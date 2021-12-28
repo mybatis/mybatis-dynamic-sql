@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2020 the original author or authors.
+ *    Copyright 2016-2021 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -21,10 +21,13 @@ import static org.mybatis.dynamic.sql.SqlBuilder.*;
 
 import java.sql.JDBCType;
 import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.SqlColumn;
+import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
@@ -39,22 +42,22 @@ class SelectStatementTest {
         Date d = new Date();
 
         SelectStatementProvider selectStatement = select(column1, column2)
-                .from(table, "a")
-                .where(column1, isEqualTo(d))
-                .or(column2, isEqualTo(4))
-                .and(column2, isLessThan(3))
-                .build()
-                .render(RenderingStrategies.MYBATIS3);
+            .from(table, "a")
+            .where(column1, isEqualTo(d))
+            .or(column2, isEqualTo(4))
+            .and(column2, isLessThan(3))
+            .build()
+            .render(RenderingStrategies.MYBATIS3);
 
         assertThat(selectStatement.getSelectStatement()).isEqualTo(
-                "select a.column1, a.column2 from foo a where a.column1 = #{parameters.p1,jdbcType=DATE} or a.column2 = #{parameters.p2,jdbcType=INTEGER} and a.column2 < #{parameters.p3,jdbcType=INTEGER}");
+            "select a.column1, a.column2 from foo a where a.column1 = #{parameters.p1,jdbcType=DATE} or a.column2 = #{parameters.p2,jdbcType=INTEGER} and a.column2 < #{parameters.p3,jdbcType=INTEGER}");
 
         Map<String, Object> parameters = selectStatement.getParameters();
 
         assertAll(
-                () -> assertThat(parameters).containsEntry("p1", d),
-                () -> assertThat(parameters).containsEntry("p2", 4),
-                () -> assertThat(parameters).containsEntry("p3", 3)
+            () -> assertThat(parameters).containsEntry("p1", d),
+            () -> assertThat(parameters).containsEntry("p2", 4),
+            () -> assertThat(parameters).containsEntry("p3", 3)
         );
     }
 
@@ -63,35 +66,34 @@ class SelectStatementTest {
         Date d = new Date();
 
         SelectStatementProvider selectStatement = select(column1, column2)
-                .from(table, "a")
-                .where(column1, isEqualTo(d))
-                .or(column2, isEqualTo(4))
-                .and(column2, isLessThan(3))
-                .or(column2, isEqualTo(4), and(column2, isEqualTo(6)))
-                .and(column2, isLessThan(3), or(column1, isEqualTo(d)))
-                .build()
-                .render(RenderingStrategies.MYBATIS3);
-
+            .from(table, "a")
+            .where(column1, isEqualTo(d))
+            .or(column2, isEqualTo(4))
+            .and(column2, isLessThan(3))
+            .or(column2, isEqualTo(4), and(column2, isEqualTo(6)))
+            .and(column2, isLessThan(3), or(column1, isEqualTo(d)))
+            .build()
+            .render(RenderingStrategies.MYBATIS3);
 
         String expected = "select a.column1, a.column2 "
-                + "from foo a "
-                + "where a.column1 = #{parameters.p1,jdbcType=DATE}"
-                + " or a.column2 = #{parameters.p2,jdbcType=INTEGER}"
-                + " and a.column2 < #{parameters.p3,jdbcType=INTEGER}"
-                + " or (a.column2 = #{parameters.p4,jdbcType=INTEGER} and a.column2 = #{parameters.p5,jdbcType=INTEGER})"
-                + " and (a.column2 < #{parameters.p6,jdbcType=INTEGER} or a.column1 = #{parameters.p7,jdbcType=DATE})";
+            + "from foo a "
+            + "where a.column1 = #{parameters.p1,jdbcType=DATE}"
+            + " or a.column2 = #{parameters.p2,jdbcType=INTEGER}"
+            + " and a.column2 < #{parameters.p3,jdbcType=INTEGER}"
+            + " or (a.column2 = #{parameters.p4,jdbcType=INTEGER} and a.column2 = #{parameters.p5,jdbcType=INTEGER})"
+            + " and (a.column2 < #{parameters.p6,jdbcType=INTEGER} or a.column1 = #{parameters.p7,jdbcType=DATE})";
 
         Map<String, Object> parameters = selectStatement.getParameters();
 
         assertAll(
-                () -> assertThat(selectStatement.getSelectStatement()).isEqualTo(expected),
-                () -> assertThat(parameters).containsEntry("p1", d),
-                () -> assertThat(parameters).containsEntry("p2", 4),
-                () -> assertThat(parameters).containsEntry("p3", 3),
-                () -> assertThat(parameters).containsEntry("p4", 4),
-                () -> assertThat(parameters).containsEntry("p5", 6),
-                () -> assertThat(parameters).containsEntry("p6", 3),
-                () -> assertThat(parameters).containsEntry("p7", d)
+            () -> assertThat(selectStatement.getSelectStatement()).isEqualTo(expected),
+            () -> assertThat(parameters).containsEntry("p1", d),
+            () -> assertThat(parameters).containsEntry("p2", 4),
+            () -> assertThat(parameters).containsEntry("p3", 3),
+            () -> assertThat(parameters).containsEntry("p4", 4),
+            () -> assertThat(parameters).containsEntry("p5", 6),
+            () -> assertThat(parameters).containsEntry("p6", 3),
+            () -> assertThat(parameters).containsEntry("p7", d)
         );
     }
 
@@ -100,21 +102,21 @@ class SelectStatementTest {
         Date d = new Date();
 
         SelectStatementProvider selectStatement = select(column1, column2)
-                .from(table, "a")
-                .where(column1, isEqualTo(d))
-                .or(column2, isEqualTo(4))
-                .and(column2, isLessThan(3))
-                .build()
-                .render(RenderingStrategies.MYBATIS3);
+            .from(table, "a")
+            .where(column1, isEqualTo(d))
+            .or(column2, isEqualTo(4))
+            .and(column2, isLessThan(3))
+            .build()
+            .render(RenderingStrategies.MYBATIS3);
 
         Map<String, Object> parameters = selectStatement.getParameters();
 
         assertAll(
-                () -> assertThat(selectStatement.getSelectStatement()).isEqualTo(
-                    "select a.column1, a.column2 from foo a where a.column1 = #{parameters.p1,jdbcType=DATE} or a.column2 = #{parameters.p2,jdbcType=INTEGER} and a.column2 < #{parameters.p3,jdbcType=INTEGER}"),
-                () -> assertThat(parameters).containsEntry("p1", d),
-                () -> assertThat(parameters).containsEntry("p2", 4),
-                () -> assertThat(parameters).containsEntry("p3", 3)
+            () -> assertThat(selectStatement.getSelectStatement()).isEqualTo(
+                "select a.column1, a.column2 from foo a where a.column1 = #{parameters.p1,jdbcType=DATE} or a.column2 = #{parameters.p2,jdbcType=INTEGER} and a.column2 < #{parameters.p3,jdbcType=INTEGER}"),
+            () -> assertThat(parameters).containsEntry("p1", d),
+            () -> assertThat(parameters).containsEntry("p2", 4),
+            () -> assertThat(parameters).containsEntry("p3", 3)
         );
     }
 
@@ -123,23 +125,22 @@ class SelectStatementTest {
         Date d = new Date();
 
         SelectStatementProvider selectStatement = select(column1, column2)
-                .from(table, "a")
-                .where(column1, isEqualTo(d))
-                .or(column2, isEqualTo(4))
-                .and(column2, isLessThan(3))
-                .or(column2, isEqualTo(4), and(column2, isEqualTo(6), or(column2, isEqualTo(7))))
-                .and(column2, isLessThan(3), or(column1, isEqualTo(d), and(column2, isEqualTo(88))))
-                .build()
-                .render(RenderingStrategies.MYBATIS3);
-
+            .from(table, "a")
+            .where(column1, isEqualTo(d))
+            .or(column2, isEqualTo(4))
+            .and(column2, isLessThan(3))
+            .or(column2, isEqualTo(4), and(column2, isEqualTo(6), or(column2, isEqualTo(7))))
+            .and(column2, isLessThan(3), or(column1, isEqualTo(d), and(column2, isEqualTo(88))))
+            .build()
+            .render(RenderingStrategies.MYBATIS3);
 
         String expected = "select a.column1, a.column2 "
-                + "from foo a "
-                + "where a.column1 = #{parameters.p1,jdbcType=DATE}"
-                + " or a.column2 = #{parameters.p2,jdbcType=INTEGER}"
-                + " and a.column2 < #{parameters.p3,jdbcType=INTEGER}"
-                + " or (a.column2 = #{parameters.p4,jdbcType=INTEGER} and (a.column2 = #{parameters.p5,jdbcType=INTEGER} or a.column2 = #{parameters.p6,jdbcType=INTEGER}))"
-                + " and (a.column2 < #{parameters.p7,jdbcType=INTEGER} or (a.column1 = #{parameters.p8,jdbcType=DATE} and a.column2 = #{parameters.p9,jdbcType=INTEGER}))";
+            + "from foo a "
+            + "where a.column1 = #{parameters.p1,jdbcType=DATE}"
+            + " or a.column2 = #{parameters.p2,jdbcType=INTEGER}"
+            + " and a.column2 < #{parameters.p3,jdbcType=INTEGER}"
+            + " or (a.column2 = #{parameters.p4,jdbcType=INTEGER} and (a.column2 = #{parameters.p5,jdbcType=INTEGER} or a.column2 = #{parameters.p6,jdbcType=INTEGER}))"
+            + " and (a.column2 < #{parameters.p7,jdbcType=INTEGER} or (a.column1 = #{parameters.p8,jdbcType=DATE} and a.column2 = #{parameters.p9,jdbcType=INTEGER}))";
 
         Map<String, Object> parameters = selectStatement.getParameters();
 
@@ -154,6 +155,45 @@ class SelectStatementTest {
             () -> assertThat(parameters).containsEntry("p7", 3),
             () -> assertThat(parameters).containsEntry("p8", d),
             () -> assertThat(parameters).containsEntry("p9", 88)
+        );
+    }
+
+    @Test
+    void testWhereSubCriteria() {
+
+        SqlCriterion cond2 = or(column2, isEqualTo(2));
+        SqlCriterion cond3 = or(column2, isEqualTo(3));
+        SelectStatementProvider selectStatement1 = select(column1, column2)
+            .from(table)
+            .where(column2, isEqualTo(1), cond2, cond3)
+            .build()
+            .render(RenderingStrategies.MYBATIS3);
+
+        List<SqlCriterion> subCriteria = new LinkedList<>();
+        subCriteria.add(cond2);
+        subCriteria.add(cond3);
+
+        SelectStatementProvider selectStatement2 = select(column1, column2)
+            .from(table)
+            .where(column2, isEqualTo(1), subCriteria)
+            .build()
+            .render(RenderingStrategies.MYBATIS3);
+
+        validateWhereSubCriteria(selectStatement1);
+        validateWhereSubCriteria(selectStatement2);
+    }
+
+    void validateWhereSubCriteria(SelectStatementProvider selectStatement) {
+        String expected = "select column1, column2 from foo "
+            + "where (column2 = #{parameters.p1,jdbcType=INTEGER} or column2 = #{parameters.p2,jdbcType=INTEGER} or column2 = #{parameters.p3,jdbcType=INTEGER})";
+
+        Map<String, Object> parameters = selectStatement.getParameters();
+
+        assertAll(
+            () -> assertThat(selectStatement.getSelectStatement()).isEqualTo(expected),
+            () -> assertThat(parameters).containsEntry("p1", 1),
+            () -> assertThat(parameters).containsEntry("p2", 2),
+            () -> assertThat(parameters).containsEntry("p3", 3)
         );
     }
 }
