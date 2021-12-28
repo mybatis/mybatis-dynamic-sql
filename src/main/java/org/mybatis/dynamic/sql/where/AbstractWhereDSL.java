@@ -223,7 +223,27 @@ public abstract class AbstractWhereDSL<T extends AbstractWhereDSL<T>> {
     }
 
     protected WhereModel internalBuild() {
-        return WhereModel.of(criteria);
+        return WhereModel.of(optimizeCriteria(criteria));
+    }
+
+    /**
+     * Recursively extract SqlCriterion list from unnecessary CriterionGroup.
+     *
+     * @param criteria
+     * @return
+     */
+    private List<SqlCriterion> optimizeCriteria(List<SqlCriterion> criteria) {
+        if (1 != criteria.size()) {
+            return criteria;
+        }
+
+        SqlCriterion criterion = criteria.get(0);
+        if (!(criterion instanceof CriterionGroup)) {
+            return criteria;
+        }
+
+        CriterionGroup group = (CriterionGroup) criterion;
+        return optimizeCriteria(group.getSubCriteria());
     }
 
     protected abstract T getThis();

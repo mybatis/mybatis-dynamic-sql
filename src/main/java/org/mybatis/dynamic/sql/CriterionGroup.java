@@ -15,6 +15,8 @@
  */
 package org.mybatis.dynamic.sql;
 
+import java.util.List;
+
 /**
  * Group sub criteria within parentheses.
  *
@@ -29,6 +31,10 @@ public class CriterionGroup extends SqlCriterion {
     @Override
     public <R> R accept(SqlCriterionVisitor<R> visitor) {
         return visitor.visit(this);
+    }
+
+    public List<SqlCriterion> getSubCriteria() {
+        return subCriteria;
     }
 
     public static Builder withConnector(String connector) {

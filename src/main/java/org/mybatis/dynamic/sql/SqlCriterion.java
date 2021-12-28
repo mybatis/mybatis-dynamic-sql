@@ -25,7 +25,7 @@ import java.util.stream.Stream;
 public abstract class SqlCriterion {
 
     private final String connector;
-    private final List<SqlCriterion> subCriteria;
+    protected final List<SqlCriterion> subCriteria;
 
     protected SqlCriterion(AbstractBuilder<?> builder) {
         connector = builder.connector;
