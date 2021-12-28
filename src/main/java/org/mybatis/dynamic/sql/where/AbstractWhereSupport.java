@@ -37,7 +37,7 @@ public abstract class AbstractWhereSupport<W extends AbstractWhereDSL<?>> {
     public abstract W where();
 
     public <T> W where(BindableColumn<T> column, VisitableCondition<T> condition, SqlCriterion...subCriteria) {
-        return where(column, condition, Arrays.asList(subCriteria));
+        return apply(w -> w.where(column, condition, subCriteria));
     }
 
     public <T> W where(BindableColumn<T> column, VisitableCondition<T> condition, List<SqlCriterion> subCriteria) {
@@ -53,7 +53,7 @@ public abstract class AbstractWhereSupport<W extends AbstractWhereDSL<?>> {
     }
 
     public W where(SqlCriterion...subCriteria) {
-        return apply(w -> w.where(Arrays.asList(subCriteria)));
+        return apply(w -> w.where(subCriteria));
     }
 
     public W where(List<SqlCriterion> subCriteria) {
