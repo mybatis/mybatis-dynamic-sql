@@ -52,6 +52,14 @@ public abstract class AbstractWhereSupport<W extends AbstractWhereDSL<?>> {
         return apply(w -> w.where(existsPredicate, subCriteria));
     }
 
+    public W where(SqlCriterion...subCriteria) {
+        return apply(w -> w.where(Arrays.asList(subCriteria)));
+    }
+
+    public W where(List<SqlCriterion> subCriteria) {
+        return apply(w -> w.where(subCriteria));
+    }
+
     public W applyWhere(WhereApplier whereApplier) {
         return apply(w -> w.applyWhere(whereApplier));
     }
