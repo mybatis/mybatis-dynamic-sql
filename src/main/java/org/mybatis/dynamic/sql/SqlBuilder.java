@@ -263,6 +263,13 @@ public interface SqlBuilder {
                 .build();
     }
 
+    static SqlCriterion or(SqlCriterion...subCriteria) {
+        return new CriterionGroup.Builder()
+            .withConnector("or") //$NON-NLS-1$
+            .withSubCriteria(Arrays.asList(subCriteria))
+            .build();
+    }
+
     static <T> SqlCriterion and(BindableColumn<T> column, VisitableCondition<T> condition) {
         return ColumnAndConditionCriterion.withColumn(column)
                 .withConnector("and") //$NON-NLS-1$
@@ -292,6 +299,13 @@ public interface SqlBuilder {
                 .withExistsPredicate(existsPredicate)
                 .withSubCriteria(Arrays.asList(subCriteria))
                 .build();
+    }
+
+    static SqlCriterion and(SqlCriterion...subCriteria) {
+        return new CriterionGroup.Builder()
+            .withConnector("and") //$NON-NLS-1$
+            .withSubCriteria(Arrays.asList(subCriteria))
+            .build();
     }
 
     // join support
