@@ -17,10 +17,16 @@ package org.mybatis.dynamic.sql;
 
 import java.sql.JDBCType;
 import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
+import org.mybatis.dynamic.sql.select.QueryExpressionDSL;
+import org.mybatis.dynamic.sql.select.QueryExpressionDSL.QueryExpressionWhereBuilder;
+import org.mybatis.dynamic.sql.select.SelectModel;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -58,6 +64,38 @@ class CriterionGroupTest {
             () -> assertThat(parameters).containsEntry("p2", 2),
             () -> assertThat(parameters).containsEntry("p3", 3)
         );
+    }
+
+    static class Param {
+        Integer cond1;
+        Integer cond2;
+        Integer cond3;
+    }
+
+
+    @Test
+    void demo() {
+        Param param = new Param();
+        param.cond1 = 1;
+        param.cond2 = 2;
+        param.cond3 = 3;
+
+        List<SqlCriterion> conditions = new LinkedList<>();
+        QueryExpressionDSL<SelectModel> dsl = select(column1, column2).from(table);
+
+        QueryExpressionWhereBuilder builder = dsl.where();
+        Optional.ofNullable(param.cond1).map(c -> or(column1, isEqualTo(c))).ifPresent(conditions::add);
+        Optional.ofNullable(param.cond2).map(c -> or(column2, isEqualTo(c))).ifPresent(conditions::add);
+        builder.and(conditions);
+
+        if (null != param.cond3) {
+            builder.and(column3, isEqualTo(param.cond3));
+        }
+
+        SelectStatementProvider selectStatement = dsl.build().render(RenderingStrategies.MYBATIS3);
+
+        System.out.println(selectStatement.getSelectStatement());
+
     }
 
     @Test
@@ -105,6 +143,33 @@ class CriterionGroupTest {
         assertAll(
             () -> assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedFullStatement),
             () -> assertThat(parameters).containsEntry("p1", 1)
+        );
+    }
+
+    @Test
+    void testNest() {
+        SelectStatementProvider selectStatement = select(column1, column2)
+            .from(table)
+            .where()
+            .and(or(column1, isEqualTo(1)), or(column2, isEqualTo(2))
+                , or(and(column2, isEqualTo(2)), and(column3, isEqualTo(3)))
+            )
+            .build()
+            .render(RenderingStrategies.MYBATIS3);
+
+        // CriterionGroup within CriterionGroup
+        String expectedFullStatement = "select col1, col2 from foo "
+            + "where col1 = #{parameters.p1,jdbcType=INTEGER} or col2 = #{parameters.p2,jdbcType=INTEGER} "
+            + "or (col2 = #{parameters.p3,jdbcType=INTEGER} and col3 = #{parameters.p4,jdbcType=INTEGER})";
+
+        Map<String, Object> parameters = selectStatement.getParameters();
+
+        assertAll(
+            () -> assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedFullStatement),
+            () -> assertThat(parameters).containsEntry("p1", 1),
+            () -> assertThat(parameters).containsEntry("p2", 2),
+            () -> assertThat(parameters).containsEntry("p3", 2),
+            () -> assertThat(parameters).containsEntry("p4", 3)
         );
     }
 }
