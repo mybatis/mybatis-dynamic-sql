@@ -148,14 +148,16 @@ class CriterionGroupTest {
 
     @Test
     void testNest() {
-        SelectStatementProvider selectStatement = select(column1, column2)
-            .from(table)
-            .where()
-            .and(or(column1, isEqualTo(1)), or(column2, isEqualTo(2))
-                , or(and(column2, isEqualTo(2)), and(column3, isEqualTo(3)))
-            )
-            .build()
-            .render(RenderingStrategies.MYBATIS3);
+        SelectStatementProvider selectStatement = select(column1, column2).from(table)
+            .where(or(and(
+                or(column1, isEqualTo(1))
+                , or(column2, isEqualTo(2))
+                , or(
+                    and(column2, isEqualTo(2))
+                    , and(column3, isEqualTo(3))
+                )
+            )))
+            .build().render(RenderingStrategies.MYBATIS3);
 
         // CriterionGroup within CriterionGroup
         String expectedFullStatement = "select col1, col2 from foo "
@@ -172,4 +174,6 @@ class CriterionGroupTest {
             () -> assertThat(parameters).containsEntry("p4", 3)
         );
     }
+
+
 }
