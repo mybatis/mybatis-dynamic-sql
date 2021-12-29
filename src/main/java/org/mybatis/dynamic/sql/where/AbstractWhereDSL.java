@@ -76,12 +76,12 @@ public abstract class AbstractWhereDSL<T extends AbstractWhereDSL<T>> {
     }
 
     @NotNull
-    public T where(SqlCriterion criterion, SqlCriterion...subCriteria) {
+    public T where(CriterionGroup criterion, SqlCriterion...subCriteria) {
         return where(criterion, Arrays.asList(subCriteria));
     }
 
     @NotNull
-    public T where(SqlCriterion criterion, List<SqlCriterion> subCriteria) {
+    public T where(CriterionGroup criterion, List<SqlCriterion> subCriteria) {
         criteria.add(new CriterionGroup.Builder()
                         .withCriterion(criterion)
                         .withSubCriteria(subCriteria)
