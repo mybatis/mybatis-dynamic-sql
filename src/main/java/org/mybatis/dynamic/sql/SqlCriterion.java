@@ -51,6 +51,11 @@ public abstract class SqlCriterion {
             return getThis();
         }
 
+        public T withCriterion(SqlCriterion criterion) {
+            this.subCriteria.add(Objects.requireNonNull(criterion));
+            return getThis();
+        }
+
         public T withSubCriteria(List<SqlCriterion> subCriteria) {
             this.subCriteria.addAll(subCriteria);
             return getThis();

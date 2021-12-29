@@ -232,6 +232,30 @@ public interface SqlBuilder {
     }
 
     // where condition connectors
+    static <T> CriterionGroup group(BindableColumn<T> column, VisitableCondition<T> condition,
+                                  SqlCriterion...subCriteria) {
+        return new CriterionGroup.Builder()
+                .withCriterion(new ColumnAndConditionCriterion.Builder<T>().withColumn(column)
+                .withCondition(condition).build())
+                .withSubCriteria(Arrays.asList(subCriteria))
+                .build();
+    }
+
+    static CriterionGroup group(ExistsPredicate existsPredicate, SqlCriterion...subCriteria) {
+        return new CriterionGroup.Builder()
+                .withCriterion(new ExistsCriterion.Builder()
+                .withExistsPredicate(existsPredicate).build())
+                .withSubCriteria(Arrays.asList(subCriteria))
+                .build();
+    }
+
+    static CriterionGroup group(CriterionGroup criterionGroup, SqlCriterion...subCriteria) {
+        return new CriterionGroup.Builder()
+                .withCriterion(criterionGroup)
+                .withSubCriteria(Arrays.asList(subCriteria))
+                .build();
+    }
+
     static <T> SqlCriterion or(BindableColumn<T> column, VisitableCondition<T> condition) {
         return ColumnAndConditionCriterion.withColumn(column)
                 .withConnector("or") //$NON-NLS-1$
@@ -263,6 +287,14 @@ public interface SqlBuilder {
                 .build();
     }
 
+    static SqlCriterion or(CriterionGroup criterionGroup, SqlCriterion...subCriteria) {
+        return new CriterionGroup.Builder()
+                .withConnector("or") //$NON-NLS-1$
+                .withCriterion(criterionGroup)
+                .withSubCriteria(Arrays.asList(subCriteria))
+                .build();
+    }
+
     static <T> SqlCriterion and(BindableColumn<T> column, VisitableCondition<T> condition) {
         return ColumnAndConditionCriterion.withColumn(column)
                 .withConnector("and") //$NON-NLS-1$
@@ -290,6 +322,14 @@ public interface SqlBuilder {
         return new ExistsCriterion.Builder()
                 .withConnector("and") //$NON-NLS-1$
                 .withExistsPredicate(existsPredicate)
+                .withSubCriteria(Arrays.asList(subCriteria))
+                .build();
+    }
+
+    static SqlCriterion and(CriterionGroup criterionGroup, SqlCriterion...subCriteria) {
+        return new CriterionGroup.Builder()
+                .withConnector("and") //$NON-NLS-1$
+                .withCriterion(criterionGroup)
                 .withSubCriteria(Arrays.asList(subCriteria))
                 .build();
     }

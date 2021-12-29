@@ -22,6 +22,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import org.mybatis.dynamic.sql.ColumnAndConditionCriterion;
+import org.mybatis.dynamic.sql.CriterionGroup;
 import org.mybatis.dynamic.sql.ExistsCriterion;
 import org.mybatis.dynamic.sql.ExistsPredicate;
 import org.mybatis.dynamic.sql.SqlCriterion;
@@ -94,6 +95,11 @@ public class CriterionRenderer implements SqlCriterionVisitor<Optional<RenderedC
                 .build();
 
         return renderWithInitialCondition(initialCondition, criterion);
+    }
+
+    @Override
+    public Optional<RenderedCriterion> visit(CriterionGroup criterion) {
+        return renderWithoutInitialCondition(criterion);
     }
 
     private <T> FragmentAndParameters renderCondition(ColumnAndConditionCriterion<T> criterion) {
