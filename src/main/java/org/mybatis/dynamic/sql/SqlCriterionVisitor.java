@@ -20,5 +20,5 @@ public interface SqlCriterionVisitor<R> {
 
     R visit(ExistsCriterion criterion);
 
-    R visit(CriterionGroup criterion);
+    R visit(CriteriaGroup criterion);
 }

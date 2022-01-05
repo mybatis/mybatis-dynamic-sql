@@ -22,7 +22,7 @@ import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.mybatis.dynamic.sql.BindableColumn;
 import org.mybatis.dynamic.sql.ColumnAndConditionCriterion;
-import org.mybatis.dynamic.sql.CriterionGroup;
+import org.mybatis.dynamic.sql.CriteriaGroup;
 import org.mybatis.dynamic.sql.ExistsCriterion;
 import org.mybatis.dynamic.sql.ExistsPredicate;
 import org.mybatis.dynamic.sql.SqlCriterion;
@@ -76,13 +76,13 @@ public abstract class AbstractWhereDSL<T extends AbstractWhereDSL<T>> {
     }
 
     @NotNull
-    public T where(CriterionGroup criterion, SqlCriterion...subCriteria) {
+    public T where(CriteriaGroup criterion, SqlCriterion...subCriteria) {
         return where(criterion, Arrays.asList(subCriteria));
     }
 
     @NotNull
-    public T where(CriterionGroup criterion, List<SqlCriterion> subCriteria) {
-        criteria.add(new CriterionGroup.Builder()
+    public T where(CriteriaGroup criterion, List<SqlCriterion> subCriteria) {
+        criteria.add(new CriteriaGroup.Builder()
                         .withCriterion(criterion)
                         .withSubCriteria(subCriteria)
                         .build());

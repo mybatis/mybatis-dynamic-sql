@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import org.mybatis.dynamic.sql.BindableColumn;
-import org.mybatis.dynamic.sql.CriterionGroup;
+import org.mybatis.dynamic.sql.CriteriaGroup;
 import org.mybatis.dynamic.sql.ExistsPredicate;
 import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.VisitableCondition;
@@ -53,11 +53,11 @@ public abstract class AbstractWhereSupport<W extends AbstractWhereDSL<?>> {
         return apply(w -> w.where(existsPredicate, subCriteria));
     }
 
-    public W where(CriterionGroup criterion, SqlCriterion...subCriteria) {
+    public W where(CriteriaGroup criterion, SqlCriterion...subCriteria) {
         return where(criterion, Arrays.asList(subCriteria));
     }
 
-    public W where(CriterionGroup criterion, List<SqlCriterion> subCriteria) {
+    public W where(CriteriaGroup criterion, List<SqlCriterion> subCriteria) {
         return apply(w -> w.where(criterion, subCriteria));
     }
 

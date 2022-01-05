@@ -15,8 +15,8 @@
  */
 package org.mybatis.dynamic.sql;
 
-public class CriterionGroup extends SqlCriterion {
-    private CriterionGroup(Builder builder) {
+public class CriteriaGroup extends SqlCriterion {
+    private CriteriaGroup(Builder builder) {
         super(builder);
     }
 
@@ -26,8 +26,8 @@ public class CriterionGroup extends SqlCriterion {
     }
 
     public static class Builder extends AbstractBuilder<Builder> {
-        public CriterionGroup build() {
-            return new CriterionGroup(this);
+        public CriteriaGroup build() {
+            return new CriteriaGroup(this);
         }
 
         @Override
