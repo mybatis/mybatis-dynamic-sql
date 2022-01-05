@@ -76,7 +76,6 @@ class GroupingTest {
                 .from(foo)
                 .where(
                         group(A, isEqualTo(1), or(A, isGreaterThan(5))),
-                        group(A, isEqualTo(1), or(A, isGreaterThan(5))),
                         and(B, isEqualTo(1)),
                         or(A, isLessThan(0), and(B, isEqualTo(2)))
                 )

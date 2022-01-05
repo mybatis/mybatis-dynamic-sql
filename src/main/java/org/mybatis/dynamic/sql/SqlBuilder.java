@@ -214,17 +214,9 @@ public interface SqlBuilder {
         return WhereDSL.where();
     }
 
-    static <T> WhereDSL where(BindableColumn<T> column, VisitableCondition<T> condition) {
-        return WhereDSL.where().where(column, condition);
-    }
-
     static <T> WhereDSL where(BindableColumn<T> column, VisitableCondition<T> condition,
             SqlCriterion... subCriteria) {
         return WhereDSL.where().where(column, condition, subCriteria);
-    }
-
-    static WhereDSL where(ExistsPredicate existsPredicate) {
-        return WhereDSL.where().where(existsPredicate);
     }
 
     static WhereDSL where(ExistsPredicate existsPredicate, SqlCriterion... subCriteria) {
@@ -256,26 +248,12 @@ public interface SqlBuilder {
                 .build();
     }
 
-    static <T> SqlCriterion or(BindableColumn<T> column, VisitableCondition<T> condition) {
-        return ColumnAndConditionCriterion.withColumn(column)
-                .withConnector("or") //$NON-NLS-1$
-                .withCondition(condition)
-                .build();
-    }
-
     static <T> SqlCriterion or(BindableColumn<T> column, VisitableCondition<T> condition,
             SqlCriterion...subCriteria) {
         return ColumnAndConditionCriterion.withColumn(column)
                 .withConnector("or") //$NON-NLS-1$
                 .withCondition(condition)
                 .withSubCriteria(Arrays.asList(subCriteria))
-                .build();
-    }
-
-    static SqlCriterion or(ExistsPredicate existsPredicate) {
-        return new ExistsCriterion.Builder()
-                .withConnector("or") //$NON-NLS-1$
-                .withExistsPredicate(existsPredicate)
                 .build();
     }
 
@@ -295,26 +273,12 @@ public interface SqlBuilder {
                 .build();
     }
 
-    static <T> SqlCriterion and(BindableColumn<T> column, VisitableCondition<T> condition) {
-        return ColumnAndConditionCriterion.withColumn(column)
-                .withConnector("and") //$NON-NLS-1$
-                .withCondition(condition)
-                .build();
-    }
-
     static <T> SqlCriterion and(BindableColumn<T> column, VisitableCondition<T> condition,
             SqlCriterion...subCriteria) {
         return ColumnAndConditionCriterion.withColumn(column)
                 .withConnector("and") //$NON-NLS-1$
                 .withCondition(condition)
                 .withSubCriteria(Arrays.asList(subCriteria))
-                .build();
-    }
-
-    static SqlCriterion and(ExistsPredicate existsPredicate) {
-        return new ExistsCriterion.Builder()
-                .withConnector("and") //$NON-NLS-1$
-                .withExistsPredicate(existsPredicate)
                 .build();
     }
 

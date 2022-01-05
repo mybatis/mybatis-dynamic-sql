@@ -32,14 +32,6 @@ public abstract class AbstractWhereDSL<T extends AbstractWhereDSL<T>> {
     private final List<SqlCriterion> criteria = new ArrayList<>();
 
     @NotNull
-    public <S> T where(BindableColumn<S> column, VisitableCondition<S> condition) {
-        criteria.add(ColumnAndConditionCriterion.withColumn(column)
-                .withCondition(condition)
-                .build());
-        return getThis();
-    }
-
-    @NotNull
     public <S> T where(BindableColumn<S> column, VisitableCondition<S> condition, SqlCriterion...subCriteria) {
         return where(column, condition, Arrays.asList(subCriteria));
     }
@@ -49,14 +41,6 @@ public abstract class AbstractWhereDSL<T extends AbstractWhereDSL<T>> {
         criteria.add(ColumnAndConditionCriterion.withColumn(column)
                 .withCondition(condition)
                 .withSubCriteria(subCriteria)
-                .build());
-        return getThis();
-    }
-
-    @NotNull
-    public T where(ExistsPredicate existsPredicate) {
-        criteria.add(new ExistsCriterion.Builder()
-                .withExistsPredicate(existsPredicate)
                 .build());
         return getThis();
     }
@@ -96,15 +80,6 @@ public abstract class AbstractWhereDSL<T extends AbstractWhereDSL<T>> {
     }
 
     @NotNull
-    public <S> T and(BindableColumn<S> column, VisitableCondition<S> condition) {
-        criteria.add(ColumnAndConditionCriterion.withColumn(column)
-                .withConnector("and") //$NON-NLS-1$
-                .withCondition(condition)
-                .build());
-        return getThis();
-    }
-
-    @NotNull
     public <S> T and(BindableColumn<S> column, VisitableCondition<S> condition, SqlCriterion...subCriteria) {
         return and(column, condition, Arrays.asList(subCriteria));
     }
@@ -115,15 +90,6 @@ public abstract class AbstractWhereDSL<T extends AbstractWhereDSL<T>> {
                 .withConnector("and") //$NON-NLS-1$
                 .withCondition(condition)
                 .withSubCriteria(subCriteria)
-                .build());
-        return getThis();
-    }
-
-    @NotNull
-    public T and(ExistsPredicate existsPredicate) {
-        criteria.add(new ExistsCriterion.Builder()
-                .withConnector("and") //$NON-NLS-1$
-                .withExistsPredicate(existsPredicate)
                 .build());
         return getThis();
     }
@@ -144,15 +110,6 @@ public abstract class AbstractWhereDSL<T extends AbstractWhereDSL<T>> {
     }
 
     @NotNull
-    public <S> T or(BindableColumn<S> column, VisitableCondition<S> condition) {
-        criteria.add(ColumnAndConditionCriterion.withColumn(column)
-                .withConnector("or") //$NON-NLS-1$
-                .withCondition(condition)
-                .build());
-        return getThis();
-    }
-
-    @NotNull
     public <S> T or(BindableColumn<S> column, VisitableCondition<S> condition, SqlCriterion...subCriteria) {
         return or(column, condition, Arrays.asList(subCriteria));
     }
@@ -163,15 +120,6 @@ public abstract class AbstractWhereDSL<T extends AbstractWhereDSL<T>> {
                 .withConnector("or") //$NON-NLS-1$
                 .withCondition(condition)
                 .withSubCriteria(subCriteria)
-                .build());
-        return getThis();
-    }
-
-    @NotNull
-    public T or(ExistsPredicate existsPredicate) {
-        criteria.add(new ExistsCriterion.Builder()
-                .withConnector("or") //$NON-NLS-1$
-                .withExistsPredicate(existsPredicate)
                 .build());
         return getThis();
     }

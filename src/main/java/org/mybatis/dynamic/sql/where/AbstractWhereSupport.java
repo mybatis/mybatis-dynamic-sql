@@ -45,10 +45,6 @@ public abstract class AbstractWhereSupport<W extends AbstractWhereDSL<?>> {
         return apply(w -> w.where(column, condition, subCriteria));
     }
 
-    public W where(ExistsPredicate existsPredicate) {
-        return apply(w -> w.where(existsPredicate));
-    }
-
     public W where(ExistsPredicate existsPredicate, SqlCriterion...subCriteria) {
         return apply(w -> w.where(existsPredicate, subCriteria));
     }
