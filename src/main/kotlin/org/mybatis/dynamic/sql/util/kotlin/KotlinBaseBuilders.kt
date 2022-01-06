@@ -39,7 +39,6 @@ fun WhereApplier.andThen(after: WhereApplier): WhereApplier = {
 @MyBatisDslMarker
 @Suppress("TooManyFunctions")
 abstract class KotlinBaseBuilder<D : AbstractWhereSupport<*>, B : KotlinBaseBuilder<D, B>> {
-    // TODO - do we need this method?
     fun <T> where(column: BindableColumn<T>, condition: VisitableCondition<T>): B =
         applyToWhere {
             where(column, condition)
@@ -50,7 +49,6 @@ abstract class KotlinBaseBuilder<D : AbstractWhereSupport<*>, B : KotlinBaseBuil
             where(column, condition, sc)
         }
 
-    // TODO - do we need this method?
     fun where(existsPredicate: ExistsPredicate): B =
         applyToWhere {
             where(existsPredicate)
@@ -61,7 +59,6 @@ abstract class KotlinBaseBuilder<D : AbstractWhereSupport<*>, B : KotlinBaseBuil
             where(existsPredicate, sc)
         }
 
-    // TODO - do we need this method?
     fun where(criteriaGroup: CriteriaGroup): B =
         applyToWhere {
             where(criteriaGroup)
@@ -77,7 +74,6 @@ abstract class KotlinBaseBuilder<D : AbstractWhereSupport<*>, B : KotlinBaseBuil
             applyWhere(whereApplier)
         }
 
-    // TODO - do we need this method?
     fun <T> and(column: BindableColumn<T>, condition: VisitableCondition<T>): B =
         applyToWhere {
             and(column, condition)
@@ -88,7 +84,6 @@ abstract class KotlinBaseBuilder<D : AbstractWhereSupport<*>, B : KotlinBaseBuil
             and(column, condition, sc)
         }
 
-    // TODO - do we need this method?
     fun and(existsPredicate: ExistsPredicate): B =
         applyToWhere {
             and(existsPredicate)
@@ -99,7 +94,6 @@ abstract class KotlinBaseBuilder<D : AbstractWhereSupport<*>, B : KotlinBaseBuil
             and(existsPredicate, sc)
         }
 
-    // TODO - do we need this method?
     fun and(criteriaGroup: CriteriaGroup): B =
         applyToWhere {
             and(criteriaGroup)
@@ -110,7 +104,6 @@ abstract class KotlinBaseBuilder<D : AbstractWhereSupport<*>, B : KotlinBaseBuil
             and(criteriaGroup, sc)
         }
 
-    // TODO - do we need this method?
     fun <T> or(column: BindableColumn<T>, condition: VisitableCondition<T>): B =
         applyToWhere {
             or(column, condition)
@@ -121,7 +114,6 @@ abstract class KotlinBaseBuilder<D : AbstractWhereSupport<*>, B : KotlinBaseBuil
             or(column, condition, sc)
         }
 
-    // TODO - do we need this method?
     fun or(existsPredicate: ExistsPredicate): B =
         applyToWhere {
             or(existsPredicate)
@@ -132,7 +124,6 @@ abstract class KotlinBaseBuilder<D : AbstractWhereSupport<*>, B : KotlinBaseBuil
             or(existsPredicate, sc)
         }
 
-    // TODO - do we need this method?
     fun or(criteriaGroup: CriteriaGroup): B =
         applyToWhere {
             or(criteriaGroup)

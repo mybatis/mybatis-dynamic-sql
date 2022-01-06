@@ -29,7 +29,6 @@ typealias CriteriaReceiver = CriteriaCollector.() -> Unit
 class CriteriaCollector {
     val criteria = mutableListOf<CriteriaGroupWithConnector>()
 
-    // TODO - do we need this method?
     fun <T> and(column: BindableColumn<T>, condition: VisitableCondition<T>): CriteriaCollector =
         apply {
             criteria.add(CriteriaGroupWithConnector.Builder()
@@ -57,7 +56,6 @@ class CriteriaCollector {
             )
         }
 
-    // TODO - do we need this method?
     fun and(existsPredicate: ExistsPredicate): CriteriaCollector =
         apply {
             criteria.add(CriteriaGroupWithConnector.Builder()
@@ -81,7 +79,6 @@ class CriteriaCollector {
             )
         }
 
-    // TODO - do we need this method?
     fun and(criteriaGroup: CriteriaGroup): CriteriaCollector =
         apply {
             criteria.add(CriteriaGroupWithConnector.Builder()
@@ -105,7 +102,6 @@ class CriteriaCollector {
             )
         }
 
-    // TODO - do we need this method?
     fun <T> or(column: BindableColumn<T>, condition: VisitableCondition<T>): CriteriaCollector =
         apply {
             criteria.add(CriteriaGroupWithConnector.Builder()
@@ -133,7 +129,6 @@ class CriteriaCollector {
             )
         }
 
-    // TODO - do we need this method?
     fun or(existsPredicate: ExistsPredicate): CriteriaCollector =
         apply {
             criteria.add(CriteriaGroupWithConnector.Builder()
@@ -157,7 +152,6 @@ class CriteriaCollector {
             )
         }
 
-    // TODO - do we need this method?
     fun or(criteriaGroup: CriteriaGroup): CriteriaCollector =
         apply {
             criteria.add(CriteriaGroupWithConnector.Builder()
