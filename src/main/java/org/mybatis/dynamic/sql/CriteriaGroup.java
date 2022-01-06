@@ -15,9 +15,18 @@
  */
 package org.mybatis.dynamic.sql;
 
+import java.util.Objects;
+
 public class CriteriaGroup extends SqlCriterion {
+    private final SqlCriterion initialCriterion;
+
     private CriteriaGroup(Builder builder) {
         super(builder);
+        initialCriterion = Objects.requireNonNull(builder.initialCriterion);
+    }
+
+    public SqlCriterion initialCriterion() {
+        return initialCriterion;
     }
 
     @Override
@@ -26,6 +35,13 @@ public class CriteriaGroup extends SqlCriterion {
     }
 
     public static class Builder extends AbstractBuilder<Builder> {
+        private SqlCriterion initialCriterion;
+
+        public Builder withInitialCriterion(SqlCriterion initialCriterion) {
+            this.initialCriterion = initialCriterion;
+            return this;
+        }
+
         public CriteriaGroup build() {
             return new CriteriaGroup(this);
         }

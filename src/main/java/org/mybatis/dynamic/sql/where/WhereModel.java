@@ -17,10 +17,12 @@ package org.mybatis.dynamic.sql.where;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
+import org.mybatis.dynamic.sql.CriteriaGroupWithConnector;
 import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.render.TableAliasCalculator;
@@ -31,14 +33,20 @@ public class WhereModel {
     private static final WhereClauseProvider EMPTY_WHERE_CLAUSE =
             new WhereClauseProvider.Builder().withWhereClause("").build(); //$NON-NLS-1$
 
-    private final List<SqlCriterion> criteria = new ArrayList<>();
+    private final SqlCriterion initialCriterion;
+    private final List<CriteriaGroupWithConnector> subCriteria = new ArrayList<>();
 
-    private WhereModel(List<SqlCriterion> criteria) {
-        this.criteria.addAll(criteria);
+    public WhereModel(SqlCriterion initialCriterion, List<CriteriaGroupWithConnector> subCriteria) {
+        this.initialCriterion = initialCriterion;
+        this.subCriteria.addAll(subCriteria);
     }
 
-    public <R> Stream<R> mapCriteria(Function<SqlCriterion, R> mapper) {
-        return criteria.stream().map(mapper);
+    public Optional<SqlCriterion> initialCriterion() {
+        return Optional.ofNullable(initialCriterion);
+    }
+
+    public <R> Stream<R> mapSubCriteria(Function<CriteriaGroupWithConnector, R> mapper) {
+        return subCriteria.stream().map(mapper);
     }
 
     /**
@@ -90,9 +98,5 @@ public class WhereModel {
                 .build()
                 .render()
                 .orElse(EMPTY_WHERE_CLAUSE);
-    }
-
-    public static WhereModel of(List<SqlCriterion> criteria) {
-        return new WhereModel(criteria);
     }
 }

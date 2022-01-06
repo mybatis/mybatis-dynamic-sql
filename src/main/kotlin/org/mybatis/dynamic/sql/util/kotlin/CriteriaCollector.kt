@@ -17,22 +17,25 @@ package org.mybatis.dynamic.sql.util.kotlin
 
 import org.mybatis.dynamic.sql.BindableColumn
 import org.mybatis.dynamic.sql.ColumnAndConditionCriterion
+import org.mybatis.dynamic.sql.CriteriaGroup
+import org.mybatis.dynamic.sql.CriteriaGroupWithConnector
 import org.mybatis.dynamic.sql.ExistsCriterion
 import org.mybatis.dynamic.sql.ExistsPredicate
-import org.mybatis.dynamic.sql.SqlCriterion
 import org.mybatis.dynamic.sql.VisitableCondition
 
 typealias CriteriaReceiver = CriteriaCollector.() -> Unit
 
 @MyBatisDslMarker
 class CriteriaCollector {
-    val criteria = mutableListOf<SqlCriterion>()
+    val criteria = mutableListOf<CriteriaGroupWithConnector>()
 
+    // TODO - do we need this method?
     fun <T> and(column: BindableColumn<T>, condition: VisitableCondition<T>): CriteriaCollector =
         apply {
-            criteria.add(
-                ColumnAndConditionCriterion.withColumn(column)
-                    .withCondition(condition)
+            criteria.add(CriteriaGroupWithConnector.Builder()
+                    .withInitialCriterion(ColumnAndConditionCriterion.withColumn(column)
+                            .withCondition(condition)
+                            .build())
                     .withConnector("and")
                     .build()
             )
@@ -44,43 +47,73 @@ class CriteriaCollector {
         criteriaReceiver: CriteriaReceiver
     ): CriteriaCollector =
         apply {
-            criteria.add(
-                ColumnAndConditionCriterion.withColumn(column)
+            criteria.add(CriteriaGroupWithConnector.Builder()
+                .withInitialCriterion(ColumnAndConditionCriterion.withColumn(column)
                     .withCondition(condition)
-                    .withSubCriteria(CriteriaCollector().apply(criteriaReceiver).criteria)
-                    .withConnector("and")
-                    .build()
+                    .build())
+                .withConnector("and")
+                .withSubCriteria(CriteriaCollector().apply(criteriaReceiver).criteria)
+                .build()
             )
         }
 
+    // TODO - do we need this method?
     fun and(existsPredicate: ExistsPredicate): CriteriaCollector =
         apply {
-            criteria.add(
-                ExistsCriterion.Builder()
+            criteria.add(CriteriaGroupWithConnector.Builder()
+                    .withInitialCriterion(ExistsCriterion.Builder()
+                        .withExistsPredicate(existsPredicate)
+                        .build())
                     .withConnector("and")
-                    .withExistsPredicate(existsPredicate)
                     .build()
             )
         }
 
     fun and(existsPredicate: ExistsPredicate, criteriaReceiver: CriteriaReceiver): CriteriaCollector =
         apply {
-            criteria.add(
-                ExistsCriterion.Builder()
-                    .withConnector("and")
+            criteria.add(CriteriaGroupWithConnector.Builder()
+                .withInitialCriterion(ExistsCriterion.Builder()
                     .withExistsPredicate(existsPredicate)
-                    .withSubCriteria(CriteriaCollector().apply(criteriaReceiver).criteria)
-                    .build()
+                    .build())
+                .withConnector("and")
+                .withSubCriteria(CriteriaCollector().apply(criteriaReceiver).criteria)
+                .build()
             )
         }
 
+    // TODO - do we need this method?
+    fun and(criteriaGroup: CriteriaGroup): CriteriaCollector =
+        apply {
+            criteria.add(CriteriaGroupWithConnector.Builder()
+                .withInitialCriterion(CriteriaGroup.Builder()
+                    .withInitialCriterion(criteriaGroup)
+                    .build())
+                .withConnector("and")
+                .build()
+            )
+        }
+
+    fun and(criteriaGroup: CriteriaGroup, criteriaReceiver: CriteriaReceiver): CriteriaCollector =
+        apply {
+            criteria.add(CriteriaGroupWithConnector.Builder()
+                .withInitialCriterion(CriteriaGroup.Builder()
+                    .withInitialCriterion(criteriaGroup)
+                    .build())
+                .withSubCriteria(CriteriaCollector().apply(criteriaReceiver).criteria)
+                .withConnector("and")
+                .build()
+            )
+        }
+
+    // TODO - do we need this method?
     fun <T> or(column: BindableColumn<T>, condition: VisitableCondition<T>): CriteriaCollector =
         apply {
-            criteria.add(
-                ColumnAndConditionCriterion.withColumn(column)
+            criteria.add(CriteriaGroupWithConnector.Builder()
+                .withInitialCriterion(ColumnAndConditionCriterion.withColumn(column)
                     .withCondition(condition)
-                    .withConnector("or")
-                    .build()
+                    .build())
+                .withConnector("or")
+                .build()
             )
         }
 
@@ -90,33 +123,61 @@ class CriteriaCollector {
         criteriaReceiver: CriteriaReceiver
     ): CriteriaCollector =
         apply {
-            criteria.add(
-                ColumnAndConditionCriterion.withColumn(column)
+            criteria.add(CriteriaGroupWithConnector.Builder()
+                .withInitialCriterion(ColumnAndConditionCriterion.withColumn(column)
                     .withCondition(condition)
-                    .withSubCriteria(CriteriaCollector().apply(criteriaReceiver).criteria)
-                    .withConnector("or")
-                    .build()
+                    .build())
+                .withConnector("or")
+                .withSubCriteria(CriteriaCollector().apply(criteriaReceiver).criteria)
+                .build()
             )
         }
 
+    // TODO - do we need this method?
     fun or(existsPredicate: ExistsPredicate): CriteriaCollector =
         apply {
-            criteria.add(
-                ExistsCriterion.Builder()
-                    .withConnector("or")
+            criteria.add(CriteriaGroupWithConnector.Builder()
+                .withInitialCriterion(ExistsCriterion.Builder()
                     .withExistsPredicate(existsPredicate)
-                    .build()
+                    .build())
+                .withConnector("or")
+                .build()
             )
         }
 
     fun or(existsPredicate: ExistsPredicate, criteriaReceiver: CriteriaReceiver): CriteriaCollector =
         apply {
-            criteria.add(
-                ExistsCriterion.Builder()
-                    .withConnector("or")
+            criteria.add(CriteriaGroupWithConnector.Builder()
+                .withInitialCriterion(ExistsCriterion.Builder()
                     .withExistsPredicate(existsPredicate)
-                    .withSubCriteria(CriteriaCollector().apply(criteriaReceiver).criteria)
-                    .build()
+                    .build())
+                .withConnector("or")
+                .withSubCriteria(CriteriaCollector().apply(criteriaReceiver).criteria)
+                .build()
+            )
+        }
+
+    // TODO - do we need this method?
+    fun or(criteriaGroup: CriteriaGroup): CriteriaCollector =
+        apply {
+            criteria.add(CriteriaGroupWithConnector.Builder()
+                .withInitialCriterion(CriteriaGroup.Builder()
+                    .withInitialCriterion(criteriaGroup)
+                    .build())
+                .withConnector("or")
+                .build()
+            )
+        }
+
+    fun or(criteriaGroup: CriteriaGroup, criteriaReceiver: CriteriaReceiver): CriteriaCollector =
+        apply {
+            criteria.add(CriteriaGroupWithConnector.Builder()
+                .withInitialCriterion(CriteriaGroup.Builder()
+                    .withInitialCriterion(criteriaGroup)
+                    .build())
+                .withSubCriteria(CriteriaCollector().apply(criteriaReceiver).criteria)
+                .withConnector("or")
+                .build()
             )
         }
 }

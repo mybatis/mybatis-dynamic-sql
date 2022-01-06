@@ -16,8 +16,9 @@
 package org.mybatis.dynamic.sql.util.kotlin
 
 import org.mybatis.dynamic.sql.BindableColumn
+import org.mybatis.dynamic.sql.CriteriaGroup
+import org.mybatis.dynamic.sql.CriteriaGroupWithConnector
 import org.mybatis.dynamic.sql.ExistsPredicate
-import org.mybatis.dynamic.sql.SqlCriterion
 import org.mybatis.dynamic.sql.SqlTable
 import org.mybatis.dynamic.sql.VisitableCondition
 import org.mybatis.dynamic.sql.select.AbstractQueryExpressionDSL
@@ -38,6 +39,7 @@ fun WhereApplier.andThen(after: WhereApplier): WhereApplier = {
 @MyBatisDslMarker
 @Suppress("TooManyFunctions")
 abstract class KotlinBaseBuilder<D : AbstractWhereSupport<*>, B : KotlinBaseBuilder<D, B>> {
+    // TODO - do we need this method?
     fun <T> where(column: BindableColumn<T>, condition: VisitableCondition<T>): B =
         applyToWhere {
             where(column, condition)
@@ -48,6 +50,7 @@ abstract class KotlinBaseBuilder<D : AbstractWhereSupport<*>, B : KotlinBaseBuil
             where(column, condition, sc)
         }
 
+    // TODO - do we need this method?
     fun where(existsPredicate: ExistsPredicate): B =
         applyToWhere {
             where(existsPredicate)
@@ -58,11 +61,23 @@ abstract class KotlinBaseBuilder<D : AbstractWhereSupport<*>, B : KotlinBaseBuil
             where(existsPredicate, sc)
         }
 
+    // TODO - do we need this method?
+    fun where(criteriaGroup: CriteriaGroup): B =
+        applyToWhere {
+            where(criteriaGroup)
+        }
+
+    fun where(criteriaGroup: CriteriaGroup, subCriteria: CriteriaReceiver): B =
+        applyToWhere(subCriteria) { sc ->
+            where(criteriaGroup, sc)
+        }
+
     fun applyWhere(whereApplier: WhereApplier): B =
         applyToWhere {
             applyWhere(whereApplier)
         }
 
+    // TODO - do we need this method?
     fun <T> and(column: BindableColumn<T>, condition: VisitableCondition<T>): B =
         applyToWhere {
             and(column, condition)
@@ -73,6 +88,7 @@ abstract class KotlinBaseBuilder<D : AbstractWhereSupport<*>, B : KotlinBaseBuil
             and(column, condition, sc)
         }
 
+    // TODO - do we need this method?
     fun and(existsPredicate: ExistsPredicate): B =
         applyToWhere {
             and(existsPredicate)
@@ -83,6 +99,18 @@ abstract class KotlinBaseBuilder<D : AbstractWhereSupport<*>, B : KotlinBaseBuil
             and(existsPredicate, sc)
         }
 
+    // TODO - do we need this method?
+    fun and(criteriaGroup: CriteriaGroup): B =
+        applyToWhere {
+            and(criteriaGroup)
+        }
+
+    fun and(criteriaGroup: CriteriaGroup, subCriteria: CriteriaReceiver): B =
+        applyToWhere(subCriteria) { sc ->
+            and(criteriaGroup, sc)
+        }
+
+    // TODO - do we need this method?
     fun <T> or(column: BindableColumn<T>, condition: VisitableCondition<T>): B =
         applyToWhere {
             or(column, condition)
@@ -93,6 +121,7 @@ abstract class KotlinBaseBuilder<D : AbstractWhereSupport<*>, B : KotlinBaseBuil
             or(column, condition, sc)
         }
 
+    // TODO - do we need this method?
     fun or(existsPredicate: ExistsPredicate): B =
         applyToWhere {
             or(existsPredicate)
@@ -101,6 +130,17 @@ abstract class KotlinBaseBuilder<D : AbstractWhereSupport<*>, B : KotlinBaseBuil
     fun or(existsPredicate: ExistsPredicate, subCriteria: CriteriaReceiver): B =
         applyToWhere(subCriteria) { sc ->
             or(existsPredicate, sc)
+        }
+
+    // TODO - do we need this method?
+    fun or(criteriaGroup: CriteriaGroup): B =
+        applyToWhere {
+            or(criteriaGroup)
+        }
+
+    fun or(criteriaGroup: CriteriaGroup, subCriteria: CriteriaReceiver): B =
+        applyToWhere(subCriteria) { sc ->
+            or(criteriaGroup, sc)
         }
 
     fun allRows(): B = self()
@@ -112,7 +152,7 @@ abstract class KotlinBaseBuilder<D : AbstractWhereSupport<*>, B : KotlinBaseBuil
 
     private fun applyToWhere(
         subCriteria: CriteriaReceiver,
-        block: AbstractWhereDSL<*>.(List<SqlCriterion>) -> Unit
+        block: AbstractWhereDSL<*>.(List<CriteriaGroupWithConnector>) -> Unit
     ): B {
         getDsl().where().block(CriteriaCollector().apply(subCriteria).criteria)
         return self()
