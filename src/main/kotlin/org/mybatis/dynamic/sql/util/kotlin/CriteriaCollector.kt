@@ -29,21 +29,10 @@ typealias CriteriaReceiver = CriteriaCollector.() -> Unit
 class CriteriaCollector {
     val criteria = mutableListOf<CriteriaGroupWithConnector>()
 
-    fun <T> and(column: BindableColumn<T>, condition: VisitableCondition<T>): CriteriaCollector =
-        apply {
-            criteria.add(CriteriaGroupWithConnector.Builder()
-                    .withInitialCriterion(ColumnAndConditionCriterion.withColumn(column)
-                            .withCondition(condition)
-                            .build())
-                    .withConnector("and")
-                    .build()
-            )
-        }
-
     fun <T> and(
         column: BindableColumn<T>,
         condition: VisitableCondition<T>,
-        criteriaReceiver: CriteriaReceiver
+        criteriaReceiver: CriteriaReceiver = {}
     ): CriteriaCollector =
         apply {
             criteria.add(CriteriaGroupWithConnector.Builder()
@@ -56,18 +45,7 @@ class CriteriaCollector {
             )
         }
 
-    fun and(existsPredicate: ExistsPredicate): CriteriaCollector =
-        apply {
-            criteria.add(CriteriaGroupWithConnector.Builder()
-                    .withInitialCriterion(ExistsCriterion.Builder()
-                        .withExistsPredicate(existsPredicate)
-                        .build())
-                    .withConnector("and")
-                    .build()
-            )
-        }
-
-    fun and(existsPredicate: ExistsPredicate, criteriaReceiver: CriteriaReceiver): CriteriaCollector =
+    fun and(existsPredicate: ExistsPredicate, criteriaReceiver: CriteriaReceiver = {}): CriteriaCollector =
         apply {
             criteria.add(CriteriaGroupWithConnector.Builder()
                 .withInitialCriterion(ExistsCriterion.Builder()
@@ -79,18 +57,7 @@ class CriteriaCollector {
             )
         }
 
-    fun and(criteriaGroup: CriteriaGroup): CriteriaCollector =
-        apply {
-            criteria.add(CriteriaGroupWithConnector.Builder()
-                .withInitialCriterion(CriteriaGroup.Builder()
-                    .withInitialCriterion(criteriaGroup)
-                    .build())
-                .withConnector("and")
-                .build()
-            )
-        }
-
-    fun and(criteriaGroup: CriteriaGroup, criteriaReceiver: CriteriaReceiver): CriteriaCollector =
+    fun and(criteriaGroup: CriteriaGroup, criteriaReceiver: CriteriaReceiver = {}): CriteriaCollector =
         apply {
             criteria.add(CriteriaGroupWithConnector.Builder()
                 .withInitialCriterion(CriteriaGroup.Builder()
@@ -98,17 +65,6 @@ class CriteriaCollector {
                     .build())
                 .withSubCriteria(CriteriaCollector().apply(criteriaReceiver).criteria)
                 .withConnector("and")
-                .build()
-            )
-        }
-
-    fun <T> or(column: BindableColumn<T>, condition: VisitableCondition<T>): CriteriaCollector =
-        apply {
-            criteria.add(CriteriaGroupWithConnector.Builder()
-                .withInitialCriterion(ColumnAndConditionCriterion.withColumn(column)
-                    .withCondition(condition)
-                    .build())
-                .withConnector("or")
                 .build()
             )
         }
@@ -116,7 +72,7 @@ class CriteriaCollector {
     fun <T> or(
         column: BindableColumn<T>,
         condition: VisitableCondition<T>,
-        criteriaReceiver: CriteriaReceiver
+        criteriaReceiver: CriteriaReceiver = {}
     ): CriteriaCollector =
         apply {
             criteria.add(CriteriaGroupWithConnector.Builder()
@@ -129,18 +85,7 @@ class CriteriaCollector {
             )
         }
 
-    fun or(existsPredicate: ExistsPredicate): CriteriaCollector =
-        apply {
-            criteria.add(CriteriaGroupWithConnector.Builder()
-                .withInitialCriterion(ExistsCriterion.Builder()
-                    .withExistsPredicate(existsPredicate)
-                    .build())
-                .withConnector("or")
-                .build()
-            )
-        }
-
-    fun or(existsPredicate: ExistsPredicate, criteriaReceiver: CriteriaReceiver): CriteriaCollector =
+    fun or(existsPredicate: ExistsPredicate, criteriaReceiver: CriteriaReceiver = {}): CriteriaCollector =
         apply {
             criteria.add(CriteriaGroupWithConnector.Builder()
                 .withInitialCriterion(ExistsCriterion.Builder()
@@ -152,18 +97,7 @@ class CriteriaCollector {
             )
         }
 
-    fun or(criteriaGroup: CriteriaGroup): CriteriaCollector =
-        apply {
-            criteria.add(CriteriaGroupWithConnector.Builder()
-                .withInitialCriterion(CriteriaGroup.Builder()
-                    .withInitialCriterion(criteriaGroup)
-                    .build())
-                .withConnector("or")
-                .build()
-            )
-        }
-
-    fun or(criteriaGroup: CriteriaGroup, criteriaReceiver: CriteriaReceiver): CriteriaCollector =
+    fun or(criteriaGroup: CriteriaGroup, criteriaReceiver: CriteriaReceiver = {}): CriteriaCollector =
         apply {
             criteria.add(CriteriaGroupWithConnector.Builder()
                 .withInitialCriterion(CriteriaGroup.Builder()
