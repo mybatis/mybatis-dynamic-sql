@@ -40,6 +40,13 @@ public class RenderedCriterion {
         }
     }
 
+    public RenderedCriterion withConnector(String connector) {
+        return new RenderedCriterion.Builder()
+                .withFragmentAndParameters(fragmentAndParameters)
+                .withConnector(connector)
+                .build();
+    }
+
     private FragmentAndParameters prependFragment(FragmentAndParameters fragmentAndParameters, String connector) {
         return FragmentAndParameters.withFragment(connector + " " + fragmentAndParameters.fragment()) //$NON-NLS-1$
                 .withParameters(fragmentAndParameters.parameters())

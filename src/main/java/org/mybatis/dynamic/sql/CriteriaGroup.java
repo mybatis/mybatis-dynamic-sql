@@ -17,6 +17,14 @@ package org.mybatis.dynamic.sql;
 
 import java.util.Objects;
 
+/**
+ * This class represents a criteria group without an AND or an OR connector. This is useful
+ * in situations where the initial SqlCriterion in a list should be further grouped
+ * as in an expression like ((A &lt; 5 and B &gt; 6) or C = 3)
+ *
+ * @author Jeff Butler, inspired by @JoshuaJeme
+ * @since 1.4.0
+ */
 public class CriteriaGroup extends SqlCriterion {
     private final SqlCriterion initialCriterion;
 

@@ -16,17 +16,24 @@
 package org.mybatis.dynamic.sql;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Function;
-import java.util.stream.Stream;
 
-public class CriteriaGroupWithConnector {
+/**
+ * This class represents a criteria group with either an AND or an OR connector.
+ * This class is intentionally NOT derived from SqlCriterion because we only want it to be
+ * available where an AND or an OR condition is appropriate.
+ *
+ * @author Jeff Butler
+ * @since 1.4.0
+ */
+public class AndOrCriteriaGroup {
     private final String connector;
     private final SqlCriterion initialCriterion;
-    private final List<CriteriaGroupWithConnector> subCriteria;
+    private final List<AndOrCriteriaGroup> subCriteria;
 
-    private CriteriaGroupWithConnector(Builder builder) {
+    private AndOrCriteriaGroup(Builder builder) {
         connector = Objects.requireNonNull(builder.connector);
         initialCriterion = Objects.requireNonNull(builder.initialCriterion);
         subCriteria = builder.subCriteria;
@@ -40,14 +47,14 @@ public class CriteriaGroupWithConnector {
         return initialCriterion;
     }
 
-    public <R> Stream<R> mapSubCriteria(Function<CriteriaGroupWithConnector, R> mapper) {
-        return subCriteria.stream().map(mapper);
+    public List<AndOrCriteriaGroup> subCriteria() {
+        return Collections.unmodifiableList(subCriteria);
     }
 
     public static class Builder {
         private String connector;
         private SqlCriterion initialCriterion;
-        private final List<CriteriaGroupWithConnector> subCriteria = new ArrayList<>();
+        private final List<AndOrCriteriaGroup> subCriteria = new ArrayList<>();
 
         public Builder withConnector(String connector) {
             this.connector = connector;
@@ -59,13 +66,13 @@ public class CriteriaGroupWithConnector {
             return this;
         }
 
-        public Builder withSubCriteria(List<CriteriaGroupWithConnector> subCriteria) {
+        public Builder withSubCriteria(List<AndOrCriteriaGroup> subCriteria) {
             this.subCriteria.addAll(subCriteria);
             return this;
         }
 
-        public CriteriaGroupWithConnector build() {
-            return new CriteriaGroupWithConnector(this);
+        public AndOrCriteriaGroup build() {
+            return new AndOrCriteriaGroup(this);
         }
     }
 }

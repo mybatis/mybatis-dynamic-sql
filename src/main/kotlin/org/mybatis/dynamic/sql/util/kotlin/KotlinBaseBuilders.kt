@@ -17,7 +17,7 @@ package org.mybatis.dynamic.sql.util.kotlin
 
 import org.mybatis.dynamic.sql.BindableColumn
 import org.mybatis.dynamic.sql.CriteriaGroup
-import org.mybatis.dynamic.sql.CriteriaGroupWithConnector
+import org.mybatis.dynamic.sql.AndOrCriteriaGroup
 import org.mybatis.dynamic.sql.ExistsPredicate
 import org.mybatis.dynamic.sql.SqlTable
 import org.mybatis.dynamic.sql.VisitableCondition
@@ -98,7 +98,7 @@ abstract class KotlinBaseBuilder<D : AbstractWhereSupport<*>, B : KotlinBaseBuil
 
     private fun applyToWhere(
         subCriteria: CriteriaReceiver,
-        block: AbstractWhereDSL<*>.(List<CriteriaGroupWithConnector>) -> Unit
+        block: AbstractWhereDSL<*>.(List<AndOrCriteriaGroup>) -> Unit
     ): B {
         getDsl().where().block(CriteriaCollector().apply(subCriteria).criteria)
         return self()

@@ -215,17 +215,17 @@ public interface SqlBuilder {
     }
 
     static <T> WhereDSL where(BindableColumn<T> column, VisitableCondition<T> condition,
-                              CriteriaGroupWithConnector... subCriteria) {
+                              AndOrCriteriaGroup... subCriteria) {
         return WhereDSL.where().where(column, condition, subCriteria);
     }
 
-    static WhereDSL where(ExistsPredicate existsPredicate, CriteriaGroupWithConnector... subCriteria) {
+    static WhereDSL where(ExistsPredicate existsPredicate, AndOrCriteriaGroup... subCriteria) {
         return WhereDSL.where().where(existsPredicate, subCriteria);
     }
 
     // where condition connectors
     static <T> CriteriaGroup group(BindableColumn<T> column, VisitableCondition<T> condition,
-                                   CriteriaGroupWithConnector...subCriteria) {
+                                   AndOrCriteriaGroup...subCriteria) {
         return new CriteriaGroup.Builder()
                 .withInitialCriterion(new ColumnAndConditionCriterion.Builder<T>().withColumn(column)
                 .withCondition(condition).build())
@@ -233,7 +233,7 @@ public interface SqlBuilder {
                 .build();
     }
 
-    static CriteriaGroup group(ExistsPredicate existsPredicate, CriteriaGroupWithConnector...subCriteria) {
+    static CriteriaGroup group(ExistsPredicate existsPredicate, AndOrCriteriaGroup...subCriteria) {
         return new CriteriaGroup.Builder()
                 .withInitialCriterion(new ExistsCriterion.Builder()
                 .withExistsPredicate(existsPredicate).build())
@@ -241,16 +241,16 @@ public interface SqlBuilder {
                 .build();
     }
 
-    static CriteriaGroup group(CriteriaGroup criterionGroup, CriteriaGroupWithConnector...subCriteria) {
+    static CriteriaGroup group(CriteriaGroup criterionGroup, AndOrCriteriaGroup...subCriteria) {
         return new CriteriaGroup.Builder()
                 .withInitialCriterion(criterionGroup)
                 .withSubCriteria(Arrays.asList(subCriteria))
                 .build();
     }
 
-    static <T> CriteriaGroupWithConnector or(BindableColumn<T> column, VisitableCondition<T> condition,
-                                CriteriaGroupWithConnector...subCriteria) {
-        return new CriteriaGroupWithConnector.Builder()
+    static <T> AndOrCriteriaGroup or(BindableColumn<T> column, VisitableCondition<T> condition,
+                                     AndOrCriteriaGroup...subCriteria) {
+        return new AndOrCriteriaGroup.Builder()
                 .withInitialCriterion(ColumnAndConditionCriterion.withColumn(column)
                         .withCondition(condition)
                         .build())
@@ -259,8 +259,8 @@ public interface SqlBuilder {
                 .build();
     }
 
-    static CriteriaGroupWithConnector or(ExistsPredicate existsPredicate, CriteriaGroupWithConnector...subCriteria) {
-        return new CriteriaGroupWithConnector.Builder()
+    static AndOrCriteriaGroup or(ExistsPredicate existsPredicate, AndOrCriteriaGroup...subCriteria) {
+        return new AndOrCriteriaGroup.Builder()
                 .withInitialCriterion(new ExistsCriterion.Builder()
                         .withExistsPredicate(existsPredicate).build())
                 .withConnector("or") //$NON-NLS-1$
@@ -268,17 +268,17 @@ public interface SqlBuilder {
                 .build();
     }
 
-    static CriteriaGroupWithConnector or(CriteriaGroup criterionGroup, CriteriaGroupWithConnector...subCriteria) {
-        return new CriteriaGroupWithConnector.Builder()
+    static AndOrCriteriaGroup or(CriteriaGroup criterionGroup, AndOrCriteriaGroup...subCriteria) {
+        return new AndOrCriteriaGroup.Builder()
                 .withConnector("or") //$NON-NLS-1$
                 .withInitialCriterion(criterionGroup)
                 .withSubCriteria(Arrays.asList(subCriteria))
                 .build();
     }
 
-    static <T> CriteriaGroupWithConnector and(BindableColumn<T> column, VisitableCondition<T> condition,
-                                              CriteriaGroupWithConnector...subCriteria) {
-        return new CriteriaGroupWithConnector.Builder()
+    static <T> AndOrCriteriaGroup and(BindableColumn<T> column, VisitableCondition<T> condition,
+                                      AndOrCriteriaGroup...subCriteria) {
+        return new AndOrCriteriaGroup.Builder()
                 .withInitialCriterion(ColumnAndConditionCriterion.withColumn(column)
                         .withCondition(condition)
                         .build())
@@ -287,8 +287,8 @@ public interface SqlBuilder {
                 .build();
     }
 
-    static CriteriaGroupWithConnector and(ExistsPredicate existsPredicate, CriteriaGroupWithConnector...subCriteria) {
-        return new CriteriaGroupWithConnector.Builder()
+    static AndOrCriteriaGroup and(ExistsPredicate existsPredicate, AndOrCriteriaGroup...subCriteria) {
+        return new AndOrCriteriaGroup.Builder()
                 .withInitialCriterion(new ExistsCriterion.Builder()
                         .withExistsPredicate(existsPredicate).build())
                 .withConnector("and") //$NON-NLS-1$
@@ -296,8 +296,8 @@ public interface SqlBuilder {
                 .build();
     }
 
-    static CriteriaGroupWithConnector and(CriteriaGroup criterionGroup, CriteriaGroupWithConnector...subCriteria) {
-        return new CriteriaGroupWithConnector.Builder()
+    static AndOrCriteriaGroup and(CriteriaGroup criterionGroup, AndOrCriteriaGroup...subCriteria) {
+        return new AndOrCriteriaGroup.Builder()
                 .withConnector("and") //$NON-NLS-1$
                 .withInitialCriterion(criterionGroup)
                 .withSubCriteria(Arrays.asList(subCriteria))

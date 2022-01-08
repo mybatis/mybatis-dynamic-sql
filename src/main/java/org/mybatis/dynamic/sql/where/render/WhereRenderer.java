@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.render.TableAliasCalculator;
+import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 import org.mybatis.dynamic.sql.util.FragmentCollector;
 import org.mybatis.dynamic.sql.where.WhereModel;
 
@@ -42,27 +43,15 @@ public class WhereRenderer {
     }
 
     public Optional<WhereClauseProvider> render() {
-        Optional<RenderedCriterion> initialCriterion = whereModel.initialCriterion().flatMap(ic -> ic.accept(criterionRenderer));
-        List<RenderedCriterion> renderedCriteria = whereModel.mapSubCriteria(criterionRenderer::renderCriteriaGroupWithConnector)
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .collect(Collectors.toList());
+        Optional<FragmentAndParameters> initialCriterion = whereModel.initialCriterion()
+                .flatMap(ic -> ic.accept(criterionRenderer))
+                .map(RenderedCriterion::fragmentAndParameters);
+        List<RenderedCriterion> renderedCriteria = criterionRenderer.renderSubCriteria(whereModel.subCriteria());
 
-        Optional<FragmentCollector> fc = Optional.ofNullable(initialCriterion.map(ic -> renderedCriteria.stream()
-                .map(RenderedCriterion::fragmentAndParametersWithConnector)
-                .collect(FragmentCollector.collect(ic.fragmentAndParameters()))).orElseGet(() -> {
-            if (renderedCriteria.isEmpty()) {
-                return null;
-            } else {
-                return renderedCriteria.subList(1, renderedCriteria.size()).stream()
-                        .map(RenderedCriterion::fragmentAndParametersWithConnector)
-                        .collect(FragmentCollector.collect(renderedCriteria.get(0).fragmentAndParameters()));
-            }
-        }));
-
-        return fc.map(fcc -> WhereClauseProvider.withWhereClause(calculateWhereClause(fcc))
-                .withParameters(fcc.parameters())
-                .build());
+        return criterionRenderer.collectSqlFragments(initialCriterion.orElse(null), renderedCriteria)
+                .map(fcc -> WhereClauseProvider.withWhereClause(calculateWhereClause(fcc))
+                        .withParameters(fcc.parameters())
+                        .build());
     }
 
     private String calculateWhereClause(FragmentCollector collector) {

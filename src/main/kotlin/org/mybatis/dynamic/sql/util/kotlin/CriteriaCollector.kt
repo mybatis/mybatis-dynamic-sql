@@ -18,7 +18,7 @@ package org.mybatis.dynamic.sql.util.kotlin
 import org.mybatis.dynamic.sql.BindableColumn
 import org.mybatis.dynamic.sql.ColumnAndConditionCriterion
 import org.mybatis.dynamic.sql.CriteriaGroup
-import org.mybatis.dynamic.sql.CriteriaGroupWithConnector
+import org.mybatis.dynamic.sql.AndOrCriteriaGroup
 import org.mybatis.dynamic.sql.ExistsCriterion
 import org.mybatis.dynamic.sql.ExistsPredicate
 import org.mybatis.dynamic.sql.SqlCriterion
@@ -28,7 +28,7 @@ typealias CriteriaReceiver = CriteriaCollector.() -> Unit
 
 @MyBatisDslMarker
 class CriteriaCollector {
-    val criteria = mutableListOf<CriteriaGroupWithConnector>()
+    val criteria = mutableListOf<AndOrCriteriaGroup>()
 
     fun <T> and(
         column: BindableColumn<T>,
@@ -74,7 +74,8 @@ class CriteriaCollector {
         criteriaReceiver: CriteriaReceiver
     ) =
         apply {
-            criteria.add(CriteriaGroupWithConnector.Builder()
+            criteria.add(
+                AndOrCriteriaGroup.Builder()
                     .withInitialCriterion(initialCriterion)
                     .withSubCriteria(CriteriaCollector().apply(criteriaReceiver).criteria)
                     .withConnector(connector)

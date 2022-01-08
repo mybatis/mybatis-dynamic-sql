@@ -16,13 +16,12 @@
 package org.mybatis.dynamic.sql.where;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Function;
-import java.util.stream.Stream;
 
-import org.mybatis.dynamic.sql.CriteriaGroupWithConnector;
+import org.mybatis.dynamic.sql.AndOrCriteriaGroup;
 import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.render.TableAliasCalculator;
@@ -34,9 +33,9 @@ public class WhereModel {
             new WhereClauseProvider.Builder().withWhereClause("").build(); //$NON-NLS-1$
 
     private final SqlCriterion initialCriterion;
-    private final List<CriteriaGroupWithConnector> subCriteria = new ArrayList<>();
+    private final List<AndOrCriteriaGroup> subCriteria = new ArrayList<>();
 
-    public WhereModel(SqlCriterion initialCriterion, List<CriteriaGroupWithConnector> subCriteria) {
+    public WhereModel(SqlCriterion initialCriterion, List<AndOrCriteriaGroup> subCriteria) {
         this.initialCriterion = initialCriterion;
         this.subCriteria.addAll(subCriteria);
     }
@@ -45,8 +44,8 @@ public class WhereModel {
         return Optional.ofNullable(initialCriterion);
     }
 
-    public <R> Stream<R> mapSubCriteria(Function<CriteriaGroupWithConnector, R> mapper) {
-        return subCriteria.stream().map(mapper);
+    public List<AndOrCriteriaGroup> subCriteria() {
+        return Collections.unmodifiableList(subCriteria);
     }
 
     /**

@@ -16,28 +16,27 @@
 package org.mybatis.dynamic.sql;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.function.Function;
-import java.util.stream.Stream;
 
 public abstract class SqlCriterion {
 
-    private final List<CriteriaGroupWithConnector> subCriteria = new ArrayList<>();
+    private final List<AndOrCriteriaGroup> subCriteria = new ArrayList<>();
 
     protected SqlCriterion(AbstractBuilder<?> builder) {
         subCriteria.addAll(builder.subCriteria);
     }
 
-    public <R> Stream<R> mapSubCriteria(Function<CriteriaGroupWithConnector, R> mapper) {
-        return subCriteria.stream().map(mapper);
+    public List<AndOrCriteriaGroup> subCriteria() {
+        return Collections.unmodifiableList(subCriteria);
     }
 
     public abstract <R> R accept(SqlCriterionVisitor<R> visitor);
 
     protected abstract static class AbstractBuilder<T extends AbstractBuilder<T>> {
-        private final List<CriteriaGroupWithConnector> subCriteria = new ArrayList<>();
+        private final List<AndOrCriteriaGroup> subCriteria = new ArrayList<>();
 
-        public T withSubCriteria(List<CriteriaGroupWithConnector> subCriteria) {
+        public T withSubCriteria(List<AndOrCriteriaGroup> subCriteria) {
             this.subCriteria.addAll(subCriteria);
             return getThis();
         }
