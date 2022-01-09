@@ -21,10 +21,6 @@ import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 
-import static examples.complexquery.PersonDynamicSqlSupport.firstName;
-import static examples.complexquery.PersonDynamicSqlSupport.id;
-import static examples.complexquery.PersonDynamicSqlSupport.lastName;
-import static examples.complexquery.PersonDynamicSqlSupport.person;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mybatis.dynamic.sql.SqlBuilder.exists;
 import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
@@ -36,7 +32,7 @@ import static org.mybatis.dynamic.sql.SqlBuilder.or;
 import static org.mybatis.dynamic.sql.SqlBuilder.select;
 
 class GroupingTest {
-    public static class Foo extends SqlTable {
+    private static class Foo extends SqlTable {
         public SqlColumn<Integer> A = column("A");
         public SqlColumn<Integer> B = column("B");
         public SqlColumn<Integer> C = column("C");
@@ -46,32 +42,32 @@ class GroupingTest {
         }
     }
 
+    private static final Foo foo = new Foo();
+    private static final SqlColumn<Integer> A = foo.A;
+    private static final SqlColumn<Integer> B = foo.B;
+    private static final SqlColumn<Integer> C = foo.C;
+
     @Test
     void testSimpleGrouping() {
-        SelectStatementProvider selectStatement = select(id, firstName, lastName)
-                .from(person)
-                .where(firstName, isEqualTo("Fred"), or(firstName, isEqualTo("Wilma")))
-                .and(lastName, isEqualTo("Flintstone"))
+        SelectStatementProvider selectStatement = select(A, B, C)
+                .from(foo)
+                .where(A, isEqualTo(1), or(A, isEqualTo(2)))
+                .and(B, isEqualTo(3))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
-        String expected = "select person_id, first_name, last_name"
-                + " from Person"
-                + " where (first_name = #{parameters.p1} or first_name = #{parameters.p2}) and last_name = #{parameters.p3}";
+        String expected = "select A, B, C"
+                + " from Foo"
+                + " where (A = #{parameters.p1} or A = #{parameters.p2}) and B = #{parameters.p3}";
 
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
-        assertThat(selectStatement.getParameters()).containsEntry("p1", "Fred");
-        assertThat(selectStatement.getParameters()).containsEntry("p2", "Wilma");
-        assertThat(selectStatement.getParameters()).containsEntry("p3", "Flintstone");
+        assertThat(selectStatement.getParameters()).containsEntry("p1", 1);
+        assertThat(selectStatement.getParameters()).containsEntry("p2", 2);
+        assertThat(selectStatement.getParameters()).containsEntry("p3", 3);
     }
 
     @Test
     void testComplexGrouping() {
-        Foo foo = new Foo();
-        SqlColumn<Integer> A = foo.A;
-        SqlColumn<Integer> B = foo.B;
-        SqlColumn<Integer> C = foo.C;
-
         SelectStatementProvider selectStatement = select(A, B, C)
                 .from(foo)
                 .where(
@@ -79,7 +75,7 @@ class GroupingTest {
                         and(B, isEqualTo(1)),
                         or(A, isLessThan(0), and(B, isEqualTo(2)))
                 )
-                .and(foo.C, isEqualTo(1))
+                .and(C, isEqualTo(1))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
@@ -98,11 +94,6 @@ class GroupingTest {
 
     @Test
     void testGroupAndExists() {
-        Foo foo = new Foo();
-        SqlColumn<Integer> A = foo.A;
-        SqlColumn<Integer> B = foo.B;
-        SqlColumn<Integer> C = foo.C;
-
         SelectStatementProvider selectStatement = select(A, B, C)
                 .from(foo)
                 .where(
@@ -110,7 +101,7 @@ class GroupingTest {
                         and(B, isEqualTo(1)),
                         or(A, isLessThan(0), and(B, isEqualTo(2)))
                 )
-                .and(foo.C, isEqualTo(1))
+                .and(C, isEqualTo(1))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
@@ -130,11 +121,6 @@ class GroupingTest {
 
     @Test
     void testNestedGrouping() {
-        Foo foo = new Foo();
-        SqlColumn<Integer> A = foo.A;
-        SqlColumn<Integer> B = foo.B;
-        SqlColumn<Integer> C = foo.C;
-
         SelectStatementProvider selectStatement = select(A, B, C)
                 .from(foo)
                 .where(
@@ -142,7 +128,7 @@ class GroupingTest {
                         and(group(A, isEqualTo(1), or(A, isGreaterThan(5))), or(B, isEqualTo(1))),
                         or(group(A, isEqualTo(1), or(A, isGreaterThan(5))), and(A, isLessThan(0), and(B, isEqualTo(2))))
                 )
-                .and(foo.C, isEqualTo(1))
+                .and(C, isEqualTo(1))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 

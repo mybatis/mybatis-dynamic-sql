@@ -226,25 +226,38 @@ public interface SqlBuilder {
     // where condition connectors
     static <T> CriteriaGroup group(BindableColumn<T> column, VisitableCondition<T> condition,
                                    AndOrCriteriaGroup...subCriteria) {
+        return group(column, condition, Arrays.asList(subCriteria));
+    }
+
+    static <T> CriteriaGroup group(BindableColumn<T> column, VisitableCondition<T> condition,
+                                   List<AndOrCriteriaGroup> subCriteria) {
         return new CriteriaGroup.Builder()
                 .withInitialCriterion(new ColumnAndConditionCriterion.Builder<T>().withColumn(column)
-                .withCondition(condition).build())
-                .withSubCriteria(Arrays.asList(subCriteria))
+                        .withCondition(condition).build())
+                .withSubCriteria(subCriteria)
                 .build();
     }
 
     static CriteriaGroup group(ExistsPredicate existsPredicate, AndOrCriteriaGroup...subCriteria) {
+        return group(existsPredicate, Arrays.asList(subCriteria));
+    }
+
+    static CriteriaGroup group(ExistsPredicate existsPredicate, List<AndOrCriteriaGroup> subCriteria) {
         return new CriteriaGroup.Builder()
                 .withInitialCriterion(new ExistsCriterion.Builder()
-                .withExistsPredicate(existsPredicate).build())
-                .withSubCriteria(Arrays.asList(subCriteria))
+                        .withExistsPredicate(existsPredicate).build())
+                .withSubCriteria(subCriteria)
                 .build();
     }
 
     static CriteriaGroup group(CriteriaGroup criterionGroup, AndOrCriteriaGroup...subCriteria) {
+        return group(criterionGroup, Arrays.asList(subCriteria));
+    }
+
+    static CriteriaGroup group(CriteriaGroup criterionGroup, List<AndOrCriteriaGroup> subCriteria) {
         return new CriteriaGroup.Builder()
                 .withInitialCriterion(criterionGroup)
-                .withSubCriteria(Arrays.asList(subCriteria))
+                .withSubCriteria(subCriteria)
                 .build();
     }
 
