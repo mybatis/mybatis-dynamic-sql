@@ -80,7 +80,8 @@ class KGroupingTest {
 
         val expected = "select A, B, C" +
                 " from Foo" +
-                " where ((A = #{parameters.p1} or A > #{parameters.p2}) and B = #{parameters.p3} or (A < #{parameters.p4} and B = #{parameters.p5})) and C = #{parameters.p6}"
+                " where ((A = #{parameters.p1} or A > #{parameters.p2}) and B = #{parameters.p3}" +
+                " or (A < #{parameters.p4} and B = #{parameters.p5})) and C = #{parameters.p6}"
 
         assertThat(selectStatement.selectStatement).isEqualTo(expected)
         assertThat(selectStatement.parameters).containsEntry("p1", 1)
@@ -114,7 +115,10 @@ class KGroupingTest {
 
         val expected = "select A, B, C" +
                 " from Foo" +
-                " where ((exists (select * from Foo where A = #{parameters.p1}) and A = #{parameters.p2} or A > #{parameters.p3}) and B = #{parameters.p4} or (A < #{parameters.p5} and B = #{parameters.p6})) and C = #{parameters.p7}"
+                " where ((exists (select * from Foo where A = #{parameters.p1}) and A = #{parameters.p2}" +
+                " or A > #{parameters.p3}) and B = #{parameters.p4} or (A < #{parameters.p5}" +
+                " and B = #{parameters.p6})) and C = #{parameters.p7}"
+
         assertThat(selectStatement.selectStatement).isEqualTo(expected)
         assertThat(selectStatement.parameters).containsEntry("p1", 3)
         assertThat(selectStatement.parameters).containsEntry("p2", 1)
@@ -154,7 +158,10 @@ class KGroupingTest {
 
         val expected = "select A, B, C" +
                 " from Foo" +
-                " where (((A = #{parameters.p1} or A > #{parameters.p2}) and A > #{parameters.p3}) and ((A = #{parameters.p4} or A > #{parameters.p5}) or B = #{parameters.p6}) or ((A = #{parameters.p7} or A > #{parameters.p8}) and (A < #{parameters.p9} and B = #{parameters.p10}))) and C = #{parameters.p11}"
+                " where (((A = #{parameters.p1} or A > #{parameters.p2}) and A > #{parameters.p3})" +
+                " and ((A = #{parameters.p4} or A > #{parameters.p5}) or B = #{parameters.p6})" +
+                " or ((A = #{parameters.p7} or A > #{parameters.p8}) and (A < #{parameters.p9}" +
+                " and B = #{parameters.p10}))) and C = #{parameters.p11}"
 
         assertThat(selectStatement.selectStatement).isEqualTo(expected)
         assertThat(selectStatement.parameters).containsEntry("p1", 1)
@@ -195,7 +202,8 @@ class KGroupingTest {
                 " where A = #{parameters.p1}" +
                 " and C = #{parameters.p2}" +
                 " and ((A = #{parameters.p3} or A > #{parameters.p4}) or B = #{parameters.p5})" +
-                " or ((A = #{parameters.p6} or A > #{parameters.p7}) and (A < #{parameters.p8} and B = #{parameters.p9}))"
+                " or ((A = #{parameters.p6} or A > #{parameters.p7}) and (A < #{parameters.p8}" +
+                " and B = #{parameters.p9}))"
 
         assertThat(selectStatement.selectStatement).isEqualTo(expected)
         assertThat(selectStatement.parameters).containsEntry("p1", 6)
