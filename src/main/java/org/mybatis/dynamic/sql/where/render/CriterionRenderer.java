@@ -109,7 +109,8 @@ public class CriterionRenderer implements SqlCriterionVisitor<Optional<RenderedC
         Optional<RenderedCriterion> initialCriterion = criterion.initialCriterion().accept(this);
 
         List<RenderedCriterion> renderedSubCriteria = renderSubCriteria(criterion.subCriteria());
-        return calculateFinalFragment(initialCriterion.map(RenderedCriterion::fragmentAndParameters).orElse(null), renderedSubCriteria);
+        return calculateFinalFragment(initialCriterion.map(RenderedCriterion::fragmentAndParameters)
+                .orElse(null), renderedSubCriteria);
     }
 
     List<RenderedCriterion> renderSubCriteria(List<AndOrCriteriaGroup> subCriteria) {
@@ -126,7 +127,8 @@ public class CriterionRenderer implements SqlCriterionVisitor<Optional<RenderedC
                 .map(Optional::get)
                 .collect(Collectors.toList());
 
-        return calculateFinalFragment(initialCriterion.map(RenderedCriterion::fragmentAndParameters).orElse(null), someList).map(rc -> rc.withConnector(criterion.connector()));
+        return calculateFinalFragment(initialCriterion.map(RenderedCriterion::fragmentAndParameters)
+                .orElse(null), someList).map(rc -> rc.withConnector(criterion.connector()));
     }
 
     private <T> FragmentAndParameters renderCondition(ColumnAndConditionCriterion<T> criterion) {
@@ -163,8 +165,8 @@ public class CriterionRenderer implements SqlCriterionVisitor<Optional<RenderedC
      * @param renderedSubCriteria - a list of previously rendered sub criteria. The sub criteria will all
      *                            have connectors (either an AND or an OR)
      * @return a fragment collector whose fragments represent the final calculated list of fragments and parameters.
-     * The fragment collector can be used to calculate the single composed fragment - either as a where clause, or
-     * a valid rendered sub criteria in the case of a recursive call.
+     *     The fragment collector can be used to calculate the single composed fragment - either as a where clause, or
+     *     a valid rendered sub criteria in the case of a recursive call.
      */
     Optional<FragmentCollector> collectSqlFragments(FragmentAndParameters initialCondition,
                                                     List<RenderedCriterion> renderedSubCriteria) {

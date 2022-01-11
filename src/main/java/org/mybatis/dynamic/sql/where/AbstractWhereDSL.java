@@ -20,10 +20,10 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
+import org.mybatis.dynamic.sql.AndOrCriteriaGroup;
 import org.mybatis.dynamic.sql.BindableColumn;
 import org.mybatis.dynamic.sql.ColumnAndConditionCriterion;
 import org.mybatis.dynamic.sql.CriteriaGroup;
-import org.mybatis.dynamic.sql.AndOrCriteriaGroup;
 import org.mybatis.dynamic.sql.ExistsCriterion;
 import org.mybatis.dynamic.sql.ExistsPredicate;
 import org.mybatis.dynamic.sql.SqlCriterion;
