@@ -149,4 +149,34 @@ class GroupingTest {
         assertThat(selectStatement.getParameters()).containsEntry("p10", 2);
         assertThat(selectStatement.getParameters()).containsEntry("p11", 1);
     }
+
+    @Test
+    void testAndOrCriteriaGroups() {
+        SelectStatementProvider selectStatement = select(A, B, C)
+                .from(foo)
+                .where(A, isEqualTo(6))
+                .and(C, isEqualTo(1))
+                .and(group(A, isEqualTo(1), or(A, isGreaterThan(5))), or(B, isEqualTo(1)))
+                .or(group(A, isEqualTo(1), or(A, isGreaterThan(5))), and(A, isLessThan(0), and(B, isEqualTo(2))))
+                .build()
+                .render(RenderingStrategies.MYBATIS3);
+
+        String expected = "select A, B, C"
+                + " from Foo"
+                + " where A = #{parameters.p1}"
+                + " and C = #{parameters.p2}"
+                + " and ((A = #{parameters.p3} or A > #{parameters.p4}) or B = #{parameters.p5})"
+                + " or ((A = #{parameters.p6} or A > #{parameters.p7}) and (A < #{parameters.p8} and B = #{parameters.p9}))";
+
+        assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
+        assertThat(selectStatement.getParameters()).containsEntry("p1", 6);
+        assertThat(selectStatement.getParameters()).containsEntry("p2", 1);
+        assertThat(selectStatement.getParameters()).containsEntry("p3", 1);
+        assertThat(selectStatement.getParameters()).containsEntry("p4", 5);
+        assertThat(selectStatement.getParameters()).containsEntry("p5", 1);
+        assertThat(selectStatement.getParameters()).containsEntry("p6", 1);
+        assertThat(selectStatement.getParameters()).containsEntry("p7", 5);
+        assertThat(selectStatement.getParameters()).containsEntry("p8", 0);
+        assertThat(selectStatement.getParameters()).containsEntry("p9", 2);
+    }
 }

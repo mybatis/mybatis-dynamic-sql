@@ -301,4 +301,46 @@ class OptionalCriterionRenderTest {
         assertThat(whereClause.getParameters()).containsExactly(entry("p1", 3), entry("p2", 4), entry("p3", 5));
         assertThat(whereClause.getWhereClause()).isEqualTo(expected);
     }
+
+    @Test
+    void testCollapsingCriteriaGroup1() {
+        String name1 = null;
+
+        WhereClauseProvider whereClause = where(
+                group(firstName, isEqualToWhenPresent(name1)), or(lastName, isEqualToWhenPresent(name1)))
+                .build()
+                .render(RenderingStrategies.SPRING_NAMED_PARAMETER);
+
+        assertThat(whereClause.getWhereClause()).isEmpty();
+    }
+
+    @Test
+    void testCollapsingCriteriaGroup2() {
+        String name1 = null;
+
+        WhereClauseProvider whereClause = where(
+                group(firstName, isEqualTo("Fred")), or(lastName, isEqualToWhenPresent(name1)))
+                .build()
+                .render(RenderingStrategies.SPRING_NAMED_PARAMETER);
+
+        String expected = "where first_name = :p1";
+
+        assertThat(whereClause.getParameters()).containsExactly(entry("p1", "Fred"));
+        assertThat(whereClause.getWhereClause()).isEqualTo(expected);
+    }
+
+    @Test
+    void testCollapsingCriteriaGroup3() {
+        String name1 = null;
+
+        WhereClauseProvider whereClause = where(
+                group(firstName, isEqualTo("Fred")), or(lastName, isEqualToWhenPresent(name1)), or(firstName, isEqualTo("Betty")))
+                .build()
+                .render(RenderingStrategies.SPRING_NAMED_PARAMETER);
+
+        String expected = "where (first_name = :p1 or first_name = :p2)";
+
+        assertThat(whereClause.getParameters()).containsExactly(entry("p1", "Fred"), entry("p2", "Betty"));
+        assertThat(whereClause.getWhereClause()).isEqualTo(expected);
+    }
 }

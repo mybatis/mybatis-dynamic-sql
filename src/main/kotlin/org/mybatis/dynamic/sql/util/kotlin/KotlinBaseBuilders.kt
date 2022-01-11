@@ -49,7 +49,7 @@ abstract class KotlinBaseBuilder<D : AbstractWhereSupport<*>, B : KotlinBaseBuil
             where(existsPredicate, sc)
         }
 
-    fun where(criteriaGroup: CriteriaGroup, subCriteria: CriteriaReceiver = {}): B =
+    fun where(criteriaGroup: CriteriaGroup, subCriteria: CriteriaReceiver): B =
         applyToWhere(subCriteria) { sc ->
             where(criteriaGroup, sc)
         }
@@ -69,7 +69,7 @@ abstract class KotlinBaseBuilder<D : AbstractWhereSupport<*>, B : KotlinBaseBuil
             and(existsPredicate, sc)
         }
 
-    fun and(criteriaGroup: CriteriaGroup, subCriteria: CriteriaReceiver = {}): B =
+    fun and(criteriaGroup: CriteriaGroup, subCriteria: CriteriaReceiver): B =
         applyToWhere(subCriteria) { sc ->
             and(criteriaGroup, sc)
         }
@@ -84,7 +84,7 @@ abstract class KotlinBaseBuilder<D : AbstractWhereSupport<*>, B : KotlinBaseBuil
             or(existsPredicate, sc)
         }
 
-    fun or(criteriaGroup: CriteriaGroup, subCriteria: CriteriaReceiver = {}): B =
+    fun or(criteriaGroup: CriteriaGroup, subCriteria: CriteriaReceiver): B =
         applyToWhere(subCriteria) { sc ->
             or(criteriaGroup, sc)
         }

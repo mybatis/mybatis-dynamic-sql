@@ -150,16 +150,16 @@ fun <T> substring(
 
 fun <T> upper(column: BindableColumn<T>): Upper<T> = SqlBuilder.upper(column)
 
-fun group(initialCriterion: CriteriaGroup, subCriteria: CriteriaReceiver = {}): CriteriaGroup =
+fun group(initialCriterion: CriteriaGroup, subCriteria: CriteriaReceiver): CriteriaGroup =
     SqlBuilder.group(initialCriterion, CriteriaCollector().apply(subCriteria).criteria)
 
-fun group(existsPredicate: ExistsPredicate, subCriteria: CriteriaReceiver = {}): CriteriaGroup =
+fun group(existsPredicate: ExistsPredicate, subCriteria: CriteriaReceiver): CriteriaGroup =
     SqlBuilder.group(existsPredicate, CriteriaCollector().apply(subCriteria).criteria)
 
 fun <T> group(
     column: BindableColumn<T>,
     condition: VisitableCondition<T>,
-    subCriteria: CriteriaReceiver = {}
+    subCriteria: CriteriaReceiver
 ): CriteriaGroup =
     SqlBuilder.group(column, condition, CriteriaCollector().apply(subCriteria).criteria)
 

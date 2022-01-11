@@ -40,7 +40,7 @@ class CriteriaCollector {
     fun and(existsPredicate: ExistsPredicate, criteriaReceiver: CriteriaReceiver = {}): CriteriaCollector =
         addCriteriaGroup("and", buildCriterion(existsPredicate), criteriaReceiver)
 
-    fun and(criteriaGroup: CriteriaGroup, criteriaReceiver: CriteriaReceiver = {}): CriteriaCollector =
+    fun and(criteriaGroup: CriteriaGroup, criteriaReceiver: CriteriaReceiver): CriteriaCollector =
         addCriteriaGroup("and", buildCriterion(criteriaGroup), criteriaReceiver)
 
     fun <T> or(
@@ -53,7 +53,7 @@ class CriteriaCollector {
     fun or(existsPredicate: ExistsPredicate, criteriaReceiver: CriteriaReceiver = {}): CriteriaCollector =
         addCriteriaGroup("or", buildCriterion(existsPredicate), criteriaReceiver)
 
-    fun or(criteriaGroup: CriteriaGroup, criteriaReceiver: CriteriaReceiver = {}): CriteriaCollector =
+    fun or(criteriaGroup: CriteriaGroup, criteriaReceiver: CriteriaReceiver): CriteriaCollector =
         addCriteriaGroup("or", buildCriterion(criteriaGroup), criteriaReceiver)
 
     private fun <T> buildCriterion(

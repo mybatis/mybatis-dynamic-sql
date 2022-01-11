@@ -219,6 +219,10 @@ public interface SqlBuilder {
         return WhereDSL.where().where(column, condition, subCriteria);
     }
 
+    static WhereDSL where(CriteriaGroup criteriaGroup, AndOrCriteriaGroup... subCriteria) {
+        return WhereDSL.where().where(criteriaGroup, subCriteria);
+    }
+
     static WhereDSL where(ExistsPredicate existsPredicate, AndOrCriteriaGroup... subCriteria) {
         return WhereDSL.where().where(existsPredicate, subCriteria);
     }
@@ -250,13 +254,13 @@ public interface SqlBuilder {
                 .build();
     }
 
-    static CriteriaGroup group(CriteriaGroup criterionGroup, AndOrCriteriaGroup...subCriteria) {
-        return group(criterionGroup, Arrays.asList(subCriteria));
+    static CriteriaGroup group(CriteriaGroup criteriaGroup, AndOrCriteriaGroup...subCriteria) {
+        return group(criteriaGroup, Arrays.asList(subCriteria));
     }
 
-    static CriteriaGroup group(CriteriaGroup criterionGroup, List<AndOrCriteriaGroup> subCriteria) {
+    static CriteriaGroup group(CriteriaGroup criteriaGroup, List<AndOrCriteriaGroup> subCriteria) {
         return new CriteriaGroup.Builder()
-                .withInitialCriterion(criterionGroup)
+                .withInitialCriterion(criteriaGroup)
                 .withSubCriteria(subCriteria)
                 .build();
     }
@@ -281,10 +285,10 @@ public interface SqlBuilder {
                 .build();
     }
 
-    static AndOrCriteriaGroup or(CriteriaGroup criterionGroup, AndOrCriteriaGroup...subCriteria) {
+    static AndOrCriteriaGroup or(CriteriaGroup criteriaGroup, AndOrCriteriaGroup...subCriteria) {
         return new AndOrCriteriaGroup.Builder()
                 .withConnector("or") //$NON-NLS-1$
-                .withInitialCriterion(criterionGroup)
+                .withInitialCriterion(criteriaGroup)
                 .withSubCriteria(Arrays.asList(subCriteria))
                 .build();
     }
@@ -309,10 +313,10 @@ public interface SqlBuilder {
                 .build();
     }
 
-    static AndOrCriteriaGroup and(CriteriaGroup criterionGroup, AndOrCriteriaGroup...subCriteria) {
+    static AndOrCriteriaGroup and(CriteriaGroup criteriaGroup, AndOrCriteriaGroup...subCriteria) {
         return new AndOrCriteriaGroup.Builder()
                 .withConnector("and") //$NON-NLS-1$
-                .withInitialCriterion(criterionGroup)
+                .withInitialCriterion(criteriaGroup)
                 .withSubCriteria(Arrays.asList(subCriteria))
                 .build();
     }
