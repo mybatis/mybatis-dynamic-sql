@@ -2,6 +2,16 @@
 
 This log will detail notable changes to MyBatis Dynamic SQL. Full details are available on the GitHub milestone pages.
 
+## Release 1.4.0 - Unreleased
+
+GitHub milestone: [https://github.com/mybatis/mybatis-dynamic-sql/issues?q=milestone%3A1.4.0+](https://github.com/mybatis/mybatis-dynamic-sql/issues?q=milestone%3A1.4.0+)
+
+1. Added support for arbitrary placement of nested criteria. For example, it is now
+   possible to write a where clause like this: `where (a < 5 and B = 3) and ((C = 4 or D = 5) and E = 6)`. Previously
+   we did not support the grouping of criteria at the beginning of a where clause or the beginning of an and/or
+   condition. Adding this support required significant refactoring, but that should be transparent to most users.
+   
+
 ## Release 1.3.1 - December 18, 2021
 
 This is a minor release with a few small enhancements. Most deprecated methods will be removed in the next release.
