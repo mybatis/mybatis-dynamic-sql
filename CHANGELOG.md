@@ -11,6 +11,9 @@ GitHub milestone: [https://github.com/mybatis/mybatis-dynamic-sql/issues?q=miles
    we did not support the grouping of criteria at the beginning of a where clause or the beginning of an and/or
    condition. Adding this support required significant refactoring, but that should be transparent to most users.
    ([#434](https://github.com/mybatis/mybatis-dynamic-sql/pull/434))
+2. Remove deprecated "when" and "then" methods on all conditions. The methods have been replaced by more appropriately
+   named "filter" and "map" methods that function as expected for method chaining.
+   ([#435](https://github.com/mybatis/mybatis-dynamic-sql/pull/435))
 
 ## Release 1.3.1 - December 18, 2021
 
