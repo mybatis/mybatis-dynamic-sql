@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2020 the original author or authors.
+ *    Copyright 2016-2022 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -35,8 +35,8 @@ class Issue105Test {
 
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
-                .where(firstName, isLike(fName).when(Objects::nonNull).then(s -> "%" + s + "%"))
-                .and(lastName, isLike(lName).when(Objects::nonNull).then(s -> "%" + s + "%"))
+                .where(firstName, isLike(fName).filter(Objects::nonNull).map(s -> "%" + s + "%"))
+                .and(lastName, isLike(lName).filter(Objects::nonNull).map(s -> "%" + s + "%"))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
@@ -57,8 +57,8 @@ class Issue105Test {
 
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
-                .where(firstName, isLike(fName).when(Objects::nonNull).then(SearchUtils::addWildcards))
-                .and(lastName, isLike(lName).when(Objects::nonNull).then(SearchUtils::addWildcards))
+                .where(firstName, isLike(fName).filter(Objects::nonNull).map(SearchUtils::addWildcards))
+                .and(lastName, isLike(lName).filter(Objects::nonNull).map(SearchUtils::addWildcards))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
@@ -77,8 +77,8 @@ class Issue105Test {
 
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
-                .where(firstName, isLike(fName).when(Objects::nonNull).then(SearchUtils::addWildcards))
-                .and(lastName, isLike(lName).when(Objects::nonNull).then(SearchUtils::addWildcards))
+                .where(firstName, isLike(fName).filter(Objects::nonNull).map(SearchUtils::addWildcards))
+                .and(lastName, isLike(lName).filter(Objects::nonNull).map(SearchUtils::addWildcards))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
@@ -97,8 +97,8 @@ class Issue105Test {
 
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
-                .where(firstName, isLike(fName).when(Objects::nonNull).then(SearchUtils::addWildcards))
-                .and(lastName, isLike(lName).when(Objects::nonNull).then(SearchUtils::addWildcards))
+                .where(firstName, isLike(fName).filter(Objects::nonNull).map(SearchUtils::addWildcards))
+                .and(lastName, isLike(lName).filter(Objects::nonNull).map(SearchUtils::addWildcards))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
@@ -114,7 +114,7 @@ class Issue105Test {
 
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
-                .where(age, isBetween(1).and(10).then(i1 -> i1 + 1,  i2 -> i2 + 2))
+                .where(age, isBetween(1).and(10).map(i1 -> i1 + 1,  i2 -> i2 + 2))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
@@ -132,7 +132,7 @@ class Issue105Test {
 
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
-                .where(age, isBetweenWhenPresent(1).and(10).then(i1 -> i1 + 1,  i2 -> i2 + 2))
+                .where(age, isBetweenWhenPresent(1).and(10).map(i1 -> i1 + 1,  i2 -> i2 + 2))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
@@ -150,7 +150,7 @@ class Issue105Test {
 
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
-                .where(age, isEqualTo(1).then(i -> i + 1))
+                .where(age, isEqualTo(1).map(i -> i + 1))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
@@ -167,7 +167,7 @@ class Issue105Test {
 
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
-                .where(age, isEqualToWhenPresent(1).then(i -> i + 1))
+                .where(age, isEqualToWhenPresent(1).map(i -> i + 1))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
@@ -184,7 +184,7 @@ class Issue105Test {
 
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
-                .where(age, isGreaterThan(1).then(i -> i + 1))
+                .where(age, isGreaterThan(1).map(i -> i + 1))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
@@ -201,7 +201,7 @@ class Issue105Test {
 
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
-                .where(age, isGreaterThanOrEqualTo(1).then(i -> i + 1))
+                .where(age, isGreaterThanOrEqualTo(1).map(i -> i + 1))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
@@ -218,7 +218,7 @@ class Issue105Test {
 
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
-                .where(age, isGreaterThanOrEqualToWhenPresent(1).then(i -> i + 1))
+                .where(age, isGreaterThanOrEqualToWhenPresent(1).map(i -> i + 1))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
@@ -235,7 +235,7 @@ class Issue105Test {
 
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
-                .where(age, isGreaterThanWhenPresent(1).then(i -> i + 1))
+                .where(age, isGreaterThanWhenPresent(1).map(i -> i + 1))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
@@ -252,7 +252,7 @@ class Issue105Test {
 
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
-                .where(age, isLessThan(1).then(i -> i + 1))
+                .where(age, isLessThan(1).map(i -> i + 1))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
@@ -269,7 +269,7 @@ class Issue105Test {
 
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
-                .where(age, isLessThanOrEqualTo(1).then(i -> i + 1))
+                .where(age, isLessThanOrEqualTo(1).map(i -> i + 1))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
@@ -286,7 +286,7 @@ class Issue105Test {
 
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
-                .where(age, isLessThanOrEqualToWhenPresent(1).then(i -> i + 1))
+                .where(age, isLessThanOrEqualToWhenPresent(1).map(i -> i + 1))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
@@ -303,7 +303,7 @@ class Issue105Test {
 
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
-                .where(age, isLessThanWhenPresent(1).then(i -> i + 1))
+                .where(age, isLessThanWhenPresent(1).map(i -> i + 1))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
@@ -320,7 +320,7 @@ class Issue105Test {
 
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
-                .where(firstName, isLike("fred").then(SearchUtils::addWildcards))
+                .where(firstName, isLike("fred").map(SearchUtils::addWildcards))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
@@ -337,7 +337,7 @@ class Issue105Test {
 
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
-                .where(firstName, isLikeCaseInsensitive("fred").then(SearchUtils::addWildcards))
+                .where(firstName, isLikeCaseInsensitive("fred").map(SearchUtils::addWildcards))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
@@ -354,7 +354,7 @@ class Issue105Test {
 
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
-                .where(firstName, isLikeCaseInsensitiveWhenPresent("fred").then(SearchUtils::addWildcards))
+                .where(firstName, isLikeCaseInsensitiveWhenPresent("fred").map(SearchUtils::addWildcards))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
@@ -371,7 +371,7 @@ class Issue105Test {
 
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
-                .where(firstName, isLikeWhenPresent("fred").then(SearchUtils::addWildcards))
+                .where(firstName, isLikeWhenPresent("fred").map(SearchUtils::addWildcards))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
@@ -388,7 +388,7 @@ class Issue105Test {
 
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
-                .where(age, isNotBetween(1).and(10).then(i1 -> i1 + 1,  i2 -> i2 + 2))
+                .where(age, isNotBetween(1).and(10).map(i1 -> i1 + 1,  i2 -> i2 + 2))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
@@ -406,7 +406,7 @@ class Issue105Test {
 
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
-                .where(age, isNotBetweenWhenPresent(1).and(10).then(i1 -> i1 + 1,  i2 -> i2 + 2))
+                .where(age, isNotBetweenWhenPresent(1).and(10).map(i1 -> i1 + 1,  i2 -> i2 + 2))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
@@ -424,7 +424,7 @@ class Issue105Test {
 
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
-                .where(age, isNotEqualTo(1).then(i -> i + 1))
+                .where(age, isNotEqualTo(1).map(i -> i + 1))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
@@ -441,7 +441,7 @@ class Issue105Test {
 
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
-                .where(age, isNotEqualToWhenPresent(1).then(i -> i + 1))
+                .where(age, isNotEqualToWhenPresent(1).map(i -> i + 1))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
@@ -458,7 +458,7 @@ class Issue105Test {
 
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
-                .where(firstName, isNotLike("fred").then(SearchUtils::addWildcards))
+                .where(firstName, isNotLike("fred").map(SearchUtils::addWildcards))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
@@ -475,7 +475,7 @@ class Issue105Test {
 
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
-                .where(firstName, isNotLikeCaseInsensitive("fred").then(SearchUtils::addWildcards))
+                .where(firstName, isNotLikeCaseInsensitive("fred").map(SearchUtils::addWildcards))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
@@ -492,7 +492,7 @@ class Issue105Test {
 
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
-                .where(firstName, isNotLikeCaseInsensitiveWhenPresent("fred").then(SearchUtils::addWildcards))
+                .where(firstName, isNotLikeCaseInsensitiveWhenPresent("fred").map(SearchUtils::addWildcards))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
@@ -509,7 +509,7 @@ class Issue105Test {
 
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
-                .where(firstName, isNotLikeWhenPresent("fred").then(SearchUtils::addWildcards))
+                .where(firstName, isNotLikeWhenPresent("fred").map(SearchUtils::addWildcards))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
@@ -526,7 +526,7 @@ class Issue105Test {
 
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
-                .where(age, isBetween(1).and((Integer) null).when(Predicates.bothPresent()).then(i1 -> i1 + 1,  i2 -> i2 + 2))
+                .where(age, isBetween(1).and((Integer) null).filter(Predicates.bothPresent()).map(i1 -> i1 + 1,  i2 -> i2 + 2))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
@@ -541,7 +541,7 @@ class Issue105Test {
 
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
-                .where(age, isBetweenWhenPresent(1).and((Integer) null).then(i1 -> i1 + 1,  i2 -> i2 + 2))
+                .where(age, isBetweenWhenPresent(1).and((Integer) null).map(i1 -> i1 + 1,  i2 -> i2 + 2))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
@@ -556,7 +556,7 @@ class Issue105Test {
 
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
-                .where(age, isEqualTo((Integer) null).when(Objects::nonNull).then(i -> i + 1))
+                .where(age, isEqualTo((Integer) null).filter(Objects::nonNull).map(i -> i + 1))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
@@ -571,7 +571,7 @@ class Issue105Test {
 
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
-                .where(age, isEqualToWhenPresent((Integer) null).then(i -> i + 1))
+                .where(age, isEqualToWhenPresent((Integer) null).map(i -> i + 1))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
@@ -586,7 +586,7 @@ class Issue105Test {
 
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
-                .where(age, isGreaterThan((Integer) null).when(Objects::nonNull).then(i -> i + 1))
+                .where(age, isGreaterThan((Integer) null).filter(Objects::nonNull).map(i -> i + 1))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
@@ -601,7 +601,7 @@ class Issue105Test {
 
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
-                .where(age, isGreaterThanOrEqualTo((Integer) null).when(Objects::nonNull).then(i -> i + 1))
+                .where(age, isGreaterThanOrEqualTo((Integer) null).filter(Objects::nonNull).map(i -> i + 1))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
@@ -616,7 +616,7 @@ class Issue105Test {
 
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
-                .where(age, isGreaterThanOrEqualToWhenPresent((Integer) null).then(i -> i + 1))
+                .where(age, isGreaterThanOrEqualToWhenPresent((Integer) null).map(i -> i + 1))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
@@ -631,7 +631,7 @@ class Issue105Test {
 
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
-                .where(age, isGreaterThanWhenPresent((Integer) null).then(i -> i + 1))
+                .where(age, isGreaterThanWhenPresent((Integer) null).map(i -> i + 1))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
@@ -646,7 +646,7 @@ class Issue105Test {
 
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
-                .where(age, isLessThan((Integer) null).when(Objects::nonNull).then(i -> i + 1))
+                .where(age, isLessThan((Integer) null).filter(Objects::nonNull).map(i -> i + 1))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
@@ -661,7 +661,7 @@ class Issue105Test {
 
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
-                .where(age, isLessThanOrEqualTo((Integer) null).when(Objects::nonNull).then(i -> i + 1))
+                .where(age, isLessThanOrEqualTo((Integer) null).filter(Objects::nonNull).map(i -> i + 1))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
@@ -676,7 +676,7 @@ class Issue105Test {
 
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
-                .where(age, isLessThanOrEqualToWhenPresent((Integer) null).then(i -> i + 1))
+                .where(age, isLessThanOrEqualToWhenPresent((Integer) null).map(i -> i + 1))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
@@ -691,7 +691,7 @@ class Issue105Test {
 
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
-                .where(age, isLessThanWhenPresent((Integer) null).then(i -> i + 1))
+                .where(age, isLessThanWhenPresent((Integer) null).map(i -> i + 1))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
@@ -706,7 +706,7 @@ class Issue105Test {
 
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
-                .where(firstName, isLike((String) null).when(Objects::nonNull).then(SearchUtils::addWildcards))
+                .where(firstName, isLike((String) null).filter(Objects::nonNull).map(SearchUtils::addWildcards))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
@@ -721,7 +721,7 @@ class Issue105Test {
 
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
-                .where(firstName, isLikeCaseInsensitive((String) null).when(Objects::nonNull).then(SearchUtils::addWildcards))
+                .where(firstName, isLikeCaseInsensitive((String) null).filter(Objects::nonNull).map(SearchUtils::addWildcards))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
@@ -736,7 +736,7 @@ class Issue105Test {
 
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
-                .where(firstName, isLikeCaseInsensitiveWhenPresent((String) null).then(SearchUtils::addWildcards))
+                .where(firstName, isLikeCaseInsensitiveWhenPresent((String) null).map(SearchUtils::addWildcards))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
@@ -751,7 +751,7 @@ class Issue105Test {
 
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
-                .where(firstName, isLikeWhenPresent((String) null).then(SearchUtils::addWildcards))
+                .where(firstName, isLikeWhenPresent((String) null).map(SearchUtils::addWildcards))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
@@ -766,7 +766,7 @@ class Issue105Test {
 
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
-                .where(age, isNotBetween((Integer) null).and(10).when(Predicates.bothPresent()).then(i1 -> i1 + 1,  i2 -> i2 + 2))
+                .where(age, isNotBetween((Integer) null).and(10).filter(Predicates.bothPresent()).map(i1 -> i1 + 1,  i2 -> i2 + 2))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
@@ -781,7 +781,7 @@ class Issue105Test {
 
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
-                .where(age, isNotBetweenWhenPresent(1).and((Integer) null).then(i1 -> i1 + 1,  i2 -> i2 + 2))
+                .where(age, isNotBetweenWhenPresent(1).and((Integer) null).map(i1 -> i1 + 1,  i2 -> i2 + 2))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
@@ -796,7 +796,7 @@ class Issue105Test {
 
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
-                .where(age, isNotEqualTo((Integer) null).when(Objects::nonNull).then(i -> i + 1))
+                .where(age, isNotEqualTo((Integer) null).filter(Objects::nonNull).map(i -> i + 1))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
@@ -811,7 +811,7 @@ class Issue105Test {
 
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
-                .where(age, isNotEqualToWhenPresent((Integer) null).then(i -> i + 1))
+                .where(age, isNotEqualToWhenPresent((Integer) null).map(i -> i + 1))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
@@ -826,7 +826,7 @@ class Issue105Test {
 
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
-                .where(firstName, isNotLike((String) null).when(Objects::nonNull).then(SearchUtils::addWildcards))
+                .where(firstName, isNotLike((String) null).filter(Objects::nonNull).map(SearchUtils::addWildcards))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
@@ -841,7 +841,7 @@ class Issue105Test {
 
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
-                .where(firstName, isNotLikeCaseInsensitive((String) null).when(Objects::nonNull).then(SearchUtils::addWildcards))
+                .where(firstName, isNotLikeCaseInsensitive((String) null).filter(Objects::nonNull).map(SearchUtils::addWildcards))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
@@ -856,7 +856,7 @@ class Issue105Test {
 
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
-                .where(firstName, isNotLikeCaseInsensitiveWhenPresent((String) null).then(SearchUtils::addWildcards))
+                .where(firstName, isNotLikeCaseInsensitiveWhenPresent((String) null).map(SearchUtils::addWildcards))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
@@ -871,7 +871,7 @@ class Issue105Test {
 
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
-                .where(firstName, isNotLikeWhenPresent((String) null).then(SearchUtils::addWildcards))
+                .where(firstName, isNotLikeWhenPresent((String) null).map(SearchUtils::addWildcards))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 

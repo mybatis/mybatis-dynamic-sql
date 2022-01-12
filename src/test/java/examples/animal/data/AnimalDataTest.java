@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2021 the original author or authors.
+ *    Copyright 2016-2022 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -582,7 +582,7 @@ class AnimalDataTest {
 
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
-                    .where(id, isIn(null, 22, null).then(s -> s.filter(Objects::nonNull).filter(i -> i != 22)))
+                    .where(id, isIn(null, 22, null).filter(Objects::nonNull).filter(i -> i != 22))
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
 
@@ -602,7 +602,7 @@ class AnimalDataTest {
 
         SelectModel selectModel = select(id, animalName, bodyWeight, brainWeight)
                 .from(animalData)
-                .where(id, isInRequired(inValues).then(s -> s.filter(Objects::nonNull).filter(i -> i != 22)))
+                .where(id, isInRequired(inValues).filter(Objects::nonNull).filter(i -> i != 22))
                 .build();
 
         assertThatExceptionOfType(RuntimeException.class).isThrownBy(() ->
@@ -697,7 +697,7 @@ class AnimalDataTest {
 
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
-                    .where(id, isNotIn(null, 22, null).then(s -> s.filter(Objects::nonNull).filter(i -> i != 22)))
+                    .where(id, isNotIn(null, 22, null).filter(Objects::nonNull).filter(i -> i != 22))
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
 
@@ -713,7 +713,7 @@ class AnimalDataTest {
         SelectModel selectModel = select(id, animalName, bodyWeight, brainWeight)
                 .from(animalData)
                 .where(id, isNotInRequired(null, 22, null)
-                        .then(s -> s.filter(Objects::nonNull).filter(i -> i != 22)))
+                        .filter(Objects::nonNull).filter(i -> i != 22))
                 .build();
 
         assertThatExceptionOfType(RuntimeException.class).isThrownBy(() ->

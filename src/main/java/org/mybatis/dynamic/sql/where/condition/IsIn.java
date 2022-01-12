@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2021 the original author or authors.
+ *    Copyright 2016-2022 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -20,11 +20,9 @@ import static org.mybatis.dynamic.sql.util.StringUtilities.spaceAfter;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -38,6 +36,10 @@ public class IsIn<T> extends AbstractListValueCondition<T> {
         @SuppressWarnings("unchecked")
         IsIn<T> t = (IsIn<T>) EMPTY;
         return t;
+    }
+
+    private <S> IsIn<S> emptyWithCallBack() {
+        return new IsIn<>(Collections.emptyList(), emptyCallback);
     }
 
     protected IsIn(Collection<T> values) {
@@ -59,27 +61,9 @@ public class IsIn<T> extends AbstractListValueCondition<T> {
         return new IsIn<>(values, callback);
     }
 
-    /**
-     * This method allows you to modify the condition's values before they are placed into the parameter map.
-     * For example, you could filter nulls, or trim strings, etc. This process will run before final rendering of SQL.
-     * If you filter values out of the stream, then final condition will not reference those values. If you filter all
-     * values out of the stream, then the condition will not render.
-     *
-     * @deprecated replaced by {@link IsIn#map(Function)} and {@link IsIn#filter(Predicate)}
-     * @param valueStreamTransformer a UnaryOperator that will transform the value stream before
-     *     the values are placed in the parameter map
-     * @return new condition with the specified transformer
-     */
-    @Deprecated
-    public IsIn<T> then(UnaryOperator<Stream<T>> valueStreamTransformer) {
-        List<T> mapped = valueStreamTransformer.apply(values.stream())
-                .collect(Collectors.toList());
-        return new IsIn<>(mapped, emptyCallback);
-    }
-
     @Override
     public IsIn<T> filter(Predicate<? super T> predicate) {
-        return filterSupport(predicate, IsIn::new, this, IsIn::empty);
+        return filterSupport(predicate, IsIn::new, this, this::emptyWithCallBack);
     }
 
     /**
@@ -93,7 +77,7 @@ public class IsIn<T> extends AbstractListValueCondition<T> {
      */
     public <R> IsIn<R> map(Function<? super T, ? extends R> mapper) {
         BiFunction<Collection<R>, Callback, IsIn<R>> constructor = IsIn::new;
-        return mapSupport(mapper, constructor, IsIn::empty);
+        return mapSupport(mapper, constructor, this::emptyWithCallBack);
     }
 
     @SafeVarargs

@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2021 the original author or authors.
+ *    Copyright 2016-2022 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -40,21 +40,6 @@ public class IsNull<T> extends AbstractNoValueCondition<T> {
     @Override
     public String renderCondition(String columnName) {
         return columnName + " is null"; //$NON-NLS-1$
-    }
-
-    /**
-     * If renderable and the supplier returns true, returns this condition. Else returns a condition
-     *     that will not render.
-     *
-     * @deprecated replaced by {@link IsNull#filter(BooleanSupplier)}
-     * @param booleanSupplier function that specifies whether the condition should render
-     * @param <S> condition type - not used except for compilation compliance
-     * @return this condition if renderable and the supplier returns true, otherwise a condition
-     *     that will not render.
-     */
-    @Deprecated
-    public <S> IsNull<S> when(BooleanSupplier booleanSupplier) {
-        return filter(booleanSupplier);
     }
 
     /**

@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2021 the original author or authors.
+ *    Copyright 2016-2022 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@ package org.mybatis.dynamic.sql.where.condition;
 
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.function.UnaryOperator;
 
 import org.mybatis.dynamic.sql.AbstractSingleValueCondition;
 
@@ -46,34 +45,6 @@ public class IsGreaterThan<T> extends AbstractSingleValueCondition<T> {
 
     public static <T> IsGreaterThan<T> of(T value) {
         return new IsGreaterThan<>(value);
-    }
-
-    /**
-     * If renderable and the value matches the predicate, returns this condition. Else returns a condition
-     *     that will not render.
-     *
-     * @deprecated replaced by {@link IsGreaterThan#filter(Predicate)}
-     * @param predicate predicate applied to the value, if renderable
-     * @return this condition if renderable and the value matches the predicate, otherwise a condition
-     *     that will not render.
-     */
-    @Deprecated
-    public IsGreaterThan<T> when(Predicate<T> predicate) {
-        return filter(predicate);
-    }
-
-    /**
-     * If renderable, apply the mapping to the value and return a new condition with the new value. Else return a
-     *     condition that will not render (this).
-     *
-     * @deprecated replaced by {@link IsGreaterThan#map(Function)}
-     * @param mapper a mapping function to apply to the value, if renderable
-     * @return a new condition with the result of applying the mapper to the value of this condition,
-     *     if renderable, otherwise a condition that will not render.
-     */
-    @Deprecated
-    public IsGreaterThan<T> then(UnaryOperator<T> mapper) {
-        return map(mapper);
     }
 
     @Override
