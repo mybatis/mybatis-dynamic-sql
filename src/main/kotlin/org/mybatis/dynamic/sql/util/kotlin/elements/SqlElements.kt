@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2021 the original author or authors.
+ *    Copyright 2016-2022 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -19,11 +19,13 @@ package org.mybatis.dynamic.sql.util.kotlin.elements
 import org.mybatis.dynamic.sql.BasicColumn
 import org.mybatis.dynamic.sql.BindableColumn
 import org.mybatis.dynamic.sql.Constant
+import org.mybatis.dynamic.sql.CriteriaGroup
 import org.mybatis.dynamic.sql.ExistsPredicate
 import org.mybatis.dynamic.sql.SortSpecification
 import org.mybatis.dynamic.sql.SqlBuilder
 import org.mybatis.dynamic.sql.SqlColumn
 import org.mybatis.dynamic.sql.StringConstant
+import org.mybatis.dynamic.sql.VisitableCondition
 import org.mybatis.dynamic.sql.select.aggregate.Avg
 import org.mybatis.dynamic.sql.select.aggregate.Count
 import org.mybatis.dynamic.sql.select.aggregate.CountAll
@@ -41,6 +43,8 @@ import org.mybatis.dynamic.sql.select.function.Substring
 import org.mybatis.dynamic.sql.select.function.Subtract
 import org.mybatis.dynamic.sql.select.function.Upper
 import org.mybatis.dynamic.sql.select.join.EqualTo
+import org.mybatis.dynamic.sql.util.kotlin.CriteriaCollector
+import org.mybatis.dynamic.sql.util.kotlin.CriteriaReceiver
 import org.mybatis.dynamic.sql.util.kotlin.KotlinSubQueryBuilder
 import org.mybatis.dynamic.sql.where.condition.IsBetween
 import org.mybatis.dynamic.sql.where.condition.IsEqualTo
@@ -145,6 +149,19 @@ fun <T> substring(
 ): Substring<T> = SqlBuilder.substring(column, offset, length)
 
 fun <T> upper(column: BindableColumn<T>): Upper<T> = SqlBuilder.upper(column)
+
+fun group(initialCriterion: CriteriaGroup, subCriteria: CriteriaReceiver): CriteriaGroup =
+    SqlBuilder.group(initialCriterion, CriteriaCollector().apply(subCriteria).criteria)
+
+fun group(existsPredicate: ExistsPredicate, subCriteria: CriteriaReceiver): CriteriaGroup =
+    SqlBuilder.group(existsPredicate, CriteriaCollector().apply(subCriteria).criteria)
+
+fun <T> group(
+    column: BindableColumn<T>,
+    condition: VisitableCondition<T>,
+    subCriteria: CriteriaReceiver
+): CriteriaGroup =
+    SqlBuilder.group(column, condition, CriteriaCollector().apply(subCriteria).criteria)
 
 // conditions for all data types
 fun <T> isNull(): IsNull<T> = SqlBuilder.isNull()

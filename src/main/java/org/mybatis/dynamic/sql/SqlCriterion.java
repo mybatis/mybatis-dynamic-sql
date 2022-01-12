@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2020 the original author or authors.
+ *    Copyright 2016-2022 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -16,42 +16,27 @@
 package org.mybatis.dynamic.sql;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.function.Function;
-import java.util.stream.Stream;
 
 public abstract class SqlCriterion {
 
-    private final String connector;
-    private final List<SqlCriterion> subCriteria;
+    private final List<AndOrCriteriaGroup> subCriteria = new ArrayList<>();
 
     protected SqlCriterion(AbstractBuilder<?> builder) {
-        connector = builder.connector;
-        subCriteria = Objects.requireNonNull(builder.subCriteria);
+        subCriteria.addAll(builder.subCriteria);
     }
 
-    public Optional<String> connector() {
-        return Optional.ofNullable(connector);
-    }
-
-    public <R> Stream<R> mapSubCriteria(Function<SqlCriterion, R> mapper) {
-        return subCriteria.stream().map(mapper);
+    public List<AndOrCriteriaGroup> subCriteria() {
+        return Collections.unmodifiableList(subCriteria);
     }
 
     public abstract <R> R accept(SqlCriterionVisitor<R> visitor);
 
     protected abstract static class AbstractBuilder<T extends AbstractBuilder<T>> {
-        private String connector;
-        private final List<SqlCriterion> subCriteria = new ArrayList<>();
+        private final List<AndOrCriteriaGroup> subCriteria = new ArrayList<>();
 
-        public T withConnector(String connector) {
-            this.connector = connector;
-            return getThis();
-        }
-
-        public T withSubCriteria(List<SqlCriterion> subCriteria) {
+        public T withSubCriteria(List<AndOrCriteriaGroup> subCriteria) {
             this.subCriteria.addAll(subCriteria);
             return getThis();
         }

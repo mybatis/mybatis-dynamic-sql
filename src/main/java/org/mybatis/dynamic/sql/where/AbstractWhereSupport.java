@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2020 the original author or authors.
+ *    Copyright 2016-2022 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -19,9 +19,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 
+import org.mybatis.dynamic.sql.AndOrCriteriaGroup;
 import org.mybatis.dynamic.sql.BindableColumn;
+import org.mybatis.dynamic.sql.CriteriaGroup;
 import org.mybatis.dynamic.sql.ExistsPredicate;
-import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.VisitableCondition;
 
 /**
@@ -36,20 +37,29 @@ public abstract class AbstractWhereSupport<W extends AbstractWhereDSL<?>> {
 
     public abstract W where();
 
-    public <T> W where(BindableColumn<T> column, VisitableCondition<T> condition, SqlCriterion...subCriteria) {
+    public <T> W where(BindableColumn<T> column, VisitableCondition<T> condition, AndOrCriteriaGroup...subCriteria) {
         return where(column, condition, Arrays.asList(subCriteria));
     }
 
-    public <T> W where(BindableColumn<T> column, VisitableCondition<T> condition, List<SqlCriterion> subCriteria) {
+    public <T> W where(BindableColumn<T> column, VisitableCondition<T> condition,
+                       List<AndOrCriteriaGroup> subCriteria) {
         return apply(w -> w.where(column, condition, subCriteria));
     }
 
-    public W where(ExistsPredicate existsPredicate) {
-        return apply(w -> w.where(existsPredicate));
+    public W where(ExistsPredicate existsPredicate, AndOrCriteriaGroup...subCriteria) {
+        return where(existsPredicate, Arrays.asList(subCriteria));
     }
 
-    public W where(ExistsPredicate existsPredicate, SqlCriterion...subCriteria) {
+    public W where(ExistsPredicate existsPredicate, List<AndOrCriteriaGroup> subCriteria) {
         return apply(w -> w.where(existsPredicate, subCriteria));
+    }
+
+    public W where(CriteriaGroup criterion, AndOrCriteriaGroup...subCriteria) {
+        return where(criterion, Arrays.asList(subCriteria));
+    }
+
+    public W where(CriteriaGroup criterion, List<AndOrCriteriaGroup> subCriteria) {
+        return apply(w -> w.where(criterion, subCriteria));
     }
 
     public W applyWhere(WhereApplier whereApplier) {

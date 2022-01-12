@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2020 the original author or authors.
+ *    Copyright 2016-2022 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -299,6 +299,48 @@ class OptionalCriterionRenderTest {
                 "and exists (select * from person where id = :p3)))";
 
         assertThat(whereClause.getParameters()).containsExactly(entry("p1", 3), entry("p2", 4), entry("p3", 5));
+        assertThat(whereClause.getWhereClause()).isEqualTo(expected);
+    }
+
+    @Test
+    void testCollapsingCriteriaGroup1() {
+        String name1 = null;
+
+        WhereClauseProvider whereClause = where(
+                group(firstName, isEqualToWhenPresent(name1)), or(lastName, isEqualToWhenPresent(name1)))
+                .build()
+                .render(RenderingStrategies.SPRING_NAMED_PARAMETER);
+
+        assertThat(whereClause.getWhereClause()).isEmpty();
+    }
+
+    @Test
+    void testCollapsingCriteriaGroup2() {
+        String name1 = null;
+
+        WhereClauseProvider whereClause = where(
+                group(firstName, isEqualTo("Fred")), or(lastName, isEqualToWhenPresent(name1)))
+                .build()
+                .render(RenderingStrategies.SPRING_NAMED_PARAMETER);
+
+        String expected = "where first_name = :p1";
+
+        assertThat(whereClause.getParameters()).containsExactly(entry("p1", "Fred"));
+        assertThat(whereClause.getWhereClause()).isEqualTo(expected);
+    }
+
+    @Test
+    void testCollapsingCriteriaGroup3() {
+        String name1 = null;
+
+        WhereClauseProvider whereClause = where(
+                group(firstName, isEqualTo("Fred")), or(lastName, isEqualToWhenPresent(name1)), or(firstName, isEqualTo("Betty")))
+                .build()
+                .render(RenderingStrategies.SPRING_NAMED_PARAMETER);
+
+        String expected = "where (first_name = :p1 or first_name = :p2)";
+
+        assertThat(whereClause.getParameters()).containsExactly(entry("p1", "Fred"), entry("p2", "Betty"));
         assertThat(whereClause.getWhereClause()).isEqualTo(expected);
     }
 }

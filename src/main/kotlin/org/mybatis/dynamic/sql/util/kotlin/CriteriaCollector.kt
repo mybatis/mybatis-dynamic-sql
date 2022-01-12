@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2021 the original author or authors.
+ *    Copyright 2016-2022 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -17,6 +17,8 @@ package org.mybatis.dynamic.sql.util.kotlin
 
 import org.mybatis.dynamic.sql.BindableColumn
 import org.mybatis.dynamic.sql.ColumnAndConditionCriterion
+import org.mybatis.dynamic.sql.CriteriaGroup
+import org.mybatis.dynamic.sql.AndOrCriteriaGroup
 import org.mybatis.dynamic.sql.ExistsCriterion
 import org.mybatis.dynamic.sql.ExistsPredicate
 import org.mybatis.dynamic.sql.SqlCriterion
@@ -26,96 +28,57 @@ typealias CriteriaReceiver = CriteriaCollector.() -> Unit
 
 @MyBatisDslMarker
 class CriteriaCollector {
-    val criteria = mutableListOf<SqlCriterion>()
-
-    fun <T> and(column: BindableColumn<T>, condition: VisitableCondition<T>): CriteriaCollector =
-        apply {
-            criteria.add(
-                ColumnAndConditionCriterion.withColumn(column)
-                    .withCondition(condition)
-                    .withConnector("and")
-                    .build()
-            )
-        }
+    val criteria = mutableListOf<AndOrCriteriaGroup>()
 
     fun <T> and(
         column: BindableColumn<T>,
         condition: VisitableCondition<T>,
-        criteriaReceiver: CriteriaReceiver
+        criteriaReceiver: CriteriaReceiver = {}
     ): CriteriaCollector =
-        apply {
-            criteria.add(
-                ColumnAndConditionCriterion.withColumn(column)
-                    .withCondition(condition)
-                    .withSubCriteria(CriteriaCollector().apply(criteriaReceiver).criteria)
-                    .withConnector("and")
-                    .build()
-            )
-        }
+        addCriteriaGroup("and", buildCriterion(column, condition), criteriaReceiver)
 
-    fun and(existsPredicate: ExistsPredicate): CriteriaCollector =
-        apply {
-            criteria.add(
-                ExistsCriterion.Builder()
-                    .withConnector("and")
-                    .withExistsPredicate(existsPredicate)
-                    .build()
-            )
-        }
+    fun and(existsPredicate: ExistsPredicate, criteriaReceiver: CriteriaReceiver = {}): CriteriaCollector =
+        addCriteriaGroup("and", buildCriterion(existsPredicate), criteriaReceiver)
 
-    fun and(existsPredicate: ExistsPredicate, criteriaReceiver: CriteriaReceiver): CriteriaCollector =
-        apply {
-            criteria.add(
-                ExistsCriterion.Builder()
-                    .withConnector("and")
-                    .withExistsPredicate(existsPredicate)
-                    .withSubCriteria(CriteriaCollector().apply(criteriaReceiver).criteria)
-                    .build()
-            )
-        }
-
-    fun <T> or(column: BindableColumn<T>, condition: VisitableCondition<T>): CriteriaCollector =
-        apply {
-            criteria.add(
-                ColumnAndConditionCriterion.withColumn(column)
-                    .withCondition(condition)
-                    .withConnector("or")
-                    .build()
-            )
-        }
+    fun and(criteriaGroup: CriteriaGroup, criteriaReceiver: CriteriaReceiver): CriteriaCollector =
+        addCriteriaGroup("and", buildCriterion(criteriaGroup), criteriaReceiver)
 
     fun <T> or(
         column: BindableColumn<T>,
         condition: VisitableCondition<T>,
-        criteriaReceiver: CriteriaReceiver
+        criteriaReceiver: CriteriaReceiver = {}
     ): CriteriaCollector =
-        apply {
-            criteria.add(
-                ColumnAndConditionCriterion.withColumn(column)
-                    .withCondition(condition)
-                    .withSubCriteria(CriteriaCollector().apply(criteriaReceiver).criteria)
-                    .withConnector("or")
-                    .build()
-            )
-        }
+        addCriteriaGroup("or", buildCriterion(column, condition), criteriaReceiver)
 
-    fun or(existsPredicate: ExistsPredicate): CriteriaCollector =
-        apply {
-            criteria.add(
-                ExistsCriterion.Builder()
-                    .withConnector("or")
-                    .withExistsPredicate(existsPredicate)
-                    .build()
-            )
-        }
+    fun or(existsPredicate: ExistsPredicate, criteriaReceiver: CriteriaReceiver = {}): CriteriaCollector =
+        addCriteriaGroup("or", buildCriterion(existsPredicate), criteriaReceiver)
 
-    fun or(existsPredicate: ExistsPredicate, criteriaReceiver: CriteriaReceiver): CriteriaCollector =
+    fun or(criteriaGroup: CriteriaGroup, criteriaReceiver: CriteriaReceiver): CriteriaCollector =
+        addCriteriaGroup("or", buildCriterion(criteriaGroup), criteriaReceiver)
+
+    private fun <T> buildCriterion(
+        column: BindableColumn<T>,
+        condition: VisitableCondition<T>
+    ): ColumnAndConditionCriterion<T> =
+        ColumnAndConditionCriterion.withColumn(column).withCondition(condition).build()
+
+    private fun buildCriterion(existsPredicate: ExistsPredicate): ExistsCriterion =
+        ExistsCriterion.Builder().withExistsPredicate(existsPredicate).build()
+
+    private fun buildCriterion(criteriaGroup: CriteriaGroup): CriteriaGroup =
+        CriteriaGroup.Builder().withInitialCriterion(criteriaGroup).build()
+
+    private fun addCriteriaGroup(
+        connector: String,
+        initialCriterion: SqlCriterion,
+        criteriaReceiver: CriteriaReceiver
+    ) =
         apply {
             criteria.add(
-                ExistsCriterion.Builder()
-                    .withConnector("or")
-                    .withExistsPredicate(existsPredicate)
+                AndOrCriteriaGroup.Builder()
+                    .withInitialCriterion(initialCriterion)
                     .withSubCriteria(CriteriaCollector().apply(criteriaReceiver).criteria)
+                    .withConnector(connector)
                     .build()
             )
         }

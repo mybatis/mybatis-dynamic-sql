@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2021 the original author or authors.
+ *    Copyright 2016-2022 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -16,8 +16,9 @@
 package org.mybatis.dynamic.sql.util.kotlin
 
 import org.mybatis.dynamic.sql.BindableColumn
+import org.mybatis.dynamic.sql.CriteriaGroup
+import org.mybatis.dynamic.sql.AndOrCriteriaGroup
 import org.mybatis.dynamic.sql.ExistsPredicate
-import org.mybatis.dynamic.sql.SqlCriterion
 import org.mybatis.dynamic.sql.SqlTable
 import org.mybatis.dynamic.sql.VisitableCondition
 import org.mybatis.dynamic.sql.select.AbstractQueryExpressionDSL
@@ -38,24 +39,19 @@ fun WhereApplier.andThen(after: WhereApplier): WhereApplier = {
 @MyBatisDslMarker
 @Suppress("TooManyFunctions")
 abstract class KotlinBaseBuilder<D : AbstractWhereSupport<*>, B : KotlinBaseBuilder<D, B>> {
-    fun <T> where(column: BindableColumn<T>, condition: VisitableCondition<T>): B =
-        applyToWhere {
-            where(column, condition)
-        }
-
-    fun <T> where(column: BindableColumn<T>, condition: VisitableCondition<T>, subCriteria: CriteriaReceiver): B =
+    fun <T> where(column: BindableColumn<T>, condition: VisitableCondition<T>, subCriteria: CriteriaReceiver = {}): B =
         applyToWhere(subCriteria) { sc ->
             where(column, condition, sc)
         }
 
-    fun where(existsPredicate: ExistsPredicate): B =
-        applyToWhere {
-            where(existsPredicate)
-        }
-
-    fun where(existsPredicate: ExistsPredicate, subCriteria: CriteriaReceiver): B =
+    fun where(existsPredicate: ExistsPredicate, subCriteria: CriteriaReceiver = {}): B =
         applyToWhere(subCriteria) { sc ->
             where(existsPredicate, sc)
+        }
+
+    fun where(criteriaGroup: CriteriaGroup, subCriteria: CriteriaReceiver): B =
+        applyToWhere(subCriteria) { sc ->
+            where(criteriaGroup, sc)
         }
 
     fun applyWhere(whereApplier: WhereApplier): B =
@@ -63,44 +59,34 @@ abstract class KotlinBaseBuilder<D : AbstractWhereSupport<*>, B : KotlinBaseBuil
             applyWhere(whereApplier)
         }
 
-    fun <T> and(column: BindableColumn<T>, condition: VisitableCondition<T>): B =
-        applyToWhere {
-            and(column, condition)
-        }
-
-    fun <T> and(column: BindableColumn<T>, condition: VisitableCondition<T>, subCriteria: CriteriaReceiver): B =
+    fun <T> and(column: BindableColumn<T>, condition: VisitableCondition<T>, subCriteria: CriteriaReceiver = {}): B =
         applyToWhere(subCriteria) { sc ->
             and(column, condition, sc)
         }
 
-    fun and(existsPredicate: ExistsPredicate): B =
-        applyToWhere {
-            and(existsPredicate)
-        }
-
-    fun and(existsPredicate: ExistsPredicate, subCriteria: CriteriaReceiver): B =
+    fun and(existsPredicate: ExistsPredicate, subCriteria: CriteriaReceiver = {}): B =
         applyToWhere(subCriteria) { sc ->
             and(existsPredicate, sc)
         }
 
-    fun <T> or(column: BindableColumn<T>, condition: VisitableCondition<T>): B =
-        applyToWhere {
-            or(column, condition)
+    fun and(criteriaGroup: CriteriaGroup, subCriteria: CriteriaReceiver): B =
+        applyToWhere(subCriteria) { sc ->
+            and(criteriaGroup, sc)
         }
 
-    fun <T> or(column: BindableColumn<T>, condition: VisitableCondition<T>, subCriteria: CriteriaReceiver): B =
+    fun <T> or(column: BindableColumn<T>, condition: VisitableCondition<T>, subCriteria: CriteriaReceiver = {}): B =
         applyToWhere(subCriteria) { sc ->
             or(column, condition, sc)
         }
 
-    fun or(existsPredicate: ExistsPredicate): B =
-        applyToWhere {
-            or(existsPredicate)
-        }
-
-    fun or(existsPredicate: ExistsPredicate, subCriteria: CriteriaReceiver): B =
+    fun or(existsPredicate: ExistsPredicate, subCriteria: CriteriaReceiver = {}): B =
         applyToWhere(subCriteria) { sc ->
             or(existsPredicate, sc)
+        }
+
+    fun or(criteriaGroup: CriteriaGroup, subCriteria: CriteriaReceiver): B =
+        applyToWhere(subCriteria) { sc ->
+            or(criteriaGroup, sc)
         }
 
     fun allRows(): B = self()
@@ -112,7 +98,7 @@ abstract class KotlinBaseBuilder<D : AbstractWhereSupport<*>, B : KotlinBaseBuil
 
     private fun applyToWhere(
         subCriteria: CriteriaReceiver,
-        block: AbstractWhereDSL<*>.(List<SqlCriterion>) -> Unit
+        block: AbstractWhereDSL<*>.(List<AndOrCriteriaGroup>) -> Unit
     ): B {
         getDsl().where().block(CriteriaCollector().apply(subCriteria).criteria)
         return self()

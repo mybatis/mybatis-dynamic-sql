@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2020 the original author or authors.
+ *    Copyright 2016-2022 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -16,11 +16,12 @@
 package org.mybatis.dynamic.sql.where;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Function;
-import java.util.stream.Stream;
 
+import org.mybatis.dynamic.sql.AndOrCriteriaGroup;
 import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.render.TableAliasCalculator;
@@ -31,14 +32,20 @@ public class WhereModel {
     private static final WhereClauseProvider EMPTY_WHERE_CLAUSE =
             new WhereClauseProvider.Builder().withWhereClause("").build(); //$NON-NLS-1$
 
-    private final List<SqlCriterion> criteria = new ArrayList<>();
+    private final SqlCriterion initialCriterion;
+    private final List<AndOrCriteriaGroup> subCriteria = new ArrayList<>();
 
-    private WhereModel(List<SqlCriterion> criteria) {
-        this.criteria.addAll(criteria);
+    public WhereModel(SqlCriterion initialCriterion, List<AndOrCriteriaGroup> subCriteria) {
+        this.initialCriterion = initialCriterion;
+        this.subCriteria.addAll(subCriteria);
     }
 
-    public <R> Stream<R> mapCriteria(Function<SqlCriterion, R> mapper) {
-        return criteria.stream().map(mapper);
+    public Optional<SqlCriterion> initialCriterion() {
+        return Optional.ofNullable(initialCriterion);
+    }
+
+    public List<AndOrCriteriaGroup> subCriteria() {
+        return Collections.unmodifiableList(subCriteria);
     }
 
     /**
@@ -90,9 +97,5 @@ public class WhereModel {
                 .build()
                 .render()
                 .orElse(EMPTY_WHERE_CLAUSE);
-    }
-
-    public static WhereModel of(List<SqlCriterion> criteria) {
-        return new WhereModel(criteria);
     }
 }
