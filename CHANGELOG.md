@@ -10,7 +10,7 @@ GitHub milestone: [https://github.com/mybatis/mybatis-dynamic-sql/issues?q=miles
    possible to write a where clause like this: `where (a < 5 and B = 3) and ((C = 4 or D = 5) and E = 6)`. Previously
    we did not support the grouping of criteria at the beginning of a where clause or the beginning of an and/or
    condition. Adding this support required significant refactoring, but that should be transparent to most users.
-   
+   ([#434](https://github.com/mybatis/mybatis-dynamic-sql/pull/434))
 
 ## Release 1.3.1 - December 18, 2021
 
