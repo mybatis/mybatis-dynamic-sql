@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2021 the original author or authors.
+ *    Copyright 2016-2022 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -429,28 +429,12 @@ class FilterAndMapTest {
     }
 
     @Test
-    void testIsInUnRenderableMapShouldReturnSameObject() {
-        IsIn<String> cond = SqlBuilder.isIn("Fred", "Wilma").filter(v -> false);
-        assertThat(cond.shouldRender()).isFalse();
-        IsIn<String> mapped = cond.map(String::toUpperCase);
-        assertThat(cond).isSameAs(mapped);
-    }
-
-    @Test
     void testIsInRenderableMapShouldReturnMappedObject() {
         IsIn<String> cond = SqlBuilder.isIn("Fred", "Wilma");
         assertThat(cond.shouldRender()).isTrue();
         IsIn<String> mapped = cond.map(String::toUpperCase);
         List<String> mappedValues = mapped.mapValues(Function.identity()).collect(Collectors.toList());
         assertThat(mappedValues).containsExactly("FRED", "WILMA");
-    }
-
-    @Test
-    void testIsNotInUnRenderableMapShouldReturnSameObject() {
-        IsNotIn<String> cond = SqlBuilder.isNotIn("Fred", "Wilma").filter(v -> false);
-        assertThat(cond.shouldRender()).isFalse();
-        IsNotIn<String> mapped = cond.map(String::toUpperCase);
-        assertThat(cond).isSameAs(mapped);
     }
 
     @Test
@@ -463,14 +447,6 @@ class FilterAndMapTest {
     }
 
     @Test
-    void testIsNotInCaseInsensitiveUnRenderableMapShouldReturnSameObject() {
-        IsNotInCaseInsensitive cond = SqlBuilder.isNotInCaseInsensitive("Fred", "Wilma").filter(v -> false);
-        assertThat(cond.shouldRender()).isFalse();
-        IsNotInCaseInsensitive mapped = cond.map(String::toUpperCase);
-        assertThat(cond).isSameAs(mapped);
-    }
-
-    @Test
     void testIsNotInCaseInsensitiveRenderableMapShouldReturnMappedObject() {
         IsNotInCaseInsensitive cond = SqlBuilder.isNotInCaseInsensitive("Fred  ", "Wilma  ");
         List<String> values = cond.mapValues(Function.identity()).collect(Collectors.toList());
@@ -480,14 +456,6 @@ class FilterAndMapTest {
         IsNotInCaseInsensitive mapped = cond.map(String::trim);
         List<String> mappedValues = mapped.mapValues(Function.identity()).collect(Collectors.toList());
         assertThat(mappedValues).containsExactly("FRED", "WILMA");
-    }
-
-    @Test
-    void testIsInCaseInsensitiveUnRenderableMapShouldReturnSameObject() {
-        IsInCaseInsensitive cond = SqlBuilder.isInCaseInsensitive("Fred", "Wilma").filter(v -> false);
-        assertThat(cond.shouldRender()).isFalse();
-        IsInCaseInsensitive mapped = cond.map(String::toUpperCase);
-        assertThat(cond).isSameAs(mapped);
     }
 
     @Test

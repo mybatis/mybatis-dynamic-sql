@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2020 the original author or authors.
+ *    Copyright 2016-2022 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -142,7 +142,7 @@ class SpringTest {
                 .build()
                 .render(RenderingStrategies.SPRING_NAMED_PARAMETER);
 
-        SqlParameterSource parameterSource = new BeanPropertySqlParameterSource(insertStatement.getRecord());
+        SqlParameterSource parameterSource = new BeanPropertySqlParameterSource(insertStatement.getRow());
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         int rows = template.update(insertStatement.getInsertStatement(), parameterSource, keyHolder);

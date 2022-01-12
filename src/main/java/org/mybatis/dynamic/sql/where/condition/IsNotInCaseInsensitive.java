@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2021 the original author or authors.
+ *    Copyright 2016-2022 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -34,6 +34,10 @@ public class IsNotInCaseInsensitive extends AbstractListValueCondition<String> {
         return EMPTY;
     }
 
+    private IsNotInCaseInsensitive emptyWithCallback() {
+        return new IsNotInCaseInsensitive(Collections.emptyList(), emptyCallback);
+    }
+
     protected IsNotInCaseInsensitive(Collection<String> values) {
         super(values);
     }
@@ -56,7 +60,7 @@ public class IsNotInCaseInsensitive extends AbstractListValueCondition<String> {
 
     @Override
     public IsNotInCaseInsensitive filter(Predicate<? super String> predicate) {
-        return filterSupport(predicate, IsNotInCaseInsensitive::new, this, IsNotInCaseInsensitive::empty);
+        return filterSupport(predicate, IsNotInCaseInsensitive::new, this, this::emptyWithCallback);
     }
 
     /**
@@ -68,7 +72,7 @@ public class IsNotInCaseInsensitive extends AbstractListValueCondition<String> {
      *     that will not render.
      */
     public IsNotInCaseInsensitive map(UnaryOperator<String> mapper) {
-        return mapSupport(mapper, IsNotInCaseInsensitive::new, IsNotInCaseInsensitive::empty);
+        return mapSupport(mapper, IsNotInCaseInsensitive::new, this::emptyWithCallback);
     }
 
     public static IsNotInCaseInsensitive of(String... values) {

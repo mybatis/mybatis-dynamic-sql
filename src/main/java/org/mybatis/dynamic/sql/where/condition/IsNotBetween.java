@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2021 the original author or authors.
+ *    Copyright 2016-2022 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -19,7 +19,6 @@ import java.util.Objects;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.function.UnaryOperator;
 
 import org.mybatis.dynamic.sql.AbstractTwoValueCondition;
 
@@ -44,35 +43,6 @@ public class IsNotBetween<T> extends AbstractTwoValueCondition<T> {
     @Override
     public String renderCondition(String columnName, String placeholder1, String placeholder2) {
         return columnName + " not between " + placeholder1 + " and " + placeholder2; //$NON-NLS-1$ //$NON-NLS-2$
-    }
-
-    /**
-     * If renderable and the values match the predicate, returns this condition. Else returns a condition
-     *     that will not render.
-     *
-     * @deprecated replaced by {@link IsNotBetween#filter(BiPredicate)}
-     * @param predicate predicate applied to the values, if renderable
-     * @return this condition if renderable and the values match the predicate, otherwise a condition
-     *     that will not render.
-     */
-    @Deprecated
-    public IsNotBetween<T> when(BiPredicate<T, T> predicate) {
-        return filter(predicate);
-    }
-
-    /**
-     * If renderable, apply the mappings to the values and return a new condition with the new values. Else return a
-     *     condition that will not render (this).
-     *
-     * @deprecated replaced by {@link IsNotBetween#map(Function, Function)}
-     * @param mapper1 a mapping function to apply to the first value, if renderable
-     * @param mapper2 a mapping function to apply to the second value, if renderable
-     * @return a new condition with the result of applying the mappers to the values of this condition,
-     *     if renderable, otherwise a condition that will not render.
-     */
-    @Deprecated
-    public IsNotBetween<T> then(UnaryOperator<T> mapper1, UnaryOperator<T> mapper2) {
-        return map(mapper1, mapper2);
     }
 
     @Override

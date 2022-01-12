@@ -28,10 +28,10 @@ import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 
 class OptionalCriterionRenderTest {
-    private static SqlTable person = SqlTable.of("person");
-    private static SqlColumn<Integer> id = person.column("id");
-    private static SqlColumn<String> firstName = person.column("first_name");
-    private static SqlColumn<String> lastName = person.column("last_name");
+    private static final SqlTable person = SqlTable.of("person");
+    private static final SqlColumn<Integer> id = person.column("id");
+    private static final SqlColumn<String> firstName = person.column("first_name");
+    private static final SqlColumn<String> lastName = person.column("last_name");
 
     @Test
     void testNoRenderableCriteria() {
@@ -51,7 +51,7 @@ class OptionalCriterionRenderTest {
     void testNoRenderableCriteriaWithIf() {
         Integer nullId = null;
 
-        WhereClauseProvider whereClause = where(id, isEqualTo(nullId).when(Objects::nonNull))
+        WhereClauseProvider whereClause = where(id, isEqualTo(nullId).filter(Objects::nonNull))
                 .build()
                 .render(RenderingStrategies.SPRING_NAMED_PARAMETER);
 
@@ -63,7 +63,7 @@ class OptionalCriterionRenderTest {
 
     @Test
     void testDisabledIsNull() {
-        WhereClauseProvider whereClause = where(id, isNull().when(() -> false))
+        WhereClauseProvider whereClause = where(id, isNull().filter(() -> false))
                 .build()
                 .render(RenderingStrategies.SPRING_NAMED_PARAMETER);
 
@@ -75,7 +75,7 @@ class OptionalCriterionRenderTest {
 
     @Test
     void testEnabledIsNull() {
-        WhereClauseProvider whereClause = where(id, isNull().when(() -> true))
+        WhereClauseProvider whereClause = where(id, isNull().filter(() -> true))
                 .build()
                 .render(RenderingStrategies.SPRING_NAMED_PARAMETER);
 
@@ -87,7 +87,7 @@ class OptionalCriterionRenderTest {
 
     @Test
     void testDisabledIsNotNull() {
-        WhereClauseProvider whereClause = where(id, isNotNull().when(() -> false))
+        WhereClauseProvider whereClause = where(id, isNotNull().filter(() -> false))
                 .build()
                 .render(RenderingStrategies.SPRING_NAMED_PARAMETER);
 
@@ -99,7 +99,7 @@ class OptionalCriterionRenderTest {
 
     @Test
     void testEnabledIsNotNull() {
-        WhereClauseProvider whereClause = where(id, isNotNull().when(() -> true))
+        WhereClauseProvider whereClause = where(id, isNotNull().filter(() -> true))
                 .build()
                 .render(RenderingStrategies.SPRING_NAMED_PARAMETER);
 
