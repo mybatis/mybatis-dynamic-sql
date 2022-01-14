@@ -265,6 +265,43 @@ public interface SqlBuilder {
                 .build();
     }
 
+    static <T> NotCriterion not(BindableColumn<T> column, VisitableCondition<T> condition,
+                                AndOrCriteriaGroup...subCriteria) {
+        return not(column, condition, Arrays.asList(subCriteria));
+    }
+
+    static <T> NotCriterion not(BindableColumn<T> column, VisitableCondition<T> condition,
+                                List<AndOrCriteriaGroup> subCriteria) {
+        return new NotCriterion.Builder()
+                .withInitialCriterion(new ColumnAndConditionCriterion.Builder<T>().withColumn(column)
+                        .withCondition(condition).build())
+                .withSubCriteria(subCriteria)
+                .build();
+    }
+
+    static NotCriterion not(ExistsPredicate existsPredicate, AndOrCriteriaGroup...subCriteria) {
+        return not(existsPredicate, Arrays.asList(subCriteria));
+    }
+
+    static NotCriterion not(ExistsPredicate existsPredicate, List<AndOrCriteriaGroup> subCriteria) {
+        return new NotCriterion.Builder()
+                .withInitialCriterion(new ExistsCriterion.Builder()
+                        .withExistsPredicate(existsPredicate).build())
+                .withSubCriteria(subCriteria)
+                .build();
+    }
+
+    static NotCriterion not(CriteriaGroup criteriaGroup, AndOrCriteriaGroup...subCriteria) {
+        return not(criteriaGroup, Arrays.asList(subCriteria));
+    }
+
+    static NotCriterion not(CriteriaGroup criteriaGroup, List<AndOrCriteriaGroup> subCriteria) {
+        return new NotCriterion.Builder()
+                .withInitialCriterion(criteriaGroup)
+                .withSubCriteria(subCriteria)
+                .build();
+    }
+
     static <T> AndOrCriteriaGroup or(BindableColumn<T> column, VisitableCondition<T> condition,
                                      AndOrCriteriaGroup...subCriteria) {
         return new AndOrCriteriaGroup.Builder()

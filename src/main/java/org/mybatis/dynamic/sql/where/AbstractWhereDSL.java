@@ -58,13 +58,13 @@ public abstract class AbstractWhereDSL<T extends AbstractWhereDSL<T>> {
     }
 
     @NotNull
-    public T where(CriteriaGroup criterion, AndOrCriteriaGroup...subCriteria) {
-        return where(criterion, Arrays.asList(subCriteria));
+    public T where(SqlCriterion initialCriterion, AndOrCriteriaGroup...subCriteria) {
+        return where(initialCriterion, Arrays.asList(subCriteria));
     }
 
     @NotNull
-    public T where(CriteriaGroup criterion, List<AndOrCriteriaGroup> subCriteria) {
-        initialCriterion = buildCriterion(criterion, subCriteria);
+    public T where(SqlCriterion initialCriterion, List<AndOrCriteriaGroup> subCriteria) {
+        this.initialCriterion = buildCriterion(initialCriterion, subCriteria);
         return getThis();
     }
 
@@ -83,7 +83,7 @@ public abstract class AbstractWhereDSL<T extends AbstractWhereDSL<T>> {
     @NotNull
     public <S> T and(BindableColumn<S> column, VisitableCondition<S> condition,
                      List<AndOrCriteriaGroup> subCriteria) {
-        addCriteriaGroup("and", buildCriterion(column, condition), subCriteria);
+        addSubCriteria("and", buildCriterion(column, condition), subCriteria);
         return getThis();
     }
 
@@ -94,18 +94,18 @@ public abstract class AbstractWhereDSL<T extends AbstractWhereDSL<T>> {
 
     @NotNull
     public T and(ExistsPredicate existsPredicate, List<AndOrCriteriaGroup> subCriteria) {
-        addCriteriaGroup("and", buildCriterion(existsPredicate), subCriteria);
+        addSubCriteria("and", buildCriterion(existsPredicate), subCriteria);
         return getThis();
     }
 
     @NotNull
-    public T and(CriteriaGroup criteriaGroup, AndOrCriteriaGroup...subCriteria) {
-        return and(criteriaGroup, Arrays.asList(subCriteria));
+    public T and(SqlCriterion initialCriterion, AndOrCriteriaGroup...subCriteria) {
+        return and(initialCriterion, Arrays.asList(subCriteria));
     }
 
     @NotNull
-    public T and(CriteriaGroup criteriaGroup, List<AndOrCriteriaGroup> subCriteria) {
-        addCriteriaGroup("and", buildCriterion(criteriaGroup), subCriteria);
+    public T and(SqlCriterion initialCriterion, List<AndOrCriteriaGroup> subCriteria) {
+        addSubCriteria("and", buildCriterion(initialCriterion), subCriteria);
         return getThis();
     }
 
@@ -118,7 +118,7 @@ public abstract class AbstractWhereDSL<T extends AbstractWhereDSL<T>> {
     @NotNull
     public <S> T or(BindableColumn<S> column, VisitableCondition<S> condition,
                     List<AndOrCriteriaGroup> subCriteria) {
-        addCriteriaGroup("or", buildCriterion(column, condition), subCriteria);
+        addSubCriteria("or", buildCriterion(column, condition), subCriteria);
         return getThis();
     }
 
@@ -129,18 +129,18 @@ public abstract class AbstractWhereDSL<T extends AbstractWhereDSL<T>> {
 
     @NotNull
     public T or(ExistsPredicate existsPredicate, List<AndOrCriteriaGroup> subCriteria) {
-        addCriteriaGroup("or", buildCriterion(existsPredicate), subCriteria);
+        addSubCriteria("or", buildCriterion(existsPredicate), subCriteria);
         return getThis();
     }
 
     @NotNull
-    public T or(CriteriaGroup criteriaGroup, AndOrCriteriaGroup...subCriteria) {
-        return or(criteriaGroup, Arrays.asList(subCriteria));
+    public T or(SqlCriterion initialCriterion, AndOrCriteriaGroup...subCriteria) {
+        return or(initialCriterion, Arrays.asList(subCriteria));
     }
 
     @NotNull
-    public T or(CriteriaGroup criteriaGroup, List<AndOrCriteriaGroup> subCriteria) {
-        addCriteriaGroup("or", buildCriterion(criteriaGroup), subCriteria);
+    public T or(SqlCriterion initialCriterion, List<AndOrCriteriaGroup> subCriteria) {
+        addSubCriteria("or", buildCriterion(initialCriterion), subCriteria);
         return getThis();
     }
 
@@ -148,38 +148,37 @@ public abstract class AbstractWhereDSL<T extends AbstractWhereDSL<T>> {
         return new WhereModel(initialCriterion, subCriteria);
     }
 
-    private <R> ColumnAndConditionCriterion<R> buildCriterion(BindableColumn<R> column,
-                                                              VisitableCondition<R> condition) {
+    private <R> SqlCriterion buildCriterion(BindableColumn<R> column, VisitableCondition<R> condition) {
         return ColumnAndConditionCriterion.withColumn(column).withCondition(condition).build();
     }
 
-    private <R> ColumnAndConditionCriterion<R> buildCriterion(BindableColumn<R> column, VisitableCondition<R> condition,
-                                                              List<AndOrCriteriaGroup> subCriteria) {
+    private <R> SqlCriterion buildCriterion(BindableColumn<R> column, VisitableCondition<R> condition,
+                                            List<AndOrCriteriaGroup> subCriteria) {
         return ColumnAndConditionCriterion.withColumn(column)
                 .withCondition(condition)
                 .withSubCriteria(subCriteria)
                 .build();
     }
 
-    private ExistsCriterion buildCriterion(ExistsPredicate existsPredicate) {
+    private SqlCriterion buildCriterion(ExistsPredicate existsPredicate) {
         return new ExistsCriterion.Builder().withExistsPredicate(existsPredicate).build();
     }
 
-    private ExistsCriterion buildCriterion(ExistsPredicate existsPredicate,
-                                           List<AndOrCriteriaGroup> subCriteria) {
+    private SqlCriterion buildCriterion(ExistsPredicate existsPredicate,
+                                        List<AndOrCriteriaGroup> subCriteria) {
         return new ExistsCriterion.Builder().withExistsPredicate(existsPredicate).withSubCriteria(subCriteria).build();
     }
 
-    private CriteriaGroup buildCriterion(CriteriaGroup criteriaGroup) {
-        return new CriteriaGroup.Builder().withInitialCriterion(criteriaGroup).build();
+    private SqlCriterion buildCriterion(SqlCriterion initialCriterion) {
+        return new CriteriaGroup.Builder().withInitialCriterion(initialCriterion).build();
     }
 
-    private CriteriaGroup buildCriterion(CriteriaGroup criteriaGroup, List<AndOrCriteriaGroup> subCriteria) {
-        return new CriteriaGroup.Builder().withInitialCriterion(criteriaGroup).withSubCriteria(subCriteria).build();
+    private SqlCriterion buildCriterion(SqlCriterion initialCriterion, List<AndOrCriteriaGroup> subCriteria) {
+        return new CriteriaGroup.Builder().withInitialCriterion(initialCriterion).withSubCriteria(subCriteria).build();
     }
 
-    private void addCriteriaGroup(String connector, SqlCriterion initialCriterion,
-                                  List<AndOrCriteriaGroup> subCriteria) {
+    private void addSubCriteria(String connector, SqlCriterion initialCriterion,
+                                List<AndOrCriteriaGroup> subCriteria) {
         this.subCriteria.add(new AndOrCriteriaGroup.Builder()
                 .withInitialCriterion(initialCriterion)
                 .withConnector(connector)

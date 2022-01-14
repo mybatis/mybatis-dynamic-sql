@@ -21,8 +21,8 @@ import java.util.function.Consumer;
 
 import org.mybatis.dynamic.sql.AndOrCriteriaGroup;
 import org.mybatis.dynamic.sql.BindableColumn;
-import org.mybatis.dynamic.sql.CriteriaGroup;
 import org.mybatis.dynamic.sql.ExistsPredicate;
+import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.VisitableCondition;
 
 /**
@@ -54,12 +54,12 @@ public abstract class AbstractWhereSupport<W extends AbstractWhereDSL<?>> {
         return apply(w -> w.where(existsPredicate, subCriteria));
     }
 
-    public W where(CriteriaGroup criterion, AndOrCriteriaGroup...subCriteria) {
-        return where(criterion, Arrays.asList(subCriteria));
+    public W where(SqlCriterion initialCriterion, AndOrCriteriaGroup...subCriteria) {
+        return where(initialCriterion, Arrays.asList(subCriteria));
     }
 
-    public W where(CriteriaGroup criterion, List<AndOrCriteriaGroup> subCriteria) {
-        return apply(w -> w.where(criterion, subCriteria));
+    public W where(SqlCriterion initialCriterion, List<AndOrCriteriaGroup> subCriteria) {
+        return apply(w -> w.where(initialCriterion, subCriteria));
     }
 
     public W applyWhere(WhereApplier whereApplier) {

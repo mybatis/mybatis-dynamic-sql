@@ -26,6 +26,7 @@ import org.mybatis.dynamic.sql.ColumnAndConditionCriterion;
 import org.mybatis.dynamic.sql.CriteriaGroup;
 import org.mybatis.dynamic.sql.ExistsCriterion;
 import org.mybatis.dynamic.sql.ExistsPredicate;
+import org.mybatis.dynamic.sql.NotCriterion;
 import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.SqlCriterionVisitor;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
@@ -76,7 +77,18 @@ public class CriterionRenderer implements SqlCriterionVisitor<Optional<RenderedC
         }
 
         List<RenderedCriterion> renderedSubCriteria = renderSubCriteria(criterion.subCriteria());
-        return calculateFinalFragment(fp, renderedSubCriteria);
+
+        Optional<FragmentCollector> fragmentCollector = collectSqlFragments(fp, renderedSubCriteria);
+        return fragmentCollector.map(fc -> {
+            FragmentAndParameters fp1 = FragmentAndParameters.withFragment(calculateFragment(fc))
+                    .withParameters(fc.parameters())
+                    .build();
+
+            return new RenderedCriterion.Builder()
+                    .withFragmentAndParameters(fp1)
+                    .build();
+
+        });
     }
 
     @Override
@@ -101,34 +113,80 @@ public class CriterionRenderer implements SqlCriterionVisitor<Optional<RenderedC
                 .build();
 
         List<RenderedCriterion> renderedSubCriteria = renderSubCriteria(criterion.subCriteria());
-        return calculateFinalFragment(initialCondition, renderedSubCriteria);
+
+        Optional<FragmentCollector> fragmentCollector = collectSqlFragments(initialCondition, renderedSubCriteria);
+        return fragmentCollector.map(fc -> {
+            FragmentAndParameters fp1 = FragmentAndParameters.withFragment(calculateFragment(fc))
+                    .withParameters(fc.parameters())
+                    .build();
+
+            return new RenderedCriterion.Builder()
+                    .withFragmentAndParameters(fp1)
+                    .build();
+
+        });
     }
 
     @Override
     public Optional<RenderedCriterion> visit(CriteriaGroup criterion) {
         Optional<RenderedCriterion> initialCriterion = criterion.initialCriterion().accept(this);
-
         List<RenderedCriterion> renderedSubCriteria = renderSubCriteria(criterion.subCriteria());
-        return calculateFinalFragment(initialCriterion.map(RenderedCriterion::fragmentAndParameters)
+
+        Optional<FragmentCollector> fragmentCollector = collectSqlFragments(initialCriterion.map(RenderedCriterion::fragmentAndParameters)
                 .orElse(null), renderedSubCriteria);
+        return fragmentCollector.map(fc -> {
+            FragmentAndParameters fp1 = FragmentAndParameters.withFragment(calculateFragment(fc))
+                    .withParameters(fc.parameters())
+                    .build();
+
+            return new RenderedCriterion.Builder()
+                    .withFragmentAndParameters(fp1)
+                    .build();
+
+        });
+    }
+
+    @Override
+    public Optional<RenderedCriterion> visit(NotCriterion criterion) {
+        Optional<RenderedCriterion> initialCriterion = criterion.initialCriterion().accept(this);
+        List<RenderedCriterion> renderedSubCriteria = renderSubCriteria(criterion.subCriteria());
+
+        Optional<FragmentCollector> fragmentCollector = collectSqlFragments(initialCriterion.map(RenderedCriterion::fragmentAndParameters)
+                .orElse(null), renderedSubCriteria);
+        return fragmentCollector.map(fc -> {
+            FragmentAndParameters fp1 = FragmentAndParameters.withFragment(calculateNotFragment(fc))
+                    .withParameters(fc.parameters())
+                    .build();
+
+            return new RenderedCriterion.Builder()
+                    .withFragmentAndParameters(fp1)
+                    .build();
+
+        });
     }
 
     List<RenderedCriterion> renderSubCriteria(List<AndOrCriteriaGroup> subCriteria) {
-        return subCriteria.stream().map(this::renderCriteriaGroupWithConnector)
+        return subCriteria.stream().map(this::renderAndOrCriteriaGroup)
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .collect(Collectors.toList());
     }
 
-    private Optional<RenderedCriterion> renderCriteriaGroupWithConnector(AndOrCriteriaGroup criterion) {
+    private Optional<RenderedCriterion> renderAndOrCriteriaGroup(AndOrCriteriaGroup criterion) {
         Optional<RenderedCriterion> initialCriterion = criterion.initialCriterion().accept(this);
-        List<RenderedCriterion> someList = criterion.subCriteria().stream().map(this::renderCriteriaGroupWithConnector)
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .collect(Collectors.toList());
+        List<RenderedCriterion> renderedSubCriteria = renderSubCriteria(criterion.subCriteria());
 
-        return calculateFinalFragment(initialCriterion.map(RenderedCriterion::fragmentAndParameters)
-                .orElse(null), someList).map(rc -> rc.withConnector(criterion.connector()));
+        Optional<FragmentCollector> fragmentCollector = collectSqlFragments(initialCriterion.map(RenderedCriterion::fragmentAndParameters)
+                .orElse(null), renderedSubCriteria);
+        return fragmentCollector.map(fc -> {
+            FragmentAndParameters fp1 = FragmentAndParameters.withFragment(calculateFragment(fc))
+                    .withParameters(fc.parameters())
+                    .build();
+
+            return new RenderedCriterion.Builder()
+                    .withFragmentAndParameters(fp1)
+                    .build();
+        }).map(rc -> rc.withConnector(criterion.connector()));
     }
 
     private <T> FragmentAndParameters renderCondition(ColumnAndConditionCriterion<T> criterion) {
@@ -139,11 +197,6 @@ public class CriterionRenderer implements SqlCriterionVisitor<Optional<RenderedC
                 .withParameterName(parameterName)
                 .build();
         return criterion.condition().accept(visitor);
-    }
-
-    private Optional<RenderedCriterion> calculateFinalFragment(FragmentAndParameters initialCondition,
-                                                               List<RenderedCriterion> renderedSubCriteria) {
-        return collectSqlFragments(initialCondition, renderedSubCriteria).map(this::calculateRenderedCriterion);
     }
 
     /**
@@ -189,22 +242,21 @@ public class CriterionRenderer implements SqlCriterionVisitor<Optional<RenderedC
         return Optional.of(fc);
     }
 
-    private RenderedCriterion calculateRenderedCriterion(FragmentCollector fc) {
-        FragmentAndParameters fp = FragmentAndParameters.withFragment(calculateFragment(fc))
-                .withParameters(fc.parameters())
-                .build();
-
-        return new RenderedCriterion.Builder()
-                .withFragmentAndParameters(fp)
-                .build();
-    }
-
     private String calculateFragment(FragmentCollector collector) {
         if (collector.hasMultipleFragments()) {
             return collector.fragments()
                     .collect(Collectors.joining(" ", "(", ")")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         } else {
             return collector.fragments().findFirst().orElse(""); //$NON-NLS-1$
+        }
+    }
+
+    private String calculateNotFragment(FragmentCollector collector) {
+        if (collector.hasMultipleFragments()) {
+            return collector.fragments()
+                    .collect(Collectors.joining(" ", "not (", ")")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        } else {
+            return collector.fragments().findFirst().map(s -> "not " + s).orElse(""); //$NON-NLS-1$ //$NON-NLS-2$
         }
     }
 
