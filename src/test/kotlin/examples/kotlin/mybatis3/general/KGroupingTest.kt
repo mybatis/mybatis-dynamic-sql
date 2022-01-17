@@ -26,7 +26,9 @@ import org.mybatis.dynamic.sql.util.kotlin.elements.exists
 import org.mybatis.dynamic.sql.util.kotlin.elements.group
 import org.mybatis.dynamic.sql.util.kotlin.elements.isEqualTo
 import org.mybatis.dynamic.sql.util.kotlin.elements.isGreaterThan
+import org.mybatis.dynamic.sql.util.kotlin.elements.isGreaterThanOrEqualTo
 import org.mybatis.dynamic.sql.util.kotlin.elements.isLessThan
+import org.mybatis.dynamic.sql.util.kotlin.elements.not
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.select
 
 object FooDynamicSqlSupport {
@@ -215,5 +217,39 @@ class KGroupingTest {
         assertThat(selectStatement.parameters).containsEntry("p7", 5)
         assertThat(selectStatement.parameters).containsEntry("p8", 0)
         assertThat(selectStatement.parameters).containsEntry("p9", 2)
+    }
+
+    @Test
+    fun testNotGroupAndOrCriteriaGroups() {
+        val selectStatement = select(A, B, C) {
+            from(foo)
+            where(not(group(B, isEqualTo(4)) {
+                and(C, isLessThan(5))
+            }) {
+                and(A, isGreaterThan(3))
+            })
+            and(not(A, isGreaterThan(4)))
+            or(
+                not(
+                    group(C, isLessThan(6)) {
+                        and(A, isGreaterThanOrEqualTo(7))
+                    }
+                )
+            )
+        }
+
+        val expected = "select A, B, C" +
+                " from Foo" +
+                " where not ((B = #{parameters.p1} and C < #{parameters.p2}) and A > #{parameters.p3})" +
+                " and not A > #{parameters.p4}" +
+                " or not (C < #{parameters.p5} and A >= #{parameters.p6})"
+
+        assertThat(selectStatement.selectStatement).isEqualTo(expected)
+        assertThat(selectStatement.parameters).containsEntry("p1", 4)
+        assertThat(selectStatement.parameters).containsEntry("p2", 5)
+        assertThat(selectStatement.parameters).containsEntry("p3", 3)
+        assertThat(selectStatement.parameters).containsEntry("p4", 4)
+        assertThat(selectStatement.parameters).containsEntry("p5", 6)
+        assertThat(selectStatement.parameters).containsEntry("p6", 7)
     }
 }
