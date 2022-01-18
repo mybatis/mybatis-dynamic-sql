@@ -14,6 +14,10 @@ GitHub milestone: [https://github.com/mybatis/mybatis-dynamic-sql/issues?q=miles
 2. Remove deprecated "when" and "then" methods on all conditions. The methods have been replaced by more appropriately
    named "filter" and "map" methods that function as expected for method chaining.
    ([#435](https://github.com/mybatis/mybatis-dynamic-sql/pull/435))
+3. Added support for a "not" criteria grouping on a where clause. It is now possible to write a where clause like
+   `where (a < 5 and B = 3) and (not (C = 4 or D = 5) and E = 6)`. With this enhancement (and the enhancement for
+   arbitrary grouping) it should now be possible to write virtually any where clause imaginable.
+   ([#438](https://github.com/mybatis/mybatis-dynamic-sql/pull/438))
 
 ## Release 1.3.1 - December 18, 2021
 
