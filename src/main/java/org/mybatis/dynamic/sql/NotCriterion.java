@@ -15,24 +15,15 @@
  */
 package org.mybatis.dynamic.sql;
 
-import java.util.Objects;
-
 /**
  * This class represents a criteria group with a NOT.
  *
  * @author Jeff Butler
  * @since 1.4.0
  */
-public class NotCriterion extends SqlCriterion {
-    private final SqlCriterion initialCriterion;
-
+public class NotCriterion extends CriteriaGroup {
     private NotCriterion(Builder builder) {
         super(builder);
-        initialCriterion = Objects.requireNonNull(builder.initialCriterion);
-    }
-
-    public SqlCriterion initialCriterion() {
-        return initialCriterion;
     }
 
     @Override
@@ -40,14 +31,7 @@ public class NotCriterion extends SqlCriterion {
         return visitor.visit(this);
     }
 
-    public static class Builder extends AbstractBuilder<Builder> {
-        private SqlCriterion initialCriterion;
-
-        public Builder withInitialCriterion(SqlCriterion initialCriterion) {
-            this.initialCriterion = initialCriterion;
-            return this;
-        }
-
+    public static class Builder extends AbstractGroupBuilder<Builder> {
         public NotCriterion build() {
             return new NotCriterion(this);
         }
