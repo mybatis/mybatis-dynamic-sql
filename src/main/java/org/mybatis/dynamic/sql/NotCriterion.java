@@ -15,12 +15,30 @@
  */
 package org.mybatis.dynamic.sql;
 
-public interface SqlCriterionVisitor<R> {
-    <T> R visit(ColumnAndConditionCriterion<T> criterion);
+/**
+ * This class represents a criteria group with a NOT.
+ *
+ * @author Jeff Butler
+ * @since 1.4.0
+ */
+public class NotCriterion extends CriteriaGroup {
+    private NotCriterion(Builder builder) {
+        super(builder);
+    }
 
-    R visit(ExistsCriterion criterion);
+    @Override
+    public <R> R accept(SqlCriterionVisitor<R> visitor) {
+        return visitor.visit(this);
+    }
 
-    R visit(CriteriaGroup criterion);
+    public static class Builder extends AbstractGroupBuilder<Builder> {
+        public NotCriterion build() {
+            return new NotCriterion(this);
+        }
 
-    R visit(NotCriterion criterion);
+        @Override
+        protected Builder getThis() {
+            return this;
+        }
+    }
 }

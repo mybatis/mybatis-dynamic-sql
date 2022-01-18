@@ -29,6 +29,7 @@ import org.junit.jupiter.api.Test
 import org.mybatis.dynamic.sql.util.kotlin.elements.exists
 import org.mybatis.dynamic.sql.util.kotlin.elements.isEqualTo
 import org.mybatis.dynamic.sql.util.kotlin.elements.isGreaterThan
+import org.mybatis.dynamic.sql.util.kotlin.elements.not
 import org.mybatis.dynamic.sql.util.kotlin.elements.notExists
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.select
 import org.mybatis.dynamic.sql.util.mybatis3.CommonSelectMapper
@@ -118,6 +119,39 @@ class ExistsTest {
             val expectedStatement: String = "select im.* from ItemMaster im" +
                 " where not exists (select ol.* from OrderLine ol where ol.item_id = im.item_id)" +
                 " order by item_id"
+            assertThat(selectStatement.selectStatement).isEqualTo(expectedStatement)
+
+            val rows = mapper.selectManyMappedRows(selectStatement)
+            assertThat(rows).hasSize(1)
+
+            with(rows[0]) {
+                assertThat(this).containsEntry("ITEM_ID", 55)
+                assertThat(this).containsEntry("DESCRIPTION", "Catcher Glove")
+            }
+        }
+    }
+
+    @Test
+    fun testNotExistsNewNot() {
+        newSession().use { session ->
+            val mapper = session.getMapper(CommonSelectMapper::class.java)
+
+            val selectStatement = select(itemMaster.allColumns()) {
+                from(itemMaster, "im")
+                where(
+                    not(exists {
+                        select(orderLine.allColumns()) {
+                            from(orderLine, "ol")
+                            where(orderLine.itemId, isEqualTo(itemMaster.itemId.qualifiedWith("im")))
+                        }
+                    })
+                )
+                orderBy(itemMaster.itemId)
+            }
+
+            val expectedStatement: String = "select im.* from ItemMaster im" +
+                    " where not exists (select ol.* from OrderLine ol where ol.item_id = im.item_id)" +
+                    " order by item_id"
             assertThat(selectStatement.selectStatement).isEqualTo(expectedStatement)
 
             val rows = mapper.selectManyMappedRows(selectStatement)

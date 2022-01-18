@@ -226,6 +226,73 @@ class AnimalDataTest {
     }
 
     @Test
+    void testSelectRowsNotBetweenWithNewNot() {
+        try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
+            AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
+
+            SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
+                    .from(animalData)
+                    .where(not(id, isBetween(10).and(60)))
+                    .build()
+                    .render(RenderingStrategies.MYBATIS3);
+
+            String expected = "select id, animal_name, body_weight, brain_weight"
+                    + " from AnimalData"
+                    + " where not id between #{parameters.p1,jdbcType=INTEGER} and #{parameters.p2,jdbcType=INTEGER}";
+
+            assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
+            List<AnimalData> animals = mapper.selectMany(selectStatement);
+            assertThat(animals).hasSize(14);
+        }
+    }
+
+    @Test
+    void testSelectRowsNotBetweenWithNotGroup() {
+        try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
+            AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
+
+            SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
+                    .from(animalData)
+                    .where(not(id, isBetween(10).and(60),
+                            or(animalName, isEqualTo("Little brown bat"))))
+                    .build()
+                    .render(RenderingStrategies.MYBATIS3);
+
+            String expected = "select id, animal_name, body_weight, brain_weight"
+                    + " from AnimalData"
+                    + " where not (id between #{parameters.p1,jdbcType=INTEGER} and #{parameters.p2,jdbcType=INTEGER}"
+                    + " or animal_name = #{parameters.p3,jdbcType=VARCHAR})";
+
+            assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
+            List<AnimalData> animals = mapper.selectMany(selectStatement);
+            assertThat(animals).hasSize(13);
+        }
+    }
+
+    @Test
+    void testSelectRowsNotBetweenWithNotAndGroup() {
+        try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
+            AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
+
+            SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
+                    .from(animalData)
+                    .where(not(group(id, isBetween(10).and(60),
+                            or(animalName, isEqualTo("Little brown bat")))))
+                    .build()
+                    .render(RenderingStrategies.MYBATIS3);
+
+            String expected = "select id, animal_name, body_weight, brain_weight"
+                    + " from AnimalData"
+                    + " where not (id between #{parameters.p1,jdbcType=INTEGER} and #{parameters.p2,jdbcType=INTEGER}"
+                    + " or animal_name = #{parameters.p3,jdbcType=VARCHAR})";
+
+            assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
+            List<AnimalData> animals = mapper.selectMany(selectStatement);
+            assertThat(animals).hasSize(13);
+        }
+    }
+
+    @Test
     void testSelectRowsNotBetweenWithStandaloneWhereClause() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
@@ -1410,8 +1477,6 @@ class AnimalDataTest {
     void testUpdateValueOrNullWithValue() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
-            AnimalData record = new AnimalData();
-            record.setBodyWeight(2.6);
 
             UpdateStatementProvider updateStatement = update(animalData)
                     .set(animalName).equalToOrNull("fred")
@@ -1430,8 +1495,6 @@ class AnimalDataTest {
     void testUpdateValueOrNullWithNull() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
-            AnimalData record = new AnimalData();
-            record.setBodyWeight(2.6);
 
             UpdateStatementProvider updateStatement = update(animalData)
                     .set(animalName).equalToOrNull((String) null)

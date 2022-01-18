@@ -28,7 +28,7 @@ import java.util.Objects;
 public class CriteriaGroup extends SqlCriterion {
     private final SqlCriterion initialCriterion;
 
-    private CriteriaGroup(Builder builder) {
+    protected CriteriaGroup(AbstractGroupBuilder<?> builder) {
         super(builder);
         initialCriterion = Objects.requireNonNull(builder.initialCriterion);
     }
@@ -42,14 +42,16 @@ public class CriteriaGroup extends SqlCriterion {
         return visitor.visit(this);
     }
 
-    public static class Builder extends AbstractBuilder<Builder> {
+    public abstract static class AbstractGroupBuilder<T extends AbstractGroupBuilder<T>> extends AbstractBuilder<T> {
         private SqlCriterion initialCriterion;
 
-        public Builder withInitialCriterion(SqlCriterion initialCriterion) {
+        public T withInitialCriterion(SqlCriterion initialCriterion) {
             this.initialCriterion = initialCriterion;
-            return this;
+            return getThis();
         }
+    }
 
+    public static class Builder extends AbstractGroupBuilder<Builder> {
         public CriteriaGroup build() {
             return new CriteriaGroup(this);
         }

@@ -219,8 +219,8 @@ public interface SqlBuilder {
         return WhereDSL.where().where(column, condition, subCriteria);
     }
 
-    static WhereDSL where(CriteriaGroup criteriaGroup, AndOrCriteriaGroup... subCriteria) {
-        return WhereDSL.where().where(criteriaGroup, subCriteria);
+    static WhereDSL where(SqlCriterion initialCriterion, AndOrCriteriaGroup... subCriteria) {
+        return WhereDSL.where().where(initialCriterion, subCriteria);
     }
 
     static WhereDSL where(ExistsPredicate existsPredicate, AndOrCriteriaGroup... subCriteria) {
@@ -254,13 +254,50 @@ public interface SqlBuilder {
                 .build();
     }
 
-    static CriteriaGroup group(CriteriaGroup criteriaGroup, AndOrCriteriaGroup...subCriteria) {
-        return group(criteriaGroup, Arrays.asList(subCriteria));
+    static CriteriaGroup group(SqlCriterion initialCriterion, AndOrCriteriaGroup...subCriteria) {
+        return group(initialCriterion, Arrays.asList(subCriteria));
     }
 
-    static CriteriaGroup group(CriteriaGroup criteriaGroup, List<AndOrCriteriaGroup> subCriteria) {
+    static CriteriaGroup group(SqlCriterion initialCriterion, List<AndOrCriteriaGroup> subCriteria) {
         return new CriteriaGroup.Builder()
-                .withInitialCriterion(criteriaGroup)
+                .withInitialCriterion(initialCriterion)
+                .withSubCriteria(subCriteria)
+                .build();
+    }
+
+    static <T> NotCriterion not(BindableColumn<T> column, VisitableCondition<T> condition,
+                                AndOrCriteriaGroup...subCriteria) {
+        return not(column, condition, Arrays.asList(subCriteria));
+    }
+
+    static <T> NotCriterion not(BindableColumn<T> column, VisitableCondition<T> condition,
+                                List<AndOrCriteriaGroup> subCriteria) {
+        return new NotCriterion.Builder()
+                .withInitialCriterion(new ColumnAndConditionCriterion.Builder<T>().withColumn(column)
+                        .withCondition(condition).build())
+                .withSubCriteria(subCriteria)
+                .build();
+    }
+
+    static NotCriterion not(ExistsPredicate existsPredicate, AndOrCriteriaGroup...subCriteria) {
+        return not(existsPredicate, Arrays.asList(subCriteria));
+    }
+
+    static NotCriterion not(ExistsPredicate existsPredicate, List<AndOrCriteriaGroup> subCriteria) {
+        return new NotCriterion.Builder()
+                .withInitialCriterion(new ExistsCriterion.Builder()
+                        .withExistsPredicate(existsPredicate).build())
+                .withSubCriteria(subCriteria)
+                .build();
+    }
+
+    static NotCriterion not(SqlCriterion initialCriterion, AndOrCriteriaGroup...subCriteria) {
+        return not(initialCriterion, Arrays.asList(subCriteria));
+    }
+
+    static NotCriterion not(SqlCriterion initialCriterion, List<AndOrCriteriaGroup> subCriteria) {
+        return new NotCriterion.Builder()
+                .withInitialCriterion(initialCriterion)
                 .withSubCriteria(subCriteria)
                 .build();
     }
@@ -285,10 +322,10 @@ public interface SqlBuilder {
                 .build();
     }
 
-    static AndOrCriteriaGroup or(CriteriaGroup criteriaGroup, AndOrCriteriaGroup...subCriteria) {
+    static AndOrCriteriaGroup or(SqlCriterion initialCriterion, AndOrCriteriaGroup...subCriteria) {
         return new AndOrCriteriaGroup.Builder()
                 .withConnector("or") //$NON-NLS-1$
-                .withInitialCriterion(criteriaGroup)
+                .withInitialCriterion(initialCriterion)
                 .withSubCriteria(Arrays.asList(subCriteria))
                 .build();
     }
@@ -313,10 +350,10 @@ public interface SqlBuilder {
                 .build();
     }
 
-    static AndOrCriteriaGroup and(CriteriaGroup criteriaGroup, AndOrCriteriaGroup...subCriteria) {
+    static AndOrCriteriaGroup and(SqlCriterion initialCriterion, AndOrCriteriaGroup...subCriteria) {
         return new AndOrCriteriaGroup.Builder()
                 .withConnector("and") //$NON-NLS-1$
-                .withInitialCriterion(criteriaGroup)
+                .withInitialCriterion(initialCriterion)
                 .withSubCriteria(Arrays.asList(subCriteria))
                 .build();
     }

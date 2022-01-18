@@ -21,9 +21,11 @@ import org.mybatis.dynamic.sql.BindableColumn
 import org.mybatis.dynamic.sql.Constant
 import org.mybatis.dynamic.sql.CriteriaGroup
 import org.mybatis.dynamic.sql.ExistsPredicate
+import org.mybatis.dynamic.sql.NotCriterion
 import org.mybatis.dynamic.sql.SortSpecification
 import org.mybatis.dynamic.sql.SqlBuilder
 import org.mybatis.dynamic.sql.SqlColumn
+import org.mybatis.dynamic.sql.SqlCriterion
 import org.mybatis.dynamic.sql.StringConstant
 import org.mybatis.dynamic.sql.VisitableCondition
 import org.mybatis.dynamic.sql.select.aggregate.Avg
@@ -150,7 +152,7 @@ fun <T> substring(
 
 fun <T> upper(column: BindableColumn<T>): Upper<T> = SqlBuilder.upper(column)
 
-fun group(initialCriterion: CriteriaGroup, subCriteria: CriteriaReceiver): CriteriaGroup =
+fun group(initialCriterion: SqlCriterion, subCriteria: CriteriaReceiver): CriteriaGroup =
     SqlBuilder.group(initialCriterion, CriteriaCollector().apply(subCriteria).criteria)
 
 fun group(existsPredicate: ExistsPredicate, subCriteria: CriteriaReceiver): CriteriaGroup =
@@ -162,6 +164,19 @@ fun <T> group(
     subCriteria: CriteriaReceiver
 ): CriteriaGroup =
     SqlBuilder.group(column, condition, CriteriaCollector().apply(subCriteria).criteria)
+
+fun not(initialCriterion: SqlCriterion, subCriteria: CriteriaReceiver = {}): NotCriterion =
+    SqlBuilder.not(initialCriterion, CriteriaCollector().apply(subCriteria).criteria)
+
+fun not(existsPredicate: ExistsPredicate, subCriteria: CriteriaReceiver = {}): NotCriterion =
+    SqlBuilder.not(existsPredicate, CriteriaCollector().apply(subCriteria).criteria)
+
+fun <T> not(
+    column: BindableColumn<T>,
+    condition: VisitableCondition<T>,
+    subCriteria: CriteriaReceiver = {}
+): NotCriterion =
+    SqlBuilder.not(column, condition, CriteriaCollector().apply(subCriteria).criteria)
 
 // conditions for all data types
 fun <T> isNull(): IsNull<T> = SqlBuilder.isNull()
