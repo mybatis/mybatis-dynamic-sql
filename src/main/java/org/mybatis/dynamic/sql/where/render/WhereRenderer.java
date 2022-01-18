@@ -15,7 +15,6 @@
  */
 package org.mybatis.dynamic.sql.where.render;
 
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -23,7 +22,6 @@ import java.util.stream.Collectors;
 
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.render.TableAliasCalculator;
-import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 import org.mybatis.dynamic.sql.util.FragmentCollector;
 import org.mybatis.dynamic.sql.where.WhereModel;
 
@@ -43,15 +41,13 @@ public class WhereRenderer {
     }
 
     public Optional<WhereClauseProvider> render() {
-        Optional<FragmentAndParameters> initialCriterion = whereModel.initialCriterion()
-                .flatMap(ic -> ic.accept(criterionRenderer))
-                .map(RenderedCriterion::fragmentAndParameters);
-        List<RenderedCriterion> renderedCriteria = criterionRenderer.renderSubCriteria(whereModel.subCriteria());
-
-        return criterionRenderer.collectSqlFragments(initialCriterion.orElse(null), renderedCriteria)
-                .map(fcc -> WhereClauseProvider.withWhereClause(calculateWhereClause(fcc))
-                        .withParameters(fcc.parameters())
-                        .build());
+        return whereModel.initialCriterion().map(ic ->
+                        criterionRenderer.render(ic, whereModel.subCriteria(), this::calculateWhereClause))
+                .orElseGet(() -> criterionRenderer.render(whereModel.subCriteria(), this::calculateWhereClause))
+                .map(rc -> WhereClauseProvider.withWhereClause(rc.fragmentAndParameters().fragment())
+                        .withParameters(rc.fragmentAndParameters().parameters())
+                        .build()
+                );
     }
 
     private String calculateWhereClause(FragmentCollector collector) {
