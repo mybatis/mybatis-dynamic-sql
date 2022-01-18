@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2020 the original author or authors.
+ *    Copyright 2016-2022 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -40,12 +40,9 @@ import static examples.joins.ItemMasterDynamicSQLSupport.itemMaster;
 import static examples.joins.OrderDetailDynamicSQLSupport.orderDetail;
 import static examples.joins.OrderLineDynamicSQLSupport.orderLine;
 import static examples.joins.OrderMasterDynamicSQLSupport.orderMaster;
-import static examples.joins.UserDynamicSQLSupport.user;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mybatis.dynamic.sql.SqlBuilder.and;
 import static org.mybatis.dynamic.sql.SqlBuilder.equalTo;
 import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
-import static org.mybatis.dynamic.sql.SqlBuilder.on;
 import static org.mybatis.dynamic.sql.SqlBuilder.select;
 import static org.mybatis.dynamic.sql.SqlBuilder.sortColumn;
 
