@@ -149,7 +149,8 @@ public class CriterionRenderer implements SqlCriterionVisitor<Optional<RenderedC
     }
 
     private Optional<RenderedCriterion> renderAndOrCriteriaGroup(AndOrCriteriaGroup criterion) {
-        return render(criterion.initialCriterion(), criterion.subCriteria(), this::calculateFragment)
+        return criterion.initialCriterion().map(ic -> render(ic, criterion.subCriteria(), this::calculateFragment))
+                .orElseGet(() -> render(criterion.subCriteria(), this::calculateFragment))
                 .map(rc -> rc.withConnector(criterion.connector()));
     }
 
