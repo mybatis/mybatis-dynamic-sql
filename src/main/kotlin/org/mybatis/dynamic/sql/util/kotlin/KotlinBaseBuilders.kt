@@ -29,7 +29,7 @@ import org.mybatis.dynamic.sql.where.AbstractWhereSupport
 @DslMarker
 annotation class MyBatisDslMarker
 
-typealias WhereApplier = AbstractWhereDSL<*>.() -> Unit
+typealias WhereApplier = KotlinBaseBuilder<*, *>.() -> Unit
 
 fun WhereApplier.andThen(after: WhereApplier): WhereApplier = {
     invoke(this)
@@ -73,8 +73,8 @@ abstract class KotlinBaseBuilder<D : AbstractWhereSupport<*>, B : KotlinBaseBuil
         }
 
     fun applyWhere(whereApplier: WhereApplier): B =
-        applyToWhere {
-            applyWhere(whereApplier)
+        self().apply {
+            whereApplier.invoke(this)
         }
 
     fun <T> and(column: BindableColumn<T>, condition: VisitableCondition<T>, subCriteria: CriteriaReceiver = {}): B =
@@ -108,11 +108,6 @@ abstract class KotlinBaseBuilder<D : AbstractWhereSupport<*>, B : KotlinBaseBuil
         }
 
     fun allRows(): B = self()
-
-    private fun applyToWhere(block: AbstractWhereDSL<*>.() -> Unit): B {
-        getDsl().where().apply(block)
-        return self()
-    }
 
     private fun applyToWhere(
         subCriteria: CriteriaReceiver,

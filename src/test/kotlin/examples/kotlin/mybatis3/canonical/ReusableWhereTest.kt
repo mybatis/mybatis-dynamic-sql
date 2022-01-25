@@ -136,7 +136,8 @@ class ReusableWhereTest {
     }
 
     private val commonWhere: WhereApplier = {
-        where(id, isEqualTo(1)).or(occupation, isNull<String>())
+        where(id, isEqualTo(1))
+        or(occupation, isNull<String>())
     }
 
     companion object {
