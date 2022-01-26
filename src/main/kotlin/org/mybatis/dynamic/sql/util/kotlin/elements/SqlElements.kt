@@ -19,15 +19,11 @@ package org.mybatis.dynamic.sql.util.kotlin.elements
 import org.mybatis.dynamic.sql.BasicColumn
 import org.mybatis.dynamic.sql.BindableColumn
 import org.mybatis.dynamic.sql.Constant
-import org.mybatis.dynamic.sql.CriteriaGroup
 import org.mybatis.dynamic.sql.ExistsPredicate
-import org.mybatis.dynamic.sql.NotCriterion
 import org.mybatis.dynamic.sql.SortSpecification
 import org.mybatis.dynamic.sql.SqlBuilder
 import org.mybatis.dynamic.sql.SqlColumn
-import org.mybatis.dynamic.sql.SqlCriterion
 import org.mybatis.dynamic.sql.StringConstant
-import org.mybatis.dynamic.sql.VisitableCondition
 import org.mybatis.dynamic.sql.select.aggregate.Avg
 import org.mybatis.dynamic.sql.select.aggregate.Count
 import org.mybatis.dynamic.sql.select.aggregate.CountAll
@@ -45,8 +41,6 @@ import org.mybatis.dynamic.sql.select.function.Substring
 import org.mybatis.dynamic.sql.select.function.Subtract
 import org.mybatis.dynamic.sql.select.function.Upper
 import org.mybatis.dynamic.sql.select.join.EqualTo
-import org.mybatis.dynamic.sql.util.kotlin.CriteriaCollector
-import org.mybatis.dynamic.sql.util.kotlin.CriteriaReceiver
 import org.mybatis.dynamic.sql.util.kotlin.KotlinSubQueryBuilder
 import org.mybatis.dynamic.sql.where.condition.IsBetween
 import org.mybatis.dynamic.sql.where.condition.IsEqualTo
@@ -151,32 +145,6 @@ fun <T> substring(
 ): Substring<T> = SqlBuilder.substring(column, offset, length)
 
 fun <T> upper(column: BindableColumn<T>): Upper<T> = SqlBuilder.upper(column)
-
-fun group(initialCriterion: SqlCriterion, subCriteria: CriteriaReceiver): CriteriaGroup =
-    SqlBuilder.group(initialCriterion, CriteriaCollector().apply(subCriteria).criteria)
-
-fun group(existsPredicate: ExistsPredicate, subCriteria: CriteriaReceiver): CriteriaGroup =
-    SqlBuilder.group(existsPredicate, CriteriaCollector().apply(subCriteria).criteria)
-
-fun <T> group(
-    column: BindableColumn<T>,
-    condition: VisitableCondition<T>,
-    subCriteria: CriteriaReceiver
-): CriteriaGroup =
-    SqlBuilder.group(column, condition, CriteriaCollector().apply(subCriteria).criteria)
-
-fun not(initialCriterion: SqlCriterion, subCriteria: CriteriaReceiver = {}): NotCriterion =
-    SqlBuilder.not(initialCriterion, CriteriaCollector().apply(subCriteria).criteria)
-
-fun not(existsPredicate: ExistsPredicate, subCriteria: CriteriaReceiver = {}): NotCriterion =
-    SqlBuilder.not(existsPredicate, CriteriaCollector().apply(subCriteria).criteria)
-
-fun <T> not(
-    column: BindableColumn<T>,
-    condition: VisitableCondition<T>,
-    subCriteria: CriteriaReceiver = {}
-): NotCriterion =
-    SqlBuilder.not(column, condition, CriteriaCollector().apply(subCriteria).criteria)
 
 // conditions for all data types
 fun <T> isNull(): IsNull<T> = SqlBuilder.isNull()

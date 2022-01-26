@@ -18,7 +18,6 @@ package org.mybatis.dynamic.sql.util.kotlin
 import org.mybatis.dynamic.sql.BindableColumn
 import org.mybatis.dynamic.sql.AndOrCriteriaGroup
 import org.mybatis.dynamic.sql.ExistsPredicate
-import org.mybatis.dynamic.sql.SqlCriterion
 import org.mybatis.dynamic.sql.SqlTable
 import org.mybatis.dynamic.sql.VisitableCondition
 import org.mybatis.dynamic.sql.select.AbstractQueryExpressionDSL
@@ -67,11 +66,6 @@ abstract class KotlinBaseBuilder<D : AbstractWhereSupport<*>, B : KotlinBaseBuil
             where(existsPredicate, sc)
         }
 
-    fun where(initialCriterion: SqlCriterion, subCriteria: CriteriaReceiver = {}): B =
-        applyToWhere(subCriteria) { sc ->
-            where(initialCriterion, sc)
-        }
-
     fun applyWhere(whereApplier: WhereApplier): B =
         self().apply {
             whereApplier.invoke(this)
@@ -87,11 +81,6 @@ abstract class KotlinBaseBuilder<D : AbstractWhereSupport<*>, B : KotlinBaseBuil
             and(existsPredicate, sc)
         }
 
-    fun and(initialCriterion: SqlCriterion, subCriteria: CriteriaReceiver = {}): B =
-        applyToWhere(subCriteria) { sc ->
-            and(initialCriterion, sc)
-        }
-
     fun <T> or(column: BindableColumn<T>, condition: VisitableCondition<T>, subCriteria: CriteriaReceiver = {}): B =
         applyToWhere(subCriteria) { sc ->
             or(column, condition, sc)
@@ -100,11 +89,6 @@ abstract class KotlinBaseBuilder<D : AbstractWhereSupport<*>, B : KotlinBaseBuil
     fun or(existsPredicate: ExistsPredicate, subCriteria: CriteriaReceiver = {}): B =
         applyToWhere(subCriteria) { sc ->
             or(existsPredicate, sc)
-        }
-
-    fun or(initialCriterion: SqlCriterion, subCriteria: CriteriaReceiver = {}): B =
-        applyToWhere(subCriteria) { sc ->
-            or(initialCriterion, sc)
         }
 
     fun allRows(): B = self()

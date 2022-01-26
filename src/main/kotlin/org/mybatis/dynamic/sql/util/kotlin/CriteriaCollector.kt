@@ -17,7 +17,6 @@ package org.mybatis.dynamic.sql.util.kotlin
 
 import org.mybatis.dynamic.sql.BindableColumn
 import org.mybatis.dynamic.sql.ColumnAndConditionCriterion
-import org.mybatis.dynamic.sql.CriteriaGroup
 import org.mybatis.dynamic.sql.AndOrCriteriaGroup
 import org.mybatis.dynamic.sql.ExistsCriterion
 import org.mybatis.dynamic.sql.ExistsPredicate
@@ -40,9 +39,6 @@ class CriteriaCollector {
     fun and(existsPredicate: ExistsPredicate, criteriaReceiver: CriteriaReceiver = {}): CriteriaCollector =
         addCriteriaGroup("and", buildCriterion(existsPredicate), criteriaReceiver)
 
-    fun and(criteriaGroup: CriteriaGroup, criteriaReceiver: CriteriaReceiver): CriteriaCollector =
-        addCriteriaGroup("and", buildCriterion(criteriaGroup), criteriaReceiver)
-
     fun <T> or(
         column: BindableColumn<T>,
         condition: VisitableCondition<T>,
@@ -53,9 +49,6 @@ class CriteriaCollector {
     fun or(existsPredicate: ExistsPredicate, criteriaReceiver: CriteriaReceiver = {}): CriteriaCollector =
         addCriteriaGroup("or", buildCriterion(existsPredicate), criteriaReceiver)
 
-    fun or(criteriaGroup: CriteriaGroup, criteriaReceiver: CriteriaReceiver): CriteriaCollector =
-        addCriteriaGroup("or", buildCriterion(criteriaGroup), criteriaReceiver)
-
     private fun <T> buildCriterion(
         column: BindableColumn<T>,
         condition: VisitableCondition<T>
@@ -64,9 +57,6 @@ class CriteriaCollector {
 
     private fun buildCriterion(existsPredicate: ExistsPredicate): ExistsCriterion =
         ExistsCriterion.Builder().withExistsPredicate(existsPredicate).build()
-
-    private fun buildCriterion(criteriaGroup: CriteriaGroup): CriteriaGroup =
-        CriteriaGroup.Builder().withInitialCriterion(criteriaGroup).build()
 
     private fun addCriteriaGroup(
         connector: String,

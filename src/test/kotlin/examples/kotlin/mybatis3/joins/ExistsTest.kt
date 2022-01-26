@@ -29,7 +29,6 @@ import org.junit.jupiter.api.Test
 import org.mybatis.dynamic.sql.util.kotlin.elements.exists
 import org.mybatis.dynamic.sql.util.kotlin.elements.isEqualTo
 import org.mybatis.dynamic.sql.util.kotlin.elements.isGreaterThan
-import org.mybatis.dynamic.sql.util.kotlin.elements.not
 import org.mybatis.dynamic.sql.util.kotlin.elements.notExists
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.select
 import org.mybatis.dynamic.sql.util.mybatis3.CommonSelectMapper
@@ -138,14 +137,16 @@ class ExistsTest {
 
             val selectStatement = select(itemMaster.allColumns()) {
                 from(itemMaster, "im")
-                where(
-                    not(exists {
-                        select(orderLine.allColumns()) {
-                            from(orderLine, "ol")
-                            where(orderLine.itemId, isEqualTo(itemMaster.itemId.qualifiedWith("im")))
+                where {
+                    not {
+                        exists {
+                            select(orderLine.allColumns()) {
+                                from(orderLine, "ol")
+                                where(orderLine.itemId, isEqualTo(itemMaster.itemId.qualifiedWith("im")))
+                            }
                         }
-                    })
-                )
+                    }
+                }
                 orderBy(itemMaster.itemId)
             }
 

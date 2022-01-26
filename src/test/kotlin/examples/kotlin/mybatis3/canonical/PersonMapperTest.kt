@@ -45,7 +45,6 @@ import org.mybatis.dynamic.sql.util.kotlin.elements.isLike
 import org.mybatis.dynamic.sql.util.kotlin.elements.isNotLike
 import org.mybatis.dynamic.sql.util.kotlin.elements.isNull
 import org.mybatis.dynamic.sql.util.kotlin.elements.isTrue
-import org.mybatis.dynamic.sql.util.kotlin.elements.not
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.insertInto
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.select
 import java.io.InputStreamReader
@@ -176,7 +175,7 @@ class PersonMapperTest {
             val mapper = session.getMapper(PersonMapper::class.java)
 
             val rows = mapper.select {
-                where(not(firstName, isIn("Fred", "Barney")))
+                where { not { firstName (isIn("Fred", "Barney")) }}
             }
 
             assertThat(rows).hasSize(4)
