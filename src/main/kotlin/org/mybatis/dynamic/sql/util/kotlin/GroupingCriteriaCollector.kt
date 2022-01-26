@@ -25,15 +25,15 @@ import org.mybatis.dynamic.sql.SqlBuilder
 import org.mybatis.dynamic.sql.SqlCriterion
 import org.mybatis.dynamic.sql.VisitableCondition
 
-typealias CriteriaReceiverV2 = CriteriaCollectorV2.() -> Unit
+typealias GroupingCriteriaReceiver = GroupingCriteriaCollector.() -> Unit
 
 @MyBatisDslMarker
-class CriteriaCollectorV2 {
+class GroupingCriteriaCollector {
     internal var initialCriterion: SqlCriterion? = null
     internal val subCriteria = mutableListOf<AndOrCriteriaGroup>()
 
-    fun and(criteriaReceiver: CriteriaReceiverV2) {
-        val cc = CriteriaCollectorV2().apply(criteriaReceiver)
+    fun and(criteriaReceiver: GroupingCriteriaReceiver) {
+        val cc = GroupingCriteriaCollector().apply(criteriaReceiver)
         subCriteria.add(
             AndOrCriteriaGroup.Builder().withConnector("and")
                 .withInitialCriterion(cc.initialCriterion)
@@ -42,8 +42,8 @@ class CriteriaCollectorV2 {
         )
     }
 
-    fun or(criteriaReceiver: CriteriaReceiverV2) {
-        val cc = CriteriaCollectorV2().apply(criteriaReceiver)
+    fun or(criteriaReceiver: GroupingCriteriaReceiver) {
+        val cc = GroupingCriteriaCollector().apply(criteriaReceiver)
         subCriteria.add(
             AndOrCriteriaGroup.Builder().withConnector("or")
                 .withInitialCriterion(cc.initialCriterion)
@@ -55,8 +55,8 @@ class CriteriaCollectorV2 {
     /**
      * This should only be specified once per scope, and should be first
      */
-    fun not(criteriaReceiver: CriteriaReceiverV2) {
-        val cc = CriteriaCollectorV2().apply(criteriaReceiver)
+    fun not(criteriaReceiver: GroupingCriteriaReceiver) {
+        val cc = GroupingCriteriaCollector().apply(criteriaReceiver)
         initialCriterion = NotCriterion.Builder()
             .withInitialCriterion(cc.initialCriterion)
             .withSubCriteria(cc.subCriteria)
@@ -78,8 +78,8 @@ class CriteriaCollectorV2 {
      *
      * This should only be specified once per scope, and should be first
      */
-    fun group(criteriaReceiver: CriteriaReceiverV2) {
-        val cc = CriteriaCollectorV2().apply(criteriaReceiver)
+    fun group(criteriaReceiver: GroupingCriteriaReceiver) {
+        val cc = GroupingCriteriaCollector().apply(criteriaReceiver)
         initialCriterion = CriteriaGroup.Builder()
             .withInitialCriterion(cc.initialCriterion)
             .withSubCriteria(cc.subCriteria)

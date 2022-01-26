@@ -38,20 +38,20 @@ fun WhereApplier.andThen(after: WhereApplier): WhereApplier = {
 @MyBatisDslMarker
 @Suppress("TooManyFunctions")
 abstract class KotlinBaseBuilder<D : AbstractWhereSupport<*>, B : KotlinBaseBuilder<D, B>> {
-    fun where(criteria: CriteriaReceiverV2) {
-        val criteriaCollector = CriteriaCollectorV2().apply(criteria)
+    fun where(criteria: GroupingCriteriaReceiver) {
+        val criteriaCollector = GroupingCriteriaCollector().apply(criteria)
 
         getDsl().where(criteriaCollector.initialCriterion, criteriaCollector.subCriteria)
     }
 
-    fun and(criteria: CriteriaReceiverV2) {
-        val criteriaCollector = CriteriaCollectorV2().apply(criteria)
+    fun and(criteria: GroupingCriteriaReceiver) {
+        val criteriaCollector = GroupingCriteriaCollector().apply(criteria)
 
         getDsl().where().and(criteriaCollector.initialCriterion, criteriaCollector.subCriteria)
     }
 
-    fun or(criteria: CriteriaReceiverV2) {
-        val criteriaCollector = CriteriaCollectorV2().apply(criteria)
+    fun or(criteria: GroupingCriteriaReceiver) {
+        val criteriaCollector = GroupingCriteriaCollector().apply(criteria)
 
         getDsl().where().or(criteriaCollector.initialCriterion, criteriaCollector.subCriteria)
     }
