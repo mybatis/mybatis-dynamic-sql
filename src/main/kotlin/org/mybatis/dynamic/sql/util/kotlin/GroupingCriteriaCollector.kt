@@ -27,49 +27,63 @@ import org.mybatis.dynamic.sql.VisitableCondition
 
 typealias GroupingCriteriaReceiver = GroupingCriteriaCollector.() -> Unit
 
+/**
+ * This class is used to gather criteria for a where clause. The class gathers two types of criteria:
+ * an initial criterion, and sub-criteria connected by either an "and" or an "or".
+ *
+ * An initial criterion can be one of four types:
+ * - A column and condition (called with the invoke operator on a column)
+ * - An exists operator (called with the "exists" function)
+ * - A criteria group which is essentially parenthesis within the where clause (called with the group function)
+ * - A "not" group (called with the not function)
+ *
+ * Only one of these initial criterion functions should be called within each scope. If you need more than one,
+ * use a sub-criteria joined with "and" or "or"
+ */
 @MyBatisDslMarker
 class GroupingCriteriaCollector {
     internal var initialCriterion: SqlCriterion? = null
     internal val subCriteria = mutableListOf<AndOrCriteriaGroup>()
 
-    fun and(criteriaReceiver: GroupingCriteriaReceiver) {
-        val cc = GroupingCriteriaCollector().apply(criteriaReceiver)
-        subCriteria.add(
-            AndOrCriteriaGroup.Builder().withConnector("and")
-                .withInitialCriterion(cc.initialCriterion)
-                .withSubCriteria(cc.subCriteria)
-                .build()
-        )
-    }
+    fun and(criteriaReceiver: GroupingCriteriaReceiver): Unit =
+        with(GroupingCriteriaCollector().apply(criteriaReceiver)) {
+            this@GroupingCriteriaCollector.subCriteria.add(
+                AndOrCriteriaGroup.Builder().withConnector("and")
+                    .withInitialCriterion(initialCriterion)
+                    .withSubCriteria(subCriteria)
+                    .build()
+            )
+        }
 
-    fun or(criteriaReceiver: GroupingCriteriaReceiver) {
-        val cc = GroupingCriteriaCollector().apply(criteriaReceiver)
-        subCriteria.add(
-            AndOrCriteriaGroup.Builder().withConnector("or")
-                .withInitialCriterion(cc.initialCriterion)
-                .withSubCriteria(cc.subCriteria)
-                .build()
-        )
-    }
-
-    /**
-     * This should only be specified once per scope, and should be first
-     */
-    fun not(criteriaReceiver: GroupingCriteriaReceiver) {
-        val cc = GroupingCriteriaCollector().apply(criteriaReceiver)
-        initialCriterion = NotCriterion.Builder()
-            .withInitialCriterion(cc.initialCriterion)
-            .withSubCriteria(cc.subCriteria)
-            .build()
-    }
+    fun or(criteriaReceiver: GroupingCriteriaReceiver): Unit =
+        with(GroupingCriteriaCollector().apply(criteriaReceiver)) {
+            this@GroupingCriteriaCollector.subCriteria.add(
+                AndOrCriteriaGroup.Builder().withConnector("or")
+                    .withInitialCriterion(initialCriterion)
+                    .withSubCriteria(subCriteria)
+                    .build()
+            )
+        }
 
     /**
      * This should only be specified once per scope, and should be first
      */
-    fun exists(kotlinSubQueryBuilder: KotlinSubQueryBuilder.() -> Unit) {
-        val f = KotlinSubQueryBuilder().apply(kotlinSubQueryBuilder)
-        initialCriterion = ExistsCriterion.Builder().withExistsPredicate(SqlBuilder.exists(f)).build()
-    }
+    fun not(criteriaReceiver: GroupingCriteriaReceiver): Unit =
+        with(GroupingCriteriaCollector().apply(criteriaReceiver)) {
+            this@GroupingCriteriaCollector.initialCriterion = NotCriterion.Builder()
+                .withInitialCriterion(initialCriterion)
+                .withSubCriteria(subCriteria)
+                .build()
+        }
+
+    /**
+     * This should only be specified once per scope, and should be first
+     */
+    fun exists(kotlinSubQueryBuilder: KotlinSubQueryBuilder.() -> Unit): Unit =
+        with(KotlinSubQueryBuilder().apply(kotlinSubQueryBuilder)) {
+            this@GroupingCriteriaCollector.initialCriterion =
+                ExistsCriterion.Builder().withExistsPredicate(SqlBuilder.exists(this)).build()
+        }
 
     /**
      * This could "almost" be an operator invoke function. The problem is that
@@ -78,13 +92,13 @@ class GroupingCriteriaCollector {
      *
      * This should only be specified once per scope, and should be first
      */
-    fun group(criteriaReceiver: GroupingCriteriaReceiver) {
-        val cc = GroupingCriteriaCollector().apply(criteriaReceiver)
-        initialCriterion = CriteriaGroup.Builder()
-            .withInitialCriterion(cc.initialCriterion)
-            .withSubCriteria(cc.subCriteria)
-            .build()
-    }
+    fun group(criteriaReceiver: GroupingCriteriaReceiver): Unit =
+        with(GroupingCriteriaCollector().apply(criteriaReceiver)) {
+            this@GroupingCriteriaCollector.initialCriterion = CriteriaGroup.Builder()
+                .withInitialCriterion(initialCriterion)
+                .withSubCriteria(subCriteria)
+                .build()
+        }
 
     /**
      * Build an initial criterion for a where clause, or a nested and/or/not group.
