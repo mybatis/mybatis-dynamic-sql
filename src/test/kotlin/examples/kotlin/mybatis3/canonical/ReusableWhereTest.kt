@@ -31,10 +31,6 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.mybatis.dynamic.sql.util.kotlin.WhereApplier
 import org.mybatis.dynamic.sql.util.kotlin.andThen
-import org.mybatis.dynamic.sql.util.kotlin.elements.isEqualTo
-import org.mybatis.dynamic.sql.util.kotlin.elements.isLessThan
-import org.mybatis.dynamic.sql.util.kotlin.elements.isNotNull
-import org.mybatis.dynamic.sql.util.kotlin.elements.isNull
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.select
 import java.io.InputStreamReader
 import java.sql.DriverManager
@@ -114,12 +110,10 @@ class ReusableWhereTest {
 
     @Test
     fun testComposition() {
-        var whereApplier = commonWhere.andThen {
-            and(birthDate, isNotNull())
-        }
-
-        whereApplier = whereApplier.andThen {
-            or(addressId, isLessThan(3))
+        val whereApplier = commonWhere.andThen {
+            and { birthDate.isNotNull() }
+        }.andThen {
+            or { addressId isLessThan 3 }
         }
 
         val selectStatement = select(person.allColumns()) {
@@ -136,8 +130,8 @@ class ReusableWhereTest {
     }
 
     private val commonWhere: WhereApplier = {
-        where(id, isEqualTo(1))
-        or(occupation, isNull<String>())
+        where { id isEqualTo 1 }
+        or { occupation.isNull() }
     }
 
     companion object {

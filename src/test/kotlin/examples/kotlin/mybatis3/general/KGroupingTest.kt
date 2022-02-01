@@ -22,14 +22,10 @@ import examples.kotlin.mybatis3.general.FooDynamicSqlSupport.foo
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.mybatis.dynamic.sql.SqlTable
+import org.mybatis.dynamic.sql.util.kotlin.elements.add
 import org.mybatis.dynamic.sql.util.kotlin.elements.column
 import org.mybatis.dynamic.sql.util.kotlin.elements.isBetween
-import org.mybatis.dynamic.sql.util.kotlin.elements.isEqualTo
-import org.mybatis.dynamic.sql.util.kotlin.elements.isGreaterThan
-import org.mybatis.dynamic.sql.util.kotlin.elements.isGreaterThanOrEqualTo
-import org.mybatis.dynamic.sql.util.kotlin.elements.isLessThan
 import org.mybatis.dynamic.sql.util.kotlin.elements.isLessThanOrEqualTo
-import org.mybatis.dynamic.sql.util.kotlin.elements.isLike
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.select
 
 object FooDynamicSqlSupport {
@@ -53,16 +49,18 @@ class KGroupingTest {
             where {
                 A (isBetween(1).and(5).map { it + 3 }.filter{ _ -> true })
                 or { A (isLessThanOrEqualTo(3).map { it + 6 }.filter { true }) }
-                or { A (isEqualTo(9)) }
-                or { C (isLike("Fred%")) }
+                or { A isNotEqualTo 9 }
+                or { C isLike "Fred%" }
             }
-            and { B (isEqualTo(3)) }
+            and { B isEqualTo 3 }
+            or { add(A, B) isGreaterThan 4 }
         }
 
         val expected = "select A, B, C" +
                 " from Foo" +
                 " where (A between #{parameters.p1} and #{parameters.p2} or A <= #{parameters.p3} or" +
-                " A = #{parameters.p4} or C like #{parameters.p5}) and B = #{parameters.p6}"
+                " A <> #{parameters.p4} or C like #{parameters.p5}) and B = #{parameters.p6}" +
+                " or (A + B) > #{parameters.p7}"
 
         assertThat(selectStatement.selectStatement).isEqualTo(expected)
         assertThat(selectStatement.parameters).containsEntry("p1", 4)
@@ -71,6 +69,7 @@ class KGroupingTest {
         assertThat(selectStatement.parameters).containsEntry("p4", 9)
         assertThat(selectStatement.parameters).containsEntry("p5", "Fred%")
         assertThat(selectStatement.parameters).containsEntry("p6", 3)
+        assertThat(selectStatement.parameters).containsEntry("p7", 4)
     }
 
     @Test
@@ -79,16 +78,16 @@ class KGroupingTest {
             from(foo)
             where {
                 group {
-                    A (isEqualTo(1))
-                    or { A (isGreaterThan(5)) }
+                    A isEqualTo 1
+                    or { A isGreaterThan 5 }
                 }
-                and { B (isEqualTo(1)) }
+                and { B isEqualTo 1 }
                 or {
-                    A (isLessThan(0))
-                    and { B (isEqualTo(2)) }
+                    A isLessThan 0
+                    and { B isEqualTo 2 }
                 }
             }
-            and { C (isEqualTo("Fred")) }
+            and { C isEqualTo "Fred" }
         }
 
         val expected = "select A, B, C" +
@@ -114,19 +113,19 @@ class KGroupingTest {
                     exists {
                         select(foo.allColumns()) {
                             from(foo)
-                            where { A (isEqualTo(3)) }
+                            where { A isEqualTo 3 }
                         }
                     }
-                    and { A (isEqualTo(1)) }
-                    or { A (isGreaterThan(5)) }
+                    and { A isEqualTo 1 }
+                    or { A isGreaterThan 5 }
                 }
-                and { B (isEqualTo(1)) }
+                and { B isEqualTo 1 }
                 or {
-                    A (isLessThan(0))
-                    and { B (isEqualTo(2)) }
+                    A isLessThan 0
+                    and { B isEqualTo 2 }
                 }
             }
-            and { C (isEqualTo("Fred")) }
+            and { C isEqualTo "Fred" }
         }
 
         val expected = "select A, B, C" +
@@ -152,30 +151,30 @@ class KGroupingTest {
             where {
                 group {
                     group {
-                        A (isEqualTo(1))
-                        or { A (isGreaterThan(5)) }
+                        A isEqualTo 1
+                        or { A isGreaterThan 5 }
                     }
-                    and { A (isGreaterThan(5)) }
+                    and { A isGreaterThan 5 }
                 }
                 and {
                     group {
-                        A (isEqualTo(1))
-                        or { A (isGreaterThan(5)) }
+                        A isEqualTo 1
+                        or { A isGreaterThan 5 }
                     }
-                    or { B (isEqualTo(1)) }
+                    or { B isEqualTo 1 }
                 }
                 or {
                     group {
-                        A (isEqualTo(1))
-                        or { A (isGreaterThan(5)) }
+                        A isEqualTo 1
+                        or { A isGreaterThan 5 }
                     }
                     and {
-                        A (isLessThan(0))
-                        and { B (isEqualTo(2)) }
+                        A isLessThan 0
+                        and { B isEqualTo 2 }
                     }
                 }
             }
-            and { C (isEqualTo("Fred")) }
+            and { C isEqualTo "Fred" }
         }
 
         val expected = "select A, B, C" +
@@ -203,23 +202,23 @@ class KGroupingTest {
     fun testAndOrCriteriaGroups() {
         val selectStatement = select(A, B, C) {
             from(foo)
-            where { A (isEqualTo(6)) }
-            and { C (isEqualTo("Fred")) }
+            where { A isEqualTo 6 }
+            and { C isEqualTo "Fred" }
             and {
                 group {
-                    A (isEqualTo(1))
-                    or { A (isGreaterThan(5)) }
+                    A isEqualTo 1
+                    or { A isGreaterThan 5 }
                 }
-                or { B (isEqualTo(1)) }
+                or { B isEqualTo 1 }
             }
             or {
                 group {
-                    A (isEqualTo(1))
-                    or { A (isGreaterThan(5)) }
+                    A  isEqualTo 1
+                    or { A isGreaterThan 5 }
                 }
                 and {
-                    A (isLessThan(0))
-                    and { B (isEqualTo(2)) }
+                    A isLessThan 0
+                    and { B isEqualTo 2 }
                 }
             }
         }
@@ -251,18 +250,18 @@ class KGroupingTest {
             where {
                 not {
                     group {
-                        B (isEqualTo(4))
-                        and { A (isLessThan(5)) }
+                        B isEqualTo 4
+                        and { A isLessThan 5 }
                     }
-                    and { A (isGreaterThan(3)) }
+                    and { A isGreaterThan 3 }
                 }
             }
-            and { not { A (isGreaterThan(4)) } }
+            and { not { A isGreaterThan 4 } }
             or {
                 not {
                     group {
-                        B (isLessThan(6))
-                        and { A (isGreaterThanOrEqualTo(7)) }
+                        B isLessThan 6
+                        and { A isGreaterThanOrEqualTo 7 }
                     }
                 }
             }
