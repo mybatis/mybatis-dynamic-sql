@@ -33,13 +33,13 @@ typealias GroupingCriteriaReceiver = GroupingCriteriaCollector.() -> Unit
  * an initial criterion, and sub-criteria connected by either an "and" or an "or".
  *
  * An initial criterion can be one of four types:
- * - A column and condition (called with the invoke operator on a column)
+ * - A column and condition (called with the invoke operator on a column, or an infix function)
  * - An exists operator (called with the "exists" function)
- * - A criteria group which is essentially parenthesis within the where clause (called with the group function)
- * - A "not" group (called with the not function)
+ * - A criteria group which is essentially parenthesis within the where clause (called with the "group" function)
+ * - A criteria group preceded with "not" (called with the "not" function)
  *
- * Only one of these initial criterion functions should be called within each scope. If you need more than one,
- * use a sub-criteria joined with "and" or "or"
+ * Only one of the initial criterion functions should be called within each scope. If you need more than one,
+ * use a sub-criterion joined with "and" or "or"
  */
 @Suppress("TooManyFunctions")
 @MyBatisDslMarker
@@ -54,6 +54,14 @@ class GroupingCriteriaCollector {
 
     internal val subCriteria = mutableListOf<AndOrCriteriaGroup>()
 
+    /**
+     * Add sub criterion joined with "and" to the current context. If the receiver adds more than one
+     * criterion that renders at runtime then parenthesis will be added.
+     *
+     * This function may be called multiple times in a context.
+     *
+     * @param criteriaReceiver a function to create the contained criteria
+     */
     fun and(criteriaReceiver: GroupingCriteriaReceiver): Unit =
         with(GroupingCriteriaCollector().apply(criteriaReceiver)) {
             this@GroupingCriteriaCollector.subCriteria.add(
@@ -64,6 +72,14 @@ class GroupingCriteriaCollector {
             )
         }
 
+    /**
+     * Add sub criterion joined with "or" to the current context. If the receiver adds more than one
+     * criterion that renders at runtime then parenthesis will be added.
+     *
+     * This function may be called multiple times in a context.
+     *
+     * @param criteriaReceiver a function to create the contained criteria
+     */
     fun or(criteriaReceiver: GroupingCriteriaReceiver): Unit =
         with(GroupingCriteriaCollector().apply(criteriaReceiver)) {
             this@GroupingCriteriaCollector.subCriteria.add(
@@ -75,7 +91,13 @@ class GroupingCriteriaCollector {
         }
 
     /**
-     * This should only be specified once per scope, and should be first
+     * Add an initial criterion preceded with "not" to the current context. If the receiver adds more than one
+     * criterion that renders at runtime then parenthesis will be added.
+     *
+     * This may only be called once per scope, and cannot be combined with "exists", "group", "invoke",
+     * or any infix function in the same scope.
+     *
+     * @param criteriaReceiver a function to create the contained criteria
      */
     fun not(criteriaReceiver: GroupingCriteriaReceiver): Unit =
         with(GroupingCriteriaCollector().apply(criteriaReceiver)) {
@@ -86,7 +108,12 @@ class GroupingCriteriaCollector {
         }
 
     /**
-     * This should only be specified once per scope, and should be first
+     * Add an initial criterion composed of a sub-query preceded with "exists" to the current context.
+     *
+     * This should only be specified once per scope, and cannot be combined with "invoke",
+     * "group", "not", or any infix function in the same scope.
+     *
+     * @param kotlinSubQueryBuilder a function to create a select statement
      */
     fun exists(kotlinSubQueryBuilder: KotlinSubQueryBuilder.() -> Unit): Unit =
         with(KotlinSubQueryBuilder().apply(kotlinSubQueryBuilder)) {
@@ -95,11 +122,17 @@ class GroupingCriteriaCollector {
         }
 
     /**
+     * Add an initial criterion to the current context. If the receiver adds more than one
+     * criterion that renders at runtime then parenthesis will be added.
+     *
+     * This should only be specified once per scope, and cannot be combined with "exists", "invoke",
+     * "not", or any infix function in the same scope.
+     *
      * This could "almost" be an operator invoke function. The problem is that
-     * to call it a user would need to use "this" explicitly. I think that is too
+     * to call it a user would need to use "this" explicitly. We think that is too
      * confusing, so we'll stick with the function name of "group"
      *
-     * This should only be specified once per scope, and should be first
+     * @param criteriaReceiver a function to create the contained criteria
      */
     fun group(criteriaReceiver: GroupingCriteriaReceiver): Unit =
         with(GroupingCriteriaCollector().apply(criteriaReceiver)) {
@@ -110,8 +143,16 @@ class GroupingCriteriaCollector {
         }
 
     /**
-     * Build an initial criterion for a where clause, or a nested and/or/not group.
-     * You can use it like A (isEqualTo(3))
+     * Add an initial criterion to the current context based on a column and condition.
+     * You can use it like "A.invoke(isEqualTo(3))" or "A (isEqualTo(3))".
+     *
+     * This is an extension function to a BindableColumn, but is scoped to the context of the
+     * current collector.
+     *
+     * This should only be specified once per scope, and cannot be combined with "exists", "group",
+     * "not", or any infix function in the same scope.
+     *
+     * @param condition the condition to be applied to this column, in this scope
      */
     operator fun <T> BindableColumn<T>.invoke(condition: VisitableCondition<T>) {
         initialCriterion = ColumnAndConditionCriterion.withColumn(this)
