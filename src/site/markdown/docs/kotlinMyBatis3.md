@@ -156,9 +156,10 @@ where clause and an order by clause as follows:
 
 ```kotlin
 val rows = mapper.select {
-    where(id, isLessThan(100))
-    or (employed, isTrue()) {
-        and (occupation, isEqualTo("Developer"))
+    where { id isLessThan 100 }
+    or {
+        employed.isTrue())
+        and { occupation isEqualTo "Developer" }
     }
     orderBy(id)
 }
@@ -227,9 +228,8 @@ supplied where clause. Clients can use the methods as follows:
 
 ```kotlin
 val rows = mapper.count {
-    where(occupation, isNull()) {
-        and(employed, isFalse())
-    }
+    where { occupation.isNull() }
+    and { employed.isFalse() }
 }
 ```
 
@@ -294,7 +294,7 @@ method as follows:
 
 ```kotlin
 val rows = mapper.delete {
-    where(occupation, isNull())
+    where { occupation.isNull() }
 }
 ```
 
@@ -870,17 +870,17 @@ the methods as follows:
 ```kotlin
 val mapper = getMapper() // not shown
 val distinctRecords = mapper.selectDistinct {
-    where(id, isGreaterThan(5))
+    where { id isGreaterThan 5 }
 }
 
 val rows = mapper.select {
-    where(firstName, isIn("Fred", "Barney"))
+    where { firstName.isIn("Fred", "Barney") }
     orderBy(id)
     limit(3)
 }
 
 val record = mapper.selectOne {
-    where(id, isEqualTo(1))
+    where { id isEqualTo 1 }
 }
 
 ```
@@ -890,7 +890,7 @@ The general `selectOne` method can also be used to implement a `selectByPrimaryK
 ```kotlin
 fun PersonMapper.selectByPrimaryKey(id_: Int) =
     selectOne {
-        where(id, isEqualTo(id_))
+        where { id isEqualTo id_ }
     }
 ```
 
@@ -934,7 +934,7 @@ select list. Like other select methods, this method can be used as follows:
 
 ```kotlin
 val records = mapper.select {
-    where(id, isLessThan(100))
+    where { id isLessThan 100 }
     limit(5)
 }
 ```
@@ -995,7 +995,7 @@ where clause. Clients can use the method as follows:
 ```kotlin
 val rows = mapper.update {
     set(occupation).equalTo("Programmer")
-    where(id, isEqualTo(100))
+    where { id isEqualTo 100 }
     and(firstName, isEqualTo("Joe"))
 }
 ```
@@ -1030,7 +1030,7 @@ follows:
 ```kotlin
 val rows = mapper.update {
     updateSelectiveColumns(updateRecord)
-    where(id, isEqualTo(100))
+    where { id isEqualTo 100 }
 }
 ```
 
@@ -1045,7 +1045,7 @@ fun PersonMapper.updateByPrimaryKey(record: PersonRecord) =
         set(employed).equalToOrNull(record::employed)
         set(occupation).equalToOrNull(record::occupation)
         set(addressId).equalToOrNull(record::addressId)
-        where(id, isEqualTo(record.id!!))
+        where { id isEqualTo record.id!! }
     }
 
 fun PersonMapper.updateByPrimaryKeySelective(record: PersonRecord) =
@@ -1056,7 +1056,7 @@ fun PersonMapper.updateByPrimaryKeySelective(record: PersonRecord) =
         set(employed).equalToWhenPresent(record::employed)
         set(occupation).equalToWhenPresent(record::occupation)
         set(addressId).equalToWhenPresent(record::addressId)
-        where(id, isEqualTo(record.id!!))
+        where { id isEqualTo record.id!! }
     }
 ```
 
