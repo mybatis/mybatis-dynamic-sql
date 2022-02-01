@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2021 the original author or authors.
+ *    Copyright 2016-2022 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -29,7 +29,6 @@ import org.junit.jupiter.api.Test
 import org.mybatis.dynamic.sql.util.kotlin.elements.exists
 import org.mybatis.dynamic.sql.util.kotlin.elements.isEqualTo
 import org.mybatis.dynamic.sql.util.kotlin.elements.isGreaterThan
-import org.mybatis.dynamic.sql.util.kotlin.elements.not
 import org.mybatis.dynamic.sql.util.kotlin.elements.notExists
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.select
 import org.mybatis.dynamic.sql.util.mybatis3.CommonSelectMapper
@@ -138,14 +137,16 @@ class ExistsTest {
 
             val selectStatement = select(itemMaster.allColumns()) {
                 from(itemMaster, "im")
-                where(
-                    not(exists {
-                        select(orderLine.allColumns()) {
-                            from(orderLine, "ol")
-                            where(orderLine.itemId, isEqualTo(itemMaster.itemId.qualifiedWith("im")))
+                where {
+                    not {
+                        exists {
+                            select(orderLine.allColumns()) {
+                                from(orderLine, "ol")
+                                where(orderLine.itemId, isEqualTo(itemMaster.itemId.qualifiedWith("im")))
+                            }
                         }
-                    })
-                )
+                    }
+                }
                 orderBy(itemMaster.itemId)
             }
 

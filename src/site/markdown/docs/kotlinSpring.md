@@ -114,17 +114,17 @@ import org.mybatis.dynamic.sql.util.kotlin.spring.countFrom
 val template: NamedParameterJdbcTemplate = getTemplate() // not shown
 
 val rowcount = template.countFrom(person) {
-    where(id, isLessThan(4))
+    where { id isLessThan 4 }
 }
 
 val columnCount = template.count(lastName) {
     from(person)
-    where(id, isLessThan(4))
+    where { id isLessThan 4 }
 }
 
 val distinctColumnCount = template.countDistinct(lastName) {
     from(person)
-    where(id, isLessThan(4))
+    where { id isLessThan 4 }
 }
 ```
 
@@ -159,7 +159,7 @@ import org.mybatis.dynamic.sql.util.kotlin.spring.deleteFrom
 val template: NamedParameterJdbcTemplate = getTemplate() // not shown
 
 val rows = template.deleteFrom(person) {
-    where(id, isLessThan(4))
+    where { id isLessThan 4 }
 }
 ```
 
@@ -405,7 +405,7 @@ val insertSelectRows: Int = template.insertSelect(person) {
         add(id, constant<Int>("100")), firstName, lastName, birthDate, employed, occupation, addressId
     ) {
         from(person)
-        where(employed, isTrue())
+        where { employed.isTrue() }
     }
 }
 ```
@@ -422,7 +422,7 @@ val rows = template.withKeyHolder(keyHolder) {
           add(id, constant<Int>("100")), firstName, lastName, birthDate, employed, occupation, addressId
        ) {
           from(person)
-          where(employed, isTrue())
+          where { employed.isTrue() }
        }
     }
 }
@@ -513,11 +513,13 @@ Select statements can be constructed and executed in a single step with code lik
 ```kotlin
 val personRecords: List<PersonRecord> = template.select(id, firstName, lastName, birthDate, employed, occupation, addressId) {
     from(person)
-    where(id, isLessThan(5))
-    and(id, isLessThan(4)) {
-        and(id, isLessThan(3)) {
-            and(id, isLessThan(2))
-        }
+    where { id isLessThan 5 }
+    and {
+       id isLessThan 4
+       and {
+          id isLessThan 3
+          or { id isLessThan 2 }
+       }
     }
     orderBy(id)
     limit(3)
@@ -540,7 +542,7 @@ like this:
 ```kotlin
 val personRecord: PersonRecord? = template.selectOne(id, firstName, lastName, birthDate, employed, occupation, addressId) {
     from(Person)
-    where(id, isEqualTo(key))
+    where { id isEqualTo key }
 }.withRowMapper { rs, _ ->
    PersonRecord(
       id = rs.getInt(id.name()),
@@ -559,7 +561,7 @@ A distinct query looks like this:
 ```kotlin
 val personRecord: List<PersonRecord> = template.selectDistinct(id, firstName, lastName, birthDate, employed, occupation, addressId) {
     from(Person)
-    where(id, isLessThan(key))
+    where { id isLessThan key }
 }.withRowMapper { rs, _ ->
    PersonRecord(
       id = rs.getInt(id.name()),
@@ -591,7 +593,7 @@ Update statements can be constructed and executed in a single step with code lik
 ```kotlin
 val rows = template.update(Person) {
     set(firstName).equalTo("Sam")
-    where(firstName, isEqualTo("Fred"))
+    where { firstName isEqualTo "Fred" }
 }
 ```
 

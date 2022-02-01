@@ -18,7 +18,6 @@ package org.mybatis.dynamic.sql.util.kotlin
 import org.mybatis.dynamic.sql.BindableColumn
 import org.mybatis.dynamic.sql.AndOrCriteriaGroup
 import org.mybatis.dynamic.sql.ExistsPredicate
-import org.mybatis.dynamic.sql.SqlCriterion
 import org.mybatis.dynamic.sql.SqlTable
 import org.mybatis.dynamic.sql.VisitableCondition
 import org.mybatis.dynamic.sql.select.AbstractQueryExpressionDSL
@@ -29,7 +28,7 @@ import org.mybatis.dynamic.sql.where.AbstractWhereSupport
 @DslMarker
 annotation class MyBatisDslMarker
 
-typealias WhereApplier = AbstractWhereDSL<*>.() -> Unit
+typealias WhereApplier = KotlinBaseBuilder<*, *>.() -> Unit
 
 fun WhereApplier.andThen(after: WhereApplier): WhereApplier = {
     invoke(this)
@@ -39,54 +38,105 @@ fun WhereApplier.andThen(after: WhereApplier): WhereApplier = {
 @MyBatisDslMarker
 @Suppress("TooManyFunctions")
 abstract class KotlinBaseBuilder<D : AbstractWhereSupport<*>, B : KotlinBaseBuilder<D, B>> {
-    fun <T> where(column: BindableColumn<T>, condition: VisitableCondition<T>, subCriteria: CriteriaReceiver = {}): B =
+    fun where(criteria: GroupingCriteriaReceiver): Unit =
+        with(GroupingCriteriaCollector().apply(criteria)) {
+            this@KotlinBaseBuilder.getDsl().where(initialCriterion, subCriteria)
+        }
+
+    fun and(criteria: GroupingCriteriaReceiver): Unit =
+        with(GroupingCriteriaCollector().apply(criteria)) {
+            this@KotlinBaseBuilder.getDsl().where().and(initialCriterion, subCriteria)
+        }
+
+    fun or(criteria: GroupingCriteriaReceiver): Unit =
+        with(GroupingCriteriaCollector().apply(criteria)) {
+            this@KotlinBaseBuilder.getDsl().where().or(initialCriterion, subCriteria)
+        }
+
+    fun applyWhere(whereApplier: WhereApplier): B =
+        self().apply {
+            whereApplier.invoke(this)
+        }
+
+    @Deprecated("Deprecated in favor of the new where clause DSL. Please see the documentation for new usage.")
+    fun <T> where(column: BindableColumn<T>, condition: VisitableCondition<T>): B =
+        applyToWhere {
+            where(column, condition)
+        }
+
+    @Deprecated("Deprecated in favor of the new where clause DSL. Please see the documentation for new usage.")
+    fun <T> where(column: BindableColumn<T>, condition: VisitableCondition<T>, subCriteria: CriteriaReceiver): B =
         applyToWhere(subCriteria) { sc ->
             where(column, condition, sc)
         }
 
-    fun where(existsPredicate: ExistsPredicate, subCriteria: CriteriaReceiver = {}): B =
+    @Deprecated(
+        message = "Deprecated in favor of the new where clause DSL. Please see the documentation for new usage.",
+        replaceWith = ReplaceWith("where { existsPredicate }")
+    )
+    fun where(existsPredicate: ExistsPredicate): B =
+        applyToWhere {
+            where(existsPredicate)
+        }
+
+    @Deprecated("Deprecated in favor of the new where clause DSL. Please see the documentation for new usage.")
+    fun where(existsPredicate: ExistsPredicate, subCriteria: CriteriaReceiver): B =
         applyToWhere(subCriteria) { sc ->
             where(existsPredicate, sc)
         }
 
-    fun where(initialCriterion: SqlCriterion, subCriteria: CriteriaReceiver = {}): B =
-        applyToWhere(subCriteria) { sc ->
-            where(initialCriterion, sc)
-        }
-
-    fun applyWhere(whereApplier: WhereApplier): B =
+    @Deprecated("Deprecated in favor of the new where clause DSL. Please see the documentation for new usage.")
+    fun <T> and(column: BindableColumn<T>, condition: VisitableCondition<T>): B =
         applyToWhere {
-            applyWhere(whereApplier)
+            and(column, condition)
         }
 
-    fun <T> and(column: BindableColumn<T>, condition: VisitableCondition<T>, subCriteria: CriteriaReceiver = {}): B =
+    @Deprecated("Deprecated in favor of the new where clause DSL. Please see the documentation for new usage.")
+    fun <T> and(column: BindableColumn<T>, condition: VisitableCondition<T>, subCriteria: CriteriaReceiver): B =
         applyToWhere(subCriteria) { sc ->
             and(column, condition, sc)
         }
 
-    fun and(existsPredicate: ExistsPredicate, subCriteria: CriteriaReceiver = {}): B =
+    @Deprecated(
+        message = "Deprecated in favor of the new where clause DSL. Please see the documentation for new usage.",
+        replaceWith = ReplaceWith("and { existsPredicate }")
+    )
+    fun and(existsPredicate: ExistsPredicate): B =
+        applyToWhere {
+            and(existsPredicate)
+        }
+
+    @Deprecated("Deprecated in favor of the new where clause DSL. Please see the documentation for new usage.")
+    fun and(existsPredicate: ExistsPredicate, subCriteria: CriteriaReceiver): B =
         applyToWhere(subCriteria) { sc ->
             and(existsPredicate, sc)
         }
 
-    fun and(initialCriterion: SqlCriterion, subCriteria: CriteriaReceiver = {}): B =
-        applyToWhere(subCriteria) { sc ->
-            and(initialCriterion, sc)
+    @Deprecated("Deprecated in favor of the new where clause DSL. Please see the documentation for new usage.")
+    fun <T> or(column: BindableColumn<T>, condition: VisitableCondition<T>): B =
+        applyToWhere {
+            or(column, condition)
         }
 
-    fun <T> or(column: BindableColumn<T>, condition: VisitableCondition<T>, subCriteria: CriteriaReceiver = {}): B =
+    @Deprecated("Deprecated in favor of the new where clause DSL. Please see the documentation for new usage.")
+    fun <T> or(column: BindableColumn<T>, condition: VisitableCondition<T>, subCriteria: CriteriaReceiver): B =
         applyToWhere(subCriteria) { sc ->
             or(column, condition, sc)
         }
 
-    fun or(existsPredicate: ExistsPredicate, subCriteria: CriteriaReceiver = {}): B =
-        applyToWhere(subCriteria) { sc ->
-            or(existsPredicate, sc)
+    @Deprecated(
+        message = "Deprecated in favor of the new where clause DSL. Please see the documentation for new usage.",
+        replaceWith = ReplaceWith("or { existsPredicate }")
+    )
+    fun or(existsPredicate: ExistsPredicate): B =
+        applyToWhere {
+            or(existsPredicate)
         }
 
-    fun or(initialCriterion: SqlCriterion, subCriteria: CriteriaReceiver = {}): B =
+    @Deprecated("Deprecated in favor of the new where clause DSL. Please see the documentation for new usage.")
+    fun or(existsPredicate: ExistsPredicate, subCriteria: CriteriaReceiver): B =
         applyToWhere(subCriteria) { sc ->
-            or(initialCriterion, sc)
+            or(existsPredicate, sc)
         }
 
     fun allRows(): B = self()

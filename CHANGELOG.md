@@ -18,6 +18,15 @@ GitHub milestone: [https://github.com/mybatis/mybatis-dynamic-sql/issues?q=miles
    `where (a < 5 and B = 3) and (not (C = 4 or D = 5) and E = 6)`. With this enhancement (and the enhancement for
    arbitrary grouping) it should now be possible to write virtually any where clause imaginable.
    ([#438](https://github.com/mybatis/mybatis-dynamic-sql/pull/438))
+4. Major update to the Kotlin where clause DSL. Where clauses now support the "group" and "not" features from above. In
+   addition, the where clause DSL has been fully updated to make it feel more like natural SQL. The previous version
+   of the where clause DSL yielded almost unreadable code when the "group" and "not" functions were added. This update
+   is better all around and yields a DSL that is very similar to native SQL. The new DSL includes many Kotlin DSL
+   construction features including infix functions, operator overloads, and functions with receivers. We believe it
+   will be well worth the effort to migrate to the new DSL. The prior where clause DSL remains in the library for now,
+   but is deprecated. It will be removed in version 1.5.0 of the library. Documentation for the new DSL is here:
+   https://github.com/mybatis/mybatis-dynamic-sql/blob/master/src/site/markdown/docs/kotlinWhereClauses.md
+   ([#442](https://github.com/mybatis/mybatis-dynamic-sql/pull/442))
 
 ## Release 1.3.1 - December 18, 2021
 

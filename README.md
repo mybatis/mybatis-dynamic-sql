@@ -22,12 +22,12 @@ For example, a typical search can be coded with a query like this (the following
    fun search(id: String?, firstName: String?, lastName: String?) =
         select(Customer.id, Customer.firstName, Customer.lastName) {
             from(Customer)
-            where(Customer.active, isEqualTo(true))
-            and(Customer.id, isEqualToWhenPresent(id).map{ it?.padStart(5, '0') })
-            and(Customer.firstName, isLikeCaseInsensitiveWhenPresent(firstName)
-                .map{ "%" + it.trim() + "%" })
-            and(Customer.lastName, isLikeCaseInsensitiveWhenPresent(lastName)
-                .map{ "%" + it.trim() + "%" })
+            where { Customer.active.isTrue() }
+            and { Customer.id (isEqualToWhenPresent(id).map{ it?.padStart(5, '0') }) }
+            and { Customer.firstName (isLikeCaseInsensitiveWhenPresent(firstName)
+                .map{ "%" + it.trim() + "%" }) }
+            and { Customer.lastName (isLikeCaseInsensitiveWhenPresent(lastName)
+                .map{ "%" + it.trim() + "%" }) }
             orderBy(Customer.lastName, Customer.firstName)
             limit(500)
         }

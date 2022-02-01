@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * This class represents a criteria group with either an AND or an OR connector.
@@ -35,7 +36,7 @@ public class AndOrCriteriaGroup {
 
     private AndOrCriteriaGroup(Builder builder) {
         connector = Objects.requireNonNull(builder.connector);
-        initialCriterion = Objects.requireNonNull(builder.initialCriterion);
+        initialCriterion = builder.initialCriterion;
         subCriteria = builder.subCriteria;
     }
 
@@ -43,8 +44,8 @@ public class AndOrCriteriaGroup {
         return connector;
     }
 
-    public SqlCriterion initialCriterion() {
-        return initialCriterion;
+    public Optional<SqlCriterion> initialCriterion() {
+        return Optional.ofNullable(initialCriterion);
     }
 
     public List<AndOrCriteriaGroup> subCriteria() {

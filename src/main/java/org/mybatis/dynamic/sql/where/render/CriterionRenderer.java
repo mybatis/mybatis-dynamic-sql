@@ -149,7 +149,8 @@ public class CriterionRenderer implements SqlCriterionVisitor<Optional<RenderedC
     }
 
     private Optional<RenderedCriterion> renderAndOrCriteriaGroup(AndOrCriteriaGroup criterion) {
-        return render(criterion.initialCriterion(), criterion.subCriteria(), this::calculateFragment)
+        return criterion.initialCriterion().map(ic -> render(ic, criterion.subCriteria(), this::calculateFragment))
+                .orElseGet(() -> render(criterion.subCriteria(), this::calculateFragment))
                 .map(rc -> rc.withConnector(criterion.connector()));
     }
 
@@ -157,6 +158,18 @@ public class CriterionRenderer implements SqlCriterionVisitor<Optional<RenderedC
             List<RenderedCriterion> renderedSubCriteria, Function<FragmentCollector, String> fragmentCalculator) {
         return Optional.of(calculateRenderedCriterion(
                 collectSqlFragments(initialCriterion, renderedSubCriteria), fragmentCalculator));
+    }
+
+    private RenderedCriterion calculateRenderedCriterion(FragmentCollector fragmentCollector,
+                                                         Function<FragmentCollector, String> fragmentCalculator) {
+        FragmentAndParameters fragmentAndParameters = FragmentAndParameters
+                .withFragment(fragmentCalculator.apply(fragmentCollector))
+                .withParameters(fragmentCollector.parameters())
+                .build();
+
+        return new RenderedCriterion.Builder()
+                .withFragmentAndParameters(fragmentAndParameters)
+                .build();
     }
 
     private Optional<RenderedCriterion> calculateRenderedCriterion(List<RenderedCriterion> renderedSubCriteria,
@@ -180,8 +193,7 @@ public class CriterionRenderer implements SqlCriterionVisitor<Optional<RenderedC
      * and there may be subcriteria. The collector will contain the initial condition and any rendered subcriteria
      * in order.
      *
-     * @param initialCondition - may be null if there is no rendered initial condition (as can be the case of
-     *                         optional conditions like isEqualToWhenPresent)
+     * @param initialCondition - may not be null. If there is no initial condition, then use the other overload
      * @param renderedSubCriteria - a list of previously rendered sub criteria. The sub criteria will all
      *                            have connectors (either an AND or an OR)
      * @return a fragment collector whose fragments represent the final calculated list of fragments and parameters.
@@ -220,18 +232,6 @@ public class CriterionRenderer implements SqlCriterionVisitor<Optional<RenderedC
                 .collect(FragmentCollector.collect(firstCondition));
 
         return Optional.of(fc);
-    }
-
-    private RenderedCriterion calculateRenderedCriterion(FragmentCollector fragmentCollector,
-                                                         Function<FragmentCollector, String> fragmentCalculator) {
-        FragmentAndParameters fragmentAndParameters = FragmentAndParameters
-                .withFragment(fragmentCalculator.apply(fragmentCollector))
-                .withParameters(fragmentCollector.parameters())
-                .build();
-
-        return new RenderedCriterion.Builder()
-                .withFragmentAndParameters(fragmentAndParameters)
-                .build();
     }
 
     private String calculateFragment(FragmentCollector collector) {

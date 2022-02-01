@@ -25,7 +25,7 @@ of the DSL will yield correct results. However, it would be best to use the DSL 
 diagnose problems.
 
 If you plan to use the Kotlin DSL, we recommend that you do not use any function from
-`org.mybatis.dynamic.sql.SqlBuilder` (the Java DSL entry points). Many functions from that class has been duplicated
+`org.mybatis.dynamic.sql.SqlBuilder` (the Java DSL entry points). Many functions from that class have been duplicated
 for the Kotlin DSL, but in a more Kotlin native manner.
 
 ## Package Structure
@@ -158,7 +158,7 @@ The DSL for count statements looks like this:
 ```kotlin
 // count(*)
 val countRowsStatement = countFrom(person) {
-    where(id, isLessThan(4))
+    where { id isLessThan 4 }
 }
 
 // count(column)
@@ -188,7 +188,7 @@ The DSL for delete statements looks like this:
 
 ```kotlin
 val deleteStatement = deleteFrom(person) {
-   where(id, isLessThan(4))
+   where { id isLessThan 4 }
 }
 ```
 
@@ -374,7 +374,7 @@ val insertSelectStatement = insertSelect(person) {
         add(id, constant<Int>("100")), firstName, lastName, birthDate, employed, occupation, addressId
     ) {
         from(person)
-        where(employed, isTrue())
+        where { employed.isTrue() }
     }
 }
 ```
@@ -401,10 +401,12 @@ The DSL for select statements looks like this:
 ```kotlin
 val selectStatement = select(id, firstName, lastName, birthDate, employed, occupation, addressId) {
    from(person)
-   where(id, isLessThan(5))
-   and(id, isLessThan(4)) {
-      and(id, isLessThan(3)) {
-         and(id, isLessThan(2))
+   where { id isLessThan 5 }
+   and {
+      id isLessThan 4
+      and {
+         id isLessThan 3
+         or { id isLessThan 2 }
       }
    }
    orderBy(id)
@@ -419,10 +421,12 @@ There is also a method that will create a "distinct" query (`select distinct ...
 ```kotlin
 val selectStatement = selectDistinct(id, firstName, lastName, birthDate, employed, occupation, addressId) {
    from(person)
-   where(id, isLessThan(5))
-   and(id, isLessThan(4)) {
-      and(id, isLessThan(3)) {
-         and(id, isLessThan(2))
+   where { id isLessThan 5 }
+   and {
+      id isLessThan 4
+      and {
+         id isLessThan 3
+         or { id isLessThan 2 }
       }
    }
    orderBy(id)
@@ -448,7 +452,7 @@ The DSL for update statements looks like this:
 ```kotlin
 val updateStatement = update(person) {
    set(firstName).equalTo("Sam")
-   where(firstName, isEqualTo("Fred"))
+   where { firstName isEqualTo "Fred" }
 }
 ```
 
