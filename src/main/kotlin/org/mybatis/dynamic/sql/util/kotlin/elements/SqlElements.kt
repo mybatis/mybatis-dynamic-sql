@@ -151,9 +151,11 @@ fun <T> isNull(): IsNull<T> = SqlBuilder.isNull()
 
 fun <T> isNotNull(): IsNotNull<T> = SqlBuilder.isNotNull()
 
+@Deprecated("Deprecated in favor of the new where clause DSL. Please see the documentation for new usage.")
 fun exists(subQuery: KotlinSubQueryBuilder.() -> Unit): ExistsPredicate =
     SqlBuilder.exists(KotlinSubQueryBuilder().apply(subQuery))
 
+@Deprecated("Deprecated in favor of the new where clause DSL. Please see the documentation for new usage.")
 fun notExists(subQuery: KotlinSubQueryBuilder.() -> Unit): ExistsPredicate =
     SqlBuilder.notExists(KotlinSubQueryBuilder().apply(subQuery))
 

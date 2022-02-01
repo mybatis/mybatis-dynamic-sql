@@ -58,61 +58,82 @@ abstract class KotlinBaseBuilder<D : AbstractWhereSupport<*>, B : KotlinBaseBuil
             whereApplier.invoke(this)
         }
 
+    @Deprecated("Deprecated in favor of the new where clause DSL. Please see the documentation for new usage.")
     fun <T> where(column: BindableColumn<T>, condition: VisitableCondition<T>): B =
         applyToWhere {
             where(column, condition)
         }
 
+    @Deprecated("Deprecated in favor of the new where clause DSL. Please see the documentation for new usage.")
     fun <T> where(column: BindableColumn<T>, condition: VisitableCondition<T>, subCriteria: CriteriaReceiver): B =
         applyToWhere(subCriteria) { sc ->
             where(column, condition, sc)
         }
 
+    @Deprecated(
+        message = "Deprecated in favor of the new where clause DSL. Please see the documentation for new usage.",
+        replaceWith = ReplaceWith("where { existsPredicate }")
+    )
     fun where(existsPredicate: ExistsPredicate): B =
         applyToWhere {
             where(existsPredicate)
         }
 
+    @Deprecated("Deprecated in favor of the new where clause DSL. Please see the documentation for new usage.")
     fun where(existsPredicate: ExistsPredicate, subCriteria: CriteriaReceiver): B =
         applyToWhere(subCriteria) { sc ->
             where(existsPredicate, sc)
         }
 
+    @Deprecated("Deprecated in favor of the new where clause DSL. Please see the documentation for new usage.")
     fun <T> and(column: BindableColumn<T>, condition: VisitableCondition<T>): B =
         applyToWhere {
             and(column, condition)
         }
 
+    @Deprecated("Deprecated in favor of the new where clause DSL. Please see the documentation for new usage.")
     fun <T> and(column: BindableColumn<T>, condition: VisitableCondition<T>, subCriteria: CriteriaReceiver): B =
         applyToWhere(subCriteria) { sc ->
             and(column, condition, sc)
         }
 
+    @Deprecated(
+        message = "Deprecated in favor of the new where clause DSL. Please see the documentation for new usage.",
+        replaceWith = ReplaceWith("and { existsPredicate }")
+    )
     fun and(existsPredicate: ExistsPredicate): B =
         applyToWhere {
             and(existsPredicate)
         }
 
+    @Deprecated("Deprecated in favor of the new where clause DSL. Please see the documentation for new usage.")
     fun and(existsPredicate: ExistsPredicate, subCriteria: CriteriaReceiver): B =
         applyToWhere(subCriteria) { sc ->
             and(existsPredicate, sc)
         }
 
+    @Deprecated("Deprecated in favor of the new where clause DSL. Please see the documentation for new usage.")
     fun <T> or(column: BindableColumn<T>, condition: VisitableCondition<T>): B =
         applyToWhere {
             or(column, condition)
         }
 
+    @Deprecated("Deprecated in favor of the new where clause DSL. Please see the documentation for new usage.")
     fun <T> or(column: BindableColumn<T>, condition: VisitableCondition<T>, subCriteria: CriteriaReceiver): B =
         applyToWhere(subCriteria) { sc ->
             or(column, condition, sc)
         }
 
+    @Deprecated(
+        message = "Deprecated in favor of the new where clause DSL. Please see the documentation for new usage.",
+        replaceWith = ReplaceWith("or { existsPredicate }")
+    )
     fun or(existsPredicate: ExistsPredicate): B =
         applyToWhere {
             or(existsPredicate)
         }
 
+    @Deprecated("Deprecated in favor of the new where clause DSL. Please see the documentation for new usage.")
     fun or(existsPredicate: ExistsPredicate, subCriteria: CriteriaReceiver): B =
         applyToWhere(subCriteria) { sc ->
             or(existsPredicate, sc)

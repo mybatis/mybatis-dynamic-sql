@@ -23,8 +23,10 @@ import org.mybatis.dynamic.sql.ExistsPredicate
 import org.mybatis.dynamic.sql.SqlCriterion
 import org.mybatis.dynamic.sql.VisitableCondition
 
+@Deprecated("Deprecated in favor of the new where clause DSL. Please see the documentation for new usage.")
 typealias CriteriaReceiver = CriteriaCollector.() -> Unit
 
+@Deprecated("Deprecated in favor of the new where clause DSL. Please see the documentation for new usage.")
 @MyBatisDslMarker
 class CriteriaCollector {
     val criteria = mutableListOf<AndOrCriteriaGroup>()
