@@ -155,8 +155,8 @@ given context. Others must be enclosed in an `and` or an `or` block. The four ty
         }}
     }
     ```
-4. 
-5. **Group** - for grouping conditions with parentheses:
+
+4. **Group** - for grouping conditions with parentheses:
 
     ```kotlin
     select(foo) {
