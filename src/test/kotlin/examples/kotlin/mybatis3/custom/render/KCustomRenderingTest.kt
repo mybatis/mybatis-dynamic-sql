@@ -32,7 +32,6 @@ import org.junit.jupiter.api.TestInstance
 import org.mybatis.dynamic.sql.SqlColumn
 import org.mybatis.dynamic.sql.util.kotlin.elements.insert
 import org.mybatis.dynamic.sql.util.kotlin.elements.insertMultiple
-import org.mybatis.dynamic.sql.util.kotlin.elements.isEqualTo
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.deleteFrom
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.insertInto
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.into
@@ -220,7 +219,7 @@ class KCustomRenderingTest {
             val updateStatement = update(jsonTest) {
                 set(info)
                     .equalTo("{\"firstName\": \"Wilma\", \"lastName\": \"Flintstone\", \"age\": 26}")
-                where(id, isEqualTo(2))
+                where { id isEqualTo 2 }
             }
             val expected = "update JsonTest " +
                 "set info = #{parameters.p1,jdbcType=VARCHAR}::json " +
@@ -264,7 +263,7 @@ class KCustomRenderingTest {
             assertThat(rows).isEqualTo(2)
             val selectStatement = select(id, description, info) {
                 from(jsonTest)
-                where(dereference(info, "age"), isEqualTo("25"))
+                where { dereference(info, "age") isEqualTo "25" }
             }
             val expected = "select id, description, info " +
                 "from JsonTest " +
@@ -301,7 +300,7 @@ class KCustomRenderingTest {
             assertThat(rows).isEqualTo(2)
             val selectStatement = select(dereference(info, "firstName").`as`("firstname")) {
                 from(jsonTest)
-                where(dereference(info, "age"), isEqualTo("25"))
+                where { dereference(info, "age") isEqualTo "25" }
             }
             val expected = "select info->>'firstName' as firstname " +
                 "from JsonTest " +

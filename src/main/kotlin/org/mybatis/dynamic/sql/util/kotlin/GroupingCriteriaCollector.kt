@@ -164,96 +164,107 @@ class GroupingCriteriaCollector {
     // receivers problem (https://youtrack.jetbrains.com/issue/KT-42435)
 
     // conditions for all data types
-    fun <T> BindableColumn<T>.isNull() = invoke(SqlBuilder.isNull())
+    fun <T> BindableColumn<T>.isNull() = invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isNull())
 
-    fun <T> BindableColumn<T>.isNotNull() = invoke(SqlBuilder.isNotNull())
+    fun <T> BindableColumn<T>.isNotNull() = invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isNotNull())
 
-    infix fun <T : Any> BindableColumn<T>.isEqualTo(value: T) = invoke(SqlBuilder.isEqualTo(value))
+    infix fun <T : Any> BindableColumn<T>.isEqualTo(value: T) =
+        invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isEqualTo(value))
 
     infix fun <T> BindableColumn<T>.isEqualToSubQuery(subQuery: KotlinSubQueryBuilder.() -> Unit) =
-        invoke(SqlBuilder.isEqualTo(KotlinSubQueryBuilder().apply(subQuery)))
+        invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isEqualTo(subQuery))
 
-    infix fun <T> BindableColumn<T>.isEqualTo(column: BasicColumn) = invoke(SqlBuilder.isEqualTo(column))
+    infix fun <T> BindableColumn<T>.isEqualTo(column: BasicColumn) =
+        invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isEqualTo(column))
 
     infix fun <T : Any> BindableColumn<T>.isEqualToWhenPresent(value: T?) =
-        invoke(SqlBuilder.isEqualToWhenPresent<T>(value))
+        invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isEqualToWhenPresent(value))
 
-    infix fun <T : Any> BindableColumn<T>.isNotEqualTo(value: T) = invoke(SqlBuilder.isNotEqualTo(value))
+    infix fun <T : Any> BindableColumn<T>.isNotEqualTo(value: T) =
+        invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isNotEqualTo(value))
 
     infix fun <T> BindableColumn<T>.isNotEqualToSubQuery(subQuery: KotlinSubQueryBuilder.() -> Unit) =
-        invoke(SqlBuilder.isNotEqualTo(KotlinSubQueryBuilder().apply(subQuery)))
+        invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isNotEqualTo(subQuery))
 
-    infix fun <T> BindableColumn<T>.isNotEqualTo(column: BasicColumn) = invoke(SqlBuilder.isNotEqualTo(column))
+    infix fun <T> BindableColumn<T>.isNotEqualTo(column: BasicColumn) =
+        invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isNotEqualTo(column))
 
     infix fun <T : Any> BindableColumn<T>.isNotEqualToWhenPresent(value: T?) =
-        invoke(SqlBuilder.isNotEqualToWhenPresent<T>(value))
+        invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isNotEqualToWhenPresent(value))
 
-    infix fun <T : Any> BindableColumn<T>.isGreaterThan(value: T) = invoke(SqlBuilder.isGreaterThan(value))
+    infix fun <T : Any> BindableColumn<T>.isGreaterThan(value: T) =
+        invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isGreaterThan(value))
 
     infix fun <T> BindableColumn<T>.isGreaterThanSubQuery(subQuery: KotlinSubQueryBuilder.() -> Unit) =
-        invoke(SqlBuilder.isGreaterThan(KotlinSubQueryBuilder().apply(subQuery)))
+        invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isGreaterThan(subQuery))
 
-    infix fun <T> BindableColumn<T>.isGreaterThan(column: BasicColumn) = invoke(SqlBuilder.isGreaterThan(column))
+    infix fun <T> BindableColumn<T>.isGreaterThan(column: BasicColumn) =
+        invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isGreaterThan(column))
 
     infix fun <T : Any> BindableColumn<T>.isGreaterThanWhenPresent(value: T?) =
-        invoke(SqlBuilder.isGreaterThanWhenPresent<T>(value))
+        invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isGreaterThanWhenPresent(value))
 
     infix fun <T : Any> BindableColumn<T>.isGreaterThanOrEqualTo(value: T) =
-        invoke(SqlBuilder.isGreaterThanOrEqualTo(value))
+        invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isGreaterThanOrEqualTo(value))
 
     infix fun <T> BindableColumn<T>.isGreaterThanOrEqualToSubQuery(subQuery: KotlinSubQueryBuilder.() -> Unit) =
-        invoke(SqlBuilder.isGreaterThanOrEqualTo(KotlinSubQueryBuilder().apply(subQuery)))
+        invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isGreaterThanOrEqualTo(subQuery))
 
     infix fun <T> BindableColumn<T>.isGreaterThanOrEqualTo(column: BasicColumn) =
-        invoke(SqlBuilder.isGreaterThanOrEqualTo(column))
+        invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isGreaterThanOrEqualTo(column))
 
     infix fun <T : Any> BindableColumn<T>.isGreaterThanOrEqualToWhenPresent(value: T?) =
-        invoke(SqlBuilder.isGreaterThanOrEqualToWhenPresent<T>(value))
+        invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isGreaterThanOrEqualToWhenPresent(value))
 
-    infix fun <T : Any> BindableColumn<T>.isLessThan(value: T) = invoke(SqlBuilder.isLessThan(value))
+    infix fun <T : Any> BindableColumn<T>.isLessThan(value: T) =
+        invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isLessThan(value))
 
     infix fun <T> BindableColumn<T>.isLessThanSubQuery(subQuery: KotlinSubQueryBuilder.() -> Unit) =
-        invoke(SqlBuilder.isLessThan(KotlinSubQueryBuilder().apply(subQuery)))
+        invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isLessThan(subQuery))
 
-    infix fun <T> BindableColumn<T>.isLessThan(column: BasicColumn) = invoke(SqlBuilder.isLessThan(column))
+    infix fun <T> BindableColumn<T>.isLessThan(column: BasicColumn) =
+        invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isLessThan(column))
 
     infix fun <T : Any> BindableColumn<T>.isLessThanWhenPresent(value: T?) =
-        invoke(SqlBuilder.isLessThanWhenPresent<T>(value))
+        invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isLessThanWhenPresent(value))
 
-    infix fun <T : Any> BindableColumn<T>.isLessThanOrEqualTo(value: T) = invoke(SqlBuilder.isLessThanOrEqualTo(value))
+    infix fun <T : Any> BindableColumn<T>.isLessThanOrEqualTo(value: T) =
+        invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isLessThanOrEqualTo(value))
 
     infix fun <T> BindableColumn<T>.isLessThanOrEqualToSubQuery(subQuery: KotlinSubQueryBuilder.() -> Unit) =
-        invoke(SqlBuilder.isLessThanOrEqualTo(KotlinSubQueryBuilder().apply(subQuery)))
+        invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isLessThanOrEqualTo(subQuery))
 
     infix fun <T> BindableColumn<T>.isLessThanOrEqualTo(column: BasicColumn) =
-        invoke(SqlBuilder.isLessThanOrEqualTo(column))
+        invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isLessThanOrEqualTo(column))
 
     infix fun <T : Any> BindableColumn<T>.isLessThanOrEqualToWhenPresent(value: T?) =
-        invoke(SqlBuilder.isLessThanOrEqualToWhenPresent<T>(value))
+        invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isLessThanOrEqualToWhenPresent(value))
 
     fun <T : Any> BindableColumn<T>.isIn(vararg values: T) = isIn(values.asList())
 
-    infix fun <T : Any> BindableColumn<T>.isIn(values: Collection<T>) = invoke(SqlBuilder.isIn(values))
+    infix fun <T : Any> BindableColumn<T>.isIn(values: Collection<T>) =
+        invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isIn(values))
 
     infix fun <T> BindableColumn<T>.isIn(subQuery: KotlinSubQueryBuilder.() -> Unit) =
-        invoke(SqlBuilder.isIn(KotlinSubQueryBuilder().apply(subQuery)))
+        invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isIn(subQuery))
 
     fun <T : Any> BindableColumn<T>.isInWhenPresent(vararg values: T?) = isInWhenPresent(values.asList())
 
     infix fun <T : Any> BindableColumn<T>.isInWhenPresent(values: Collection<T?>?) =
-        invoke(SqlBuilder.isInWhenPresent<T>(values))
+        invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isInWhenPresent(values))
 
     fun <T : Any> BindableColumn<T>.isNotIn(vararg values: T) = isNotIn(values.asList())
 
-    infix fun <T : Any> BindableColumn<T>.isNotIn(values: Collection<T>) = invoke(SqlBuilder.isNotIn(values))
+    infix fun <T : Any> BindableColumn<T>.isNotIn(values: Collection<T>) =
+        invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isNotIn(values))
 
     infix fun <T> BindableColumn<T>.isNotIn(subQuery: KotlinSubQueryBuilder.() -> Unit) =
-        invoke(SqlBuilder.isNotIn(KotlinSubQueryBuilder().apply(subQuery)))
+        invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isNotIn(subQuery))
 
     fun <T : Any> BindableColumn<T>.isNotInWhenPresent(vararg values: T?) = isNotInWhenPresent(values.asList())
 
     infix fun <T : Any> BindableColumn<T>.isNotInWhenPresent(values: Collection<T?>?) =
-        invoke(SqlBuilder.isNotInWhenPresent<T>(values))
+        invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isNotInWhenPresent(values))
 
     infix fun <T : Any> BindableColumn<T>.isBetween(value1: T) =
         InfixBetweenBuilder(value1) { invoke(it) }
@@ -268,15 +279,17 @@ class GroupingCriteriaCollector {
         InfixNotBetweenWhenPresentBuilder(value1) { invoke(it) }
 
     // for string columns, but generic for columns with type handlers
-    infix fun <T : Any> BindableColumn<T>.isLike(value: T) = invoke(SqlBuilder.isLike(value))
+    infix fun <T : Any> BindableColumn<T>.isLike(value: T) =
+        invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isLike(value))
 
     infix fun <T : Any> BindableColumn<T>.isLikeWhenPresent(value: T?) =
-        invoke(SqlBuilder.isLikeWhenPresent<T>(value))
+        invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isLikeWhenPresent(value))
 
-    infix fun <T : Any> BindableColumn<T>.isNotLike(value: T) = invoke(SqlBuilder.isNotLike(value))
+    infix fun <T : Any> BindableColumn<T>.isNotLike(value: T) =
+        invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isNotLike(value))
 
     infix fun <T : Any> BindableColumn<T>.isNotLikeWhenPresent(value: T?) =
-        invoke(SqlBuilder.isNotLikeWhenPresent<T>(value))
+        invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isNotLikeWhenPresent(value))
 
     // shortcuts for booleans
     fun BindableColumn<Boolean>.isTrue() = isEqualTo(true)
@@ -285,37 +298,37 @@ class GroupingCriteriaCollector {
 
     // conditions for strings only
     infix fun BindableColumn<String>.isLikeCaseInsensitive(value: String) =
-        invoke(SqlBuilder.isLikeCaseInsensitive(value))
+        invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isLikeCaseInsensitive(value))
 
     infix fun BindableColumn<String>.isLikeCaseInsensitiveWhenPresent(value: String?) =
-        invoke(SqlBuilder.isLikeCaseInsensitiveWhenPresent(value))
+        invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isLikeCaseInsensitiveWhenPresent(value))
 
     infix fun BindableColumn<String>.isNotLikeCaseInsensitive(value: String) =
-        invoke(SqlBuilder.isNotLikeCaseInsensitive(value))
+        invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isNotLikeCaseInsensitive(value))
 
     infix fun BindableColumn<String>.isNotLikeCaseInsensitiveWhenPresent(value: String?) =
-        invoke(SqlBuilder.isNotLikeCaseInsensitiveWhenPresent(value))
+        invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isNotLikeCaseInsensitiveWhenPresent(value))
 
     fun BindableColumn<String>.isInCaseInsensitive(vararg values: String) = isInCaseInsensitive(values.asList())
 
     infix fun BindableColumn<String>.isInCaseInsensitive(values: Collection<String>) =
-        invoke(SqlBuilder.isInCaseInsensitive(values))
+        invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isInCaseInsensitive(values))
 
     fun BindableColumn<String>.isInCaseInsensitiveWhenPresent(vararg values: String?) =
         isInCaseInsensitiveWhenPresent(values.asList())
 
     infix fun BindableColumn<String>.isInCaseInsensitiveWhenPresent(values: Collection<String?>?) =
-        invoke(SqlBuilder.isInCaseInsensitiveWhenPresent(values))
+        invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isInCaseInsensitiveWhenPresent(values))
 
     fun BindableColumn<String>.isNotInCaseInsensitive(vararg values: String) =
         isNotInCaseInsensitive(values.asList())
 
     infix fun BindableColumn<String>.isNotInCaseInsensitive(values: Collection<String>) =
-        invoke(SqlBuilder.isNotInCaseInsensitive(values))
+        invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isNotInCaseInsensitive(values))
 
     fun BindableColumn<String>.isNotInCaseInsensitiveWhenPresent(vararg values: String?) =
         isNotInCaseInsensitiveWhenPresent(values.asList())
 
     infix fun BindableColumn<String>.isNotInCaseInsensitiveWhenPresent(values: Collection<String?>?) =
-        invoke(SqlBuilder.isNotInCaseInsensitiveWhenPresent(values))
+        invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isNotInCaseInsensitiveWhenPresent(values))
 }

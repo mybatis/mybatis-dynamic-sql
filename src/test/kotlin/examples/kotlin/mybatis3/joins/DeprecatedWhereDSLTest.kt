@@ -26,12 +26,16 @@ import org.apache.ibatis.session.SqlSessionFactoryBuilder
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import org.mybatis.dynamic.sql.util.kotlin.elements.exists
+import org.mybatis.dynamic.sql.util.kotlin.elements.isEqualTo
+import org.mybatis.dynamic.sql.util.kotlin.elements.isGreaterThan
+import org.mybatis.dynamic.sql.util.kotlin.elements.notExists
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.select
 import org.mybatis.dynamic.sql.util.mybatis3.CommonSelectMapper
 import java.io.InputStreamReader
 import java.sql.DriverManager
 
-class ExistsTest {
+class DeprecatedWhereDSLTest {
 
     private fun newSession(): SqlSession {
         Class.forName(JDBC_DRIVER)
@@ -57,14 +61,14 @@ class ExistsTest {
 
             val selectStatement = select(itemMaster.allColumns()) {
                 from(itemMaster, "im")
-                where {
+                where(
                     exists {
                         select(orderLine.allColumns()) {
                             from(orderLine, "ol")
-                            where { orderLine.itemId isEqualTo itemMaster.itemId.qualifiedWith("im") }
+                            where(orderLine.itemId, isEqualTo(itemMaster.itemId.qualifiedWith("im")))
                         }
                     }
-                }
+                )
                 orderBy(itemMaster.itemId)
             }
 
@@ -100,16 +104,14 @@ class ExistsTest {
 
             val selectStatement = select(itemMaster.allColumns()) {
                 from(itemMaster, "im")
-                where {
-                    not {
-                        exists {
-                            select(orderLine.allColumns()) {
-                                from(orderLine, "ol")
-                                where { orderLine.itemId isEqualTo itemMaster.itemId.qualifiedWith("im") }
-                            }
+                where(
+                    notExists {
+                        select(orderLine.allColumns()) {
+                            from(orderLine, "ol")
+                            where(orderLine.itemId, isEqualTo(itemMaster.itemId.qualifiedWith("im")))
                         }
                     }
-                }
+                )
                 orderBy(itemMaster.itemId)
             }
 
@@ -129,56 +131,21 @@ class ExistsTest {
     }
 
     @Test
-    fun testNotExistsNewNot() {
-        newSession().use { session ->
-            val mapper = session.getMapper(CommonSelectMapper::class.java)
-
-            val selectStatement = select(itemMaster.allColumns()) {
-                from(itemMaster, "im")
-                where {
-                    not {
-                        exists {
-                            select(orderLine.allColumns()) {
-                                from(orderLine, "ol")
-                                where { orderLine.itemId isEqualTo itemMaster.itemId.qualifiedWith("im") }
-                            }
-                        }
-                    }
-                }
-                orderBy(itemMaster.itemId)
-            }
-
-            val expectedStatement: String = "select im.* from ItemMaster im" +
-                    " where not exists (select ol.* from OrderLine ol where ol.item_id = im.item_id)" +
-                    " order by item_id"
-            assertThat(selectStatement.selectStatement).isEqualTo(expectedStatement)
-
-            val rows = mapper.selectManyMappedRows(selectStatement)
-            assertThat(rows).hasSize(1)
-
-            with(rows[0]) {
-                assertThat(this).containsEntry("ITEM_ID", 55)
-                assertThat(this).containsEntry("DESCRIPTION", "Catcher Glove")
-            }
-        }
-    }
-
-    @Test
     fun testAndExists() {
         newSession().use { session ->
             val mapper = session.getMapper(CommonSelectMapper::class.java)
 
             val selectStatement = select(itemMaster.allColumns()) {
                 from(itemMaster, "im")
-                where { itemMaster.itemId isEqualTo 22 }
-                and {
+                where(itemMaster.itemId, isEqualTo(22))
+                and(
                     exists {
                         select(orderLine.allColumns()) {
                             from(orderLine, "ol")
-                            where { orderLine.itemId isEqualTo itemMaster.itemId.qualifiedWith("im") }
+                            where(orderLine.itemId, isEqualTo(itemMaster.itemId.qualifiedWith("im")))
                         }
                     }
-                }
+                )
                 orderBy(itemMaster.itemId)
             }
 
@@ -206,15 +173,16 @@ class ExistsTest {
 
             val selectStatement = select(itemMaster.allColumns()) {
                 from(itemMaster, "im")
-                where { itemMaster.itemId isEqualTo 22 }
-                and {
+                where(itemMaster.itemId, isEqualTo(22))
+                and(
                     exists {
                         select(orderLine.allColumns()) {
                             from(orderLine, "ol")
-                            where { orderLine.itemId isEqualTo itemMaster.itemId.qualifiedWith("im") }
+                            where(orderLine.itemId, isEqualTo(itemMaster.itemId.qualifiedWith("im")))
                         }
                     }
-                    and { itemMaster.itemId isGreaterThan 2 }
+                ) {
+                    and(itemMaster.itemId, isGreaterThan(2))
                 }
                 orderBy(itemMaster.itemId)
             }
@@ -243,17 +211,16 @@ class ExistsTest {
 
             val selectStatement = select(itemMaster.allColumns()) {
                 from(itemMaster, "im")
-                where {
-                    itemMaster.itemId isEqualTo 22
-                    and {
+                where(itemMaster.itemId, isEqualTo(22)) {
+                    and(
                         exists {
                             select(orderLine.allColumns()) {
                                 from(orderLine, "ol")
-                                where { orderLine.itemId isEqualTo itemMaster.itemId.qualifiedWith("im") }
+                                where(orderLine.itemId, isEqualTo(itemMaster.itemId.qualifiedWith("im")))
                             }
                         }
-                    }
-                    and { itemMaster.itemId isGreaterThan 2 }
+                    )
+                    and(itemMaster.itemId, isGreaterThan(2))
                 }
                 orderBy(itemMaster.itemId)
             }
@@ -282,16 +249,16 @@ class ExistsTest {
 
             val selectStatement = select(itemMaster.allColumns()) {
                 from(itemMaster, "im")
-                where {
-                    itemMaster.itemId isEqualTo 22
-                    and {
+                where(itemMaster.itemId, isEqualTo(22)) {
+                    and(
                         exists {
                             select(orderLine.allColumns()) {
                                 from(orderLine, "ol")
-                                where { orderLine.itemId isEqualTo itemMaster.itemId.qualifiedWith("im") }
+                                where(orderLine.itemId, isEqualTo(itemMaster.itemId.qualifiedWith("im")))
                             }
                         }
-                        and { itemMaster.itemId isGreaterThan 2 }
+                    ) {
+                        and(itemMaster.itemId, isGreaterThan(2))
                     }
                 }
                 orderBy(itemMaster.itemId)
@@ -321,15 +288,15 @@ class ExistsTest {
 
             val selectStatement = select(itemMaster.allColumns()) {
                 from(itemMaster, "im")
-                where { itemMaster.itemId isEqualTo 22 }
-                or {
+                where(itemMaster.itemId, isEqualTo(22))
+                or(
                     exists {
                         select(orderLine.allColumns()) {
                             from(orderLine, "ol")
-                            where { orderLine.itemId isEqualTo itemMaster.itemId.qualifiedWith("im") }
+                            where(orderLine.itemId, isEqualTo(itemMaster.itemId.qualifiedWith("im")))
                         }
                     }
-                }
+                )
                 orderBy(itemMaster.itemId)
             }
 
@@ -366,15 +333,21 @@ class ExistsTest {
 
             val selectStatement = select(itemMaster.allColumns()) {
                 from(itemMaster, "im")
-                where { itemMaster.itemId isEqualTo 22 }
-                or {
+                where(itemMaster.itemId, isEqualTo(22))
+                or(
                     exists {
                         select(orderLine.allColumns()) {
                             from(orderLine, "ol")
-                            where { orderLine.itemId isEqualTo itemMaster.itemId.qualifiedWith("im") }
+                            where(
+                                orderLine.itemId,
+                                isEqualTo(
+                                    itemMaster.itemId.qualifiedWith("im")
+                                )
+                            )
                         }
                     }
-                    and { itemMaster.itemId isGreaterThan 2 }
+                ) {
+                    and(itemMaster.itemId, isGreaterThan(2))
                 }
                 orderBy(itemMaster.itemId)
             }
@@ -413,17 +386,16 @@ class ExistsTest {
 
             val selectStatement = select(itemMaster.allColumns()) {
                 from(itemMaster, "im")
-                where {
-                    itemMaster.itemId isEqualTo 22
-                    or {
+                where(itemMaster.itemId, isEqualTo(22)) {
+                    or(
                         exists {
                             select(orderLine.allColumns()) {
                                 from(orderLine, "ol")
-                                where { orderLine.itemId isEqualTo itemMaster.itemId.qualifiedWith("im") }
+                                where(orderLine.itemId, isEqualTo(itemMaster.itemId.qualifiedWith("im")))
                             }
                         }
-                    }
-                    and { itemMaster.itemId isGreaterThan 2 }
+                    )
+                    and(itemMaster.itemId, isGreaterThan(2))
                 }
                 orderBy(itemMaster.itemId)
             }
@@ -462,16 +434,16 @@ class ExistsTest {
 
             val selectStatement = select(itemMaster.allColumns()) {
                 from(itemMaster, "im")
-                where {
-                    itemMaster.itemId isEqualTo 22
-                    or {
+                where(itemMaster.itemId, isEqualTo(22)) {
+                    or(
                         exists {
                             select(orderLine.allColumns()) {
                                 from(orderLine, "ol")
-                                where { orderLine.itemId isEqualTo itemMaster.itemId.qualifiedWith("im") }
+                                where(orderLine.itemId, isEqualTo(itemMaster.itemId.qualifiedWith("im")))
                             }
                         }
-                        and { itemMaster.itemId isGreaterThan 2 }
+                    ) {
+                        and(itemMaster.itemId, isGreaterThan(2))
                     }
                 }
                 orderBy(itemMaster.itemId)
@@ -511,14 +483,15 @@ class ExistsTest {
 
             val selectStatement = select(itemMaster.allColumns()) {
                 from(itemMaster, "im")
-                where {
+                where(
                     exists {
                         select(orderLine.allColumns()) {
                             from(orderLine, "ol")
-                            where { orderLine.itemId isEqualTo itemMaster.itemId.qualifiedWith("im") }
+                            where(orderLine.itemId, isEqualTo(itemMaster.itemId.qualifiedWith("im")))
                         }
                     }
-                    or { itemMaster.itemId isEqualTo 22 }
+                ) {
+                    or(itemMaster.itemId, isEqualTo(22))
                 }
                 orderBy(itemMaster.itemId)
             }
@@ -556,14 +529,15 @@ class ExistsTest {
 
             val selectStatement = select(itemMaster.allColumns()) {
                 from(itemMaster, "im")
-                where {
+                where(
                     exists {
                         select(orderLine.allColumns()) {
                             from(orderLine, "ol")
-                            where { orderLine.itemId isEqualTo itemMaster.itemId.qualifiedWith("im") }
+                            where(orderLine.itemId, isEqualTo(itemMaster.itemId.qualifiedWith("im")))
                         }
                     }
-                    and { itemMaster.itemId isEqualTo 22 }
+                ) {
+                    and(itemMaster.itemId, isEqualTo(22))
                 }
                 orderBy(itemMaster.itemId)
             }
@@ -576,6 +550,124 @@ class ExistsTest {
 
             val rows = mapper.selectManyMappedRows(selectStatement)
             assertThat(rows).hasSize(1)
+
+            with(rows[0]) {
+                assertThat(this).containsEntry("ITEM_ID", 22)
+                assertThat(this).containsEntry("DESCRIPTION", "Helmet")
+            }
+        }
+    }
+
+    @Test
+    fun testWhereAnd() {
+        newSession().use { session ->
+            val mapper = session.getMapper(CommonSelectMapper::class.java)
+
+            val selectStatement = select(itemMaster.allColumns()) {
+                from(itemMaster)
+                where(itemMaster.itemId, isGreaterThan(3))
+                and(itemMaster.itemId, isGreaterThan(4))
+                orderBy(itemMaster.itemId)
+            }
+
+            val expectedStatement = "select * from ItemMaster" +
+                    " where item_id > #{parameters.p1,jdbcType=INTEGER}" +
+                    " and item_id > #{parameters.p2,jdbcType=INTEGER}" +
+                    " order by item_id"
+            assertThat(selectStatement.selectStatement).isEqualTo(expectedStatement)
+
+            val rows = mapper.selectManyMappedRows(selectStatement)
+            assertThat(rows).hasSize(4)
+
+            with(rows[0]) {
+                assertThat(this).containsEntry("ITEM_ID", 22)
+                assertThat(this).containsEntry("DESCRIPTION", "Helmet")
+            }
+        }
+    }
+
+    @Test
+    fun testWhereAndAnd() {
+        newSession().use { session ->
+            val mapper = session.getMapper(CommonSelectMapper::class.java)
+
+            val selectStatement = select(itemMaster.allColumns()) {
+                from(itemMaster)
+                where(itemMaster.itemId, isGreaterThan(3))
+                and(itemMaster.itemId, isGreaterThan(4)) {
+                    and(itemMaster.itemId, isGreaterThan(5))
+                }
+                orderBy(itemMaster.itemId)
+            }
+
+            val expectedStatement = "select * from ItemMaster" +
+                    " where item_id > #{parameters.p1,jdbcType=INTEGER}" +
+                    " and (item_id > #{parameters.p2,jdbcType=INTEGER}" +
+                    " and item_id > #{parameters.p3,jdbcType=INTEGER})" +
+                    " order by item_id"
+            assertThat(selectStatement.selectStatement).isEqualTo(expectedStatement)
+
+            val rows = mapper.selectManyMappedRows(selectStatement)
+            assertThat(rows).hasSize(4)
+
+            with(rows[0]) {
+                assertThat(this).containsEntry("ITEM_ID", 22)
+                assertThat(this).containsEntry("DESCRIPTION", "Helmet")
+            }
+        }
+    }
+
+    @Test
+    fun testWhereOr() {
+        newSession().use { session ->
+            val mapper = session.getMapper(CommonSelectMapper::class.java)
+
+            val selectStatement = select(itemMaster.allColumns()) {
+                from(itemMaster)
+                where(itemMaster.itemId, isEqualTo(22))
+                or(itemMaster.itemId, isEqualTo(33))
+                orderBy(itemMaster.itemId)
+            }
+
+            val expectedStatement = "select * from ItemMaster" +
+                    " where item_id = #{parameters.p1,jdbcType=INTEGER}" +
+                    " or item_id = #{parameters.p2,jdbcType=INTEGER}" +
+                    " order by item_id"
+            assertThat(selectStatement.selectStatement).isEqualTo(expectedStatement)
+
+            val rows = mapper.selectManyMappedRows(selectStatement)
+            assertThat(rows).hasSize(2)
+
+            with(rows[0]) {
+                assertThat(this).containsEntry("ITEM_ID", 22)
+                assertThat(this).containsEntry("DESCRIPTION", "Helmet")
+            }
+        }
+    }
+
+    @Test
+    fun testWhereOrOr() {
+        newSession().use { session ->
+            val mapper = session.getMapper(CommonSelectMapper::class.java)
+
+            val selectStatement = select(itemMaster.allColumns()) {
+                from(itemMaster)
+                where(itemMaster.itemId, isEqualTo(22))
+                or(itemMaster.itemId, isEqualTo(33)) {
+                    or(itemMaster.itemId, isEqualTo(44))
+                }
+                orderBy(itemMaster.itemId)
+            }
+
+            val expectedStatement = "select * from ItemMaster" +
+                    " where item_id = #{parameters.p1,jdbcType=INTEGER}" +
+                    " or (item_id = #{parameters.p2,jdbcType=INTEGER}" +
+                    " or item_id = #{parameters.p3,jdbcType=INTEGER})" +
+                    " order by item_id"
+            assertThat(selectStatement.selectStatement).isEqualTo(expectedStatement)
+
+            val rows = mapper.selectManyMappedRows(selectStatement)
+            assertThat(rows).hasSize(3)
 
             with(rows[0]) {
                 assertThat(this).containsEntry("ITEM_ID", 22)

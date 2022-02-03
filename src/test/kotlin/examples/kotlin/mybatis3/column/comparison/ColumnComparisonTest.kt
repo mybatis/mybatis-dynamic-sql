@@ -20,12 +20,6 @@ import examples.kotlin.mybatis3.column.comparison.ColumnComparisonDynamicSqlSupp
 import examples.kotlin.mybatis3.column.comparison.ColumnComparisonDynamicSqlSupport.number2
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import org.mybatis.dynamic.sql.util.kotlin.elements.isEqualTo
-import org.mybatis.dynamic.sql.util.kotlin.elements.isGreaterThan
-import org.mybatis.dynamic.sql.util.kotlin.elements.isGreaterThanOrEqualTo
-import org.mybatis.dynamic.sql.util.kotlin.elements.isLessThan
-import org.mybatis.dynamic.sql.util.kotlin.elements.isLessThanOrEqualTo
-import org.mybatis.dynamic.sql.util.kotlin.elements.isNotEqualTo
 import org.mybatis.dynamic.sql.util.kotlin.elements.sortColumn
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.select
 import org.springframework.beans.factory.annotation.Autowired
@@ -41,7 +35,7 @@ class ColumnComparisonTest {
     fun testColumnComparisonLessThan() {
         val selectStatement = select(number1, number2) {
             from(columnComparison)
-            where(number1, isLessThan(number2))
+            where { number1 isLessThan number2 }
             orderBy(number1, number2)
         }
 
@@ -61,7 +55,7 @@ class ColumnComparisonTest {
     fun testColumnComparisonLessThanOrEqual() {
         val selectStatement = select(number1, number2) {
             from(columnComparison)
-            where(number1, isLessThanOrEqualTo(number2))
+            where { number1 isLessThanOrEqualTo number2 }
             orderBy(number1, number2)
         }
 
@@ -81,7 +75,7 @@ class ColumnComparisonTest {
     fun testColumnComparisonGreaterThan() {
         val selectStatement = select(number1, number2) {
             from(columnComparison)
-            where(number1, isGreaterThan(number2))
+            where { number1 isGreaterThan number2 }
             orderBy(number1, number2)
         }
 
@@ -101,7 +95,7 @@ class ColumnComparisonTest {
     fun testColumnComparisonGreaterThanOrEqual() {
         val selectStatement = select(number1, number2) {
             from(columnComparison)
-            where(number1, isGreaterThanOrEqualTo(number2))
+            where { number1 isGreaterThanOrEqualTo number2 }
             orderBy(number1, number2)
         }
 
@@ -121,7 +115,7 @@ class ColumnComparisonTest {
     fun testColumnComparisonEqual() {
         val selectStatement = select(number1, number2) {
             from(columnComparison)
-            where(number1, isEqualTo(number2))
+            where { number1 isEqualTo number2 }
             orderBy(number1, number2)
         }
 
@@ -140,7 +134,7 @@ class ColumnComparisonTest {
     fun testColumnComparisonNotEqual() {
         val selectStatement = select(number1, number2) {
             from(columnComparison, "a")
-            where(number1, isNotEqualTo(number2))
+            where { number1 isNotEqualTo number2 }
             orderBy(sortColumn("a", number1), sortColumn("a", number2))
         }
 
@@ -159,7 +153,7 @@ class ColumnComparisonTest {
     @Test
     fun testHelperMethod() {
         val records = mapper.select {
-            where(number1, isNotEqualTo(number2))
+            where { number1 isNotEqualTo number2 }
             orderBy(number1, number2)
         }
 

@@ -30,11 +30,6 @@ import org.junit.jupiter.api.Test
 import org.mybatis.dynamic.sql.util.kotlin.elements.add
 import org.mybatis.dynamic.sql.util.kotlin.elements.constant
 import org.mybatis.dynamic.sql.util.kotlin.elements.equalTo
-import org.mybatis.dynamic.sql.util.kotlin.elements.isEqualTo
-import org.mybatis.dynamic.sql.util.kotlin.elements.isGreaterThan
-import org.mybatis.dynamic.sql.util.kotlin.elements.isGreaterThanOrEqualTo
-import org.mybatis.dynamic.sql.util.kotlin.elements.isLessThan
-import org.mybatis.dynamic.sql.util.kotlin.elements.isNotNull
 import org.mybatis.dynamic.sql.util.kotlin.spring.count
 import org.mybatis.dynamic.sql.util.kotlin.spring.countDistinct
 import org.mybatis.dynamic.sql.util.kotlin.spring.countFrom
@@ -59,14 +54,14 @@ import java.util.Date
 
 @SpringJUnitConfig(classes = [SpringConfiguration::class])
 @Transactional
-class CanonicalSpringKotlinTemplateDirectTest {
+open class CanonicalSpringKotlinTemplateDirectTest {
     @Autowired
     private lateinit var template: NamedParameterJdbcTemplate
 
     @Test
     fun testCount() {
         val rows = template.countFrom(person) {
-            where(id, isLessThan(4))
+            where { id isLessThan 4 }
         }
 
         assertThat(rows).isEqualTo(3)
@@ -111,7 +106,7 @@ class CanonicalSpringKotlinTemplateDirectTest {
     @Test
     fun testDelete1() {
         val rows = template.deleteFrom(person) {
-            where(id, isLessThan(4))
+            where { id isLessThan 4 }
         }
 
         assertThat(rows).isEqualTo(3)
@@ -120,8 +115,8 @@ class CanonicalSpringKotlinTemplateDirectTest {
     @Test
     fun testDelete2() {
         val rows = template.deleteFrom(person) {
-            where(id, isLessThan(4))
-            and(occupation, isNotNull())
+            where { id isLessThan 4 }
+            and { occupation.isNotNull() }
         }
 
         assertThat(rows).isEqualTo(2)
@@ -130,8 +125,8 @@ class CanonicalSpringKotlinTemplateDirectTest {
     @Test
     fun testDelete3() {
         val rows = template.deleteFrom(person) {
-            where(id, isLessThan(4))
-            or(occupation, isNotNull())
+            where { id isLessThan 4 }
+            or { occupation.isNotNull() }
         }
 
         assertThat(rows).isEqualTo(5)
@@ -140,10 +135,11 @@ class CanonicalSpringKotlinTemplateDirectTest {
     @Test
     fun testDelete4() {
         val rows = template.deleteFrom(person) {
-            where(id, isLessThan(4)) {
-                or(occupation, isNotNull())
+            where {
+                id isLessThan 4
+                or { occupation.isNotNull() }
             }
-            and(employed, isEqualTo(true))
+            and { employed isEqualTo true }
         }
 
         assertThat(rows).isEqualTo(4)
@@ -152,9 +148,10 @@ class CanonicalSpringKotlinTemplateDirectTest {
     @Test
     fun testDelete5() {
         val rows = template.deleteFrom(person) {
-            where(id, isLessThan(4))
-            or(occupation, isNotNull()) {
-                and(employed, isEqualTo(true))
+            where { id isLessThan 4 }
+            or {
+                occupation.isNotNull()
+                and { employed isEqualTo true }
             }
         }
 
@@ -164,9 +161,10 @@ class CanonicalSpringKotlinTemplateDirectTest {
     @Test
     fun testDelete6() {
         val rows = template.deleteFrom(person) {
-            where(id, isLessThan(4))
-            and(occupation, isNotNull()) {
-                and(employed, isEqualTo(true))
+            where { id isLessThan 4 }
+            and {
+                occupation.isNotNull()
+                and { employed isEqualTo true }
             }
         }
 
@@ -259,7 +257,7 @@ class CanonicalSpringKotlinTemplateDirectTest {
 
         val records = template.select(id, firstName, lastName, birthDate, employed, occupation, addressId) {
             from(person)
-            where(id, isGreaterThanOrEqualTo(100))
+            where { id isGreaterThanOrEqualTo 100 }
             orderBy(id)
         }.withRowMapper(personRowMapper)
 
@@ -379,10 +377,11 @@ class CanonicalSpringKotlinTemplateDirectTest {
     fun testSelect() {
         val rows = template.select(id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId) {
             from(person)
-            where(id, isLessThan(4)) {
-                and(occupation, isNotNull())
+            where {
+                id isLessThan 4
+                and { occupation.isNotNull() }
             }
-            and(occupation, isNotNull())
+            and { occupation.isNotNull() }
             orderBy(id)
             limit(3)
         }.withRowMapper(personRowMapper)
@@ -403,17 +402,17 @@ class CanonicalSpringKotlinTemplateDirectTest {
     fun testSelectWithUnion() {
         val rows = template.select(id, firstName, lastName, birthDate, employed, occupation, addressId) {
             from(person)
-            where(id, isEqualTo(1))
+            where { id isEqualTo 1 }
             union {
                 select(id, firstName, lastName, birthDate, employed, occupation, addressId) {
                     from(person)
-                    where(id, isEqualTo(2))
+                    where { id isEqualTo 2 }
                 }
             }
             union {
                 select(id, firstName, lastName, birthDate, employed, occupation, addressId) {
                     from(person)
-                    where(id, isEqualTo(2))
+                    where { id isEqualTo 2 }
                 }
             }
         }.withRowMapper(personRowMapper)
@@ -434,17 +433,17 @@ class CanonicalSpringKotlinTemplateDirectTest {
     fun testSelectWithUnionAll() {
         val rows = template.select(id, firstName, lastName, birthDate, employed, occupation, addressId) {
             from(person)
-            where(id, isEqualTo(1))
+            where { id isEqualTo 1 }
             union {
                 select(id, firstName, lastName, birthDate, employed, occupation, addressId) {
                     from(person)
-                    where(id, isEqualTo(2))
+                    where { id isEqualTo 2 }
                 }
             }
             unionAll {
                 select(id, firstName, lastName, birthDate, employed, occupation, addressId) {
                     from(person)
-                    where(id, isEqualTo(2))
+                    where { id isEqualTo 2 }
                 }
             }
         }.withRowMapper(personRowMapper)
@@ -467,7 +466,7 @@ class CanonicalSpringKotlinTemplateDirectTest {
             id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId
         ) {
             from(person)
-            where(id, isEqualTo(1))
+            where { id isEqualTo 1 }
         }.withRowMapper(personRowMapper)
 
         with(record!!) {
@@ -485,7 +484,7 @@ class CanonicalSpringKotlinTemplateDirectTest {
     fun testSelectOneWithAlias() {
         val name = template.selectOne(firstName) {
             from(person, "p")
-            where(id, isEqualTo(1))
+            where { id isEqualTo 1 }
         }.withRowMapper { rs, _ ->
             rs.getString(1)
         }
@@ -527,7 +526,7 @@ class CanonicalSpringKotlinTemplateDirectTest {
             join(address, "a") {
                 on(addressId, equalTo(address.id))
             }
-            where(id, isLessThan(4))
+            where { id isLessThan 4 }
             orderBy(id)
             limit(3)
         }.withRowMapper(personWithAddressRowMapper)
@@ -551,10 +550,12 @@ class CanonicalSpringKotlinTemplateDirectTest {
     fun testSelectWithComplexWhere1() {
         val rows = template.select(id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId) {
             from(person)
-            where(id, isLessThan(5))
-            and(id, isLessThan(4)) {
-                and(id, isLessThan(3)) {
-                    and(id, isLessThan(2))
+            where { id isLessThan 5 }
+            and {
+                id isLessThan 4
+                and {
+                    id isLessThan 3
+                    and { id isLessThan 2 }
                 }
             }
             orderBy(id)
@@ -577,10 +578,12 @@ class CanonicalSpringKotlinTemplateDirectTest {
     fun testSelectWithComplexWhere2() {
         val rows = template.select(id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId) {
             from(person)
-            where(id, isEqualTo(5))
-            or(id, isEqualTo(4)) {
-                or(id, isEqualTo(3)) {
-                    or(id, isEqualTo(2))
+            where { id isEqualTo 5 }
+            or {
+                id isEqualTo 4
+                or {
+                    id isEqualTo 3
+                    or { id isEqualTo 2 }
                 }
             }
             orderBy(id)
@@ -603,7 +606,7 @@ class CanonicalSpringKotlinTemplateDirectTest {
     fun testUpdate1() {
         val rows = template.update(person) {
             set(firstName).equalTo("Sam")
-            where(firstName, isEqualTo("Fred"))
+            where { firstName isEqualTo "Fred" }
         }
 
         assertThat(rows).isEqualTo(1)
@@ -613,8 +616,9 @@ class CanonicalSpringKotlinTemplateDirectTest {
     fun testUpdate2() {
         val rows = template.update(person) {
             set(firstName).equalTo("Sam")
-            where(firstName, isEqualTo("Fred")) {
-                or(id, isGreaterThan(3))
+            where {
+                firstName isEqualTo "Fred"
+                or { id isGreaterThan 3 }
             }
         }
 
@@ -625,9 +629,10 @@ class CanonicalSpringKotlinTemplateDirectTest {
     fun testUpdate3() {
         val rows = template.update(person) {
             set(firstName).equalTo("Sam")
-            where(firstName, isEqualTo("Fred"))
-            or(id, isEqualTo(5)) {
-                or(id, isEqualTo(6))
+            where { firstName isEqualTo "Fred" }
+            or {
+                id isEqualTo 5
+                or { id isEqualTo 6 }
             }
         }
 
@@ -638,9 +643,10 @@ class CanonicalSpringKotlinTemplateDirectTest {
     fun testUpdate4() {
         val rows = template.update(person) {
             set(firstName).equalTo("Sam")
-            where(firstName, isEqualTo("Fred"))
-            and(id, isEqualTo(1)) {
-                or(id, isEqualTo(6))
+            where { firstName isEqualTo "Fred" }
+            and {
+                id isEqualTo 1
+                or { id isEqualTo 6 }
             }
         }
 
@@ -651,8 +657,8 @@ class CanonicalSpringKotlinTemplateDirectTest {
     fun testUpdate5() {
         val rows = template.update(person) {
             set(firstName).equalTo("Sam")
-            where(firstName, isEqualTo("Fred"))
-            or(id, isEqualTo(3))
+            where { firstName isEqualTo "Fred" }
+            or { id isEqualTo 3 }
         }
 
         assertThat(rows).isEqualTo(2)

@@ -25,7 +25,6 @@ import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.lastName
 import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.occupation
 import org.mybatis.dynamic.sql.util.kotlin.SelectCompleter
 import org.mybatis.dynamic.sql.util.kotlin.elements.equalTo
-import org.mybatis.dynamic.sql.util.kotlin.elements.isEqualTo
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.select
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.selectDistinct
 
@@ -62,5 +61,5 @@ fun PersonWithAddressMapper.selectDistinct(completer: SelectCompleter): List<Per
 
 fun PersonWithAddressMapper.selectByPrimaryKey(id_: Int) =
     selectOne {
-        where(id, isEqualTo(id_))
+        where { id isEqualTo id_ }
     }

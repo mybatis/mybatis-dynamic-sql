@@ -21,8 +21,6 @@ import examples.kotlin.spring.canonical.PersonDynamicSqlSupport.id
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.mybatis.dynamic.sql.DerivedColumn
-import org.mybatis.dynamic.sql.util.kotlin.elements.isLessThan
-import org.mybatis.dynamic.sql.util.kotlin.elements.isLike
 import org.mybatis.dynamic.sql.util.kotlin.spring.select
 import org.mybatis.dynamic.sql.util.kotlin.spring.selectList
 import org.springframework.beans.factory.annotation.Autowired
@@ -32,7 +30,7 @@ import org.springframework.transaction.annotation.Transactional
 
 @SpringJUnitConfig(classes = [SpringConfiguration::class])
 @Transactional
-class SpringKotlinSubQueryTest {
+open class SpringKotlinSubQueryTest {
     @Autowired
     private lateinit var template: NamedParameterJdbcTemplate
 
@@ -45,12 +43,12 @@ class SpringKotlinSubQueryTest {
                 from {
                     select(id, firstName) {
                         from(person)
-                        where(id, isLessThan(22))
+                        where { id isLessThan 22 }
                         orderBy(firstName.descending())
                     }
                 }
-                where(rowNum, isLessThan(5))
-                and(firstName, isLike("%a%"))
+                where { rowNum isLessThan 5 }
+                and { firstName isLike "%a%" }
             }
 
         assertThat(selectStatement.selectStatement).isEqualTo(
@@ -85,12 +83,12 @@ class SpringKotlinSubQueryTest {
             from {
                 select(id, firstName) {
                     from(person)
-                    where(id, isLessThan(22))
+                    where { id isLessThan 22 }
                     orderBy(firstName.descending())
                 }
             }
-            where(rowNum, isLessThan(5))
-            and(firstName, isLike("%a%"))
+            where { rowNum isLessThan 5 }
+            and { firstName isLike "%a%" }
         }.withRowMapper { rs, _ ->
             mapOf(
                 Pair("FIRST_NAME", rs.getString(1)),
@@ -114,13 +112,13 @@ class SpringKotlinSubQueryTest {
                 from {
                     select(id.`as`("personId"), firstName) {
                         from(person, "a")
-                        where(id, isLessThan(22))
+                        where { id isLessThan 22 }
                         orderBy(firstName.descending())
                     }
                     + "b"
                 }
-                where(rowNum, isLessThan(5))
-                and(outerFirstName, isLike("%a%"))
+                where { rowNum isLessThan 5 }
+                and { outerFirstName isLike "%a%" }
             }
 
         assertThat(selectStatement.selectStatement).isEqualTo(

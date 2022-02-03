@@ -155,8 +155,8 @@ given context. Others must be enclosed in an `and` or an `or` block. The four ty
         }}
     }
     ```
-4. 
-5. **Group** - for grouping conditions with parentheses:
+
+4. **Group** - for grouping conditions with parentheses:
 
     ```kotlin
     select(foo) {
@@ -184,3 +184,187 @@ At this time, it is not possible to add infix functions for custom conditions to
 underlying limitation in Kotlin itself. There is a Kotlin language enhancement on the roadmap that will likely
 remove this limitation. That enhancement will allow multiple receivers for an extension function. You can follow
 progress of that enhancement here: https://youtrack.jetbrains.com/issue/KT-42435
+
+## Migrating from Prior Releases
+
+In version 1.4.0 the where DSL improved significantly and is now implemented as shown on this page. Many methods from
+previous releases are now deprecated. One of the primary motivations for this change was that compound criteria
+from prior releases were difficult to reason about - the Kotlin syntax was very different from the generated SQL.
+In complex where clauses, the code could become very difficult to understand.
+
+With the updated DSL, the Kotlin code is much closer to the generated SQL and there is a consistent use of curly braces
+to denote where parentheses should be generated in SQL.
+
+This section will detail the patterns for code updates from prior releases to the new DSL. The patterns below apply
+equally to "where", "and", and "or" methods from the prior releases.
+
+### Migrating Single Column and Condition
+
+In prior releases, a criterion with a single column and condition was written as follows:
+
+```kotlin
+select(foo) {
+   from(bar)
+   where(id, isEqualTo(3))
+   or(id, isEqualTo(4))
+}
+```
+
+These criteria should be updated by moving the column and condition into a lambda and using an infix function:
+
+```kotlin
+select(foo) {
+   from(bar)
+   where { id isEqualTo 3 }
+   or { id isEqualTo 4 }
+}
+```
+
+### Migrating Compound Column and Condition Criteria
+
+In prior releases, a criterion with multiple column and conditions grouped together was written like the following:
+
+```kotlin
+select(foo) {
+    from(bar)
+    where(id, isEqualTo(3)) {
+        or(id, isEqualTo(4))
+    }
+}
+```
+
+These criteria should be updated by moving the first column and condition into the lambda, using infix functions,
+and updating the second criterion as well:
+
+```kotlin
+select(foo) {
+    from(bar)
+    where {
+       id isEqualTo 3
+       or { id isEqualTo 4 }
+    }
+}
+```
+
+### Migrating Criteria Using Filter and Map
+
+In prior releases, a criterion that used filter and map was written as follows:
+
+```kotlin
+select(foo) {
+   from(bar)
+   where(firstName, isLike("fred").map { "%$it%" }) // add SQL wildcards
+}
+```
+
+These criteria should be updated by moving the column and condition into a lambda and using the "invoke" operator
+function:
+
+```kotlin
+select(foo) {
+   from(bar)
+   where { firstName (isLike("fred").map { "%$it%" }) } // add SQL wildcards
+}
+```
+
+### Migrating Exists Criteria
+
+In prior releases, a criterion that used an "exists" sub-query looked like this:
+
+```kotlin
+select(foo) {
+   from(bar)
+   where(
+      exists {
+         select(baz) {
+            from(bar)
+         }
+      }
+   )
+}
+```
+
+These criteria should be updated by moving the "exists" phrase into a lambda:
+
+```kotlin
+select(foo) {
+  from(bar)
+  where {
+     exists {
+        select(baz) {
+           from(bar)
+        }
+     }
+  }
+}
+```
+
+### Migrating Not Exists Criteria
+
+In prior releases, a criterion that used a "not exists" sub-query looked like this:
+
+```kotlin
+select(foo) {
+   from(bar)
+   where(
+      notExists {
+         select(baz) {
+            from(bar)
+         }
+      }
+   )
+}
+```
+
+These criteria should be updated by moving the phrase into a lambda, and replacing "notExists" with a combination
+of "not" and "exists":
+
+```kotlin
+select(foo) {
+  from(bar)
+  where {
+     not {
+        exists {
+           select(baz) {
+              from(bar)
+           }
+        }
+     }
+  }
+}
+```
+
+### Migrating Compound Exists Criteria
+
+In prior releases, a criterion that used a compound "exists" sub-query looked like this:
+
+```kotlin
+select(foo) {
+   from(bar)
+   where(
+      exists {
+         select(baz) {
+            from(bar)
+         }
+      }
+   ) {
+       or(id, isEqualTo(3))
+   }
+}
+```
+
+These criteria should be updated by moving the "exists" phrase into the lambda and updating any other criteria:
+
+```kotlin
+select(foo) {
+  from(bar)
+  where {
+     exists {
+        select(baz) {
+           from(bar)
+        }
+     }
+     or { id isEqualTo 3 }
+  }
+}
+```

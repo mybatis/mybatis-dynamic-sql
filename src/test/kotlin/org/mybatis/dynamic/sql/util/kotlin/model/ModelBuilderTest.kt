@@ -19,7 +19,6 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.mybatis.dynamic.sql.SqlTable
 import org.mybatis.dynamic.sql.render.RenderingStrategies
-import org.mybatis.dynamic.sql.util.kotlin.elements.isEqualTo
 
 class ModelBuilderTest {
     class Table : SqlTable("Table")
@@ -32,7 +31,7 @@ class ModelBuilderTest {
     fun testSelectBuilder() {
         val provider = select(id, description) {
             from(table)
-            where(id, isEqualTo(3))
+            where { id isEqualTo 3 }
         }.render(RenderingStrategies.SPRING_NAMED_PARAMETER)
 
         assertThat(provider.selectStatement).isEqualTo("select id, description from Table where id = :p1")
@@ -42,7 +41,7 @@ class ModelBuilderTest {
     fun testSelectDistinctBuilder() {
         val provider = selectDistinct(id, description) {
             from(table)
-            where(id, isEqualTo(3))
+            where { id isEqualTo 3 }
         }.render(RenderingStrategies.SPRING_NAMED_PARAMETER)
 
         assertThat(provider.selectStatement).isEqualTo("select distinct id, description from Table where id = :p1")
