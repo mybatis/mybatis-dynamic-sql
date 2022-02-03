@@ -58,20 +58,22 @@ abstract class KotlinBaseBuilder<D : AbstractWhereSupport<*>, B : KotlinBaseBuil
             whereApplier.invoke(this)
         }
 
-    @Deprecated("Deprecated in favor of the new where clause DSL. Please see the documentation for new usage.")
+    @Deprecated("Deprecated in favor of the new where clause DSL. Update by moving the column and condition " +
+            "into a lambda and rewriting the condition to use an infix function.")
     fun <T> where(column: BindableColumn<T>, condition: VisitableCondition<T>): B =
         applyToWhere {
             where(column, condition)
         }
 
-    @Deprecated("Deprecated in favor of the new where clause DSL. Please see the documentation for new usage.")
+    @Deprecated("Deprecated in favor of the new where clause DSL. Update by moving the column and condition " +
+            "inside the lambda and rewriting the condition to use an infix function.")
     fun <T> where(column: BindableColumn<T>, condition: VisitableCondition<T>, subCriteria: CriteriaReceiver): B =
         applyToWhere(subCriteria) { sc ->
             where(column, condition, sc)
         }
 
     @Deprecated(
-        message = "Deprecated in favor of the new where clause DSL. Please see the documentation for new usage.",
+        message = "Deprecated in favor of the new where clause DSL.",
         replaceWith = ReplaceWith("where { existsPredicate }")
     )
     fun where(existsPredicate: ExistsPredicate): B =
@@ -79,26 +81,29 @@ abstract class KotlinBaseBuilder<D : AbstractWhereSupport<*>, B : KotlinBaseBuil
             where(existsPredicate)
         }
 
-    @Deprecated("Deprecated in favor of the new where clause DSL. Please see the documentation for new usage.")
+    @Deprecated("Deprecated in favor of the new where clause DSL. Update by moving the exists expression " +
+            "into the lambda.")
     fun where(existsPredicate: ExistsPredicate, subCriteria: CriteriaReceiver): B =
         applyToWhere(subCriteria) { sc ->
             where(existsPredicate, sc)
         }
 
-    @Deprecated("Deprecated in favor of the new where clause DSL. Please see the documentation for new usage.")
+    @Deprecated("Deprecated in favor of the new where clause DSL. Update by moving the column and condition " +
+            "into a lambda and rewriting the condition to use an infix function.")
     fun <T> and(column: BindableColumn<T>, condition: VisitableCondition<T>): B =
         applyToWhere {
             and(column, condition)
         }
 
-    @Deprecated("Deprecated in favor of the new where clause DSL. Please see the documentation for new usage.")
+    @Deprecated("Deprecated in favor of the new where clause DSL. Update by moving the column and condition " +
+            "inside the lambda and rewriting the condition to use an infix function.")
     fun <T> and(column: BindableColumn<T>, condition: VisitableCondition<T>, subCriteria: CriteriaReceiver): B =
         applyToWhere(subCriteria) { sc ->
             and(column, condition, sc)
         }
 
     @Deprecated(
-        message = "Deprecated in favor of the new where clause DSL. Please see the documentation for new usage.",
+        message = "Deprecated in favor of the new where clause DSL.",
         replaceWith = ReplaceWith("and { existsPredicate }")
     )
     fun and(existsPredicate: ExistsPredicate): B =
@@ -106,26 +111,29 @@ abstract class KotlinBaseBuilder<D : AbstractWhereSupport<*>, B : KotlinBaseBuil
             and(existsPredicate)
         }
 
-    @Deprecated("Deprecated in favor of the new where clause DSL. Please see the documentation for new usage.")
+    @Deprecated("Deprecated in favor of the new where clause DSL. Update by moving the exists expression " +
+            "into the lambda.")
     fun and(existsPredicate: ExistsPredicate, subCriteria: CriteriaReceiver): B =
         applyToWhere(subCriteria) { sc ->
             and(existsPredicate, sc)
         }
 
-    @Deprecated("Deprecated in favor of the new where clause DSL. Please see the documentation for new usage.")
+    @Deprecated("Deprecated in favor of the new where clause DSL. Update by moving the column and condition " +
+            "into a lambda and rewriting the condition to use an infix function.")
     fun <T> or(column: BindableColumn<T>, condition: VisitableCondition<T>): B =
         applyToWhere {
             or(column, condition)
         }
 
-    @Deprecated("Deprecated in favor of the new where clause DSL. Please see the documentation for new usage.")
+    @Deprecated("Deprecated in favor of the new where clause DSL. Update by moving the column and condition " +
+            "inside the lambda and rewriting the condition to use an infix function.")
     fun <T> or(column: BindableColumn<T>, condition: VisitableCondition<T>, subCriteria: CriteriaReceiver): B =
         applyToWhere(subCriteria) { sc ->
             or(column, condition, sc)
         }
 
     @Deprecated(
-        message = "Deprecated in favor of the new where clause DSL. Please see the documentation for new usage.",
+        message = "Deprecated in favor of the new where clause DSL.",
         replaceWith = ReplaceWith("or { existsPredicate }")
     )
     fun or(existsPredicate: ExistsPredicate): B =
@@ -133,7 +141,8 @@ abstract class KotlinBaseBuilder<D : AbstractWhereSupport<*>, B : KotlinBaseBuil
             or(existsPredicate)
         }
 
-    @Deprecated("Deprecated in favor of the new where clause DSL. Please see the documentation for new usage.")
+    @Deprecated("Deprecated in favor of the new where clause DSL. Update by moving the exists expression " +
+            "into the lambda.")
     fun or(existsPredicate: ExistsPredicate, subCriteria: CriteriaReceiver): B =
         applyToWhere(subCriteria) { sc ->
             or(existsPredicate, sc)
