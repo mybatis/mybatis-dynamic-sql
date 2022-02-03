@@ -24,7 +24,6 @@ import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.id
 import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.lastName
 import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.occupation
 import org.mybatis.dynamic.sql.util.kotlin.SelectCompleter
-import org.mybatis.dynamic.sql.util.kotlin.elements.equalTo
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.select
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.selectDistinct
 
@@ -36,7 +35,7 @@ fun PersonWithAddressMapper.selectOne(completer: SelectCompleter): PersonWithAdd
     select(columnList) {
         from(person)
         fullJoin(address) {
-            on(person.addressId, equalTo(address.id))
+            on(person.addressId) equalTo address.id
         }
         completer()
     }.run(this::selectOne)
@@ -45,7 +44,7 @@ fun PersonWithAddressMapper.select(completer: SelectCompleter): List<PersonWithA
     select(columnList) {
         from(person, "p")
         fullJoin(address) {
-            on(person.addressId, equalTo(address.id))
+            on(person.addressId) equalTo address.id
         }
         completer()
     }.run(this::selectMany)
@@ -54,7 +53,7 @@ fun PersonWithAddressMapper.selectDistinct(completer: SelectCompleter): List<Per
     selectDistinct(columnList) {
         from(person)
         fullJoin(address) {
-            on(person.addressId, equalTo(address.id))
+            on(person.addressId) equalTo address.id
         }
         completer()
     }.run(this::selectMany)

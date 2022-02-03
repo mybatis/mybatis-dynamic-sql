@@ -30,7 +30,6 @@ import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.junit.jupiter.api.Test
 import org.mybatis.dynamic.sql.util.kotlin.elements.add
 import org.mybatis.dynamic.sql.util.kotlin.elements.constant
-import org.mybatis.dynamic.sql.util.kotlin.elements.equalTo
 import org.mybatis.dynamic.sql.util.kotlin.elements.insert
 import org.mybatis.dynamic.sql.util.kotlin.elements.insertBatch
 import org.mybatis.dynamic.sql.util.kotlin.elements.insertMultiple
@@ -854,7 +853,7 @@ open class CanonicalSpringKotlinTest {
         ) {
             from(person, "p")
             join(address, "a") {
-                on(addressId, equalTo(address.id))
+                on(addressId) equalTo address.id
             }
             where { id isLessThan 4 }
             orderBy(id)

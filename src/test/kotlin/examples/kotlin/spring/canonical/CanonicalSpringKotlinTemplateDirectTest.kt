@@ -29,7 +29,6 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.mybatis.dynamic.sql.util.kotlin.elements.add
 import org.mybatis.dynamic.sql.util.kotlin.elements.constant
-import org.mybatis.dynamic.sql.util.kotlin.elements.equalTo
 import org.mybatis.dynamic.sql.util.kotlin.spring.count
 import org.mybatis.dynamic.sql.util.kotlin.spring.countDistinct
 import org.mybatis.dynamic.sql.util.kotlin.spring.countFrom
@@ -524,7 +523,7 @@ open class CanonicalSpringKotlinTemplateDirectTest {
         ) {
             from(person, "p")
             join(address, "a") {
-                on(addressId, equalTo(address.id))
+                on(addressId) equalTo address.id
             }
             where { id isLessThan 4 }
             orderBy(id)

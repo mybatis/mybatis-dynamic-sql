@@ -65,7 +65,7 @@ class JoinMapperTest {
             ) {
                 from(orderMaster, "om")
                 join(orderDetail, "od") {
-                    on(orderMaster.orderId, equalTo(orderDetail.orderId))
+                    on(orderMaster.orderId) equalTo orderDetail.orderId
                 }
             }
 
@@ -102,8 +102,8 @@ class JoinMapperTest {
         ) {
             from(orderMaster, "om")
             join(orderDetail, "od") {
-                on(orderMaster.orderId, equalTo(orderDetail.orderId))
-                and(orderMaster.orderId, equalTo(orderDetail.orderId))
+                on(orderMaster.orderId) equalTo orderDetail.orderId
+                and(orderMaster.orderId) equalTo orderDetail.orderId
             }
         }
 
@@ -121,8 +121,8 @@ class JoinMapperTest {
         ) {
             from(orderMaster, "om")
             join(orderDetail, "od") {
-                on(orderMaster.orderId, equalTo(orderDetail.orderId))
-                and(orderMaster.orderId, equalTo(orderDetail.orderId))
+                on(orderMaster.orderId) equalTo orderDetail.orderId
+                and(orderMaster.orderId) equalTo orderDetail.orderId
             }
             where { orderMaster.orderId isEqualTo 1 }
         }
@@ -130,6 +130,27 @@ class JoinMapperTest {
         val expectedStatement = "select om.order_id, om.order_date, od.line_number, od.description, od.quantity" +
             " from OrderMaster om join OrderDetail od on om.order_id = od.order_id and om.order_id = od.order_id" +
             " where om.order_id = #{parameters.p1,jdbcType=INTEGER}"
+        assertThat(selectStatement.selectStatement).isEqualTo(expectedStatement)
+    }
+
+    @Test
+    fun testDeprecatedJoin() {
+        // this is a nonsensical join, but it does test the "and" capability
+        val selectStatement = select(
+            orderMaster.orderId, orderMaster.orderDate, orderDetail.lineNumber,
+            orderDetail.description, orderDetail.quantity
+        ) {
+            from(orderMaster, "om")
+            join(orderDetail, "od") {
+                on(orderMaster.orderId, equalTo(orderDetail.orderId))
+                and(orderMaster.orderId, equalTo(orderDetail.orderId))
+            }
+            where { orderMaster.orderId isEqualTo 1 }
+        }
+
+        val expectedStatement = "select om.order_id, om.order_date, od.line_number, od.description, od.quantity" +
+                " from OrderMaster om join OrderDetail od on om.order_id = od.order_id and om.order_id = od.order_id" +
+                " where om.order_id = #{parameters.p1,jdbcType=INTEGER}"
         assertThat(selectStatement.selectStatement).isEqualTo(expectedStatement)
     }
 
@@ -144,10 +165,10 @@ class JoinMapperTest {
             ) {
                 from(orderMaster, "om")
                 join(orderLine, "ol") {
-                    on(orderMaster.orderId, equalTo(orderLine.orderId))
+                    on(orderMaster.orderId) equalTo orderLine.orderId
                 }
                 join(itemMaster, "im") {
-                    on(orderLine.itemId, equalTo(itemMaster.itemId))
+                    on(orderLine.itemId) equalTo itemMaster.itemId
                 }
                 where { orderMaster.orderId isEqualTo 2 }
             }
@@ -180,10 +201,10 @@ class JoinMapperTest {
             ) {
                 from(orderMaster, "om")
                 join(orderLine, "ol") {
-                    on(orderMaster.orderId, equalTo(orderLine.orderId))
+                    on(orderMaster.orderId) equalTo orderLine.orderId
                 }
                 fullJoin(itemMaster, "im") {
-                    on(orderLine.itemId, equalTo(itemMaster.itemId))
+                    on(orderLine.itemId) equalTo itemMaster.itemId
                 }
                 orderBy(orderLine.orderId, itemMaster.itemId)
             }
@@ -255,10 +276,8 @@ class JoinMapperTest {
                         + "ol"
                     },
                     joinCriteria = {
-                        on(
-                            orderMaster.orderId.qualifiedWith("om"),
-                            equalTo(orderLine.orderId.qualifiedWith("ol"))
-                        )
+                        on(orderMaster.orderId.qualifiedWith("om")) equalTo
+                                orderLine.orderId.qualifiedWith("ol")
                     }
                 )
                 fullJoin(
@@ -269,10 +288,8 @@ class JoinMapperTest {
                         + "im"
                     }
                 ) {
-                    on(
-                        orderLine.itemId.qualifiedWith("ol"),
-                        equalTo(itemMaster.itemId.qualifiedWith("im"))
-                    )
+                    on(orderLine.itemId.qualifiedWith("ol")) equalTo
+                            itemMaster.itemId.qualifiedWith("im")
                 }
                 orderBy(orderLine.orderId, itemMaster.itemId)
             }
@@ -331,10 +348,10 @@ class JoinMapperTest {
             ) {
                 from(orderMaster, "om")
                 join(orderLine, "ol") {
-                    on(orderMaster.orderId, equalTo(orderLine.orderId))
+                    on(orderMaster.orderId) equalTo orderLine.orderId
                 }
                 fullJoin(itemMaster) {
-                    on(orderLine.itemId, equalTo(itemMaster.itemId))
+                    on(orderLine.itemId) equalTo itemMaster.itemId
                 }
                 orderBy(orderLine.orderId, itemMaster.itemId)
             }
@@ -379,10 +396,10 @@ class JoinMapperTest {
             ) {
                 from(orderMaster, "om")
                 join(orderLine, "ol") {
-                    on(orderMaster.orderId, equalTo(orderLine.orderId))
+                    on(orderMaster.orderId) equalTo orderLine.orderId
                 }
                 leftJoin(itemMaster, "im") {
-                    on(orderLine.itemId, equalTo(itemMaster.itemId))
+                    on(orderLine.itemId) equalTo itemMaster.itemId
                 }
                 orderBy(orderLine.orderId, itemMaster.itemId)
             }
@@ -423,7 +440,7 @@ class JoinMapperTest {
             ) {
                 from(orderMaster, "om")
                 join(orderLine, "ol") {
-                    on(orderMaster.orderId, equalTo(orderLine.orderId))
+                    on(orderMaster.orderId) equalTo orderLine.orderId
                 }
                 leftJoin(
                     {
@@ -433,7 +450,7 @@ class JoinMapperTest {
                         + "im"
                     }
                 ) {
-                    on(orderLine.itemId, equalTo(itemMaster.itemId.qualifiedWith("im")))
+                    on(orderLine.itemId) equalTo itemMaster.itemId.qualifiedWith("im")
                 }
                 orderBy(orderLine.orderId, itemMaster.itemId)
             }
@@ -473,10 +490,10 @@ class JoinMapperTest {
             ) {
                 from(orderMaster, "om")
                 join(orderLine, "ol") {
-                    on(orderMaster.orderId, equalTo(orderLine.orderId))
+                    on(orderMaster.orderId) equalTo orderLine.orderId
                 }
                 leftJoin(itemMaster) {
-                    on(orderLine.itemId, equalTo(itemMaster.itemId))
+                    on(orderLine.itemId)  equalTo itemMaster.itemId
                 }
                 orderBy(orderLine.orderId, itemMaster.itemId)
             }
@@ -516,10 +533,10 @@ class JoinMapperTest {
             ) {
                 from(orderMaster, "om")
                 join(orderLine, "ol") {
-                    on(orderMaster.orderId, equalTo(orderLine.orderId))
+                    on(orderMaster.orderId) equalTo orderLine.orderId
                 }
                 rightJoin(itemMaster, "im") {
-                    on(orderLine.itemId, equalTo(itemMaster.itemId))
+                    on(orderLine.itemId) equalTo itemMaster.itemId
                 }
                 orderBy(orderLine.orderId, itemMaster.itemId)
             }
@@ -560,7 +577,7 @@ class JoinMapperTest {
             ) {
                 from(orderMaster, "om")
                 join(orderLine, "ol") {
-                    on(orderMaster.orderId, equalTo(orderLine.orderId))
+                    on(orderMaster.orderId) equalTo orderLine.orderId
                 }
                 rightJoin(
                     {
@@ -570,7 +587,7 @@ class JoinMapperTest {
                         + "im"
                     }
                 ) {
-                    on(orderLine.itemId, equalTo(itemMaster.itemId.qualifiedWith("im")))
+                    on(orderLine.itemId) equalTo itemMaster.itemId.qualifiedWith("im")
                 }
                 orderBy(orderLine.orderId, itemMaster.itemId)
             }
@@ -610,10 +627,10 @@ class JoinMapperTest {
             ) {
                 from(orderMaster, "om")
                 join(orderLine, "ol") {
-                    on(orderMaster.orderId, equalTo(orderLine.orderId))
+                    on(orderMaster.orderId) equalTo orderLine.orderId
                 }
                 rightJoin(itemMaster) {
-                    on(orderLine.itemId, equalTo(itemMaster.itemId))
+                    on(orderLine.itemId) equalTo itemMaster.itemId
                 }
                 orderBy(orderLine.orderId, itemMaster.itemId)
             }
@@ -655,7 +672,7 @@ class JoinMapperTest {
             val selectStatement = select(user.userId, user.userName, user.parentId) {
                 from(user, "u1")
                 join(user2, "u2") {
-                    on(user.userId, equalTo(user2.parentId))
+                    on(user.userId) equalTo user2.parentId
                 }
                 where { user2.userId isEqualTo 4 }
             }
@@ -686,7 +703,7 @@ class JoinMapperTest {
             val selectStatement = select(user.userId, user.userName, user.parentId) {
                 from(user)
                 join(user2) {
-                    on(user.userId, equalTo(user2.parentId))
+                    on(user.userId) equalTo user2.parentId
                 }
                 where { user2.userId isEqualTo 4 }
             }
@@ -718,7 +735,7 @@ class JoinMapperTest {
             val selectStatement = select(user.userId, user.userName, user.parentId) {
                 from(user, "u1")
                 join(user2, "u2") {
-                    on(user.userId, equalTo(user2.parentId))
+                    on(user.userId) equalTo user2.parentId
                 }
                 where { user2.userId isEqualTo 4 }
             }
