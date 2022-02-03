@@ -31,7 +31,6 @@ import org.mybatis.dynamic.sql.util.kotlin.InsertSelectCompleter
 import org.mybatis.dynamic.sql.util.kotlin.KotlinUpdateBuilder
 import org.mybatis.dynamic.sql.util.kotlin.SelectCompleter
 import org.mybatis.dynamic.sql.util.kotlin.UpdateCompleter
-import org.mybatis.dynamic.sql.util.kotlin.elements.isEqualTo
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.count
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.countDistinct
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.countFrom
@@ -60,7 +59,7 @@ fun PersonMapper.delete(completer: DeleteCompleter) =
 
 fun PersonMapper.deleteByPrimaryKey(id_: Int) =
     delete {
-        where(id, isEqualTo(id_))
+        where { id isEqualTo id_ }
     }
 
 fun PersonMapper.insert(record: PersonRecord) =
@@ -132,7 +131,7 @@ fun PersonMapper.selectDistinct(completer: SelectCompleter) =
 
 fun PersonMapper.selectByPrimaryKey(id_: Int) =
     selectOne {
-        where(id, isEqualTo(id_))
+        where { id isEqualTo id_ }
     }
 
 fun PersonMapper.update(completer: UpdateCompleter) =
@@ -168,7 +167,7 @@ fun PersonMapper.updateByPrimaryKey(record: PersonRecord) =
         set(employed).equalToOrNull(record::employed)
         set(occupation).equalToOrNull(record::occupation)
         set(addressId).equalToOrNull(record::addressId)
-        where(id, isEqualTo(record.id!!))
+        where { id isEqualTo record.id!! }
     }
 
 fun PersonMapper.updateByPrimaryKeySelective(record: PersonRecord) =
@@ -179,5 +178,5 @@ fun PersonMapper.updateByPrimaryKeySelective(record: PersonRecord) =
         set(employed).equalToWhenPresent(record::employed)
         set(occupation).equalToWhenPresent(record::occupation)
         set(addressId).equalToWhenPresent(record::addressId)
-        where(id, isEqualTo(record.id!!))
+        where { id isEqualTo record.id!! }
     }

@@ -15,6 +15,7 @@
  */
 package examples.kotlin.spring.canonical
 
+import examples.kotlin.spring.canonical.PersonDynamicSqlSupport.employed
 import examples.kotlin.spring.canonical.PersonDynamicSqlSupport.person
 import examples.kotlin.spring.canonical.PersonDynamicSqlSupport.firstName
 import examples.kotlin.spring.canonical.PersonDynamicSqlSupport.id
@@ -28,39 +29,25 @@ import org.mybatis.dynamic.sql.util.kotlin.elements.constant
 import org.mybatis.dynamic.sql.util.kotlin.elements.count
 import org.mybatis.dynamic.sql.util.kotlin.elements.countDistinct
 import org.mybatis.dynamic.sql.util.kotlin.elements.divide
-import org.mybatis.dynamic.sql.util.kotlin.elements.isBetween
 import org.mybatis.dynamic.sql.util.kotlin.elements.isBetweenWhenPresent
 import org.mybatis.dynamic.sql.util.kotlin.elements.isEqualTo
-import org.mybatis.dynamic.sql.util.kotlin.elements.isEqualToWhenPresent
-import org.mybatis.dynamic.sql.util.kotlin.elements.isGreaterThanOrEqualToWhenPresent
-import org.mybatis.dynamic.sql.util.kotlin.elements.isGreaterThanWhenPresent
+import org.mybatis.dynamic.sql.util.kotlin.elements.isFalse
 import org.mybatis.dynamic.sql.util.kotlin.elements.isInCaseInsensitive
 import org.mybatis.dynamic.sql.util.kotlin.elements.isInCaseInsensitiveWhenPresent
 import org.mybatis.dynamic.sql.util.kotlin.elements.isInWhenPresent
-import org.mybatis.dynamic.sql.util.kotlin.elements.isLessThanOrEqualTo
-import org.mybatis.dynamic.sql.util.kotlin.elements.isLessThanOrEqualToWhenPresent
-import org.mybatis.dynamic.sql.util.kotlin.elements.isLessThanWhenPresent
-import org.mybatis.dynamic.sql.util.kotlin.elements.isLike
-import org.mybatis.dynamic.sql.util.kotlin.elements.isLikeCaseInsensitive
-import org.mybatis.dynamic.sql.util.kotlin.elements.isLikeCaseInsensitiveWhenPresent
-import org.mybatis.dynamic.sql.util.kotlin.elements.isLikeWhenPresent
 import org.mybatis.dynamic.sql.util.kotlin.elements.isNotBetween
 import org.mybatis.dynamic.sql.util.kotlin.elements.isNotBetweenWhenPresent
-import org.mybatis.dynamic.sql.util.kotlin.elements.isNotEqualToWhenPresent
 import org.mybatis.dynamic.sql.util.kotlin.elements.isNotIn
 import org.mybatis.dynamic.sql.util.kotlin.elements.isNotInCaseInsensitive
 import org.mybatis.dynamic.sql.util.kotlin.elements.isNotInCaseInsensitiveWhenPresent
 import org.mybatis.dynamic.sql.util.kotlin.elements.isNotInWhenPresent
-import org.mybatis.dynamic.sql.util.kotlin.elements.isNotLikeCaseInsensitive
-import org.mybatis.dynamic.sql.util.kotlin.elements.isNotLikeCaseInsensitiveWhenPresent
-import org.mybatis.dynamic.sql.util.kotlin.elements.isNotLikeWhenPresent
+import org.mybatis.dynamic.sql.util.kotlin.elements.isTrue
 import org.mybatis.dynamic.sql.util.kotlin.elements.lower
 import org.mybatis.dynamic.sql.util.kotlin.elements.multiply
 import org.mybatis.dynamic.sql.util.kotlin.elements.stringConstant
 import org.mybatis.dynamic.sql.util.kotlin.elements.substring
 import org.mybatis.dynamic.sql.util.kotlin.elements.subtract
 import org.mybatis.dynamic.sql.util.kotlin.elements.sum
-import org.mybatis.dynamic.sql.util.kotlin.elements.upper
 import org.mybatis.dynamic.sql.util.kotlin.spring.select
 import org.mybatis.dynamic.sql.util.kotlin.spring.selectList
 import org.mybatis.dynamic.sql.util.kotlin.spring.selectOne
@@ -72,7 +59,7 @@ import org.springframework.transaction.annotation.Transactional
 @Suppress("LargeClass", "MaxLineLength")
 @SpringJUnitConfig(classes = [SpringConfiguration::class])
 @Transactional
-class KotlinElementsTest {
+open class KotlinElementsTest {
     @Autowired
     private lateinit var template: NamedParameterJdbcTemplate
 
@@ -121,10 +108,10 @@ class KotlinElementsTest {
     }
 
     @Test
-    fun testNull() {
+    fun testSelectOneNoResult() {
         val selectStatement = select(id) {
             from(person)
-            where(id, isEqualTo(55))
+            where { id (isEqualTo(55)) }
         }
 
         assertThat(selectStatement.selectStatement).isEqualTo(
@@ -149,22 +136,6 @@ class KotlinElementsTest {
         val value = template.selectOne(selectStatement, Double::class)
 
         assertThat(value).isEqualTo(21.0)
-    }
-
-    @Test
-    fun testStringConstant() {
-        val selectStatement = select(firstName) {
-            from(person)
-            where(firstName, isEqualTo(stringConstant("Fred")))
-        }
-
-        assertThat(selectStatement.selectStatement).isEqualTo(
-            "select first_name from Person where first_name = 'Fred'"
-        )
-
-        val value = template.selectOne(selectStatement, String::class)
-
-        assertThat(value).isEqualTo("Fred")
     }
 
     @Test
@@ -270,23 +241,6 @@ class KotlinElementsTest {
     }
 
     @Test
-    fun testUpper() {
-        val selectStatement = select(upper(firstName)) {
-            from(person)
-            orderBy(id)
-        }
-
-        assertThat(selectStatement.selectStatement).isEqualTo(
-            "select upper(first_name) from Person order by id"
-        )
-
-        val rows = template.selectList(selectStatement, String::class)
-
-        assertThat(rows).hasSize(6)
-        assertThat(rows[5]).isEqualTo("BAMM BAMM")
-    }
-
-    @Test
     fun testSubstring() {
         val selectStatement = select(substring(firstName, 1, 3)) {
             from(person)
@@ -304,267 +258,10 @@ class KotlinElementsTest {
     }
 
     @Test
-    fun testIsEqualToWhenPresent() {
-        val selectStatement = select(firstName) {
-            from(person)
-            where(id, isEqualToWhenPresent(6))
-            orderBy(id)
-        }
-
-        assertThat(selectStatement.selectStatement).isEqualTo(
-            "select first_name from Person where id = :p1 order by id"
-        )
-
-        val rows = template.selectList(selectStatement, String::class)
-
-        assertThat(rows).hasSize(1)
-        assertThat(rows[0]).isEqualTo("Bamm Bamm")
-    }
-
-    @Test
-    fun testIsEqualToWhenPresentNull() {
-        val selectStatement = select(firstName) {
-            from(person)
-            where(id, isEqualToWhenPresent(null))
-            orderBy(id)
-        }
-
-        assertThat(selectStatement.selectStatement).isEqualTo(
-            "select first_name from Person order by id"
-        )
-
-        val rows = template.selectList(selectStatement, String::class)
-
-        assertThat(rows).hasSize(6)
-        assertThat(rows[5]).isEqualTo("Bamm Bamm")
-    }
-
-    @Test
-    fun testIsNotEqualToWhenPresent() {
-        val selectStatement = select(firstName) {
-            from(person)
-            where(id, isNotEqualToWhenPresent(6))
-            orderBy(id)
-        }
-
-        assertThat(selectStatement.selectStatement).isEqualTo(
-            "select first_name from Person where id <> :p1 order by id"
-        )
-
-        val rows = template.selectList(selectStatement, String::class)
-
-        assertThat(rows).hasSize(5)
-        assertThat(rows[0]).isEqualTo("Fred")
-    }
-
-    @Test
-    fun testIsNotEqualToWhenPresentNull() {
-        val selectStatement = select(firstName) {
-            from(person)
-            where(id, isNotEqualToWhenPresent(null))
-            orderBy(id)
-        }
-
-        assertThat(selectStatement.selectStatement).isEqualTo(
-            "select first_name from Person order by id"
-        )
-
-        val rows = template.selectList(selectStatement, String::class)
-
-        assertThat(rows).hasSize(6)
-        assertThat(rows[5]).isEqualTo("Bamm Bamm")
-    }
-
-    @Test
-    fun testIsGreaterThanWhenPresent() {
-        val selectStatement = select(firstName) {
-            from(person)
-            where(id, isGreaterThanWhenPresent(5))
-            orderBy(id)
-        }
-
-        assertThat(selectStatement.selectStatement).isEqualTo(
-            "select first_name from Person where id > :p1 order by id"
-        )
-
-        val rows = template.selectList(selectStatement, String::class)
-
-        assertThat(rows).hasSize(1)
-        assertThat(rows[0]).isEqualTo("Bamm Bamm")
-    }
-
-    @Test
-    fun testIsGreaterThanWhenPresentNull() {
-        val selectStatement = select(firstName) {
-            from(person)
-            where(id, isGreaterThanWhenPresent(null))
-            orderBy(id)
-        }
-
-        assertThat(selectStatement.selectStatement).isEqualTo(
-            "select first_name from Person order by id"
-        )
-
-        val rows = template.selectList(selectStatement, String::class)
-
-        assertThat(rows).hasSize(6)
-        assertThat(rows[5]).isEqualTo("Bamm Bamm")
-    }
-
-    @Test
-    fun testIsGreaterThanOrEqualToWhenPresent() {
-        val selectStatement = select(firstName) {
-            from(person)
-            where(id, isGreaterThanOrEqualToWhenPresent(5))
-            orderBy(id)
-        }
-
-        assertThat(selectStatement.selectStatement).isEqualTo(
-            "select first_name from Person where id >= :p1 order by id"
-        )
-
-        val rows = template.selectList(selectStatement, String::class)
-
-        assertThat(rows).hasSize(2)
-        assertThat(rows[0]).isEqualTo("Betty")
-    }
-
-    @Test
-    fun testIsGreaterThanOrEqualToWhenPresentNull() {
-        val selectStatement = select(firstName) {
-            from(person)
-            where(id, isGreaterThanOrEqualToWhenPresent(null))
-            orderBy(id)
-        }
-
-        assertThat(selectStatement.selectStatement).isEqualTo(
-            "select first_name from Person order by id"
-        )
-
-        val rows = template.selectList(selectStatement, String::class)
-
-        assertThat(rows).hasSize(6)
-        assertThat(rows[5]).isEqualTo("Bamm Bamm")
-    }
-
-    @Test
-    fun testIsLessThanWhenPresent() {
-        val selectStatement = select(firstName) {
-            from(person)
-            where(id, isLessThanWhenPresent(5))
-            orderBy(id)
-        }
-
-        assertThat(selectStatement.selectStatement).isEqualTo(
-            "select first_name from Person where id < :p1 order by id"
-        )
-
-        val rows = template.selectList(selectStatement, String::class)
-
-        assertThat(rows).hasSize(4)
-        assertThat(rows[0]).isEqualTo("Fred")
-    }
-
-    @Test
-    fun testIsLessThanWhenPresentNull() {
-        val selectStatement = select(firstName) {
-            from(person)
-            where(id, isGreaterThanWhenPresent(null))
-            orderBy(id)
-        }
-
-        assertThat(selectStatement.selectStatement).isEqualTo(
-            "select first_name from Person order by id"
-        )
-
-        val rows = template.selectList(selectStatement, String::class)
-
-        assertThat(rows).hasSize(6)
-        assertThat(rows[5]).isEqualTo("Bamm Bamm")
-    }
-
-    @Test
-    fun testIsLessThanOrEqualTo() {
-        val selectStatement = select(firstName) {
-            from(person)
-            where(id, isLessThanOrEqualTo(5))
-            orderBy(id)
-        }
-
-        assertThat(selectStatement.selectStatement).isEqualTo(
-            "select first_name from Person where id <= :p1 order by id"
-        )
-
-        val rows = template.selectList(selectStatement, String::class)
-
-        assertThat(rows).hasSize(5)
-        assertThat(rows[0]).isEqualTo("Fred")
-    }
-
-    @Test
-    fun testIsLessThanOrEqualToWhenPresent() {
-        val selectStatement = select(firstName) {
-            from(person)
-            where(id, isLessThanOrEqualToWhenPresent(5))
-            orderBy(id)
-        }
-
-        assertThat(selectStatement.selectStatement).isEqualTo(
-            "select first_name from Person where id <= :p1 order by id"
-        )
-
-        val rows = template.selectList(selectStatement, String::class)
-
-        assertThat(rows).hasSize(5)
-        assertThat(rows[0]).isEqualTo("Fred")
-    }
-
-    @Test
-    fun testIsLessThanOrEqualToWhenPresentNull() {
-        val selectStatement = select(firstName) {
-            from(person)
-            where(id, isLessThanOrEqualToWhenPresent(null))
-            orderBy(id)
-        }
-
-        assertThat(selectStatement.selectStatement).isEqualTo(
-            "select first_name from Person order by id"
-        )
-
-        val rows = template.selectList(selectStatement, String::class)
-
-        assertThat(rows).hasSize(6)
-        assertThat(rows[5]).isEqualTo("Bamm Bamm")
-    }
-
-    @Test
     fun testIsInWhenPresent() {
         val selectStatement = select(firstName) {
             from(person)
-            where(id, isInWhenPresent(1, null, 3))
-            orderBy(id)
-        }
-
-        assertThat(selectStatement.selectStatement).isEqualTo(
-            "select first_name from Person where id in (:p1,:p2) order by id"
-        )
-
-        val rows = template.selectList(selectStatement, String::class)
-
-        assertThat(rows).hasSize(2)
-        assertThat(rows[0]).isEqualTo("Fred")
-    }
-
-    @Test
-    fun testIsInWhenPresentWithList() {
-        val myList = mutableListOf<Int?>()
-        myList.add(1)
-        myList.add(null)
-        myList.add(3)
-
-        val selectStatement = select(firstName) {
-            from(person)
-            where(id, isInWhenPresent(myList))
+            where { id (isInWhenPresent(1, null, 3)) }
             orderBy(id)
         }
 
@@ -582,29 +279,7 @@ class KotlinElementsTest {
     fun testIsNotInWhenPresent() {
         val selectStatement = select(firstName) {
             from(person)
-            where(id, isNotInWhenPresent(1, null, 3))
-            orderBy(id)
-        }
-
-        assertThat(selectStatement.selectStatement).isEqualTo(
-            "select first_name from Person where id not in (:p1,:p2) order by id"
-        )
-
-        val rows = template.selectList(selectStatement, String::class)
-
-        assertThat(rows).hasSize(4)
-        assertThat(rows[0]).isEqualTo("Wilma")
-    }
-
-    @Test
-    fun testIsNotInWithList() {
-        val myList = mutableListOf<Int>()
-        myList.add(1)
-        myList.add(3)
-
-        val selectStatement = select(firstName) {
-            from(person)
-            where(id, isNotIn(myList))
+            where { id (isNotInWhenPresent(1, null, 3)) }
             orderBy(id)
         }
 
@@ -622,7 +297,7 @@ class KotlinElementsTest {
     fun testIsNotIn() {
         val selectStatement = select(firstName) {
             from(person)
-            where(id, isNotIn(1, 3))
+            where { id (isNotIn(1, 3)) }
             orderBy(id)
         }
 
@@ -633,47 +308,6 @@ class KotlinElementsTest {
         val rows = template.selectList(selectStatement, String::class)
 
         assertThat(rows).hasSize(4)
-        assertThat(rows[0]).isEqualTo("Wilma")
-    }
-
-    @Test
-    fun testIsNotInWhenPresentWithList() {
-        val myList = mutableListOf<Int?>()
-        myList.add(1)
-        myList.add(null)
-        myList.add(3)
-
-        val selectStatement = select(firstName) {
-            from(person)
-            where(id, isNotInWhenPresent(myList))
-            orderBy(id)
-        }
-
-        assertThat(selectStatement.selectStatement).isEqualTo(
-            "select first_name from Person where id not in (:p1,:p2) order by id"
-        )
-
-        val rows = template.selectList(selectStatement, String::class)
-
-        assertThat(rows).hasSize(4)
-        assertThat(rows[0]).isEqualTo("Wilma")
-    }
-
-    @Test
-    fun testBetween() {
-        val selectStatement = select(firstName) {
-            from(person)
-            where(id, isBetween(2).and(3))
-            orderBy(id)
-        }
-
-        assertThat(selectStatement.selectStatement).isEqualTo(
-            "select first_name from Person where id between :p1 and :p2 order by id"
-        )
-
-        val rows = template.selectList(selectStatement, String::class)
-
-        assertThat(rows).hasSize(2)
         assertThat(rows[0]).isEqualTo("Wilma")
     }
 
@@ -681,7 +315,7 @@ class KotlinElementsTest {
     fun testBetweenWhenPresentBothPresent() {
         val selectStatement = select(firstName) {
             from(person)
-            where(id, isBetweenWhenPresent(2).and(3))
+            where { id (isBetweenWhenPresent(2).and(3)) }
             orderBy(id)
         }
 
@@ -699,7 +333,7 @@ class KotlinElementsTest {
     fun testBetweenWhenPresentFirstMissing() {
         val selectStatement = select(firstName) {
             from(person)
-            where(id, isBetweenWhenPresent<Int>(null).and(3))
+            where { id (isBetweenWhenPresent<Int>(null).and(3)) }
             orderBy(id)
         }
 
@@ -717,7 +351,7 @@ class KotlinElementsTest {
     fun testBetweenWhenPresentSecondMissing() {
         val selectStatement = select(firstName) {
             from(person)
-            where(id, isBetweenWhenPresent(2).and(null))
+            where { id (isBetweenWhenPresent(2).and(null)) }
             orderBy(id)
         }
 
@@ -735,7 +369,7 @@ class KotlinElementsTest {
     fun testBetweenWhenPresentBothMissing() {
         val selectStatement = select(firstName) {
             from(person)
-            where(id, isBetweenWhenPresent<Int>(null).and(null))
+            where { id (isBetweenWhenPresent<Int>(null).and(null)) }
             orderBy(id)
         }
 
@@ -753,7 +387,7 @@ class KotlinElementsTest {
     fun testNotBetween() {
         val selectStatement = select(firstName) {
             from(person)
-            where(id, isNotBetween(2).and(3))
+            where { id (isNotBetween(2).and(3)) }
             orderBy(id)
         }
 
@@ -771,7 +405,7 @@ class KotlinElementsTest {
     fun testNotBetweenWhenPresentBothPresent() {
         val selectStatement = select(firstName) {
             from(person)
-            where(id, isNotBetweenWhenPresent(2).and(3))
+            where { id (isNotBetweenWhenPresent(2).and(3)) }
             orderBy(id)
         }
 
@@ -789,7 +423,7 @@ class KotlinElementsTest {
     fun testNotBetweenWhenPresentFirstMissing() {
         val selectStatement = select(firstName) {
             from(person)
-            where(id, isNotBetweenWhenPresent<Int>(null).and(3))
+            where { id (isNotBetweenWhenPresent<Int>(null).and(3)) }
             orderBy(id)
         }
 
@@ -807,7 +441,7 @@ class KotlinElementsTest {
     fun testNotBetweenWhenPresentSecondMissing() {
         val selectStatement = select(firstName) {
             from(person)
-            where(id, isNotBetweenWhenPresent(2).and(null))
+            where { id (isNotBetweenWhenPresent(2).and(null)) }
             orderBy(id)
         }
 
@@ -825,7 +459,7 @@ class KotlinElementsTest {
     fun testNotBetweenWhenPresentBothMissing() {
         val selectStatement = select(firstName) {
             from(person)
-            where(id, isNotBetweenWhenPresent<Int>(null).and(null))
+            where { id (isNotBetweenWhenPresent<Int>(null).and(null)) }
             orderBy(id)
         }
 
@@ -840,190 +474,46 @@ class KotlinElementsTest {
     }
 
     @Test
-    fun testIsLikeWhenPresent() {
+    fun testIsTrue() {
         val selectStatement = select(firstName) {
             from(person)
-            where(firstName, isLikeWhenPresent("F%"))
+            where { employed (isTrue()) }
             orderBy(id)
         }
 
         assertThat(selectStatement.selectStatement).isEqualTo(
-            "select first_name from Person where first_name like :p1 order by id"
+            "select first_name from Person where employed = :p1 order by id"
         )
 
         val rows = template.selectList(selectStatement, String::class)
 
-        assertThat(rows).hasSize(1)
+        assertThat(rows).hasSize(4)
         assertThat(rows[0]).isEqualTo("Fred")
     }
 
     @Test
-    fun testIsLikeWhenPresentNull() {
+    fun testIsFalse() {
         val selectStatement = select(firstName) {
             from(person)
-            where(firstName, isLikeWhenPresent(null))
+            where { employed (isFalse()) }
             orderBy(id)
         }
 
         assertThat(selectStatement.selectStatement).isEqualTo(
-            "select first_name from Person order by id"
+            "select first_name from Person where employed = :p1 order by id"
         )
 
         val rows = template.selectList(selectStatement, String::class)
 
-        assertThat(rows).hasSize(6)
-        assertThat(rows[0]).isEqualTo("Fred")
-    }
-
-    @Test
-    fun testIsNotLikeWhenPresent() {
-        val selectStatement = select(firstName) {
-            from(person)
-            where(firstName, isNotLikeWhenPresent("F%"))
-            orderBy(id)
-        }
-
-        assertThat(selectStatement.selectStatement).isEqualTo(
-            "select first_name from Person where first_name not like :p1 order by id"
-        )
-
-        val rows = template.selectList(selectStatement, String::class)
-
-        assertThat(rows).hasSize(5)
-        assertThat(rows[0]).isEqualTo("Wilma")
-    }
-
-    @Test
-    fun testIsNotLikeWhenPresentNull() {
-        val selectStatement = select(firstName) {
-            from(person)
-            where(firstName, isNotLikeWhenPresent(null))
-            orderBy(id)
-        }
-
-        assertThat(selectStatement.selectStatement).isEqualTo(
-            "select first_name from Person order by id"
-        )
-
-        val rows = template.selectList(selectStatement, String::class)
-
-        assertThat(rows).hasSize(6)
-        assertThat(rows[0]).isEqualTo("Fred")
-    }
-
-    @Test
-    fun testIsLikeCaseInsensitive() {
-        val selectStatement = select(firstName) {
-            from(person)
-            where(firstName, isLikeCaseInsensitive("f%"))
-            orderBy(id)
-        }
-
-        assertThat(selectStatement.selectStatement).isEqualTo(
-            "select first_name from Person where upper(first_name) like :p1 order by id"
-        )
-
-        val rows = template.selectList(selectStatement, String::class)
-
-        assertThat(rows).hasSize(1)
-        assertThat(rows[0]).isEqualTo("Fred")
-    }
-
-    @Test
-    fun testIsLikeCaseInsensitiveWhenPresent() {
-        val selectStatement = select(firstName) {
-            from(person)
-            where(firstName, isLikeCaseInsensitiveWhenPresent("f%"))
-            orderBy(id)
-        }
-
-        assertThat(selectStatement.selectStatement).isEqualTo(
-            "select first_name from Person where upper(first_name) like :p1 order by id"
-        )
-
-        val rows = template.selectList(selectStatement, String::class)
-
-        assertThat(rows).hasSize(1)
-        assertThat(rows[0]).isEqualTo("Fred")
-    }
-
-    @Test
-    fun testIsLikeCaseInsensitiveWhenPresentNull() {
-        val selectStatement = select(firstName) {
-            from(person)
-            where(firstName, isLikeCaseInsensitiveWhenPresent(null))
-            orderBy(id)
-        }
-
-        assertThat(selectStatement.selectStatement).isEqualTo(
-            "select first_name from Person order by id"
-        )
-
-        val rows = template.selectList(selectStatement, String::class)
-
-        assertThat(rows).hasSize(6)
-        assertThat(rows[0]).isEqualTo("Fred")
-    }
-
-    @Test
-    fun testIsNotLikeCaseInsensitive() {
-        val selectStatement = select(firstName) {
-            from(person)
-            where(firstName, isNotLikeCaseInsensitive("f%"))
-            orderBy(id)
-        }
-
-        assertThat(selectStatement.selectStatement).isEqualTo(
-            "select first_name from Person where upper(first_name) not like :p1 order by id"
-        )
-
-        val rows = template.selectList(selectStatement, String::class)
-
-        assertThat(rows).hasSize(5)
-        assertThat(rows[0]).isEqualTo("Wilma")
-    }
-
-    @Test
-    fun testIsNotLikeCaseInsensitiveWhenPresent() {
-        val selectStatement = select(firstName) {
-            from(person)
-            where(firstName, isNotLikeCaseInsensitiveWhenPresent("f%"))
-            orderBy(id)
-        }
-
-        assertThat(selectStatement.selectStatement).isEqualTo(
-            "select first_name from Person where upper(first_name) not like :p1 order by id"
-        )
-
-        val rows = template.selectList(selectStatement, String::class)
-
-        assertThat(rows).hasSize(5)
-        assertThat(rows[0]).isEqualTo("Wilma")
-    }
-
-    @Test
-    fun testIsNotLikeCaseInsensitiveWhenPresentNull() {
-        val selectStatement = select(firstName) {
-            from(person)
-            where(firstName, isNotLikeCaseInsensitiveWhenPresent(null))
-            orderBy(id)
-        }
-
-        assertThat(selectStatement.selectStatement).isEqualTo(
-            "select first_name from Person order by id"
-        )
-
-        val rows = template.selectList(selectStatement, String::class)
-
-        assertThat(rows).hasSize(6)
-        assertThat(rows[0]).isEqualTo("Fred")
+        assertThat(rows).hasSize(2)
+        assertThat(rows[0]).isEqualTo("Pebbles")
     }
 
     @Test
     fun testIsInCaseInsensitive() {
         val selectStatement = select(firstName) {
             from(person)
-            where(firstName, isInCaseInsensitive("FRED", "wilma"))
+            where { firstName (isInCaseInsensitive("FRED", "wilma")) }
             orderBy(id)
         }
 
@@ -1041,7 +531,7 @@ class KotlinElementsTest {
     fun testIsInCaseInsensitiveWhenPresent() {
         val selectStatement = select(firstName) {
             from(person)
-            where(firstName, isInCaseInsensitiveWhenPresent("FRED", null, "wilma"))
+            where { firstName (isInCaseInsensitiveWhenPresent("FRED", null, "wilma")) }
             orderBy(id)
         }
 
@@ -1059,7 +549,7 @@ class KotlinElementsTest {
     fun testIsInCaseInsensitiveWhenPresentAllNull() {
         val selectStatement = select(firstName) {
             from(person)
-            where(firstName, isInCaseInsensitiveWhenPresent(null, null))
+            where { firstName (isInCaseInsensitiveWhenPresent(null, null)) }
             orderBy(id)
         }
 
@@ -1077,7 +567,7 @@ class KotlinElementsTest {
     fun testIsNotInCaseInsensitive() {
         val selectStatement = select(firstName) {
             from(person)
-            where(firstName, isNotInCaseInsensitive("FRED", "wilma"))
+            where { firstName (isNotInCaseInsensitive("FRED", "wilma")) }
             orderBy(id)
         }
 
@@ -1095,7 +585,7 @@ class KotlinElementsTest {
     fun testIsNotInCaseInsensitiveWhenPresent() {
         val selectStatement = select(firstName) {
             from(person)
-            where(firstName, isNotInCaseInsensitiveWhenPresent("FRED", null, "wilma"))
+            where { firstName (isNotInCaseInsensitiveWhenPresent("FRED", null, "wilma")) }
             orderBy(id)
         }
 
@@ -1113,7 +603,7 @@ class KotlinElementsTest {
     fun testIsNotInCaseInsensitiveWhenPresentAllNull() {
         val selectStatement = select(firstName) {
             from(person)
-            where(firstName, isNotInCaseInsensitiveWhenPresent(null, null))
+            where { firstName (isNotInCaseInsensitiveWhenPresent(null, null)) }
             orderBy(id)
         }
 
@@ -1125,56 +615,5 @@ class KotlinElementsTest {
 
         assertThat(rows).hasSize(6)
         assertThat(rows[0]).isEqualTo("Fred")
-    }
-
-    @Test
-    fun testSearchWhenThenBlank() {
-        val fn = ""
-
-        val selectStatement = select(firstName) {
-            from(person)
-            where(
-                upper(firstName),
-                isLike(fn).filter(String::isNotBlank)
-                    .map(String::uppercase)
-                    .map { "%$it%" }
-            )
-            orderBy(id)
-        }
-
-        assertThat(selectStatement.selectStatement).isEqualTo(
-            "select first_name from Person order by id"
-        )
-
-        val rows = template.selectList(selectStatement, String::class)
-
-        assertThat(rows).hasSize(6)
-        assertThat(rows[0]).isEqualTo("Fred")
-    }
-
-    @Test
-    fun testSearchWhenThenNotBlank() {
-        val fn = "w"
-
-        val selectStatement = select(firstName) {
-            from(person)
-            where(
-                upper(firstName),
-                isLike(fn).filter(String::isNotBlank)
-                    .map(String::uppercase)
-                    .map { "%$it%" }
-            )
-            orderBy(id)
-        }
-
-        assertThat(selectStatement.selectStatement).isEqualTo(
-            "select first_name from Person where upper(first_name) like :p1 order by id"
-        )
-        assertThat(selectStatement.parameters).containsEntry("p1", "%W%")
-
-        val rows = template.selectList(selectStatement, String::class)
-
-        assertThat(rows).hasSize(1)
-        assertThat(rows[0]).isEqualTo("Wilma")
     }
 }

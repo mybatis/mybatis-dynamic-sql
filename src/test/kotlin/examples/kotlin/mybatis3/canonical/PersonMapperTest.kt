@@ -36,15 +36,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.mybatis.dynamic.sql.util.kotlin.elements.add
 import org.mybatis.dynamic.sql.util.kotlin.elements.constant
-import org.mybatis.dynamic.sql.util.kotlin.elements.isEqualTo
-import org.mybatis.dynamic.sql.util.kotlin.elements.isFalse
-import org.mybatis.dynamic.sql.util.kotlin.elements.isGreaterThan
 import org.mybatis.dynamic.sql.util.kotlin.elements.isIn
-import org.mybatis.dynamic.sql.util.kotlin.elements.isLessThan
-import org.mybatis.dynamic.sql.util.kotlin.elements.isLike
-import org.mybatis.dynamic.sql.util.kotlin.elements.isNotLike
-import org.mybatis.dynamic.sql.util.kotlin.elements.isNull
-import org.mybatis.dynamic.sql.util.kotlin.elements.isTrue
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.insertInto
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.select
 import java.io.InputStreamReader
@@ -77,8 +69,8 @@ class PersonMapperTest {
             val mapper = session.getMapper(PersonMapper::class.java)
 
             val rows = mapper.select {
-                where(id, isEqualTo(1))
-                or(occupation, isNull())
+                where { id isEqualTo 1 }
+                or { occupation.isNull() }
             }
 
             assertThat(rows).hasSize(3)
@@ -120,8 +112,8 @@ class PersonMapperTest {
             val mapper = session.getMapper(PersonMapper::class.java)
 
             val rows = mapper.selectDistinct {
-                where(id, isGreaterThan(1))
-                or(occupation, isNull())
+                where { id isGreaterThan 1 }
+                or { occupation.isNull() }
             }
 
             assertThat(rows).hasSize(5)
@@ -134,7 +126,7 @@ class PersonMapperTest {
             val mapper = session.getMapper(PersonMapper::class.java)
 
             val rows = mapper.select {
-                where(employed, isEqualTo(false))
+                where { employed isEqualTo false }
                 orderBy(id)
             }
 
@@ -160,7 +152,7 @@ class PersonMapperTest {
             val mapper = session.getMapper(PersonMapper::class.java)
 
             val rows = mapper.select {
-                where(firstName, isIn("Fred", "Barney"))
+                where { firstName.isIn("Fred", "Barney") }
             }
 
             assertThat(rows).hasSize(2)
@@ -190,7 +182,7 @@ class PersonMapperTest {
             val mapper = session.getMapper(PersonMapper::class.java)
 
             val rows = mapper.delete {
-                where(occupation, isNull())
+                where { occupation.isNull() }
             }
             assertThat(rows).isEqualTo(2)
         }
@@ -319,7 +311,7 @@ class PersonMapperTest {
 
             rows = mapper.update {
                 set(occupation).equalTo("Programmer")
-                where(id, isEqualTo(100))
+                where { id isEqualTo 100 }
             }
             assertThat(rows).isEqualTo(1)
 
@@ -340,7 +332,7 @@ class PersonMapperTest {
 
             rows = mapper.update {
                 set(occupation).equalTo("Programmer")
-                where(id, isEqualTo(100))
+                where { id isEqualTo 100 }
             }
             assertThat(rows).isEqualTo(1)
 
@@ -362,8 +354,8 @@ class PersonMapperTest {
 
             rows = mapper.update {
                 set(occupation).equalTo("Programmer")
-                where(id, isEqualTo(100))
-                and(firstName, isEqualTo("Joe"))
+                where { id isEqualTo 100 }
+                and { firstName isEqualTo "Joe" }
             }
 
             assertThat(rows).isEqualTo(1)
@@ -385,7 +377,7 @@ class PersonMapperTest {
 
             rows = mapper.update {
                 set(occupation).equalTo("Programmer")
-                where(id, isEqualTo(100))
+                where { id isEqualTo 100 }
             }
 
             assertThat(rows).isEqualTo(1)
@@ -449,7 +441,7 @@ class PersonMapperTest {
 
             rows = mapper.update {
                 set(occupation).equalTo("Programmer")
-                where(id, isEqualTo(100))
+                where { id isEqualTo 100 }
             }
 
             assertThat(rows).isEqualTo(1)
@@ -465,8 +457,9 @@ class PersonMapperTest {
             val mapper = session.getMapper(PersonMapper::class.java)
 
             val rows = mapper.count {
-                where(occupation, isNull()) {
-                    and(employed, isFalse())
+                where {
+                    occupation.isNull()
+                    and { employed.isFalse() }
                 }
             }
 
@@ -480,8 +473,8 @@ class PersonMapperTest {
             val mapper = session.getMapper(PersonMapper::class.java)
 
             val rows = mapper.count {
-                where(employed, isTrue())
-                and(occupation, isEqualTo("Brontosaurus Operator"))
+                where { employed.isTrue() }
+                and { occupation isEqualTo "Brontosaurus Operator" }
             }
 
             assertThat(rows).isEqualTo(2L)
@@ -494,8 +487,10 @@ class PersonMapperTest {
             val mapper = session.getMapper(PersonMapper::class.java)
 
             val rows = mapper.count {
-                where(id, isEqualTo(1))
-                or(id, isEqualTo(2))
+                where {
+                    id isEqualTo 1
+                    or { id isEqualTo 2 }
+                }
             }
 
             assertThat(rows).isEqualTo(2L)
@@ -508,9 +503,10 @@ class PersonMapperTest {
             val mapper = session.getMapper(PersonMapper::class.java)
 
             val rows = mapper.count {
-                where(id, isEqualTo(1))
-                or(id, isEqualTo(2)) {
-                    or(id, isEqualTo(3))
+                where { id isEqualTo 1 }
+                or {
+                    id isEqualTo 2
+                    or { id isEqualTo 3 }
                 }
             }
 
@@ -524,9 +520,10 @@ class PersonMapperTest {
             val mapper = session.getMapper(PersonMapper::class.java)
 
             val rows = mapper.count {
-                where(id, isLessThan(5))
-                and(id, isLessThan(3)) {
-                    and(id, isEqualTo(1))
+                where { id isLessThan 5 }
+                and {
+                    id isLessThan 3
+                    and { id isEqualTo 1 }
                 }
             }
 
@@ -573,7 +570,7 @@ class PersonMapperTest {
             val mapper = session.getMapper(PersonMapper::class.java)
 
             val rows = mapper.select {
-                where(lastName, isLike(LastName("Fl%")))
+                where { lastName isLike LastName("Fl%") }
                 orderBy(id)
             }
 
@@ -588,7 +585,7 @@ class PersonMapperTest {
             val mapper = session.getMapper(PersonMapper::class.java)
 
             val rows = mapper.select {
-                where(lastName, isNotLike(LastName("Fl%")))
+                where { lastName isNotLike LastName("Fl%") }
                 orderBy(id)
             }
 
@@ -634,7 +631,7 @@ class PersonMapperTest {
             val mapper = session.getMapper(PersonWithAddressMapper::class.java)
 
             val records = mapper.select {
-                where(id, isEqualTo(1))
+                where { id isEqualTo 1 }
             }
 
             assertThat(records).hasSize(1)
@@ -660,7 +657,7 @@ class PersonMapperTest {
             val mapper = session.getMapper(PersonWithAddressMapper::class.java)
 
             val records = mapper.selectDistinct {
-                where(id, isEqualTo(1))
+                where { id isEqualTo 1 }
             }
 
             assertThat(records).hasSize(1)
@@ -733,7 +730,7 @@ class PersonMapperTest {
 
             val selectStatement = select(address.addressType) {
                 from(address)
-                where(address.id, isEqualTo(4))
+                where { address.id isEqualTo 4 }
             }
 
             val type = mapper.selectOptionalInteger(selectStatement)

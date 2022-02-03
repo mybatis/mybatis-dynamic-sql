@@ -45,11 +45,6 @@ import org.mybatis.dynamic.sql.util.kotlin.elements.count
 import org.mybatis.dynamic.sql.util.kotlin.elements.equalTo
 import org.mybatis.dynamic.sql.util.kotlin.elements.insert
 import org.mybatis.dynamic.sql.util.kotlin.elements.insertMultiple
-import org.mybatis.dynamic.sql.util.kotlin.elements.isEqualTo
-import org.mybatis.dynamic.sql.util.kotlin.elements.isGreaterThan
-import org.mybatis.dynamic.sql.util.kotlin.elements.isLessThan
-import org.mybatis.dynamic.sql.util.kotlin.elements.isNotEqualTo
-import org.mybatis.dynamic.sql.util.kotlin.elements.isNotNull
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.count
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.countDistinct
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.countFrom
@@ -88,7 +83,7 @@ class GeneralKotlinTest {
             val mapper = session.getMapper(PersonMapper::class.java)
 
             val countStatement = countFrom(person) {
-                where(id, isLessThan(4))
+                where { id isLessThan 4 }
             }
 
             assertThat(countStatement.selectStatement).isEqualTo(
@@ -125,7 +120,7 @@ class GeneralKotlinTest {
 
             val countStatement = count(lastName) {
                 from(person)
-                where(id, isLessThan(4))
+                where { id isLessThan 4 }
             }
 
             assertThat(countStatement.selectStatement).isEqualTo(
@@ -145,7 +140,7 @@ class GeneralKotlinTest {
 
             val countStatement = countDistinct(lastName) {
                 from(person)
-                where(id, isLessThan(4))
+                where { id isLessThan 4 }
             }
 
             assertThat(countStatement.selectStatement).isEqualTo(
@@ -164,7 +159,7 @@ class GeneralKotlinTest {
             val mapper = session.getMapper(PersonMapper::class.java)
 
             val deleteStatement = deleteFrom(person) {
-                where(id, isLessThan(4))
+                where { id isLessThan 4 }
             }
 
             assertThat(deleteStatement.deleteStatement).isEqualTo(
@@ -183,8 +178,8 @@ class GeneralKotlinTest {
             val mapper = session.getMapper(PersonMapper::class.java)
 
             val deleteStatement = deleteFrom(person) {
-                where(id, isLessThan(4))
-                and(occupation, isNotNull())
+                where { id isLessThan 4 }
+                and { occupation.isNotNull() }
             }
 
             assertThat(deleteStatement.deleteStatement).isEqualTo(
@@ -203,8 +198,8 @@ class GeneralKotlinTest {
             val mapper = session.getMapper(PersonMapper::class.java)
 
             val deleteStatement = deleteFrom(person) {
-                where(id, isLessThan(4))
-                or(occupation, isNotNull())
+                where { id isLessThan 4 }
+                or { occupation.isNotNull() }
             }
 
             assertThat(deleteStatement.deleteStatement).isEqualTo(
@@ -223,10 +218,11 @@ class GeneralKotlinTest {
             val mapper = session.getMapper(PersonMapper::class.java)
 
             val deleteStatement = deleteFrom(person) {
-                where(id, isLessThan(4)) {
-                    or(occupation, isNotNull())
+                where {
+                    id isLessThan 4
+                    or { occupation.isNotNull() }
                 }
-                and(employed, isEqualTo(true))
+                and { employed isEqualTo true }
             }
 
             val expected = "delete from Person " +
@@ -248,9 +244,10 @@ class GeneralKotlinTest {
             val mapper = session.getMapper(PersonMapper::class.java)
 
             val deleteStatement = deleteFrom(person) {
-                where(id, isLessThan(4))
-                or(occupation, isNotNull()) {
-                    and(employed, isEqualTo(true))
+                where { id isLessThan 4 }
+                or {
+                    occupation.isNotNull()
+                    and { employed isEqualTo true }
                 }
             }
 
@@ -273,9 +270,10 @@ class GeneralKotlinTest {
             val mapper = session.getMapper(PersonMapper::class.java)
 
             val deleteStatement = deleteFrom(person) {
-                where(id, isLessThan(4))
-                and(occupation, isNotNull()) {
-                    and(employed, isEqualTo(true))
+                where { id isLessThan 4 }
+                and {
+                    occupation.isNotNull()
+                    and { employed isEqualTo true }
                 }
             }
 
@@ -386,10 +384,11 @@ class GeneralKotlinTest {
                 addressId
             ) {
                 from(person)
-                where(id, isLessThan(4)) {
-                    and(occupation, isNotNull())
+                where {
+                    id isLessThan 4
+                    and { occupation.isNotNull() }
                 }
-                and(occupation, isNotNull())
+                and { occupation.isNotNull() }
                 orderBy(id)
                 limit(3)
             }
@@ -419,10 +418,11 @@ class GeneralKotlinTest {
                 addressId
             ) {
                 from(person)
-                where(id, isLessThan(4)) {
-                    and(occupation, isNotNull())
+                where {
+                    id  isLessThan 4
+                    and { occupation.isNotNull() }
                 }
-                and(occupation, isNotNull())
+                and { occupation.isNotNull() }
                 orderBy(id)
                 limit(3)
             }
@@ -455,7 +455,7 @@ class GeneralKotlinTest {
                 join(address) {
                     on(addressId, equalTo(address.id))
                 }
-                where(id, isLessThan(4))
+                where { id isLessThan 4 }
                 orderBy(id)
                 limit(3)
             }
@@ -491,10 +491,12 @@ class GeneralKotlinTest {
                 join(address) {
                     on(addressId, equalTo(address.id))
                 }
-                where(id, isLessThan(5))
-                and(id, isLessThan(4)) {
-                    and(id, isLessThan(3)) {
-                        and(id, isLessThan(2))
+                where { id isLessThan 5 }
+                and {
+                    id isLessThan 4
+                    and {
+                        id isLessThan 3
+                        and { id isLessThan 2 }
                     }
                 }
             }
@@ -530,10 +532,12 @@ class GeneralKotlinTest {
                 join(address) {
                     on(addressId, equalTo(address.id))
                 }
-                where(id, isEqualTo(5))
-                or(id, isEqualTo(4)) {
-                    or(id, isEqualTo(3)) {
-                        or(id, isEqualTo(2))
+                where { id isEqualTo 5 }
+                or {
+                    id  isEqualTo 4
+                    or {
+                        id isEqualTo 3
+                        or { id isEqualTo 2 }
                     }
                 }
                 orderBy(id)
@@ -568,10 +572,12 @@ class GeneralKotlinTest {
                 addressId
             ) {
                 from(person)
-                where(id, isLessThan(5))
-                and(id, isLessThan(4)) {
-                    and(id, isLessThan(3)) {
-                        and(id, isLessThan(2))
+                where { id isLessThan 5 }
+                and {
+                    id isLessThan 4
+                    and {
+                        id isLessThan 3
+                        and { id isLessThan 2 }
                     }
                 }
                 orderBy(id)
@@ -612,10 +618,12 @@ class GeneralKotlinTest {
                 addressId
             ) {
                 from(person)
-                where(id, isEqualTo(5))
-                or(id, isEqualTo(4)) {
-                    or(id, isEqualTo(3)) {
-                        or(id, isEqualTo(2))
+                where { id isEqualTo 5 }
+                or {
+                    id isEqualTo 4
+                    or {
+                        id isEqualTo 3
+                        or { id isEqualTo 2 }
                     }
                 }
                 orderBy(id)
@@ -650,10 +658,12 @@ class GeneralKotlinTest {
     fun testRawSelectWithoutFrom() {
         assertThatExceptionOfType(UninitializedPropertyAccessException::class.java).isThrownBy {
             select(id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId) {
-                where(id, isEqualTo(5))
-                or(id, isEqualTo(4)) {
-                    or(id, isEqualTo(3)) {
-                        or(id, isEqualTo(2))
+                where { id isEqualTo 5 }
+                or {
+                    id isEqualTo 4
+                    or {
+                        id isEqualTo 3
+                        or { id isEqualTo 2 }
                     }
                 }
                 orderBy(id)
@@ -666,10 +676,12 @@ class GeneralKotlinTest {
     fun testRawCountWithoutFrom() {
         assertThatExceptionOfType(UninitializedPropertyAccessException::class.java).isThrownBy {
             count(id) {
-                where(id, isEqualTo(5))
-                or(id, isEqualTo(4)) {
-                    or(id, isEqualTo(3)) {
-                        or(id, isEqualTo(2))
+                where { id isEqualTo 5 }
+                or {
+                    id isEqualTo 4
+                    or {
+                        id isEqualTo 3
+                        or { id isEqualTo 2 }
                     }
                 }
             }
@@ -731,7 +743,7 @@ class GeneralKotlinTest {
 
         val ss = select(lastName, count()) {
             from(person)
-            where(firstName, isNotEqualTo("Bamm Bamm"))
+            where { firstName isNotEqualTo "Bamm Bamm" }
             groupBy(lastName)
             orderBy(lastName)
         }
@@ -751,7 +763,7 @@ class GeneralKotlinTest {
 
             val updateStatement = update(person) {
                 set(firstName).equalTo("Sam")
-                where(firstName, isEqualTo("Fred"))
+                where { firstName isEqualTo "Fred" }
             }
 
             assertThat(updateStatement.updateStatement).isEqualTo(
@@ -773,8 +785,9 @@ class GeneralKotlinTest {
 
             val updateStatement = update(person) {
                 set(firstName).equalTo("Sam")
-                where(firstName, isEqualTo("Fred")) {
-                    or(id, isGreaterThan(3))
+                where {
+                    firstName isEqualTo "Fred"
+                    or { id isGreaterThan 3 }
                 }
             }
 
@@ -797,9 +810,10 @@ class GeneralKotlinTest {
 
             val updateStatement = update(person) {
                 set(firstName).equalTo("Sam")
-                where(firstName, isEqualTo("Fred"))
-                or(id, isEqualTo(5)) {
-                    or(id, isEqualTo(6))
+                where { firstName isEqualTo "Fred" }
+                or {
+                    id isEqualTo 5
+                    or { id isEqualTo 6 }
                 }
             }
 
@@ -823,9 +837,10 @@ class GeneralKotlinTest {
 
             val updateStatement = update(person) {
                 set(firstName).equalTo("Sam")
-                where(firstName, isEqualTo("Fred"))
-                and(id, isEqualTo(1)) {
-                    or(id, isEqualTo(6))
+                where { firstName isEqualTo "Fred" }
+                and {
+                    id isEqualTo 1
+                    or { id isEqualTo 6 }
                 }
             }
 
@@ -849,8 +864,8 @@ class GeneralKotlinTest {
 
             val updateStatement = update(person) {
                 set(firstName).equalTo("Sam")
-                where(firstName, isEqualTo("Fred"))
-                or(id, isEqualTo(3))
+                where { firstName isEqualTo "Fred" }
+                or { id isEqualTo 3 }
             }
 
             assertThat(updateStatement.updateStatement).isEqualTo(

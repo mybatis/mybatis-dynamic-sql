@@ -31,7 +31,6 @@ import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.entry
 import org.junit.jupiter.api.Test
 import org.mybatis.dynamic.sql.util.kotlin.elements.equalTo
-import org.mybatis.dynamic.sql.util.kotlin.elements.isEqualTo
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.select
 import java.io.InputStreamReader
 import java.sql.DriverManager
@@ -125,7 +124,7 @@ class JoinMapperTest {
                 on(orderMaster.orderId, equalTo(orderDetail.orderId))
                 and(orderMaster.orderId, equalTo(orderDetail.orderId))
             }
-            where(orderMaster.orderId, isEqualTo(1))
+            where { orderMaster.orderId isEqualTo 1 }
         }
 
         val expectedStatement = "select om.order_id, om.order_date, od.line_number, od.description, od.quantity" +
@@ -150,7 +149,7 @@ class JoinMapperTest {
                 join(itemMaster, "im") {
                     on(orderLine.itemId, equalTo(itemMaster.itemId))
                 }
-                where(orderMaster.orderId, isEqualTo(2))
+                where { orderMaster.orderId isEqualTo 2 }
             }
 
             val expectedStatement = "select om.order_id, om.order_date, ol.line_number, im.description, ol.quantity" +
@@ -658,7 +657,7 @@ class JoinMapperTest {
                 join(user2, "u2") {
                     on(user.userId, equalTo(user2.parentId))
                 }
-                where(user2.userId, isEqualTo(4))
+                where { user2.userId isEqualTo 4 }
             }
 
             val expectedStatement = "select u1.user_id, u1.user_name, u1.parent_id" +
@@ -689,7 +688,7 @@ class JoinMapperTest {
                 join(user2) {
                     on(user.userId, equalTo(user2.parentId))
                 }
-                where(user2.userId, isEqualTo(4))
+                where { user2.userId isEqualTo 4 }
             }
 
             val expectedStatement = "select User.user_id, User.user_name, User.parent_id" +
@@ -721,7 +720,7 @@ class JoinMapperTest {
                 join(user2, "u2") {
                     on(user.userId, equalTo(user2.parentId))
                 }
-                where(user2.userId, isEqualTo(4))
+                where { user2.userId isEqualTo 4 }
             }
 
             val expectedStatement = "select u1.user_id, u1.user_name, u1.parent_id" +
