@@ -267,16 +267,24 @@ class GroupingCriteriaCollector {
         invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isNotInWhenPresent(values))
 
     infix fun <T : Any> BindableColumn<T>.isBetween(value1: T) =
-        InfixBetweenBuilder(value1) { invoke(it) }
+        SecondValueCollector<T> {
+            invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isBetween(value1).and(it))
+        }
 
     infix fun <T : Any> BindableColumn<T>.isBetweenWhenPresent(value1: T?) =
-        InfixBetweenWhenPresentBuilder(value1) { invoke(it) }
+        NullableSecondValueCollector<T> {
+            invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isBetweenWhenPresent(value1).and(it))
+        }
 
     infix fun <T : Any> BindableColumn<T>.isNotBetween(value1: T) =
-        InfixNotBetweenBuilder(value1) { invoke(it) }
+        SecondValueCollector<T> {
+            invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isNotBetween(value1).and(it))
+        }
 
     infix fun <T : Any> BindableColumn<T>.isNotBetweenWhenPresent(value1: T?) =
-        InfixNotBetweenWhenPresentBuilder(value1) { invoke(it) }
+        NullableSecondValueCollector<T> {
+            invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isNotBetweenWhenPresent(value1).and(it))
+        }
 
     // for string columns, but generic for columns with type handlers
     infix fun <T : Any> BindableColumn<T>.isLike(value: T) =
@@ -331,4 +339,12 @@ class GroupingCriteriaCollector {
 
     infix fun BindableColumn<String>.isNotInCaseInsensitiveWhenPresent(values: Collection<String?>?) =
         invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isNotInCaseInsensitiveWhenPresent(values))
+}
+
+class SecondValueCollector<T> (private val consumer: (T) -> Unit) {
+    infix fun and(value2: T) = consumer.invoke(value2)
+}
+
+class NullableSecondValueCollector<T> (private val consumer: (T?) -> Unit) {
+    infix fun and(value2: T?) = consumer.invoke(value2)
 }
