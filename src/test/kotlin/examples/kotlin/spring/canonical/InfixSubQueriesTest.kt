@@ -47,7 +47,7 @@ open class InfixSubQueriesTest {
         val selectStatement = select(id, firstName, lastName, birthDate, employed, occupation, addressId) {
             from(person)
             where {
-                id isEqualToSubQuery {
+                id isEqualTo {
                     select(max(id)) {
                         from(person)
                     }
@@ -78,7 +78,7 @@ open class InfixSubQueriesTest {
     fun testSelectNotEqualSubQuery() {
         val selectStatement = select(id, firstName, lastName, birthDate, employed, occupation, addressId) {
             from(person)
-            where { id isNotEqualToSubQuery {
+            where { id isNotEqualTo {
                     select(max(id)) {
                         from(person)
                     }
@@ -184,7 +184,7 @@ open class InfixSubQueriesTest {
         val selectStatement = select(id, firstName, lastName, birthDate, employed, occupation, addressId) {
             from(person)
             where {
-                id isLessThanSubQuery {
+                id isLessThan {
                     select(max(id)) {
                         from(person)
                     }
@@ -218,7 +218,7 @@ open class InfixSubQueriesTest {
         val selectStatement = select(id, firstName, lastName, birthDate, employed, occupation, addressId) {
             from(person)
             where {
-                id isLessThanOrEqualToSubQuery {
+                id isLessThanOrEqualTo {
                     select(max(id)) {
                         from(person)
                     }
@@ -252,7 +252,7 @@ open class InfixSubQueriesTest {
         val selectStatement = select(id, firstName, lastName, birthDate, employed, occupation, addressId) {
             from(person)
             where {
-                id isGreaterThanSubQuery {
+                id isGreaterThan {
                     select(min(id)) {
                         from(person)
                     }
@@ -286,7 +286,7 @@ open class InfixSubQueriesTest {
         val selectStatement = select(id, firstName, lastName, birthDate, employed, occupation, addressId) {
             from(person)
             where {
-                id isGreaterThanOrEqualToSubQuery {
+                id isGreaterThanOrEqualTo {
                     select(min(id)) {
                         from(person)
                     }
