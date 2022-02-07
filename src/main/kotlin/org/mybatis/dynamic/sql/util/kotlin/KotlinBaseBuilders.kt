@@ -154,7 +154,7 @@ abstract class KotlinBaseBuilder<D : AbstractWhereSupport<*>> {
     private fun applyToWhere(
         subCriteria: CriteriaReceiver,
         block: AbstractWhereDSL<*>.(List<AndOrCriteriaGroup>) -> Unit
-    ): Unit {
+    ) {
         getDsl().where().block(CriteriaCollector().apply(subCriteria).criteria)
     }
 
