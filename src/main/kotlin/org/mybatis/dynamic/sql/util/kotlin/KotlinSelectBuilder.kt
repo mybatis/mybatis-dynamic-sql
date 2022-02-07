@@ -26,7 +26,7 @@ typealias SelectCompleter = KotlinSelectBuilder.() -> Unit
 
 @Suppress("TooManyFunctions")
 class KotlinSelectBuilder(private val fromGatherer: QueryExpressionDSL.FromGatherer<SelectModel>) :
-    KotlinBaseJoiningBuilder<QueryExpressionDSL<SelectModel>, KotlinSelectBuilder>(), Buildable<SelectModel> {
+    KotlinBaseJoiningBuilder<QueryExpressionDSL<SelectModel>>(), Buildable<SelectModel> {
 
     private lateinit var dsl: QueryExpressionDSL<SelectModel>
 
@@ -82,8 +82,6 @@ class KotlinSelectBuilder(private val fromGatherer: QueryExpressionDSL.FromGathe
         }
 
     override fun build(): SelectModel = getDsl().build()
-
-    override fun self(): KotlinSelectBuilder = this
 
     override fun getDsl(): QueryExpressionDSL<SelectModel> {
         try {

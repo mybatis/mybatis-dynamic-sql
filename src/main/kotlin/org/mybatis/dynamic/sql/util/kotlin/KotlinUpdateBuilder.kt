@@ -24,15 +24,13 @@ import org.mybatis.dynamic.sql.util.Buildable
 typealias UpdateCompleter = KotlinUpdateBuilder.() -> Unit
 
 class KotlinUpdateBuilder(private val dsl: UpdateDSL<UpdateModel>) :
-    KotlinBaseBuilder<UpdateDSL<UpdateModel>, KotlinUpdateBuilder>(), Buildable<UpdateModel> {
+    KotlinBaseBuilder<UpdateDSL<UpdateModel>>(), Buildable<UpdateModel> {
 
     fun <T> set(column: SqlColumn<T>): KotlinSetClauseFinisher<T> = KotlinSetClauseFinisher(column)
 
     override fun build(): UpdateModel = dsl.build()
 
     override fun getDsl(): UpdateDSL<UpdateModel> = dsl
-
-    override fun self(): KotlinUpdateBuilder = this
 
     @MyBatisDslMarker
     @Suppress("TooManyFunctions")
