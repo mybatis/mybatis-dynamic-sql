@@ -32,7 +32,7 @@ GitHub milestone: [https://github.com/mybatis/mybatis-dynamic-sql/issues?q=miles
    as described in the documentation. This change greatly simplifies the type hierarchy of the Kotlin builders.
    ([#446](https://github.com/mybatis/mybatis-dynamic-sql/pull/446))
 6. Minor update the Kotlin join DSL to make it closer to natural SQL. The existing join methods are deprecated and
-   will be removed in version 1.5.0.
+   will be removed in version 1.5.0. ([#447](https://github.com/mybatis/mybatis-dynamic-sql/pull/447))
 
 ## Release 1.3.1 - December 18, 2021
 
