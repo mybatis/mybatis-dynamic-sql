@@ -922,7 +922,7 @@ fun PersonWithAddressMapper.select(completer: SelectCompleter): List<PersonWithA
     ) {
         from(person, "p")
         fullJoin(address) {
-            on(person.addressId, equalTo(address.id))
+            on(person.addressId) equalTo address.id
         }
         completer()
     }.run(this::selectMany)

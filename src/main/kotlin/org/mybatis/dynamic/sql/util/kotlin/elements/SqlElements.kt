@@ -76,6 +76,7 @@ import org.mybatis.dynamic.sql.where.condition.IsNotNull
 import org.mybatis.dynamic.sql.where.condition.IsNull
 
 // join support
+@Deprecated("Please use the infix function in the JoinCollector")
 fun equalTo(column: BasicColumn): EqualTo = SqlBuilder.equalTo(column)
 
 // aggregate support

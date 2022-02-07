@@ -396,25 +396,35 @@ This method creates models or providers depending on which package is used:
 Select statement support enables the creation of methods that execute a query allowing a user to specify a where clause,
 join specifications, order by clauses, group by clauses, pagination clauses, etc.
 
-The DSL for select statements looks like this:
+The full DSL for select statements looks like this:
 
 ```kotlin
-val selectStatement = select(id, firstName, lastName, birthDate, employed, occupation, addressId) {
-   from(person)
-   where { id isLessThan 5 }
-   and {
-      id isLessThan 4
-      and {
-         id isLessThan 3
-         or { id isLessThan 2 }
-      }
+val selectStatement = select(orderMaster.orderId, orderMaster.orderDate, orderDetail.lineNumber,
+   orderDetail.description, orderDetail.quantity
+) {
+   from(orderMaster, "om")
+   join(orderDetail, "od") {
+      on(orderMaster.orderId) equalTo orderDetail.orderId
+      and(orderMaster.orderId) equalTo orderDetail.orderId
    }
-   orderBy(id)
+   where { orderMaster.orderId isEqualTo 1 }
+   or {
+      orderMaster.orderId isEqualTo 2
+      and { orderDetail.quantity isLessThan 6 }
+   }
+   orderBy(orderMaster.orderId)
    limit(3)
 }
 ```
 
+In a select statement you must specify a table in a `from` clause. Everything else is optional.
+
+Multiple join clauses can be specified if you need to join additional tables. In a join clause, you must
+specify an `on` condition, and you may specify additional `and` conditions as necessary. Full, left, right, inner,
+and outer joins are supported.
+
 Where clauses can be of arbitrary complexity and support all SQL operators including exists operators, subqueries, etc.
+You can nest `and`, `or`, and `not` clauses as necessary in where clauses.
 
 There is also a method that will create a "distinct" query (`select distinct ...`) as follows:
 

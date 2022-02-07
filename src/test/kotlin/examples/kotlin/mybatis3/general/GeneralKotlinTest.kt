@@ -42,7 +42,6 @@ import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.junit.jupiter.api.Test
 import org.mybatis.dynamic.sql.util.kotlin.elements.count
-import org.mybatis.dynamic.sql.util.kotlin.elements.equalTo
 import org.mybatis.dynamic.sql.util.kotlin.elements.insert
 import org.mybatis.dynamic.sql.util.kotlin.elements.insertMultiple
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.count
@@ -453,7 +452,7 @@ class GeneralKotlinTest {
             ) {
                 from(person)
                 join(address) {
-                    on(addressId, equalTo(address.id))
+                    on(addressId) equalTo address.id
                 }
                 where { id isLessThan 4 }
                 orderBy(id)
@@ -489,7 +488,7 @@ class GeneralKotlinTest {
             ) {
                 from(person)
                 join(address) {
-                    on(addressId, equalTo(address.id))
+                    on(addressId) equalTo address.id
                 }
                 where { id isLessThan 5 }
                 and {
@@ -530,7 +529,7 @@ class GeneralKotlinTest {
             ) {
                 from(person)
                 join(address) {
-                    on(addressId, equalTo(address.id))
+                    on(addressId) equalTo address.id
                 }
                 where { id isEqualTo 5 }
                 or {

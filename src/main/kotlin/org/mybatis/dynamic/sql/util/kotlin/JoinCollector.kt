@@ -16,6 +16,7 @@
 package org.mybatis.dynamic.sql.util.kotlin
 
 import org.mybatis.dynamic.sql.BasicColumn
+import org.mybatis.dynamic.sql.SqlBuilder
 import org.mybatis.dynamic.sql.select.join.JoinCondition
 import org.mybatis.dynamic.sql.select.join.JoinCriterion
 
@@ -27,6 +28,25 @@ class JoinCollector {
     val andJoinCriteria = mutableListOf<JoinCriterion>()
     private lateinit var internalOnCriterion: JoinCriterion
 
+    fun on(leftColumn: BasicColumn): RightColumnCollector = RightColumnCollector {
+        internalOnCriterion = JoinCriterion.Builder()
+            .withConnector("on")
+            .withJoinColumn(leftColumn)
+            .withJoinCondition(it)
+            .build()
+    }
+
+    fun and(leftColumn: BasicColumn): RightColumnCollector = RightColumnCollector {
+        andJoinCriteria.add(
+            JoinCriterion.Builder()
+                .withConnector("and")
+                .withJoinColumn(leftColumn)
+                .withJoinCondition(it)
+                .build()
+        )
+    }
+
+    @Deprecated("Please use: on(leftColumn) equalTo rightColumn")
     fun on(column: BasicColumn, condition: JoinCondition) {
         internalOnCriterion = JoinCriterion.Builder()
             .withConnector("on")
@@ -35,6 +55,7 @@ class JoinCollector {
             .build()
     }
 
+    @Deprecated("Please use: and(leftColumn) equalTo rightColumn")
     fun and(column: BasicColumn, condition: JoinCondition) {
         andJoinCriteria.add(
             JoinCriterion.Builder()
@@ -44,4 +65,8 @@ class JoinCollector {
                 .build()
         )
     }
+}
+
+class RightColumnCollector(private val joinConditionConsumer: (JoinCondition) -> Unit) {
+    infix fun equalTo(rightColumn: BasicColumn) = joinConditionConsumer.invoke(SqlBuilder.equalTo(rightColumn))
 }

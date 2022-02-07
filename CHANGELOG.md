@@ -20,17 +20,19 @@ GitHub milestone: [https://github.com/mybatis/mybatis-dynamic-sql/issues?q=miles
    ([#438](https://github.com/mybatis/mybatis-dynamic-sql/pull/438))
 4. Major update to the Kotlin where clause DSL. Where clauses now support the "group" and "not" features from above. In
    addition, the where clause DSL has been fully updated to make it feel more like natural SQL. The previous version
-   of the where clause DSL yielded almost unreadable code when the "group" and "not" functions were added. This update
-   is better all around and yields a DSL that is very similar to native SQL. The new DSL includes many Kotlin DSL
-   construction features including infix functions, operator overloads, and functions with receivers. We believe it
-   will be well worth the effort to migrate to the new DSL. The prior where clause DSL remains in the library for now,
-   but is deprecated. It will be removed in version 1.5.0 of the library. Documentation for the new DSL is here:
-   https://github.com/mybatis/mybatis-dynamic-sql/blob/master/src/site/markdown/docs/kotlinWhereClauses.md
+   of the where clause DSL would have yielded almost unreadable code had the "group" and "not" functions been added.
+   This update is better all around and yields a DSL that is very similar to native SQL. The new DSL includes many
+   Kotlin DSL construction features including infix functions, operator overloads, and functions with receivers.
+   We believe it will be well worth the effort to migrate to the new DSL. The prior where clause DSL remains in the
+   library for now, but is deprecated. It will be removed in version 1.5.0 of the library. Documentation for the new
+   DSL is here: https://github.com/mybatis/mybatis-dynamic-sql/blob/master/src/site/markdown/docs/kotlinWhereClauses.md
    ([#442](https://github.com/mybatis/mybatis-dynamic-sql/pull/442))
 5. General cleanup of the Kotlin DSL. The Kotlin DSL functions are now mostly Unit functions. This should have
    no impact on most users and is source code compatible with prior versions of the library when the library was used
    as described in the documentation. This change greatly simplifies the type hierarchy of the Kotlin builders.
    ([#446](https://github.com/mybatis/mybatis-dynamic-sql/pull/446))
+6. Minor update the Kotlin join DSL to make it closer to natural SQL. The existing join methods are deprecated and
+   will be removed in version 1.5.0. ([#447](https://github.com/mybatis/mybatis-dynamic-sql/pull/447))
 
 ## Release 1.3.1 - December 18, 2021
 
