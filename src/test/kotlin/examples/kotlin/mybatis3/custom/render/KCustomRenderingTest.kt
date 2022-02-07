@@ -125,9 +125,9 @@ class KCustomRenderingTest {
         sqlSessionFactory.openSession().use { sqlSession ->
             val mapper = sqlSession.getMapper(KJsonTestMapper::class.java)
             var insertStatement = insertInto(jsonTest) {
-                set(id).toValue(1)
-                set(description).toValue("Fred")
-                set(info).toValue("{\"firstName\": \"Fred\", \"lastName\": \"Flintstone\", \"age\": 30}")
+                set(id) toValue 1
+                set(description) toValue "Fred"
+                set(info) toValue "{\"firstName\": \"Fred\", \"lastName\": \"Flintstone\", \"age\": 30}"
             }
             val expected = "insert into JsonTest (id, description, info) " +
                 "values (#{parameters.p1,jdbcType=INTEGER}, #{parameters.p2,jdbcType=VARCHAR}, " +
@@ -136,9 +136,9 @@ class KCustomRenderingTest {
             var rows = mapper!!.generalInsert(insertStatement)
             assertThat(rows).isEqualTo(1)
             insertStatement = insertInto(jsonTest) {
-                set(id).toValue(2)
-                set(description).toValue("Wilma")
-                set(info).toValue("{\"firstName\": \"Wilma\", \"lastName\": \"Flintstone\", \"age\": 25}")
+                set(id) toValue 2
+                set(description) toValue "Wilma"
+                set(info) toValue "{\"firstName\": \"Wilma\", \"lastName\": \"Flintstone\", \"age\": 25}"
             }
             rows = mapper.generalInsert(insertStatement)
             assertThat(rows).isEqualTo(1)

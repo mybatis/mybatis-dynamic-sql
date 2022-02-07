@@ -190,13 +190,13 @@ open class CanonicalSpringKotlinTemplateDirectTest {
     @Test
     fun testGeneralInsert() {
         val rows = template.insertInto(person) {
-            set(id).toValue(100)
-            set(firstName).toValue("Joe")
-            set(lastName).toValue(LastName("Jones"))
-            set(birthDate).toValue(Date())
-            set(employed).toValue(true)
-            set(occupation).toValue("Developer")
-            set(addressId).toValue(1)
+            set(id) toValue 100
+            set(firstName) toValue "Joe"
+            set(lastName) toValue LastName("Jones")
+            set(birthDate) toValue Date()
+            set(employed) toValue true
+            set(occupation) toValue "Developer"
+            set(addressId) toValue 1
         }
 
         assertThat(rows).isEqualTo(1)
@@ -279,8 +279,8 @@ open class CanonicalSpringKotlinTemplateDirectTest {
 
         val rows = template.withKeyHolder(keyHolder) {
             insertInto(generatedAlways) {
-                set(generatedAlways.firstName).toValue("Fred")
-                set(generatedAlways.lastName).toValue("Flintstone")
+                set(generatedAlways.firstName) toValue "Fred"
+                set(generatedAlways.lastName) toValue "Flintstone"
             }
         }
 

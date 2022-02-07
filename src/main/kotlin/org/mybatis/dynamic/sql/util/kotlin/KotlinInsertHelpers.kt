@@ -47,38 +47,38 @@ class KotlinGeneralInsertBuilder(private val dsl: GeneralInsertDSL) : Buildable<
                 set(column).toNull()
             }
 
-        fun toConstant(constant: String): Unit =
+        infix fun toConstant(constant: String): Unit =
             applyToDsl {
                 set(column).toConstant(constant)
             }
 
-        fun toStringConstant(constant: String): Unit =
+        infix fun toStringConstant(constant: String): Unit =
             applyToDsl {
                 set(column).toStringConstant(constant)
             }
 
-        fun toValue(value: T): Unit = toValue { value }
+        infix fun toValue(value: T): Unit = toValue { value }
 
-        fun toValue(value: () -> T): Unit =
+        infix fun toValue(value: () -> T): Unit =
             applyToDsl {
                 set(column).toValue(value)
             }
 
-        fun toValueOrNull(value: T?): Unit = toValueOrNull { value }
+        infix fun toValueOrNull(value: T?): Unit = toValueOrNull { value }
 
-        fun toValueOrNull(value: () -> T?): Unit =
+        infix fun toValueOrNull(value: () -> T?): Unit =
             applyToDsl {
                 set(column).toValueOrNull(value)
             }
 
-        fun toValueWhenPresent(value: T?): Unit = toValueWhenPresent { value }
+        infix fun toValueWhenPresent(value: T?): Unit = toValueWhenPresent { value }
 
-        fun toValueWhenPresent(value: () -> T?): Unit =
+        infix fun toValueWhenPresent(value: () -> T?): Unit =
             applyToDsl {
                 set(column).toValueWhenPresent(value)
             }
 
-        private fun applyToDsl(block: GeneralInsertDSL.() -> Unit): Unit {
+        private fun applyToDsl(block: GeneralInsertDSL.() -> Unit) {
             this@KotlinGeneralInsertBuilder.dsl.apply(block)
         }
     }

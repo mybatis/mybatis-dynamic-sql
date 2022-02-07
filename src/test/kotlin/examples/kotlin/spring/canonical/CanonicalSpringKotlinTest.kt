@@ -272,13 +272,13 @@ open class CanonicalSpringKotlinTest {
     fun testGeneralInsert() {
 
         val insertStatement = insertInto(person) {
-            set(id).toConstant("100")
-            set(firstName).toStringConstant("Joe")
-            set(lastName).toValue(LastName("Jones"))
-            set(birthDate).toValue(Date())
-            set(employed).toValue(true)
+            set(id) toConstant "100"
+            set(firstName) toStringConstant "Joe"
+            set(lastName) toValue LastName("Jones")
+            set(birthDate) toValue Date()
+            set(employed) toValue true
             set(occupation).toNull()
-            set(addressId).toValue(1)
+            set(addressId) toValue 1
         }
 
         val expected =
@@ -309,13 +309,13 @@ open class CanonicalSpringKotlinTest {
     fun testGeneralInsertSpecialConditions() {
 
         val insertStatement = insertInto(person) {
-            set(id).toConstant("100")
-            set(firstName).toStringConstant("Joe")
-            set(lastName).toValue(LastName("Jones"))
-            set(birthDate).toValue(Date())
-            set(employed).toValueOrNull(true)
-            set(occupation).toValueWhenPresent(null)
-            set(addressId).toValue(1)
+            set(id) toConstant "100"
+            set(firstName) toStringConstant "Joe"
+            set(lastName) toValue LastName("Jones")
+            set(birthDate) toValue Date()
+            set(employed) toValueOrNull true
+            set(occupation) toValueWhenPresent null
+            set(addressId) toValue 1
         }
 
         val expected =
@@ -453,8 +453,8 @@ open class CanonicalSpringKotlinTest {
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     fun testGeneralInsertWithGeneratedKey() {
         val insertStatement = insertInto(generatedAlways) {
-            set(generatedAlways.firstName).toValue("Fred")
-            set(generatedAlways.lastName).toValue("Flintstone")
+            set(generatedAlways.firstName) toValue "Fred"
+            set(generatedAlways.lastName) toValue "Flintstone"
         }
 
         val keyHolder = GeneratedKeyHolder()
