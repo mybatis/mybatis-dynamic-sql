@@ -147,7 +147,7 @@ abstract class KotlinBaseBuilder<D : AbstractWhereSupport<*>> {
 
     fun allRows() {}
 
-    private fun applyToWhere(block: AbstractWhereDSL<*>.() -> Unit): Unit {
+    private fun applyToWhere(block: AbstractWhereDSL<*>.() -> Unit) {
         getDsl().where().apply(block)
     }
 
