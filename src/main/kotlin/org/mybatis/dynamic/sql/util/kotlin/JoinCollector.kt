@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2021 the original author or authors.
+ *    Copyright 2016-2022 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -27,23 +27,21 @@ class JoinCollector {
     val andJoinCriteria = mutableListOf<JoinCriterion>()
     private lateinit var internalOnCriterion: JoinCriterion
 
-    fun on(column: BasicColumn, condition: JoinCondition): JoinCollector =
-        apply {
-            internalOnCriterion = JoinCriterion.Builder()
-                .withConnector("on")
+    fun on(column: BasicColumn, condition: JoinCondition) {
+        internalOnCriterion = JoinCriterion.Builder()
+            .withConnector("on")
+            .withJoinColumn(column)
+            .withJoinCondition(condition)
+            .build()
+    }
+
+    fun and(column: BasicColumn, condition: JoinCondition) {
+        andJoinCriteria.add(
+            JoinCriterion.Builder()
+                .withConnector("and")
                 .withJoinColumn(column)
                 .withJoinCondition(condition)
                 .build()
-        }
-
-    fun and(column: BasicColumn, condition: JoinCondition): JoinCollector =
-        apply {
-            andJoinCriteria.add(
-                JoinCriterion.Builder()
-                    .withConnector("and")
-                    .withJoinColumn(column)
-                    .withJoinCondition(condition)
-                    .build()
-            )
-        }
+        )
+    }
 }
