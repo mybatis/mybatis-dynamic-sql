@@ -968,7 +968,7 @@ open class CanonicalSpringKotlinTest {
     @Test
     fun testRawUpdate1() {
         val updateStatement = update(person) {
-            set(lastName).equalTo(LastName("Smith"))
+            set(lastName) equalTo LastName("Smith")
             where { firstName isEqualTo "Fred" }
         }
 
@@ -988,7 +988,7 @@ open class CanonicalSpringKotlinTest {
     @Test
     fun testRawUpdate2() {
         val updateStatement = update(person) {
-            set(firstName).equalTo("Sam")
+            set(firstName) equalTo "Sam"
             where {
                 firstName isEqualTo "Fred"
                 or { id isGreaterThan 3 }
@@ -1009,7 +1009,7 @@ open class CanonicalSpringKotlinTest {
     @Test
     fun testRawUpdate3() {
         val updateStatement = update(person) {
-            set(firstName).equalTo("Sam")
+            set(firstName) equalTo "Sam"
             where { firstName isEqualTo "Fred" }
             or {
                 id isEqualTo 5
@@ -1032,7 +1032,7 @@ open class CanonicalSpringKotlinTest {
     @Test
     fun testRawUpdate4() {
         val updateStatement = update(person) {
-            set(firstName).equalTo("Sam")
+            set(firstName) equalTo "Sam"
             where { firstName isEqualTo "Fred" }
             and {
                 id isEqualTo 1
@@ -1055,7 +1055,7 @@ open class CanonicalSpringKotlinTest {
     @Test
     fun testRawUpdate5() {
         val updateStatement = update(person) {
-            set(firstName).equalTo("Sam")
+            set(firstName) equalTo "Sam"
             where { firstName isEqualTo "Fred" }
             or { id isEqualTo 3 }
         }
@@ -1075,7 +1075,7 @@ open class CanonicalSpringKotlinTest {
     @Test
     fun testRawUpdate6() {
         val updateStatement = update(person) {
-            set(occupation).equalToOrNull(null)
+            set(occupation) equalToOrNull  null
             where { firstName isEqualTo "Fred" }
             or { id isEqualTo 3 }
         }
@@ -1095,7 +1095,7 @@ open class CanonicalSpringKotlinTest {
     @Test
     fun testUpdateWithTypeConverterAndNullValue() {
         val updateStatement = update(person) {
-            set(firstName).equalTo("Sam")
+            set(firstName) equalTo "Sam"
             set(lastName).equalToNull()
             where { id isEqualTo 3 }
         }
@@ -1127,8 +1127,8 @@ open class CanonicalSpringKotlinTest {
     @Test
     fun testUpdateWithTypeConverterAndNonNullValue() {
         val updateStatement = update(person) {
-            set(firstName).equalTo("Sam")
-            set(lastName).equalTo(LastName("Smith"))
+            set(firstName) equalTo "Sam"
+            set(lastName) equalTo LastName("Smith")
             where { id isEqualTo 3 }
         }
 
@@ -1189,7 +1189,7 @@ open class CanonicalSpringKotlinTest {
     @Test
     fun testUpdateSetToConstant() {
         val updateStatement = update(person) {
-            set(addressId).equalToConstant("5")
+            set(addressId) equalToConstant "5"
             where { id isEqualTo 3 }
         }
 
@@ -1218,7 +1218,7 @@ open class CanonicalSpringKotlinTest {
     @Test
     fun testUpdateSetToColumn() {
         val updateStatement = update(person) {
-            set(addressId).equalTo(id)
+            set(addressId) equalTo id
             where { id isEqualTo 3 }
         }
 
@@ -1247,7 +1247,7 @@ open class CanonicalSpringKotlinTest {
     @Test
     fun testUpdateSetToSubQuery() {
         val updateStatement = update(person) {
-            set(addressId).equalToQueryResult {
+            set(addressId) equalToQueryResult {
                 select(add(max(addressId), constant<Int>("1"))) {
                     from(person)
                 }
@@ -1280,8 +1280,8 @@ open class CanonicalSpringKotlinTest {
     @Test
     fun testUpdateSetEqualToWhenPresent() {
         val updateStatement = update(person) {
-            set(addressId).equalTo(5)
-            set(firstName).equalToWhenPresent(null)
+            set(addressId) equalTo 5
+            set(firstName) equalToWhenPresent null
             where { id isEqualTo 3 }
         }
 

@@ -139,44 +139,44 @@ fun PersonMapper.update(completer: UpdateCompleter) =
 
 fun KotlinUpdateBuilder.updateAllColumns(record: PersonRecord) =
     apply {
-        set(id).equalToOrNull(record::id)
-        set(firstName).equalToOrNull(record::firstName)
-        set(lastName).equalToOrNull(record::lastName)
-        set(birthDate).equalToOrNull(record::birthDate)
-        set(employed).equalToOrNull(record::employed)
-        set(occupation).equalToOrNull(record::occupation)
-        set(addressId).equalToOrNull(record::addressId)
+        set(id) equalToOrNull record::id
+        set(firstName) equalToOrNull record::firstName
+        set(lastName) equalToOrNull record::lastName
+        set(birthDate) equalToOrNull record::birthDate
+        set(employed) equalToOrNull record::employed
+        set(occupation) equalToOrNull record::occupation
+        set(addressId) equalToOrNull record::addressId
     }
 
 fun KotlinUpdateBuilder.updateSelectiveColumns(record: PersonRecord) =
     apply {
-        set(id).equalToWhenPresent(record::id)
-        set(firstName).equalToWhenPresent(record::firstName)
-        set(lastName).equalToWhenPresent(record::lastName)
-        set(birthDate).equalToWhenPresent(record::birthDate)
-        set(employed).equalToWhenPresent(record::employed)
-        set(occupation).equalToWhenPresent(record::occupation)
-        set(addressId).equalToWhenPresent(record::addressId)
+        set(id) equalToWhenPresent record::id
+        set(firstName) equalToWhenPresent record::firstName
+        set(lastName) equalToWhenPresent record::lastName
+        set(birthDate) equalToWhenPresent record::birthDate
+        set(employed) equalToWhenPresent record::employed
+        set(occupation) equalToWhenPresent record::occupation
+        set(addressId) equalToWhenPresent record::addressId
     }
 
 fun PersonMapper.updateByPrimaryKey(record: PersonRecord) =
     update {
-        set(firstName).equalToOrNull(record::firstName)
-        set(lastName).equalToOrNull(record::lastName)
-        set(birthDate).equalToOrNull(record::birthDate)
-        set(employed).equalToOrNull(record::employed)
-        set(occupation).equalToOrNull(record::occupation)
-        set(addressId).equalToOrNull(record::addressId)
+        set(firstName) equalToOrNull record::firstName
+        set(lastName) equalToOrNull record::lastName
+        set(birthDate) equalToOrNull record::birthDate
+        set(employed) equalToOrNull record::employed
+        set(occupation) equalToOrNull record::occupation
+        set(addressId) equalToOrNull record::addressId
         where { id isEqualTo record.id!! }
     }
 
 fun PersonMapper.updateByPrimaryKeySelective(record: PersonRecord) =
     update {
-        set(firstName).equalToWhenPresent(record::firstName)
-        set(lastName).equalToWhenPresent(record::lastName)
-        set(birthDate).equalToWhenPresent(record::birthDate)
-        set(employed).equalToWhenPresent(record::employed)
-        set(occupation).equalToWhenPresent(record::occupation)
-        set(addressId).equalToWhenPresent(record::addressId)
+        set(firstName) equalToWhenPresent record::firstName
+        set(lastName) equalToWhenPresent record::lastName
+        set(birthDate) equalToWhenPresent record::birthDate
+        set(employed) equalToWhenPresent record::employed
+        set(occupation) equalToWhenPresent record::occupation
+        set(addressId) equalToWhenPresent record::addressId
         where { id isEqualTo record.id!! }
     }

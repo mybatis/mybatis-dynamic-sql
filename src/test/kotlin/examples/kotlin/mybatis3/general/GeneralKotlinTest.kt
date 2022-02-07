@@ -761,7 +761,7 @@ class GeneralKotlinTest {
             val mapper = session.getMapper(PersonMapper::class.java)
 
             val updateStatement = update(person) {
-                set(firstName).equalTo("Sam")
+                set(firstName) equalTo  "Sam"
                 where { firstName isEqualTo "Fred" }
             }
 
@@ -783,7 +783,7 @@ class GeneralKotlinTest {
             val mapper = session.getMapper(PersonMapper::class.java)
 
             val updateStatement = update(person) {
-                set(firstName).equalTo("Sam")
+                set(firstName) equalTo "Sam"
                 where {
                     firstName isEqualTo "Fred"
                     or { id isGreaterThan 3 }
@@ -808,7 +808,7 @@ class GeneralKotlinTest {
             val mapper = session.getMapper(PersonMapper::class.java)
 
             val updateStatement = update(person) {
-                set(firstName).equalTo("Sam")
+                set(firstName) equalTo "Sam"
                 where { firstName isEqualTo "Fred" }
                 or {
                     id isEqualTo 5
@@ -835,7 +835,7 @@ class GeneralKotlinTest {
             val mapper = session.getMapper(PersonMapper::class.java)
 
             val updateStatement = update(person) {
-                set(firstName).equalTo("Sam")
+                set(firstName) equalTo "Sam"
                 where { firstName isEqualTo "Fred" }
                 and {
                     id isEqualTo 1
@@ -862,7 +862,7 @@ class GeneralKotlinTest {
             val mapper = session.getMapper(PersonMapper::class.java)
 
             val updateStatement = update(person) {
-                set(firstName).equalTo("Sam")
+                set(firstName) equalTo  "Sam"
                 where { firstName isEqualTo "Fred" }
                 or { id isEqualTo 3 }
             }

@@ -217,8 +217,7 @@ class KCustomRenderingTest {
             var rows = mapper.insertMultiple(insertStatement)
             assertThat(rows).isEqualTo(2)
             val updateStatement = update(jsonTest) {
-                set(info)
-                    .equalTo("{\"firstName\": \"Wilma\", \"lastName\": \"Flintstone\", \"age\": 26}")
+                set(info) equalTo "{\"firstName\": \"Wilma\", \"lastName\": \"Flintstone\", \"age\": 26}"
                 where { id isEqualTo 2 }
             }
             val expected = "update JsonTest " +

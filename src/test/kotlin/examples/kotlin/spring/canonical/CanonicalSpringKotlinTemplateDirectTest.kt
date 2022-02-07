@@ -604,7 +604,7 @@ open class CanonicalSpringKotlinTemplateDirectTest {
     @Test
     fun testUpdate1() {
         val rows = template.update(person) {
-            set(firstName).equalTo("Sam")
+            set(firstName) equalTo "Sam"
             where { firstName isEqualTo "Fred" }
         }
 
@@ -614,7 +614,7 @@ open class CanonicalSpringKotlinTemplateDirectTest {
     @Test
     fun testUpdate2() {
         val rows = template.update(person) {
-            set(firstName).equalTo("Sam")
+            set(firstName) equalTo "Sam"
             where {
                 firstName isEqualTo "Fred"
                 or { id isGreaterThan 3 }
@@ -627,7 +627,7 @@ open class CanonicalSpringKotlinTemplateDirectTest {
     @Test
     fun testUpdate3() {
         val rows = template.update(person) {
-            set(firstName).equalTo("Sam")
+            set(firstName) equalTo "Sam"
             where { firstName isEqualTo "Fred" }
             or {
                 id isEqualTo 5
@@ -641,7 +641,7 @@ open class CanonicalSpringKotlinTemplateDirectTest {
     @Test
     fun testUpdate4() {
         val rows = template.update(person) {
-            set(firstName).equalTo("Sam")
+            set(firstName) equalTo  "Sam"
             where { firstName isEqualTo "Fred" }
             and {
                 id isEqualTo 1
@@ -655,7 +655,7 @@ open class CanonicalSpringKotlinTemplateDirectTest {
     @Test
     fun testUpdate5() {
         val rows = template.update(person) {
-            set(firstName).equalTo("Sam")
+            set(firstName) equalTo "Sam"
             where { firstName isEqualTo "Fred" }
             or { id isEqualTo 3 }
         }

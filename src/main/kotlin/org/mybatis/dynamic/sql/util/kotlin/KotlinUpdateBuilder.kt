@@ -40,46 +40,46 @@ class KotlinUpdateBuilder(private val dsl: UpdateDSL<UpdateModel>) :
                 set(column).equalToNull()
             }
 
-        fun equalToConstant(constant: String): Unit =
+        infix fun equalToConstant(constant: String): Unit =
             applyToDsl {
                 set(column).equalToConstant(constant)
             }
 
-        fun equalToStringConstant(constant: String): Unit =
+        infix fun equalToStringConstant(constant: String): Unit =
             applyToDsl {
                 set(column).equalToStringConstant(constant)
             }
 
-        fun equalTo(value: T): Unit = equalTo { value }
+        infix fun equalTo(value: T): Unit = equalTo { value }
 
-        fun equalTo(value: () -> T): Unit =
+        infix fun equalTo(value: () -> T): Unit =
             applyToDsl {
                 set(column).equalTo(value)
             }
 
-        fun equalTo(rightColumn: BasicColumn): Unit =
+        infix fun equalTo(rightColumn: BasicColumn): Unit =
             applyToDsl {
                 set(column).equalTo(rightColumn)
             }
 
-        fun equalToOrNull(value: T?): Unit = equalToOrNull { value }
+        infix fun equalToOrNull(value: T?): Unit = equalToOrNull { value }
 
-        fun equalToOrNull(value: () -> T?): Unit =
+        infix fun equalToOrNull(value: () -> T?): Unit =
             applyToDsl {
                 set(column).equalToOrNull(value)
             }
 
-        fun equalToQueryResult(subQuery: KotlinSubQueryBuilder.() -> Unit): Unit =
+        infix fun equalToQueryResult(subQuery: KotlinSubQueryBuilder.() -> Unit): Unit =
             applyToDsl {
                 set(column).equalTo(KotlinSubQueryBuilder().apply(subQuery))
             }
 
-        fun equalToWhenPresent(value: () -> T?): Unit =
+        infix fun equalToWhenPresent(value: () -> T?): Unit =
             applyToDsl {
                 set(column).equalToWhenPresent(value)
             }
 
-        fun equalToWhenPresent(value: T?): Unit = equalToWhenPresent { value }
+        infix fun equalToWhenPresent(value: T?): Unit = equalToWhenPresent { value }
 
         private fun applyToDsl(block: UpdateDSL<UpdateModel>.() -> Unit) {
             this@KotlinUpdateBuilder.dsl.apply(block)

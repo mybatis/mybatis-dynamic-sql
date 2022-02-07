@@ -310,7 +310,7 @@ class PersonMapperTest {
             assertThat(rows).isEqualTo(1)
 
             rows = mapper.update {
-                set(occupation).equalTo("Programmer")
+                set(occupation) equalTo  "Programmer"
                 where { id isEqualTo 100 }
             }
             assertThat(rows).isEqualTo(1)
@@ -331,7 +331,7 @@ class PersonMapperTest {
             assertThat(rows).isEqualTo(1)
 
             rows = mapper.update {
-                set(occupation).equalTo("Programmer")
+                set(occupation) equalTo "Programmer"
                 where { id isEqualTo 100 }
             }
             assertThat(rows).isEqualTo(1)
@@ -353,7 +353,7 @@ class PersonMapperTest {
             assertThat(rows).isEqualTo(1)
 
             rows = mapper.update {
-                set(occupation).equalTo("Programmer")
+                set(occupation) equalTo "Programmer"
                 where { id isEqualTo 100 }
                 and { firstName isEqualTo "Joe" }
             }
@@ -376,7 +376,7 @@ class PersonMapperTest {
             assertThat(rows).isEqualTo(1)
 
             rows = mapper.update {
-                set(occupation).equalTo("Programmer")
+                set(occupation) equalTo "Programmer"
                 where { id isEqualTo 100 }
             }
 
@@ -398,7 +398,7 @@ class PersonMapperTest {
             assertThat(rows).isEqualTo(1)
 
             rows = mapper.update {
-                set(occupation).equalTo("Programmer")
+                set(occupation) equalTo "Programmer"
             }
 
             assertThat(rows).isEqualTo(7)
@@ -419,7 +419,7 @@ class PersonMapperTest {
             assertThat(rows).isEqualTo(1)
 
             rows = mapper.update {
-                set(occupation).equalTo("Programmer")
+                set(occupation) equalTo "Programmer"
             }
 
             assertThat(rows).isEqualTo(7)
@@ -440,7 +440,7 @@ class PersonMapperTest {
             assertThat(rows).isEqualTo(1)
 
             rows = mapper.update {
-                set(occupation).equalTo("Programmer")
+                set(occupation) equalTo "Programmer"
                 where { id isEqualTo 100 }
             }
 
