@@ -35,55 +35,54 @@ class KotlinUpdateBuilder(private val dsl: UpdateDSL<UpdateModel>) :
     @MyBatisDslMarker
     @Suppress("TooManyFunctions")
     inner class KotlinSetClauseFinisher<T>(private val column: SqlColumn<T>) {
-        fun equalToNull(): KotlinUpdateBuilder =
+        fun equalToNull(): Unit =
             applyToDsl {
                 set(column).equalToNull()
             }
 
-        fun equalToConstant(constant: String): KotlinUpdateBuilder =
+        fun equalToConstant(constant: String): Unit =
             applyToDsl {
                 set(column).equalToConstant(constant)
             }
 
-        fun equalToStringConstant(constant: String): KotlinUpdateBuilder =
+        fun equalToStringConstant(constant: String): Unit =
             applyToDsl {
                 set(column).equalToStringConstant(constant)
             }
 
-        fun equalTo(value: T): KotlinUpdateBuilder = equalTo { value }
+        fun equalTo(value: T): Unit = equalTo { value }
 
-        fun equalTo(value: () -> T): KotlinUpdateBuilder =
+        fun equalTo(value: () -> T): Unit =
             applyToDsl {
                 set(column).equalTo(value)
             }
 
-        fun equalTo(rightColumn: BasicColumn): KotlinUpdateBuilder =
+        fun equalTo(rightColumn: BasicColumn): Unit =
             applyToDsl {
                 set(column).equalTo(rightColumn)
             }
 
-        fun equalToOrNull(value: T?): KotlinUpdateBuilder = equalToOrNull { value }
+        fun equalToOrNull(value: T?): Unit = equalToOrNull { value }
 
-        fun equalToOrNull(value: () -> T?): KotlinUpdateBuilder =
+        fun equalToOrNull(value: () -> T?): Unit =
             applyToDsl {
                 set(column).equalToOrNull(value)
             }
 
-        fun equalToQueryResult(subQuery: KotlinSubQueryBuilder.() -> Unit): KotlinUpdateBuilder =
+        fun equalToQueryResult(subQuery: KotlinSubQueryBuilder.() -> Unit): Unit =
             applyToDsl {
                 set(column).equalTo(KotlinSubQueryBuilder().apply(subQuery))
             }
 
-        fun equalToWhenPresent(value: () -> T?): KotlinUpdateBuilder =
+        fun equalToWhenPresent(value: () -> T?): Unit =
             applyToDsl {
                 set(column).equalToWhenPresent(value)
             }
 
-        fun equalToWhenPresent(value: T?): KotlinUpdateBuilder = equalToWhenPresent { value }
+        fun equalToWhenPresent(value: T?): Unit = equalToWhenPresent { value }
 
-        private fun applyToDsl(block: UpdateDSL<UpdateModel>.() -> Unit): KotlinUpdateBuilder =
-            this@KotlinUpdateBuilder.apply {
-                dsl.apply(block)
-            }
+        private fun applyToDsl(block: UpdateDSL<UpdateModel>.() -> Unit) {
+            this@KotlinUpdateBuilder.dsl.apply(block)
+        }
     }
 }
