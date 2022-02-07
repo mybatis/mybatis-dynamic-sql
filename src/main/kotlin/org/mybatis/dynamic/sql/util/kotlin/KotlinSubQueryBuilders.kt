@@ -49,7 +49,7 @@ sealed class KotlinBaseSubQueryBuilder : Buildable<SelectModel> {
         }
 }
 
-class KotlinSubQueryBuilder : KotlinBaseSubQueryBuilder() {}
+class KotlinSubQueryBuilder : KotlinBaseSubQueryBuilder()
 
 class KotlinQualifiedSubQueryBuilder : KotlinBaseSubQueryBuilder() {
     var correlationName: String? = null
