@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2021 the original author or authors.
+ *    Copyright 2016-2022 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 package org.mybatis.dynamic.sql.util.kotlin
 
 import org.mybatis.dynamic.sql.BasicColumn
-import org.mybatis.dynamic.sql.SqlBuilder
 import org.mybatis.dynamic.sql.select.join.JoinCondition
 import org.mybatis.dynamic.sql.select.join.JoinCriterion
 
@@ -47,26 +46,24 @@ class JoinCollector {
     }
 
     @Deprecated("Please use: on(leftColumn) equalTo rightColumn")
-    fun on(column: BasicColumn, condition: JoinCondition): JoinCollector =
-        apply {
-            internalOnCriterion = JoinCriterion.Builder()
-                .withConnector("on")
+    fun on(column: BasicColumn, condition: JoinCondition) {
+        internalOnCriterion = JoinCriterion.Builder()
+            .withConnector("on")
+            .withJoinColumn(column)
+            .withJoinCondition(condition)
+            .build()
+    }
+
+    @Deprecated("Please use: and(leftColumn) equalTo rightColumn")
+    fun and(column: BasicColumn, condition: JoinCondition) {
+        andJoinCriteria.add(
+            JoinCriterion.Builder()
+                .withConnector("and")
                 .withJoinColumn(column)
                 .withJoinCondition(condition)
                 .build()
-        }
-
-    @Deprecated("Please use: and(leftColumn) equalTo rightColumn")
-    fun and(column: BasicColumn, condition: JoinCondition): JoinCollector =
-        apply {
-            andJoinCriteria.add(
-                JoinCriterion.Builder()
-                    .withConnector("and")
-                    .withJoinColumn(column)
-                    .withJoinCondition(condition)
-                    .build()
-            )
-        }
+        )
+    }
 }
 
 class RightColumnCollector(private val joinConditionConsumer: (JoinCondition) -> Unit) {

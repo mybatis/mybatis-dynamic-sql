@@ -35,20 +35,20 @@ class CriteriaCollector {
         column: BindableColumn<T>,
         condition: VisitableCondition<T>,
         criteriaReceiver: CriteriaReceiver = {}
-    ): CriteriaCollector =
+    ): Unit =
         addCriteriaGroup("and", buildCriterion(column, condition), criteriaReceiver)
 
-    fun and(existsPredicate: ExistsPredicate, criteriaReceiver: CriteriaReceiver = {}): CriteriaCollector =
+    fun and(existsPredicate: ExistsPredicate, criteriaReceiver: CriteriaReceiver = {}): Unit =
         addCriteriaGroup("and", buildCriterion(existsPredicate), criteriaReceiver)
 
     fun <T> or(
         column: BindableColumn<T>,
         condition: VisitableCondition<T>,
         criteriaReceiver: CriteriaReceiver = {}
-    ): CriteriaCollector =
+    ): Unit =
         addCriteriaGroup("or", buildCriterion(column, condition), criteriaReceiver)
 
-    fun or(existsPredicate: ExistsPredicate, criteriaReceiver: CriteriaReceiver = {}): CriteriaCollector =
+    fun or(existsPredicate: ExistsPredicate, criteriaReceiver: CriteriaReceiver = {}): Unit =
         addCriteriaGroup("or", buildCriterion(existsPredicate), criteriaReceiver)
 
     private fun <T> buildCriterion(
@@ -64,14 +64,13 @@ class CriteriaCollector {
         connector: String,
         initialCriterion: SqlCriterion,
         criteriaReceiver: CriteriaReceiver
-    ) =
-        apply {
-            criteria.add(
-                AndOrCriteriaGroup.Builder()
-                    .withInitialCriterion(initialCriterion)
-                    .withSubCriteria(CriteriaCollector().apply(criteriaReceiver).criteria)
-                    .withConnector(connector)
-                    .build()
-            )
-        }
+    ) {
+        criteria.add(
+            AndOrCriteriaGroup.Builder()
+                .withInitialCriterion(initialCriterion)
+                .withSubCriteria(CriteriaCollector().apply(criteriaReceiver).criteria)
+                .withConnector(connector)
+                .build()
+        )
+    }
 }

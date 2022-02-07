@@ -28,7 +28,7 @@ import org.mybatis.dynamic.sql.where.AbstractWhereSupport
 @DslMarker
 annotation class MyBatisDslMarker
 
-typealias WhereApplier = KotlinBaseBuilder<*, *>.() -> Unit
+typealias WhereApplier = KotlinBaseBuilder<*>.() -> Unit
 
 fun WhereApplier.andThen(after: WhereApplier): WhereApplier = {
     invoke(this)
@@ -37,7 +37,7 @@ fun WhereApplier.andThen(after: WhereApplier): WhereApplier = {
 
 @MyBatisDslMarker
 @Suppress("TooManyFunctions")
-abstract class KotlinBaseBuilder<D : AbstractWhereSupport<*>, B : KotlinBaseBuilder<D, B>> {
+abstract class KotlinBaseBuilder<D : AbstractWhereSupport<*>> {
     fun where(criteria: GroupingCriteriaReceiver): Unit =
         with(GroupingCriteriaCollector().apply(criteria)) {
             this@KotlinBaseBuilder.getDsl().where(initialCriterion, subCriteria)
@@ -53,21 +53,18 @@ abstract class KotlinBaseBuilder<D : AbstractWhereSupport<*>, B : KotlinBaseBuil
             this@KotlinBaseBuilder.getDsl().where().or(initialCriterion, subCriteria)
         }
 
-    fun applyWhere(whereApplier: WhereApplier): B =
-        self().apply {
-            whereApplier.invoke(this)
-        }
+    fun applyWhere(whereApplier: WhereApplier) = whereApplier.invoke(this)
 
     @Deprecated("Deprecated in favor of the new where clause DSL. Update by moving the column and condition " +
             "into a lambda and rewriting the condition to use an infix function.")
-    fun <T> where(column: BindableColumn<T>, condition: VisitableCondition<T>): B =
+    fun <T> where(column: BindableColumn<T>, condition: VisitableCondition<T>): Unit =
         applyToWhere {
             where(column, condition)
         }
 
     @Deprecated("Deprecated in favor of the new where clause DSL. Update by moving the column and condition " +
             "inside the lambda and rewriting the condition to use an infix function.")
-    fun <T> where(column: BindableColumn<T>, condition: VisitableCondition<T>, subCriteria: CriteriaReceiver): B =
+    fun <T> where(column: BindableColumn<T>, condition: VisitableCondition<T>, subCriteria: CriteriaReceiver): Unit =
         applyToWhere(subCriteria) { sc ->
             where(column, condition, sc)
         }
@@ -76,28 +73,28 @@ abstract class KotlinBaseBuilder<D : AbstractWhereSupport<*>, B : KotlinBaseBuil
         message = "Deprecated in favor of the new where clause DSL.",
         replaceWith = ReplaceWith("where { existsPredicate }")
     )
-    fun where(existsPredicate: ExistsPredicate): B =
+    fun where(existsPredicate: ExistsPredicate): Unit =
         applyToWhere {
             where(existsPredicate)
         }
 
     @Deprecated("Deprecated in favor of the new where clause DSL. Update by moving the exists expression " +
             "into the lambda.")
-    fun where(existsPredicate: ExistsPredicate, subCriteria: CriteriaReceiver): B =
+    fun where(existsPredicate: ExistsPredicate, subCriteria: CriteriaReceiver): Unit =
         applyToWhere(subCriteria) { sc ->
             where(existsPredicate, sc)
         }
 
     @Deprecated("Deprecated in favor of the new where clause DSL. Update by moving the column and condition " +
             "into a lambda and rewriting the condition to use an infix function.")
-    fun <T> and(column: BindableColumn<T>, condition: VisitableCondition<T>): B =
+    fun <T> and(column: BindableColumn<T>, condition: VisitableCondition<T>): Unit =
         applyToWhere {
             and(column, condition)
         }
 
     @Deprecated("Deprecated in favor of the new where clause DSL. Update by moving the column and condition " +
             "inside the lambda and rewriting the condition to use an infix function.")
-    fun <T> and(column: BindableColumn<T>, condition: VisitableCondition<T>, subCriteria: CriteriaReceiver): B =
+    fun <T> and(column: BindableColumn<T>, condition: VisitableCondition<T>, subCriteria: CriteriaReceiver): Unit =
         applyToWhere(subCriteria) { sc ->
             and(column, condition, sc)
         }
@@ -106,28 +103,28 @@ abstract class KotlinBaseBuilder<D : AbstractWhereSupport<*>, B : KotlinBaseBuil
         message = "Deprecated in favor of the new where clause DSL.",
         replaceWith = ReplaceWith("and { existsPredicate }")
     )
-    fun and(existsPredicate: ExistsPredicate): B =
+    fun and(existsPredicate: ExistsPredicate): Unit =
         applyToWhere {
             and(existsPredicate)
         }
 
     @Deprecated("Deprecated in favor of the new where clause DSL. Update by moving the exists expression " +
             "into the lambda.")
-    fun and(existsPredicate: ExistsPredicate, subCriteria: CriteriaReceiver): B =
+    fun and(existsPredicate: ExistsPredicate, subCriteria: CriteriaReceiver): Unit =
         applyToWhere(subCriteria) { sc ->
             and(existsPredicate, sc)
         }
 
     @Deprecated("Deprecated in favor of the new where clause DSL. Update by moving the column and condition " +
             "into a lambda and rewriting the condition to use an infix function.")
-    fun <T> or(column: BindableColumn<T>, condition: VisitableCondition<T>): B =
+    fun <T> or(column: BindableColumn<T>, condition: VisitableCondition<T>): Unit =
         applyToWhere {
             or(column, condition)
         }
 
     @Deprecated("Deprecated in favor of the new where clause DSL. Update by moving the column and condition " +
             "inside the lambda and rewriting the condition to use an infix function.")
-    fun <T> or(column: BindableColumn<T>, condition: VisitableCondition<T>, subCriteria: CriteriaReceiver): B =
+    fun <T> or(column: BindableColumn<T>, condition: VisitableCondition<T>, subCriteria: CriteriaReceiver): Unit =
         applyToWhere(subCriteria) { sc ->
             or(column, condition, sc)
         }
@@ -136,48 +133,43 @@ abstract class KotlinBaseBuilder<D : AbstractWhereSupport<*>, B : KotlinBaseBuil
         message = "Deprecated in favor of the new where clause DSL.",
         replaceWith = ReplaceWith("or { existsPredicate }")
     )
-    fun or(existsPredicate: ExistsPredicate): B =
+    fun or(existsPredicate: ExistsPredicate): Unit =
         applyToWhere {
             or(existsPredicate)
         }
 
     @Deprecated("Deprecated in favor of the new where clause DSL. Update by moving the exists expression " +
             "into the lambda.")
-    fun or(existsPredicate: ExistsPredicate, subCriteria: CriteriaReceiver): B =
+    fun or(existsPredicate: ExistsPredicate, subCriteria: CriteriaReceiver): Unit =
         applyToWhere(subCriteria) { sc ->
             or(existsPredicate, sc)
         }
 
-    fun allRows(): B = self()
+    fun allRows() {}
 
-    private fun applyToWhere(block: AbstractWhereDSL<*>.() -> Unit): B {
+    private fun applyToWhere(block: AbstractWhereDSL<*>.() -> Unit) {
         getDsl().where().apply(block)
-        return self()
     }
 
     private fun applyToWhere(
         subCriteria: CriteriaReceiver,
         block: AbstractWhereDSL<*>.(List<AndOrCriteriaGroup>) -> Unit
-    ): B {
+    ) {
         getDsl().where().block(CriteriaCollector().apply(subCriteria).criteria)
-        return self()
     }
-
-    protected abstract fun self(): B
 
     protected abstract fun getDsl(): D
 }
 
 @Suppress("TooManyFunctions")
-abstract class KotlinBaseJoiningBuilder<D : AbstractQueryExpressionDSL<*, *>, B : KotlinBaseJoiningBuilder<D, B>> :
-    KotlinBaseBuilder<D, B>() {
+abstract class KotlinBaseJoiningBuilder<D : AbstractQueryExpressionDSL<*, *>> : KotlinBaseBuilder<D>() {
 
-    fun join(table: SqlTable, joinCriteria: JoinReceiver): B =
+    fun join(table: SqlTable, joinCriteria: JoinReceiver): Unit =
         applyToDsl(joinCriteria) { jc ->
             join(table, jc.onJoinCriterion, jc.andJoinCriteria)
         }
 
-    fun join(table: SqlTable, alias: String, joinCriteria: JoinReceiver): B =
+    fun join(table: SqlTable, alias: String, joinCriteria: JoinReceiver): Unit =
         applyToDsl(joinCriteria) { jc ->
             join(table, alias, jc.onJoinCriterion, jc.andJoinCriteria)
         }
@@ -185,17 +177,17 @@ abstract class KotlinBaseJoiningBuilder<D : AbstractQueryExpressionDSL<*, *>, B 
     fun join(
         subQuery: KotlinQualifiedSubQueryBuilder.() -> Unit,
         joinCriteria: JoinReceiver
-    ): B =
+    ): Unit =
         applyToDsl(subQuery, joinCriteria) { sq, jc ->
             join(sq, sq.correlationName, jc.onJoinCriterion, jc.andJoinCriteria)
         }
 
-    fun fullJoin(table: SqlTable, joinCriteria: JoinReceiver): B =
+    fun fullJoin(table: SqlTable, joinCriteria: JoinReceiver): Unit =
         applyToDsl(joinCriteria) { jc ->
             fullJoin(table, jc.onJoinCriterion, jc.andJoinCriteria)
         }
 
-    fun fullJoin(table: SqlTable, alias: String, joinCriteria: JoinReceiver): B =
+    fun fullJoin(table: SqlTable, alias: String, joinCriteria: JoinReceiver): Unit =
         applyToDsl(joinCriteria) { jc ->
             fullJoin(table, alias, jc.onJoinCriterion, jc.andJoinCriteria)
         }
@@ -203,17 +195,17 @@ abstract class KotlinBaseJoiningBuilder<D : AbstractQueryExpressionDSL<*, *>, B 
     fun fullJoin(
         subQuery: KotlinQualifiedSubQueryBuilder.() -> Unit,
         joinCriteria: JoinReceiver
-    ): B =
+    ): Unit =
         applyToDsl(subQuery, joinCriteria) { sq, jc ->
             fullJoin(sq, sq.correlationName, jc.onJoinCriterion, jc.andJoinCriteria)
         }
 
-    fun leftJoin(table: SqlTable, joinCriteria: JoinReceiver): B =
+    fun leftJoin(table: SqlTable, joinCriteria: JoinReceiver): Unit =
         applyToDsl(joinCriteria) { jc ->
             leftJoin(table, jc.onJoinCriterion, jc.andJoinCriteria)
         }
 
-    fun leftJoin(table: SqlTable, alias: String, joinCriteria: JoinReceiver): B =
+    fun leftJoin(table: SqlTable, alias: String, joinCriteria: JoinReceiver): Unit =
         applyToDsl(joinCriteria) { jc ->
             leftJoin(table, alias, jc.onJoinCriterion, jc.andJoinCriteria)
         }
@@ -221,17 +213,17 @@ abstract class KotlinBaseJoiningBuilder<D : AbstractQueryExpressionDSL<*, *>, B 
     fun leftJoin(
         subQuery: KotlinQualifiedSubQueryBuilder.() -> Unit,
         joinCriteria: JoinReceiver
-    ): B =
+    ): Unit =
         applyToDsl(subQuery, joinCriteria) { sq, jc ->
             leftJoin(sq, sq.correlationName, jc.onJoinCriterion, jc.andJoinCriteria)
         }
 
-    fun rightJoin(table: SqlTable, joinCriteria: JoinReceiver): B =
+    fun rightJoin(table: SqlTable, joinCriteria: JoinReceiver): Unit =
         applyToDsl(joinCriteria) { jc ->
             rightJoin(table, jc.onJoinCriterion, jc.andJoinCriteria)
         }
 
-    fun rightJoin(table: SqlTable, alias: String, joinCriteria: JoinReceiver): B =
+    fun rightJoin(table: SqlTable, alias: String, joinCriteria: JoinReceiver): Unit =
         applyToDsl(joinCriteria) { jc ->
             rightJoin(table, alias, jc.onJoinCriterion, jc.andJoinCriteria)
         }
@@ -239,22 +231,20 @@ abstract class KotlinBaseJoiningBuilder<D : AbstractQueryExpressionDSL<*, *>, B 
     fun rightJoin(
         subQuery: KotlinQualifiedSubQueryBuilder.() -> Unit,
         joinCriteria: JoinReceiver
-    ): B =
+    ): Unit =
         applyToDsl(subQuery, joinCriteria) { sq, jc ->
             rightJoin(sq, sq.correlationName, jc.onJoinCriterion, jc.andJoinCriteria)
         }
 
-    private fun applyToDsl(joinCriteria: JoinReceiver, applyJoin: D.(JoinCollector) -> Unit): B {
+    private fun applyToDsl(joinCriteria: JoinReceiver, applyJoin: D.(JoinCollector) -> Unit) {
         getDsl().applyJoin(JoinCollector().apply(joinCriteria))
-        return self()
     }
 
     private fun applyToDsl(
         subQuery: KotlinQualifiedSubQueryBuilder.() -> Unit,
         joinCriteria: JoinReceiver,
         applyJoin: D.(KotlinQualifiedSubQueryBuilder, JoinCollector) -> Unit
-    ): B {
+    ) {
         getDsl().applyJoin(KotlinQualifiedSubQueryBuilder().apply(subQuery), JoinCollector().apply(joinCriteria))
-        return self()
     }
 }

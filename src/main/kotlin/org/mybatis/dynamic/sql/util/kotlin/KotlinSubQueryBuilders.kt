@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2021 the original author or authors.
+ *    Copyright 2016-2022 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -22,24 +22,22 @@ import org.mybatis.dynamic.sql.select.SelectModel
 import org.mybatis.dynamic.sql.util.Buildable
 
 @MyBatisDslMarker
-sealed class KotlinBaseSubQueryBuilder<T : KotlinBaseSubQueryBuilder<T>> : Buildable<SelectModel> {
+sealed class KotlinBaseSubQueryBuilder : Buildable<SelectModel> {
     private lateinit var selectBuilder: KotlinSelectBuilder
 
-    fun select(vararg selectList: BasicColumn, completer: SelectCompleter): T =
+    fun select(vararg selectList: BasicColumn, completer: SelectCompleter): Unit =
         select(selectList.toList(), completer)
 
-    fun select(selectList: List<BasicColumn>, completer: SelectCompleter): T =
-        applySelf {
-            selectBuilder = KotlinSelectBuilder(SqlBuilder.select(selectList)).apply(completer)
-        }
+    fun select(selectList: List<BasicColumn>, completer: SelectCompleter) {
+        selectBuilder = KotlinSelectBuilder(SqlBuilder.select(selectList)).apply(completer)
+    }
 
-    fun selectDistinct(vararg selectList: BasicColumn, completer: SelectCompleter): T =
+    fun selectDistinct(vararg selectList: BasicColumn, completer: SelectCompleter): Unit =
         selectDistinct(selectList.toList(), completer)
 
-    fun selectDistinct(selectList: List<BasicColumn>, completer: SelectCompleter): T =
-        applySelf {
-            selectBuilder = KotlinSelectBuilder(SqlBuilder.selectDistinct(selectList)).apply(completer)
-        }
+    fun selectDistinct(selectList: List<BasicColumn>, completer: SelectCompleter) {
+        selectBuilder = KotlinSelectBuilder(SqlBuilder.selectDistinct(selectList)).apply(completer)
+    }
 
     override fun build(): SelectModel =
         try {
@@ -49,29 +47,19 @@ sealed class KotlinBaseSubQueryBuilder<T : KotlinBaseSubQueryBuilder<T>> : Build
                 "You must specify a select statement", e
             )
         }
-
-    private fun applySelf(block: T.() -> Unit): T =
-        self().apply { block() }
-
-    protected abstract fun self(): T
 }
 
-class KotlinSubQueryBuilder : KotlinBaseSubQueryBuilder<KotlinSubQueryBuilder>() {
-    override fun self(): KotlinSubQueryBuilder = this
-}
+class KotlinSubQueryBuilder : KotlinBaseSubQueryBuilder()
 
-class KotlinQualifiedSubQueryBuilder : KotlinBaseSubQueryBuilder<KotlinQualifiedSubQueryBuilder>() {
+class KotlinQualifiedSubQueryBuilder : KotlinBaseSubQueryBuilder() {
     var correlationName: String? = null
 
-    operator fun String.unaryPlus(): KotlinQualifiedSubQueryBuilder {
+    operator fun String.unaryPlus() {
         correlationName = this
-        return self()
     }
-
-    override fun self(): KotlinQualifiedSubQueryBuilder = this
 }
 
-class KotlinInsertSelectSubQueryBuilder : KotlinBaseSubQueryBuilder<KotlinInsertSelectSubQueryBuilder>() {
+class KotlinInsertSelectSubQueryBuilder : KotlinBaseSubQueryBuilder() {
     private lateinit var lateColumnList: List<SqlColumn<*>>
 
     val columnList: List<SqlColumn<*>>
@@ -84,13 +72,9 @@ class KotlinInsertSelectSubQueryBuilder : KotlinBaseSubQueryBuilder<KotlinInsert
                 )
             }
 
-    fun columns(vararg columnList: SqlColumn<*>): KotlinInsertSelectSubQueryBuilder =
-        columns(columnList.asList())
+    fun columns(vararg columnList: SqlColumn<*>): Unit = columns(columnList.asList())
 
-    fun columns(columnList: List<SqlColumn<*>>): KotlinInsertSelectSubQueryBuilder =
-        apply {
-            this.lateColumnList = columnList
-        }
-
-    override fun self(): KotlinInsertSelectSubQueryBuilder = this
+    fun columns(columnList: List<SqlColumn<*>>) {
+        this.lateColumnList = columnList
+    }
 }

@@ -27,6 +27,10 @@ GitHub milestone: [https://github.com/mybatis/mybatis-dynamic-sql/issues?q=miles
    but is deprecated. It will be removed in version 1.5.0 of the library. Documentation for the new DSL is here:
    https://github.com/mybatis/mybatis-dynamic-sql/blob/master/src/site/markdown/docs/kotlinWhereClauses.md
    ([#442](https://github.com/mybatis/mybatis-dynamic-sql/pull/442))
+5. General cleanup of the Kotlin DSL. The Kotlin DSL functions are now mostly Unit functions. This should have
+   no impact on most users and is source code compatible with prior versions of the library when the library was used
+   as described in the documentation. This change greatly simplifies the type hierarchy of the Kotlin builders.
+   ([#446](https://github.com/mybatis/mybatis-dynamic-sql/pull/446))
 
 ## Release 1.3.1 - December 18, 2021
 

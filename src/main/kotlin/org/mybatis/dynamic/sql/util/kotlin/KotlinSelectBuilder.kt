@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2021 the original author or authors.
+ *    Copyright 2016-2022 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -26,64 +26,50 @@ typealias SelectCompleter = KotlinSelectBuilder.() -> Unit
 
 @Suppress("TooManyFunctions")
 class KotlinSelectBuilder(private val fromGatherer: QueryExpressionDSL.FromGatherer<SelectModel>) :
-    KotlinBaseJoiningBuilder<QueryExpressionDSL<SelectModel>, KotlinSelectBuilder>(), Buildable<SelectModel> {
+    KotlinBaseJoiningBuilder<QueryExpressionDSL<SelectModel>>(), Buildable<SelectModel> {
 
     private lateinit var dsl: QueryExpressionDSL<SelectModel>
 
-    fun from(table: SqlTable): KotlinSelectBuilder =
-        apply {
-            dsl = fromGatherer.from(table)
-        }
+    fun from(table: SqlTable) {
+        dsl = fromGatherer.from(table)
+    }
 
-    fun from(table: SqlTable, alias: String): KotlinSelectBuilder =
-        apply {
-            dsl = fromGatherer.from(table, alias)
-        }
+    fun from(table: SqlTable, alias: String) {
+        dsl = fromGatherer.from(table, alias)
+    }
 
-    fun from(subQuery: KotlinQualifiedSubQueryBuilder.() -> Unit): KotlinSelectBuilder =
-        apply {
-            val builder = KotlinQualifiedSubQueryBuilder().apply(subQuery)
-            dsl = fromGatherer.from(builder, builder.correlationName)
-        }
+    fun from(subQuery: KotlinQualifiedSubQueryBuilder.() -> Unit) {
+        val builder = KotlinQualifiedSubQueryBuilder().apply(subQuery)
+        dsl = fromGatherer.from(builder, builder.correlationName)
+    }
 
-    fun groupBy(vararg columns: BasicColumn): KotlinSelectBuilder =
-        apply {
-            getDsl().groupBy(columns.toList())
-        }
+    fun groupBy(vararg columns: BasicColumn) {
+        getDsl().groupBy(columns.toList())
+    }
 
-    fun orderBy(vararg columns: SortSpecification): KotlinSelectBuilder =
-        apply {
-            getDsl().orderBy(columns.toList())
-        }
+    fun orderBy(vararg columns: SortSpecification) {
+        getDsl().orderBy(columns.toList())
+    }
 
-    fun limit(limit: Long): KotlinSelectBuilder =
-        apply {
-            getDsl().limit(limit)
-        }
+    fun limit(limit: Long) {
+        getDsl().limit(limit)
+    }
 
-    fun offset(offset: Long): KotlinSelectBuilder =
-        apply {
-            getDsl().offset(offset)
-        }
+    fun offset(offset: Long) {
+        getDsl().offset(offset)
+    }
 
-    fun fetchFirst(fetchFirstRows: Long): KotlinSelectBuilder =
-        apply {
-            getDsl().fetchFirst(fetchFirstRows).rowsOnly()
-        }
+    fun fetchFirst(fetchFirstRows: Long) {
+        getDsl().fetchFirst(fetchFirstRows).rowsOnly()
+    }
 
-    fun union(union: KotlinUnionBuilder.() -> Unit): KotlinSelectBuilder =
-        apply {
-            union(KotlinUnionBuilder(getDsl().union()))
-        }
+    fun union(union: KotlinUnionBuilder.() -> Unit): Unit =
+        union(KotlinUnionBuilder(getDsl().union()))
 
-    fun unionAll(unionAll: KotlinUnionBuilder.() -> Unit): KotlinSelectBuilder =
-        apply {
-            unionAll(KotlinUnionBuilder(getDsl().unionAll()))
-        }
+    fun unionAll(unionAll: KotlinUnionBuilder.() -> Unit): Unit =
+        unionAll(KotlinUnionBuilder(getDsl().unionAll()))
 
     override fun build(): SelectModel = getDsl().build()
-
-    override fun self(): KotlinSelectBuilder = this
 
     override fun getDsl(): QueryExpressionDSL<SelectModel> {
         try {
