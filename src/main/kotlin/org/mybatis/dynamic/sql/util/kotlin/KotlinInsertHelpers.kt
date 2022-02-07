@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2021 the original author or authors.
+ *    Copyright 2016-2022 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -42,45 +42,44 @@ class KotlinGeneralInsertBuilder(private val dsl: GeneralInsertDSL) : Buildable<
 
     @MyBatisDslMarker
     inner class GeneralInsertSetClauseFinisher<T>(private val column: SqlColumn<T>) {
-        fun toNull(): KotlinGeneralInsertBuilder =
+        fun toNull(): Unit =
             applyToDsl {
                 set(column).toNull()
             }
 
-        fun toConstant(constant: String): KotlinGeneralInsertBuilder =
+        fun toConstant(constant: String): Unit =
             applyToDsl {
                 set(column).toConstant(constant)
             }
 
-        fun toStringConstant(constant: String): KotlinGeneralInsertBuilder =
+        fun toStringConstant(constant: String): Unit =
             applyToDsl {
                 set(column).toStringConstant(constant)
             }
 
-        fun toValue(value: T): KotlinGeneralInsertBuilder = toValue { value }
+        fun toValue(value: T): Unit = toValue { value }
 
-        fun toValue(value: () -> T): KotlinGeneralInsertBuilder =
+        fun toValue(value: () -> T): Unit =
             applyToDsl {
                 set(column).toValue(value)
             }
 
-        fun toValueOrNull(value: T?): KotlinGeneralInsertBuilder = toValueOrNull { value }
+        fun toValueOrNull(value: T?): Unit = toValueOrNull { value }
 
-        fun toValueOrNull(value: () -> T?): KotlinGeneralInsertBuilder =
+        fun toValueOrNull(value: () -> T?): Unit =
             applyToDsl {
                 set(column).toValueOrNull(value)
             }
 
-        fun toValueWhenPresent(value: T?): KotlinGeneralInsertBuilder = toValueWhenPresent { value }
+        fun toValueWhenPresent(value: T?): Unit = toValueWhenPresent { value }
 
-        fun toValueWhenPresent(value: () -> T?): KotlinGeneralInsertBuilder =
+        fun toValueWhenPresent(value: () -> T?): Unit =
             applyToDsl {
                 set(column).toValueWhenPresent(value)
             }
 
-        private fun applyToDsl(block: GeneralInsertDSL.() -> Unit): KotlinGeneralInsertBuilder =
-            this@KotlinGeneralInsertBuilder.apply {
-                dsl.apply(block)
-            }
+        private fun applyToDsl(block: GeneralInsertDSL.() -> Unit): Unit {
+            this@KotlinGeneralInsertBuilder.dsl.apply(block)
+        }
     }
 }
