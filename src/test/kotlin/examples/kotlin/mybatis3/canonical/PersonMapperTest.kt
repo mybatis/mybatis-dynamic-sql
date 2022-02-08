@@ -228,13 +228,13 @@ class PersonMapperTest {
             val mapper = session.getMapper(PersonMapper::class.java)
 
             val rows = mapper.generalInsert {
-                set(id).toValue(100)
-                set(firstName).toValue("Joe")
-                set(lastName).toValue(LastName("Jones"))
-                set(employed).toValue(true)
-                set(occupation).toValue("Developer")
-                set(addressId).toValue(1)
-                set(birthDate).toValue(Date())
+                set(id) toValue 100
+                set(firstName) toValue "Joe"
+                set(lastName) toValue LastName("Jones")
+                set(employed) toValue true
+                set(occupation) toValue "Developer"
+                set(addressId) toValue 1
+                set(birthDate) toValue Date()
             }
 
             assertThat(rows).isEqualTo(1)
@@ -310,7 +310,7 @@ class PersonMapperTest {
             assertThat(rows).isEqualTo(1)
 
             rows = mapper.update {
-                set(occupation).equalTo("Programmer")
+                set(occupation) equalTo  "Programmer"
                 where { id isEqualTo 100 }
             }
             assertThat(rows).isEqualTo(1)
@@ -331,7 +331,7 @@ class PersonMapperTest {
             assertThat(rows).isEqualTo(1)
 
             rows = mapper.update {
-                set(occupation).equalTo("Programmer")
+                set(occupation) equalTo "Programmer"
                 where { id isEqualTo 100 }
             }
             assertThat(rows).isEqualTo(1)
@@ -353,7 +353,7 @@ class PersonMapperTest {
             assertThat(rows).isEqualTo(1)
 
             rows = mapper.update {
-                set(occupation).equalTo("Programmer")
+                set(occupation) equalTo "Programmer"
                 where { id isEqualTo 100 }
                 and { firstName isEqualTo "Joe" }
             }
@@ -376,7 +376,7 @@ class PersonMapperTest {
             assertThat(rows).isEqualTo(1)
 
             rows = mapper.update {
-                set(occupation).equalTo("Programmer")
+                set(occupation) equalTo "Programmer"
                 where { id isEqualTo 100 }
             }
 
@@ -398,7 +398,7 @@ class PersonMapperTest {
             assertThat(rows).isEqualTo(1)
 
             rows = mapper.update {
-                set(occupation).equalTo("Programmer")
+                set(occupation) equalTo "Programmer"
             }
 
             assertThat(rows).isEqualTo(7)
@@ -419,7 +419,7 @@ class PersonMapperTest {
             assertThat(rows).isEqualTo(1)
 
             rows = mapper.update {
-                set(occupation).equalTo("Programmer")
+                set(occupation) equalTo "Programmer"
             }
 
             assertThat(rows).isEqualTo(7)
@@ -440,7 +440,7 @@ class PersonMapperTest {
             assertThat(rows).isEqualTo(1)
 
             rows = mapper.update {
-                set(occupation).equalTo("Programmer")
+                set(occupation) equalTo "Programmer"
                 where { id isEqualTo 100 }
             }
 
@@ -718,11 +718,11 @@ class PersonMapperTest {
             val mapper: AddressMapper = session.getMapper(AddressMapper::class.java)
 
             val insertStatement = insertInto(address) {
-                set(address.id).toValue(4)
-                set(address.streetAddress).toValue("987 Elm Street")
-                set(address.city).toValue("Mayberry")
-                set(address.state).toValue("NC")
-                set(address.addressType).toValue(AddressType.HOME)
+                set(address.id) toValue 4
+                set(address.streetAddress) toValue "987 Elm Street"
+                set(address.city) toValue "Mayberry"
+                set(address.state) toValue "NC"
+                set(address.addressType) toValue AddressType.HOME
             }
 
             val rows = mapper.generalInsert(insertStatement)

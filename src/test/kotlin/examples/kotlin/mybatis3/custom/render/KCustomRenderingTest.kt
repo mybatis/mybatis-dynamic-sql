@@ -30,6 +30,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import org.mybatis.dynamic.sql.SqlColumn
+import org.mybatis.dynamic.sql.util.kotlin.elements.`as`
 import org.mybatis.dynamic.sql.util.kotlin.elements.insert
 import org.mybatis.dynamic.sql.util.kotlin.elements.insertMultiple
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.deleteFrom
@@ -125,9 +126,9 @@ class KCustomRenderingTest {
         sqlSessionFactory.openSession().use { sqlSession ->
             val mapper = sqlSession.getMapper(KJsonTestMapper::class.java)
             var insertStatement = insertInto(jsonTest) {
-                set(id).toValue(1)
-                set(description).toValue("Fred")
-                set(info).toValue("{\"firstName\": \"Fred\", \"lastName\": \"Flintstone\", \"age\": 30}")
+                set(id) toValue 1
+                set(description) toValue "Fred"
+                set(info) toValue "{\"firstName\": \"Fred\", \"lastName\": \"Flintstone\", \"age\": 30}"
             }
             val expected = "insert into JsonTest (id, description, info) " +
                 "values (#{parameters.p1,jdbcType=INTEGER}, #{parameters.p2,jdbcType=VARCHAR}, " +
@@ -136,9 +137,9 @@ class KCustomRenderingTest {
             var rows = mapper!!.generalInsert(insertStatement)
             assertThat(rows).isEqualTo(1)
             insertStatement = insertInto(jsonTest) {
-                set(id).toValue(2)
-                set(description).toValue("Wilma")
-                set(info).toValue("{\"firstName\": \"Wilma\", \"lastName\": \"Flintstone\", \"age\": 25}")
+                set(id) toValue 2
+                set(description) toValue "Wilma"
+                set(info) toValue "{\"firstName\": \"Wilma\", \"lastName\": \"Flintstone\", \"age\": 25}"
             }
             rows = mapper.generalInsert(insertStatement)
             assertThat(rows).isEqualTo(1)
@@ -217,8 +218,7 @@ class KCustomRenderingTest {
             var rows = mapper.insertMultiple(insertStatement)
             assertThat(rows).isEqualTo(2)
             val updateStatement = update(jsonTest) {
-                set(info)
-                    .equalTo("{\"firstName\": \"Wilma\", \"lastName\": \"Flintstone\", \"age\": 26}")
+                set(info) equalTo "{\"firstName\": \"Wilma\", \"lastName\": \"Flintstone\", \"age\": 26}"
                 where { id isEqualTo 2 }
             }
             val expected = "update JsonTest " +
@@ -298,7 +298,7 @@ class KCustomRenderingTest {
             }
             val rows = mapper.insertMultiple(insertStatement)
             assertThat(rows).isEqualTo(2)
-            val selectStatement = select(dereference(info, "firstName").`as`("firstname")) {
+            val selectStatement = select(dereference(info, "firstName") `as` "firstname") {
                 from(jsonTest)
                 where { dereference(info, "age") isEqualTo "25" }
             }

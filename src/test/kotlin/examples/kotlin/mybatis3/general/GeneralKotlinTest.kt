@@ -41,6 +41,7 @@ import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.junit.jupiter.api.Test
+import org.mybatis.dynamic.sql.util.kotlin.elements.`as`
 import org.mybatis.dynamic.sql.util.kotlin.elements.count
 import org.mybatis.dynamic.sql.util.kotlin.elements.insert
 import org.mybatis.dynamic.sql.util.kotlin.elements.insertMultiple
@@ -379,7 +380,7 @@ class GeneralKotlinTest {
             val mapper = session.getMapper(PersonMapper::class.java)
 
             val selectStatement = selectDistinct(
-                id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation,
+                id `as` "A_ID", firstName, lastName, birthDate, employed, occupation,
                 addressId
             ) {
                 from(person)
@@ -413,7 +414,7 @@ class GeneralKotlinTest {
             val mapper = session.getMapper(PersonMapper::class.java)
 
             val selectStatement = select(
-                id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation,
+                id `as` "A_ID", firstName, lastName, birthDate, employed, occupation,
                 addressId
             ) {
                 from(person)
@@ -447,7 +448,7 @@ class GeneralKotlinTest {
             val mapper = session.getMapper(PersonWithAddressMapper::class.java)
 
             val selectStatement = select(
-                id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation,
+                id `as` "A_ID", firstName, lastName, birthDate, employed, occupation,
                 address.id, address.streetAddress, address.city, address.state
             ) {
                 from(person)
@@ -483,7 +484,7 @@ class GeneralKotlinTest {
             val mapper = session.getMapper(PersonWithAddressMapper::class.java)
 
             val selectStatement = select(
-                id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation,
+                id `as` "A_ID", firstName, lastName, birthDate, employed, occupation,
                 address.id, address.streetAddress, address.city, address.state
             ) {
                 from(person)
@@ -524,7 +525,7 @@ class GeneralKotlinTest {
             val mapper = session.getMapper(PersonWithAddressMapper::class.java)
 
             val selectStatement = select(
-                id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation,
+                id `as` "A_ID", firstName, lastName, birthDate, employed, occupation,
                 address.id, address.streetAddress, address.city, address.state
             ) {
                 from(person)
@@ -567,7 +568,7 @@ class GeneralKotlinTest {
             val mapper = session.getMapper(PersonMapper::class.java)
 
             val selectStatement = select(
-                id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation,
+                id `as` "A_ID", firstName, lastName, birthDate, employed, occupation,
                 addressId
             ) {
                 from(person)
@@ -613,7 +614,7 @@ class GeneralKotlinTest {
             val mapper = session.getMapper(PersonMapper::class.java)
 
             val selectStatement = select(
-                id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation,
+                id `as` "A_ID", firstName, lastName, birthDate, employed, occupation,
                 addressId
             ) {
                 from(person)
@@ -656,7 +657,7 @@ class GeneralKotlinTest {
     @Test
     fun testRawSelectWithoutFrom() {
         assertThatExceptionOfType(UninitializedPropertyAccessException::class.java).isThrownBy {
-            select(id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId) {
+            select(id `as` "A_ID", firstName, lastName, birthDate, employed, occupation, addressId) {
                 where { id isEqualTo 5 }
                 or {
                     id isEqualTo 4
@@ -761,7 +762,7 @@ class GeneralKotlinTest {
             val mapper = session.getMapper(PersonMapper::class.java)
 
             val updateStatement = update(person) {
-                set(firstName).equalTo("Sam")
+                set(firstName) equalTo  "Sam"
                 where { firstName isEqualTo "Fred" }
             }
 
@@ -783,7 +784,7 @@ class GeneralKotlinTest {
             val mapper = session.getMapper(PersonMapper::class.java)
 
             val updateStatement = update(person) {
-                set(firstName).equalTo("Sam")
+                set(firstName) equalTo "Sam"
                 where {
                     firstName isEqualTo "Fred"
                     or { id isGreaterThan 3 }
@@ -808,7 +809,7 @@ class GeneralKotlinTest {
             val mapper = session.getMapper(PersonMapper::class.java)
 
             val updateStatement = update(person) {
-                set(firstName).equalTo("Sam")
+                set(firstName) equalTo "Sam"
                 where { firstName isEqualTo "Fred" }
                 or {
                     id isEqualTo 5
@@ -835,7 +836,7 @@ class GeneralKotlinTest {
             val mapper = session.getMapper(PersonMapper::class.java)
 
             val updateStatement = update(person) {
-                set(firstName).equalTo("Sam")
+                set(firstName) equalTo "Sam"
                 where { firstName isEqualTo "Fred" }
                 and {
                     id isEqualTo 1
@@ -862,7 +863,7 @@ class GeneralKotlinTest {
             val mapper = session.getMapper(PersonMapper::class.java)
 
             val updateStatement = update(person) {
-                set(firstName).equalTo("Sam")
+                set(firstName) equalTo  "Sam"
                 where { firstName isEqualTo "Fred" }
                 or { id isEqualTo 3 }
             }

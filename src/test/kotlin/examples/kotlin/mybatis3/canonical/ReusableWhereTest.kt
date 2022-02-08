@@ -100,7 +100,7 @@ class ReusableWhereTest {
             val mapper = session.getMapper(PersonMapper::class.java)
 
             val rows = mapper.update {
-                set(occupation).equalToStringConstant("worker")
+                set(occupation) equalToStringConstant "worker"
                 applyWhere(commonWhere)
             }
 

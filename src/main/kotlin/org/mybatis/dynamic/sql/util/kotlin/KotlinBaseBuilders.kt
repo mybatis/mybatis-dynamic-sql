@@ -145,7 +145,21 @@ abstract class KotlinBaseBuilder<D : AbstractWhereSupport<*>> {
             or(existsPredicate, sc)
         }
 
-    fun allRows() {}
+    /**
+     * This function does nothing, but it can be used to make some code snippets more understandable.
+     *
+     * For example, to count all rows in a table you can write either of the following:
+     *
+     * val rows = countFrom(foo) { }
+     *
+     *    or
+     *
+     * val rows = countFrom(foo) { allRows() }
+     */
+    @SuppressWarnings("EmptyFunctionBlock")
+    fun allRows() {
+        // intentionally empty - this function exists for code beautification and clarity only
+    }
 
     private fun applyToWhere(block: AbstractWhereDSL<*>.() -> Unit) {
         getDsl().where().apply(block)
