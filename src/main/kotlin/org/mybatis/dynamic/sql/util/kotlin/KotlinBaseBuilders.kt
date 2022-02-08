@@ -157,7 +157,9 @@ abstract class KotlinBaseBuilder<D : AbstractWhereSupport<*>> {
      * val rows = countFrom(foo) { allRows() }
      */
     @SuppressWarnings("EmptyFunctionBlock")
-    fun allRows() {}
+    fun allRows() {
+        // intentionally empty - this function exists for code beautification and clarity only
+    }
 
     private fun applyToWhere(block: AbstractWhereDSL<*>.() -> Unit) {
         getDsl().where().apply(block)
