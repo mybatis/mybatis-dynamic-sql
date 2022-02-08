@@ -24,10 +24,11 @@ import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.id
 import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.lastName
 import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.occupation
 import org.mybatis.dynamic.sql.util.kotlin.SelectCompleter
+import org.mybatis.dynamic.sql.util.kotlin.elements.`as`
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.select
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.selectDistinct
 
-private val columnList = listOf(id.`as`("A_ID"), firstName, lastName, birthDate,
+private val columnList = listOf(id `as` "A_ID", firstName, lastName, birthDate,
     employed, occupation, address.id, address.streetAddress, address.city, address.state, address.addressType
 )
 

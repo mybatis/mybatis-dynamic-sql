@@ -63,7 +63,7 @@ object PersonDynamicSqlSupport {
         val birthDate = column<Date>(name = "birth_date", jdbcType = JDBCType.DATE)
         val employed = column(
             name = "employed",
-            jdbcType = JDBCType.VARCHAR
+            jdbcType = JDBCType.VARCHAR,
             typeHandler = "foo.bar.StringToBooleanTypeHandler"
         )
         val occupation = column<String>(name = "occupation", jdbcType = JDBCType.VARCHAR)
@@ -143,8 +143,9 @@ Then extensions could be added to make a shortcut method as follows:
 ```kotlin
 import org.mybatis.dynamic.sql.util.kotlin.SelectCompleter
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.selectList
+import org.mybatis.dynamic.sql.util.kotlin.elements.`as`
 
-private val columnList = listOf(id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId)
+private val columnList = listOf(id `as` "A_ID", firstName, lastName, birthDate, employed, occupation, addressId)
 
 fun PersonMapper.select(completer: SelectCompleter) =
     selectList(this::selectMany, columnList, Person, completer)
@@ -158,7 +159,7 @@ where clause and an order by clause as follows:
 val rows = mapper.select {
     where { id isLessThan 100 }
     or {
-        employed.isTrue())
+        employed.isTrue()
         and { occupation isEqualTo "Developer" }
     }
     orderBy(id)
@@ -193,7 +194,7 @@ interface PersonMapper : CommonCountMapper
 The mapper method can be used as follows:
 
 ```kotlin
-val countStatement = count(...) // not shown... see the overview page for examples
+val countStatement = count() // not shown... see the overview page for examples
 val mapper: PersonMapper = getMapper() // not shown
 val rows: Long = mapper.count(countStatement)
 ```
@@ -267,7 +268,7 @@ interface PersonMapper : CommonDeleteMapper
 The mapper method can be used as follows:
 
 ```kotlin
-val deleteStatement = deleteFrom(...) // not shown... see the overview page for examples
+val deleteStatement = deleteFrom() // not shown... see the overview page for examples
 val mapper: PersonMapper = getMapper() // not shown
 val rows: Int = mapper.delete(deleteStatement)
 ```
@@ -332,7 +333,7 @@ interface PersonMapper : CommonInsertMapper<T>
 The mapper method can be used as follows:
 
 ```kotlin
-val insertStatement = insert(...) // not shown, see overview page
+val insertStatement = insert() // not shown, see overview page
 val mapper: PersonMapper = getMapper() // not shown
 val rows: Int = mapper.insert(insertStatement)
 ```
@@ -411,7 +412,7 @@ interface PersonMapper : CommonInsertMapper<T>
 The mapper method can be used as follows:
 
 ```kotlin
-val insertStatement = insertInto(...) // not shown, see overview page
+val insertStatement = insertInto() // not shown, see overview page
 val mapper: PersonMapper = getMapper() // not shown
 val rows: Int = mapper.generalInsert(insertStatement)
 ```
@@ -512,7 +513,7 @@ interface PersonMapper : CommonInsertMapper<T>
 The mapper method can be used as follows:
 
 ```kotlin
-val insertStatement = insertMultiple(...) // not shown, see overview page
+val insertStatement = insertMultiple() // not shown, see overview page
 val mapper: PersonMapper = getMapper() // not shown
 val rows: Int = mapper.insertMultiple(insertStatement)
 ```
@@ -600,7 +601,6 @@ batch such as update counts. The methods are coded as follows:
 import org.apache.ibatis.annotations.Flush
 import org.apache.ibatis.annotations.InsertProvider
 import org.apache.ibatis.executor.BatchResult
-...
 
 @Mapper
 interface PersonMapper {
@@ -649,9 +649,9 @@ val sqlSessionFactory: SqlSessionFactory = getSessionFactory() // not shown
 val sqlSession: SqlSession = sqlSessionFactory.openSession(ExecutorType.BATCH)
 val mapper: PersonMapper = sqlSession.getMapper(PersonMapper::class.java)
 
-val batchInsert = insertBatch(...) // not shown, see overview page
+val batchInsert = insertBatch() // not shown, see overview page
 batchInsert.execute(mapper) // see note below about return value
-val batchResults: mapper.flush()
+val batchResults = mapper.flush()
 ```
 
 Note the use of the extension function `BatchInsert.execute(mapper)`. This function simply loops over all
@@ -700,7 +700,7 @@ val sqlSessionFactory: SqlSessionFactory = getSessionFactory() // not shown
 val sqlSession: SqlSession = sqlSessionFactory.openSession(ExecutorType.BATCH)
 val mapper: PersonMapper = sqlSession.getMapper(PersonMapper::class.java)
 mapper.insertBatch(record1, record2)
-val batchResults: mapper.flush()
+val batchResults = mapper.flush()
 ```
 
 ### Generated Key Support
@@ -748,7 +748,7 @@ interface PersonMapper : CommonInsertMapper<T>
 The mapper method can be used as follows:
 
 ```kotlin
-val insertStatement = insertSelect(...) // not shown, see overview page
+val insertStatement = insertSelect() // not shown, see overview page
 val mapper: PersonMapper = getMapper() // not shown
 val rows: Int = mapper.insertSelect(insertStatement)
 ```
@@ -825,10 +825,10 @@ The methods can be used as follows:
 ```kotlin
 val mapper: PersonMapper = getMapper() // not shown
 
-val selectStatement = select(...) // not shown... see the overview page for examples
+val selectStatement = select() // not shown... see the overview page for examples
 val rows: List<PersonRecord> = mapper.selectMany(selectStatement)
 
-val selectOneStatement = select(...) // not shown... see the overview page for examples
+val selectOneStatement = select() // not shown... see the overview page for examples
 val row: PersonRecord? = mapper.selectOne(selectStatement)
 ```
 
@@ -843,11 +843,12 @@ and selecting a single record:
 
 ```kotlin
 import org.mybatis.dynamic.sql.util.kotlin.SelectCompleter
+import org.mybatis.dynamic.sql.util.kotlin.elements.`as`
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.selectDistinct
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.selectList
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.selectOne
 
-private val columnList = listOf(id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId)
+private val columnList = listOf(id `as` "A_ID", firstName, lastName, birthDate, employed, occupation, addressId)
 
 fun PersonMapper.selectOne(completer: SelectCompleter) =
     selectOne(this::selectOne, columnList, Person, completer)
@@ -917,7 +918,7 @@ and other parts of a select statement. For example, you could code a mapper exte
 ```kotlin
 fun PersonWithAddressMapper.select(completer: SelectCompleter): List<PersonWithAddress> =
     select(
-        id.`as`("A_ID"), firstName, lastName, birthDate,
+        id `as` "A_ID", firstName, lastName, birthDate,
         employed, occupation, address.id, address.streetAddress, address.city, address.state
     ) {
         from(person, "p")
@@ -967,7 +968,7 @@ interface PersonMapper : CommonUpdateMapper
 The mapper method can be used as follows:
 
 ```kotlin
-val updateStatement = update(...) // not shown... see the overview page for examples
+val updateStatement = update() // not shown... see the overview page for examples
 val mapper: PersonMapper = getMapper() // not shown
 val rows: Int = mapper.update(updateStatement)
 ```
@@ -1005,7 +1006,7 @@ If you wish to update all rows in a table, you can simply omit the where clause 
 ```kotlin
 // update all rows...
 val rows = mapper.update {
-    set(occupation).equalTo("Programmer")
+    set(occupation) equalTo "Programmer"
 }
 ```
 
@@ -1014,13 +1015,13 @@ It is also possible to write utility methods that will set values. For example:
 ```kotlin
 fun KotlinUpdateBuilder.updateSelectiveColumns(record: PersonRecord) =
     apply {
-        set(id).equalToWhenPresent(record::id)
-        set(firstName).equalToWhenPresent(record::firstName)
-        set(lastName).equalToWhenPresent(record::lastName)
-        set(birthDate).equalToWhenPresent(record::birthDate)
-        set(employed).equalToWhenPresent(record::employed)
-        set(occupation).equalToWhenPresent(record::occupation)
-        set(addressId).equalToWhenPresent(record::addressId)
+        set(id) equalToWhenPresent record::id
+        set(firstName) equalToWhenPresent record::firstName 
+        set(lastName) equalToWhenPresent record::lastName
+        set(birthDate) equalToWhenPresent record::birthDate
+        set(employed) equalToWhenPresent record::employed
+        set(occupation) equalToWhenPresent record::occupation
+        set(addressId) equalToWhenPresent record::addressId
     }
 ```
 
@@ -1039,23 +1040,23 @@ If you wish to implement an "update by primary key" method, you can reuse the ex
 ```kotlin
 fun PersonMapper.updateByPrimaryKey(record: PersonRecord) =
     update {
-        set(firstName).equalToOrNull(record::firstName)
-        set(lastName).equalToOrNull(record::lastName)
-        set(birthDate).equalToOrNull(record::birthDate)
-        set(employed).equalToOrNull(record::employed)
-        set(occupation).equalToOrNull(record::occupation)
-        set(addressId).equalToOrNull(record::addressId)
+        set(firstName) equalToOrNull record::firstName
+        set(lastName) equalToOrNull record::lastName
+        set(birthDate) equalToOrNull record::birthDate
+        set(employed) equalToOrNull record::employed
+        set(occupation) equalToOrNull record::occupation
+        set(addressId) equalToOrNull record::addressId
         where { id isEqualTo record.id!! }
     }
 
 fun PersonMapper.updateByPrimaryKeySelective(record: PersonRecord) =
     update {
-        set(firstName).equalToWhenPresent(record::firstName)
-        set(lastName).equalToWhenPresent(record::lastName)
-        set(birthDate).equalToWhenPresent(record::birthDate)
-        set(employed).equalToWhenPresent(record::employed)
-        set(occupation).equalToWhenPresent(record::occupation)
-        set(addressId).equalToWhenPresent(record::addressId)
+        set(firstName) equalToWhenPresent record::firstName
+        set(lastName) equalToWhenPresent record::lastName
+        set(birthDate) equalToWhenPresent record::birthDate
+        set(employed) equalToWhenPresent record::employed
+        set(occupation) equalToWhenPresent record::occupation
+        set(addressId) equalToWhenPresent record::addressId
         where { id isEqualTo record.id!! }
     }
 ```

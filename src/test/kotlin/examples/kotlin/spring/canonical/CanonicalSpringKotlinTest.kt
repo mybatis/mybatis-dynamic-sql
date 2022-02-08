@@ -28,6 +28,7 @@ import examples.kotlin.spring.canonical.PersonDynamicSqlSupport.occupation
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.junit.jupiter.api.Test
+import org.mybatis.dynamic.sql.util.kotlin.elements.`as`
 import org.mybatis.dynamic.sql.util.kotlin.elements.add
 import org.mybatis.dynamic.sql.util.kotlin.elements.constant
 import org.mybatis.dynamic.sql.util.kotlin.elements.insert
@@ -528,7 +529,7 @@ open class CanonicalSpringKotlinTest {
     @Test
     fun testRawSelect() {
         val selectStatement = select(
-            id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId
+            id `as` "A_ID", firstName, lastName, birthDate, employed, occupation, addressId
         ) {
             from(person)
             where {
@@ -572,7 +573,7 @@ open class CanonicalSpringKotlinTest {
     @Test
     fun testRawSelectWithMissingRecord() {
         val selectStatement = select(
-            id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId
+            id `as` "A_ID", firstName, lastName, birthDate, employed, occupation, addressId
         ) {
             from(person)
             where { id isEqualTo 300 }
@@ -586,7 +587,7 @@ open class CanonicalSpringKotlinTest {
     @Test
     fun testRawSelectByPrimaryKey() {
         val selectStatement = select(
-            id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId
+            id `as` "A_ID", firstName, lastName, birthDate, employed, occupation, addressId
         ) {
             from(person)
             where { id isEqualTo 1 }
@@ -608,18 +609,18 @@ open class CanonicalSpringKotlinTest {
     @Test
     fun testRawSelectWithUnion() {
         val selectStatement = select(
-            id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId
+            id `as` "A_ID", firstName, lastName, birthDate, employed, occupation, addressId
         ) {
             from(person)
             where { id isEqualTo 1 }
             union {
-                select(id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId) {
+                select(id `as` "A_ID", firstName, lastName, birthDate, employed, occupation, addressId) {
                     from(person)
                     where { id isEqualTo 2 }
                 }
             }
             union {
-                select(id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId) {
+                select(id `as` "A_ID", firstName, lastName, birthDate, employed, occupation, addressId) {
                     from(person)
                     where { id isEqualTo 3 }
                 }
@@ -667,18 +668,18 @@ open class CanonicalSpringKotlinTest {
     @Test
     fun testRawSelectWithUnionAndAlias() {
         val selectStatement = select(
-            id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId
+            id `as` "A_ID", firstName, lastName, birthDate, employed, occupation, addressId
         ) {
             from(person)
             where { id isEqualTo 1 }
             union {
-                select(id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId) {
+                select(id `as` "A_ID", firstName, lastName, birthDate, employed, occupation, addressId) {
                     from(person)
                     where { id isEqualTo 2 }
                 }
             }
             union {
-                select(id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId) {
+                select(id `as` "A_ID", firstName, lastName, birthDate, employed, occupation, addressId) {
                     from(person, "p")
                     where { id isEqualTo 3 }
                 }
@@ -727,18 +728,18 @@ open class CanonicalSpringKotlinTest {
     @Test
     fun testRawSelectWithUnionAndDistinct() {
         val selectStatement = select(
-            id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId
+            id `as` "A_ID", firstName, lastName, birthDate, employed, occupation, addressId
         ) {
             from(person)
             where { id isEqualTo 1 }
             union {
-                select(id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId) {
+                select(id `as` "A_ID", firstName, lastName, birthDate, employed, occupation, addressId) {
                     from(person)
                     where { id isEqualTo 2 }
                 }
             }
             union {
-                selectDistinct(id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId) {
+                selectDistinct(id `as` "A_ID", firstName, lastName, birthDate, employed, occupation, addressId) {
                     from(person, "p")
                     where { id isEqualTo 3 }
                 }
@@ -787,18 +788,18 @@ open class CanonicalSpringKotlinTest {
     @Test
     fun testRawSelectWithUnionAllAndDistinct() {
         val selectStatement = select(
-            id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId
+            id `as` "A_ID" , firstName, lastName, birthDate, employed, occupation, addressId
         ) {
             from(person)
             where { id isEqualTo 1 }
             union {
-                select(id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId) {
+                select(id `as` "A_ID", firstName, lastName, birthDate, employed, occupation, addressId) {
                     from(person)
                     where { id isEqualTo 2 }
                 }
             }
             unionAll {
-                selectDistinct(id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId) {
+                selectDistinct(id `as` "A_ID", firstName, lastName, birthDate, employed, occupation, addressId) {
                     from(person, "p")
                     allRows()
                 }
@@ -848,7 +849,7 @@ open class CanonicalSpringKotlinTest {
     @Test
     fun testRawSelectWithJoin() {
         val selectStatement = select(
-            id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, address.id,
+            id `as` "A_ID", firstName, lastName, birthDate, employed, occupation, address.id,
             address.streetAddress, address.city, address.state
         ) {
             from(person, "p")
@@ -886,7 +887,7 @@ open class CanonicalSpringKotlinTest {
     @Test
     fun testRawSelectWithComplexWhere1() {
         val selectStatement = select(
-            id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId
+            id `as` "A_ID", firstName, lastName, birthDate, employed, occupation, addressId
         ) {
             from(person)
             where { id isLessThan 5 }
@@ -927,7 +928,7 @@ open class CanonicalSpringKotlinTest {
     @Test
     fun testRawSelectWithComplexWhere2() {
         val selectStatement = select(
-            id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId
+            id `as` "A_ID", firstName, lastName, birthDate, employed, occupation, addressId
         ) {
             from(person)
             where { id isEqualTo 5 }

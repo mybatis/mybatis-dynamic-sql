@@ -30,6 +30,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import org.mybatis.dynamic.sql.SqlColumn
+import org.mybatis.dynamic.sql.util.kotlin.elements.`as`
 import org.mybatis.dynamic.sql.util.kotlin.elements.insert
 import org.mybatis.dynamic.sql.util.kotlin.elements.insertMultiple
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.deleteFrom
@@ -297,7 +298,7 @@ class KCustomRenderingTest {
             }
             val rows = mapper.insertMultiple(insertStatement)
             assertThat(rows).isEqualTo(2)
-            val selectStatement = select(dereference(info, "firstName").`as`("firstname")) {
+            val selectStatement = select(dereference(info, "firstName") `as` "firstname") {
                 from(jsonTest)
                 where { dereference(info, "age") isEqualTo "25" }
             }

@@ -27,6 +27,7 @@ import examples.kotlin.spring.canonical.PersonDynamicSqlSupport.lastName
 import examples.kotlin.spring.canonical.PersonDynamicSqlSupport.occupation
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import org.mybatis.dynamic.sql.util.kotlin.elements.`as`
 import org.mybatis.dynamic.sql.util.kotlin.elements.add
 import org.mybatis.dynamic.sql.util.kotlin.elements.constant
 import org.mybatis.dynamic.sql.util.kotlin.spring.count
@@ -374,7 +375,7 @@ open class CanonicalSpringKotlinTemplateDirectTest {
 
     @Test
     fun testSelect() {
-        val rows = template.select(id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId) {
+        val rows = template.select(id `as` "A_ID", firstName, lastName, birthDate, employed, occupation, addressId) {
             from(person)
             where {
                 id isLessThan 4
@@ -462,7 +463,7 @@ open class CanonicalSpringKotlinTemplateDirectTest {
     @Test
     fun testSelectByPrimaryKey() {
         val record = template.selectOne(
-            id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId
+            id `as` "A_ID", firstName, lastName, birthDate, employed, occupation, addressId
         ) {
             from(person)
             where { id isEqualTo 1 }
@@ -518,7 +519,7 @@ open class CanonicalSpringKotlinTemplateDirectTest {
     @Test
     fun testSelectWithJoin() {
         val rows = template.select(
-            id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation,
+            id `as` "A_ID", firstName, lastName, birthDate, employed, occupation,
             address.id, address.streetAddress, address.city, address.state
         ) {
             from(person, "p")
@@ -547,7 +548,7 @@ open class CanonicalSpringKotlinTemplateDirectTest {
 
     @Test
     fun testSelectWithComplexWhere1() {
-        val rows = template.select(id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId) {
+        val rows = template.select(id `as` "A_ID", firstName, lastName, birthDate, employed, occupation, addressId) {
             from(person)
             where { id isLessThan 5 }
             and {
@@ -575,7 +576,7 @@ open class CanonicalSpringKotlinTemplateDirectTest {
 
     @Test
     fun testSelectWithComplexWhere2() {
-        val rows = template.select(id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId) {
+        val rows = template.select(id `as` "A_ID", firstName, lastName, birthDate, employed, occupation, addressId) {
             from(person)
             where { id isEqualTo 5 }
             or {
