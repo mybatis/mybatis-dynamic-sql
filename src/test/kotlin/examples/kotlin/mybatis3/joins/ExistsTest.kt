@@ -165,6 +165,41 @@ class ExistsTest {
     }
 
     @Test
+    fun testPropagateTableAliasToExists() {
+        newSession().use { session ->
+            val mapper = session.getMapper(CommonSelectMapper::class.java)
+
+            val selectStatement = select(itemMaster.allColumns()) {
+                from(itemMaster, "im")
+                where {
+                    not {
+                        exists {
+                            select(orderLine.allColumns()) {
+                                from(orderLine, "ol")
+                                where { orderLine.itemId isEqualTo itemMaster.itemId }
+                            }
+                        }
+                    }
+                }
+                orderBy(itemMaster.itemId)
+            }
+
+            val expectedStatement: String = "select im.* from ItemMaster im" +
+                    " where not exists (select ol.* from OrderLine ol where ol.item_id = im.item_id)" +
+                    " order by item_id"
+            assertThat(selectStatement.selectStatement).isEqualTo(expectedStatement)
+
+            val rows = mapper.selectManyMappedRows(selectStatement)
+            assertThat(rows).hasSize(1)
+
+            with(rows[0]) {
+                assertThat(this).containsEntry("ITEM_ID", 55)
+                assertThat(this).containsEntry("DESCRIPTION", "Catcher Glove")
+            }
+        }
+    }
+
+    @Test
     fun testAndExists() {
         newSession().use { session ->
             val mapper = session.getMapper(CommonSelectMapper::class.java)
