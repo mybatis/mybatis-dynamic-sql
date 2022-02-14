@@ -148,8 +148,8 @@ fun NamedParameterJdbcTemplate.insertSelect(
     update(insertStatement.insertStatement, MapSqlParameterSource(insertStatement.parameters), keyHolder)
 
 // insert with KeyHolder support
-fun NamedParameterJdbcTemplate.withKeyHolder(keyHolder: KeyHolder, build: KeyHolderHelper.() -> Int): Int =
-    build(KeyHolderHelper(keyHolder, this))
+fun NamedParameterJdbcTemplate.withKeyHolder(keyHolder: KeyHolder, block: KeyHolderHelper.() -> Int): Int =
+    KeyHolderHelper(keyHolder, this).run(block)
 
 fun NamedParameterJdbcTemplate.select(
     vararg selectList: BasicColumn,

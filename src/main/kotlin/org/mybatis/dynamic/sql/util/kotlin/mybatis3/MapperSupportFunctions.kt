@@ -19,7 +19,6 @@ package org.mybatis.dynamic.sql.util.kotlin.mybatis3
 import org.mybatis.dynamic.sql.BasicColumn
 import org.mybatis.dynamic.sql.SqlTable
 import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider
-import org.mybatis.dynamic.sql.insert.render.BatchInsert
 import org.mybatis.dynamic.sql.insert.render.GeneralInsertStatementProvider
 import org.mybatis.dynamic.sql.insert.render.InsertSelectStatementProvider
 import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider
@@ -75,9 +74,6 @@ fun <T> insert(
         run(completer)
     }.run(mapper)
 
-fun <T> BatchInsert<T>.execute(mapper: (InsertStatementProvider<T>) -> Int): List<Int> =
-    insertStatements().map(mapper)
-
 /**
  * This function simply inserts all rows using the supplied mapper. It is up
  * to the user to manage MyBatis3 batch processing externally. When executed with a SqlSession
@@ -94,7 +90,7 @@ fun <T> insertBatch(
     insertBatch(records) {
         into(table)
         run(completer)
-    }.execute(mapper)
+    }.insertStatements().map(mapper)
 
 fun insertInto(
     mapper: (GeneralInsertStatementProvider) -> Int,
