@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2021 the original author or authors.
+ *    Copyright 2016-2022 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -30,20 +30,23 @@ import org.mybatis.dynamic.sql.insert.render.MultiRowInsertStatementProvider
 import org.mybatis.dynamic.sql.render.RenderingStrategies
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider
-import org.mybatis.dynamic.sql.util.kotlin.BatchInsertCompleter
 import org.mybatis.dynamic.sql.util.kotlin.CountCompleter
 import org.mybatis.dynamic.sql.util.kotlin.DeleteCompleter
 import org.mybatis.dynamic.sql.util.kotlin.GeneralInsertCompleter
-import org.mybatis.dynamic.sql.util.kotlin.InsertCompleter
 import org.mybatis.dynamic.sql.util.kotlin.InsertSelectCompleter
-import org.mybatis.dynamic.sql.util.kotlin.MultiRowInsertCompleter
+import org.mybatis.dynamic.sql.util.kotlin.KotlinBatchInsertCompleter
+import org.mybatis.dynamic.sql.util.kotlin.KotlinInsertCompleter
+import org.mybatis.dynamic.sql.util.kotlin.KotlinMultiRowInsertCompleter
 import org.mybatis.dynamic.sql.util.kotlin.SelectCompleter
 import org.mybatis.dynamic.sql.util.kotlin.UpdateCompleter
 import org.mybatis.dynamic.sql.util.kotlin.model.count
 import org.mybatis.dynamic.sql.util.kotlin.model.countDistinct
 import org.mybatis.dynamic.sql.util.kotlin.model.countFrom
 import org.mybatis.dynamic.sql.util.kotlin.model.deleteFrom
+import org.mybatis.dynamic.sql.util.kotlin.model.insert
+import org.mybatis.dynamic.sql.util.kotlin.model.insertBatch
 import org.mybatis.dynamic.sql.util.kotlin.model.insertInto
+import org.mybatis.dynamic.sql.util.kotlin.model.insertMultiple
 import org.mybatis.dynamic.sql.util.kotlin.model.insertSelect
 import org.mybatis.dynamic.sql.util.kotlin.model.into
 import org.mybatis.dynamic.sql.util.kotlin.model.select
@@ -62,21 +65,39 @@ fun countFrom(table: SqlTable, completer: CountCompleter): SelectStatementProvid
 fun deleteFrom(table: SqlTable, completer: DeleteCompleter): DeleteStatementProvider =
     deleteFrom(table, completer).render(RenderingStrategies.SPRING_NAMED_PARAMETER)
 
+fun <T> insert(row: T, completer: KotlinInsertCompleter<T>): InsertStatementProvider<T> =
+    insert(row, completer).render(RenderingStrategies.SPRING_NAMED_PARAMETER)
+
+fun <T> insertBatch(rows: Collection<T>, completer: KotlinBatchInsertCompleter<T>): BatchInsert<T> =
+    insertBatch(rows, completer).render(RenderingStrategies.SPRING_NAMED_PARAMETER)
+
 fun insertInto(table: SqlTable, completer: GeneralInsertCompleter): GeneralInsertStatementProvider =
     insertInto(table, completer).render(RenderingStrategies.SPRING_NAMED_PARAMETER)
+
+fun <T> insertMultiple(
+    rows: Collection<T>,
+    completer: KotlinMultiRowInsertCompleter<T>
+): MultiRowInsertStatementProvider<T> =
+    insertMultiple(rows, completer).render(RenderingStrategies.SPRING_NAMED_PARAMETER)
 
 fun insertSelect(table: SqlTable, completer: InsertSelectCompleter): InsertSelectStatementProvider =
     insertSelect(table, completer).render(RenderingStrategies.SPRING_NAMED_PARAMETER)
 
-fun <T> BatchInsertDSL.IntoGatherer<T>.into(table: SqlTable, completer: BatchInsertCompleter<T>): BatchInsert<T> =
+@Deprecated("Please switch to the insertBatch statement in the spring package")
+fun <T> BatchInsertDSL.IntoGatherer<T>.into(table: SqlTable, completer: BatchInsertDSL<T>.() -> Unit): BatchInsert<T> =
     into(table, completer).render(RenderingStrategies.SPRING_NAMED_PARAMETER)
 
-fun <T> InsertDSL.IntoGatherer<T>.into(table: SqlTable, completer: InsertCompleter<T>): InsertStatementProvider<T> =
+@Deprecated("Please switch to the insert statement in the spring package")
+fun <T> InsertDSL.IntoGatherer<T>.into(
+    table: SqlTable,
+    completer: InsertDSL<T>.() -> Unit
+): InsertStatementProvider<T> =
     into(table, completer).render(RenderingStrategies.SPRING_NAMED_PARAMETER)
 
+@Deprecated("Please switch to the insertMultiple statement in the spring package")
 fun <T> MultiRowInsertDSL.IntoGatherer<T>.into(
     table: SqlTable,
-    completer: MultiRowInsertCompleter<T>
+    completer: MultiRowInsertDSL<T>.() -> Unit
 ): MultiRowInsertStatementProvider<T> =
     into(table, completer).render(RenderingStrategies.SPRING_NAMED_PARAMETER)
 

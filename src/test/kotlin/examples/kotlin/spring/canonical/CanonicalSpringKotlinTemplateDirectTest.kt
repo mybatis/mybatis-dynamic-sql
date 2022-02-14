@@ -175,6 +175,24 @@ open class CanonicalSpringKotlinTemplateDirectTest {
     fun testInsert() {
         val record = PersonRecord(100, "Joe", LastName("Jones"), Date(), true, "Developer", 1)
 
+        val rows = template.insert(record) {
+            into(person)
+            map(id) toProperty "id"
+            map(firstName) toProperty "firstName"
+            map(lastName) toProperty "lastNameAsString"
+            map(birthDate) toProperty "birthDate"
+            map(employed) toProperty "employedAsString"
+            map(occupation).toPropertyWhenPresent("occupation", record::occupation)
+            map(addressId) toProperty "addressId"
+        }
+
+        assertThat(rows).isEqualTo(1)
+    }
+
+    @Test
+    fun testDeprecatedInsert() {
+        val record = PersonRecord(100, "Joe", LastName("Jones"), Date(), true, "Developer", 1)
+
         val rows = template.insert(record).into(person) {
             map(id).toProperty("id")
             map(firstName).toProperty("firstName")
@@ -208,6 +226,25 @@ open class CanonicalSpringKotlinTemplateDirectTest {
         val record1 = PersonRecord(100, "Joe", LastName("Jones"), Date(), true, "Developer", 1)
         val record2 = PersonRecord(101, "Sarah", LastName("Smith"), Date(), true, "Architect", 2)
 
+        val rows = template.insertMultiple(record1, record2) {
+            into(person)
+            map(id).toProperty("id")
+            map(firstName).toProperty("firstName")
+            map(lastName).toProperty("lastNameAsString")
+            map(birthDate).toProperty("birthDate")
+            map(employed).toProperty("employedAsString")
+            map(occupation).toProperty("occupation")
+            map(addressId).toProperty("addressId")
+        }
+
+        assertThat(rows).isEqualTo(2)
+    }
+
+    @Test
+    fun testDeprecatedMultiRowInsert() {
+        val record1 = PersonRecord(100, "Joe", LastName("Jones"), Date(), true, "Developer", 1)
+        val record2 = PersonRecord(101, "Sarah", LastName("Smith"), Date(), true, "Architect", 2)
+
         val rows = template.insertMultiple(record1, record2).into(person) {
             map(id).toProperty("id")
             map(firstName).toProperty("firstName")
@@ -223,6 +260,27 @@ open class CanonicalSpringKotlinTemplateDirectTest {
 
     @Test
     fun testBatchInsert() {
+        val record1 = PersonRecord(100, "Joe", LastName("Jones"), Date(), true, "Developer", 1)
+        val record2 = PersonRecord(101, "Sarah", LastName("Smith"), Date(), true, "Architect", 2)
+
+        val rows = template.insertBatch(record1, record2) {
+            into(person)
+            map(id).toProperty("id")
+            map(firstName).toProperty("firstName")
+            map(lastName).toProperty("lastNameAsString")
+            map(birthDate).toProperty("birthDate")
+            map(employed).toProperty("employedAsString")
+            map(occupation).toProperty("occupation")
+            map(addressId).toProperty("addressId")
+        }
+
+        assertThat(rows).hasSize(2)
+        assertThat(rows[0]).isEqualTo(1)
+        assertThat(rows[1]).isEqualTo(1)
+    }
+
+    @Test
+    fun testDeprecatedBatchInsert() {
         val record1 = PersonRecord(100, "Joe", LastName("Jones"), Date(), true, "Developer", 1)
         val record2 = PersonRecord(101, "Sarah", LastName("Smith"), Date(), true, "Architect", 2)
 
@@ -298,6 +356,26 @@ open class CanonicalSpringKotlinTemplateDirectTest {
         val keyHolder = GeneratedKeyHolder()
 
         val rows = template.withKeyHolder(keyHolder) {
+            insert(command) {
+                into(generatedAlways)
+                map(generatedAlways.firstName).toProperty("firstName")
+                map(generatedAlways.lastName).toProperty("lastName")
+            }
+        }
+
+        assertThat(rows).isEqualTo(1)
+        assertThat(keyHolder.keys).containsEntry("ID", 22)
+        assertThat(keyHolder.keys).containsEntry("FULL_NAME", "Fred Flintstone")
+    }
+
+    @Test
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
+    fun testDeprecatedInsertWithGeneratedKey() {
+        val command = GeneratedAlwaysCommand(firstName = "Fred", lastName = "Flintstone")
+
+        val keyHolder = GeneratedKeyHolder()
+
+        val rows = template.withKeyHolder(keyHolder) {
             insert(command).into(generatedAlways) {
                 map(generatedAlways.firstName).toProperty("firstName")
                 map(generatedAlways.lastName).toProperty("lastName")
@@ -312,6 +390,29 @@ open class CanonicalSpringKotlinTemplateDirectTest {
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     fun testMultiRowInsertWithGeneratedKey() {
+        val command1 = GeneratedAlwaysCommand(firstName = "Fred", lastName = "Flintstone")
+        val command2 = GeneratedAlwaysCommand(firstName = "Barney", lastName = "Rubble")
+
+        val keyHolder = GeneratedKeyHolder()
+
+        val rows = template.withKeyHolder(keyHolder) {
+            insertMultiple(command1, command2) {
+                into(generatedAlways)
+                map(generatedAlways.firstName).toProperty("firstName")
+                map(generatedAlways.lastName).toProperty("lastName")
+            }
+        }
+
+        assertThat(rows).isEqualTo(2)
+        assertThat(keyHolder.keyList[0]).containsEntry("ID", 22)
+        assertThat(keyHolder.keyList[0]).containsEntry("FULL_NAME", "Fred Flintstone")
+        assertThat(keyHolder.keyList[1]).containsEntry("ID", 23)
+        assertThat(keyHolder.keyList[1]).containsEntry("FULL_NAME", "Barney Rubble")
+    }
+
+    @Test
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
+    fun testDeprecatedMultiRowInsertWithGeneratedKey() {
         val command1 = GeneratedAlwaysCommand(firstName = "Fred", lastName = "Flintstone")
         val command2 = GeneratedAlwaysCommand(firstName = "Barney", lastName = "Rubble")
 

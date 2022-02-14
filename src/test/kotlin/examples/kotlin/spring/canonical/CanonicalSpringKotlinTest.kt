@@ -244,7 +244,8 @@ open class CanonicalSpringKotlinTest {
 
         val record = PersonRecord(100, "Joe", LastName("Jones"), Date(), true, "Developer", 1)
 
-        val insertStatement = insert(record).into(person) {
+        val insertStatement = insert(record) {
+            into(person)
             map(id).toProperty("id")
             map(firstName).toProperty("firstName")
             map(lastName).toProperty("lastNameAsString")
@@ -261,6 +262,36 @@ open class CanonicalSpringKotlinTest {
                 " :lastNameAsString," +
                 " :birthDate, :employedAsString," +
                 " :occupation, :addressId)"
+
+        assertThat(insertStatement.insertStatement).isEqualTo(expected)
+
+        val rows = template.insert(insertStatement)
+
+        assertThat(rows).isEqualTo(1)
+    }
+
+    @Test
+    fun testDeprecatedInsert() {
+
+        val record = PersonRecord(100, "Joe", LastName("Jones"), Date(), true, "Developer", 1)
+
+        val insertStatement = insert(record).into(person) {
+            map(id).toProperty("id")
+            map(firstName).toProperty("firstName")
+            map(lastName).toProperty("lastNameAsString")
+            map(birthDate).toProperty("birthDate")
+            map(employed).toProperty("employedAsString")
+            map(occupation).toProperty("occupation")
+            map(addressId).toProperty("addressId")
+        }
+
+        val expected =
+            "insert into Person (id, first_name, last_name, birth_date, employed, occupation, address_id)" +
+                    " values" +
+                    " (:id, :firstName," +
+                    " :lastNameAsString," +
+                    " :birthDate, :employedAsString," +
+                    " :occupation, :addressId)"
 
         assertThat(insertStatement.insertStatement).isEqualTo(expected)
 
@@ -348,7 +379,8 @@ open class CanonicalSpringKotlinTest {
         val record1 = PersonRecord(100, "Joe", LastName("Jones"), Date(), true, "Developer", 1)
         val record2 = PersonRecord(101, "Sarah", LastName("Smith"), Date(), true, "Architect", 2)
 
-        val insertStatement = insertMultiple(record1, record2).into(person) {
+        val insertStatement = insertMultiple(listOf(record1, record2)) {
+            into(person)
             map(id).toProperty("id")
             map(firstName).toProperty("firstName")
             map(lastName).toProperty("lastNameAsString")
@@ -365,6 +397,34 @@ open class CanonicalSpringKotlinTest {
                 ":records[0].occupation, :records[0].addressId), " +
                 "(:records[1].id, :records[1].firstName, :records[1].lastNameAsString, " +
                 ":records[1].birthDate, :records[1].employedAsString, :records[1].occupation, :records[1].addressId)"
+        )
+
+        val rows = template.insertMultiple(insertStatement)
+        assertThat(rows).isEqualTo(2)
+    }
+
+    @Test
+    fun testDeprecatedMultiRowInsert() {
+        val record1 = PersonRecord(100, "Joe", LastName("Jones"), Date(), true, "Developer", 1)
+        val record2 = PersonRecord(101, "Sarah", LastName("Smith"), Date(), true, "Architect", 2)
+
+        val insertStatement = insertMultiple(record1, record2).into(person) {
+            map(id).toProperty("id")
+            map(firstName).toProperty("firstName")
+            map(lastName).toProperty("lastNameAsString")
+            map(birthDate).toProperty("birthDate")
+            map(employed).toProperty("employedAsString")
+            map(occupation).toProperty("occupation")
+            map(addressId).toProperty("addressId")
+        }
+
+        assertThat(insertStatement.insertStatement).isEqualTo(
+            "insert into Person (id, first_name, last_name, birth_date, employed, occupation, address_id) " +
+                    "values (:records[0].id, :records[0].firstName, :records[0].lastNameAsString, " +
+                    ":records[0].birthDate, :records[0].employedAsString, " +
+                    ":records[0].occupation, :records[0].addressId), " +
+                    "(:records[1].id, :records[1].firstName, :records[1].lastNameAsString, " +
+                    ":records[1].birthDate, :records[1].employedAsString, :records[1].occupation, :records[1].addressId)"
         )
 
         val rows = template.insertMultiple(insertStatement)

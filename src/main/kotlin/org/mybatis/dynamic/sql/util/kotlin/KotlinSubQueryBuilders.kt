@@ -59,6 +59,8 @@ class KotlinQualifiedSubQueryBuilder : KotlinBaseSubQueryBuilder() {
     }
 }
 
+typealias InsertSelectCompleter = KotlinInsertSelectSubQueryBuilder.() -> Unit
+
 class KotlinInsertSelectSubQueryBuilder : KotlinBaseSubQueryBuilder() {
     private lateinit var lateColumnList: List<SqlColumn<*>>
 

@@ -16,22 +16,11 @@
 package org.mybatis.dynamic.sql.util.kotlin
 
 import org.mybatis.dynamic.sql.SqlColumn
-import org.mybatis.dynamic.sql.insert.BatchInsertDSL
 import org.mybatis.dynamic.sql.insert.GeneralInsertDSL
 import org.mybatis.dynamic.sql.insert.GeneralInsertModel
-import org.mybatis.dynamic.sql.insert.InsertDSL
-import org.mybatis.dynamic.sql.insert.MultiRowInsertDSL
 import org.mybatis.dynamic.sql.util.Buildable
 
 typealias GeneralInsertCompleter = @MyBatisDslMarker KotlinGeneralInsertBuilder.() -> Unit
-
-typealias InsertCompleter<T> = @MyBatisDslMarker InsertDSL<T>.() -> Unit
-
-typealias MultiRowInsertCompleter<T> = @MyBatisDslMarker MultiRowInsertDSL<T>.() -> Unit
-
-typealias BatchInsertCompleter<T> = @MyBatisDslMarker BatchInsertDSL<T>.() -> Unit
-
-typealias InsertSelectCompleter = @MyBatisDslMarker KotlinInsertSelectSubQueryBuilder.() -> Unit
 
 @MyBatisDslMarker
 class KotlinGeneralInsertBuilder(private val dsl: GeneralInsertDSL) : Buildable<GeneralInsertModel> {
