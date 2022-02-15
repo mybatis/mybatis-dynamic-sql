@@ -67,10 +67,16 @@ fun NamedParameterJdbcTemplate.deleteFrom(table: SqlTable, completer: DeleteComp
 fun <T> NamedParameterJdbcTemplate.insertBatch(insertStatement: BatchInsert<T>): IntArray =
     batchUpdate(insertStatement.insertStatementSQL, SqlParameterSourceUtils.createBatch(insertStatement.records))
 
-fun <T : Any> NamedParameterJdbcTemplate.insertBatch(vararg records: T, completer: KotlinBatchInsertCompleter<T>): IntArray =
+fun <T : Any> NamedParameterJdbcTemplate.insertBatch(
+    vararg records: T,
+    completer: KotlinBatchInsertCompleter<T>
+): IntArray =
     insertBatch(records.asList(), completer)
 
-fun <T : Any> NamedParameterJdbcTemplate.insertBatch(records: List<T>, completer: KotlinBatchInsertCompleter<T>): IntArray =
+fun <T : Any> NamedParameterJdbcTemplate.insertBatch(
+    records: List<T>,
+    completer: KotlinBatchInsertCompleter<T>
+): IntArray =
     insertBatch(org.mybatis.dynamic.sql.util.kotlin.spring.insertBatch(records, completer))
 
 @Deprecated("Please move the into phrase inside the lambda")
@@ -112,10 +118,16 @@ fun NamedParameterJdbcTemplate.insertInto(table: SqlTable, completer: GeneralIns
     generalInsert(org.mybatis.dynamic.sql.util.kotlin.spring.insertInto(table, completer))
 
 // multiple row insert
-fun <T : Any> NamedParameterJdbcTemplate.insertMultiple(vararg records: T, completer: KotlinMultiRowInsertCompleter<T>): Int =
+fun <T : Any> NamedParameterJdbcTemplate.insertMultiple(
+    vararg records: T
+    , completer: KotlinMultiRowInsertCompleter<T>
+): Int =
     insertMultiple(records.asList(), completer)
 
-fun <T : Any> NamedParameterJdbcTemplate.insertMultiple(records: List<T>, completer: KotlinMultiRowInsertCompleter<T>): Int =
+fun <T : Any> NamedParameterJdbcTemplate.insertMultiple(
+    records: List<T>,
+    completer: KotlinMultiRowInsertCompleter<T>
+): Int =
     insertMultiple(org.mybatis.dynamic.sql.util.kotlin.spring.insertMultiple(records, completer))
 
 @Deprecated("Please move the into phrase inside the lambda")

@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2020 the original author or authors.
+ *    Copyright 2016-2022 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
 import org.jetbrains.annotations.NotNull;
 import org.mybatis.dynamic.sql.SqlColumn;
@@ -34,11 +35,12 @@ public class BatchInsertDSL<T> implements Buildable<BatchInsertModel<T>> {
 
     private final Collection<T> records;
     private final SqlTable table;
-    private final List<AbstractColumnMapping> columnMappings = new ArrayList<>();
+    private final List<AbstractColumnMapping> columnMappings;
 
-    private BatchInsertDSL(Collection<T> records, SqlTable table) {
-        this.records = records;
-        this.table = table;
+    private BatchInsertDSL(AbstractBuilder<T, ?> builder) {
+        this.records = builder.records;
+        this.table = Objects.requireNonNull(builder.table);
+        this.columnMappings = builder.columnMappings;
     }
 
     public <F> ColumnMappingFinisher<F> map(SqlColumn<F> column) {
@@ -71,7 +73,7 @@ public class BatchInsertDSL<T> implements Buildable<BatchInsertModel<T>> {
         }
 
         public BatchInsertDSL<T> into(SqlTable table) {
-            return new BatchInsertDSL<>(records, table);
+            return new Builder<T>().withRecords(records).withTable(table).build();
         }
     }
 
@@ -100,6 +102,40 @@ public class BatchInsertDSL<T> implements Buildable<BatchInsertModel<T>> {
         public BatchInsertDSL<T> toStringConstant(String constant) {
             columnMappings.add(StringConstantMapping.of(column, constant));
             return BatchInsertDSL.this;
+        }
+    }
+
+    public abstract static class AbstractBuilder<T, B extends AbstractBuilder<T, B>> {
+        final Collection<T> records = new ArrayList<>();
+        SqlTable table;
+        final List<AbstractColumnMapping> columnMappings = new ArrayList<>();
+
+        public B withRecords(Collection<T> records) {
+            this.records.addAll(records);
+            return getThis();
+        }
+
+        public B withTable(SqlTable table) {
+            this.table = table;
+            return getThis();
+        }
+
+        public B withColumnMappings(Collection<AbstractColumnMapping> columnMappings) {
+            this.columnMappings.addAll(columnMappings);
+            return getThis();
+        }
+
+        protected abstract B getThis();
+    }
+
+    public static class Builder<T> extends AbstractBuilder<T, Builder<T>> {
+        @Override
+        protected Builder<T> getThis() {
+            return this;
+        }
+
+        public BatchInsertDSL<T> build() {
+            return new BatchInsertDSL<>(this);
         }
     }
 }

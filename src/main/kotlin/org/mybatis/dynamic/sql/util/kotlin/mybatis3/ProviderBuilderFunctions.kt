@@ -74,7 +74,10 @@ fun <T> insertBatch(rows: Collection<T>, completer: KotlinBatchInsertCompleter<T
 fun insertInto(table: SqlTable, completer: GeneralInsertCompleter): GeneralInsertStatementProvider =
     insertInto(table, completer).render(RenderingStrategies.MYBATIS3)
 
-fun <T> insertMultiple(rows: Collection<T>, completer: KotlinMultiRowInsertCompleter<T>): MultiRowInsertStatementProvider<T> =
+fun <T> insertMultiple(
+    rows: Collection<T>,
+    completer: KotlinMultiRowInsertCompleter<T>
+): MultiRowInsertStatementProvider<T> =
     insertMultiple(rows, completer).render(RenderingStrategies.MYBATIS3)
 
 fun insertSelect(table: SqlTable, completer: InsertSelectCompleter): InsertSelectStatementProvider =
@@ -85,7 +88,10 @@ fun <T> BatchInsertDSL.IntoGatherer<T>.into(table: SqlTable, completer: BatchIns
     into(table, completer).render(RenderingStrategies.MYBATIS3)
 
 @Deprecated("Please switch to the insert statement in the mybatis3 package")
-fun <T> InsertDSL.IntoGatherer<T>.into(table: SqlTable, completer: InsertDSL<T>.() -> Unit): InsertStatementProvider<T> =
+fun <T> InsertDSL.IntoGatherer<T>.into(
+    table: SqlTable,
+    completer: InsertDSL<T>.() -> Unit
+): InsertStatementProvider<T> =
     into(table, completer).render(RenderingStrategies.MYBATIS3)
 
 @Deprecated("Please switch to the insertMultiple statement in the mybatis3 package")

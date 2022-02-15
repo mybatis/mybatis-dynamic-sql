@@ -16,59 +16,27 @@
 package org.mybatis.dynamic.sql.util.kotlin
 
 import org.mybatis.dynamic.sql.SqlColumn
+import org.mybatis.dynamic.sql.SqlTable
 import org.mybatis.dynamic.sql.insert.GeneralInsertDSL
 import org.mybatis.dynamic.sql.insert.GeneralInsertModel
+import org.mybatis.dynamic.sql.util.AbstractColumnMapping
 import org.mybatis.dynamic.sql.util.Buildable
 
 typealias GeneralInsertCompleter = @MyBatisDslMarker KotlinGeneralInsertBuilder.() -> Unit
 
 @MyBatisDslMarker
-class KotlinGeneralInsertBuilder(private val dsl: GeneralInsertDSL) : Buildable<GeneralInsertModel> {
+class KotlinGeneralInsertBuilder(private val table: SqlTable) : Buildable<GeneralInsertModel> {
 
-    fun <T> set(column: SqlColumn<T>): GeneralInsertSetClauseFinisher<T> = GeneralInsertSetClauseFinisher(column)
+    private val columnMappings = mutableListOf<AbstractColumnMapping>()
 
-    override fun build(): GeneralInsertModel = dsl.build()
-
-    @MyBatisDslMarker
-    inner class GeneralInsertSetClauseFinisher<T>(private val column: SqlColumn<T>) {
-        fun toNull(): Unit =
-            applyToDsl {
-                set(column).toNull()
-            }
-
-        infix fun toConstant(constant: String): Unit =
-            applyToDsl {
-                set(column).toConstant(constant)
-            }
-
-        infix fun toStringConstant(constant: String): Unit =
-            applyToDsl {
-                set(column).toStringConstant(constant)
-            }
-
-        infix fun toValue(value: T): Unit = toValue { value }
-
-        infix fun toValue(value: () -> T): Unit =
-            applyToDsl {
-                set(column).toValue(value)
-            }
-
-        infix fun toValueOrNull(value: T?): Unit = toValueOrNull { value }
-
-        infix fun toValueOrNull(value: () -> T?): Unit =
-            applyToDsl {
-                set(column).toValueOrNull(value)
-            }
-
-        infix fun toValueWhenPresent(value: T?): Unit = toValueWhenPresent { value }
-
-        infix fun toValueWhenPresent(value: () -> T?): Unit =
-            applyToDsl {
-                set(column).toValueWhenPresent(value)
-            }
-
-        private fun applyToDsl(block: GeneralInsertDSL.() -> Unit) {
-            this@KotlinGeneralInsertBuilder.dsl.apply(block)
-        }
+    fun <T : Any> set(column: SqlColumn<T>) = GeneralInsertColumnSetCompleter(column) {
+        columnMappings.add(it)
     }
+
+    override fun build(): GeneralInsertModel =
+        with(GeneralInsertDSL.Builder()) {
+            withTable(table)
+            withColumnMappings(columnMappings)
+            build()
+        }.build()
 }

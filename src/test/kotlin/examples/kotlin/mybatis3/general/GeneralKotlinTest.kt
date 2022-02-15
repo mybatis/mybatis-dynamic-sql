@@ -291,7 +291,7 @@ class GeneralKotlinTest {
     }
 
     @Test
-    fun testInsert() {
+    fun testDeprecatedInsert() {
         newSession().use { session ->
             val mapper = session.getMapper(PersonMapper::class.java)
 
@@ -326,7 +326,7 @@ class GeneralKotlinTest {
     }
 
     @Test
-    fun testInsertMultiple() {
+    fun testDeprecatedInsertMultiple() {
         newSession().use { session ->
             val mapper = session.getMapper(PersonMapper::class.java)
 

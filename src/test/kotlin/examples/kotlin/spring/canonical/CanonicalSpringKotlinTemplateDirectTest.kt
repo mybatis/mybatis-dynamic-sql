@@ -52,6 +52,7 @@ import org.springframework.test.context.junit.jupiter.SpringJUnitConfig
 import org.springframework.transaction.annotation.Transactional
 import java.util.Date
 
+@Suppress("LargeClass")
 @SpringJUnitConfig(classes = [SpringConfiguration::class])
 @Transactional
 open class CanonicalSpringKotlinTemplateDirectTest {

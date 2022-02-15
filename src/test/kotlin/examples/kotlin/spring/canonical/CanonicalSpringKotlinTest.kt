@@ -424,7 +424,8 @@ open class CanonicalSpringKotlinTest {
                     ":records[0].birthDate, :records[0].employedAsString, " +
                     ":records[0].occupation, :records[0].addressId), " +
                     "(:records[1].id, :records[1].firstName, :records[1].lastNameAsString, " +
-                    ":records[1].birthDate, :records[1].employedAsString, :records[1].occupation, :records[1].addressId)"
+                    ":records[1].birthDate, :records[1].employedAsString, :records[1].occupation, " +
+                    ":records[1].addressId)"
         )
 
         val rows = template.insertMultiple(insertStatement)
@@ -433,8 +434,62 @@ open class CanonicalSpringKotlinTest {
 
     @Test
     fun testBatchInsert() {
-        val record1 = PersonRecord(100, "Joe", LastName("Jones"), Date(), true, "Developer", 1)
-        val record2 = PersonRecord(101, "Sarah", LastName("Smith"), Date(), true, "Architect", 2)
+        val record1 = PersonRecord(
+            100,
+            "Joe",
+            LastName("Jones"),
+            Date(),
+            true,
+            "Developer",
+            1
+        )
+        val record2 = PersonRecord(
+            101,
+            "Sarah",
+            LastName("Smith"),
+            Date(),
+            true,
+            "Architect",
+            2
+        )
+
+        val insertStatement = insertBatch(listOf(record1, record2)) {
+            into(person)
+            map(id).toProperty("id")
+            map(firstName).toProperty("firstName")
+            map(lastName).toProperty("lastNameAsString")
+            map(birthDate).toProperty("birthDate")
+            map(employed).toProperty("employedAsString")
+            map(occupation).toProperty("occupation")
+            map(addressId).toProperty("addressId")
+        }
+
+        val rows = template.insertBatch(insertStatement)
+        assertThat(rows).hasSize(2)
+        assertThat(rows[0]).isEqualTo(1)
+        assertThat(rows[1]).isEqualTo(1)
+    }
+
+    @Test
+    fun testDeprecatedBatchInsert() {
+        val record1 = PersonRecord(
+            100,
+            "Joe",
+            LastName("Jones"),
+            Date(),
+            true,
+            "Developer",
+            1
+        )
+        val record2 = PersonRecord(
+            101,
+            "Sarah",
+            LastName("Smith"),
+            Date(),
+            true,
+            "Architect",
+            2
+        )
 
         val insertStatement = insertBatch(record1, record2).into(person) {
             map(id).toProperty("id")
@@ -531,7 +586,8 @@ open class CanonicalSpringKotlinTest {
     fun testInsertWithGeneratedKey() {
         val command = GeneratedAlwaysCommand(firstName = "Fred", lastName = "Flintstone")
 
-        val insertStatement = insert(command).into(generatedAlways) {
+        val insertStatement = insert(command) {
+            into(generatedAlways)
             map(generatedAlways.firstName).toProperty("firstName")
             map(generatedAlways.lastName).toProperty("lastName")
         }
@@ -550,7 +606,8 @@ open class CanonicalSpringKotlinTest {
         val command1 = GeneratedAlwaysCommand(firstName = "Fred", lastName = "Flintstone")
         val command2 = GeneratedAlwaysCommand(firstName = "Barney", lastName = "Rubble")
 
-        val insertStatement = insertMultiple(command1, command2).into(generatedAlways) {
+        val insertStatement = insertMultiple(listOf(command1, command2)) {
+            into(generatedAlways)
             map(generatedAlways.firstName).toProperty("firstName")
             map(generatedAlways.lastName).toProperty("lastName")
         }

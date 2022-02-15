@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2020 the original author or authors.
+ *    Copyright 2016-2022 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -15,10 +15,10 @@
  */
 package org.mybatis.dynamic.sql.insert;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
 import org.jetbrains.annotations.NotNull;
 import org.mybatis.dynamic.sql.SqlColumn;
@@ -34,11 +34,12 @@ public class MultiRowInsertDSL<T> implements Buildable<MultiRowInsertModel<T>> {
 
     private final Collection<T> records;
     private final SqlTable table;
-    private final List<AbstractColumnMapping> columnMappings = new ArrayList<>();
+    private final List<AbstractColumnMapping> columnMappings;
 
-    private MultiRowInsertDSL(Collection<T> records, SqlTable table) {
-        this.records = records;
-        this.table = table;
+    private MultiRowInsertDSL(BatchInsertDSL.AbstractBuilder<T, ?> builder) {
+        this.records = builder.records;
+        this.table = Objects.requireNonNull(builder.table);
+        this.columnMappings = builder.columnMappings;
     }
 
     public <F> ColumnMappingFinisher<F> map(SqlColumn<F> column) {
@@ -71,7 +72,7 @@ public class MultiRowInsertDSL<T> implements Buildable<MultiRowInsertModel<T>> {
         }
 
         public MultiRowInsertDSL<T> into(SqlTable table) {
-            return new MultiRowInsertDSL<>(records, table);
+            return new Builder<T>().withRecords(records).withTable(table).build();
         }
     }
 
@@ -100,6 +101,18 @@ public class MultiRowInsertDSL<T> implements Buildable<MultiRowInsertModel<T>> {
         public MultiRowInsertDSL<T> toStringConstant(String constant) {
             columnMappings.add(StringConstantMapping.of(column, constant));
             return MultiRowInsertDSL.this;
+        }
+    }
+
+    public static class Builder<T> extends BatchInsertDSL.AbstractBuilder<T, Builder<T>> {
+
+        @Override
+        protected Builder<T> getThis() {
+            return this;
+        }
+
+        public MultiRowInsertDSL<T> build() {
+            return new MultiRowInsertDSL<>(this);
         }
     }
 }

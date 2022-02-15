@@ -15,69 +15,33 @@
  */
 package org.mybatis.dynamic.sql.util.kotlin
 
-import org.mybatis.dynamic.sql.SqlBuilder
 import org.mybatis.dynamic.sql.SqlColumn
 import org.mybatis.dynamic.sql.SqlTable
 import org.mybatis.dynamic.sql.insert.InsertDSL
 import org.mybatis.dynamic.sql.insert.InsertModel
+import org.mybatis.dynamic.sql.util.AbstractColumnMapping
 import org.mybatis.dynamic.sql.util.Buildable
 
 typealias KotlinInsertCompleter<T> = KotlinInsertBuilder<T>.() -> Unit
 
 @MyBatisDslMarker
 class KotlinInsertBuilder<T> (private val row: T): Buildable<InsertModel<T>> {
-
-    private lateinit var dsl: InsertDSL<T>
+    private var table: SqlTable? = null
+    private val columnMappings = mutableListOf<AbstractColumnMapping>()
 
     fun into(table: SqlTable) {
-        dsl = SqlBuilder.insert(row).into(table)
+        this.table = table;
     }
 
-    fun <C : Any> map(column: SqlColumn<C>) = MapCompleter(column)
-
-    override fun build(): InsertModel<T> {
-        return getDsl().build()
+    fun <C : Any> map(column: SqlColumn<C>) = SingleRowInsertColumnMapCompleter(column) {
+        columnMappings.add(it)
     }
 
-    private fun getDsl(): InsertDSL<T> {
-        try {
-            return dsl
-        } catch (e: UninitializedPropertyAccessException) {
-            throw UninitializedPropertyAccessException(
-                "You must specify an \"into\" clause before any other clauses in an insert statement", e
-            )
-        }
-    }
-
-    @MyBatisDslMarker
-    inner class MapCompleter<C : Any> (private val column: SqlColumn<C>) {
-        infix fun toProperty(property: String) =
-            applyToDsl {
-                map(column).toProperty(property)
-            }
-
-        fun toNull() =
-            applyToDsl {
-                map(column).toNull()
-            }
-
-        infix fun toConstant(constant: String) =
-            applyToDsl {
-                map(column).toConstant(constant)
-            }
-
-        infix fun toStringConstant(constant: String) =
-            applyToDsl {
-                map(column).toStringConstant(constant)
-            }
-
-        fun toPropertyWhenPresent(property: String, valueSupplier: () -> C?) =
-            applyToDsl {
-                map(column).toPropertyWhenPresent(property, valueSupplier)
-            }
-
-        private fun applyToDsl(block: InsertDSL<T>.() -> Unit) {
-            this@KotlinInsertBuilder.getDsl().apply(block)
-        }
-    }
+    override fun build(): InsertModel<T> =
+        with(InsertDSL.Builder<T>()) {
+            withRow(row)
+            withTable(table)
+            withColumnMappings(columnMappings)
+            build()
+        }.build()
 }

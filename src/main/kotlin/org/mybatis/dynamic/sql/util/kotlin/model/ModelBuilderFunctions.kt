@@ -22,7 +22,6 @@ import org.mybatis.dynamic.sql.SqlTable
 import org.mybatis.dynamic.sql.delete.DeleteModel
 import org.mybatis.dynamic.sql.insert.BatchInsertDSL
 import org.mybatis.dynamic.sql.insert.BatchInsertModel
-import org.mybatis.dynamic.sql.insert.GeneralInsertDSL
 import org.mybatis.dynamic.sql.insert.GeneralInsertModel
 import org.mybatis.dynamic.sql.insert.InsertDSL
 import org.mybatis.dynamic.sql.insert.InsertModel
@@ -70,7 +69,7 @@ fun <T> insertBatch(rows: Collection<T>, completer: KotlinBatchInsertCompleter<T
     KotlinBatchInsertBuilder(rows).apply(completer).build()
 
 fun insertInto(table: SqlTable, completer: GeneralInsertCompleter): GeneralInsertModel =
-    KotlinGeneralInsertBuilder(GeneralInsertDSL.insertInto(table)).apply(completer).build()
+    KotlinGeneralInsertBuilder(table).apply(completer).build()
 
 fun <T> insertMultiple(rows: Collection<T>, completer: KotlinMultiRowInsertCompleter<T>): MultiRowInsertModel<T> =
     KotlinMultiRowInsertBuilder(rows).apply(completer).build()

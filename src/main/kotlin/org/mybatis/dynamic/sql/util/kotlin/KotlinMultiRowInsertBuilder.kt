@@ -15,64 +15,33 @@
  */
 package org.mybatis.dynamic.sql.util.kotlin
 
-import org.mybatis.dynamic.sql.SqlBuilder
 import org.mybatis.dynamic.sql.SqlColumn
 import org.mybatis.dynamic.sql.SqlTable
 import org.mybatis.dynamic.sql.insert.MultiRowInsertDSL
 import org.mybatis.dynamic.sql.insert.MultiRowInsertModel
+import org.mybatis.dynamic.sql.util.AbstractColumnMapping
 import org.mybatis.dynamic.sql.util.Buildable
 
 typealias KotlinMultiRowInsertCompleter<T> = KotlinMultiRowInsertBuilder<T>.() -> Unit
 
 @MyBatisDslMarker
 class KotlinMultiRowInsertBuilder<T> (private val rows: Collection<T>): Buildable<MultiRowInsertModel<T>> {
-
-    private lateinit var dsl: MultiRowInsertDSL<T>
+    private var table: SqlTable? = null
+    private val columnMappings = mutableListOf<AbstractColumnMapping>()
 
     fun into(table: SqlTable) {
-        dsl = SqlBuilder.insertMultiple(rows).into(table)
+        this.table = table
     }
 
-    infix fun <C : Any> map(column: SqlColumn<C>) = MapCompleter(column)
-
-    override fun build(): MultiRowInsertModel<T> {
-        return getDsl().build()
+    fun <C : Any> map(column: SqlColumn<C>) = MultiRowInsertColumnMapCompleter(column) {
+        columnMappings.add(it)
     }
 
-    private fun getDsl(): MultiRowInsertDSL<T> {
-        try {
-            return dsl
-        } catch (e: UninitializedPropertyAccessException) {
-            throw UninitializedPropertyAccessException(
-                "You must specify an \"into\" clause before any other clauses in an insertMultiple statement", e
-            )
-        }
-    }
-
-    @MyBatisDslMarker
-    inner class MapCompleter<C : Any> (private val column: SqlColumn<C>) {
-        infix fun toProperty(property: String) =
-            applyToDsl {
-                map(column).toProperty(property)
-            }
-
-        fun toNull() =
-            applyToDsl {
-                map(column).toNull()
-            }
-
-        infix fun toConstant(constant: String) =
-            applyToDsl {
-                map(column).toConstant(constant)
-            }
-
-        infix fun toStringConstant(constant: String) =
-            applyToDsl {
-                map(column).toStringConstant(constant)
-            }
-
-        private fun applyToDsl(block: MultiRowInsertDSL<T>.() -> Unit) {
-            this@KotlinMultiRowInsertBuilder.getDsl().apply(block)
-        }
-    }
+    override fun build(): MultiRowInsertModel<T> =
+        with(MultiRowInsertDSL.Builder<T>()) {
+            withRecords(rows)
+            withTable(table)
+            withColumnMappings(columnMappings)
+            build()
+        }.build()
 }
