@@ -65,13 +65,13 @@ fun PersonMapper.deleteByPrimaryKey(id_: Int) =
 
 fun PersonMapper.insert(record: PersonRecord) =
     insert(this::insert, record, person) {
-        map(id).toProperty("id")
-        map(firstName).toProperty("firstName")
-        map(lastName).toProperty("lastName")
-        map(birthDate).toProperty("birthDate")
-        map(employed).toProperty("employed")
-        map(occupation).toProperty("occupation")
-        map(addressId).toProperty("addressId")
+        map(id) toProperty "id"
+        map(firstName) toProperty "firstName"
+        map(lastName) toProperty "lastName"
+        map(birthDate) toProperty "birthDate"
+        map(employed) toProperty "employed"
+        map(occupation) toProperty "occupation"
+        map(addressId) toProperty "addressId"
     }
 
 fun PersonMapper.generalInsert(completer: GeneralInsertCompleter) =
@@ -85,13 +85,13 @@ fun PersonMapper.insertBatch(vararg records: PersonRecord): List<Int> =
 
 fun PersonMapper.insertBatch(records: Collection<PersonRecord>): List<Int> =
     insertBatch(this::insert, records, person) {
-        map(id).toProperty("id")
-        map(firstName).toProperty("firstName")
-        map(lastName).toProperty("lastName")
-        map(birthDate).toProperty("birthDate")
-        map(employed).toProperty("employed")
-        map(occupation).toProperty("occupation")
-        map(addressId).toProperty("addressId")
+        map(id) toProperty "id"
+        map(firstName) toProperty "firstName"
+        map(lastName) toProperty "lastName"
+        map(birthDate) toProperty "birthDate"
+        map(employed) toProperty "employed"
+        map(occupation) toProperty "occupation"
+        map(addressId) toProperty "addressId"
     }
 
 fun PersonMapper.insertMultiple(vararg records: PersonRecord) =
@@ -99,13 +99,13 @@ fun PersonMapper.insertMultiple(vararg records: PersonRecord) =
 
 fun PersonMapper.insertMultiple(records: Collection<PersonRecord>) =
     insertMultiple(this::insertMultiple, records, person) {
-        map(id).toProperty("id")
-        map(firstName).toProperty("firstName")
-        map(lastName).toProperty("lastName")
-        map(birthDate).toProperty("birthDate")
-        map(employed).toProperty("employed")
-        map(occupation).toProperty("occupation")
-        map(addressId).toProperty("addressId")
+        map(id) toProperty "id"
+        map(firstName) toProperty "firstName"
+        map(lastName) toProperty "lastName"
+        map(birthDate) toProperty "birthDate"
+        map(employed) toProperty "employed"
+        map(occupation) toProperty "occupation"
+        map(addressId) toProperty "addressId"
     }
 
 fun PersonMapper.insertSelective(record: PersonRecord) =

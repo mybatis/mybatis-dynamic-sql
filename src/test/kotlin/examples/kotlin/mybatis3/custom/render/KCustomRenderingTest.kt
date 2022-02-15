@@ -31,11 +31,10 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import org.mybatis.dynamic.sql.SqlColumn
 import org.mybatis.dynamic.sql.util.kotlin.elements.`as`
-import org.mybatis.dynamic.sql.util.kotlin.elements.insert
-import org.mybatis.dynamic.sql.util.kotlin.elements.insertMultiple
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.deleteFrom
+import org.mybatis.dynamic.sql.util.kotlin.mybatis3.insert
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.insertInto
-import org.mybatis.dynamic.sql.util.kotlin.mybatis3.into
+import org.mybatis.dynamic.sql.util.kotlin.mybatis3.insertMultiple
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.select
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.update
 import org.mybatis.dynamic.sql.util.mybatis3.CommonSelectMapper
@@ -84,10 +83,11 @@ class KCustomRenderingTest {
                 info = "{\"firstName\": \"Fred\", \"lastName\": \"Flintstone\", \"age\": 30}"
             )
 
-            var insertStatement = insert(record).into(jsonTest) {
-                map(id).toProperty("id")
-                map(description).toProperty("description")
-                map(info).toProperty("info")
+            var insertStatement = insert(record) {
+                into(jsonTest)
+                map(id) toProperty "id"
+                map(description) toProperty "description"
+                map(info) toProperty "info"
             }
             val expected = "insert into JsonTest (id, description, info) " +
                 "values (#{record.id,jdbcType=INTEGER}, #{record.description,jdbcType=VARCHAR}, " +
@@ -101,10 +101,11 @@ class KCustomRenderingTest {
                 info = "{\"firstName\": \"Wilma\", \"lastName\": \"Flintstone\", \"age\": 25}"
             )
 
-            insertStatement = insert(record).into(jsonTest) {
-                map(id).toProperty("id")
-                map(description).toProperty("description")
-                map(info).toProperty("info")
+            insertStatement = insert(record) {
+                into(jsonTest)
+                map(id) toProperty "id"
+                map(description) toProperty "description"
+                map(info) toProperty "info"
             }
             rows = mapper.insert(insertStatement)
             assertThat(rows).isEqualTo(1)
@@ -170,10 +171,11 @@ class KCustomRenderingTest {
                 description = "Wilma",
                 info = "{\"firstName\": \"Wilma\", \"lastName\": \"Flintstone\", \"age\": 25}"
             )
-            val insertStatement = insertMultiple(record1, record2).into(jsonTest) {
-                map(id).toProperty("id")
-                map(description).toProperty("description")
-                map(info).toProperty("info")
+            val insertStatement = insertMultiple(listOf(record1, record2)) {
+                into(jsonTest)
+                map(id) toProperty "id"
+                map(description) toProperty "description"
+                map(info) toProperty "info"
             }
             val expected = "insert into JsonTest (id, description, info) " +
                 "values (#{records[0].id,jdbcType=INTEGER}, #{records[0].description,jdbcType=VARCHAR}, " +
@@ -210,10 +212,11 @@ class KCustomRenderingTest {
                 description = "Wilma",
                 info = "{\"firstName\": \"Wilma\", \"lastName\": \"Flintstone\", \"age\": 25}"
             )
-            val insertStatement = insertMultiple(record1, record2).into(jsonTest) {
-                map(id).toProperty("id")
-                map(description).toProperty("description")
-                map(info).toProperty("info")
+            val insertStatement = insertMultiple(listOf(record1, record2)) {
+                into(jsonTest)
+                map(id) toProperty "id"
+                map(description) toProperty "description"
+                map(info) toProperty "info"
             }
             var rows = mapper.insertMultiple(insertStatement)
             assertThat(rows).isEqualTo(2)
@@ -254,10 +257,11 @@ class KCustomRenderingTest {
                 description = "Wilma",
                 info = "{\"firstName\": \"Wilma\", \"lastName\": \"Flintstone\", \"age\": 25}"
             )
-            val insertStatement = insertMultiple(record1, record2).into(jsonTest) {
-                map(id).toProperty("id")
-                map(description).toProperty("description")
-                map(info).toProperty("info")
+            val insertStatement = insertMultiple(listOf(record1, record2)) {
+                into(jsonTest)
+                map(id) toProperty "id"
+                map(description) toProperty "description"
+                map(info) toProperty "info"
             }
             val rows = mapper.insertMultiple(insertStatement)
             assertThat(rows).isEqualTo(2)
@@ -291,10 +295,11 @@ class KCustomRenderingTest {
                 description = "Wilma",
                 info = "{\"firstName\": \"Wilma\", \"lastName\": \"Flintstone\", \"age\": 25}"
             )
-            val insertStatement = insertMultiple(record1, record2).into(jsonTest) {
-                map(id).toProperty("id")
-                map(description).toProperty("description")
-                map(info).toProperty("info")
+            val insertStatement = insertMultiple(listOf(record1, record2)) {
+                into(jsonTest)
+                map(id) toProperty "id"
+                map(description) toProperty "description"
+                map(info) toProperty "info"
             }
             val rows = mapper.insertMultiple(insertStatement)
             assertThat(rows).isEqualTo(2)

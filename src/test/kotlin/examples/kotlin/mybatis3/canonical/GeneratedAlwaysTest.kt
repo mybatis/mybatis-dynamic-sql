@@ -84,7 +84,7 @@ class GeneratedAlwaysTest {
                 lastName = "Rubble"
             )
 
-            val rows = mapper.insertMultiple(listOf(record1, record2))
+            val rows = mapper.insertMultiple(record1, record2)
 
             assertThat(rows).isEqualTo(2)
             assertThat(record1.id).isEqualTo(22)

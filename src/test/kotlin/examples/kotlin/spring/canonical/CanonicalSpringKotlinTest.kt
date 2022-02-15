@@ -455,13 +455,13 @@ open class CanonicalSpringKotlinTest {
 
         val insertStatement = insertBatch(listOf(record1, record2)) {
             into(person)
-            map(id).toProperty("id")
-            map(firstName).toProperty("firstName")
-            map(lastName).toProperty("lastNameAsString")
-            map(birthDate).toProperty("birthDate")
-            map(employed).toProperty("employedAsString")
-            map(occupation).toProperty("occupation")
-            map(addressId).toProperty("addressId")
+            map(id) toProperty "id"
+            map(firstName) toProperty "firstName"
+            map(lastName) toProperty "lastNameAsString"
+            map(birthDate) toProperty "birthDate"
+            map(employed) toProperty "employedAsString"
+            map(occupation) toProperty "occupation"
+            map(addressId) toProperty "addressId"
         }
 
         val rows = template.insertBatch(insertStatement)
@@ -588,8 +588,8 @@ open class CanonicalSpringKotlinTest {
 
         val insertStatement = insert(command) {
             into(generatedAlways)
-            map(generatedAlways.firstName).toProperty("firstName")
-            map(generatedAlways.lastName).toProperty("lastName")
+            map(generatedAlways.firstName) toProperty "firstName"
+            map(generatedAlways.lastName) toProperty "lastName"
         }
 
         val keyHolder = GeneratedKeyHolder()
@@ -608,8 +608,8 @@ open class CanonicalSpringKotlinTest {
 
         val insertStatement = insertMultiple(listOf(command1, command2)) {
             into(generatedAlways)
-            map(generatedAlways.firstName).toProperty("firstName")
-            map(generatedAlways.lastName).toProperty("lastName")
+            map(generatedAlways.firstName) toProperty "firstName"
+            map(generatedAlways.lastName) toProperty "lastName"
         }
 
         val keyHolder = GeneratedKeyHolder()

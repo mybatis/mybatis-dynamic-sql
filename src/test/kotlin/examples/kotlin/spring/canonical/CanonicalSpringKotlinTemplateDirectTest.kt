@@ -229,13 +229,13 @@ open class CanonicalSpringKotlinTemplateDirectTest {
 
         val rows = template.insertMultiple(record1, record2) {
             into(person)
-            map(id).toProperty("id")
-            map(firstName).toProperty("firstName")
-            map(lastName).toProperty("lastNameAsString")
-            map(birthDate).toProperty("birthDate")
-            map(employed).toProperty("employedAsString")
-            map(occupation).toProperty("occupation")
-            map(addressId).toProperty("addressId")
+            map(id) toProperty "id"
+            map(firstName) toProperty "firstName"
+            map(lastName) toProperty "lastNameAsString"
+            map(birthDate) toProperty "birthDate"
+            map(employed) toProperty "employedAsString"
+            map(occupation) toProperty "occupation"
+            map(addressId) toProperty "addressId"
         }
 
         assertThat(rows).isEqualTo(2)
@@ -266,13 +266,13 @@ open class CanonicalSpringKotlinTemplateDirectTest {
 
         val rows = template.insertBatch(record1, record2) {
             into(person)
-            map(id).toProperty("id")
-            map(firstName).toProperty("firstName")
-            map(lastName).toProperty("lastNameAsString")
-            map(birthDate).toProperty("birthDate")
-            map(employed).toProperty("employedAsString")
-            map(occupation).toProperty("occupation")
-            map(addressId).toProperty("addressId")
+            map(id) toProperty "id"
+            map(firstName) toProperty "firstName"
+            map(lastName) toProperty "lastNameAsString"
+            map(birthDate) toProperty "birthDate"
+            map(employed) toProperty "employedAsString"
+            map(occupation) toProperty "occupation"
+            map(addressId) toProperty "addressId"
         }
 
         assertThat(rows).hasSize(2)
@@ -359,8 +359,8 @@ open class CanonicalSpringKotlinTemplateDirectTest {
         val rows = template.withKeyHolder(keyHolder) {
             insert(command) {
                 into(generatedAlways)
-                map(generatedAlways.firstName).toProperty("firstName")
-                map(generatedAlways.lastName).toProperty("lastName")
+                map(generatedAlways.firstName) toProperty "firstName"
+                map(generatedAlways.lastName) toProperty "lastName"
             }
         }
 
@@ -399,8 +399,8 @@ open class CanonicalSpringKotlinTemplateDirectTest {
         val rows = template.withKeyHolder(keyHolder) {
             insertMultiple(command1, command2) {
                 into(generatedAlways)
-                map(generatedAlways.firstName).toProperty("firstName")
-                map(generatedAlways.lastName).toProperty("lastName")
+                map(generatedAlways.firstName) toProperty "firstName"
+                map(generatedAlways.lastName) toProperty "lastName"
             }
         }
 
