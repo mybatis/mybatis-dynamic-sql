@@ -349,13 +349,13 @@ import org.mybatis.dynamic.sql.util.kotlin.mybatis3.insert
 
 fun PersonMapper.insert(row: PersonRecord) =
     insert(this::insert, row, Person) {
-        map(id).toProperty("id")
-        map(firstName).toProperty("firstName")
-        map(lastName).toProperty("lastName")
-        map(birthDate).toProperty("birthDate")
-        map(employed).toProperty("employed")
-        map(occupation).toProperty("occupation")
-        map(addressId).toProperty("addressId")
+        map(id) toProperty "id"
+        map(firstName) toProperty "firstName"
+        map(lastName) toProperty "lastName"
+        map(birthDate) toProperty "birthDate"
+        map(employed) toProperty "employed"
+        map(occupation) toProperty "occupation"
+        map(addressId) toProperty "addressId"
     }
 ```
 
@@ -440,13 +440,13 @@ method as follows:
 
 ```kotlin
 val rows = mapper.generalInsert {
-    set(id).toValue(100)
-    set(firstName).toValue("Joe")
-    set(lastName).toValue(LastName("Jones"))
-    set(employed).toValue(true)
-    set(occupation).toValue("Developer")
-    set(addressId).toValue(1)
-    set(birthDate).toValue(Date())
+    set(id) toValue 100
+    set(firstName) toValue "Joe"
+    set(lastName) toValue LastName("Jones")
+    set(employed) toValue true
+    set(occupation) toValue "Developer"
+    set(addressId) toValue 1
+    set(birthDate) toValue Date()
 }
 ```
 
@@ -532,13 +532,13 @@ fun PersonMapper.insertMultiple(vararg records: PersonRecord) =
 
 fun PersonMapper.insertMultiple(records: Collection<PersonRecord>) =
     insertMultiple(this::insertMultiple, records, person) {
-        map(id).toProperty("id")
-        map(firstName).toProperty("firstName")
-        map(lastName).toProperty("lastName")
-        map(birthDate).toProperty("birthDate")
-        map(employed).toProperty("employed")
-        map(occupation).toProperty("occupation")
-        map(addressId).toProperty("addressId")
+        map(id) toProperty "id"
+        map(firstName) toProperty "firstName"
+        map(lastName) toProperty "lastName"
+        map(birthDate) toProperty "birthDate"
+        map(employed) toProperty "employed"
+        map(occupation) toProperty "occupation"
+        map(addressId) toProperty "addressId"
     }
 ```
 
@@ -677,13 +677,13 @@ fun PersonMapper.insertBatch(vararg records: PersonRecord): List<Int> =
 
 fun PersonMapper.insertBatch(records: Collection<PersonRecord>): List<Int> =
     insertBatch(this::insert, records, person) {
-        map(id).toProperty("id")
-        map(firstName).toProperty("firstName")
-        map(lastName).toProperty("lastName")
-        map(birthDate).toProperty("birthDate")
-        map(employed).toProperty("employed")
-        map(occupation).toProperty("occupation")
-        map(addressId).toProperty("addressId")
+        map(id) toProperty "id"
+        map(firstName) toProperty "firstName"
+        map(lastName) toProperty "lastName"
+        map(birthDate) toProperty "birthDate"
+        map(employed) toProperty "employed"
+        map(occupation) toProperty "occupation"
+        map(addressId) toProperty "addressId"
     }
 ```
 

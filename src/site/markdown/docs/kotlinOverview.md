@@ -228,20 +228,22 @@ data class PersonRecord(
 
 val row = PersonRecord(100, "Joe", "Jones", Date(), true, "Developer", 1)
 
-val insertRecordStatement = insert(row).into(person) {
-   map(id).toProperty("id")
-   map(firstName).toProperty("firstName")
-   map(lastName).toProperty("lastName")
-   map(birthDate).toProperty("birthDate")
-   map(employed).toProperty("employedAsString")
+val insertRecordStatement = insert(row) {
+   into(person)
+   map(id) toProperty "id" 
+   map(firstName) toProperty "firstName"
+   map(lastName) toProperty "lastName"
+   map(birthDate) toProperty "birthDate"
+   map(employed) toProperty "employedAsString"
    map(occupation).toPropertyWhenPresent("occupation", row::occupation)
-   map(addressId).toProperty("addressId")
+   map(addressId) toProperty "addressId"
 }
 ```
 
 This statement maps insert columns to properties in a class. Note the use of the `toPropertyWhenPresent` mapping - this
 will only set the insert value if the value of the property is non-null. Also note that you can use other mapping
-methods to map insert fields to nulls and constants if desired.
+methods to map insert fields to nulls and constants if desired. Many of the mappings can be called via infix
+as shown above.
 
 This method creates models or providers depending on which package is used:
 
@@ -260,13 +262,13 @@ The DSL for general insert statements looks like this:
 
 ```kotlin
 val generalInsertStatement = insertInto(person) {
-    set(id).toValue(100)
-    set(firstName).toValue("Joe")
-    set(lastName).toValue("Jones")
-    set(birthDate).toValue(Date())
-    set(employed).toValue(true)
-    set(occupation).toValue("Developer")
-    set(addressId).toValue(1)
+    set(id) toValue 100
+    set(firstName) toValue "Joe"
+    set(lastName) toValue "Jones"
+    set(birthDate) toValue Date()
+    set(employed) toValue true
+    set(occupation) toValue "Developer"
+    set(addressId) toValue 1
 }
 ```
 
@@ -302,18 +304,23 @@ The DSL for multi-row insert statements looks like this:
 val record1 = PersonRecord(100, "Joe", "Jones", Date(), true, "Developer", 1)
 val record2 = PersonRecord(101, "Sarah", "Smith", Date(), true, "Architect", 2)
 
-val multiRowInsertStatement = insertMultiple(record1, record2).into(person) {
-   map(id).toProperty("id")
-   map(firstName).toProperty("firstName")
-   map(lastName).toProperty("lastNameAsString")
-   map(birthDate).toProperty("birthDate")
-   map(employed).toProperty("employedAsString")
-   map(occupation).toProperty("occupation")
-   map(addressId).toProperty("addressId")
+val multiRowInsertStatement = insertMultiple(listOf(record1, record2)) {
+   into(person)
+   map(id) toProperty "id"
+   map(firstName) toProperty "firstName"
+   map(lastName) toProperty "lastNameAsString"
+   map(birthDate) toProperty "birthDate"
+   map(employed) toProperty "employedAsString"
+   map(occupation) toProperty "occupation"
+   map(addressId) toProperty "addressId"
 }
 ```
 
 Note there is no `toPropertyWhenPresent` mapping available on a multi-row insert.
+
+Also note that there is no overload of this function that accepts a vararg of rows because it would cause an overload
+resolution ambiguity error. This limitation is overcome in the utility functions for MyBatis and Spring as shown on
+the documentation pages for those utilities.
 
 This method creates models or providers depending on which package is used:
 
@@ -340,18 +347,23 @@ The DSL for batch insert statements looks like this:
 val record1 = PersonRecord(100, "Joe", "Jones", Date(), true, "Developer", 1)
 val record2 = PersonRecord(101, "Sarah", "Smith", Date(), true, "Architect", 2)
 
-val batchInsertStatement = insertBatch(record1, record2).into(person) {
-   map(id).toProperty("id")
-   map(firstName).toProperty("firstName")
-   map(lastName).toProperty("lastNameAsString")
-   map(birthDate).toProperty("birthDate")
-   map(employed).toProperty("employedAsString")
-   map(occupation).toProperty("occupation")
-   map(addressId).toProperty("addressId")
+val batchInsertStatement = insertBatch(listOf(record1, record2)) {
+   into(person)
+   map(id) toProperty "id"
+   map(firstName) toProperty "firstName"
+   map(lastName) toProperty "lastNameAsString"
+   map(birthDate) toProperty "birthDate"
+   map(employed) toProperty "employedAsString"
+   map(occupation) toProperty "occupation"
+   map(addressId) toProperty "addressId"
 }
 ```
 
 Note there is no `toPropertyWhenPresent` mapping available on a batch insert.
+
+Also note that there is no overload of this function that accepts a vararg of rows because it would cause an overload
+resolution ambiguity error. This limitation is overcome in the utility functions for MyBatis and Spring as shown on
+the documentation pages for those utilities.
 
 This method creates models or providers depending on which package is used:
 
