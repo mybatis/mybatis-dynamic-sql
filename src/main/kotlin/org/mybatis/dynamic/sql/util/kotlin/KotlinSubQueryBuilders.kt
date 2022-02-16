@@ -23,7 +23,7 @@ import org.mybatis.dynamic.sql.util.Buildable
 
 @MyBatisDslMarker
 sealed class KotlinBaseSubQueryBuilder : Buildable<SelectModel> {
-    private lateinit var selectBuilder: KotlinSelectBuilder
+    private var selectBuilder: KotlinSelectBuilder? = null
 
     fun select(vararg selectList: BasicColumn, completer: SelectCompleter): Unit =
         select(selectList.toList(), completer)
@@ -40,13 +40,7 @@ sealed class KotlinBaseSubQueryBuilder : Buildable<SelectModel> {
     }
 
     override fun build(): SelectModel =
-        try {
-            selectBuilder.build()
-        } catch (e: UninitializedPropertyAccessException) {
-            throw UninitializedPropertyAccessException(
-                "You must specify a select statement", e
-            )
-        }
+        selectBuilder?.build()?: throw KInvalidSQLException("You must specify a select statement in a sub query")
 }
 
 class KotlinSubQueryBuilder : KotlinBaseSubQueryBuilder()
@@ -59,22 +53,17 @@ class KotlinQualifiedSubQueryBuilder : KotlinBaseSubQueryBuilder() {
     }
 }
 
-class KotlinInsertSelectSubQueryBuilder : KotlinBaseSubQueryBuilder() {
-    private lateinit var lateColumnList: List<SqlColumn<*>>
+typealias InsertSelectCompleter = KotlinInsertSelectSubQueryBuilder.() -> Unit
 
-    val columnList: List<SqlColumn<*>>
-        get(): List<SqlColumn<*>> =
-            try {
-                lateColumnList
-            } catch (e: UninitializedPropertyAccessException) {
-                throw UninitializedPropertyAccessException(
-                    "You must specify a column list in an insert with select statement", e
-                )
-            }
+class KotlinInsertSelectSubQueryBuilder : KotlinBaseSubQueryBuilder() {
+    private var columnList: List<SqlColumn<*>>? = null
+
+    internal fun columnList(): List<SqlColumn<*>> =
+        columnList?: throw KInvalidSQLException("You must specify a column list in an insert select statement")
 
     fun columns(vararg columnList: SqlColumn<*>): Unit = columns(columnList.asList())
 
     fun columns(columnList: List<SqlColumn<*>>) {
-        this.lateColumnList = columnList
+        this.columnList = columnList
     }
 }

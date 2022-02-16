@@ -16,11 +16,6 @@
 package org.mybatis.dynamic.sql.util.kotlin
 
 /**
- * This exception is thrown when a where clause contains more than one criterion and there
- * is not an "and" or an "or" to connect them.
- *
- * @since 1.4.0
+ * This exception is thrown if the library detects misuse of the Kotlin DSL that would result in invalid SQL
  */
-class DuplicateInitialCriterionException : RuntimeException(
-    "Setting more than one initial criterion is not allowed. " +
-            "Additional criteria should be added with \"and\" or \"or\" expression")
+class KInvalidSQLException(message: String) : RuntimeException(message)

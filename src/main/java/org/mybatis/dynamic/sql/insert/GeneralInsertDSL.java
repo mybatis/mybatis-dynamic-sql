@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2021 the original author or authors.
+ *    Copyright 2016-2022 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 package org.mybatis.dynamic.sql.insert;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Supplier;
@@ -33,11 +34,12 @@ import org.mybatis.dynamic.sql.util.ValueOrNullMapping;
 import org.mybatis.dynamic.sql.util.ValueWhenPresentMapping;
 
 public class GeneralInsertDSL implements Buildable<GeneralInsertModel> {
-    private final List<AbstractColumnMapping> insertMappings = new ArrayList<>();
+    private final List<AbstractColumnMapping> columnMappings;
     private final SqlTable table;
 
-    private GeneralInsertDSL(SqlTable table) {
-        this.table = Objects.requireNonNull(table);
+    private GeneralInsertDSL(Builder builder) {
+        table = Objects.requireNonNull(builder.table);
+        columnMappings = builder.columnMappings;
     }
 
     public <T> SetClauseFinisher<T> set(SqlColumn<T> column) {
@@ -49,12 +51,12 @@ public class GeneralInsertDSL implements Buildable<GeneralInsertModel> {
     public GeneralInsertModel build() {
         return new GeneralInsertModel.Builder()
                 .withTable(table)
-                .withInsertMappings(insertMappings)
+                .withInsertMappings(columnMappings)
                 .build();
     }
 
     public static GeneralInsertDSL insertInto(SqlTable table) {
-        return new GeneralInsertDSL(table);
+        return new GeneralInsertDSL.Builder().withTable(table).build();
     }
 
     public class SetClauseFinisher<T> {
@@ -66,17 +68,17 @@ public class GeneralInsertDSL implements Buildable<GeneralInsertModel> {
         }
 
         public GeneralInsertDSL toNull() {
-            insertMappings.add(NullMapping.of(column));
+            columnMappings.add(NullMapping.of(column));
             return GeneralInsertDSL.this;
         }
 
         public GeneralInsertDSL toConstant(String constant) {
-            insertMappings.add(ConstantMapping.of(column, constant));
+            columnMappings.add(ConstantMapping.of(column, constant));
             return GeneralInsertDSL.this;
         }
 
         public GeneralInsertDSL toStringConstant(String constant) {
-            insertMappings.add(StringConstantMapping.of(column, constant));
+            columnMappings.add(StringConstantMapping.of(column, constant));
             return GeneralInsertDSL.this;
         }
 
@@ -85,7 +87,7 @@ public class GeneralInsertDSL implements Buildable<GeneralInsertModel> {
         }
 
         public GeneralInsertDSL toValue(Supplier<T> valueSupplier) {
-            insertMappings.add(ValueMapping.of(column, valueSupplier));
+            columnMappings.add(ValueMapping.of(column, valueSupplier));
             return GeneralInsertDSL.this;
         }
 
@@ -94,7 +96,7 @@ public class GeneralInsertDSL implements Buildable<GeneralInsertModel> {
         }
 
         public GeneralInsertDSL toValueOrNull(Supplier<T> valueSupplier) {
-            insertMappings.add(ValueOrNullMapping.of(column, valueSupplier));
+            columnMappings.add(ValueOrNullMapping.of(column, valueSupplier));
             return GeneralInsertDSL.this;
         }
 
@@ -103,8 +105,27 @@ public class GeneralInsertDSL implements Buildable<GeneralInsertModel> {
         }
 
         public GeneralInsertDSL toValueWhenPresent(Supplier<T> valueSupplier) {
-            insertMappings.add(ValueWhenPresentMapping.of(column, valueSupplier));
+            columnMappings.add(ValueWhenPresentMapping.of(column, valueSupplier));
             return GeneralInsertDSL.this;
+        }
+    }
+
+    public static class Builder {
+        private final List<AbstractColumnMapping> columnMappings = new ArrayList<>();
+        private SqlTable table;
+
+        public Builder withTable(SqlTable table) {
+            this.table = table;
+            return this;
+        }
+
+        public Builder withColumnMappings(Collection<AbstractColumnMapping> columnMappings) {
+            this.columnMappings.addAll(columnMappings);
+            return this;
+        }
+
+        public GeneralInsertDSL build() {
+            return new GeneralInsertDSL(this);
         }
     }
 }

@@ -28,7 +28,7 @@ typealias SelectCompleter = KotlinSelectBuilder.() -> Unit
 class KotlinSelectBuilder(private val fromGatherer: QueryExpressionDSL.FromGatherer<SelectModel>) :
     KotlinBaseJoiningBuilder<QueryExpressionDSL<SelectModel>>(), Buildable<SelectModel> {
 
-    private lateinit var dsl: QueryExpressionDSL<SelectModel>
+    private var dsl: QueryExpressionDSL<SelectModel>? = null
 
     fun from(table: SqlTable) {
         dsl = fromGatherer.from(table)
@@ -72,13 +72,7 @@ class KotlinSelectBuilder(private val fromGatherer: QueryExpressionDSL.FromGathe
     override fun build(): SelectModel = getDsl().build()
 
     override fun getDsl(): QueryExpressionDSL<SelectModel> {
-        try {
-            return dsl
-        } catch (e: UninitializedPropertyAccessException) {
-            throw UninitializedPropertyAccessException(
-                "You must specify a \"from\" clause before any other clauses in a select statement",
-                e
-            )
-        }
+        return dsl?: throw KInvalidSQLException(
+            "You must specify a \"from\" clause before any other clauses in a select statement")
     }
 }

@@ -196,14 +196,15 @@ Single record insert statements can be constructed and executed in a single step
 ```kotlin
 val row = PersonRecord(100, "Joe", "Jones", Date(), true, "Developer", 1)
 
-val rows = template.insert(row).into(Person) {
-    map(id).toProperty("id")
-    map(firstName).toProperty("firstName")
-    map(lastName).toProperty("lastName")
-    map(birthDate).toProperty("birthDate")
-    map(employed).toProperty("employedAsString")
+val rows = template.insert(row) {
+    into(Person)
+    map(id) toProperty "id"
+    map(firstName) toProperty "firstName"
+    map(lastName) toProperty "lastName"
+    map(birthDate) toProperty "birthDate"
+    map(employed) toProperty "employedAsString"
     map(occupation).toPropertyWhenPresent("occupation", row::occupation)
-    map(addressId).toProperty("addressId")
+    map(addressId) toProperty "addressId"
 }
 ```
 
@@ -217,14 +218,15 @@ val keyHolder = GeneratedKeyHolder()
 val row = PersonRecord(100, "Joe", "Jones", Date(), true, "Developer", 1)
 
 val rows = template.withKeyHolder(keyHolder) {
-    insert(row).into(Person) {
-        map(id).toProperty("id")
-        map(firstName).toProperty("firstName")
-        map(lastName).toProperty("lastName")
-        map(birthDate).toProperty("birthDate")
-        map(employed).toProperty("employedAsString")
+    insert(row) {
+        into(Person)
+        map(id) toProperty"id"
+        map(firstName) toProperty "firstName"
+        map(lastName) toProperty "lastName"
+        map(birthDate) toProperty "birthDate"
+        map(employed) toProperty "employedAsString"
         map(occupation).toPropertyWhenPresent("occupation", row::occupation)
-        map(addressId).toProperty("addressId")
+        map(addressId) toProperty "addressId"
     }
 }
 ```
@@ -255,13 +257,13 @@ General insert statements can be constructed and executed in a single step with 
 val myOccupation = "Developer"
 
 val rows = template.insertInto(Person) {
-    set(id).toValue(100)
-    set(firstName).toValue("Joe")
-    set(lastName).toValue("Jones")
-    set(birthDate).toValue(Date())
-    set(employed).toValue(true)
-    set(occupation).toValueWhenPresent(myOccupation)
-    set(addressId).toValue(1)
+    set(id) toValue 100
+    set(firstName) toValue "Joe"
+    set(lastName) toValue "Jones"
+    set(birthDate) toValue Date()
+    set(employed) toValue true
+    set(occupation) toValueWhenPresent myOccupation
+    set(addressId) toValue 1
 }
 ```
 
@@ -276,13 +278,13 @@ val myOccupation = "Developer"
 
 val rows = template.withKeyHolder(keyHolder) {
     insertInto(Person) {
-        set(id).toValue(100)
-        set(firstName).toValue("Joe")
-        set(lastName).toValue("Jones")
-        set(birthDate).toValue(Date())
-        set(employed).toValue(true)
-        set(occupation).toValueWhenPresent(myOccupation)
-        set(addressId).toValue(1)
+        set(id) toValue 100
+        set(firstName) toValue "Joe"
+        set(lastName) toValue "Jones"
+        set(birthDate) toValue Date()
+        set(employed) toValue true
+        set(occupation) toValueWhenPresent myOccupation
+        set(addressId) toValue 1
     }
 }
 ```
@@ -313,14 +315,15 @@ Multi-Row insert statements can be constructed and executed in a single step wit
 val record1 = PersonRecord(100, "Joe", LastName("Jones"), Date(), true, "Developer", 1)
 val record2 = PersonRecord(101, "Sarah", LastName("Smith"), Date(), true, "Architect", 2)
 
-val rows = template.insertMultiple(record1, record2).into(Person) {
-    map(id).toProperty("id")
-    map(firstName).toProperty("firstName")
-    map(lastName).toProperty("lastNameAsString")
-    map(birthDate).toProperty("birthDate")
-    map(employed).toProperty("employedAsString")
-    map(occupation).toProperty("occupation")
-    map(addressId).toProperty("addressId")
+val rows = template.insertMultiple(record1, record2) {
+    into(Person)
+    map(id) toProperty "id"
+    map(firstName) toProperty "firstName"
+    map(lastName) toProperty "lastNameAsString"
+    map(birthDate) toProperty "birthDate"
+    map(employed) toProperty "employedAsString"
+    map(occupation) toProperty "occupation"
+    map(addressId) toProperty "addressId"
 }
 ```
 
@@ -332,14 +335,15 @@ val record1 = PersonRecord(100, "Joe", LastName("Jones"), Date(), true, "Develop
 val record2 = PersonRecord(101, "Sarah", LastName("Smith"), Date(), true, "Architect", 2)
 
 val rows = template.withKeyHolder(keyHolder) {
-    insertMultiple(record1, record2).into(Person) {
-        map(id).toProperty("id")
-        map(firstName).toProperty("firstName")
-        map(lastName).toProperty("lastNameAsString")
-        map(birthDate).toProperty("birthDate")
-        map(employed).toProperty("employedAsString")
-        map(occupation).toProperty("occupation")
-        map(addressId).toProperty("addressId")
+    insertMultiple(record1, record2) {
+        into(Person)
+        map(id) toProperty "id"
+        map(firstName) toProperty "firstName"
+        map(lastName) toProperty "lastNameAsString"
+        map(birthDate) toProperty "birthDate"
+        map(employed) toProperty "employedAsString"
+        map(occupation) toProperty "occupation"
+        map(addressId) toProperty "addressId"
     }
 }
 ```
@@ -365,14 +369,15 @@ Batch statements can be constructed and executed in a single step with code like
 val record1 = PersonRecord(100, "Joe", LastName("Jones"), Date(), true, "Developer", 1)
 val record2 = PersonRecord(101, "Sarah", LastName("Smith"), Date(), true, "Architect", 2)
 
-val rows = template.insertBatch(record1, record2).into(Person) {
-    map(id).toProperty("id")
-    map(firstName).toProperty("firstName")
-    map(lastName).toProperty("lastNameAsString")
-    map(birthDate).toProperty("birthDate")
-    map(employed).toProperty("employedAsString")
-    map(occupation).toProperty("occupation")
-    map(addressId).toProperty("addressId")
+val rows = template.insertBatch(record1, record2) {
+    into(Person)
+    map(id) toProperty "id"
+    map(firstName) toProperty "firstName"
+    map(lastName) toProperty "lastNameAsString"
+    map(birthDate) toProperty "birthDate"
+    map(employed) toProperty "employedAsString"
+    map(occupation) toProperty "occupation"
+    map(addressId) toProperty "addressId"
 }
 ```
 

@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2021 the original author or authors.
+ *    Copyright 2016-2022 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -19,25 +19,21 @@ package org.mybatis.dynamic.sql.util.kotlin.mybatis3
 import org.mybatis.dynamic.sql.BasicColumn
 import org.mybatis.dynamic.sql.SqlTable
 import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider
-import org.mybatis.dynamic.sql.insert.render.BatchInsert
 import org.mybatis.dynamic.sql.insert.render.GeneralInsertStatementProvider
 import org.mybatis.dynamic.sql.insert.render.InsertSelectStatementProvider
 import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider
 import org.mybatis.dynamic.sql.insert.render.MultiRowInsertStatementProvider
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider
-import org.mybatis.dynamic.sql.util.kotlin.BatchInsertCompleter
 import org.mybatis.dynamic.sql.util.kotlin.CountCompleter
 import org.mybatis.dynamic.sql.util.kotlin.DeleteCompleter
 import org.mybatis.dynamic.sql.util.kotlin.GeneralInsertCompleter
-import org.mybatis.dynamic.sql.util.kotlin.InsertCompleter
 import org.mybatis.dynamic.sql.util.kotlin.InsertSelectCompleter
-import org.mybatis.dynamic.sql.util.kotlin.MultiRowInsertCompleter
+import org.mybatis.dynamic.sql.util.kotlin.KotlinBatchInsertCompleter
+import org.mybatis.dynamic.sql.util.kotlin.KotlinInsertCompleter
+import org.mybatis.dynamic.sql.util.kotlin.KotlinMultiRowInsertCompleter
 import org.mybatis.dynamic.sql.util.kotlin.SelectCompleter
 import org.mybatis.dynamic.sql.util.kotlin.UpdateCompleter
-import org.mybatis.dynamic.sql.util.kotlin.elements.insert
-import org.mybatis.dynamic.sql.util.kotlin.elements.insertBatch
-import org.mybatis.dynamic.sql.util.kotlin.elements.insertMultiple
 
 fun count(
     mapper: (SelectStatementProvider) -> Long,
@@ -47,7 +43,7 @@ fun count(
 ): Long =
     count(column) {
         from(table)
-        completer()
+        run(completer)
     }.run(mapper)
 
 fun countDistinct(
@@ -58,7 +54,7 @@ fun countDistinct(
 ): Long =
     countDistinct(column) {
         from(table)
-        completer()
+        run(completer)
     }.run(mapper)
 
 fun countFrom(mapper: (SelectStatementProvider) -> Long, table: SqlTable, completer: CountCompleter): Long =
@@ -71,12 +67,12 @@ fun <T> insert(
     mapper: (InsertStatementProvider<T>) -> Int,
     row: T,
     table: SqlTable,
-    completer: InsertCompleter<T>
+    completer: KotlinInsertCompleter<T>
 ): Int =
-    insert(row).into(table, completer).run(mapper)
-
-fun <T> BatchInsert<T>.execute(mapper: (InsertStatementProvider<T>) -> Int): List<Int> =
-    insertStatements().map(mapper)
+    insert(row) {
+        into(table)
+        run(completer)
+    }.run(mapper)
 
 /**
  * This function simply inserts all rows using the supplied mapper. It is up
@@ -89,9 +85,12 @@ fun <T> insertBatch(
     mapper: (InsertStatementProvider<T>) -> Int,
     records: Collection<T>,
     table: SqlTable,
-    completer: BatchInsertCompleter<T>
+    completer: KotlinBatchInsertCompleter<T>
 ): List<Int> =
-    insertBatch(records).into(table, completer).execute(mapper)
+    insertBatch(records) {
+        into(table)
+        run(completer)
+    }.insertStatements().map(mapper)
 
 fun insertInto(
     mapper: (GeneralInsertStatementProvider) -> Int,
@@ -104,17 +103,23 @@ fun <T> insertMultiple(
     mapper: (MultiRowInsertStatementProvider<T>) -> Int,
     records: Collection<T>,
     table: SqlTable,
-    completer: MultiRowInsertCompleter<T>
+    completer: KotlinMultiRowInsertCompleter<T>
 ): Int =
-    insertMultiple(records).into(table, completer).run(mapper)
+    insertMultiple(records) {
+        into(table)
+        run(completer)
+    }.run(mapper)
 
 fun <T> insertMultipleWithGeneratedKeys(
     mapper: (String, List<T>) -> Int,
     records: Collection<T>,
     table: SqlTable,
-    completer: MultiRowInsertCompleter<T>
+    completer: KotlinMultiRowInsertCompleter<T>
 ): Int =
-    insertMultiple(records).into(table, completer).run {
+    insertMultiple(records) {
+        into(table)
+        run(completer)
+    }.run {
         mapper(insertStatement, this.records)
     }
 
@@ -133,7 +138,7 @@ fun <T> selectDistinct(
 ): List<T> =
     selectDistinct(selectList) {
         from(table)
-        completer()
+        run(completer)
     }.run(mapper)
 
 fun <T> selectList(
@@ -144,7 +149,7 @@ fun <T> selectList(
 ): List<T> =
     select(selectList) {
         from(table)
-        completer()
+        run(completer)
     }.run(mapper)
 
 fun <T> selectOne(
@@ -155,7 +160,7 @@ fun <T> selectOne(
 ): T? =
     select(selectList) {
         from(table)
-        completer()
+        run(completer)
     }.run(mapper)
 
 fun update(mapper: (UpdateStatementProvider) -> Int, table: SqlTable, completer: UpdateCompleter): Int =

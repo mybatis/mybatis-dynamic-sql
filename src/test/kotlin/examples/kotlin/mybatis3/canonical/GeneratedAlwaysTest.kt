@@ -28,7 +28,9 @@ import org.apache.ibatis.session.SqlSessionFactoryBuilder
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import org.mybatis.dynamic.sql.util.kotlin.elements.insertBatch
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.insertInto
+import org.mybatis.dynamic.sql.util.kotlin.mybatis3.into
 import java.io.InputStreamReader
 import java.sql.DriverManager
 
@@ -82,7 +84,7 @@ class GeneratedAlwaysTest {
                 lastName = "Rubble"
             )
 
-            val rows = mapper.insertMultiple(listOf(record1, record2))
+            val rows = mapper.insertMultiple(record1, record2)
 
             assertThat(rows).isEqualTo(2)
             assertThat(record1.id).isEqualTo(22)
@@ -108,6 +110,40 @@ class GeneratedAlwaysTest {
             )
 
             mapper.insertBatch(listOf(record1, record2))
+
+            val batchResults = mapper.flush()
+
+            assertThat(batchResults).hasSize(1)
+            assertThat(batchResults[0].updateCounts).hasSize(2)
+            assertThat(batchResults[0].updateCounts[0]).isEqualTo(1)
+            assertThat(batchResults[0].updateCounts[1]).isEqualTo(1)
+
+            assertThat(record1.id).isEqualTo(22)
+            assertThat(record1.fullName).isEqualTo("Fred Flintstone")
+            assertThat(record2.id).isEqualTo(23)
+            assertThat(record2.fullName).isEqualTo("Barney Rubble")
+        }
+    }
+
+    @Test
+    fun testDeprecatedInsertBatch() {
+        newSession(ExecutorType.BATCH).use { session ->
+            val mapper = session.getMapper(GeneratedAlwaysMapper::class.java)
+
+            val record1 = GeneratedAlwaysRecord(
+                firstName = "Fred",
+                lastName = "Flintstone"
+            )
+
+            val record2 = GeneratedAlwaysRecord(
+                firstName = "Barney",
+                lastName = "Rubble"
+            )
+
+            insertBatch(record1, record2).into(generatedAlways) {
+                map(firstName).toProperty("firstName")
+                map(lastName).toProperty("lastName")
+            }.insertStatements().map(mapper::insert)
 
             val batchResults = mapper.flush()
 

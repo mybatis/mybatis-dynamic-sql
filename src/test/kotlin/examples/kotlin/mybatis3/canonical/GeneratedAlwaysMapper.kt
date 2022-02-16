@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2021 the original author or authors.
+ *    Copyright 2016-2022 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -49,21 +49,23 @@ interface GeneratedAlwaysMapper {
 
 fun GeneratedAlwaysMapper.insert(record: GeneratedAlwaysRecord): Int {
     return insert(this::insert, record, generatedAlways) {
-        map(firstName).toProperty("firstName")
-        map(lastName).toProperty("lastName")
+        map(firstName) toProperty "firstName"
+        map(lastName) toProperty "lastName"
     }
 }
 
+fun GeneratedAlwaysMapper.insertMultiple(vararg records: GeneratedAlwaysRecord): Int = insertMultiple(records.asList())
+
 fun GeneratedAlwaysMapper.insertMultiple(records: Collection<GeneratedAlwaysRecord>): Int {
     return insertMultipleWithGeneratedKeys(this::insertMultiple, records, generatedAlways) {
-        map(firstName).toProperty("firstName")
-        map(lastName).toProperty("lastName")
+        map(firstName) toProperty "firstName"
+        map(lastName) toProperty "lastName"
     }
 }
 
 fun GeneratedAlwaysMapper.insertBatch(records: Collection<GeneratedAlwaysRecord>): List<Int> {
     return insertBatch(this::insert, records, generatedAlways) {
-        map(firstName).toProperty("firstName")
-        map(lastName).toProperty("lastName")
+        map(firstName) toProperty "firstName"
+        map(lastName) toProperty "lastName"
     }
 }

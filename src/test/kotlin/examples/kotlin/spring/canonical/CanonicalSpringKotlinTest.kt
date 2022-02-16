@@ -28,6 +28,7 @@ import examples.kotlin.spring.canonical.PersonDynamicSqlSupport.occupation
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.junit.jupiter.api.Test
+import org.mybatis.dynamic.sql.util.kotlin.KInvalidSQLException
 import org.mybatis.dynamic.sql.util.kotlin.elements.`as`
 import org.mybatis.dynamic.sql.util.kotlin.elements.add
 import org.mybatis.dynamic.sql.util.kotlin.elements.constant
@@ -244,7 +245,8 @@ open class CanonicalSpringKotlinTest {
 
         val record = PersonRecord(100, "Joe", LastName("Jones"), Date(), true, "Developer", 1)
 
-        val insertStatement = insert(record).into(person) {
+        val insertStatement = insert(record) {
+            into(person)
             map(id).toProperty("id")
             map(firstName).toProperty("firstName")
             map(lastName).toProperty("lastNameAsString")
@@ -261,6 +263,36 @@ open class CanonicalSpringKotlinTest {
                 " :lastNameAsString," +
                 " :birthDate, :employedAsString," +
                 " :occupation, :addressId)"
+
+        assertThat(insertStatement.insertStatement).isEqualTo(expected)
+
+        val rows = template.insert(insertStatement)
+
+        assertThat(rows).isEqualTo(1)
+    }
+
+    @Test
+    fun testDeprecatedInsert() {
+
+        val record = PersonRecord(100, "Joe", LastName("Jones"), Date(), true, "Developer", 1)
+
+        val insertStatement = insert(record).into(person) {
+            map(id).toProperty("id")
+            map(firstName).toProperty("firstName")
+            map(lastName).toProperty("lastNameAsString")
+            map(birthDate).toProperty("birthDate")
+            map(employed).toProperty("employedAsString")
+            map(occupation).toProperty("occupation")
+            map(addressId).toProperty("addressId")
+        }
+
+        val expected =
+            "insert into Person (id, first_name, last_name, birth_date, employed, occupation, address_id)" +
+                    " values" +
+                    " (:id, :firstName," +
+                    " :lastNameAsString," +
+                    " :birthDate, :employedAsString," +
+                    " :occupation, :addressId)"
 
         assertThat(insertStatement.insertStatement).isEqualTo(expected)
 
@@ -348,7 +380,8 @@ open class CanonicalSpringKotlinTest {
         val record1 = PersonRecord(100, "Joe", LastName("Jones"), Date(), true, "Developer", 1)
         val record2 = PersonRecord(101, "Sarah", LastName("Smith"), Date(), true, "Architect", 2)
 
-        val insertStatement = insertMultiple(record1, record2).into(person) {
+        val insertStatement = insertMultiple(listOf(record1, record2)) {
+            into(person)
             map(id).toProperty("id")
             map(firstName).toProperty("firstName")
             map(lastName).toProperty("lastNameAsString")
@@ -372,9 +405,92 @@ open class CanonicalSpringKotlinTest {
     }
 
     @Test
-    fun testBatchInsert() {
+    fun testDeprecatedMultiRowInsert() {
         val record1 = PersonRecord(100, "Joe", LastName("Jones"), Date(), true, "Developer", 1)
         val record2 = PersonRecord(101, "Sarah", LastName("Smith"), Date(), true, "Architect", 2)
+
+        val insertStatement = insertMultiple(record1, record2).into(person) {
+            map(id).toProperty("id")
+            map(firstName).toProperty("firstName")
+            map(lastName).toProperty("lastNameAsString")
+            map(birthDate).toProperty("birthDate")
+            map(employed).toProperty("employedAsString")
+            map(occupation).toProperty("occupation")
+            map(addressId).toProperty("addressId")
+        }
+
+        assertThat(insertStatement.insertStatement).isEqualTo(
+            "insert into Person (id, first_name, last_name, birth_date, employed, occupation, address_id) " +
+                    "values (:records[0].id, :records[0].firstName, :records[0].lastNameAsString, " +
+                    ":records[0].birthDate, :records[0].employedAsString, " +
+                    ":records[0].occupation, :records[0].addressId), " +
+                    "(:records[1].id, :records[1].firstName, :records[1].lastNameAsString, " +
+                    ":records[1].birthDate, :records[1].employedAsString, :records[1].occupation, " +
+                    ":records[1].addressId)"
+        )
+
+        val rows = template.insertMultiple(insertStatement)
+        assertThat(rows).isEqualTo(2)
+    }
+
+    @Test
+    fun testBatchInsert() {
+        val record1 = PersonRecord(
+            100,
+            "Joe",
+            LastName("Jones"),
+            Date(),
+            true,
+            "Developer",
+            1
+        )
+        val record2 = PersonRecord(
+            101,
+            "Sarah",
+            LastName("Smith"),
+            Date(),
+            true,
+            "Architect",
+            2
+        )
+
+        val insertStatement = insertBatch(listOf(record1, record2)) {
+            into(person)
+            map(id) toProperty "id"
+            map(firstName) toProperty "firstName"
+            map(lastName) toProperty "lastNameAsString"
+            map(birthDate) toProperty "birthDate"
+            map(employed) toProperty "employedAsString"
+            map(occupation) toProperty "occupation"
+            map(addressId) toProperty "addressId"
+        }
+
+        val rows = template.insertBatch(insertStatement)
+        assertThat(rows).hasSize(2)
+        assertThat(rows[0]).isEqualTo(1)
+        assertThat(rows[1]).isEqualTo(1)
+    }
+
+    @Test
+    fun testDeprecatedBatchInsert() {
+        val record1 = PersonRecord(
+            100,
+            "Joe",
+            LastName("Jones"),
+            Date(),
+            true,
+            "Developer",
+            1
+        )
+        val record2 = PersonRecord(
+            101,
+            "Sarah",
+            LastName("Smith"),
+            Date(),
+            true,
+            "Architect",
+            2
+        )
 
         val insertStatement = insertBatch(record1, record2).into(person) {
             map(id).toProperty("id")
@@ -431,23 +547,58 @@ open class CanonicalSpringKotlinTest {
 
     @Test
     fun testInsertSelectNoColumns() {
-        assertThatExceptionOfType(UninitializedPropertyAccessException::class.java).isThrownBy {
+        assertThatExceptionOfType(KInvalidSQLException::class.java).isThrownBy {
             insertSelect(person) {
                 select(add(id, constant<Int>("100")), firstName, lastName, birthDate, employed, occupation, addressId) {
                     from(person)
                     orderBy(id)
                 }
             }
-        }.withMessage("You must specify a column list in an insert with select statement")
+        }.withMessage("You must specify a column list in an insert select statement")
     }
 
     @Test
     fun testInsertSelectNoSelectStatement() {
-        assertThatExceptionOfType(UninitializedPropertyAccessException::class.java).isThrownBy {
+        assertThatExceptionOfType(KInvalidSQLException::class.java).isThrownBy {
             insertSelect(person) {
                 columns(id, firstName, lastName, birthDate, employed, occupation, addressId)
             }
-        }.withMessage("You must specify a select statement")
+        }.withMessage("You must specify a select statement in a sub query")
+    }
+
+    @Test
+    fun testBatchInsertNoTable() {
+        val record1 = PersonRecord(100, "Joe", LastName("Jones"), Date(), true, "Developer", 1)
+        val record2 = PersonRecord(101, "Sarah", LastName("Smith"), Date(), true, "Architect", 1)
+
+        assertThatExceptionOfType(KInvalidSQLException::class.java).isThrownBy {
+            insertBatch(listOf(record1, record2)) {
+                map(person.firstName) toProperty "firstName"
+            }
+        }.withMessage("Batch Insert Statements Must Contain an \"into\" phrase.")
+    }
+
+    @Test
+    fun testInsertNoTable() {
+        val record = PersonRecord(100, "Joe", LastName("Jones"), Date(), true, "Developer", 1)
+
+        assertThatExceptionOfType(KInvalidSQLException::class.java).isThrownBy {
+            insert(record) {
+                map(person.firstName) toProperty "firstName"
+            }
+        }.withMessage("Insert Statements Must Contain an \"into\" phrase.")
+    }
+
+    @Test
+    fun testMultiRowInsertNoTable() {
+        val record1 = PersonRecord(100, "Joe", LastName("Jones"), Date(), true, "Developer", 1)
+        val record2 = PersonRecord(101, "Sarah", LastName("Smith"), Date(), true, "Architect", 1)
+
+        assertThatExceptionOfType(KInvalidSQLException::class.java).isThrownBy {
+            insertMultiple(listOf(record1, record2)) {
+                map(person.firstName) toProperty "firstName"
+            }
+        }.withMessage("Multi Row Insert Statements Must Contain an \"into\" phrase.")
     }
 
     @Test
@@ -471,9 +622,10 @@ open class CanonicalSpringKotlinTest {
     fun testInsertWithGeneratedKey() {
         val command = GeneratedAlwaysCommand(firstName = "Fred", lastName = "Flintstone")
 
-        val insertStatement = insert(command).into(generatedAlways) {
-            map(generatedAlways.firstName).toProperty("firstName")
-            map(generatedAlways.lastName).toProperty("lastName")
+        val insertStatement = insert(command) {
+            into(generatedAlways)
+            map(generatedAlways.firstName) toProperty "firstName"
+            map(generatedAlways.lastName) toProperty "lastName"
         }
 
         val keyHolder = GeneratedKeyHolder()
@@ -490,9 +642,10 @@ open class CanonicalSpringKotlinTest {
         val command1 = GeneratedAlwaysCommand(firstName = "Fred", lastName = "Flintstone")
         val command2 = GeneratedAlwaysCommand(firstName = "Barney", lastName = "Rubble")
 
-        val insertStatement = insertMultiple(command1, command2).into(generatedAlways) {
-            map(generatedAlways.firstName).toProperty("firstName")
-            map(generatedAlways.lastName).toProperty("lastName")
+        val insertStatement = insertMultiple(listOf(command1, command2)) {
+            into(generatedAlways)
+            map(generatedAlways.firstName) toProperty "firstName"
+            map(generatedAlways.lastName) toProperty "lastName"
         }
 
         val keyHolder = GeneratedKeyHolder()

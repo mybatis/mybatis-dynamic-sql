@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2021 the original author or authors.
+ *    Copyright 2016-2022 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -22,7 +22,6 @@ import org.mybatis.dynamic.sql.SqlTable
 import org.mybatis.dynamic.sql.delete.DeleteModel
 import org.mybatis.dynamic.sql.insert.BatchInsertDSL
 import org.mybatis.dynamic.sql.insert.BatchInsertModel
-import org.mybatis.dynamic.sql.insert.GeneralInsertDSL
 import org.mybatis.dynamic.sql.insert.GeneralInsertModel
 import org.mybatis.dynamic.sql.insert.InsertDSL
 import org.mybatis.dynamic.sql.insert.InsertModel
@@ -31,19 +30,22 @@ import org.mybatis.dynamic.sql.insert.MultiRowInsertDSL
 import org.mybatis.dynamic.sql.insert.MultiRowInsertModel
 import org.mybatis.dynamic.sql.select.SelectModel
 import org.mybatis.dynamic.sql.update.UpdateModel
-import org.mybatis.dynamic.sql.util.kotlin.BatchInsertCompleter
 import org.mybatis.dynamic.sql.util.kotlin.CountCompleter
 import org.mybatis.dynamic.sql.util.kotlin.DeleteCompleter
 import org.mybatis.dynamic.sql.util.kotlin.GeneralInsertCompleter
-import org.mybatis.dynamic.sql.util.kotlin.InsertCompleter
 import org.mybatis.dynamic.sql.util.kotlin.InsertSelectCompleter
+import org.mybatis.dynamic.sql.util.kotlin.KotlinBatchInsertBuilder
+import org.mybatis.dynamic.sql.util.kotlin.KotlinBatchInsertCompleter
 import org.mybatis.dynamic.sql.util.kotlin.KotlinCountBuilder
 import org.mybatis.dynamic.sql.util.kotlin.KotlinDeleteBuilder
 import org.mybatis.dynamic.sql.util.kotlin.KotlinGeneralInsertBuilder
+import org.mybatis.dynamic.sql.util.kotlin.KotlinInsertBuilder
+import org.mybatis.dynamic.sql.util.kotlin.KotlinInsertCompleter
 import org.mybatis.dynamic.sql.util.kotlin.KotlinInsertSelectSubQueryBuilder
+import org.mybatis.dynamic.sql.util.kotlin.KotlinMultiRowInsertBuilder
+import org.mybatis.dynamic.sql.util.kotlin.KotlinMultiRowInsertCompleter
 import org.mybatis.dynamic.sql.util.kotlin.KotlinSelectBuilder
 import org.mybatis.dynamic.sql.util.kotlin.KotlinUpdateBuilder
-import org.mybatis.dynamic.sql.util.kotlin.MultiRowInsertCompleter
 import org.mybatis.dynamic.sql.util.kotlin.SelectCompleter
 import org.mybatis.dynamic.sql.util.kotlin.UpdateCompleter
 
@@ -60,26 +62,41 @@ fun countFrom(table: SqlTable, completer: CountCompleter): SelectModel =
 fun deleteFrom(table: SqlTable, completer: DeleteCompleter): DeleteModel =
     KotlinDeleteBuilder(SqlBuilder.deleteFrom(table)).apply(completer).build()
 
+fun <T> insert(row: T, completer: KotlinInsertCompleter<T>): InsertModel<T> =
+    KotlinInsertBuilder(row).apply(completer).build()
+
+fun <T> insertBatch(rows: Collection<T>, completer: KotlinBatchInsertCompleter<T>): BatchInsertModel<T> =
+    KotlinBatchInsertBuilder(rows).apply(completer).build()
+
 fun insertInto(table: SqlTable, completer: GeneralInsertCompleter): GeneralInsertModel =
-    KotlinGeneralInsertBuilder(GeneralInsertDSL.insertInto(table)).apply(completer).build()
+    KotlinGeneralInsertBuilder(table).apply(completer).build()
+
+fun <T> insertMultiple(rows: Collection<T>, completer: KotlinMultiRowInsertCompleter<T>): MultiRowInsertModel<T> =
+    KotlinMultiRowInsertBuilder(rows).apply(completer).build()
 
 fun insertSelect(table: SqlTable, completer: InsertSelectCompleter): InsertSelectModel =
     with(KotlinInsertSelectSubQueryBuilder().apply(completer)) {
         SqlBuilder.insertInto(table)
-            .withColumnList(columnList)
+            .withColumnList(columnList())
             .withSelectStatement(this)
             .build()
     }
 
-fun <T> BatchInsertDSL.IntoGatherer<T>.into(table: SqlTable, completer: BatchInsertCompleter<T>): BatchInsertModel<T> =
+@Deprecated("Please switch to the insertBatch statement in the model package")
+fun <T> BatchInsertDSL.IntoGatherer<T>.into(
+    table: SqlTable,
+    completer: BatchInsertDSL<T>.() -> Unit
+): BatchInsertModel<T> =
     into(table).apply(completer).build()
 
-fun <T> InsertDSL.IntoGatherer<T>.into(table: SqlTable, completer: InsertCompleter<T>): InsertModel<T> =
+@Deprecated("Please switch to the insert statement in the model package")
+fun <T> InsertDSL.IntoGatherer<T>.into(table: SqlTable, completer: InsertDSL<T>.() -> Unit): InsertModel<T> =
     into(table).apply(completer).build()
 
+@Deprecated("Please switch to the insertMultiple statement in the model package")
 fun <T> MultiRowInsertDSL.IntoGatherer<T>.into(
     table: SqlTable,
-    completer: MultiRowInsertCompleter<T>
+    completer: MultiRowInsertDSL<T>.() -> Unit
 ): MultiRowInsertModel<T> =
     into(table).apply(completer).build()
 

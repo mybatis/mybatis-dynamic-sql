@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2021 the original author or authors.
+ *    Copyright 2016-2022 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -16,7 +16,9 @@
 package org.mybatis.dynamic.sql.insert;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Supplier;
 
 import org.jetbrains.annotations.NotNull;
@@ -34,11 +36,12 @@ public class InsertDSL<T> implements Buildable<InsertModel<T>> {
 
     private final T row;
     private final SqlTable table;
-    private final List<AbstractColumnMapping> columnMappings = new ArrayList<>();
+    private final List<AbstractColumnMapping> columnMappings;
 
-    private InsertDSL(T row, SqlTable table) {
-        this.row = row;
-        this.table = table;
+    private InsertDSL(Builder<T> builder) {
+        this.row = Objects.requireNonNull(builder.row);
+        this.table = Objects.requireNonNull(builder.table);
+        columnMappings = builder.columnMappings;
     }
 
     public <F> ColumnMappingFinisher<F> map(SqlColumn<F> column) {
@@ -66,7 +69,7 @@ public class InsertDSL<T> implements Buildable<InsertModel<T>> {
         }
 
         public InsertDSL<T> into(SqlTable table) {
-            return new InsertDSL<>(row, table);
+            return new InsertDSL.Builder<T>().withRow(row).withTable(table).build();
         }
     }
 
@@ -100,6 +103,31 @@ public class InsertDSL<T> implements Buildable<InsertModel<T>> {
         public InsertDSL<T> toStringConstant(String constant) {
             columnMappings.add(StringConstantMapping.of(column, constant));
             return InsertDSL.this;
+        }
+    }
+
+    public static class Builder<T> {
+        private T row;
+        private SqlTable table;
+        private final List<AbstractColumnMapping> columnMappings = new ArrayList<>();
+
+        public Builder<T> withRow(T row) {
+            this.row = row;
+            return this;
+        }
+
+        public Builder<T> withTable(SqlTable table) {
+            this.table = table;
+            return this;
+        }
+
+        public Builder<T> withColumnMappings(Collection<AbstractColumnMapping> columnMappings) {
+            this.columnMappings.addAll(columnMappings);
+            return this;
+        }
+
+        public InsertDSL<T> build() {
+            return new InsertDSL<>(this);
         }
     }
 }
