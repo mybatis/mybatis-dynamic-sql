@@ -43,7 +43,7 @@ GitHub milestone: [https://github.com/mybatis/mybatis-dynamic-sql/issues?q=miles
 7. Updated most of the Kotlin insert DSL functions to be more like natural SQL. The main difference is that for insert,
    insertBatch, and insertMultiple, the "into" function is moved inside the completer lambda. The old methods are now
    deprecated and will be removed in version 1.5.0 of the library. This also allowed us to make some insert DSL
-   methods into infix functions.
+   methods into infix functions. ([#452](https://github.com/mybatis/mybatis-dynamic-sql/pull/452))
 
 ## Release 1.3.1 - December 18, 2021
 
