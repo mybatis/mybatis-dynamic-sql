@@ -38,10 +38,14 @@ class KotlinMultiRowInsertBuilder<T> (private val rows: Collection<T>): Buildabl
     }
 
     override fun build(): MultiRowInsertModel<T> =
-        with(MultiRowInsertDSL.Builder<T>()) {
-            withRecords(rows)
-            withTable(table)
-            withColumnMappings(columnMappings)
-            build()
-        }.build()
+        if (table == null) {
+            throw KInvalidSQLException("Multi Row Insert Statements Must Contain an \"into\" phrase.")
+        } else {
+            with(MultiRowInsertDSL.Builder<T>()) {
+                withRecords(rows)
+                withTable(table)
+                withColumnMappings(columnMappings)
+                build()
+            }.build()
+        }
 }

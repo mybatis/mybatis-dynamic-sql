@@ -38,10 +38,14 @@ class KotlinBatchInsertBuilder<T> (private val rows: Collection<T>): Buildable<B
     }
 
     override fun build(): BatchInsertModel<T> =
-        with(BatchInsertDSL.Builder<T>()) {
-            withRecords(rows)
-            withTable(table)
-            withColumnMappings(columnMappings)
-            build()
-        }.build()
+        if (table == null) {
+            throw KInvalidSQLException("Batch Insert Statements Must Contain an \"into\" phrase.")
+        } else {
+            with(BatchInsertDSL.Builder<T>()) {
+                withRecords(rows)
+                withTable(table)
+                withColumnMappings(columnMappings)
+                build()
+            }.build()
+        }
 }

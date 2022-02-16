@@ -30,7 +30,7 @@ class KotlinInsertBuilder<T> (private val row: T): Buildable<InsertModel<T>> {
     private val columnMappings = mutableListOf<AbstractColumnMapping>()
 
     fun into(table: SqlTable) {
-        this.table = table;
+        this.table = table
     }
 
     fun <C : Any> map(column: SqlColumn<C>) = SingleRowInsertColumnMapCompleter(column) {
@@ -38,10 +38,14 @@ class KotlinInsertBuilder<T> (private val row: T): Buildable<InsertModel<T>> {
     }
 
     override fun build(): InsertModel<T> =
-        with(InsertDSL.Builder<T>()) {
-            withRow(row)
-            withTable(table)
-            withColumnMappings(columnMappings)
-            build()
-        }.build()
+        if (table == null) {
+            throw KInvalidSQLException("Insert Statements Must Contain an \"into\" phrase.")
+        } else {
+            with(InsertDSL.Builder<T>()) {
+                withRow(row)
+                withTable(table)
+                withColumnMappings(columnMappings)
+                build()
+            }.build()
+        }
 }

@@ -28,6 +28,7 @@ import examples.kotlin.spring.canonical.PersonDynamicSqlSupport.occupation
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.junit.jupiter.api.Test
+import org.mybatis.dynamic.sql.util.kotlin.KInvalidSQLException
 import org.mybatis.dynamic.sql.util.kotlin.elements.`as`
 import org.mybatis.dynamic.sql.util.kotlin.elements.add
 import org.mybatis.dynamic.sql.util.kotlin.elements.constant
@@ -546,23 +547,58 @@ open class CanonicalSpringKotlinTest {
 
     @Test
     fun testInsertSelectNoColumns() {
-        assertThatExceptionOfType(UninitializedPropertyAccessException::class.java).isThrownBy {
+        assertThatExceptionOfType(KInvalidSQLException::class.java).isThrownBy {
             insertSelect(person) {
                 select(add(id, constant<Int>("100")), firstName, lastName, birthDate, employed, occupation, addressId) {
                     from(person)
                     orderBy(id)
                 }
             }
-        }.withMessage("You must specify a column list in an insert with select statement")
+        }.withMessage("You must specify a column list in an insert select statement")
     }
 
     @Test
     fun testInsertSelectNoSelectStatement() {
-        assertThatExceptionOfType(UninitializedPropertyAccessException::class.java).isThrownBy {
+        assertThatExceptionOfType(KInvalidSQLException::class.java).isThrownBy {
             insertSelect(person) {
                 columns(id, firstName, lastName, birthDate, employed, occupation, addressId)
             }
-        }.withMessage("You must specify a select statement")
+        }.withMessage("You must specify a select statement in a sub query")
+    }
+
+    @Test
+    fun testBatchInsertNoTable() {
+        val record1 = PersonRecord(100, "Joe", LastName("Jones"), Date(), true, "Developer", 1)
+        val record2 = PersonRecord(101, "Sarah", LastName("Smith"), Date(), true, "Architect", 1)
+
+        assertThatExceptionOfType(KInvalidSQLException::class.java).isThrownBy {
+            insertBatch(listOf(record1, record2)) {
+                map(person.firstName) toProperty "firstName"
+            }
+        }.withMessage("Batch Insert Statements Must Contain an \"into\" phrase.")
+    }
+
+    @Test
+    fun testInsertNoTable() {
+        val record = PersonRecord(100, "Joe", LastName("Jones"), Date(), true, "Developer", 1)
+
+        assertThatExceptionOfType(KInvalidSQLException::class.java).isThrownBy {
+            insert(record) {
+                map(person.firstName) toProperty "firstName"
+            }
+        }.withMessage("Insert Statements Must Contain an \"into\" phrase.")
+    }
+
+    @Test
+    fun testMultiRowInsertNoTable() {
+        val record1 = PersonRecord(100, "Joe", LastName("Jones"), Date(), true, "Developer", 1)
+        val record2 = PersonRecord(101, "Sarah", LastName("Smith"), Date(), true, "Architect", 1)
+
+        assertThatExceptionOfType(KInvalidSQLException::class.java).isThrownBy {
+            insertMultiple(listOf(record1, record2)) {
+                map(person.firstName) toProperty "firstName"
+            }
+        }.withMessage("Multi Row Insert Statements Must Contain an \"into\" phrase.")
     }
 
     @Test

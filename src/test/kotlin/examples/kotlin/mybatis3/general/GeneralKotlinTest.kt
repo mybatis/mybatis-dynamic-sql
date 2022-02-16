@@ -41,6 +41,7 @@ import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.junit.jupiter.api.Test
+import org.mybatis.dynamic.sql.util.kotlin.KInvalidSQLException
 import org.mybatis.dynamic.sql.util.kotlin.elements.`as`
 import org.mybatis.dynamic.sql.util.kotlin.elements.count
 import org.mybatis.dynamic.sql.util.kotlin.elements.insert
@@ -656,7 +657,7 @@ class GeneralKotlinTest {
 
     @Test
     fun testRawSelectWithoutFrom() {
-        assertThatExceptionOfType(UninitializedPropertyAccessException::class.java).isThrownBy {
+        assertThatExceptionOfType(KInvalidSQLException::class.java).isThrownBy {
             select(id `as` "A_ID", firstName, lastName, birthDate, employed, occupation, addressId) {
                 where { id isEqualTo 5 }
                 or {
@@ -674,7 +675,7 @@ class GeneralKotlinTest {
 
     @Test
     fun testRawCountWithoutFrom() {
-        assertThatExceptionOfType(UninitializedPropertyAccessException::class.java).isThrownBy {
+        assertThatExceptionOfType(KInvalidSQLException::class.java).isThrownBy {
             count(id) {
                 where { id isEqualTo 5 }
                 or {

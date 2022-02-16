@@ -77,7 +77,7 @@ fun <T> insertMultiple(rows: Collection<T>, completer: KotlinMultiRowInsertCompl
 fun insertSelect(table: SqlTable, completer: InsertSelectCompleter): InsertSelectModel =
     with(KotlinInsertSelectSubQueryBuilder().apply(completer)) {
         SqlBuilder.insertInto(table)
-            .withColumnList(columnList)
+            .withColumnList(columnList())
             .withSelectStatement(this)
             .build()
     }

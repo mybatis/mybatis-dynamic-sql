@@ -28,14 +28,17 @@ import org.apache.ibatis.session.SqlSession
 import org.apache.ibatis.session.SqlSessionFactoryBuilder
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.assertj.core.api.Assertions.entry
 import org.junit.jupiter.api.Test
+import org.mybatis.dynamic.sql.util.kotlin.KInvalidSQLException
 import org.mybatis.dynamic.sql.util.kotlin.elements.equalTo
 import org.mybatis.dynamic.sql.util.kotlin.elements.qualifiedWith
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.select
 import java.io.InputStreamReader
 import java.sql.DriverManager
 
+@Suppress("LargeClass")
 class JoinMapperTest {
 
     private fun newSession(): SqlSession {
@@ -753,6 +756,22 @@ class JoinMapperTest {
                 entry("USER_NAME", "Barney"),
             )
         }
+    }
+
+    @Test
+    fun testJoinWithNoOnCondition() {
+        // create second table instance for self-join
+        val user2 = user.withAlias("other_user")
+
+        assertThatExceptionOfType(KInvalidSQLException::class.java).isThrownBy {
+            select(user.userId, user.userName, user.parentId) {
+                from(user, "u1")
+                join(user2, "u2") {
+                    and(user.userId) equalTo user2.parentId
+                }
+                where { user2.userId isEqualTo 4 }
+            }
+        }.withMessage("You must specify an \"on\" condition in a join")
     }
 
     companion object {

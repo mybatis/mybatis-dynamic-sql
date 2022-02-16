@@ -26,7 +26,7 @@ class KotlinCountBuilder(private val fromGatherer: CountDSL.FromGatherer<SelectM
     KotlinBaseJoiningBuilder<CountDSL<SelectModel>>(),
     Buildable<SelectModel> {
 
-    private lateinit var dsl: CountDSL<SelectModel>
+    private var dsl: CountDSL<SelectModel>? = null
 
     fun from(table: SqlTable): KotlinCountBuilder =
         apply {
@@ -35,13 +35,7 @@ class KotlinCountBuilder(private val fromGatherer: CountDSL.FromGatherer<SelectM
 
     override fun build(): SelectModel = getDsl().build()
 
-    override fun getDsl(): CountDSL<SelectModel> {
-        try {
-            return dsl
-        } catch (e: UninitializedPropertyAccessException) {
-            throw UninitializedPropertyAccessException(
-                "You must specify a \"from\" clause before any other clauses in a count statement", e
-            )
-        }
-    }
+    override fun getDsl(): CountDSL<SelectModel> =
+        dsl?: throw KInvalidSQLException(
+            "You must specify a \"from\" clause before any other clauses in a count statement")
 }

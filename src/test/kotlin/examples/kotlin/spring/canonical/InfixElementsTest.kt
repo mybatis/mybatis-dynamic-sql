@@ -24,7 +24,7 @@ import examples.kotlin.spring.canonical.PersonDynamicSqlSupport.lastName
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.junit.jupiter.api.Test
-import org.mybatis.dynamic.sql.util.kotlin.DuplicateInitialCriterionException
+import org.mybatis.dynamic.sql.util.kotlin.KInvalidSQLException
 import org.mybatis.dynamic.sql.util.kotlin.elements.isLike
 import org.mybatis.dynamic.sql.util.kotlin.elements.stringConstant
 import org.mybatis.dynamic.sql.util.kotlin.elements.upper
@@ -960,7 +960,7 @@ open class InfixElementsTest {
 
     @Test
     fun testThatTwoInitialCriteriaThrowsException() {
-        assertThatExceptionOfType(DuplicateInitialCriterionException::class.java).isThrownBy {
+        assertThatExceptionOfType(KInvalidSQLException::class.java).isThrownBy {
             select(lastName) {
                 from(person)
                 where {

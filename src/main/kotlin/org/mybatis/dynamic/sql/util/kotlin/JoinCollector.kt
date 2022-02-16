@@ -24,12 +24,14 @@ typealias JoinReceiver = JoinCollector.() -> Unit
 
 @MyBatisDslMarker
 class JoinCollector {
-    val onJoinCriterion: JoinCriterion by lazy { internalOnCriterion }
-    val andJoinCriteria = mutableListOf<JoinCriterion>()
-    private lateinit var internalOnCriterion: JoinCriterion
+    private var onJoinCriterion: JoinCriterion? = null
+    internal val andJoinCriteria = mutableListOf<JoinCriterion>()
+
+    internal fun onJoinCriterion() : JoinCriterion =
+        onJoinCriterion?: throw KInvalidSQLException("You must specify an \"on\" condition in a join")
 
     fun on(leftColumn: BasicColumn): RightColumnCollector = RightColumnCollector {
-        internalOnCriterion = JoinCriterion.Builder()
+        onJoinCriterion = JoinCriterion.Builder()
             .withConnector("on")
             .withJoinColumn(leftColumn)
             .withJoinCondition(it)
@@ -48,7 +50,7 @@ class JoinCollector {
 
     @Deprecated("Please use: on(leftColumn) equalTo rightColumn")
     fun on(column: BasicColumn, condition: JoinCondition) {
-        internalOnCriterion = JoinCriterion.Builder()
+        onJoinCriterion = JoinCriterion.Builder()
             .withConnector("on")
             .withJoinColumn(column)
             .withJoinCondition(condition)

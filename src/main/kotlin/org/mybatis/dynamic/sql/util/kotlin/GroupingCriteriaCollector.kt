@@ -47,7 +47,8 @@ class GroupingCriteriaCollector {
     internal var initialCriterion: SqlCriterion? = null
         private set(value) {
             if (field != null) {
-                throw DuplicateInitialCriterionException()
+                throw KInvalidSQLException("Setting more than one initial criterion is not allowed. " +
+                        "Additional criteria should be added with \"and\" or \"or\" expression")
             }
             field = value
         }
