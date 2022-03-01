@@ -4,7 +4,7 @@ This log will detail notable changes to MyBatis Dynamic SQL. Full details are av
 
 ## Release 1.4.0 - Unreleased
 
-The release includes new function in the Where Clause DSL to support arbitrary grouping of conditions, and also use
+The release includes new functionality in the Where Clause DSL to support arbitrary grouping of conditions, and also use
 of a "not" condition. It should now be possible to write any type of where clause.
 
 Additionally, there were significant updates to the Kotlin DSL - both to support the new functionality in the
@@ -44,6 +44,9 @@ GitHub milestone: [https://github.com/mybatis/mybatis-dynamic-sql/issues?q=miles
    insertBatch, and insertMultiple, the "into" function is moved inside the completer lambda. The old methods are now
    deprecated and will be removed in version 1.5.0 of the library. This also allowed us to make some insert DSL
    methods into infix functions. ([#452](https://github.com/mybatis/mybatis-dynamic-sql/pull/452))
+8. Updated the "exists" support to expose table aliases specified in the outer query to the query in the exists
+   clause. This makes it easier to use exists without having to re-specify the aliases for columns from the outer query.
+   ([#437](https://github.com/mybatis/mybatis-dynamic-sql/issues/437))
 
 ## Release 1.3.1 - December 18, 2021
 

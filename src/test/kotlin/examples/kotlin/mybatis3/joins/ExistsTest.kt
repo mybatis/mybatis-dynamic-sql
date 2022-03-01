@@ -95,6 +95,49 @@ class ExistsTest {
     }
 
     @Test
+    fun testExistsPropagatedAliases() {
+        newSession().use { session ->
+            val mapper = session.getMapper(CommonSelectMapper::class.java)
+
+            val selectStatement = select(itemMaster.allColumns()) {
+                from(itemMaster, "im")
+                where {
+                    exists {
+                        select(orderLine.allColumns()) {
+                            from(orderLine, "ol")
+                            where { orderLine.itemId isEqualTo itemMaster.itemId }
+                        }
+                    }
+                }
+                orderBy(itemMaster.itemId)
+            }
+
+            val expectedStatement: String = "select im.* from ItemMaster im" +
+                    " where exists (select ol.* from OrderLine ol where ol.item_id = im.item_id)" +
+                    " order by item_id"
+            assertThat(selectStatement.selectStatement).isEqualTo(expectedStatement)
+
+            val rows = mapper.selectManyMappedRows(selectStatement)
+            assertThat(rows).hasSize(3)
+
+            with(rows[0]) {
+                assertThat(this).containsEntry("ITEM_ID", 22)
+                assertThat(this).containsEntry("DESCRIPTION", "Helmet")
+            }
+
+            with(rows[1]) {
+                assertThat(this).containsEntry("ITEM_ID", 33)
+                assertThat(this).containsEntry("DESCRIPTION", "First Base Glove")
+            }
+
+            with(rows[2]) {
+                assertThat(this).containsEntry("ITEM_ID", 44)
+                assertThat(this).containsEntry("DESCRIPTION", "Outfield Glove")
+            }
+        }
+    }
+
+    @Test
     fun testNotExists() {
         newSession().use { session ->
             val mapper = session.getMapper(CommonSelectMapper::class.java)

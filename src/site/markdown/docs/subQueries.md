@@ -135,15 +135,16 @@ SelectStatementProvider selectStatement = select(itemMaster.allColumns())
         .where(exists(
                 select(orderLine.allColumns())
                 .from(orderLine, "ol")
-                .where(orderLine.itemId, isEqualTo(itemMaster.itemId.qualifiedWith("im")))
+                .where(orderLine.itemId, isEqualTo(itemMaster.itemId))
         ))
         .orderBy(itemMaster.itemId)
         .build()
         .render(RenderingStrategies.MYBATIS3);
 ```
 
-Note that we have to apply the qualifier for the outer query ("im") to the inner query. The qualifier
-for the inner query ("ol") is automatically applied.
+Note that the qualifier for the outer query ("im") is automatically applied to the inner query, as well as the
+qualifier for the inner query ("ol"). Carrying alias from an outer query to an inner query is only supported with
+exists or not exists sub queries.
 
 An example of a column based subquery is as follows:
 
@@ -168,13 +169,15 @@ An example of an exists subquery is as follows:
 ```kotlin
 val selectStatement = select(ItemMaster.allColumns()) {
     from(ItemMaster, "im")
-    where(exists {
-        select(OrderLine.allColumns()) {
-            from(OrderLine, "ol")
-            where(OrderLine.itemId, isEqualTo(ItemMaster.itemId.qualifiedWith("im")))
-        }
-    })
-    orderBy(ItemMaster.itemId)
+    where {
+       exists {
+          select(OrderLine.allColumns()) {
+             from(OrderLine, "ol")
+             where { OrderLine.itemId isEqualTo ItemMaster.itemId }
+          }
+       }
+       orderBy(ItemMaster.itemId)
+    }
 }
 ```
 
@@ -182,11 +185,13 @@ An example of a column based subquery is as follows:
 ```kotlin
 val selectStatement = select(id, firstName, lastName, birthDate, employed, occupation, addressId) {
     from(Person)
-    where(id, isEqualTo {
-        select(max(id)) {
-            from(Person)
-        }
-    })
+    where {
+       id isEqualTo {
+          select(max(id)) {
+             from(Person)
+          }
+       }
+    }
 }
 ```
 
@@ -241,12 +246,12 @@ with the select DSL. You can write subqueries like this:
 
 ```kotlin
 val updateStatement = update(Person) {
-    set(addressId).equalToQueryResult {
+    set(addressId) equalToQueryResult {
         select(add(max(addressId), constant<Int>("1"))) {
             from(Person)
         }
     }
-    where(id, isEqualTo(3))
+    where { id isEqualTo 3 }
 }
 ```
 
@@ -289,12 +294,12 @@ val selectStatement =
         from {
             select(id, firstName) {
                 from(Person)
-                where(id, isLessThan(22))
+                where { id isLessThan 22 }
                 orderBy(firstName.descending())
             }
         }
-        where(rowNum, isLessThan(5))
-        and(firstName, isLike("%a%"))
+        where { rowNum isLessThan 5 }
+        and { firstName isLike "%a%" }
     }
 ```
 
@@ -307,13 +312,13 @@ val selectStatement =
         from {
             select(id, firstName) {
                 from(Person, "a")
-                where(id, isLessThan(22))
+                where { id isLessThan 22 }
                 orderBy(firstName.descending())
             }
             + "b"
         }
-        where(rowNum, isLessThan(5))
-        and(firstName, isLike("%a%"))
+        where { rowNum isLessThan 5 }
+        and { firstName isLike "%a%" }
     }
 ```
 
@@ -356,15 +361,17 @@ val selectStatement = select(OrderLine.orderId, OrderLine.quantity,
         ItemMaster.itemId.qualifiedWith("im"), ItemMaster.description) {
     from(OrderMaster, "om")
     join(OrderLine, "ol") {
-        on(OrderMaster.orderId, equalTo(OrderLine.orderId))
+        on(OrderMaster.orderId) equalTo OrderLine.orderId
     }
-    leftJoin({
-        select(ItemMaster.allColumns()) {
-            from(ItemMaster)
-        }
-        + "im"
-    }) {
-        on(OrderLine.itemId, equalTo(ItemMaster.itemId.qualifiedWith("im")))
+    leftJoin(
+       {
+          select(ItemMaster.allColumns()) {
+             from(ItemMaster)
+          }
+          + "im"
+      }
+    ) {
+        on(OrderLine.itemId) equalTo (ItemMaster.itemId qualifiedWith "im")
     }
     orderBy(OrderLine.orderId, ItemMaster.itemId)
 }
