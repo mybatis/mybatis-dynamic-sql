@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2021 the original author or authors.
+ *    Copyright 2016-2022 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -15,50 +15,27 @@
  */
 package org.mybatis.dynamic.sql.render;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 
 import org.mybatis.dynamic.sql.SqlTable;
 
-public class TableAliasCalculator {
+public interface TableAliasCalculator {
 
-    private final Map<SqlTable, String> aliases;
+    Optional<String> aliasForColumn(SqlTable table);
 
-    protected TableAliasCalculator(Map<SqlTable, String> aliases) {
-        this.aliases = Objects.requireNonNull(aliases);
-    }
+    Optional<String> aliasForTable(SqlTable table);
 
-    public Optional<String> aliasForColumn(SqlTable table) {
-        return explicitAliasOrTableAlias(table);
-    }
+    static TableAliasCalculator empty() {
+        return new TableAliasCalculator() {
+            @Override
+            public Optional<String> aliasForColumn(SqlTable table) {
+                return Optional.empty();
+            }
 
-    public Optional<String> aliasForTable(SqlTable table) {
-        return explicitAliasOrTableAlias(table);
-    }
-
-    private Optional<String> explicitAliasOrTableAlias(SqlTable table) {
-        String alias = aliases.get(table);
-        if (alias == null) {
-            return table.tableAlias();
-        } else {
-            return Optional.of(alias);
-        }
-    }
-
-    public static TableAliasCalculator of(SqlTable table, String alias) {
-        Map<SqlTable, String> tableAliases = new HashMap<>();
-        tableAliases.put(table, alias);
-        return of(tableAliases);
-    }
-
-    public static TableAliasCalculator of(Map<SqlTable, String> aliases) {
-        return new TableAliasCalculator(aliases);
-    }
-
-    public static TableAliasCalculator empty() {
-        return of(Collections.emptyMap());
+            @Override
+            public Optional<String> aliasForTable(SqlTable table) {
+                return Optional.empty();
+            }
+        };
     }
 }

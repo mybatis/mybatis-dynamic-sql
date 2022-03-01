@@ -25,6 +25,7 @@ import java.util.stream.Collectors;
 
 import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.TableExpression;
+import org.mybatis.dynamic.sql.render.ExplicitTableAliasCalculator;
 import org.mybatis.dynamic.sql.render.GuaranteedTableAliasCalculator;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.render.TableAliasCalculator;
@@ -60,13 +61,13 @@ public class QueryExpressionRenderer {
         return queryExpression.joinModel().map(JoinModel::containsSubQueries).map(containsSubQueries -> {
             if (containsSubQueries) {
                 // if there are subQueries, then force explicit qualifiers
-                return TableAliasCalculator.of(queryExpression.tableAliases());
+                return ExplicitTableAliasCalculator.of(queryExpression.tableAliases());
             } else {
                 // there are joins, but no sub-queries. In this case, we can use the
                 // table names as qualifiers without requiring explicit qualifiers
                 return GuaranteedTableAliasCalculator.of(queryExpression.tableAliases());
             }
-        }).orElseGet(() -> TableAliasCalculator.of(queryExpression.tableAliases()));
+        }).orElseGet(() -> ExplicitTableAliasCalculator.of(queryExpression.tableAliases()));
     }
 
     public FragmentAndParameters render() {
