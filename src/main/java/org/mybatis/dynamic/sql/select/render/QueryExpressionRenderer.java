@@ -29,6 +29,7 @@ import org.mybatis.dynamic.sql.render.ExplicitTableAliasCalculator;
 import org.mybatis.dynamic.sql.render.GuaranteedTableAliasCalculator;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.render.TableAliasCalculator;
+import org.mybatis.dynamic.sql.render.TableAliasCalculatorWithParent;
 import org.mybatis.dynamic.sql.select.GroupByModel;
 import org.mybatis.dynamic.sql.select.QueryExpressionModel;
 import org.mybatis.dynamic.sql.select.join.JoinModel;
@@ -49,7 +50,7 @@ public class QueryExpressionRenderer {
         queryExpression = Objects.requireNonNull(builder.queryExpression);
         renderingStrategy = Objects.requireNonNull(builder.renderingStrategy);
         sequence = Objects.requireNonNull(builder.sequence);
-        tableAliasCalculator = determineJoinTableAliasCalculator(queryExpression);
+        tableAliasCalculator = calculateTableAliasCalculator(queryExpression, builder.parentTableAliasCalculator);
         tableExpressionRenderer = new TableExpressionRenderer.Builder()
                 .withTableAliasCalculator(tableAliasCalculator)
                 .withRenderingStrategy(renderingStrategy)
@@ -57,17 +58,37 @@ public class QueryExpressionRenderer {
                 .build();
     }
 
-    private TableAliasCalculator determineJoinTableAliasCalculator(QueryExpressionModel queryExpression) {
-        return queryExpression.joinModel().map(JoinModel::containsSubQueries).map(containsSubQueries -> {
-            if (containsSubQueries) {
-                // if there are subQueries, then force explicit qualifiers
-                return ExplicitTableAliasCalculator.of(queryExpression.tableAliases());
-            } else {
-                // there are joins, but no sub-queries. In this case, we can use the
-                // table names as qualifiers without requiring explicit qualifiers
-                return GuaranteedTableAliasCalculator.of(queryExpression.tableAliases());
-            }
-        }).orElseGet(() -> ExplicitTableAliasCalculator.of(queryExpression.tableAliases()));
+    private TableAliasCalculator calculateTableAliasCalculator(QueryExpressionModel queryExpression,
+                                                               TableAliasCalculator parentTableAliasCalculator) {
+        TableAliasCalculator baseTableAliasCalculator = queryExpression.joinModel()
+                .map(JoinModel::containsSubQueries)
+                .map(this::calculateTableAliasCalculatorWithJoins)
+                .orElseGet(this::explicitTableAliasCalculator);
+
+        if (parentTableAliasCalculator == null) {
+            return baseTableAliasCalculator;
+        } else {
+            return new TableAliasCalculatorWithParent(parentTableAliasCalculator, baseTableAliasCalculator);
+        }
+    }
+
+    private TableAliasCalculator calculateTableAliasCalculatorWithJoins(boolean hasSubQueries) {
+        if (hasSubQueries) {
+            // if there are subqueries, we cannot use the table name automatically
+            // so all aliases must be specified
+            return explicitTableAliasCalculator();
+        } else {
+            // without subqueries, we can automatically use table names as aliases
+            return guaranteedTableAliasCalculator();
+        }
+    }
+
+    private TableAliasCalculator explicitTableAliasCalculator() {
+        return ExplicitTableAliasCalculator.of(queryExpression.tableAliases());
+    }
+
+    private TableAliasCalculator guaranteedTableAliasCalculator() {
+        return GuaranteedTableAliasCalculator.of(queryExpression.tableAliases());
     }
 
     public FragmentAndParameters render() {
@@ -157,23 +178,15 @@ public class QueryExpressionRenderer {
         return new Builder().withQueryExpression(model);
     }
 
-    public static class Builder {
+    public static class Builder extends AbstractQueryRendererBuilder<Builder> {
         private QueryExpressionModel queryExpression;
-        private RenderingStrategy renderingStrategy;
-        private AtomicInteger sequence;
 
         public Builder withQueryExpression(QueryExpressionModel queryExpression) {
             this.queryExpression = queryExpression;
             return this;
         }
 
-        public Builder withRenderingStrategy(RenderingStrategy renderingStrategy) {
-            this.renderingStrategy = renderingStrategy;
-            return this;
-        }
-
-        public Builder withSequence(AtomicInteger sequence) {
-            this.sequence = sequence;
+        Builder getThis() {
             return this;
         }
 

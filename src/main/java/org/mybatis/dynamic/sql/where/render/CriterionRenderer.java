@@ -127,6 +127,7 @@ public class CriterionRenderer implements SqlCriterionVisitor<Optional<RenderedC
                 .withSelectModel(existsPredicate.selectModelBuilder().build())
                 .withRenderingStrategy(renderingStrategy)
                 .withSequence(sequence)
+                .withParentTableAliasCalculator(tableAliasCalculator)
                 .build()
                 .render();
 

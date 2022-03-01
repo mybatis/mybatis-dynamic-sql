@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2020 the original author or authors.
+ *    Copyright 2016-2022 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
 
 import org.mybatis.dynamic.sql.SortSpecification;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
+import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 import org.mybatis.dynamic.sql.select.OrderByModel;
 import org.mybatis.dynamic.sql.select.PagingModel;
 import org.mybatis.dynamic.sql.select.QueryExpressionModel;
@@ -34,11 +35,17 @@ public class SelectRenderer {
     private final SelectModel selectModel;
     private final RenderingStrategy renderingStrategy;
     private final AtomicInteger sequence;
+    private final TableAliasCalculator parentTableAliasCalculator; // may be null
 
     private SelectRenderer(Builder builder) {
         selectModel = Objects.requireNonNull(builder.selectModel);
         renderingStrategy = Objects.requireNonNull(builder.renderingStrategy);
-        sequence = builder.sequence().orElseGet(() -> new AtomicInteger(1));
+        if(builder.sequence == null) {
+            sequence = new AtomicInteger(1);
+        } else {
+            sequence = builder.sequence;
+        }
+        parentTableAliasCalculator = builder.parentTableAliasCalculator;
     }
 
     public SelectStatementProvider render() {
@@ -59,6 +66,7 @@ public class SelectRenderer {
         return QueryExpressionRenderer.withQueryExpression(queryExpressionModel)
                 .withRenderingStrategy(renderingStrategy)
                 .withSequence(sequence)
+                .withParentTableAliasCalculator(parentTableAliasCalculator)
                 .build()
                 .render();
     }
@@ -99,32 +107,20 @@ public class SelectRenderer {
         return new Builder().withSelectModel(selectModel);
     }
 
-    public static class Builder {
+    public static class Builder extends AbstractQueryRendererBuilder<Builder> {
         private SelectModel selectModel;
-        private RenderingStrategy renderingStrategy;
-        private AtomicInteger sequence;
 
         public Builder withSelectModel(SelectModel selectModel) {
             this.selectModel = selectModel;
             return this;
         }
 
-        public Builder withRenderingStrategy(RenderingStrategy renderingStrategy) {
-            this.renderingStrategy = renderingStrategy;
-            return this;
-        }
-
-        public Builder withSequence(AtomicInteger sequence) {
-            this.sequence = sequence;
-            return this;
-        }
-
-        private Optional<AtomicInteger> sequence() {
-            return Optional.ofNullable(sequence);
-        }
-
         public SelectRenderer build() {
             return new SelectRenderer(this);
+        }
+
+        Builder getThis() {
+            return this;
         }
     }
 }
