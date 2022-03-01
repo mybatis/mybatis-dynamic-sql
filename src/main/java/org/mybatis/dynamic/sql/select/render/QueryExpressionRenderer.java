@@ -58,6 +58,29 @@ public class QueryExpressionRenderer {
                 .build();
     }
 
+    /**
+     * This function calculates a table alias calculator to use in the current context. In general,
+     * there are two possibilities: this could be a renderer for a regular select statement, or it
+     * could be a renderer for a select statement in an "exists" condition.
+     *
+     * <p>In the case of "exists" conditions, we will have a parent table alias calculator. We want to give visibility
+     * to the aliases in the outer select statement to this renderer so columns in aliased tables can be used in exists
+     * conditions without having to re-specify the alias.
+     *
+     * <p>Another complication is that we calculate aliases differently if there are joins and sub queries. The
+     * cases are as follows:
+     *
+     * <ol>
+     *     <li>If there are no joins, then we will only use aliases that are explicitly set by the user</li>
+     *     <lI>If there are joins and sub queries, we will also only use explicit aliases</lI>
+     *     <li>If there are joins, but no sub queries, then we will automatically use the table name
+     *     as an alias if no explicit alias has been specified</li>
+     * </ol>
+     *
+     * @param queryExpression the model to render
+     * @param parentTableAliasCalculator table alias calculator from the parent query
+     * @return a table alias calculator appropriate for this context
+     */
     private TableAliasCalculator calculateTableAliasCalculator(QueryExpressionModel queryExpression,
                                                                TableAliasCalculator parentTableAliasCalculator) {
         TableAliasCalculator baseTableAliasCalculator = queryExpression.joinModel()
