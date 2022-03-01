@@ -15,10 +15,10 @@
  */
 package org.mybatis.dynamic.sql.select.render;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.render.TableAliasCalculator;
-
-import java.util.concurrent.atomic.AtomicInteger;
 
 public abstract class AbstractQueryRendererBuilder<T extends AbstractQueryRendererBuilder<T>> {
     RenderingStrategy renderingStrategy;

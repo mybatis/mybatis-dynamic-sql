@@ -15,10 +15,10 @@
  */
 package org.mybatis.dynamic.sql.render;
 
-import org.mybatis.dynamic.sql.SqlTable;
-
 import java.util.Objects;
 import java.util.Optional;
+
+import org.mybatis.dynamic.sql.SqlTable;
 
 public class TableAliasCalculatorWithParent implements TableAliasCalculator {
     private final TableAliasCalculator parent;

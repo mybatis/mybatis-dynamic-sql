@@ -15,12 +15,12 @@
  */
 package org.mybatis.dynamic.sql.render;
 
-import org.mybatis.dynamic.sql.SqlTable;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+
+import org.mybatis.dynamic.sql.SqlTable;
 
 public class ExplicitTableAliasCalculator implements TableAliasCalculator {
     private final Map<SqlTable, String> aliases;

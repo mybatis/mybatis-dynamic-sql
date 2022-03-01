@@ -40,7 +40,7 @@ public class SelectRenderer {
     private SelectRenderer(Builder builder) {
         selectModel = Objects.requireNonNull(builder.selectModel);
         renderingStrategy = Objects.requireNonNull(builder.renderingStrategy);
-        if(builder.sequence == null) {
+        if (builder.sequence == null) {
             sequence = new AtomicInteger(1);
         } else {
             sequence = builder.sequence;
