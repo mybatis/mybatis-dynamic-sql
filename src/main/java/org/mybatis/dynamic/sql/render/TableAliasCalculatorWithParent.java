@@ -24,9 +24,9 @@ public class TableAliasCalculatorWithParent implements TableAliasCalculator {
     private final TableAliasCalculator parent;
     private final TableAliasCalculator child;
 
-    public TableAliasCalculatorWithParent(TableAliasCalculator parent, TableAliasCalculator child) {
-        this.parent = Objects.requireNonNull(parent);
-        this.child = Objects.requireNonNull(child);
+    private TableAliasCalculatorWithParent(Builder builder) {
+        parent = Objects.requireNonNull(builder.parent);
+        child = Objects.requireNonNull(builder.child);
     }
 
     @Override
@@ -45,5 +45,24 @@ public class TableAliasCalculatorWithParent implements TableAliasCalculator {
             return answer;
         }
         return parent.aliasForTable(table);
+    }
+
+    public static class Builder {
+        private TableAliasCalculator parent;
+        private TableAliasCalculator child;
+
+        public Builder withParent(TableAliasCalculator parent) {
+            this.parent = parent;
+            return this;
+        }
+
+        public Builder withChild(TableAliasCalculator child) {
+            this.child = child;
+            return this;
+        }
+
+        public TableAliasCalculatorWithParent build() {
+            return new TableAliasCalculatorWithParent(this);
+        }
     }
 }

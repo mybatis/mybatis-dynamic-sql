@@ -59,9 +59,10 @@ public class QueryExpressionRenderer {
     }
 
     /**
-     * This function calculates a table alias calculator to use in the current context. In general,
-     * there are two possibilities: this could be a renderer for a regular select statement, or it
-     * could be a renderer for a select statement in an "exists" condition.
+     * This function calculates a table alias calculator to use in the current context. There are several
+     * possibilities: this could be a renderer for a regular select statement, or it could be a renderer for a table
+     * expression in a join, or a column to sub query where condition, or it could be a renderer for a select
+     * statement in an "exists" condition.
      *
      * <p>In the case of "exists" conditions, we will have a parent table alias calculator. We want to give visibility
      * to the aliases in the outer select statement to this renderer so columns in aliased tables can be used in exists
@@ -91,7 +92,10 @@ public class QueryExpressionRenderer {
         if (parentTableAliasCalculator == null) {
             return baseTableAliasCalculator;
         } else {
-            return new TableAliasCalculatorWithParent(parentTableAliasCalculator, baseTableAliasCalculator);
+            return new TableAliasCalculatorWithParent.Builder()
+                    .withParent(parentTableAliasCalculator)
+                    .withChild(baseTableAliasCalculator)
+                    .build();
         }
     }
 
