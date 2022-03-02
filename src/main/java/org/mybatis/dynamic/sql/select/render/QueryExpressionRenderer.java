@@ -60,13 +60,13 @@ public class QueryExpressionRenderer {
 
     /**
      * This function calculates a table alias calculator to use in the current context. There are several
-     * possibilities: this could be a renderer for a regular select statement, or it could be a renderer for a table
+     * possibilities: this could be a renderer for a top level select statement, or it could be a renderer for a table
      * expression in a join, or a column to sub query where condition, or it could be a renderer for a select
-     * statement in an "exists" condition.
+     * statement in an "exists" condition in a where clause.
      *
-     * <p>In the case of "exists" conditions, we will have a parent table alias calculator. We want to give visibility
-     * to the aliases in the outer select statement to this renderer so columns in aliased tables can be used in exists
-     * conditions without having to re-specify the alias.
+     * <p>In the case of conditions in a where clause, we will have a parent table alias calculator. This will give
+     * visibility to the aliases in the outer select statement to this renderer so columns in aliased tables can be
+     * used in where clause sub query conditions without having to re-specify the alias.
      *
      * <p>Another complication is that we calculate aliases differently if there are joins and sub queries. The
      * cases are as follows:
