@@ -33,6 +33,7 @@ import org.assertj.core.api.Assertions.entry
 import org.junit.jupiter.api.Test
 import org.mybatis.dynamic.sql.util.kotlin.KInvalidSQLException
 import org.mybatis.dynamic.sql.util.kotlin.elements.equalTo
+import org.mybatis.dynamic.sql.util.kotlin.elements.max
 import org.mybatis.dynamic.sql.util.kotlin.elements.qualifiedWith
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.select
 import java.io.InputStreamReader
@@ -772,6 +773,50 @@ class JoinMapperTest {
                 where { user2.userId isEqualTo 4 }
             }
         }.withMessage("You must specify an \"on\" condition in a join")
+    }
+
+    @Test
+    fun testThatAliasesPropagateToSubQueryConditions() {
+        newSession().use { session ->
+            val mapper = session.getMapper(JoinMapper::class.java)
+
+            val orderLine2 = OrderLineDynamicSQLSupport.OrderLine()
+
+            val selectStatement = select(orderLine.orderId, orderLine.lineNumber) {
+                from(orderLine, "ol")
+                where {
+                    orderLine.lineNumber isEqualTo  {
+                        select(max(orderLine2.lineNumber)) {
+                            from(orderLine2, "ol2")
+                            where { orderLine2.orderId isEqualTo orderLine.orderId }
+                        }
+                    }
+                }
+                orderBy(orderLine.orderId)
+            }
+
+            val expectedStatement = "select ol.order_id, ol.line_number " +
+                    "from OrderLine ol " +
+                    "where ol.line_number = " +
+                    "(select max(ol2.line_number) from OrderLine ol2 where ol2.order_id = ol.order_id) " +
+                    "order by order_id"
+
+            assertThat(selectStatement.selectStatement).isEqualTo(expectedStatement)
+
+            val rows = mapper.selectManyMappedRows(selectStatement)
+
+            assertThat(rows).hasSize(2)
+
+            assertThat(rows[0]).containsOnly(
+                entry("ORDER_ID", 1),
+                entry("LINE_NUMBER", 2)
+            )
+
+            assertThat(rows[1]).containsOnly(
+                entry("ORDER_ID", 2),
+                entry("LINE_NUMBER", 3)
+            )
+        }
     }
 
     companion object {

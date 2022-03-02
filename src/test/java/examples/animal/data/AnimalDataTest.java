@@ -53,8 +53,8 @@ import org.mybatis.dynamic.sql.insert.render.BatchInsert;
 import org.mybatis.dynamic.sql.insert.render.GeneralInsertStatementProvider;
 import org.mybatis.dynamic.sql.insert.render.InsertSelectStatementProvider;
 import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider;
+import org.mybatis.dynamic.sql.render.ExplicitTableAliasCalculator;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
-import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 import org.mybatis.dynamic.sql.select.SelectModel;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
@@ -314,7 +314,7 @@ class AnimalDataTest {
 
             WhereClauseProvider whereClause = where(id, isEqualTo(1), or(bodyWeight, isGreaterThan(1.0)))
                     .build()
-                    .render(RenderingStrategies.MYBATIS3, TableAliasCalculator.of(animalData, "a"));
+                    .render(RenderingStrategies.MYBATIS3, ExplicitTableAliasCalculator.of(animalData, "a"));
 
             assertThat(whereClause.getWhereClause()).isEqualTo("where (a.id = #{parameters.p1,jdbcType=INTEGER} or a.body_weight > #{parameters.p2,jdbcType=DOUBLE})");
 
@@ -347,7 +347,8 @@ class AnimalDataTest {
 
             WhereClauseProvider whereClause = where(id, isLessThan(60))
                     .build()
-                    .render(RenderingStrategies.MYBATIS3, TableAliasCalculator.of(animalData, "b"),  "whereClauseProvider");
+                    .render(RenderingStrategies.MYBATIS3, ExplicitTableAliasCalculator.of(animalData, "b"),
+                            "whereClauseProvider");
 
             List<AnimalData> animals = mapper.selectWithWhereClauseAliasLimitAndOffset(whereClause, 3, 24);
             assertAll(

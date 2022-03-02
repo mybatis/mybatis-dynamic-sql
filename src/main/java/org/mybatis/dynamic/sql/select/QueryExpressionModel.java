@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2020 the original author or authors.
+ *    Copyright 2016-2022 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -27,8 +27,6 @@ import java.util.stream.Stream;
 import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.TableExpression;
-import org.mybatis.dynamic.sql.render.GuaranteedTableAliasCalculator;
-import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 import org.mybatis.dynamic.sql.select.join.JoinModel;
 import org.mybatis.dynamic.sql.where.WhereModel;
 
@@ -38,7 +36,7 @@ public class QueryExpressionModel {
     private final List<BasicColumn> selectList;
     private final TableExpression table;
     private final JoinModel joinModel;
-    private final TableAliasCalculator tableAliasCalculator;
+    private final Map<SqlTable, String> tableAliases;
     private final WhereModel whereModel;
     private final GroupByModel groupByModel;
 
@@ -48,20 +46,9 @@ public class QueryExpressionModel {
         selectList = Objects.requireNonNull(builder.selectList);
         table = Objects.requireNonNull(builder.table);
         joinModel = builder.joinModel;
-        tableAliasCalculator = joinModel().map(jm -> determineJoinTableAliasCalculator(jm, builder.tableAliases))
-                .orElseGet(() -> TableAliasCalculator.of(builder.tableAliases));
+        tableAliases = builder.tableAliases;
         whereModel = builder.whereModel;
         groupByModel = builder.groupByModel;
-    }
-
-    private TableAliasCalculator determineJoinTableAliasCalculator(JoinModel joinModel, Map<SqlTable,
-            String> tableAliases) {
-        if (joinModel.containsSubQueries()) {
-            // if there are subQueries, then force explicit qualifiers
-            return TableAliasCalculator.of(tableAliases);
-        } else {
-            return GuaranteedTableAliasCalculator.of(tableAliases);
-        }
     }
 
     public Optional<String> connector() {
@@ -80,8 +67,8 @@ public class QueryExpressionModel {
         return table;
     }
 
-    public TableAliasCalculator tableAliasCalculator() {
-        return tableAliasCalculator;
+    public Map<SqlTable, String> tableAliases() {
+        return tableAliases;
     }
 
     public Optional<WhereModel> whereModel() {

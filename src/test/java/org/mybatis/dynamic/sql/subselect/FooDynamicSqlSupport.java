@@ -13,29 +13,25 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.mybatis.dynamic.sql.render;
+package org.mybatis.dynamic.sql.subselect;
 
-import java.util.Optional;
-
+import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
 
-public interface TableAliasCalculator {
+import java.sql.JDBCType;
+import java.util.Date;
 
-    Optional<String> aliasForColumn(SqlTable table);
+public class FooDynamicSqlSupport {
+    public static final Foo foo = new Foo();
+    public static final SqlColumn<Date> column1 = foo.column1;
+    static final SqlColumn<Integer> column2 = foo.column2;
 
-    Optional<String> aliasForTable(SqlTable table);
+    public static class Foo extends SqlTable {
+        public final SqlColumn<Date> column1 = column("column1", JDBCType.DATE);
+        public final SqlColumn<Integer> column2 = column("column2", JDBCType.INTEGER);
 
-    static TableAliasCalculator empty() {
-        return new TableAliasCalculator() {
-            @Override
-            public Optional<String> aliasForColumn(SqlTable table) {
-                return Optional.empty();
-            }
-
-            @Override
-            public Optional<String> aliasForTable(SqlTable table) {
-                return Optional.empty();
-            }
-        };
+        public Foo() {
+            super("foo");
+        }
     }
 }

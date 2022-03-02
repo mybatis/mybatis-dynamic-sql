@@ -1,5 +1,5 @@
 --
---    Copyright 2016-2019 the original author or authors.
+--    Copyright 2016-2022 the original author or authors.
 --
 --    Licensed under the Apache License, Version 2.0 (the "License");
 --    you may not use this file except in compliance with the License.
@@ -68,7 +68,7 @@ insert into ItemMaster(item_id, description) values(44, 'Outfield Glove');
 insert into ItemMaster(item_id, description) values(55, 'Catcher Glove');
 
 insert into OrderLine(order_id, item_id, line_number, quantity) values(1, 22, 1, 1);
-insert into OrderLine(order_id, item_id, line_number, quantity) values(1, 33, 1, 1);
+insert into OrderLine(order_id, item_id, line_number, quantity) values(1, 33, 2, 1);
 insert into OrderLine(order_id, item_id, line_number, quantity) values(2, 22, 1, 1);
 insert into OrderLine(order_id, item_id, line_number, quantity) values(2, 44, 2, 1);
 insert into OrderLine(order_id, item_id, line_number, quantity) values(2, 66, 3, 6);

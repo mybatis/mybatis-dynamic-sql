@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2020 the original author or authors.
+ *    Copyright 2016-2022 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.mybatis.dynamic.sql.BasicColumn;
-import org.mybatis.dynamic.sql.select.QueryExpressionModel;
+import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 import org.mybatis.dynamic.sql.select.join.JoinCriterion;
 import org.mybatis.dynamic.sql.select.join.JoinModel;
 import org.mybatis.dynamic.sql.select.join.JoinSpecification;
@@ -31,13 +31,13 @@ import org.mybatis.dynamic.sql.util.FragmentCollector;
 
 public class JoinRenderer {
     private final JoinModel joinModel;
-    private final QueryExpressionModel queryExpression;
     private final TableExpressionRenderer tableExpressionRenderer;
+    private final TableAliasCalculator tableAliasCalculator;
 
     private JoinRenderer(Builder builder) {
         joinModel = Objects.requireNonNull(builder.joinModel);
-        queryExpression = Objects.requireNonNull(builder.queryExpression);
         tableExpressionRenderer = Objects.requireNonNull(builder.tableExpressionRenderer);
+        tableAliasCalculator = Objects.requireNonNull(builder.tableAliasCalculator);
     }
 
     public FragmentAndParameters render() {
@@ -75,7 +75,7 @@ public class JoinRenderer {
     }
 
     private String applyTableAlias(BasicColumn column) {
-        return column.renderWithTableAlias(queryExpression.tableAliasCalculator());
+        return column.renderWithTableAlias(tableAliasCalculator);
     }
 
     public static Builder withJoinModel(JoinModel joinModel) {
@@ -84,21 +84,21 @@ public class JoinRenderer {
 
     public static class Builder {
         private JoinModel joinModel;
-        private QueryExpressionModel queryExpression;
         private TableExpressionRenderer tableExpressionRenderer;
+        private TableAliasCalculator tableAliasCalculator;
 
         public Builder withJoinModel(JoinModel joinModel) {
             this.joinModel = joinModel;
             return this;
         }
 
-        public Builder withQueryExpression(QueryExpressionModel queryExpression) {
-            this.queryExpression = queryExpression;
+        public Builder withTableExpressionRenderer(TableExpressionRenderer tableExpressionRenderer) {
+            this.tableExpressionRenderer = tableExpressionRenderer;
             return this;
         }
 
-        public Builder withTableExpressionRenderer(TableExpressionRenderer tableExpressionRenderer) {
-            this.tableExpressionRenderer = tableExpressionRenderer;
+        public Builder withTableAliasCalculator(TableAliasCalculator tableAliasCalculator) {
+            this.tableAliasCalculator = tableAliasCalculator;
             return this;
         }
 

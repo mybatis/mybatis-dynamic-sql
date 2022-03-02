@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2021 the original author or authors.
+ *    Copyright 2016-2022 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -27,6 +27,7 @@ import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.ColumnAndConditionCriterion;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
+import org.mybatis.dynamic.sql.render.ExplicitTableAliasCalculator;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
@@ -74,7 +75,7 @@ class CriterionRendererTest {
         CriterionRenderer renderer = new CriterionRenderer.Builder()
                 .withSequence(sequence)
                 .withRenderingStrategy(RenderingStrategies.MYBATIS3)
-                .withTableAliasCalculator(TableAliasCalculator.of(tableAliases))
+                .withTableAliasCalculator(ExplicitTableAliasCalculator.of(tableAliases))
                 .build();
 
         assertThat(criterion.accept(renderer)).hasValueSatisfying(rc -> {

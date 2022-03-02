@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2020 the original author or authors.
+ *    Copyright 2016-2022 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -25,7 +25,11 @@ import java.util.stream.Collectors;
 
 import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.TableExpression;
+import org.mybatis.dynamic.sql.render.ExplicitTableAliasCalculator;
+import org.mybatis.dynamic.sql.render.GuaranteedTableAliasCalculator;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
+import org.mybatis.dynamic.sql.render.TableAliasCalculator;
+import org.mybatis.dynamic.sql.render.TableAliasCalculatorWithParent;
 import org.mybatis.dynamic.sql.select.GroupByModel;
 import org.mybatis.dynamic.sql.select.QueryExpressionModel;
 import org.mybatis.dynamic.sql.select.join.JoinModel;
@@ -40,16 +44,78 @@ public class QueryExpressionRenderer {
     private final RenderingStrategy renderingStrategy;
     private final AtomicInteger sequence;
     private final TableExpressionRenderer tableExpressionRenderer;
+    private final TableAliasCalculator tableAliasCalculator;
 
     private QueryExpressionRenderer(Builder builder) {
         queryExpression = Objects.requireNonNull(builder.queryExpression);
         renderingStrategy = Objects.requireNonNull(builder.renderingStrategy);
         sequence = Objects.requireNonNull(builder.sequence);
+        tableAliasCalculator = calculateTableAliasCalculator(queryExpression, builder.parentTableAliasCalculator);
         tableExpressionRenderer = new TableExpressionRenderer.Builder()
-                .withTableAliasCalculator(queryExpression.tableAliasCalculator())
+                .withTableAliasCalculator(tableAliasCalculator)
                 .withRenderingStrategy(renderingStrategy)
                 .withSequence(sequence)
                 .build();
+    }
+
+    /**
+     * This function calculates a table alias calculator to use in the current context. There are several
+     * possibilities: this could be a renderer for a top level select statement, or it could be a renderer for a table
+     * expression in a join, or a column to sub query where condition, or it could be a renderer for a select
+     * statement in an "exists" condition in a where clause.
+     *
+     * <p>In the case of conditions in a where clause, we will have a parent table alias calculator. This will give
+     * visibility to the aliases in the outer select statement to this renderer so columns in aliased tables can be
+     * used in where clause sub query conditions without having to re-specify the alias.
+     *
+     * <p>Another complication is that we calculate aliases differently if there are joins and sub queries. The
+     * cases are as follows:
+     *
+     * <ol>
+     *     <li>If there are no joins, then we will only use aliases that are explicitly set by the user</li>
+     *     <lI>If there are joins and sub queries, we will also only use explicit aliases</lI>
+     *     <li>If there are joins, but no sub queries, then we will automatically use the table name
+     *     as an alias if no explicit alias has been specified</li>
+     * </ol>
+     *
+     * @param queryExpression the model to render
+     * @param parentTableAliasCalculator table alias calculator from the parent query
+     * @return a table alias calculator appropriate for this context
+     */
+    private TableAliasCalculator calculateTableAliasCalculator(QueryExpressionModel queryExpression,
+                                                               TableAliasCalculator parentTableAliasCalculator) {
+        TableAliasCalculator baseTableAliasCalculator = queryExpression.joinModel()
+                .map(JoinModel::containsSubQueries)
+                .map(this::calculateTableAliasCalculatorWithJoins)
+                .orElseGet(this::explicitTableAliasCalculator);
+
+        if (parentTableAliasCalculator == null) {
+            return baseTableAliasCalculator;
+        } else {
+            return new TableAliasCalculatorWithParent.Builder()
+                    .withParent(parentTableAliasCalculator)
+                    .withChild(baseTableAliasCalculator)
+                    .build();
+        }
+    }
+
+    private TableAliasCalculator calculateTableAliasCalculatorWithJoins(boolean hasSubQueries) {
+        if (hasSubQueries) {
+            // if there are subqueries, we cannot use the table name automatically
+            // so all aliases must be specified
+            return explicitTableAliasCalculator();
+        } else {
+            // without subqueries, we can automatically use table names as aliases
+            return guaranteedTableAliasCalculator();
+        }
+    }
+
+    private TableAliasCalculator explicitTableAliasCalculator() {
+        return ExplicitTableAliasCalculator.of(queryExpression.tableAliases());
+    }
+
+    private TableAliasCalculator guaranteedTableAliasCalculator() {
+        return GuaranteedTableAliasCalculator.of(queryExpression.tableAliases());
     }
 
     public FragmentAndParameters render() {
@@ -81,7 +147,7 @@ public class QueryExpressionRenderer {
     }
 
     private String applyTableAndColumnAlias(BasicColumn selectListItem) {
-        return selectListItem.renderWithTableAndColumnAlias(queryExpression.tableAliasCalculator());
+        return selectListItem.renderWithTableAndColumnAlias(tableAliasCalculator);
     }
 
     private FragmentAndParameters renderTableExpression(TableExpression table) {
@@ -97,8 +163,8 @@ public class QueryExpressionRenderer {
 
     private FragmentAndParameters renderJoin(JoinModel joinModel) {
         return JoinRenderer.withJoinModel(joinModel)
-                .withQueryExpression(queryExpression)
                 .withTableExpressionRenderer(tableExpressionRenderer)
+                .withTableAliasCalculator(tableAliasCalculator)
                 .build()
                 .render();
     }
@@ -113,7 +179,7 @@ public class QueryExpressionRenderer {
     private Optional<WhereClauseProvider> renderWhereClause(WhereModel whereModel) {
         return WhereRenderer.withWhereModel(whereModel)
                 .withRenderingStrategy(renderingStrategy)
-                .withTableAliasCalculator(queryExpression.tableAliasCalculator())
+                .withTableAliasCalculator(tableAliasCalculator)
                 .withSequence(sequence)
                 .build()
                 .render();
@@ -132,30 +198,22 @@ public class QueryExpressionRenderer {
     }
 
     private String applyTableAlias(BasicColumn column) {
-        return column.renderWithTableAlias(queryExpression.tableAliasCalculator());
+        return column.renderWithTableAlias(tableAliasCalculator);
     }
 
     public static Builder withQueryExpression(QueryExpressionModel model) {
         return new Builder().withQueryExpression(model);
     }
 
-    public static class Builder {
+    public static class Builder extends AbstractQueryRendererBuilder<Builder> {
         private QueryExpressionModel queryExpression;
-        private RenderingStrategy renderingStrategy;
-        private AtomicInteger sequence;
 
         public Builder withQueryExpression(QueryExpressionModel queryExpression) {
             this.queryExpression = queryExpression;
             return this;
         }
 
-        public Builder withRenderingStrategy(RenderingStrategy renderingStrategy) {
-            this.renderingStrategy = renderingStrategy;
-            return this;
-        }
-
-        public Builder withSequence(AtomicInteger sequence) {
-            this.sequence = sequence;
+        Builder getThis() {
             return this;
         }
 
