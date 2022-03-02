@@ -44,8 +44,9 @@ GitHub milestone: [https://github.com/mybatis/mybatis-dynamic-sql/issues?q=miles
    insertBatch, and insertMultiple, the "into" function is moved inside the completer lambda. The old methods are now
    deprecated and will be removed in version 1.5.0 of the library. This also allowed us to make some insert DSL
    methods into infix functions. ([#452](https://github.com/mybatis/mybatis-dynamic-sql/pull/452))
-8. Updated the "exists" support to expose table aliases specified in the outer query to the query in the exists
-   clause. This makes it easier to use exists without having to re-specify the aliases for columns from the outer query.
+8. Updated the where clause to expose table aliases specified in an outer query to sub queries in the where clause
+   (either an "exists" clause, or a sub query to column comparison condition) This makes it easier to use these types
+   of sub queries without having to re-specify the aliases for columns from the outer query.
    ([#437](https://github.com/mybatis/mybatis-dynamic-sql/issues/437))
 
 ## Release 1.3.1 - December 18, 2021
