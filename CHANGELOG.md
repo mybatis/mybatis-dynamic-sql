@@ -47,7 +47,7 @@ GitHub milestone: [https://github.com/mybatis/mybatis-dynamic-sql/issues?q=miles
 8. Updated the where clause to expose table aliases specified in an outer query to sub queries in the where clause
    (either an "exists" clause, or a sub query to column comparison condition) This makes it easier to use these types
    of sub queries without having to re-specify the aliases for columns from the outer query.
-   ([#437](https://github.com/mybatis/mybatis-dynamic-sql/issues/437))
+   ([#459](https://github.com/mybatis/mybatis-dynamic-sql/pull/459))
 
 ## Release 1.3.1 - December 18, 2021
 
