@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>IsNotBetween.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.where.condition</a> &gt; <span class="el_source">IsNotBetween.java</span></div><h1>IsNotBetween.java</h1><pre class="source lang-java linenums">/*
- *    Copyright 2016-2021 the original author or authors.
+ *    Copyright 2016-2022 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  *    you may not use this file except in compliance with the License.
@@ -19,70 +19,40 @@ import java.util.Objects;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.function.UnaryOperator;
 
 import org.mybatis.dynamic.sql.AbstractTwoValueCondition;
 
 public class IsNotBetween&lt;T&gt; extends AbstractTwoValueCondition&lt;T&gt; {
-<span class="fc" id="L27">    private static final IsNotBetween&lt;?&gt; EMPTY = new IsNotBetween&lt;Object&gt;(null, null) {</span>
+<span class="fc" id="L26">    private static final IsNotBetween&lt;?&gt; EMPTY = new IsNotBetween&lt;Object&gt;(null, null) {</span>
         @Override
         public boolean shouldRender() {
-<span class="fc" id="L30">            return false;</span>
+<span class="fc" id="L29">            return false;</span>
         }
     };
 
     public static &lt;T&gt; IsNotBetween&lt;T&gt; empty() {
         @SuppressWarnings(&quot;unchecked&quot;)
-<span class="fc" id="L36">        IsNotBetween&lt;T&gt; t = (IsNotBetween&lt;T&gt;) EMPTY;</span>
-<span class="fc" id="L37">        return t;</span>
+<span class="fc" id="L35">        IsNotBetween&lt;T&gt; t = (IsNotBetween&lt;T&gt;) EMPTY;</span>
+<span class="fc" id="L36">        return t;</span>
     }
 
     protected IsNotBetween(T value1, T value2) {
-<span class="fc" id="L41">        super(value1, value2);</span>
-<span class="fc" id="L42">    }</span>
+<span class="fc" id="L40">        super(value1, value2);</span>
+<span class="fc" id="L41">    }</span>
 
     @Override
     public String renderCondition(String columnName, String placeholder1, String placeholder2) {
-<span class="fc" id="L46">        return columnName + &quot; not between &quot; + placeholder1 + &quot; and &quot; + placeholder2; //$NON-NLS-1$ //$NON-NLS-2$</span>
-    }
-
-    /**
-     * If renderable and the values match the predicate, returns this condition. Else returns a condition
-     *     that will not render.
-     *
-     * @deprecated replaced by {@link IsNotBetween#filter(BiPredicate)}
-     * @param predicate predicate applied to the values, if renderable
-     * @return this condition if renderable and the values match the predicate, otherwise a condition
-     *     that will not render.
-     */
-    @Deprecated
-    public IsNotBetween&lt;T&gt; when(BiPredicate&lt;T, T&gt; predicate) {
-<span class="fc" id="L60">        return filter(predicate);</span>
-    }
-
-    /**
-     * If renderable, apply the mappings to the values and return a new condition with the new values. Else return a
-     *     condition that will not render (this).
-     *
-     * @deprecated replaced by {@link IsNotBetween#map(Function, Function)}
-     * @param mapper1 a mapping function to apply to the first value, if renderable
-     * @param mapper2 a mapping function to apply to the second value, if renderable
-     * @return a new condition with the result of applying the mappers to the values of this condition,
-     *     if renderable, otherwise a condition that will not render.
-     */
-    @Deprecated
-    public IsNotBetween&lt;T&gt; then(UnaryOperator&lt;T&gt; mapper1, UnaryOperator&lt;T&gt; mapper2) {
-<span class="fc" id="L75">        return map(mapper1, mapper2);</span>
+<span class="fc" id="L45">        return columnName + &quot; not between &quot; + placeholder1 + &quot; and &quot; + placeholder2; //$NON-NLS-1$ //$NON-NLS-2$</span>
     }
 
     @Override
     public IsNotBetween&lt;T&gt; filter(BiPredicate&lt;? super T, ? super T&gt; predicate) {
-<span class="fc" id="L80">        return filterSupport(predicate, IsNotBetween::empty, this);</span>
+<span class="fc" id="L50">        return filterSupport(predicate, IsNotBetween::empty, this);</span>
     }
 
     @Override
     public IsNotBetween&lt;T&gt; filter(Predicate&lt;? super T&gt; predicate) {
-<span class="fc" id="L85">        return filterSupport(predicate, IsNotBetween::empty, this);</span>
+<span class="fc" id="L55">        return filterSupport(predicate, IsNotBetween::empty, this);</span>
     }
 
     /**
@@ -97,7 +67,7 @@ public class IsNotBetween&lt;T&gt; extends AbstractTwoValueCondition&lt;T&gt; {
      */
     public &lt;R&gt; IsNotBetween&lt;R&gt; map(Function&lt;? super T, ? extends R&gt; mapper1,
             Function&lt;? super T, ? extends R&gt; mapper2) {
-<span class="fc" id="L100">        return mapSupport(mapper1, mapper2, IsNotBetween::new, IsNotBetween::empty);</span>
+<span class="fc" id="L70">        return mapSupport(mapper1, mapper2, IsNotBetween::new, IsNotBetween::empty);</span>
     }
 
     /**
@@ -110,38 +80,38 @@ public class IsNotBetween&lt;T&gt; extends AbstractTwoValueCondition&lt;T&gt; {
      *     if renderable, otherwise a condition that will not render.
      */
     public &lt;R&gt; IsNotBetween&lt;R&gt; map(Function&lt;? super T, ? extends R&gt; mapper) {
-<span class="fc" id="L113">        return map(mapper, mapper);</span>
+<span class="fc" id="L83">        return map(mapper, mapper);</span>
     }
 
     public static &lt;T&gt; Builder&lt;T&gt; isNotBetween(T value1) {
-<span class="fc" id="L117">        return new Builder&lt;&gt;(value1);</span>
+<span class="fc" id="L87">        return new Builder&lt;&gt;(value1);</span>
     }
 
     public static &lt;T&gt; WhenPresentBuilder&lt;T&gt; isNotBetweenWhenPresent(T value1) {
-<span class="fc" id="L121">        return new WhenPresentBuilder&lt;&gt;(value1);</span>
+<span class="fc" id="L91">        return new WhenPresentBuilder&lt;&gt;(value1);</span>
     }
 
     public static class Builder&lt;T&gt; extends AndGatherer&lt;T, IsNotBetween&lt;T&gt;&gt; {
 
         private Builder(T value1) {
-<span class="fc" id="L127">            super(value1);</span>
-<span class="fc" id="L128">        }</span>
+<span class="fc" id="L97">            super(value1);</span>
+<span class="fc" id="L98">        }</span>
 
         @Override
         protected IsNotBetween&lt;T&gt; build() {
-<span class="fc" id="L132">            return new IsNotBetween&lt;&gt;(value1, value2);</span>
+<span class="fc" id="L102">            return new IsNotBetween&lt;&gt;(value1, value2);</span>
         }
     }
 
     public static class WhenPresentBuilder&lt;T&gt; extends AndGatherer&lt;T, IsNotBetween&lt;T&gt;&gt; {
 
         private WhenPresentBuilder(T value1) {
-<span class="fc" id="L139">            super(value1);</span>
-<span class="fc" id="L140">        }</span>
+<span class="fc" id="L109">            super(value1);</span>
+<span class="fc" id="L110">        }</span>
 
         @Override
         protected IsNotBetween&lt;T&gt; build() {
-<span class="fc" id="L144">            return new IsNotBetween&lt;&gt;(value1, value2).filter(Objects::nonNull);</span>
+<span class="fc" id="L114">            return new IsNotBetween&lt;&gt;(value1, value2).filter(Objects::nonNull);</span>
         }
     }
 }

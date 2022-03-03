@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>KotlinDeleteBuilder.kt</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.util.kotlin</a> &gt; <span class="el_source">KotlinDeleteBuilder.kt</span></div><h1>KotlinDeleteBuilder.kt</h1><pre class="source lang-java linenums">/*
- *    Copyright 2016-2021 the original author or authors.
+ *    Copyright 2016-2022 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  *    you may not use this file except in compliance with the License.
@@ -22,12 +22,10 @@ import org.mybatis.dynamic.sql.util.Buildable
 typealias DeleteCompleter = KotlinDeleteBuilder.() -&gt; Unit
 
 <span class="fc" id="L24">class KotlinDeleteBuilder(private val dsl: DeleteDSL&lt;DeleteModel&gt;) :</span>
-<span class="fc" id="L25">    KotlinBaseBuilder&lt;DeleteDSL&lt;DeleteModel&gt;, KotlinDeleteBuilder&gt;(), Buildable&lt;DeleteModel&gt; {</span>
+<span class="fc" id="L25">    KotlinBaseBuilder&lt;DeleteDSL&lt;DeleteModel&gt;&gt;(), Buildable&lt;DeleteModel&gt; {</span>
 
 <span class="fc" id="L27">    override fun build(): DeleteModel = dsl.build()</span>
 
 <span class="fc" id="L29">    override fun getDsl(): DeleteDSL&lt;DeleteModel&gt; = dsl</span>
-
-<span class="fc" id="L31">    override fun self(): KotlinDeleteBuilder = this</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

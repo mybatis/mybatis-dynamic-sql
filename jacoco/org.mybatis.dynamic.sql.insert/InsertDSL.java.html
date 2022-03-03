@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>InsertDSL.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.insert</a> &gt; <span class="el_source">InsertDSL.java</span></div><h1>InsertDSL.java</h1><pre class="source lang-java linenums">/*
- *    Copyright 2016-2021 the original author or authors.
+ *    Copyright 2016-2022 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  *    you may not use this file except in compliance with the License.
@@ -16,7 +16,9 @@
 package org.mybatis.dynamic.sql.insert;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Supplier;
 
 import org.jetbrains.annotations.NotNull;
@@ -34,72 +36,98 @@ public class InsertDSL&lt;T&gt; implements Buildable&lt;InsertModel&lt;T&gt;&gt;
 
     private final T row;
     private final SqlTable table;
-<span class="fc" id="L37">    private final List&lt;AbstractColumnMapping&gt; columnMappings = new ArrayList&lt;&gt;();</span>
+    private final List&lt;AbstractColumnMapping&gt; columnMappings;
 
-<span class="fc" id="L39">    private InsertDSL(T row, SqlTable table) {</span>
-<span class="fc" id="L40">        this.row = row;</span>
-<span class="fc" id="L41">        this.table = table;</span>
-<span class="fc" id="L42">    }</span>
+<span class="fc" id="L41">    private InsertDSL(Builder&lt;T&gt; builder) {</span>
+<span class="fc" id="L42">        this.row = Objects.requireNonNull(builder.row);</span>
+<span class="fc" id="L43">        this.table = Objects.requireNonNull(builder.table);</span>
+<span class="fc" id="L44">        columnMappings = builder.columnMappings;</span>
+<span class="fc" id="L45">    }</span>
 
     public &lt;F&gt; ColumnMappingFinisher&lt;F&gt; map(SqlColumn&lt;F&gt; column) {
-<span class="fc" id="L45">        return new ColumnMappingFinisher&lt;&gt;(column);</span>
+<span class="fc" id="L48">        return new ColumnMappingFinisher&lt;&gt;(column);</span>
     }
 
     @NotNull
     @Override
     public InsertModel&lt;T&gt; build() {
-<span class="fc" id="L51">        return InsertModel.withRow(row)</span>
-<span class="fc" id="L52">                .withTable(table)</span>
-<span class="fc" id="L53">                .withColumnMappings(columnMappings)</span>
-<span class="fc" id="L54">                .build();</span>
+<span class="fc" id="L54">        return InsertModel.withRow(row)</span>
+<span class="fc" id="L55">                .withTable(table)</span>
+<span class="fc" id="L56">                .withColumnMappings(columnMappings)</span>
+<span class="fc" id="L57">                .build();</span>
     }
 
     public static &lt;T&gt; IntoGatherer&lt;T&gt; insert(T row) {
-<span class="fc" id="L58">        return new IntoGatherer&lt;&gt;(row);</span>
+<span class="fc" id="L61">        return new IntoGatherer&lt;&gt;(row);</span>
     }
 
     public static class IntoGatherer&lt;T&gt; {
         private final T row;
 
-<span class="fc" id="L64">        private IntoGatherer(T row) {</span>
-<span class="fc" id="L65">            this.row = row;</span>
-<span class="fc" id="L66">        }</span>
+<span class="fc" id="L67">        private IntoGatherer(T row) {</span>
+<span class="fc" id="L68">            this.row = row;</span>
+<span class="fc" id="L69">        }</span>
 
         public InsertDSL&lt;T&gt; into(SqlTable table) {
-<span class="fc" id="L69">            return new InsertDSL&lt;&gt;(row, table);</span>
+<span class="fc" id="L72">            return new InsertDSL.Builder&lt;T&gt;().withRow(row).withTable(table).build();</span>
         }
     }
 
     public class ColumnMappingFinisher&lt;F&gt; {
         private final SqlColumn&lt;F&gt; column;
 
-<span class="fc" id="L76">        public ColumnMappingFinisher(SqlColumn&lt;F&gt; column) {</span>
-<span class="fc" id="L77">            this.column = column;</span>
-<span class="fc" id="L78">        }</span>
+<span class="fc" id="L79">        public ColumnMappingFinisher(SqlColumn&lt;F&gt; column) {</span>
+<span class="fc" id="L80">            this.column = column;</span>
+<span class="fc" id="L81">        }</span>
 
         public InsertDSL&lt;T&gt; toProperty(String property) {
-<span class="fc" id="L81">            columnMappings.add(PropertyMapping.of(column, property));</span>
-<span class="fc" id="L82">            return InsertDSL.this;</span>
+<span class="fc" id="L84">            columnMappings.add(PropertyMapping.of(column, property));</span>
+<span class="fc" id="L85">            return InsertDSL.this;</span>
         }
 
         public InsertDSL&lt;T&gt; toPropertyWhenPresent(String property, Supplier&lt;?&gt; valueSupplier) {
-<span class="fc" id="L86">            columnMappings.add(PropertyWhenPresentMapping.of(column, property, valueSupplier));</span>
-<span class="fc" id="L87">            return InsertDSL.this;</span>
+<span class="fc" id="L89">            columnMappings.add(PropertyWhenPresentMapping.of(column, property, valueSupplier));</span>
+<span class="fc" id="L90">            return InsertDSL.this;</span>
         }
 
         public InsertDSL&lt;T&gt; toNull() {
-<span class="fc" id="L91">            columnMappings.add(NullMapping.of(column));</span>
-<span class="fc" id="L92">            return InsertDSL.this;</span>
+<span class="fc" id="L94">            columnMappings.add(NullMapping.of(column));</span>
+<span class="fc" id="L95">            return InsertDSL.this;</span>
         }
 
         public InsertDSL&lt;T&gt; toConstant(String constant) {
-<span class="fc" id="L96">            columnMappings.add(ConstantMapping.of(column, constant));</span>
-<span class="fc" id="L97">            return InsertDSL.this;</span>
+<span class="fc" id="L99">            columnMappings.add(ConstantMapping.of(column, constant));</span>
+<span class="fc" id="L100">            return InsertDSL.this;</span>
         }
 
         public InsertDSL&lt;T&gt; toStringConstant(String constant) {
-<span class="fc" id="L101">            columnMappings.add(StringConstantMapping.of(column, constant));</span>
-<span class="fc" id="L102">            return InsertDSL.this;</span>
+<span class="fc" id="L104">            columnMappings.add(StringConstantMapping.of(column, constant));</span>
+<span class="fc" id="L105">            return InsertDSL.this;</span>
+        }
+    }
+
+<span class="fc" id="L109">    public static class Builder&lt;T&gt; {</span>
+        private T row;
+        private SqlTable table;
+<span class="fc" id="L112">        private final List&lt;AbstractColumnMapping&gt; columnMappings = new ArrayList&lt;&gt;();</span>
+
+        public Builder&lt;T&gt; withRow(T row) {
+<span class="fc" id="L115">            this.row = row;</span>
+<span class="fc" id="L116">            return this;</span>
+        }
+
+        public Builder&lt;T&gt; withTable(SqlTable table) {
+<span class="fc" id="L120">            this.table = table;</span>
+<span class="fc" id="L121">            return this;</span>
+        }
+
+        public Builder&lt;T&gt; withColumnMappings(Collection&lt;AbstractColumnMapping&gt; columnMappings) {
+<span class="fc" id="L125">            this.columnMappings.addAll(columnMappings);</span>
+<span class="fc" id="L126">            return this;</span>
+        }
+
+        public InsertDSL&lt;T&gt; build() {
+<span class="fc" id="L130">            return new InsertDSL&lt;&gt;(this);</span>
         }
     }
 }

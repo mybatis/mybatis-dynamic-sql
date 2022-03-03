@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>KotlinCountBuilder.kt</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.util.kotlin</a> &gt; <span class="el_source">KotlinCountBuilder.kt</span></div><h1>KotlinCountBuilder.kt</h1><pre class="source lang-java linenums">/*
- *    Copyright 2016-2021 the original author or authors.
+ *    Copyright 2016-2022 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  *    you may not use this file except in compliance with the License.
@@ -23,10 +23,10 @@ import org.mybatis.dynamic.sql.util.Buildable
 typealias CountCompleter = KotlinCountBuilder.() -&gt; Unit
 
 <span class="fc" id="L25">class KotlinCountBuilder(private val fromGatherer: CountDSL.FromGatherer&lt;SelectModel&gt;) :</span>
-<span class="fc" id="L26">    KotlinBaseJoiningBuilder&lt;CountDSL&lt;SelectModel&gt;, KotlinCountBuilder&gt;(),</span>
+<span class="fc" id="L26">    KotlinBaseJoiningBuilder&lt;CountDSL&lt;SelectModel&gt;&gt;(),</span>
     Buildable&lt;SelectModel&gt; {
 
-    private lateinit var dsl: CountDSL&lt;SelectModel&gt;
+    private var dsl: CountDSL&lt;SelectModel&gt;? = null
 
     fun from(table: SqlTable): KotlinCountBuilder =
 <span class="fc" id="L32">        apply {</span>
@@ -35,16 +35,8 @@ typealias CountCompleter = KotlinCountBuilder.() -&gt; Unit
 
 <span class="fc" id="L36">    override fun build(): SelectModel = getDsl().build()</span>
 
-<span class="fc" id="L38">    override fun self(): KotlinCountBuilder = this</span>
-
-    override fun getDsl(): CountDSL&lt;SelectModel&gt; {
-<span class="fc" id="L41">        try {</span>
-<span class="pc bpc" id="L42" title="1 of 2 branches missed.">            return dsl</span>
-<span class="fc" id="L43">        } catch (e: UninitializedPropertyAccessException) {</span>
-<span class="fc" id="L44">            throw UninitializedPropertyAccessException(</span>
-<span class="fc" id="L45">                &quot;You must specify a \&quot;from\&quot; clause before any other clauses in a count statement&quot;, e</span>
-            )
-        }
-    }
+    override fun getDsl(): CountDSL&lt;SelectModel&gt; =
+<span class="fc bfc" id="L39" title="All 2 branches covered.">        dsl?: throw KInvalidSQLException(</span>
+<span class="fc" id="L40">            &quot;You must specify a \&quot;from\&quot; clause before any other clauses in a count statement&quot;)</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

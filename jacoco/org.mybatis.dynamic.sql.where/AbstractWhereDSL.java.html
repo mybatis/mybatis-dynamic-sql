@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AbstractWhereDSL.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.where</a> &gt; <span class="el_source">AbstractWhereDSL.java</span></div><h1>AbstractWhereDSL.java</h1><pre class="source lang-java linenums">/*
- *    Copyright 2016-2021 the original author or authors.
+ *    Copyright 2016-2022 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  *    you may not use this file except in compliance with the License.
@@ -20,165 +20,171 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
+import org.mybatis.dynamic.sql.AndOrCriteriaGroup;
 import org.mybatis.dynamic.sql.BindableColumn;
 import org.mybatis.dynamic.sql.ColumnAndConditionCriterion;
+import org.mybatis.dynamic.sql.CriteriaGroup;
 import org.mybatis.dynamic.sql.ExistsCriterion;
 import org.mybatis.dynamic.sql.ExistsPredicate;
 import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.VisitableCondition;
 
-<span class="fc" id="L30">public abstract class AbstractWhereDSL&lt;T extends AbstractWhereDSL&lt;T&gt;&gt; {</span>
-<span class="fc" id="L31">    private final List&lt;SqlCriterion&gt; criteria = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L32">public abstract class AbstractWhereDSL&lt;T extends AbstractWhereDSL&lt;T&gt;&gt; {</span>
+    private SqlCriterion initialCriterion; // WARNING - may be null!
+<span class="fc" id="L34">    private final List&lt;AndOrCriteriaGroup&gt; subCriteria = new ArrayList&lt;&gt;();</span>
 
     @NotNull
-    public &lt;S&gt; T where(BindableColumn&lt;S&gt; column, VisitableCondition&lt;S&gt; condition) {
-<span class="fc" id="L35">        criteria.add(ColumnAndConditionCriterion.withColumn(column)</span>
-<span class="fc" id="L36">                .withCondition(condition)</span>
-<span class="fc" id="L37">                .build());</span>
-<span class="fc" id="L38">        return getThis();</span>
+    public &lt;S&gt; T where(BindableColumn&lt;S&gt; column, VisitableCondition&lt;S&gt; condition,
+                       AndOrCriteriaGroup...subCriteria) {
+<span class="fc" id="L39">        return where(column, condition, Arrays.asList(subCriteria));</span>
     }
 
     @NotNull
-    public &lt;S&gt; T where(BindableColumn&lt;S&gt; column, VisitableCondition&lt;S&gt; condition, SqlCriterion...subCriteria) {
-<span class="fc" id="L43">        return where(column, condition, Arrays.asList(subCriteria));</span>
+    public &lt;S&gt; T where(BindableColumn&lt;S&gt; column, VisitableCondition&lt;S&gt; condition,
+                       List&lt;AndOrCriteriaGroup&gt; subCriteria) {
+<span class="fc" id="L45">        initialCriterion = buildCriterion(column, condition, subCriteria);</span>
+<span class="fc" id="L46">        return getThis();</span>
     }
 
     @NotNull
-    public &lt;S&gt; T where(BindableColumn&lt;S&gt; column, VisitableCondition&lt;S&gt; condition, List&lt;SqlCriterion&gt; subCriteria) {
-<span class="fc" id="L48">        criteria.add(ColumnAndConditionCriterion.withColumn(column)</span>
-<span class="fc" id="L49">                .withCondition(condition)</span>
-<span class="fc" id="L50">                .withSubCriteria(subCriteria)</span>
-<span class="fc" id="L51">                .build());</span>
-<span class="fc" id="L52">        return getThis();</span>
+    public T where(ExistsPredicate existsPredicate, AndOrCriteriaGroup...subCriteria) {
+<span class="fc" id="L51">        return where(existsPredicate, Arrays.asList(subCriteria));</span>
     }
 
     @NotNull
-    public T where(ExistsPredicate existsPredicate) {
-<span class="fc" id="L57">        criteria.add(new ExistsCriterion.Builder()</span>
-<span class="fc" id="L58">                .withExistsPredicate(existsPredicate)</span>
-<span class="fc" id="L59">                .build());</span>
-<span class="fc" id="L60">        return getThis();</span>
+    public T where(ExistsPredicate existsPredicate, List&lt;AndOrCriteriaGroup&gt; subCriteria) {
+<span class="fc" id="L56">        initialCriterion = buildCriterion(existsPredicate, subCriteria);</span>
+<span class="fc" id="L57">        return getThis();</span>
     }
 
     @NotNull
-    public T where(ExistsPredicate existsPredicate, SqlCriterion...subCriteria) {
-<span class="fc" id="L65">        return where(existsPredicate, Arrays.asList(subCriteria));</span>
+    public T where(SqlCriterion initialCriterion, AndOrCriteriaGroup...subCriteria) {
+<span class="fc" id="L62">        return where(initialCriterion, Arrays.asList(subCriteria));</span>
     }
 
     @NotNull
-    public T where(ExistsPredicate existsPredicate, List&lt;SqlCriterion&gt; subCriteria) {
-<span class="fc" id="L70">        criteria.add(new ExistsCriterion.Builder()</span>
-<span class="fc" id="L71">                .withExistsPredicate(existsPredicate)</span>
-<span class="fc" id="L72">                .withSubCriteria(subCriteria)</span>
-<span class="fc" id="L73">                .build());</span>
-<span class="fc" id="L74">        return getThis();</span>
+    public T where(SqlCriterion initialCriterion, List&lt;AndOrCriteriaGroup&gt; subCriteria) {
+<span class="fc" id="L67">        this.initialCriterion = buildCriterion(initialCriterion, subCriteria);</span>
+<span class="fc" id="L68">        return getThis();</span>
     }
 
     @NotNull
     public T applyWhere(WhereApplier whereApplier) {
-<span class="fc" id="L79">        whereApplier.accept(this);</span>
-<span class="fc" id="L80">        return getThis();</span>
+<span class="fc" id="L73">        whereApplier.accept(this);</span>
+<span class="fc" id="L74">        return getThis();</span>
     }
 
     @NotNull
-    public &lt;S&gt; T and(BindableColumn&lt;S&gt; column, VisitableCondition&lt;S&gt; condition) {
-<span class="fc" id="L85">        criteria.add(ColumnAndConditionCriterion.withColumn(column)</span>
-<span class="fc" id="L86">                .withConnector(&quot;and&quot;) //$NON-NLS-1$</span>
-<span class="fc" id="L87">                .withCondition(condition)</span>
-<span class="fc" id="L88">                .build());</span>
-<span class="fc" id="L89">        return getThis();</span>
+    public &lt;S&gt; T and(BindableColumn&lt;S&gt; column, VisitableCondition&lt;S&gt; condition,
+                     AndOrCriteriaGroup...subCriteria) {
+<span class="fc" id="L80">        return and(column, condition, Arrays.asList(subCriteria));</span>
     }
 
     @NotNull
-    public &lt;S&gt; T and(BindableColumn&lt;S&gt; column, VisitableCondition&lt;S&gt; condition, SqlCriterion...subCriteria) {
-<span class="fc" id="L94">        return and(column, condition, Arrays.asList(subCriteria));</span>
+    public &lt;S&gt; T and(BindableColumn&lt;S&gt; column, VisitableCondition&lt;S&gt; condition,
+                     List&lt;AndOrCriteriaGroup&gt; subCriteria) {
+<span class="fc" id="L86">        addSubCriteria(&quot;and&quot;, buildCriterion(column, condition), subCriteria);</span>
+<span class="fc" id="L87">        return getThis();</span>
     }
 
     @NotNull
-    public &lt;S&gt; T and(BindableColumn&lt;S&gt; column, VisitableCondition&lt;S&gt; condition, List&lt;SqlCriterion&gt; subCriteria) {
-<span class="fc" id="L99">        criteria.add(ColumnAndConditionCriterion.withColumn(column)</span>
-<span class="fc" id="L100">                .withConnector(&quot;and&quot;) //$NON-NLS-1$</span>
-<span class="fc" id="L101">                .withCondition(condition)</span>
-<span class="fc" id="L102">                .withSubCriteria(subCriteria)</span>
-<span class="fc" id="L103">                .build());</span>
-<span class="fc" id="L104">        return getThis();</span>
+    public T and(ExistsPredicate existsPredicate, AndOrCriteriaGroup...subCriteria) {
+<span class="fc" id="L92">        return and(existsPredicate, Arrays.asList(subCriteria));</span>
     }
 
     @NotNull
-    public T and(ExistsPredicate existsPredicate) {
-<span class="fc" id="L109">        criteria.add(new ExistsCriterion.Builder()</span>
-<span class="fc" id="L110">                .withConnector(&quot;and&quot;) //$NON-NLS-1$</span>
-<span class="fc" id="L111">                .withExistsPredicate(existsPredicate)</span>
-<span class="fc" id="L112">                .build());</span>
-<span class="fc" id="L113">        return getThis();</span>
+    public T and(ExistsPredicate existsPredicate, List&lt;AndOrCriteriaGroup&gt; subCriteria) {
+<span class="fc" id="L97">        addSubCriteria(&quot;and&quot;, buildCriterion(existsPredicate), subCriteria);</span>
+<span class="fc" id="L98">        return getThis();</span>
     }
 
     @NotNull
-    public T and(ExistsPredicate existsPredicate, SqlCriterion...subCriteria) {
-<span class="fc" id="L118">        return and(existsPredicate, Arrays.asList(subCriteria));</span>
+    public T and(SqlCriterion initialCriterion, AndOrCriteriaGroup...subCriteria) {
+<span class="fc" id="L103">        return and(initialCriterion, Arrays.asList(subCriteria));</span>
     }
 
     @NotNull
-    public T and(ExistsPredicate existsPredicate, List&lt;SqlCriterion&gt; subCriteria) {
-<span class="fc" id="L123">        criteria.add(new ExistsCriterion.Builder()</span>
-<span class="fc" id="L124">                .withConnector(&quot;and&quot;) //$NON-NLS-1$</span>
-<span class="fc" id="L125">                .withExistsPredicate(existsPredicate)</span>
-<span class="fc" id="L126">                .withSubCriteria(subCriteria)</span>
-<span class="fc" id="L127">                .build());</span>
-<span class="fc" id="L128">        return getThis();</span>
+    public T and(SqlCriterion initialCriterion, List&lt;AndOrCriteriaGroup&gt; subCriteria) {
+<span class="fc" id="L108">        addSubCriteria(&quot;and&quot;, buildCriterion(initialCriterion), subCriteria);</span>
+<span class="fc" id="L109">        return getThis();</span>
     }
 
     @NotNull
-    public &lt;S&gt; T or(BindableColumn&lt;S&gt; column, VisitableCondition&lt;S&gt; condition) {
-<span class="fc" id="L133">        criteria.add(ColumnAndConditionCriterion.withColumn(column)</span>
-<span class="fc" id="L134">                .withConnector(&quot;or&quot;) //$NON-NLS-1$</span>
-<span class="fc" id="L135">                .withCondition(condition)</span>
-<span class="fc" id="L136">                .build());</span>
-<span class="fc" id="L137">        return getThis();</span>
+    public &lt;S&gt; T or(BindableColumn&lt;S&gt; column, VisitableCondition&lt;S&gt; condition,
+                    AndOrCriteriaGroup...subCriteria) {
+<span class="fc" id="L115">        return or(column, condition, Arrays.asList(subCriteria));</span>
     }
 
     @NotNull
-    public &lt;S&gt; T or(BindableColumn&lt;S&gt; column, VisitableCondition&lt;S&gt; condition, SqlCriterion...subCriteria) {
-<span class="fc" id="L142">        return or(column, condition, Arrays.asList(subCriteria));</span>
+    public &lt;S&gt; T or(BindableColumn&lt;S&gt; column, VisitableCondition&lt;S&gt; condition,
+                    List&lt;AndOrCriteriaGroup&gt; subCriteria) {
+<span class="fc" id="L121">        addSubCriteria(&quot;or&quot;, buildCriterion(column, condition), subCriteria);</span>
+<span class="fc" id="L122">        return getThis();</span>
     }
 
     @NotNull
-    public &lt;S&gt; T or(BindableColumn&lt;S&gt; column, VisitableCondition&lt;S&gt; condition, List&lt;SqlCriterion&gt; subCriteria) {
-<span class="fc" id="L147">        criteria.add(ColumnAndConditionCriterion.withColumn(column)</span>
-<span class="fc" id="L148">                .withConnector(&quot;or&quot;) //$NON-NLS-1$</span>
-<span class="fc" id="L149">                .withCondition(condition)</span>
-<span class="fc" id="L150">                .withSubCriteria(subCriteria)</span>
-<span class="fc" id="L151">                .build());</span>
-<span class="fc" id="L152">        return getThis();</span>
+    public T or(ExistsPredicate existsPredicate, AndOrCriteriaGroup...subCriteria) {
+<span class="fc" id="L127">        return or(existsPredicate, Arrays.asList(subCriteria));</span>
     }
 
     @NotNull
-    public T or(ExistsPredicate existsPredicate) {
-<span class="fc" id="L157">        criteria.add(new ExistsCriterion.Builder()</span>
-<span class="fc" id="L158">                .withConnector(&quot;or&quot;) //$NON-NLS-1$</span>
-<span class="fc" id="L159">                .withExistsPredicate(existsPredicate)</span>
-<span class="fc" id="L160">                .build());</span>
-<span class="fc" id="L161">        return getThis();</span>
+    public T or(ExistsPredicate existsPredicate, List&lt;AndOrCriteriaGroup&gt; subCriteria) {
+<span class="fc" id="L132">        addSubCriteria(&quot;or&quot;, buildCriterion(existsPredicate), subCriteria);</span>
+<span class="fc" id="L133">        return getThis();</span>
     }
 
     @NotNull
-    public T or(ExistsPredicate existsPredicate, SqlCriterion...subCriteria) {
-<span class="fc" id="L166">        return or(existsPredicate, Arrays.asList(subCriteria));</span>
+    public T or(SqlCriterion initialCriterion, AndOrCriteriaGroup...subCriteria) {
+<span class="fc" id="L138">        return or(initialCriterion, Arrays.asList(subCriteria));</span>
     }
 
     @NotNull
-    public T or(ExistsPredicate existsPredicate, List&lt;SqlCriterion&gt; subCriteria) {
-<span class="fc" id="L171">        criteria.add(new ExistsCriterion.Builder()</span>
-<span class="fc" id="L172">                .withConnector(&quot;or&quot;) //$NON-NLS-1$</span>
-<span class="fc" id="L173">                .withExistsPredicate(existsPredicate)</span>
-<span class="fc" id="L174">                .withSubCriteria(subCriteria)</span>
-<span class="fc" id="L175">                .build());</span>
-<span class="fc" id="L176">        return getThis();</span>
+    public T or(SqlCriterion initialCriterion, List&lt;AndOrCriteriaGroup&gt; subCriteria) {
+<span class="fc" id="L143">        addSubCriteria(&quot;or&quot;, buildCriterion(initialCriterion), subCriteria);</span>
+<span class="fc" id="L144">        return getThis();</span>
     }
 
     protected WhereModel internalBuild() {
-<span class="fc" id="L180">        return WhereModel.of(criteria);</span>
+<span class="fc" id="L148">        return new WhereModel(initialCriterion, subCriteria);</span>
     }
+
+    private &lt;R&gt; SqlCriterion buildCriterion(BindableColumn&lt;R&gt; column, VisitableCondition&lt;R&gt; condition) {
+<span class="fc" id="L152">        return ColumnAndConditionCriterion.withColumn(column).withCondition(condition).build();</span>
+    }
+
+    private &lt;R&gt; SqlCriterion buildCriterion(BindableColumn&lt;R&gt; column, VisitableCondition&lt;R&gt; condition,
+                                            List&lt;AndOrCriteriaGroup&gt; subCriteria) {
+<span class="fc" id="L157">        return ColumnAndConditionCriterion.withColumn(column)</span>
+<span class="fc" id="L158">                .withCondition(condition)</span>
+<span class="fc" id="L159">                .withSubCriteria(subCriteria)</span>
+<span class="fc" id="L160">                .build();</span>
+    }
+
+    private SqlCriterion buildCriterion(ExistsPredicate existsPredicate) {
+<span class="fc" id="L164">        return new ExistsCriterion.Builder().withExistsPredicate(existsPredicate).build();</span>
+    }
+
+    private SqlCriterion buildCriterion(ExistsPredicate existsPredicate,
+                                        List&lt;AndOrCriteriaGroup&gt; subCriteria) {
+<span class="fc" id="L169">        return new ExistsCriterion.Builder().withExistsPredicate(existsPredicate).withSubCriteria(subCriteria).build();</span>
+    }
+
+    private SqlCriterion buildCriterion(SqlCriterion initialCriterion) {
+<span class="fc" id="L173">        return new CriteriaGroup.Builder().withInitialCriterion(initialCriterion).build();</span>
+    }
+
+    private SqlCriterion buildCriterion(SqlCriterion initialCriterion, List&lt;AndOrCriteriaGroup&gt; subCriteria) {
+<span class="fc" id="L177">        return new CriteriaGroup.Builder().withInitialCriterion(initialCriterion).withSubCriteria(subCriteria).build();</span>
+    }
+
+    private void addSubCriteria(String connector, SqlCriterion initialCriterion,
+                                List&lt;AndOrCriteriaGroup&gt; subCriteria) {
+<span class="fc" id="L182">        this.subCriteria.add(new AndOrCriteriaGroup.Builder()</span>
+<span class="fc" id="L183">                .withInitialCriterion(initialCriterion)</span>
+<span class="fc" id="L184">                .withConnector(connector)</span>
+<span class="fc" id="L185">                .withSubCriteria(subCriteria)</span>
+<span class="fc" id="L186">                .build());</span>
+<span class="fc" id="L187">    }</span>
 
     protected abstract T getThis();
 }

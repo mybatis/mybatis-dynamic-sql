@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>KotlinBaseBuilders.kt</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.util.kotlin</a> &gt; <span class="el_source">KotlinBaseBuilders.kt</span></div><h1>KotlinBaseBuilders.kt</h1><pre class="source lang-java linenums">/*
- *    Copyright 2016-2021 the original author or authors.
+ *    Copyright 2016-2022 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  *    you may not use this file except in compliance with the License.
@@ -16,8 +16,8 @@
 package org.mybatis.dynamic.sql.util.kotlin
 
 import org.mybatis.dynamic.sql.BindableColumn
+import org.mybatis.dynamic.sql.AndOrCriteriaGroup
 import org.mybatis.dynamic.sql.ExistsPredicate
-import org.mybatis.dynamic.sql.SqlCriterion
 import org.mybatis.dynamic.sql.SqlTable
 import org.mybatis.dynamic.sql.VisitableCondition
 import org.mybatis.dynamic.sql.select.AbstractQueryExpressionDSL
@@ -28,7 +28,7 @@ import org.mybatis.dynamic.sql.where.AbstractWhereSupport
 @DslMarker
 annotation class MyBatisDslMarker
 
-typealias WhereApplier = AbstractWhereDSL&lt;*&gt;.() -&gt; Unit
+typealias WhereApplier = KotlinBaseBuilder&lt;*&gt;.() -&gt; Unit
 
 <span class="fc" id="L33">fun WhereApplier.andThen(after: WhereApplier): WhereApplier = {</span>
 <span class="fc" id="L34">    invoke(this)</span>
@@ -37,180 +37,229 @@ typealias WhereApplier = AbstractWhereDSL&lt;*&gt;.() -&gt; Unit
 
 <span class="fc" id="L38">@MyBatisDslMarker</span>
 @Suppress(&quot;TooManyFunctions&quot;)
-<span class="fc" id="L40">abstract class KotlinBaseBuilder&lt;D : AbstractWhereSupport&lt;*&gt;, B : KotlinBaseBuilder&lt;D, B&gt;&gt; {</span>
-    fun &lt;T&gt; where(column: BindableColumn&lt;T&gt;, condition: VisitableCondition&lt;T&gt;): B =
-<span class="fc" id="L42">        applyToWhere {</span>
-<span class="fc" id="L43">            where(column, condition)</span>
+<span class="fc" id="L40">abstract class KotlinBaseBuilder&lt;D : AbstractWhereSupport&lt;*&gt;&gt; {</span>
+    fun where(criteria: GroupingCriteriaReceiver): Unit =
+<span class="fc" id="L42">        with(GroupingCriteriaCollector().apply(criteria)) {</span>
+<span class="fc" id="L43">            this@KotlinBaseBuilder.getDsl().where(initialCriterion, subCriteria)</span>
 <span class="fc" id="L44">        }</span>
 
-    fun &lt;T&gt; where(column: BindableColumn&lt;T&gt;, condition: VisitableCondition&lt;T&gt;, subCriteria: CriteriaReceiver): B =
-<span class="fc" id="L47">        applyToWhere(subCriteria) { sc -&gt;</span>
-<span class="fc" id="L48">            where(column, condition, sc)</span>
+    fun and(criteria: GroupingCriteriaReceiver): Unit =
+<span class="fc" id="L47">        with(GroupingCriteriaCollector().apply(criteria)) {</span>
+<span class="fc" id="L48">            this@KotlinBaseBuilder.getDsl().where().and(initialCriterion, subCriteria)</span>
 <span class="fc" id="L49">        }</span>
 
-    fun where(existsPredicate: ExistsPredicate): B =
-<span class="fc" id="L52">        applyToWhere {</span>
-<span class="fc" id="L53">            where(existsPredicate)</span>
+    fun or(criteria: GroupingCriteriaReceiver): Unit =
+<span class="fc" id="L52">        with(GroupingCriteriaCollector().apply(criteria)) {</span>
+<span class="fc" id="L53">            this@KotlinBaseBuilder.getDsl().where().or(initialCriterion, subCriteria)</span>
 <span class="fc" id="L54">        }</span>
 
-    fun where(existsPredicate: ExistsPredicate, subCriteria: CriteriaReceiver): B =
-<span class="fc" id="L57">        applyToWhere(subCriteria) { sc -&gt;</span>
-<span class="fc" id="L58">            where(existsPredicate, sc)</span>
-<span class="fc" id="L59">        }</span>
+<span class="fc" id="L56">    fun applyWhere(whereApplier: WhereApplier) = whereApplier.invoke(this)</span>
 
-    fun applyWhere(whereApplier: WhereApplier): B =
-<span class="fc" id="L62">        applyToWhere {</span>
-<span class="fc" id="L63">            applyWhere(whereApplier)</span>
-<span class="fc" id="L64">        }</span>
+    @Deprecated(&quot;Deprecated in favor of the new where clause DSL. Update by moving the column and condition &quot; +
+            &quot;into a lambda and rewriting the condition to use an infix function.&quot;)
+    fun &lt;T&gt; where(column: BindableColumn&lt;T&gt;, condition: VisitableCondition&lt;T&gt;): Unit =
+<span class="fc" id="L61">        applyToWhere {</span>
+<span class="fc" id="L62">            where(column, condition)</span>
+<span class="fc" id="L63">        }</span>
 
-    fun &lt;T&gt; and(column: BindableColumn&lt;T&gt;, condition: VisitableCondition&lt;T&gt;): B =
-<span class="fc" id="L67">        applyToWhere {</span>
-<span class="fc" id="L68">            and(column, condition)</span>
-<span class="fc" id="L69">        }</span>
+    @Deprecated(&quot;Deprecated in favor of the new where clause DSL. Update by moving the column and condition &quot; +
+            &quot;inside the lambda and rewriting the condition to use an infix function.&quot;)
+    fun &lt;T&gt; where(column: BindableColumn&lt;T&gt;, condition: VisitableCondition&lt;T&gt;, subCriteria: CriteriaReceiver): Unit =
+<span class="fc" id="L68">        applyToWhere(subCriteria) { sc -&gt;</span>
+<span class="fc" id="L69">            where(column, condition, sc)</span>
+<span class="fc" id="L70">        }</span>
 
-    fun &lt;T&gt; and(column: BindableColumn&lt;T&gt;, condition: VisitableCondition&lt;T&gt;, subCriteria: CriteriaReceiver): B =
-<span class="fc" id="L72">        applyToWhere(subCriteria) { sc -&gt;</span>
-<span class="fc" id="L73">            and(column, condition, sc)</span>
-<span class="fc" id="L74">        }</span>
-
-    fun and(existsPredicate: ExistsPredicate): B =
+    @Deprecated(
+        message = &quot;Deprecated in favor of the new where clause DSL.&quot;,
+        replaceWith = ReplaceWith(&quot;where { existsPredicate }&quot;)
+    )
+    fun where(existsPredicate: ExistsPredicate): Unit =
 <span class="fc" id="L77">        applyToWhere {</span>
-<span class="fc" id="L78">            and(existsPredicate)</span>
+<span class="fc" id="L78">            where(existsPredicate)</span>
 <span class="fc" id="L79">        }</span>
 
-    fun and(existsPredicate: ExistsPredicate, subCriteria: CriteriaReceiver): B =
-<span class="fc" id="L82">        applyToWhere(subCriteria) { sc -&gt;</span>
-<span class="fc" id="L83">            and(existsPredicate, sc)</span>
-<span class="fc" id="L84">        }</span>
+    @Deprecated(&quot;Deprecated in favor of the new where clause DSL. Update by moving the exists expression &quot; +
+            &quot;into the lambda.&quot;)
+    fun where(existsPredicate: ExistsPredicate, subCriteria: CriteriaReceiver): Unit =
+<span class="fc" id="L84">        applyToWhere(subCriteria) { sc -&gt;</span>
+<span class="fc" id="L85">            where(existsPredicate, sc)</span>
+<span class="fc" id="L86">        }</span>
 
-    fun &lt;T&gt; or(column: BindableColumn&lt;T&gt;, condition: VisitableCondition&lt;T&gt;): B =
-<span class="fc" id="L87">        applyToWhere {</span>
-<span class="fc" id="L88">            or(column, condition)</span>
-<span class="fc" id="L89">        }</span>
+    @Deprecated(&quot;Deprecated in favor of the new where clause DSL. Update by moving the column and condition &quot; +
+            &quot;into a lambda and rewriting the condition to use an infix function.&quot;)
+    fun &lt;T&gt; and(column: BindableColumn&lt;T&gt;, condition: VisitableCondition&lt;T&gt;): Unit =
+<span class="fc" id="L91">        applyToWhere {</span>
+<span class="fc" id="L92">            and(column, condition)</span>
+<span class="fc" id="L93">        }</span>
 
-    fun &lt;T&gt; or(column: BindableColumn&lt;T&gt;, condition: VisitableCondition&lt;T&gt;, subCriteria: CriteriaReceiver): B =
-<span class="fc" id="L92">        applyToWhere(subCriteria) { sc -&gt;</span>
-<span class="fc" id="L93">            or(column, condition, sc)</span>
-<span class="fc" id="L94">        }</span>
+    @Deprecated(&quot;Deprecated in favor of the new where clause DSL. Update by moving the column and condition &quot; +
+            &quot;inside the lambda and rewriting the condition to use an infix function.&quot;)
+    fun &lt;T&gt; and(column: BindableColumn&lt;T&gt;, condition: VisitableCondition&lt;T&gt;, subCriteria: CriteriaReceiver): Unit =
+<span class="fc" id="L98">        applyToWhere(subCriteria) { sc -&gt;</span>
+<span class="fc" id="L99">            and(column, condition, sc)</span>
+<span class="fc" id="L100">        }</span>
 
-    fun or(existsPredicate: ExistsPredicate): B =
-<span class="fc" id="L97">        applyToWhere {</span>
-<span class="fc" id="L98">            or(existsPredicate)</span>
-<span class="fc" id="L99">        }</span>
+    @Deprecated(
+        message = &quot;Deprecated in favor of the new where clause DSL.&quot;,
+        replaceWith = ReplaceWith(&quot;and { existsPredicate }&quot;)
+    )
+    fun and(existsPredicate: ExistsPredicate): Unit =
+<span class="fc" id="L107">        applyToWhere {</span>
+<span class="fc" id="L108">            and(existsPredicate)</span>
+<span class="fc" id="L109">        }</span>
 
-    fun or(existsPredicate: ExistsPredicate, subCriteria: CriteriaReceiver): B =
-<span class="fc" id="L102">        applyToWhere(subCriteria) { sc -&gt;</span>
-<span class="fc" id="L103">            or(existsPredicate, sc)</span>
-<span class="fc" id="L104">        }</span>
+    @Deprecated(&quot;Deprecated in favor of the new where clause DSL. Update by moving the exists expression &quot; +
+            &quot;into the lambda.&quot;)
+    fun and(existsPredicate: ExistsPredicate, subCriteria: CriteriaReceiver): Unit =
+<span class="fc" id="L114">        applyToWhere(subCriteria) { sc -&gt;</span>
+<span class="fc" id="L115">            and(existsPredicate, sc)</span>
+<span class="fc" id="L116">        }</span>
 
-<span class="fc" id="L106">    fun allRows(): B = self()</span>
+    @Deprecated(&quot;Deprecated in favor of the new where clause DSL. Update by moving the column and condition &quot; +
+            &quot;into a lambda and rewriting the condition to use an infix function.&quot;)
+    fun &lt;T&gt; or(column: BindableColumn&lt;T&gt;, condition: VisitableCondition&lt;T&gt;): Unit =
+<span class="fc" id="L121">        applyToWhere {</span>
+<span class="fc" id="L122">            or(column, condition)</span>
+<span class="fc" id="L123">        }</span>
 
-    private fun applyToWhere(block: AbstractWhereDSL&lt;*&gt;.() -&gt; Unit): B {
-<span class="fc" id="L109">        getDsl().where().apply(block)</span>
-<span class="fc" id="L110">        return self()</span>
-    }
+    @Deprecated(&quot;Deprecated in favor of the new where clause DSL. Update by moving the column and condition &quot; +
+            &quot;inside the lambda and rewriting the condition to use an infix function.&quot;)
+    fun &lt;T&gt; or(column: BindableColumn&lt;T&gt;, condition: VisitableCondition&lt;T&gt;, subCriteria: CriteriaReceiver): Unit =
+<span class="fc" id="L128">        applyToWhere(subCriteria) { sc -&gt;</span>
+<span class="fc" id="L129">            or(column, condition, sc)</span>
+<span class="fc" id="L130">        }</span>
+
+    @Deprecated(
+        message = &quot;Deprecated in favor of the new where clause DSL.&quot;,
+        replaceWith = ReplaceWith(&quot;or { existsPredicate }&quot;)
+    )
+    fun or(existsPredicate: ExistsPredicate): Unit =
+<span class="fc" id="L137">        applyToWhere {</span>
+<span class="fc" id="L138">            or(existsPredicate)</span>
+<span class="fc" id="L139">        }</span>
+
+    @Deprecated(&quot;Deprecated in favor of the new where clause DSL. Update by moving the exists expression &quot; +
+            &quot;into the lambda.&quot;)
+    fun or(existsPredicate: ExistsPredicate, subCriteria: CriteriaReceiver): Unit =
+<span class="fc" id="L144">        applyToWhere(subCriteria) { sc -&gt;</span>
+<span class="fc" id="L145">            or(existsPredicate, sc)</span>
+<span class="fc" id="L146">        }</span>
+
+    /**
+     * This function does nothing, but it can be used to make some code snippets more understandable.
+     *
+     * For example, to count all rows in a table you can write either of the following:
+     *
+     * val rows = countFrom(foo) { }
+     *
+     *    or
+     *
+     * val rows = countFrom(foo) { allRows() }
+     */
+    @SuppressWarnings(&quot;EmptyFunctionBlock&quot;)
+    fun allRows() {
+        // intentionally empty - this function exists for code beautification and clarity only
+<span class="fc" id="L162">    }</span>
+
+    private fun applyToWhere(block: AbstractWhereDSL&lt;*&gt;.() -&gt; Unit) {
+<span class="fc" id="L165">        getDsl().where().apply(block)</span>
+<span class="fc" id="L166">    }</span>
 
     private fun applyToWhere(
         subCriteria: CriteriaReceiver,
-        block: AbstractWhereDSL&lt;*&gt;.(List&lt;SqlCriterion&gt;) -&gt; Unit
-    ): B {
-<span class="fc" id="L117">        getDsl().where().block(CriteriaCollector().apply(subCriteria).criteria)</span>
-<span class="fc" id="L118">        return self()</span>
-    }
-
-    protected abstract fun self(): B
+        block: AbstractWhereDSL&lt;*&gt;.(List&lt;AndOrCriteriaGroup&gt;) -&gt; Unit
+    ) {
+<span class="fc" id="L172">        getDsl().where().block(CriteriaCollector().apply(subCriteria).criteria)</span>
+<span class="fc" id="L173">    }</span>
 
     protected abstract fun getDsl(): D
 }
 
 @Suppress(&quot;TooManyFunctions&quot;)
-<span class="fc" id="L127">abstract class KotlinBaseJoiningBuilder&lt;D : AbstractQueryExpressionDSL&lt;*, *&gt;, B : KotlinBaseJoiningBuilder&lt;D, B&gt;&gt; :</span>
-<span class="fc" id="L128">    KotlinBaseBuilder&lt;D, B&gt;() {</span>
+<span class="fc" id="L179">abstract class KotlinBaseJoiningBuilder&lt;D : AbstractQueryExpressionDSL&lt;*, *&gt;&gt; : KotlinBaseBuilder&lt;D&gt;() {</span>
 
-    fun join(table: SqlTable, joinCriteria: JoinReceiver): B =
-<span class="fc" id="L131">        applyToDsl(joinCriteria) { jc -&gt;</span>
-<span class="fc" id="L132">            join(table, jc.onJoinCriterion, jc.andJoinCriteria)</span>
-<span class="fc" id="L133">        }</span>
+    fun join(table: SqlTable, joinCriteria: JoinReceiver): Unit =
+<span class="fc" id="L182">        applyToDsl(joinCriteria) { jc -&gt;</span>
+<span class="fc" id="L183">            join(table, jc.onJoinCriterion(), jc.andJoinCriteria)</span>
+<span class="fc" id="L184">        }</span>
 
-    fun join(table: SqlTable, alias: String, joinCriteria: JoinReceiver): B =
-<span class="fc" id="L136">        applyToDsl(joinCriteria) { jc -&gt;</span>
-<span class="fc" id="L137">            join(table, alias, jc.onJoinCriterion, jc.andJoinCriteria)</span>
-<span class="fc" id="L138">        }</span>
+    fun join(table: SqlTable, alias: String, joinCriteria: JoinReceiver): Unit =
+<span class="fc" id="L187">        applyToDsl(joinCriteria) { jc -&gt;</span>
+<span class="fc" id="L188">            join(table, alias, jc.onJoinCriterion(), jc.andJoinCriteria)</span>
+<span class="fc" id="L189">        }</span>
 
     fun join(
         subQuery: KotlinQualifiedSubQueryBuilder.() -&gt; Unit,
         joinCriteria: JoinReceiver
-    ): B =
-<span class="fc" id="L144">        applyToDsl(subQuery, joinCriteria) { sq, jc -&gt;</span>
-<span class="fc" id="L145">            join(sq, sq.correlationName, jc.onJoinCriterion, jc.andJoinCriteria)</span>
-<span class="fc" id="L146">        }</span>
+    ): Unit =
+<span class="fc" id="L195">        applyToDsl(subQuery, joinCriteria) { sq, jc -&gt;</span>
+<span class="fc" id="L196">            join(sq, sq.correlationName, jc.onJoinCriterion(), jc.andJoinCriteria)</span>
+<span class="fc" id="L197">        }</span>
 
-    fun fullJoin(table: SqlTable, joinCriteria: JoinReceiver): B =
-<span class="fc" id="L149">        applyToDsl(joinCriteria) { jc -&gt;</span>
-<span class="fc" id="L150">            fullJoin(table, jc.onJoinCriterion, jc.andJoinCriteria)</span>
-<span class="fc" id="L151">        }</span>
+    fun fullJoin(table: SqlTable, joinCriteria: JoinReceiver): Unit =
+<span class="fc" id="L200">        applyToDsl(joinCriteria) { jc -&gt;</span>
+<span class="fc" id="L201">            fullJoin(table, jc.onJoinCriterion(), jc.andJoinCriteria)</span>
+<span class="fc" id="L202">        }</span>
 
-    fun fullJoin(table: SqlTable, alias: String, joinCriteria: JoinReceiver): B =
-<span class="fc" id="L154">        applyToDsl(joinCriteria) { jc -&gt;</span>
-<span class="fc" id="L155">            fullJoin(table, alias, jc.onJoinCriterion, jc.andJoinCriteria)</span>
-<span class="fc" id="L156">        }</span>
+    fun fullJoin(table: SqlTable, alias: String, joinCriteria: JoinReceiver): Unit =
+<span class="fc" id="L205">        applyToDsl(joinCriteria) { jc -&gt;</span>
+<span class="fc" id="L206">            fullJoin(table, alias, jc.onJoinCriterion(), jc.andJoinCriteria)</span>
+<span class="fc" id="L207">        }</span>
 
     fun fullJoin(
         subQuery: KotlinQualifiedSubQueryBuilder.() -&gt; Unit,
         joinCriteria: JoinReceiver
-    ): B =
-<span class="fc" id="L162">        applyToDsl(subQuery, joinCriteria) { sq, jc -&gt;</span>
-<span class="fc" id="L163">            fullJoin(sq, sq.correlationName, jc.onJoinCriterion, jc.andJoinCriteria)</span>
-<span class="fc" id="L164">        }</span>
+    ): Unit =
+<span class="fc" id="L213">        applyToDsl(subQuery, joinCriteria) { sq, jc -&gt;</span>
+<span class="fc" id="L214">            fullJoin(sq, sq.correlationName, jc.onJoinCriterion(), jc.andJoinCriteria)</span>
+<span class="fc" id="L215">        }</span>
 
-    fun leftJoin(table: SqlTable, joinCriteria: JoinReceiver): B =
-<span class="fc" id="L167">        applyToDsl(joinCriteria) { jc -&gt;</span>
-<span class="fc" id="L168">            leftJoin(table, jc.onJoinCriterion, jc.andJoinCriteria)</span>
-<span class="fc" id="L169">        }</span>
+    fun leftJoin(table: SqlTable, joinCriteria: JoinReceiver): Unit =
+<span class="fc" id="L218">        applyToDsl(joinCriteria) { jc -&gt;</span>
+<span class="fc" id="L219">            leftJoin(table, jc.onJoinCriterion(), jc.andJoinCriteria)</span>
+<span class="fc" id="L220">        }</span>
 
-    fun leftJoin(table: SqlTable, alias: String, joinCriteria: JoinReceiver): B =
-<span class="fc" id="L172">        applyToDsl(joinCriteria) { jc -&gt;</span>
-<span class="fc" id="L173">            leftJoin(table, alias, jc.onJoinCriterion, jc.andJoinCriteria)</span>
-<span class="fc" id="L174">        }</span>
+    fun leftJoin(table: SqlTable, alias: String, joinCriteria: JoinReceiver): Unit =
+<span class="fc" id="L223">        applyToDsl(joinCriteria) { jc -&gt;</span>
+<span class="fc" id="L224">            leftJoin(table, alias, jc.onJoinCriterion(), jc.andJoinCriteria)</span>
+<span class="fc" id="L225">        }</span>
 
     fun leftJoin(
         subQuery: KotlinQualifiedSubQueryBuilder.() -&gt; Unit,
         joinCriteria: JoinReceiver
-    ): B =
-<span class="fc" id="L180">        applyToDsl(subQuery, joinCriteria) { sq, jc -&gt;</span>
-<span class="fc" id="L181">            leftJoin(sq, sq.correlationName, jc.onJoinCriterion, jc.andJoinCriteria)</span>
-<span class="fc" id="L182">        }</span>
+    ): Unit =
+<span class="fc" id="L231">        applyToDsl(subQuery, joinCriteria) { sq, jc -&gt;</span>
+<span class="fc" id="L232">            leftJoin(sq, sq.correlationName, jc.onJoinCriterion(), jc.andJoinCriteria)</span>
+<span class="fc" id="L233">        }</span>
 
-    fun rightJoin(table: SqlTable, joinCriteria: JoinReceiver): B =
-<span class="fc" id="L185">        applyToDsl(joinCriteria) { jc -&gt;</span>
-<span class="fc" id="L186">            rightJoin(table, jc.onJoinCriterion, jc.andJoinCriteria)</span>
-<span class="fc" id="L187">        }</span>
+    fun rightJoin(table: SqlTable, joinCriteria: JoinReceiver): Unit =
+<span class="fc" id="L236">        applyToDsl(joinCriteria) { jc -&gt;</span>
+<span class="fc" id="L237">            rightJoin(table, jc.onJoinCriterion(), jc.andJoinCriteria)</span>
+<span class="fc" id="L238">        }</span>
 
-    fun rightJoin(table: SqlTable, alias: String, joinCriteria: JoinReceiver): B =
-<span class="fc" id="L190">        applyToDsl(joinCriteria) { jc -&gt;</span>
-<span class="fc" id="L191">            rightJoin(table, alias, jc.onJoinCriterion, jc.andJoinCriteria)</span>
-<span class="fc" id="L192">        }</span>
+    fun rightJoin(table: SqlTable, alias: String, joinCriteria: JoinReceiver): Unit =
+<span class="fc" id="L241">        applyToDsl(joinCriteria) { jc -&gt;</span>
+<span class="fc" id="L242">            rightJoin(table, alias, jc.onJoinCriterion(), jc.andJoinCriteria)</span>
+<span class="fc" id="L243">        }</span>
 
     fun rightJoin(
         subQuery: KotlinQualifiedSubQueryBuilder.() -&gt; Unit,
         joinCriteria: JoinReceiver
-    ): B =
-<span class="fc" id="L198">        applyToDsl(subQuery, joinCriteria) { sq, jc -&gt;</span>
-<span class="fc" id="L199">            rightJoin(sq, sq.correlationName, jc.onJoinCriterion, jc.andJoinCriteria)</span>
-<span class="fc" id="L200">        }</span>
+    ): Unit =
+<span class="fc" id="L249">        applyToDsl(subQuery, joinCriteria) { sq, jc -&gt;</span>
+<span class="fc" id="L250">            rightJoin(sq, sq.correlationName, jc.onJoinCriterion(), jc.andJoinCriteria)</span>
+<span class="fc" id="L251">        }</span>
 
-    private fun applyToDsl(joinCriteria: JoinReceiver, applyJoin: D.(JoinCollector) -&gt; Unit): B {
-<span class="fc" id="L203">        getDsl().applyJoin(JoinCollector().apply(joinCriteria))</span>
-<span class="fc" id="L204">        return self()</span>
-    }
+    private fun applyToDsl(joinCriteria: JoinReceiver, applyJoin: D.(JoinCollector) -&gt; Unit) {
+<span class="fc" id="L254">        getDsl().applyJoin(JoinCollector().apply(joinCriteria))</span>
+<span class="fc" id="L255">    }</span>
 
     private fun applyToDsl(
         subQuery: KotlinQualifiedSubQueryBuilder.() -&gt; Unit,
         joinCriteria: JoinReceiver,
         applyJoin: D.(KotlinQualifiedSubQueryBuilder, JoinCollector) -&gt; Unit
-    ): B {
-<span class="fc" id="L212">        getDsl().applyJoin(KotlinQualifiedSubQueryBuilder().apply(subQuery), JoinCollector().apply(joinCriteria))</span>
-<span class="fc" id="L213">        return self()</span>
-    }
+    ) {
+<span class="fc" id="L262">        getDsl().applyJoin(KotlinQualifiedSubQueryBuilder().apply(subQuery), JoinCollector().apply(joinCriteria))</span>
+<span class="fc" id="L263">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

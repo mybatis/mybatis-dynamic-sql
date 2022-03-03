@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CriterionRenderer.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.where.render</a> &gt; <span class="el_source">CriterionRenderer.java</span></div><h1>CriterionRenderer.java</h1><pre class="source lang-java linenums">/*
- *    Copyright 2016-2021 the original author or authors.
+ *    Copyright 2016-2022 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  *    you may not use this file except in compliance with the License.
@@ -19,11 +19,15 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import org.mybatis.dynamic.sql.AndOrCriteriaGroup;
 import org.mybatis.dynamic.sql.ColumnAndConditionCriterion;
+import org.mybatis.dynamic.sql.CriteriaGroup;
 import org.mybatis.dynamic.sql.ExistsCriterion;
 import org.mybatis.dynamic.sql.ExistsPredicate;
+import org.mybatis.dynamic.sql.NotCriterion;
 import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.SqlCriterionVisitor;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
@@ -57,151 +61,226 @@ public class CriterionRenderer implements SqlCriterionVisitor&lt;Optional&lt;Ren
     private final TableAliasCalculator tableAliasCalculator;
     private final String parameterName;
 
-<span class="fc" id="L60">    private CriterionRenderer(Builder builder) {</span>
-<span class="fc" id="L61">        sequence = Objects.requireNonNull(builder.sequence);</span>
-<span class="fc" id="L62">        renderingStrategy = Objects.requireNonNull(builder.renderingStrategy);</span>
-<span class="fc" id="L63">        tableAliasCalculator = Objects.requireNonNull(builder.tableAliasCalculator);</span>
-<span class="fc" id="L64">        parameterName = builder.parameterName;</span>
-<span class="fc" id="L65">    }</span>
+<span class="fc" id="L64">    private CriterionRenderer(Builder builder) {</span>
+<span class="fc" id="L65">        sequence = Objects.requireNonNull(builder.sequence);</span>
+<span class="fc" id="L66">        renderingStrategy = Objects.requireNonNull(builder.renderingStrategy);</span>
+<span class="fc" id="L67">        tableAliasCalculator = Objects.requireNonNull(builder.tableAliasCalculator);</span>
+<span class="fc" id="L68">        parameterName = builder.parameterName;</span>
+<span class="fc" id="L69">    }</span>
 
     @Override
     public &lt;T&gt; Optional&lt;RenderedCriterion&gt; visit(ColumnAndConditionCriterion&lt;T&gt; criterion) {
-<span class="fc bfc" id="L69" title="All 2 branches covered.">        if (criterion.condition().shouldRender()) {</span>
-<span class="fc" id="L70">            return renderWithInitialCondition(renderCondition(criterion), criterion);</span>
-        } else {
-<span class="fc" id="L72">            criterion.condition().renderingSkipped();</span>
-<span class="fc" id="L73">            return renderWithoutInitialCondition(criterion);</span>
-        }
+<span class="fc" id="L73">        Optional&lt;FragmentAndParameters&gt; initialCriterion = renderColumnAndCondition(criterion);</span>
+<span class="fc" id="L74">        List&lt;RenderedCriterion&gt; renderedSubCriteria = renderSubCriteria(criterion.subCriteria());</span>
+
+<span class="fc" id="L76">        return initialCriterion.map(fp -&gt; calculateRenderedCriterion(fp, renderedSubCriteria, this::calculateFragment))</span>
+<span class="fc" id="L77">                .orElseGet(() -&gt; calculateRenderedCriterion(renderedSubCriteria, this::calculateFragment));</span>
     }
 
     @Override
     public Optional&lt;RenderedCriterion&gt; visit(ExistsCriterion criterion) {
-<span class="fc" id="L79">        ExistsPredicate existsPredicate = criterion.existsPredicate();</span>
+<span class="fc" id="L82">        FragmentAndParameters initialCriterion = renderExists(criterion);</span>
+<span class="fc" id="L83">        List&lt;RenderedCriterion&gt; renderedSubCriteria = renderSubCriteria(criterion.subCriteria());</span>
 
-<span class="fc" id="L81">        SelectStatementProvider selectStatement = SelectRenderer</span>
-<span class="fc" id="L82">                .withSelectModel(existsPredicate.selectModelBuilder().build())</span>
-<span class="fc" id="L83">                .withRenderingStrategy(renderingStrategy)</span>
-<span class="fc" id="L84">                .withSequence(sequence)</span>
-<span class="fc" id="L85">                .build()</span>
-<span class="fc" id="L86">                .render();</span>
+<span class="fc" id="L85">        return calculateRenderedCriterion(initialCriterion, renderedSubCriteria, this::calculateFragment);</span>
+    }
 
-<span class="fc" id="L88">        String fragment = existsPredicate.operator() + &quot; (&quot; //$NON-NLS-1$</span>
-<span class="fc" id="L89">                + selectStatement.getSelectStatement() + &quot;)&quot;; //$NON-NLS-1$</span>
+    @Override
+    public Optional&lt;RenderedCriterion&gt; visit(CriteriaGroup criterion) {
+<span class="fc" id="L90">        return render(criterion.initialCriterion(), criterion.subCriteria(), this::calculateFragment);</span>
+    }
 
-<span class="fc" id="L91">        FragmentAndParameters initialCondition = FragmentAndParameters</span>
-<span class="fc" id="L92">                .withFragment(fragment)</span>
-<span class="fc" id="L93">                .withParameters(selectStatement.getParameters())</span>
-<span class="fc" id="L94">                .build();</span>
+    @Override
+    public Optional&lt;RenderedCriterion&gt; visit(NotCriterion criterion) {
+<span class="fc" id="L95">        return render(criterion.initialCriterion(), criterion.subCriteria(), this::calculateNotFragment);</span>
+    }
 
-<span class="fc" id="L96">        return renderWithInitialCondition(initialCondition, criterion);</span>
+    public Optional&lt;RenderedCriterion&gt; render(SqlCriterion initialCriterion, List&lt;AndOrCriteriaGroup&gt; subCriteria,
+                                              Function&lt;FragmentCollector, String&gt; fragmentCalculator) {
+<span class="fc" id="L100">        Optional&lt;FragmentAndParameters&gt; fragmentAndParameters = initialCriterion.accept(this)</span>
+<span class="fc" id="L101">                .map(RenderedCriterion::fragmentAndParameters);</span>
+<span class="fc" id="L102">        List&lt;RenderedCriterion&gt; renderedSubCriteria = renderSubCriteria(subCriteria);</span>
+
+<span class="fc" id="L104">        return fragmentAndParameters.map(fp -&gt; calculateRenderedCriterion(fp, renderedSubCriteria, fragmentCalculator))</span>
+<span class="fc" id="L105">                .orElseGet(() -&gt; calculateRenderedCriterion(renderedSubCriteria, fragmentCalculator));</span>
+    }
+
+    public Optional&lt;RenderedCriterion&gt; render(List&lt;AndOrCriteriaGroup&gt; subCriteria,
+                                              Function&lt;FragmentCollector, String&gt; fragmentCalculator) {
+<span class="fc" id="L110">        List&lt;RenderedCriterion&gt; renderedSubCriteria = renderSubCriteria(subCriteria);</span>
+<span class="fc" id="L111">        return calculateRenderedCriterion(renderedSubCriteria, fragmentCalculator);</span>
+    }
+
+    private &lt;T&gt; Optional&lt;FragmentAndParameters&gt; renderColumnAndCondition(ColumnAndConditionCriterion&lt;T&gt; criterion) {
+<span class="fc bfc" id="L115" title="All 2 branches covered.">        if (criterion.condition().shouldRender()) {</span>
+<span class="fc" id="L116">            return Optional.of(renderCondition(criterion));</span>
+        } else {
+<span class="fc" id="L118">            criterion.condition().renderingSkipped();</span>
+<span class="fc" id="L119">            return Optional.empty();</span>
+        }
+    }
+
+    private FragmentAndParameters renderExists(ExistsCriterion criterion) {
+<span class="fc" id="L124">        ExistsPredicate existsPredicate = criterion.existsPredicate();</span>
+
+<span class="fc" id="L126">        SelectStatementProvider selectStatement = SelectRenderer</span>
+<span class="fc" id="L127">                .withSelectModel(existsPredicate.selectModelBuilder().build())</span>
+<span class="fc" id="L128">                .withRenderingStrategy(renderingStrategy)</span>
+<span class="fc" id="L129">                .withSequence(sequence)</span>
+<span class="fc" id="L130">                .withParentTableAliasCalculator(tableAliasCalculator)</span>
+<span class="fc" id="L131">                .build()</span>
+<span class="fc" id="L132">                .render();</span>
+
+<span class="fc" id="L134">        String fragment = existsPredicate.operator()</span>
+                + &quot; (&quot; //$NON-NLS-1$
+<span class="fc" id="L136">                + selectStatement.getSelectStatement()</span>
+                + &quot;)&quot;; //$NON-NLS-1$
+
+<span class="fc" id="L139">        return FragmentAndParameters</span>
+<span class="fc" id="L140">                .withFragment(fragment)</span>
+<span class="fc" id="L141">                .withParameters(selectStatement.getParameters())</span>
+<span class="fc" id="L142">                .build();</span>
+    }
+
+    private List&lt;RenderedCriterion&gt; renderSubCriteria(List&lt;AndOrCriteriaGroup&gt; subCriteria) {
+<span class="fc" id="L146">        return subCriteria.stream().map(this::renderAndOrCriteriaGroup)</span>
+<span class="fc" id="L147">                .filter(Optional::isPresent)</span>
+<span class="fc" id="L148">                .map(Optional::get)</span>
+<span class="fc" id="L149">                .collect(Collectors.toList());</span>
+    }
+
+    private Optional&lt;RenderedCriterion&gt; renderAndOrCriteriaGroup(AndOrCriteriaGroup criterion) {
+<span class="fc" id="L153">        return criterion.initialCriterion().map(ic -&gt; render(ic, criterion.subCriteria(), this::calculateFragment))</span>
+<span class="pc" id="L154">                .orElseGet(() -&gt; render(criterion.subCriteria(), this::calculateFragment))</span>
+<span class="fc" id="L155">                .map(rc -&gt; rc.withConnector(criterion.connector()));</span>
+    }
+
+    private Optional&lt;RenderedCriterion&gt; calculateRenderedCriterion(FragmentAndParameters initialCriterion,
+            List&lt;RenderedCriterion&gt; renderedSubCriteria, Function&lt;FragmentCollector, String&gt; fragmentCalculator) {
+<span class="fc" id="L160">        return Optional.of(calculateRenderedCriterion(</span>
+<span class="fc" id="L161">                collectSqlFragments(initialCriterion, renderedSubCriteria), fragmentCalculator));</span>
+    }
+
+    private RenderedCriterion calculateRenderedCriterion(FragmentCollector fragmentCollector,
+                                                         Function&lt;FragmentCollector, String&gt; fragmentCalculator) {
+<span class="fc" id="L166">        FragmentAndParameters fragmentAndParameters = FragmentAndParameters</span>
+<span class="fc" id="L167">                .withFragment(fragmentCalculator.apply(fragmentCollector))</span>
+<span class="fc" id="L168">                .withParameters(fragmentCollector.parameters())</span>
+<span class="fc" id="L169">                .build();</span>
+
+<span class="fc" id="L171">        return new RenderedCriterion.Builder()</span>
+<span class="fc" id="L172">                .withFragmentAndParameters(fragmentAndParameters)</span>
+<span class="fc" id="L173">                .build();</span>
+    }
+
+    private Optional&lt;RenderedCriterion&gt; calculateRenderedCriterion(List&lt;RenderedCriterion&gt; renderedSubCriteria,
+            Function&lt;FragmentCollector, String&gt; fragmentCalculator) {
+<span class="fc" id="L178">        return collectSqlFragments(renderedSubCriteria).map(fc -&gt; calculateRenderedCriterion(fc, fragmentCalculator));</span>
     }
 
     private &lt;T&gt; FragmentAndParameters renderCondition(ColumnAndConditionCriterion&lt;T&gt; criterion) {
-<span class="fc" id="L100">        WhereConditionVisitor&lt;T&gt; visitor = WhereConditionVisitor.withColumn(criterion.column())</span>
-<span class="fc" id="L101">                .withRenderingStrategy(renderingStrategy)</span>
-<span class="fc" id="L102">                .withSequence(sequence)</span>
-<span class="fc" id="L103">                .withTableAliasCalculator(tableAliasCalculator)</span>
-<span class="fc" id="L104">                .withParameterName(parameterName)</span>
-<span class="fc" id="L105">                .build();</span>
-<span class="fc" id="L106">        return criterion.condition().accept(visitor);</span>
+<span class="fc" id="L182">        WhereConditionVisitor&lt;T&gt; visitor = WhereConditionVisitor.withColumn(criterion.column())</span>
+<span class="fc" id="L183">                .withRenderingStrategy(renderingStrategy)</span>
+<span class="fc" id="L184">                .withSequence(sequence)</span>
+<span class="fc" id="L185">                .withTableAliasCalculator(tableAliasCalculator)</span>
+<span class="fc" id="L186">                .withParameterName(parameterName)</span>
+<span class="fc" id="L187">                .build();</span>
+<span class="fc" id="L188">        return criterion.condition().accept(visitor);</span>
     }
 
-    private List&lt;RenderedCriterion&gt; renderSubCriteria(SqlCriterion criterion) {
-<span class="fc" id="L110">        return criterion.mapSubCriteria(c -&gt; c.accept(this))</span>
-<span class="fc" id="L111">                .filter(Optional::isPresent)</span>
-<span class="fc" id="L112">                .map(Optional::get)</span>
-<span class="fc" id="L113">                .collect(Collectors.toList());</span>
+    /**
+     * This method encapsulates the logic of building a collection of fragments from an initial condition
+     * and a list of rendered sub criteria. In this overload we know there is an initial condition
+     * and there may be subcriteria. The collector will contain the initial condition and any rendered subcriteria
+     * in order.
+     *
+     * @param initialCondition - may not be null. If there is no initial condition, then use the other overload
+     * @param renderedSubCriteria - a list of previously rendered sub criteria. The sub criteria will all
+     *                            have connectors (either an AND or an OR)
+     * @return a fragment collector whose fragments represent the final calculated list of fragments and parameters.
+     *     The fragment collector can be used to calculate the single composed fragment - either as a where clause, or
+     *     a valid rendered sub criteria in the case of a recursive call.
+     */
+    private FragmentCollector collectSqlFragments(FragmentAndParameters initialCondition,
+                                                  List&lt;RenderedCriterion&gt; renderedSubCriteria) {
+<span class="fc" id="L206">        return renderedSubCriteria.stream()</span>
+<span class="fc" id="L207">                .map(RenderedCriterion::fragmentAndParametersWithConnector)</span>
+<span class="fc" id="L208">                .collect(FragmentCollector.collect(initialCondition));</span>
     }
 
-    private Optional&lt;RenderedCriterion&gt; renderWithoutInitialCondition(SqlCriterion criterion) {
-<span class="fc" id="L117">        List&lt;RenderedCriterion&gt; subCriteria = renderSubCriteria(criterion);</span>
-<span class="fc bfc" id="L118" title="All 2 branches covered.">        if (subCriteria.isEmpty()) {</span>
-<span class="fc" id="L119">            return Optional.empty();</span>
+    /**
+     * This method encapsulates the logic of building a collection of fragments from a list of rendered sub criteria.
+     * In this overload we take the initial condition to be the first element in the subcriteria list.
+     * The collector will contain the rendered subcriteria in order. However, the connector from the first rendered
+     * sub criterion will be removed. This to avoid generating an invalid where clause like &quot;where and a &lt; 3&quot;
+     *
+     * @param renderedSubCriteria - a list of previously rendered sub criteria. The sub criteria will all
+     *                            have connectors (either an AND or an OR)
+     * @return a fragment collector whose fragments represent the final calculated list of fragments and parameters.
+     *     The fragment collector can be used to calculate the single composed fragment - either as a where clause, or
+     *     a valid rendered sub criteria in the case of a recursive call.
+     */
+    private Optional&lt;FragmentCollector&gt; collectSqlFragments(List&lt;RenderedCriterion&gt; renderedSubCriteria) {
+<span class="fc bfc" id="L224" title="All 2 branches covered.">        if (renderedSubCriteria.isEmpty()) {</span>
+<span class="fc" id="L225">            return Optional.empty();</span>
         }
 
-<span class="fc" id="L122">        return calculateRenderedCriterion(subCriteria, criterion);</span>
-    }
+<span class="fc" id="L228">        FragmentAndParameters firstCondition = renderedSubCriteria.get(0).fragmentAndParameters();</span>
 
-    private Optional&lt;RenderedCriterion&gt; renderWithInitialCondition(FragmentAndParameters initialCondition,
-            SqlCriterion criterion) {
-<span class="fc" id="L127">        List&lt;RenderedCriterion&gt; subCriteria = renderSubCriteria(criterion);</span>
-<span class="fc bfc" id="L128" title="All 2 branches covered.">        if (subCriteria.isEmpty()) {</span>
-<span class="fc" id="L129">            return calculateRenderedCriterion(initialCondition, criterion);</span>
-        }
+<span class="fc" id="L230">        FragmentCollector fc = renderedSubCriteria.stream()</span>
+<span class="fc" id="L231">                .skip(1)</span>
+<span class="fc" id="L232">                .map(RenderedCriterion::fragmentAndParametersWithConnector)</span>
+<span class="fc" id="L233">                .collect(FragmentCollector.collect(firstCondition));</span>
 
-<span class="fc" id="L132">        return calculateRenderedCriterion(initialCondition, criterion, subCriteria);</span>
-    }
-
-    private Optional&lt;RenderedCriterion&gt; calculateRenderedCriterion(FragmentAndParameters initialCondition,
-            SqlCriterion criterion) {
-<span class="fc" id="L137">        return fromFragmentAndParameters(initialCondition, criterion);</span>
-    }
-
-    private Optional&lt;RenderedCriterion&gt; calculateRenderedCriterion(List&lt;RenderedCriterion&gt; subCriteria,
-            SqlCriterion criterion) {
-<span class="fc" id="L142">        return calculateRenderedCriterion(subCriteria.get(0).fragmentAndParameters(),</span>
-                criterion,
-<span class="fc" id="L144">                subCriteria.subList(1, subCriteria.size()));</span>
-    }
-
-    private Optional&lt;RenderedCriterion&gt; calculateRenderedCriterion(FragmentAndParameters initialCondition,
-            SqlCriterion criterion,
-            List&lt;RenderedCriterion&gt; subCriteria) {
-<span class="fc" id="L150">        FragmentCollector fc = subCriteria.stream()</span>
-<span class="fc" id="L151">                .map(RenderedCriterion::fragmentAndParametersWithConnector)</span>
-<span class="fc" id="L152">                .collect(FragmentCollector.collect(initialCondition));</span>
-<span class="fc" id="L153">        return fromFragmentAndParameters(FragmentAndParameters.withFragment(calculateFragment(fc))</span>
-<span class="fc" id="L154">                .withParameters(fc.parameters())</span>
-<span class="fc" id="L155">                .build(), criterion);</span>
+<span class="fc" id="L235">        return Optional.of(fc);</span>
     }
 
     private String calculateFragment(FragmentCollector collector) {
-<span class="fc bfc" id="L159" title="All 2 branches covered.">        if (collector.hasMultipleFragments()) {</span>
-<span class="fc" id="L160">            return collector.fragments()</span>
-<span class="fc" id="L161">                    .collect(Collectors.joining(&quot; &quot;, &quot;(&quot;, &quot;)&quot;)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$</span>
+<span class="fc bfc" id="L239" title="All 2 branches covered.">        if (collector.hasMultipleFragments()) {</span>
+<span class="fc" id="L240">            return collector.fragments()</span>
+<span class="fc" id="L241">                    .collect(Collectors.joining(&quot; &quot;, &quot;(&quot;, &quot;)&quot;)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$</span>
         } else {
-<span class="fc" id="L163">            return collector.fragments().findFirst().orElse(&quot;&quot;); //$NON-NLS-1$</span>
+<span class="fc" id="L243">            return collector.fragments().findFirst().orElse(&quot;&quot;); //$NON-NLS-1$</span>
         }
     }
 
-    private Optional&lt;RenderedCriterion&gt; fromFragmentAndParameters(FragmentAndParameters fragmentAndParameters,
-            SqlCriterion criterion) {
-<span class="fc" id="L169">        RenderedCriterion.Builder builder = new RenderedCriterion.Builder()</span>
-<span class="fc" id="L170">                .withFragmentAndParameters(fragmentAndParameters);</span>
-
-<span class="fc" id="L172">        criterion.connector().ifPresent(builder::withConnector);</span>
-
-<span class="fc" id="L174">        return Optional.of(builder.build());</span>
+    private String calculateNotFragment(FragmentCollector collector) {
+<span class="fc bfc" id="L248" title="All 2 branches covered.">        if (collector.hasMultipleFragments()) {</span>
+<span class="fc" id="L249">            return collector.fragments()</span>
+<span class="fc" id="L250">                    .collect(Collectors.joining(&quot; &quot;, &quot;not (&quot;, &quot;)&quot;)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$</span>
+        } else {
+<span class="fc" id="L252">            return collector.fragments().findFirst().map(s -&gt; &quot;not &quot; + s).orElse(&quot;&quot;); //$NON-NLS-1$ //$NON-NLS-2$</span>
+        }
     }
 
-<span class="fc" id="L177">    public static class Builder {</span>
+<span class="fc" id="L256">    public static class Builder {</span>
         private AtomicInteger sequence;
         private RenderingStrategy renderingStrategy;
         private TableAliasCalculator tableAliasCalculator;
         private String parameterName;
 
         public Builder withSequence(AtomicInteger sequence) {
-<span class="fc" id="L184">            this.sequence = sequence;</span>
-<span class="fc" id="L185">            return this;</span>
+<span class="fc" id="L263">            this.sequence = sequence;</span>
+<span class="fc" id="L264">            return this;</span>
         }
 
         public Builder withRenderingStrategy(RenderingStrategy renderingStrategy) {
-<span class="fc" id="L189">            this.renderingStrategy = renderingStrategy;</span>
-<span class="fc" id="L190">            return this;</span>
+<span class="fc" id="L268">            this.renderingStrategy = renderingStrategy;</span>
+<span class="fc" id="L269">            return this;</span>
         }
 
         public Builder withTableAliasCalculator(TableAliasCalculator tableAliasCalculator) {
-<span class="fc" id="L194">            this.tableAliasCalculator = tableAliasCalculator;</span>
-<span class="fc" id="L195">            return this;</span>
+<span class="fc" id="L273">            this.tableAliasCalculator = tableAliasCalculator;</span>
+<span class="fc" id="L274">            return this;</span>
         }
 
         public Builder withParameterName(String parameterName) {
-<span class="fc" id="L199">            this.parameterName = parameterName;</span>
-<span class="fc" id="L200">            return this;</span>
+<span class="fc" id="L278">            this.parameterName = parameterName;</span>
+<span class="fc" id="L279">            return this;</span>
         }
 
         public CriterionRenderer build() {
-<span class="fc" id="L204">            return new CriterionRenderer(this);</span>
+<span class="fc" id="L283">            return new CriterionRenderer(this);</span>
         }
     }
 }

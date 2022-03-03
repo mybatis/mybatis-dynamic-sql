@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>JoinCollector.kt</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.util.kotlin</a> &gt; <span class="el_source">JoinCollector.kt</span></div><h1>JoinCollector.kt</h1><pre class="source lang-java linenums">/*
- *    Copyright 2016-2021 the original author or authors.
+ *    Copyright 2016-2022 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  *    you may not use this file except in compliance with the License.
@@ -16,35 +16,60 @@
 package org.mybatis.dynamic.sql.util.kotlin
 
 import org.mybatis.dynamic.sql.BasicColumn
+import org.mybatis.dynamic.sql.SqlBuilder
 import org.mybatis.dynamic.sql.select.join.JoinCondition
 import org.mybatis.dynamic.sql.select.join.JoinCriterion
 
 typealias JoinReceiver = JoinCollector.() -&gt; Unit
 
-<span class="fc" id="L24">@MyBatisDslMarker</span>
-<span class="fc" id="L25">class JoinCollector {</span>
-<span class="pc bpc" id="L26" title="1 of 2 branches missed.">    val onJoinCriterion: JoinCriterion by lazy { internalOnCriterion }</span>
-<span class="fc" id="L27">    val andJoinCriteria = mutableListOf&lt;JoinCriterion&gt;()</span>
-    private lateinit var internalOnCriterion: JoinCriterion
+<span class="fc" id="L25">@MyBatisDslMarker</span>
+<span class="fc" id="L26">class JoinCollector {</span>
+    private var onJoinCriterion: JoinCriterion? = null
+<span class="fc" id="L28">    internal val andJoinCriteria = mutableListOf&lt;JoinCriterion&gt;()</span>
 
-    fun on(column: BasicColumn, condition: JoinCondition): JoinCollector =
-<span class="fc" id="L31">        apply {</span>
-<span class="fc" id="L32">            internalOnCriterion = JoinCriterion.Builder()</span>
-<span class="fc" id="L33">                .withConnector(&quot;on&quot;)</span>
-<span class="fc" id="L34">                .withJoinColumn(column)</span>
-<span class="fc" id="L35">                .withJoinCondition(condition)</span>
-<span class="fc" id="L36">                .build()</span>
-<span class="fc" id="L37">        }</span>
+    internal fun onJoinCriterion() : JoinCriterion =
+<span class="fc bfc" id="L31" title="All 2 branches covered.">        onJoinCriterion?: throw KInvalidSQLException(&quot;You must specify an \&quot;on\&quot; condition in a join&quot;)</span>
 
-    fun and(column: BasicColumn, condition: JoinCondition): JoinCollector =
-<span class="fc" id="L40">        apply {</span>
-<span class="fc" id="L41">            andJoinCriteria.add(</span>
-<span class="fc" id="L42">                JoinCriterion.Builder()</span>
-<span class="fc" id="L43">                    .withConnector(&quot;and&quot;)</span>
-<span class="fc" id="L44">                    .withJoinColumn(column)</span>
-<span class="fc" id="L45">                    .withJoinCondition(condition)</span>
-<span class="fc" id="L46">                    .build()</span>
-            )
-<span class="fc" id="L48">        }</span>
+<span class="fc" id="L33">    fun on(leftColumn: BasicColumn): RightColumnCollector = RightColumnCollector {</span>
+<span class="fc" id="L34">        onJoinCriterion = JoinCriterion.Builder()</span>
+<span class="fc" id="L35">            .withConnector(&quot;on&quot;)</span>
+<span class="fc" id="L36">            .withJoinColumn(leftColumn)</span>
+<span class="fc" id="L37">            .withJoinCondition(it)</span>
+<span class="fc" id="L38">            .build()</span>
+<span class="fc" id="L39">    }</span>
+
+<span class="fc" id="L41">    fun and(leftColumn: BasicColumn): RightColumnCollector = RightColumnCollector {</span>
+<span class="fc" id="L42">        andJoinCriteria.add(</span>
+<span class="fc" id="L43">            JoinCriterion.Builder()</span>
+<span class="fc" id="L44">                .withConnector(&quot;and&quot;)</span>
+<span class="fc" id="L45">                .withJoinColumn(leftColumn)</span>
+<span class="fc" id="L46">                .withJoinCondition(it)</span>
+<span class="fc" id="L47">                .build()</span>
+        )
+<span class="fc" id="L49">    }</span>
+
+    @Deprecated(&quot;Please use: on(leftColumn) equalTo rightColumn&quot;)
+    fun on(column: BasicColumn, condition: JoinCondition) {
+<span class="fc" id="L53">        onJoinCriterion = JoinCriterion.Builder()</span>
+<span class="fc" id="L54">            .withConnector(&quot;on&quot;)</span>
+<span class="fc" id="L55">            .withJoinColumn(column)</span>
+<span class="fc" id="L56">            .withJoinCondition(condition)</span>
+<span class="fc" id="L57">            .build()</span>
+<span class="fc" id="L58">    }</span>
+
+    @Deprecated(&quot;Please use: and(leftColumn) equalTo rightColumn&quot;)
+    fun and(column: BasicColumn, condition: JoinCondition) {
+<span class="fc" id="L62">        andJoinCriteria.add(</span>
+<span class="fc" id="L63">            JoinCriterion.Builder()</span>
+<span class="fc" id="L64">                .withConnector(&quot;and&quot;)</span>
+<span class="fc" id="L65">                .withJoinColumn(column)</span>
+<span class="fc" id="L66">                .withJoinCondition(condition)</span>
+<span class="fc" id="L67">                .build()</span>
+        )
+<span class="fc" id="L69">    }</span>
+}
+
+<span class="fc" id="L72">class RightColumnCollector(private val joinConditionConsumer: (JoinCondition) -&gt; Unit) {</span>
+<span class="fc" id="L73">    infix fun equalTo(rightColumn: BasicColumn) = joinConditionConsumer.invoke(SqlBuilder.equalTo(rightColumn))</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>KotlinSelectBuilder.kt</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.util.kotlin</a> &gt; <span class="el_source">KotlinSelectBuilder.kt</span></div><h1>KotlinSelectBuilder.kt</h1><pre class="source lang-java linenums">/*
- *    Copyright 2016-2021 the original author or authors.
+ *    Copyright 2016-2022 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  *    you may not use this file except in compliance with the License.
@@ -26,74 +26,54 @@ typealias SelectCompleter = KotlinSelectBuilder.() -&gt; Unit
 
 @Suppress(&quot;TooManyFunctions&quot;)
 <span class="fc" id="L28">class KotlinSelectBuilder(private val fromGatherer: QueryExpressionDSL.FromGatherer&lt;SelectModel&gt;) :</span>
-<span class="fc" id="L29">    KotlinBaseJoiningBuilder&lt;QueryExpressionDSL&lt;SelectModel&gt;, KotlinSelectBuilder&gt;(), Buildable&lt;SelectModel&gt; {</span>
+<span class="fc" id="L29">    KotlinBaseJoiningBuilder&lt;QueryExpressionDSL&lt;SelectModel&gt;&gt;(), Buildable&lt;SelectModel&gt; {</span>
 
-    private lateinit var dsl: QueryExpressionDSL&lt;SelectModel&gt;
+    private var dsl: QueryExpressionDSL&lt;SelectModel&gt;? = null
 
-    fun from(table: SqlTable): KotlinSelectBuilder =
-<span class="fc" id="L34">        apply {</span>
-<span class="fc" id="L35">            dsl = fromGatherer.from(table)</span>
-<span class="fc" id="L36">        }</span>
+    fun from(table: SqlTable) {
+<span class="fc" id="L34">        dsl = fromGatherer.from(table)</span>
+<span class="fc" id="L35">    }</span>
 
-    fun from(table: SqlTable, alias: String): KotlinSelectBuilder =
-<span class="fc" id="L39">        apply {</span>
-<span class="fc" id="L40">            dsl = fromGatherer.from(table, alias)</span>
-<span class="fc" id="L41">        }</span>
+    fun from(table: SqlTable, alias: String) {
+<span class="fc" id="L38">        dsl = fromGatherer.from(table, alias)</span>
+<span class="fc" id="L39">    }</span>
 
-    fun from(subQuery: KotlinQualifiedSubQueryBuilder.() -&gt; Unit): KotlinSelectBuilder =
-<span class="fc" id="L44">        apply {</span>
-<span class="fc" id="L45">            val builder = KotlinQualifiedSubQueryBuilder().apply(subQuery)</span>
-<span class="fc" id="L46">            dsl = fromGatherer.from(builder, builder.correlationName)</span>
-<span class="fc" id="L47">        }</span>
+    fun from(subQuery: KotlinQualifiedSubQueryBuilder.() -&gt; Unit) {
+<span class="fc" id="L42">        val builder = KotlinQualifiedSubQueryBuilder().apply(subQuery)</span>
+<span class="fc" id="L43">        dsl = fromGatherer.from(builder, builder.correlationName)</span>
+<span class="fc" id="L44">    }</span>
 
-    fun groupBy(vararg columns: BasicColumn): KotlinSelectBuilder =
-<span class="fc" id="L50">        apply {</span>
-<span class="fc" id="L51">            getDsl().groupBy(columns.toList())</span>
-<span class="fc" id="L52">        }</span>
+    fun groupBy(vararg columns: BasicColumn) {
+<span class="fc" id="L47">        getDsl().groupBy(columns.toList())</span>
+<span class="fc" id="L48">    }</span>
 
-    fun orderBy(vararg columns: SortSpecification): KotlinSelectBuilder =
-<span class="fc" id="L55">        apply {</span>
-<span class="fc" id="L56">            getDsl().orderBy(columns.toList())</span>
-<span class="fc" id="L57">        }</span>
+    fun orderBy(vararg columns: SortSpecification) {
+<span class="fc" id="L51">        getDsl().orderBy(columns.toList())</span>
+<span class="fc" id="L52">    }</span>
 
-    fun limit(limit: Long): KotlinSelectBuilder =
-<span class="fc" id="L60">        apply {</span>
-<span class="fc" id="L61">            getDsl().limit(limit)</span>
-<span class="fc" id="L62">        }</span>
+    fun limit(limit: Long) {
+<span class="fc" id="L55">        getDsl().limit(limit)</span>
+<span class="fc" id="L56">    }</span>
 
-    fun offset(offset: Long): KotlinSelectBuilder =
-<span class="fc" id="L65">        apply {</span>
-<span class="fc" id="L66">            getDsl().offset(offset)</span>
-<span class="fc" id="L67">        }</span>
+    fun offset(offset: Long) {
+<span class="fc" id="L59">        getDsl().offset(offset)</span>
+<span class="fc" id="L60">    }</span>
 
-    fun fetchFirst(fetchFirstRows: Long): KotlinSelectBuilder =
-<span class="fc" id="L70">        apply {</span>
-<span class="fc" id="L71">            getDsl().fetchFirst(fetchFirstRows).rowsOnly()</span>
-<span class="fc" id="L72">        }</span>
+    fun fetchFirst(fetchFirstRows: Long) {
+<span class="fc" id="L63">        getDsl().fetchFirst(fetchFirstRows).rowsOnly()</span>
+<span class="fc" id="L64">    }</span>
 
-    fun union(union: KotlinUnionBuilder.() -&gt; Unit): KotlinSelectBuilder =
-<span class="fc" id="L75">        apply {</span>
-<span class="fc" id="L76">            union(KotlinUnionBuilder(getDsl().union()))</span>
-<span class="fc" id="L77">        }</span>
+    fun union(union: KotlinUnionBuilder.() -&gt; Unit): Unit =
+<span class="fc" id="L67">        union(KotlinUnionBuilder(getDsl().union()))</span>
 
-    fun unionAll(unionAll: KotlinUnionBuilder.() -&gt; Unit): KotlinSelectBuilder =
-<span class="fc" id="L80">        apply {</span>
-<span class="fc" id="L81">            unionAll(KotlinUnionBuilder(getDsl().unionAll()))</span>
-<span class="fc" id="L82">        }</span>
+    fun unionAll(unionAll: KotlinUnionBuilder.() -&gt; Unit): Unit =
+<span class="fc" id="L70">        unionAll(KotlinUnionBuilder(getDsl().unionAll()))</span>
 
-<span class="fc" id="L84">    override fun build(): SelectModel = getDsl().build()</span>
-
-<span class="fc" id="L86">    override fun self(): KotlinSelectBuilder = this</span>
+<span class="fc" id="L72">    override fun build(): SelectModel = getDsl().build()</span>
 
     override fun getDsl(): QueryExpressionDSL&lt;SelectModel&gt; {
-<span class="fc" id="L89">        try {</span>
-<span class="pc bpc" id="L90" title="1 of 2 branches missed.">            return dsl</span>
-<span class="fc" id="L91">        } catch (e: UninitializedPropertyAccessException) {</span>
-<span class="fc" id="L92">            throw UninitializedPropertyAccessException(</span>
-<span class="fc" id="L93">                &quot;You must specify a \&quot;from\&quot; clause before any other clauses in a select statement&quot;,</span>
-<span class="fc" id="L94">                e</span>
-            )
-        }
+<span class="fc bfc" id="L75" title="All 2 branches covered.">        return dsl?: throw KInvalidSQLException(</span>
+<span class="fc" id="L76">            &quot;You must specify a \&quot;from\&quot; clause before any other clauses in a select statement&quot;)</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

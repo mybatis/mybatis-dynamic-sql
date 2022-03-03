@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>IsIn.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.where.condition</a> &gt; <span class="el_source">IsIn.java</span></div><h1>IsIn.java</h1><pre class="source lang-java linenums">/*
- *    Copyright 2016-2021 the original author or authors.
+ *    Copyright 2016-2022 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  *    you may not use this file except in compliance with the License.
@@ -20,11 +20,9 @@ import static org.mybatis.dynamic.sql.util.StringUtilities.spaceAfter;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -32,54 +30,40 @@ import org.mybatis.dynamic.sql.AbstractListValueCondition;
 import org.mybatis.dynamic.sql.Callback;
 
 public class IsIn&lt;T&gt; extends AbstractListValueCondition&lt;T&gt; {
-<span class="fc" id="L35">    private static final IsIn&lt;?&gt; EMPTY = new IsIn&lt;&gt;(Collections.emptyList());</span>
+<span class="fc" id="L33">    private static final IsIn&lt;?&gt; EMPTY = new IsIn&lt;&gt;(Collections.emptyList());</span>
 
     public static &lt;T&gt; IsIn&lt;T&gt; empty() {
         @SuppressWarnings(&quot;unchecked&quot;)
-<span class="fc" id="L39">        IsIn&lt;T&gt; t = (IsIn&lt;T&gt;) EMPTY;</span>
-<span class="fc" id="L40">        return t;</span>
+<span class="fc" id="L37">        IsIn&lt;T&gt; t = (IsIn&lt;T&gt;) EMPTY;</span>
+<span class="fc" id="L38">        return t;</span>
+    }
+
+    private &lt;S&gt; IsIn&lt;S&gt; emptyWithCallBack() {
+<span class="fc" id="L42">        return new IsIn&lt;&gt;(Collections.emptyList(), emptyCallback);</span>
     }
 
     protected IsIn(Collection&lt;T&gt; values) {
-<span class="fc" id="L44">        super(values);</span>
-<span class="fc" id="L45">    }</span>
+<span class="fc" id="L46">        super(values);</span>
+<span class="fc" id="L47">    }</span>
 
     protected IsIn(Collection&lt;T&gt; values, Callback emptyCallback) {
-<span class="fc" id="L48">        super(values, emptyCallback);</span>
-<span class="fc" id="L49">    }</span>
+<span class="fc" id="L50">        super(values, emptyCallback);</span>
+<span class="fc" id="L51">    }</span>
 
     @Override
     public String renderCondition(String columnName, Stream&lt;String&gt; placeholders) {
-<span class="fc" id="L53">        return spaceAfter(columnName)</span>
-<span class="fc" id="L54">                + placeholders.collect(Collectors.joining(&quot;,&quot;, &quot;in (&quot;, &quot;)&quot;)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$</span>
+<span class="fc" id="L55">        return spaceAfter(columnName)</span>
+<span class="fc" id="L56">                + placeholders.collect(Collectors.joining(&quot;,&quot;, &quot;in (&quot;, &quot;)&quot;)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$</span>
     }
 
     @Override
     public IsIn&lt;T&gt; withListEmptyCallback(Callback callback) {
-<span class="fc" id="L59">        return new IsIn&lt;&gt;(values, callback);</span>
-    }
-
-    /**
-     * This method allows you to modify the condition's values before they are placed into the parameter map.
-     * For example, you could filter nulls, or trim strings, etc. This process will run before final rendering of SQL.
-     * If you filter values out of the stream, then final condition will not reference those values. If you filter all
-     * values out of the stream, then the condition will not render.
-     *
-     * @deprecated replaced by {@link IsIn#map(Function)} and {@link IsIn#filter(Predicate)}
-     * @param valueStreamTransformer a UnaryOperator that will transform the value stream before
-     *     the values are placed in the parameter map
-     * @return new condition with the specified transformer
-     */
-    @Deprecated
-    public IsIn&lt;T&gt; then(UnaryOperator&lt;Stream&lt;T&gt;&gt; valueStreamTransformer) {
-<span class="fc" id="L75">        List&lt;T&gt; mapped = valueStreamTransformer.apply(values.stream())</span>
-<span class="fc" id="L76">                .collect(Collectors.toList());</span>
-<span class="fc" id="L77">        return new IsIn&lt;&gt;(mapped, emptyCallback);</span>
+<span class="fc" id="L61">        return new IsIn&lt;&gt;(values, callback);</span>
     }
 
     @Override
     public IsIn&lt;T&gt; filter(Predicate&lt;? super T&gt; predicate) {
-<span class="fc" id="L82">        return filterSupport(predicate, IsIn::new, this, IsIn::empty);</span>
+<span class="fc" id="L66">        return filterSupport(predicate, IsIn::new, this, this::emptyWithCallBack);</span>
     }
 
     /**
@@ -92,17 +76,17 @@ public class IsIn&lt;T&gt; extends AbstractListValueCondition&lt;T&gt; {
      *     that will not render.
      */
     public &lt;R&gt; IsIn&lt;R&gt; map(Function&lt;? super T, ? extends R&gt; mapper) {
-<span class="fc" id="L95">        BiFunction&lt;Collection&lt;R&gt;, Callback, IsIn&lt;R&gt;&gt; constructor = IsIn::new;</span>
-<span class="fc" id="L96">        return mapSupport(mapper, constructor, IsIn::empty);</span>
+<span class="fc" id="L79">        BiFunction&lt;Collection&lt;R&gt;, Callback, IsIn&lt;R&gt;&gt; constructor = IsIn::new;</span>
+<span class="fc" id="L80">        return mapSupport(mapper, constructor, this::emptyWithCallBack);</span>
     }
 
     @SafeVarargs
     public static &lt;T&gt; IsIn&lt;T&gt; of(T... values) {
-<span class="fc" id="L101">        return of(Arrays.asList(values));</span>
+<span class="fc" id="L85">        return of(Arrays.asList(values));</span>
     }
 
     public static &lt;T&gt; IsIn&lt;T&gt; of(Collection&lt;T&gt; values) {
-<span class="fc" id="L105">        return new IsIn&lt;&gt;(values);</span>
+<span class="fc" id="L89">        return new IsIn&lt;&gt;(values);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

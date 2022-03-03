@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>InsertStatements.kt</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.util.kotlin.elements</a> &gt; <span class="el_source">InsertStatements.kt</span></div><h1>InsertStatements.kt</h1><pre class="source lang-java linenums">/*
- *    Copyright 2016-2021 the original author or authors.
+ *    Copyright 2016-2022 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  *    you may not use this file except in compliance with the License.
@@ -22,13 +22,18 @@ import org.mybatis.dynamic.sql.insert.MultiRowInsertDSL
 
 // These insert functions help avoid the use of org.mybatis.dynamic.sql.SqlBuilder in Kotlin
 
-<span class="fc" id="L25">fun &lt;T&gt; insert(row: T): InsertDSL.IntoGatherer&lt;T&gt; = SqlBuilder.insert(row)</span>
+@Deprecated(&quot;Please see the deprecation message on the following \&quot;into\&quot; function for advice&quot;)
+<span class="fc" id="L26">fun &lt;T&gt; insert(row: T): InsertDSL.IntoGatherer&lt;T&gt; = SqlBuilder.insert(row)</span>
 
-<span class="fc" id="L27">fun &lt;T&gt; insertBatch(vararg records: T): BatchInsertDSL.IntoGatherer&lt;T&gt; = insertBatch(records.asList())</span>
+@Deprecated(&quot;Please see the deprecation message on the following \&quot;into\&quot; function for advice&quot;)
+<span class="fc" id="L29">fun &lt;T&gt; insertBatch(vararg records: T): BatchInsertDSL.IntoGatherer&lt;T&gt; = insertBatch(records.asList())</span>
 
-<span class="fc" id="L29">fun &lt;T&gt; insertBatch(records: Collection&lt;T&gt;): BatchInsertDSL.IntoGatherer&lt;T&gt; = SqlBuilder.insertBatch(records)</span>
+@Deprecated(&quot;Please see the deprecation message on the following \&quot;into\&quot; function for advice&quot;)
+<span class="fc" id="L32">fun &lt;T&gt; insertBatch(records: Collection&lt;T&gt;): BatchInsertDSL.IntoGatherer&lt;T&gt; = SqlBuilder.insertBatch(records)</span>
 
-<span class="fc" id="L31">fun &lt;T&gt; insertMultiple(vararg records: T): MultiRowInsertDSL.IntoGatherer&lt;T&gt; = insertMultiple(records.asList())</span>
+@Deprecated(&quot;Please see the deprecation message on the following \&quot;into\&quot; function for advice&quot;)
+<span class="fc" id="L35">fun &lt;T&gt; insertMultiple(vararg records: T): MultiRowInsertDSL.IntoGatherer&lt;T&gt; = insertMultiple(records.asList())</span>
 
-<span class="fc" id="L33">fun &lt;T&gt; insertMultiple(records: Collection&lt;T&gt;): MultiRowInsertDSL.IntoGatherer&lt;T&gt; = SqlBuilder.insertMultiple(records)</span>
+@Deprecated(&quot;Please see the deprecation message on the following \&quot;into\&quot; function for advice&quot;)
+<span class="fc" id="L38">fun &lt;T&gt; insertMultiple(records: Collection&lt;T&gt;): MultiRowInsertDSL.IntoGatherer&lt;T&gt; = SqlBuilder.insertMultiple(records)</span>
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

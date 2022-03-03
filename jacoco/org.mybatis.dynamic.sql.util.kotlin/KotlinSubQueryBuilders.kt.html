@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>KotlinSubQueryBuilders.kt</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.util.kotlin</a> &gt; <span class="el_source">KotlinSubQueryBuilders.kt</span></div><h1>KotlinSubQueryBuilders.kt</h1><pre class="source lang-java linenums">/*
- *    Copyright 2016-2021 the original author or authors.
+ *    Copyright 2016-2022 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  *    you may not use this file except in compliance with the License.
@@ -22,76 +22,49 @@ import org.mybatis.dynamic.sql.select.SelectModel
 import org.mybatis.dynamic.sql.util.Buildable
 
 @MyBatisDslMarker
-sealed class KotlinBaseSubQueryBuilder&lt;T : KotlinBaseSubQueryBuilder&lt;T&gt;&gt; : Buildable&lt;SelectModel&gt; {
-    private lateinit var selectBuilder: KotlinSelectBuilder
+sealed class KotlinBaseSubQueryBuilder : Buildable&lt;SelectModel&gt; {
+    private var selectBuilder: KotlinSelectBuilder? = null
 
-    fun select(vararg selectList: BasicColumn, completer: SelectCompleter): T =
+    fun select(vararg selectList: BasicColumn, completer: SelectCompleter): Unit =
 <span class="fc" id="L29">        select(selectList.toList(), completer)</span>
 
-    fun select(selectList: List&lt;BasicColumn&gt;, completer: SelectCompleter): T =
-<span class="fc" id="L32">        applySelf {</span>
-<span class="fc" id="L33">            selectBuilder = KotlinSelectBuilder(SqlBuilder.select(selectList)).apply(completer)</span>
-<span class="fc" id="L34">        }</span>
+    fun select(selectList: List&lt;BasicColumn&gt;, completer: SelectCompleter) {
+<span class="fc" id="L32">        selectBuilder = KotlinSelectBuilder(SqlBuilder.select(selectList)).apply(completer)</span>
+<span class="fc" id="L33">    }</span>
 
-    fun selectDistinct(vararg selectList: BasicColumn, completer: SelectCompleter): T =
-<span class="fc" id="L37">        selectDistinct(selectList.toList(), completer)</span>
+    fun selectDistinct(vararg selectList: BasicColumn, completer: SelectCompleter): Unit =
+<span class="fc" id="L36">        selectDistinct(selectList.toList(), completer)</span>
 
-    fun selectDistinct(selectList: List&lt;BasicColumn&gt;, completer: SelectCompleter): T =
-<span class="fc" id="L40">        applySelf {</span>
-<span class="fc" id="L41">            selectBuilder = KotlinSelectBuilder(SqlBuilder.selectDistinct(selectList)).apply(completer)</span>
-<span class="fc" id="L42">        }</span>
+    fun selectDistinct(selectList: List&lt;BasicColumn&gt;, completer: SelectCompleter) {
+<span class="fc" id="L39">        selectBuilder = KotlinSelectBuilder(SqlBuilder.selectDistinct(selectList)).apply(completer)</span>
+<span class="fc" id="L40">    }</span>
 
     override fun build(): SelectModel =
-<span class="fc" id="L45">        try {</span>
-<span class="pc bpc" id="L46" title="1 of 2 branches missed.">            selectBuilder.build()</span>
-<span class="fc" id="L47">        } catch (e: UninitializedPropertyAccessException) {</span>
-<span class="fc" id="L48">            throw UninitializedPropertyAccessException(</span>
-<span class="fc" id="L49">                &quot;You must specify a select statement&quot;, e</span>
-            )
-<span class="fc" id="L51">        }</span>
-
-    private fun applySelf(block: T.() -&gt; Unit): T =
-<span class="fc" id="L54">        self().apply { block() }</span>
-
-    protected abstract fun self(): T
+<span class="fc bfc" id="L43" title="All 4 branches covered.">        selectBuilder?.build()?: throw KInvalidSQLException(&quot;You must specify a select statement in a sub query&quot;)</span>
 }
 
-<span class="fc" id="L59">class KotlinSubQueryBuilder : KotlinBaseSubQueryBuilder&lt;KotlinSubQueryBuilder&gt;() {</span>
-<span class="fc" id="L60">    override fun self(): KotlinSubQueryBuilder = this</span>
+<span class="fc" id="L46">class KotlinSubQueryBuilder : KotlinBaseSubQueryBuilder()</span>
+
+<span class="fc" id="L48">class KotlinQualifiedSubQueryBuilder : KotlinBaseSubQueryBuilder() {</span>
+<span class="pc" id="L49">    var correlationName: String? = null</span>
+
+    operator fun String.unaryPlus() {
+<span class="fc" id="L52">        correlationName = this</span>
+<span class="fc" id="L53">    }</span>
 }
 
-<span class="fc" id="L63">class KotlinQualifiedSubQueryBuilder : KotlinBaseSubQueryBuilder&lt;KotlinQualifiedSubQueryBuilder&gt;() {</span>
-<span class="pc" id="L64">    var correlationName: String? = null</span>
+typealias InsertSelectCompleter = KotlinInsertSelectSubQueryBuilder.() -&gt; Unit
 
-    operator fun String.unaryPlus(): KotlinQualifiedSubQueryBuilder {
-<span class="fc" id="L67">        correlationName = this</span>
-<span class="fc" id="L68">        return self()</span>
-    }
+<span class="fc" id="L58">class KotlinInsertSelectSubQueryBuilder : KotlinBaseSubQueryBuilder() {</span>
+    private var columnList: List&lt;SqlColumn&lt;*&gt;&gt;? = null
 
-<span class="fc" id="L71">    override fun self(): KotlinQualifiedSubQueryBuilder = this</span>
-}
+    internal fun columnList(): List&lt;SqlColumn&lt;*&gt;&gt; =
+<span class="fc bfc" id="L62" title="All 2 branches covered.">        columnList?: throw KInvalidSQLException(&quot;You must specify a column list in an insert select statement&quot;)</span>
 
-<span class="fc" id="L74">class KotlinInsertSelectSubQueryBuilder : KotlinBaseSubQueryBuilder&lt;KotlinInsertSelectSubQueryBuilder&gt;() {</span>
-    private lateinit var lateColumnList: List&lt;SqlColumn&lt;*&gt;&gt;
+<span class="fc" id="L64">    fun columns(vararg columnList: SqlColumn&lt;*&gt;): Unit = columns(columnList.asList())</span>
 
-    val columnList: List&lt;SqlColumn&lt;*&gt;&gt;
-        get(): List&lt;SqlColumn&lt;*&gt;&gt; =
-<span class="fc" id="L79">            try {</span>
-<span class="pc bpc" id="L80" title="1 of 2 branches missed.">                lateColumnList</span>
-<span class="fc" id="L81">            } catch (e: UninitializedPropertyAccessException) {</span>
-<span class="fc" id="L82">                throw UninitializedPropertyAccessException(</span>
-<span class="fc" id="L83">                    &quot;You must specify a column list in an insert with select statement&quot;, e</span>
-                )
-<span class="fc" id="L85">            }</span>
-
-    fun columns(vararg columnList: SqlColumn&lt;*&gt;): KotlinInsertSelectSubQueryBuilder =
-<span class="fc" id="L88">        columns(columnList.asList())</span>
-
-    fun columns(columnList: List&lt;SqlColumn&lt;*&gt;&gt;): KotlinInsertSelectSubQueryBuilder =
-<span class="fc" id="L91">        apply {</span>
-<span class="fc" id="L92">            this.lateColumnList = columnList</span>
-<span class="fc" id="L93">        }</span>
-
-<span class="fc" id="L95">    override fun self(): KotlinInsertSelectSubQueryBuilder = this</span>
+    fun columns(columnList: List&lt;SqlColumn&lt;*&gt;&gt;) {
+<span class="fc" id="L67">        this.columnList = columnList</span>
+<span class="fc" id="L68">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MapperSupportFunctions.kt</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.util.kotlin.mybatis3</a> &gt; <span class="el_source">MapperSupportFunctions.kt</span></div><h1>MapperSupportFunctions.kt</h1><pre class="source lang-java linenums">/*
- *    Copyright 2016-2021 the original author or authors.
+ *    Copyright 2016-2022 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  *    you may not use this file except in compliance with the License.
@@ -19,25 +19,21 @@ package org.mybatis.dynamic.sql.util.kotlin.mybatis3
 import org.mybatis.dynamic.sql.BasicColumn
 import org.mybatis.dynamic.sql.SqlTable
 import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider
-import org.mybatis.dynamic.sql.insert.render.BatchInsert
 import org.mybatis.dynamic.sql.insert.render.GeneralInsertStatementProvider
 import org.mybatis.dynamic.sql.insert.render.InsertSelectStatementProvider
 import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider
 import org.mybatis.dynamic.sql.insert.render.MultiRowInsertStatementProvider
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider
-import org.mybatis.dynamic.sql.util.kotlin.BatchInsertCompleter
 import org.mybatis.dynamic.sql.util.kotlin.CountCompleter
 import org.mybatis.dynamic.sql.util.kotlin.DeleteCompleter
 import org.mybatis.dynamic.sql.util.kotlin.GeneralInsertCompleter
-import org.mybatis.dynamic.sql.util.kotlin.InsertCompleter
 import org.mybatis.dynamic.sql.util.kotlin.InsertSelectCompleter
-import org.mybatis.dynamic.sql.util.kotlin.MultiRowInsertCompleter
+import org.mybatis.dynamic.sql.util.kotlin.KotlinBatchInsertCompleter
+import org.mybatis.dynamic.sql.util.kotlin.KotlinInsertCompleter
+import org.mybatis.dynamic.sql.util.kotlin.KotlinMultiRowInsertCompleter
 import org.mybatis.dynamic.sql.util.kotlin.SelectCompleter
 import org.mybatis.dynamic.sql.util.kotlin.UpdateCompleter
-import org.mybatis.dynamic.sql.util.kotlin.elements.insert
-import org.mybatis.dynamic.sql.util.kotlin.elements.insertBatch
-import org.mybatis.dynamic.sql.util.kotlin.elements.insertMultiple
 
 fun count(
     mapper: (SelectStatementProvider) -&gt; Long,
@@ -45,10 +41,10 @@ fun count(
     table: SqlTable,
     completer: CountCompleter
 ): Long =
-<span class="fc" id="L48">    count(column) {</span>
-<span class="fc" id="L49">        from(table)</span>
-<span class="fc" id="L50">        completer()</span>
-<span class="fc" id="L51">    }.run(mapper)</span>
+<span class="fc" id="L44">    count(column) {</span>
+<span class="fc" id="L45">        from(table)</span>
+<span class="fc" id="L46">        run(completer)</span>
+<span class="fc" id="L47">    }.run(mapper)</span>
 
 fun countDistinct(
     mapper: (SelectStatementProvider) -&gt; Long,
@@ -56,27 +52,27 @@ fun countDistinct(
     table: SqlTable,
     completer: CountCompleter
 ): Long =
-<span class="fc" id="L59">    countDistinct(column) {</span>
-<span class="fc" id="L60">        from(table)</span>
-<span class="fc" id="L61">        completer()</span>
-<span class="fc" id="L62">    }.run(mapper)</span>
+<span class="fc" id="L55">    countDistinct(column) {</span>
+<span class="fc" id="L56">        from(table)</span>
+<span class="fc" id="L57">        run(completer)</span>
+<span class="fc" id="L58">    }.run(mapper)</span>
 
 fun countFrom(mapper: (SelectStatementProvider) -&gt; Long, table: SqlTable, completer: CountCompleter): Long =
-<span class="fc" id="L65">    countFrom(table, completer).run(mapper)</span>
+<span class="fc" id="L61">    countFrom(table, completer).run(mapper)</span>
 
 fun deleteFrom(mapper: (DeleteStatementProvider) -&gt; Int, table: SqlTable, completer: DeleteCompleter): Int =
-<span class="fc" id="L68">    deleteFrom(table, completer).run(mapper)</span>
+<span class="fc" id="L64">    deleteFrom(table, completer).run(mapper)</span>
 
 fun &lt;T&gt; insert(
     mapper: (InsertStatementProvider&lt;T&gt;) -&gt; Int,
     row: T,
     table: SqlTable,
-    completer: InsertCompleter&lt;T&gt;
+    completer: KotlinInsertCompleter&lt;T&gt;
 ): Int =
-<span class="fc" id="L76">    insert(row).into(table, completer).run(mapper)</span>
-
-fun &lt;T&gt; BatchInsert&lt;T&gt;.execute(mapper: (InsertStatementProvider&lt;T&gt;) -&gt; Int): List&lt;Int&gt; =
-<span class="fc" id="L79">    insertStatements().map(mapper)</span>
+<span class="fc" id="L72">    insert(row) {</span>
+<span class="fc" id="L73">        into(table)</span>
+<span class="fc" id="L74">        run(completer)</span>
+<span class="fc" id="L75">    }.run(mapper)</span>
 
 /**
  * This function simply inserts all rows using the supplied mapper. It is up
@@ -89,41 +85,50 @@ fun &lt;T&gt; insertBatch(
     mapper: (InsertStatementProvider&lt;T&gt;) -&gt; Int,
     records: Collection&lt;T&gt;,
     table: SqlTable,
-    completer: BatchInsertCompleter&lt;T&gt;
+    completer: KotlinBatchInsertCompleter&lt;T&gt;
 ): List&lt;Int&gt; =
-<span class="fc" id="L94">    insertBatch(records).into(table, completer).execute(mapper)</span>
+<span class="fc" id="L90">    insertBatch(records) {</span>
+<span class="fc" id="L91">        into(table)</span>
+<span class="fc" id="L92">        run(completer)</span>
+<span class="fc" id="L93">    }.insertStatements().map(mapper)</span>
 
 fun insertInto(
     mapper: (GeneralInsertStatementProvider) -&gt; Int,
     table: SqlTable,
     completer: GeneralInsertCompleter
 ): Int =
-<span class="fc" id="L101">    insertInto(table, completer).run(mapper)</span>
+<span class="fc" id="L100">    insertInto(table, completer).run(mapper)</span>
 
 fun &lt;T&gt; insertMultiple(
     mapper: (MultiRowInsertStatementProvider&lt;T&gt;) -&gt; Int,
     records: Collection&lt;T&gt;,
     table: SqlTable,
-    completer: MultiRowInsertCompleter&lt;T&gt;
+    completer: KotlinMultiRowInsertCompleter&lt;T&gt;
 ): Int =
-<span class="fc" id="L109">    insertMultiple(records).into(table, completer).run(mapper)</span>
+<span class="fc" id="L108">    insertMultiple(records) {</span>
+<span class="fc" id="L109">        into(table)</span>
+<span class="fc" id="L110">        run(completer)</span>
+<span class="fc" id="L111">    }.run(mapper)</span>
 
 fun &lt;T&gt; insertMultipleWithGeneratedKeys(
     mapper: (String, List&lt;T&gt;) -&gt; Int,
     records: Collection&lt;T&gt;,
     table: SqlTable,
-    completer: MultiRowInsertCompleter&lt;T&gt;
+    completer: KotlinMultiRowInsertCompleter&lt;T&gt;
 ): Int =
-<span class="fc" id="L117">    insertMultiple(records).into(table, completer).run {</span>
-<span class="fc" id="L118">        mapper(insertStatement, this.records)</span>
-<span class="fc" id="L119">    }</span>
+<span class="fc" id="L119">    insertMultiple(records) {</span>
+<span class="fc" id="L120">        into(table)</span>
+<span class="fc" id="L121">        run(completer)</span>
+<span class="fc" id="L122">    }.run {</span>
+<span class="fc" id="L123">        mapper(insertStatement, this.records)</span>
+<span class="fc" id="L124">    }</span>
 
 fun insertSelect(
     mapper: (InsertSelectStatementProvider) -&gt; Int,
     table: SqlTable,
     completer: InsertSelectCompleter
 ): Int =
-<span class="fc" id="L126">    insertSelect(table, completer).run(mapper)</span>
+<span class="fc" id="L131">    insertSelect(table, completer).run(mapper)</span>
 
 fun &lt;T&gt; selectDistinct(
     mapper: (SelectStatementProvider) -&gt; List&lt;T&gt;,
@@ -131,10 +136,10 @@ fun &lt;T&gt; selectDistinct(
     table: SqlTable,
     completer: SelectCompleter
 ): List&lt;T&gt; =
-<span class="fc" id="L134">    selectDistinct(selectList) {</span>
-<span class="fc" id="L135">        from(table)</span>
-<span class="fc" id="L136">        completer()</span>
-<span class="fc" id="L137">    }.run(mapper)</span>
+<span class="fc" id="L139">    selectDistinct(selectList) {</span>
+<span class="fc" id="L140">        from(table)</span>
+<span class="fc" id="L141">        run(completer)</span>
+<span class="fc" id="L142">    }.run(mapper)</span>
 
 fun &lt;T&gt; selectList(
     mapper: (SelectStatementProvider) -&gt; List&lt;T&gt;,
@@ -142,10 +147,10 @@ fun &lt;T&gt; selectList(
     table: SqlTable,
     completer: SelectCompleter
 ): List&lt;T&gt; =
-<span class="fc" id="L145">    select(selectList) {</span>
-<span class="fc" id="L146">        from(table)</span>
-<span class="fc" id="L147">        completer()</span>
-<span class="fc" id="L148">    }.run(mapper)</span>
+<span class="fc" id="L150">    select(selectList) {</span>
+<span class="fc" id="L151">        from(table)</span>
+<span class="fc" id="L152">        run(completer)</span>
+<span class="fc" id="L153">    }.run(mapper)</span>
 
 fun &lt;T&gt; selectOne(
     mapper: (SelectStatementProvider) -&gt; T?,
@@ -153,11 +158,11 @@ fun &lt;T&gt; selectOne(
     table: SqlTable,
     completer: SelectCompleter
 ): T? =
-<span class="fc" id="L156">    select(selectList) {</span>
-<span class="fc" id="L157">        from(table)</span>
-<span class="fc" id="L158">        completer()</span>
-<span class="fc" id="L159">    }.run(mapper)</span>
+<span class="fc" id="L161">    select(selectList) {</span>
+<span class="fc" id="L162">        from(table)</span>
+<span class="fc" id="L163">        run(completer)</span>
+<span class="fc" id="L164">    }.run(mapper)</span>
 
 fun update(mapper: (UpdateStatementProvider) -&gt; Int, table: SqlTable, completer: UpdateCompleter): Int =
-<span class="fc" id="L162">    update(table, completer).run(mapper)</span>
+<span class="fc" id="L167">    update(table, completer).run(mapper)</span>
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

@@ -7,7 +7,7 @@
 <body>
 <div id="overview"><a href="../../../testapidocs/examples/emptywhere/EmptyWhereTest.html">View Javadoc</a></div><pre>
 <a class="jxr_linenumber" name="L1" href="#L1">1</a>   <em class="jxr_comment">/*</em>
-<a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_comment"> *    Copyright 2016-2021 the original author or authors.</em>
+<a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_comment"> *    Copyright 2016-2022 the original author or authors.</em>
 <a class="jxr_linenumber" name="L3" href="#L3">3</a>   <em class="jxr_comment"> *</em>
 <a class="jxr_linenumber" name="L4" href="#L4">4</a>   <em class="jxr_comment"> *    Licensed under the Apache License, Version 2.0 (the "License");</em>
 <a class="jxr_linenumber" name="L5" href="#L5">5</a>   <em class="jxr_comment"> *    you may not use this file except in compliance with the License.</em>
@@ -106,8 +106,8 @@
 <a class="jxr_linenumber" name="L98" href="#L98">98</a>          DeleteDSL&lt;DeleteModel&gt;.DeleteWhereBuilder builder = deleteFrom(person)
 <a class="jxr_linenumber" name="L99" href="#L99">99</a>                  .where(id, isEqualTo(3));
 <a class="jxr_linenumber" name="L100" href="#L100">100</a> 
-<a class="jxr_linenumber" name="L101" href="#L101">101</a>         builder.and(firstName, isEqualTo(fName).when(Objects::nonNull));
-<a class="jxr_linenumber" name="L102" href="#L102">102</a>         builder.and(PersonDynamicSqlSupport.lastName, isEqualTo(lName).when(Objects::nonNull));
+<a class="jxr_linenumber" name="L101" href="#L101">101</a>         builder.and(firstName, isEqualTo(fName).filter(Objects::nonNull));
+<a class="jxr_linenumber" name="L102" href="#L102">102</a>         builder.and(PersonDynamicSqlSupport.lastName, isEqualTo(lName).filter(Objects::nonNull));
 <a class="jxr_linenumber" name="L103" href="#L103">103</a> 
 <a class="jxr_linenumber" name="L104" href="#L104">104</a>         DeleteStatementProvider deleteStatement = builder.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L105" href="#L105">105</a> 
@@ -125,8 +125,8 @@
 <a class="jxr_linenumber" name="L117" href="#L117">117</a>         DeleteDSL&lt;DeleteModel&gt;.DeleteWhereBuilder builder = deleteFrom(person)
 <a class="jxr_linenumber" name="L118" href="#L118">118</a>                 .where();
 <a class="jxr_linenumber" name="L119" href="#L119">119</a> 
-<a class="jxr_linenumber" name="L120" href="#L120">120</a>         builder.and(firstName, isEqualTo(variation.firstName).when(Objects::nonNull));
-<a class="jxr_linenumber" name="L121" href="#L121">121</a>         builder.or(PersonDynamicSqlSupport.lastName, isEqualTo(variation.lastName).when(Objects::nonNull));
+<a class="jxr_linenumber" name="L120" href="#L120">120</a>         builder.and(firstName, isEqualTo(variation.firstName).filter(Objects::nonNull));
+<a class="jxr_linenumber" name="L121" href="#L121">121</a>         builder.or(PersonDynamicSqlSupport.lastName, isEqualTo(variation.lastName).filter(Objects::nonNull));
 <a class="jxr_linenumber" name="L122" href="#L122">122</a> 
 <a class="jxr_linenumber" name="L123" href="#L123">123</a>         DeleteStatementProvider deleteStatement = builder.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L124" href="#L124">124</a> 
@@ -144,8 +144,8 @@
 <a class="jxr_linenumber" name="L136" href="#L136">136</a>                 .from(person)
 <a class="jxr_linenumber" name="L137" href="#L137">137</a>                 .where(id, isEqualTo(3));
 <a class="jxr_linenumber" name="L138" href="#L138">138</a> 
-<a class="jxr_linenumber" name="L139" href="#L139">139</a>         builder.and(firstName, isEqualTo(fName).when(Objects::nonNull));
-<a class="jxr_linenumber" name="L140" href="#L140">140</a>         builder.and(PersonDynamicSqlSupport.lastName, isEqualTo(lName).when(Objects::nonNull));
+<a class="jxr_linenumber" name="L139" href="#L139">139</a>         builder.and(firstName, isEqualTo(fName).filter(Objects::nonNull));
+<a class="jxr_linenumber" name="L140" href="#L140">140</a>         builder.and(PersonDynamicSqlSupport.lastName, isEqualTo(lName).filter(Objects::nonNull));
 <a class="jxr_linenumber" name="L141" href="#L141">141</a> 
 <a class="jxr_linenumber" name="L142" href="#L142">142</a>         SelectStatementProvider selectStatement = builder.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L143" href="#L143">143</a> 
@@ -165,8 +165,8 @@
 <a class="jxr_linenumber" name="L157" href="#L157">157</a>                 .from(person)
 <a class="jxr_linenumber" name="L158" href="#L158">158</a>                 .where();
 <a class="jxr_linenumber" name="L159" href="#L159">159</a> 
-<a class="jxr_linenumber" name="L160" href="#L160">160</a>         builder.and(firstName, isEqualTo(variation.firstName).when(Objects::nonNull));
-<a class="jxr_linenumber" name="L161" href="#L161">161</a>         builder.or(PersonDynamicSqlSupport.lastName, isEqualTo(variation.lastName).when(Objects::nonNull));
+<a class="jxr_linenumber" name="L160" href="#L160">160</a>         builder.and(firstName, isEqualTo(variation.firstName).filter(Objects::nonNull));
+<a class="jxr_linenumber" name="L161" href="#L161">161</a>         builder.or(PersonDynamicSqlSupport.lastName, isEqualTo(variation.lastName).filter(Objects::nonNull));
 <a class="jxr_linenumber" name="L162" href="#L162">162</a> 
 <a class="jxr_linenumber" name="L163" href="#L163">163</a>         SelectStatementProvider selectStatement = builder.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L164" href="#L164">164</a> 
@@ -184,8 +184,8 @@
 <a class="jxr_linenumber" name="L176" href="#L176">176</a>                 .from(person).join(order).on(person.id, equalTo(order.personId))
 <a class="jxr_linenumber" name="L177" href="#L177">177</a>                 .where(id, isEqualTo(3));
 <a class="jxr_linenumber" name="L178" href="#L178">178</a> 
-<a class="jxr_linenumber" name="L179" href="#L179">179</a>         builder.and(firstName, isEqualTo(fName).when(Objects::nonNull));
-<a class="jxr_linenumber" name="L180" href="#L180">180</a>         builder.and(PersonDynamicSqlSupport.lastName, isEqualTo(lName).when(Objects::nonNull));
+<a class="jxr_linenumber" name="L179" href="#L179">179</a>         builder.and(firstName, isEqualTo(fName).filter(Objects::nonNull));
+<a class="jxr_linenumber" name="L180" href="#L180">180</a>         builder.and(PersonDynamicSqlSupport.lastName, isEqualTo(lName).filter(Objects::nonNull));
 <a class="jxr_linenumber" name="L181" href="#L181">181</a> 
 <a class="jxr_linenumber" name="L182" href="#L182">182</a>         SelectStatementProvider selectStatement = builder.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L183" href="#L183">183</a> 
@@ -206,8 +206,8 @@
 <a class="jxr_linenumber" name="L198" href="#L198">198</a>                 .from(person).join(order).on(person.id, equalTo(order.personId))
 <a class="jxr_linenumber" name="L199" href="#L199">199</a>                 .where();
 <a class="jxr_linenumber" name="L200" href="#L200">200</a> 
-<a class="jxr_linenumber" name="L201" href="#L201">201</a>         builder.and(firstName, isEqualTo(variation.firstName).when(Objects::nonNull));
-<a class="jxr_linenumber" name="L202" href="#L202">202</a>         builder.or(PersonDynamicSqlSupport.lastName, isEqualTo(variation.lastName).when(Objects::nonNull));
+<a class="jxr_linenumber" name="L201" href="#L201">201</a>         builder.and(firstName, isEqualTo(variation.firstName).filter(Objects::nonNull));
+<a class="jxr_linenumber" name="L202" href="#L202">202</a>         builder.or(PersonDynamicSqlSupport.lastName, isEqualTo(variation.lastName).filter(Objects::nonNull));
 <a class="jxr_linenumber" name="L203" href="#L203">203</a> 
 <a class="jxr_linenumber" name="L204" href="#L204">204</a>         SelectStatementProvider selectStatement = builder.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L205" href="#L205">205</a> 
@@ -228,8 +228,8 @@
 <a class="jxr_linenumber" name="L220" href="#L220">220</a>                 .set(id).equalTo(3)
 <a class="jxr_linenumber" name="L221" href="#L221">221</a>                 .where(id, isEqualTo(3));
 <a class="jxr_linenumber" name="L222" href="#L222">222</a> 
-<a class="jxr_linenumber" name="L223" href="#L223">223</a>         builder.and(firstName, isEqualTo(fName).when(Objects::nonNull));
-<a class="jxr_linenumber" name="L224" href="#L224">224</a>         builder.and(PersonDynamicSqlSupport.lastName, isEqualTo(lName).when(Objects::nonNull));
+<a class="jxr_linenumber" name="L223" href="#L223">223</a>         builder.and(firstName, isEqualTo(fName).filter(Objects::nonNull));
+<a class="jxr_linenumber" name="L224" href="#L224">224</a>         builder.and(PersonDynamicSqlSupport.lastName, isEqualTo(lName).filter(Objects::nonNull));
 <a class="jxr_linenumber" name="L225" href="#L225">225</a> 
 <a class="jxr_linenumber" name="L226" href="#L226">226</a>         UpdateStatementProvider updateStatement = builder.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L227" href="#L227">227</a> 
@@ -249,8 +249,8 @@
 <a class="jxr_linenumber" name="L241" href="#L241">241</a>                 .set(id).equalTo(3)
 <a class="jxr_linenumber" name="L242" href="#L242">242</a>                 .where();
 <a class="jxr_linenumber" name="L243" href="#L243">243</a> 
-<a class="jxr_linenumber" name="L244" href="#L244">244</a>         builder.and(firstName, isEqualTo(variation.firstName).when(Objects::nonNull));
-<a class="jxr_linenumber" name="L245" href="#L245">245</a>         builder.or(PersonDynamicSqlSupport.lastName, isEqualTo(variation.lastName).when(Objects::nonNull));
+<a class="jxr_linenumber" name="L244" href="#L244">244</a>         builder.and(firstName, isEqualTo(variation.firstName).filter(Objects::nonNull));
+<a class="jxr_linenumber" name="L245" href="#L245">245</a>         builder.or(PersonDynamicSqlSupport.lastName, isEqualTo(variation.lastName).filter(Objects::nonNull));
 <a class="jxr_linenumber" name="L246" href="#L246">246</a> 
 <a class="jxr_linenumber" name="L247" href="#L247">247</a>         UpdateStatementProvider updateStatement = builder.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L248" href="#L248">248</a> 
@@ -268,8 +268,8 @@
 <a class="jxr_linenumber" name="L260" href="#L260">260</a> 
 <a class="jxr_linenumber" name="L261" href="#L261">261</a>         WhereDSL builder = where(id, isEqualTo(3));
 <a class="jxr_linenumber" name="L262" href="#L262">262</a> 
-<a class="jxr_linenumber" name="L263" href="#L263">263</a>         builder.and(firstName, isEqualTo(fName).when(Objects::nonNull));
-<a class="jxr_linenumber" name="L264" href="#L264">264</a>         builder.and(PersonDynamicSqlSupport.lastName, isEqualTo(lName).when(Objects::nonNull));
+<a class="jxr_linenumber" name="L263" href="#L263">263</a>         builder.and(firstName, isEqualTo(fName).filter(Objects::nonNull));
+<a class="jxr_linenumber" name="L264" href="#L264">264</a>         builder.and(PersonDynamicSqlSupport.lastName, isEqualTo(lName).filter(Objects::nonNull));
 <a class="jxr_linenumber" name="L265" href="#L265">265</a> 
 <a class="jxr_linenumber" name="L266" href="#L266">266</a>         WhereClauseProvider whereClause = builder.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L267" href="#L267">267</a> 
@@ -285,8 +285,8 @@
 <a class="jxr_linenumber" name="L277" href="#L277">277</a>     <strong class="jxr_keyword">void</strong> testWhereVariations(Variation variation) {
 <a class="jxr_linenumber" name="L278" href="#L278">278</a>         WhereDSL builder = where();
 <a class="jxr_linenumber" name="L279" href="#L279">279</a> 
-<a class="jxr_linenumber" name="L280" href="#L280">280</a>         builder.and(firstName, isEqualTo(variation.firstName).when(Objects::nonNull));
-<a class="jxr_linenumber" name="L281" href="#L281">281</a>         builder.or(PersonDynamicSqlSupport.lastName, isEqualTo(variation.lastName).when(Objects::nonNull));
+<a class="jxr_linenumber" name="L280" href="#L280">280</a>         builder.and(firstName, isEqualTo(variation.firstName).filter(Objects::nonNull));
+<a class="jxr_linenumber" name="L281" href="#L281">281</a>         builder.or(PersonDynamicSqlSupport.lastName, isEqualTo(variation.lastName).filter(Objects::nonNull));
 <a class="jxr_linenumber" name="L282" href="#L282">282</a> 
 <a class="jxr_linenumber" name="L283" href="#L283">283</a>         WhereClauseProvider whereClause = builder.build().render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L284" href="#L284">284</a> 
@@ -307,6 +307,6 @@
 <a class="jxr_linenumber" name="L299" href="#L299">299</a> }
 </pre>
 <hr/>
-<div id="footer">Copyright &#169; 2016&#x2013;2021 <a href="https://www.mybatis.org/">MyBatis.org</a>. All rights reserved.</div>
+<div id="footer">Copyright &#169; 2016&#x2013;2022 <a href="https://www.mybatis.org/">MyBatis.org</a>. All rights reserved.</div>
 </body>
 </html>

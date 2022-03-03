@@ -7,7 +7,7 @@
 <body>
 <div id="overview"><a href="../../../../../../../apidocs/org/mybatis/dynamic/sql/where/condition/IsLikeCaseInsensitive.html">View Javadoc</a></div><pre>
 <a class="jxr_linenumber" name="L1" href="#L1">1</a>   <em class="jxr_comment">/*</em>
-<a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_comment"> *    Copyright 2016-2021 the original author or authors.</em>
+<a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_comment"> *    Copyright 2016-2022 the original author or authors.</em>
 <a class="jxr_linenumber" name="L3" href="#L3">3</a>   <em class="jxr_comment"> *</em>
 <a class="jxr_linenumber" name="L4" href="#L4">4</a>   <em class="jxr_comment"> *    Licensed under the Apache License, Version 2.0 (the "License");</em>
 <a class="jxr_linenumber" name="L5" href="#L5">5</a>   <em class="jxr_comment"> *    you may not use this file except in compliance with the License.</em>
@@ -59,53 +59,25 @@
 <a class="jxr_linenumber" name="L51" href="#L51">51</a>          <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> <a name="IsLikeCaseInsensitive" href="../../../../../../org/mybatis/dynamic/sql/where/condition/IsLikeCaseInsensitive.html#IsLikeCaseInsensitive">IsLikeCaseInsensitive</a>(value);
 <a class="jxr_linenumber" name="L52" href="#L52">52</a>      }
 <a class="jxr_linenumber" name="L53" href="#L53">53</a>  
-<a class="jxr_linenumber" name="L54" href="#L54">54</a>      <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L55" href="#L55">55</a>  <em class="jxr_javadoccomment">     * If renderable and the value matches the predicate, returns this condition. Else returns a condition</em>
-<a class="jxr_linenumber" name="L56" href="#L56">56</a>  <em class="jxr_javadoccomment">     *     that will not render.</em>
-<a class="jxr_linenumber" name="L57" href="#L57">57</a>  <em class="jxr_javadoccomment">     *</em>
-<a class="jxr_linenumber" name="L58" href="#L58">58</a>  <em class="jxr_javadoccomment">     * @deprecated replaced by {@link IsLikeCaseInsensitive#filter(Predicate)}</em>
-<a class="jxr_linenumber" name="L59" href="#L59">59</a>  <em class="jxr_javadoccomment">     * @param predicate predicate applied to the value, if renderable</em>
-<a class="jxr_linenumber" name="L60" href="#L60">60</a>  <em class="jxr_javadoccomment">     * @return this condition if renderable and the value matches the predicate, otherwise a condition</em>
-<a class="jxr_linenumber" name="L61" href="#L61">61</a>  <em class="jxr_javadoccomment">     *     that will not render.</em>
-<a class="jxr_linenumber" name="L62" href="#L62">62</a>  <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L63" href="#L63">63</a>      @Deprecated
-<a class="jxr_linenumber" name="L64" href="#L64">64</a>      <strong class="jxr_keyword">public</strong> <a name="IsLikeCaseInsensitive" href="../../../../../../org/mybatis/dynamic/sql/where/condition/IsLikeCaseInsensitive.html#IsLikeCaseInsensitive">IsLikeCaseInsensitive</a> when(Predicate&lt;String&gt; predicate) {
-<a class="jxr_linenumber" name="L65" href="#L65">65</a>          <strong class="jxr_keyword">return</strong> filter(predicate);
-<a class="jxr_linenumber" name="L66" href="#L66">66</a>      }
-<a class="jxr_linenumber" name="L67" href="#L67">67</a>  
-<a class="jxr_linenumber" name="L68" href="#L68">68</a>      <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L69" href="#L69">69</a>  <em class="jxr_javadoccomment">     * If renderable, apply the mapping to the value and return a new condition with the new value. Else return a</em>
-<a class="jxr_linenumber" name="L70" href="#L70">70</a>  <em class="jxr_javadoccomment">     *     condition that will not render (this).</em>
-<a class="jxr_linenumber" name="L71" href="#L71">71</a>  <em class="jxr_javadoccomment">     *</em>
-<a class="jxr_linenumber" name="L72" href="#L72">72</a>  <em class="jxr_javadoccomment">     * @deprecated replaced by {@link IsLikeCaseInsensitive#map(UnaryOperator)}</em>
-<a class="jxr_linenumber" name="L73" href="#L73">73</a>  <em class="jxr_javadoccomment">     * @param mapper a mapping function to apply to the value, if renderable</em>
-<a class="jxr_linenumber" name="L74" href="#L74">74</a>  <em class="jxr_javadoccomment">     * @return a new condition with the result of applying the mapper to the value of this condition,</em>
-<a class="jxr_linenumber" name="L75" href="#L75">75</a>  <em class="jxr_javadoccomment">     *     if renderable, otherwise a condition that will not render.</em>
-<a class="jxr_linenumber" name="L76" href="#L76">76</a>  <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L77" href="#L77">77</a>      @Deprecated
-<a class="jxr_linenumber" name="L78" href="#L78">78</a>      <strong class="jxr_keyword">public</strong> <a name="IsLikeCaseInsensitive" href="../../../../../../org/mybatis/dynamic/sql/where/condition/IsLikeCaseInsensitive.html#IsLikeCaseInsensitive">IsLikeCaseInsensitive</a> then(UnaryOperator&lt;String&gt; mapper) {
-<a class="jxr_linenumber" name="L79" href="#L79">79</a>          <strong class="jxr_keyword">return</strong> map(mapper);
-<a class="jxr_linenumber" name="L80" href="#L80">80</a>      }
-<a class="jxr_linenumber" name="L81" href="#L81">81</a>  
-<a class="jxr_linenumber" name="L82" href="#L82">82</a>      @Override
-<a class="jxr_linenumber" name="L83" href="#L83">83</a>      <strong class="jxr_keyword">public</strong> <a name="IsLikeCaseInsensitive" href="../../../../../../org/mybatis/dynamic/sql/where/condition/IsLikeCaseInsensitive.html#IsLikeCaseInsensitive">IsLikeCaseInsensitive</a> filter(Predicate&lt;? <strong class="jxr_keyword">super</strong> String&gt; predicate) {
-<a class="jxr_linenumber" name="L84" href="#L84">84</a>          <strong class="jxr_keyword">return</strong> filterSupport(predicate, IsLikeCaseInsensitive::empty, <strong class="jxr_keyword">this</strong>);
-<a class="jxr_linenumber" name="L85" href="#L85">85</a>      }
-<a class="jxr_linenumber" name="L86" href="#L86">86</a>  
-<a class="jxr_linenumber" name="L87" href="#L87">87</a>      <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L88" href="#L88">88</a>  <em class="jxr_javadoccomment">     * If renderable, apply the mapping to the value and return a new condition with the new value. Else return a</em>
-<a class="jxr_linenumber" name="L89" href="#L89">89</a>  <em class="jxr_javadoccomment">     *     condition that will not render (this).</em>
-<a class="jxr_linenumber" name="L90" href="#L90">90</a>  <em class="jxr_javadoccomment">     *</em>
-<a class="jxr_linenumber" name="L91" href="#L91">91</a>  <em class="jxr_javadoccomment">     * @param mapper a mapping function to apply to the value, if renderable</em>
-<a class="jxr_linenumber" name="L92" href="#L92">92</a>  <em class="jxr_javadoccomment">     * @return a new condition with the result of applying the mapper to the value of this condition,</em>
-<a class="jxr_linenumber" name="L93" href="#L93">93</a>  <em class="jxr_javadoccomment">     *     if renderable, otherwise a condition that will not render.</em>
-<a class="jxr_linenumber" name="L94" href="#L94">94</a>  <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L95" href="#L95">95</a>      <strong class="jxr_keyword">public</strong> <a name="IsLikeCaseInsensitive" href="../../../../../../org/mybatis/dynamic/sql/where/condition/IsLikeCaseInsensitive.html#IsLikeCaseInsensitive">IsLikeCaseInsensitive</a> map(UnaryOperator&lt;String&gt; mapper) {
-<a class="jxr_linenumber" name="L96" href="#L96">96</a>          <strong class="jxr_keyword">return</strong> mapSupport(mapper, IsLikeCaseInsensitive::<strong class="jxr_keyword">new</strong>, IsLikeCaseInsensitive::empty);
-<a class="jxr_linenumber" name="L97" href="#L97">97</a>      }
-<a class="jxr_linenumber" name="L98" href="#L98">98</a>  }
+<a class="jxr_linenumber" name="L54" href="#L54">54</a>      @Override
+<a class="jxr_linenumber" name="L55" href="#L55">55</a>      <strong class="jxr_keyword">public</strong> <a name="IsLikeCaseInsensitive" href="../../../../../../org/mybatis/dynamic/sql/where/condition/IsLikeCaseInsensitive.html#IsLikeCaseInsensitive">IsLikeCaseInsensitive</a> filter(Predicate&lt;? <strong class="jxr_keyword">super</strong> String&gt; predicate) {
+<a class="jxr_linenumber" name="L56" href="#L56">56</a>          <strong class="jxr_keyword">return</strong> filterSupport(predicate, IsLikeCaseInsensitive::empty, <strong class="jxr_keyword">this</strong>);
+<a class="jxr_linenumber" name="L57" href="#L57">57</a>      }
+<a class="jxr_linenumber" name="L58" href="#L58">58</a>  
+<a class="jxr_linenumber" name="L59" href="#L59">59</a>      <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L60" href="#L60">60</a>  <em class="jxr_javadoccomment">     * If renderable, apply the mapping to the value and return a new condition with the new value. Else return a</em>
+<a class="jxr_linenumber" name="L61" href="#L61">61</a>  <em class="jxr_javadoccomment">     *     condition that will not render (this).</em>
+<a class="jxr_linenumber" name="L62" href="#L62">62</a>  <em class="jxr_javadoccomment">     *</em>
+<a class="jxr_linenumber" name="L63" href="#L63">63</a>  <em class="jxr_javadoccomment">     * @param mapper a mapping function to apply to the value, if renderable</em>
+<a class="jxr_linenumber" name="L64" href="#L64">64</a>  <em class="jxr_javadoccomment">     * @return a new condition with the result of applying the mapper to the value of this condition,</em>
+<a class="jxr_linenumber" name="L65" href="#L65">65</a>  <em class="jxr_javadoccomment">     *     if renderable, otherwise a condition that will not render.</em>
+<a class="jxr_linenumber" name="L66" href="#L66">66</a>  <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L67" href="#L67">67</a>      <strong class="jxr_keyword">public</strong> <a name="IsLikeCaseInsensitive" href="../../../../../../org/mybatis/dynamic/sql/where/condition/IsLikeCaseInsensitive.html#IsLikeCaseInsensitive">IsLikeCaseInsensitive</a> map(UnaryOperator&lt;String&gt; mapper) {
+<a class="jxr_linenumber" name="L68" href="#L68">68</a>          <strong class="jxr_keyword">return</strong> mapSupport(mapper, IsLikeCaseInsensitive::<strong class="jxr_keyword">new</strong>, IsLikeCaseInsensitive::empty);
+<a class="jxr_linenumber" name="L69" href="#L69">69</a>      }
+<a class="jxr_linenumber" name="L70" href="#L70">70</a>  }
 </pre>
 <hr/>
-<div id="footer">Copyright &#169; 2016&#x2013;2021 <a href="https://www.mybatis.org/">MyBatis.org</a>. All rights reserved.</div>
+<div id="footer">Copyright &#169; 2016&#x2013;2022 <a href="https://www.mybatis.org/">MyBatis.org</a>. All rights reserved.</div>
 </body>
 </html>
