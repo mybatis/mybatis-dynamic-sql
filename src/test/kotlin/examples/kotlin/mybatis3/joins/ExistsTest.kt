@@ -26,7 +26,7 @@ import org.apache.ibatis.session.SqlSessionFactoryBuilder
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import org.mybatis.dynamic.sql.util.kotlin.elements.qualifiedWith
+import org.mybatis.dynamic.sql.util.kotlin.elements.invoke
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.select
 import org.mybatis.dynamic.sql.util.mybatis3.CommonSelectMapper
 import java.io.InputStreamReader
@@ -62,7 +62,7 @@ class ExistsTest {
                     exists {
                         select(orderLine.allColumns()) {
                             from(orderLine, "ol")
-                            where { orderLine.itemId isEqualTo (itemMaster.itemId qualifiedWith "im") }
+                            where { orderLine.itemId isEqualTo "im"(itemMaster.itemId) }
                         }
                     }
                 }
@@ -149,7 +149,7 @@ class ExistsTest {
                         exists {
                             select(orderLine.allColumns()) {
                                 from(orderLine, "ol")
-                                where { orderLine.itemId isEqualTo (itemMaster.itemId qualifiedWith "im") }
+                                where { orderLine.itemId isEqualTo "im"(itemMaster.itemId) }
                             }
                         }
                     }
@@ -184,7 +184,7 @@ class ExistsTest {
                         exists {
                             select(orderLine.allColumns()) {
                                 from(orderLine, "ol")
-                                where { orderLine.itemId isEqualTo (itemMaster.itemId qualifiedWith "im") }
+                                where { orderLine.itemId isEqualTo "im"(itemMaster.itemId) }
                             }
                         }
                     }
@@ -254,7 +254,7 @@ class ExistsTest {
                     exists {
                         select(orderLine.allColumns()) {
                             from(orderLine, "ol")
-                            where { orderLine.itemId isEqualTo (itemMaster.itemId qualifiedWith "im") }
+                            where { orderLine.itemId isEqualTo "im"(itemMaster.itemId) }
                         }
                     }
                 }
@@ -290,7 +290,7 @@ class ExistsTest {
                     exists {
                         select(orderLine.allColumns()) {
                             from(orderLine, "ol")
-                            where { orderLine.itemId isEqualTo (itemMaster.itemId qualifiedWith "im") }
+                            where { orderLine.itemId isEqualTo "im"(itemMaster.itemId) }
                         }
                     }
                     and { itemMaster.itemId isGreaterThan 2 }
@@ -328,7 +328,7 @@ class ExistsTest {
                         exists {
                             select(orderLine.allColumns()) {
                                 from(orderLine, "ol")
-                                where { orderLine.itemId isEqualTo (itemMaster.itemId qualifiedWith "im") }
+                                where { orderLine.itemId isEqualTo "im"(itemMaster.itemId) }
                             }
                         }
                     }
@@ -367,7 +367,7 @@ class ExistsTest {
                         exists {
                             select(orderLine.allColumns()) {
                                 from(orderLine, "ol")
-                                where { orderLine.itemId isEqualTo (itemMaster.itemId qualifiedWith "im") }
+                                where { orderLine.itemId isEqualTo "im"(itemMaster.itemId) }
                             }
                         }
                         and { itemMaster.itemId isGreaterThan 2 }
@@ -405,7 +405,7 @@ class ExistsTest {
                     exists {
                         select(orderLine.allColumns()) {
                             from(orderLine, "ol")
-                            where { orderLine.itemId isEqualTo (itemMaster.itemId qualifiedWith "im") }
+                            where { orderLine.itemId isEqualTo "im"(itemMaster.itemId) }
                         }
                     }
                 }
@@ -450,7 +450,7 @@ class ExistsTest {
                     exists {
                         select(orderLine.allColumns()) {
                             from(orderLine, "ol")
-                            where { orderLine.itemId isEqualTo (itemMaster.itemId qualifiedWith "im") }
+                            where { orderLine.itemId isEqualTo "im"(itemMaster.itemId) }
                         }
                     }
                     and { itemMaster.itemId isGreaterThan 2 }
@@ -498,7 +498,7 @@ class ExistsTest {
                         exists {
                             select(orderLine.allColumns()) {
                                 from(orderLine, "ol")
-                                where { orderLine.itemId isEqualTo (itemMaster.itemId qualifiedWith "im") }
+                                where { orderLine.itemId isEqualTo "im"(itemMaster.itemId) }
                             }
                         }
                     }
@@ -547,7 +547,7 @@ class ExistsTest {
                         exists {
                             select(orderLine.allColumns()) {
                                 from(orderLine, "ol")
-                                where { orderLine.itemId isEqualTo (itemMaster.itemId qualifiedWith "im") }
+                                where { orderLine.itemId isEqualTo "im"(itemMaster.itemId) }
                             }
                         }
                         and { itemMaster.itemId isGreaterThan 2 }
@@ -594,7 +594,7 @@ class ExistsTest {
                     exists {
                         select(orderLine.allColumns()) {
                             from(orderLine, "ol")
-                            where { orderLine.itemId isEqualTo (itemMaster.itemId qualifiedWith "im") }
+                            where { orderLine.itemId isEqualTo "im"(itemMaster.itemId) }
                         }
                     }
                     or { itemMaster.itemId isEqualTo 22 }
@@ -639,7 +639,7 @@ class ExistsTest {
                     exists {
                         select(orderLine.allColumns()) {
                             from(orderLine, "ol")
-                            where { orderLine.itemId isEqualTo (itemMaster.itemId qualifiedWith "im") }
+                            where { orderLine.itemId isEqualTo "im"(itemMaster.itemId) }
                         }
                     }
                     and { itemMaster.itemId isEqualTo 22 }
