@@ -358,7 +358,7 @@ The Kotlin select build supports subqueries in joins as follows:
 
 ```kotlin
 val selectStatement = select(OrderLine.orderId, OrderLine.quantity,
-        ItemMaster.itemId.qualifiedWith("im"), ItemMaster.description) {
+        "im"(ItemMaster.itemId), ItemMaster.description) {
     from(OrderMaster, "om")
     join(OrderLine, "ol") {
         on(OrderMaster.orderId) equalTo OrderLine.orderId
@@ -371,7 +371,7 @@ val selectStatement = select(OrderLine.orderId, OrderLine.quantity,
           + "im"
       }
     ) {
-        on(OrderLine.itemId) equalTo (ItemMaster.itemId qualifiedWith "im")
+        on(OrderLine.itemId) equalTo "im"(ItemMaster.itemId)
     }
     orderBy(OrderLine.orderId, ItemMaster.itemId)
 }
@@ -386,6 +386,7 @@ left join (select * from ItemMaster) im on ol.item_id = im.item_id
 order by order_id, item_id
 ```
 
-Notice again that subquery qualifiers must be specified when needed. Also note that the Kotlin join methods accept
-two lambda functions - one for the subquery and one for the join specification. Only the join specification can
-be outside the parenthesis of the join methods.
+Notice again that sub query qualifiers must be specified when needed. In this case we use a Kotlin trick - an invoke
+operator function that gets close to natural SQL syntax (```"im"(ItemMaster.itemId)```).  Also note that the Kotlin
+join methods accept two lambda functions - one for the sub query and one for the join specification. Only the join
+specification can be outside the parenthesis of the join methods.

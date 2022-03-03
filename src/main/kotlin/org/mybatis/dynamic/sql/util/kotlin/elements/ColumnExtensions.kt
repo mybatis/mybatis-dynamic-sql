@@ -22,4 +22,9 @@ infix fun <T> DerivedColumn<T>.`as`(alias: String): DerivedColumn<T> = this.`as`
 
 infix fun <T> SqlColumn<T>.`as`(alias: String): SqlColumn<T> = this.`as`(alias)
 
-infix fun <T> SqlColumn<T>.qualifiedWith(tableQualifier: String): SqlColumn<T> = this.qualifiedWith(tableQualifier)
+/**
+ * Adds a qualifier to a column for use with table aliases (typically in joins or sub queries).
+ * This is as close to natural SQL syntax as we can get in Kotlin. Natural SQL would look like
+ * "qualifier.column". With this function we can say "qualifier(column)".
+ */
+operator fun <T> String.invoke(column: SqlColumn<T>): SqlColumn<T> = column.qualifiedWith(this)

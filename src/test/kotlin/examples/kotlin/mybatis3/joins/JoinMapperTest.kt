@@ -33,8 +33,8 @@ import org.assertj.core.api.Assertions.entry
 import org.junit.jupiter.api.Test
 import org.mybatis.dynamic.sql.util.kotlin.KInvalidSQLException
 import org.mybatis.dynamic.sql.util.kotlin.elements.equalTo
+import org.mybatis.dynamic.sql.util.kotlin.elements.invoke
 import org.mybatis.dynamic.sql.util.kotlin.elements.max
-import org.mybatis.dynamic.sql.util.kotlin.elements.qualifiedWith
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.select
 import java.io.InputStreamReader
 import java.sql.DriverManager
@@ -264,7 +264,7 @@ class JoinMapperTest {
             val mapper = session.getMapper(JoinMapper::class.java)
 
             val selectStatement = select(
-                orderLine.orderId qualifiedWith "ol", orderLine.quantity, itemMaster.itemId qualifiedWith "im",
+                "ol"(orderLine.orderId), orderLine.quantity, "im"(itemMaster.itemId),
                 itemMaster.description
             ) {
                 from {
@@ -281,8 +281,8 @@ class JoinMapperTest {
                         + "ol"
                     },
                     joinCriteria = {
-                        on(orderMaster.orderId qualifiedWith "om") equalTo
-                                (orderLine.orderId qualifiedWith "ol")
+                        on("om"(orderMaster.orderId)) equalTo
+                                "ol"(orderLine.orderId)
                     }
                 )
                 fullJoin(
@@ -293,8 +293,8 @@ class JoinMapperTest {
                         + "im"
                     }
                 ) {
-                    on(orderLine.itemId qualifiedWith "ol") equalTo
-                            (itemMaster.itemId qualifiedWith "im")
+                    on("ol"(orderLine.itemId)) equalTo
+                            "im"(itemMaster.itemId)
                 }
                 orderBy(orderLine.orderId, itemMaster.itemId)
             }
@@ -440,7 +440,7 @@ class JoinMapperTest {
             val mapper = session.getMapper(JoinMapper::class.java)
 
             val selectStatement = select(
-                orderLine.orderId, orderLine.quantity, itemMaster.itemId qualifiedWith "im",
+                orderLine.orderId, orderLine.quantity, "im"(itemMaster.itemId),
                 itemMaster.description
             ) {
                 from(orderMaster, "om")
@@ -455,7 +455,7 @@ class JoinMapperTest {
                         + "im"
                     }
                 ) {
-                    on(orderLine.itemId) equalTo (itemMaster.itemId qualifiedWith "im")
+                    on(orderLine.itemId) equalTo "im"(itemMaster.itemId)
                 }
                 orderBy(orderLine.orderId, itemMaster.itemId)
             }
@@ -578,7 +578,7 @@ class JoinMapperTest {
 
             val selectStatement = select(
                 orderLine.orderId, orderLine.quantity,
-                itemMaster.itemId qualifiedWith "im", itemMaster.description
+                "im"(itemMaster.itemId), itemMaster.description
             ) {
                 from(orderMaster, "om")
                 join(orderLine, "ol") {
@@ -592,7 +592,7 @@ class JoinMapperTest {
                         + "im"
                     }
                 ) {
-                    on(orderLine.itemId) equalTo (itemMaster.itemId qualifiedWith "im")
+                    on(orderLine.itemId) equalTo "im"(itemMaster.itemId)
                 }
                 orderBy(orderLine.orderId, itemMaster.itemId)
             }

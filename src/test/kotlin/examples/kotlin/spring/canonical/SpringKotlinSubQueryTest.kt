@@ -22,7 +22,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.mybatis.dynamic.sql.DerivedColumn
 import org.mybatis.dynamic.sql.util.kotlin.elements.`as`
-import org.mybatis.dynamic.sql.util.kotlin.elements.qualifiedWith
+import org.mybatis.dynamic.sql.util.kotlin.elements.invoke
 import org.mybatis.dynamic.sql.util.kotlin.spring.select
 import org.mybatis.dynamic.sql.util.kotlin.spring.selectList
 import org.springframework.beans.factory.annotation.Autowired
@@ -106,7 +106,7 @@ open class SpringKotlinSubQueryTest {
     @Test
     fun testBasicSubQueryWithAliases() {
         val rowNum = DerivedColumn.of<Int>("rownum()") `as` "myRows"
-        val outerFirstName = firstName qualifiedWith "b"
+        val outerFirstName = "b"(firstName)
         val personId = DerivedColumn.of<Int>("personId", "b")
 
         val selectStatement =
