@@ -2,7 +2,7 @@
 
 This log will detail notable changes to MyBatis Dynamic SQL. Full details are available on the GitHub milestone pages.
 
-## Release 1.4.0 - Unreleased
+## Release 1.4.0 - March 3, 2022
 
 The release includes new functionality in the Where Clause DSL to support arbitrary grouping of conditions, and also use
 of a "not" condition. It should now be possible to write any type of where clause.
