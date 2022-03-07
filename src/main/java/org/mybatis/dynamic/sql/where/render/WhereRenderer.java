@@ -20,6 +20,7 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
+import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 import org.mybatis.dynamic.sql.util.FragmentCollector;
@@ -41,13 +42,20 @@ public class WhereRenderer {
     }
 
     public Optional<WhereClauseProvider> render() {
-        return whereModel.initialCriterion().map(ic ->
-                        criterionRenderer.render(ic, whereModel.subCriteria(), this::calculateWhereClause))
-                .orElseGet(() -> criterionRenderer.render(whereModel.subCriteria(), this::calculateWhereClause))
+        return whereModel.initialCriterion().map(this::renderWithInitialCriterion)
+                .orElseGet(this::renderWithoutInitialCriterion)
                 .map(rc -> WhereClauseProvider.withWhereClause(rc.fragmentAndParameters().fragment())
                         .withParameters(rc.fragmentAndParameters().parameters())
                         .build()
                 );
+    }
+
+    private Optional<RenderedCriterion> renderWithInitialCriterion(SqlCriterion initialCriterion) {
+        return criterionRenderer.render(initialCriterion, whereModel.subCriteria(), this::calculateWhereClause);
+    }
+
+    private Optional<RenderedCriterion> renderWithoutInitialCriterion() {
+        return criterionRenderer.render(whereModel.subCriteria(), this::calculateWhereClause);
     }
 
     private String calculateWhereClause(FragmentCollector collector) {
