@@ -62,6 +62,10 @@ public abstract class AbstractWhereSupport<W extends AbstractWhereDSL<?>> {
         return apply(w -> w.where(initialCriterion, subCriteria));
     }
 
+    public W where(List<AndOrCriteriaGroup> subCriteria) {
+        return apply(w -> w.where(subCriteria));
+    }
+
     public W applyWhere(WhereApplier whereApplier) {
         return apply(w -> w.applyWhere(whereApplier));
     }

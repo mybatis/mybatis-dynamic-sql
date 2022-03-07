@@ -57,7 +57,7 @@ class GroupingCriteriaCollector {
 
     /**
      * Add sub criterion joined with "and" to the current context. If the receiver adds more than one
-     * criterion that renders at runtime then parenthesis will be added.
+     * criterion that renders then parentheses will be added.
      *
      * This function may be called multiple times in a context.
      *
@@ -74,8 +74,27 @@ class GroupingCriteriaCollector {
         }
 
     /**
+     * Add a list of criteria joined with "and" to the current context. If the list contains more than
+     * one criterion that renders then parentheses will be added. This function is distinguished from the
+     * other overload in that it can accept a pre-created list of criteria and does not require any criterion
+     * to be the initial criterion. The first criterion that renders will be rendered without the "and" or "or".
+     *
+     * This function may be called multiple times in a context.
+     *
+     * @param criteria a list of pre-created criteria
+     *
+     */
+    fun and(criteria: List<AndOrCriteriaGroup>) {
+        this@GroupingCriteriaCollector.subCriteria.add(
+            AndOrCriteriaGroup.Builder().withConnector("and")
+                .withSubCriteria(criteria)
+                .build()
+        )
+    }
+
+    /**
      * Add sub criterion joined with "or" to the current context. If the receiver adds more than one
-     * criterion that renders at runtime then parenthesis will be added.
+     * criterion that renders then parentheses will be added.
      *
      * This function may be called multiple times in a context.
      *
@@ -92,8 +111,27 @@ class GroupingCriteriaCollector {
         }
 
     /**
+     * Add a list of criteria joined with "or" to the current context. If the list contains more than
+     * one criterion that renders then parentheses will be added. This function is distinguished from the
+     * other overload in that it can accept a pre-created list of criteria and does not require any criterion
+     * to be the initial criterion. The first criterion that renders will be rendered without the "and" or "or".
+     *
+     * This function may be called multiple times in a context.
+     *
+     * @param criteria a list of pre-created criteria
+     *
+     */
+    fun or(criteria: List<AndOrCriteriaGroup>) {
+        this@GroupingCriteriaCollector.subCriteria.add(
+            AndOrCriteriaGroup.Builder().withConnector("or")
+                .withSubCriteria(criteria)
+                .build()
+        )
+    }
+
+    /**
      * Add an initial criterion preceded with "not" to the current context. If the receiver adds more than one
-     * criterion that renders at runtime then parenthesis will be added.
+     * criterion that renders then parentheses will be added.
      *
      * This may only be called once per scope, and cannot be combined with "exists", "group", "invoke",
      * or any infix function in the same scope.
@@ -107,6 +145,24 @@ class GroupingCriteriaCollector {
                 .withSubCriteria(subCriteria)
                 .build()
         }
+
+    /**
+     * Add an initial criterion preceded with "not" to the current context. If the list contains more than
+     * one criterion that renders then parentheses will be added. This function is distinguished from the
+     * other overload in that it can accept a pre-created list of criteria and does not require any criterion
+     * to be the initial criterion. The first criterion that renders will be rendered without the "and" or "or".
+     *
+     * This may only be called once per scope, and cannot be combined with "exists", "group", "invoke",
+     * or any infix function in the same scope.
+     *
+     * @param criteria a list of pre-created criteria
+     *
+     */
+    fun not(criteria: List<AndOrCriteriaGroup>) {
+        this@GroupingCriteriaCollector.initialCriterion = NotCriterion.Builder()
+            .withSubCriteria(criteria)
+            .build()
+    }
 
     /**
      * Add an initial criterion composed of a sub-query preceded with "exists" to the current context.
@@ -124,9 +180,9 @@ class GroupingCriteriaCollector {
 
     /**
      * Add an initial criterion to the current context. If the receiver adds more than one
-     * criterion that renders at runtime then parenthesis will be added.
+     * criterion that renders at runtime then parentheses will be added.
      *
-     * This should only be specified once per scope, and cannot be combined with "exists", "invoke",
+     * This may only be specified once per scope, and cannot be combined with "exists", "invoke",
      * "not", or any infix function in the same scope.
      *
      * This could "almost" be an operator invoke function. The problem is that
@@ -142,6 +198,24 @@ class GroupingCriteriaCollector {
                 .withSubCriteria(subCriteria)
                 .build()
         }
+
+    /**
+     * Add an initial criterion preceded to the current context. If the list contains more than
+     * one criterion that renders then parentheses will be added. This function is distinguished from the
+     * other overload in that it can accept a pre-created list of criteria and does not require any criterion
+     * to be the initial criterion. The first criterion that renders will be rendered without the "and" or "or".
+     *
+     * This may only be specified once per scope, and cannot be combined with "exists", "invoke",
+     * "not", or any infix function in the same scope.
+     *
+     * @param criteria a list of pre-created criteria
+     *
+     */
+    fun group(criteria: List<AndOrCriteriaGroup>) {
+        this@GroupingCriteriaCollector.initialCriterion = CriteriaGroup.Builder()
+            .withSubCriteria(criteria)
+            .build()
+    }
 
     /**
      * Add an initial criterion to the current context based on a column and condition.

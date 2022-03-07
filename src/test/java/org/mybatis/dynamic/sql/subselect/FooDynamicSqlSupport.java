@@ -24,7 +24,7 @@ import java.util.Date;
 public class FooDynamicSqlSupport {
     public static final Foo foo = new Foo();
     public static final SqlColumn<Date> column1 = foo.column1;
-    static final SqlColumn<Integer> column2 = foo.column2;
+    public static final SqlColumn<Integer> column2 = foo.column2;
 
     public static class Foo extends SqlTable {
         public final SqlColumn<Date> column1 = column("column1", JDBCType.DATE);

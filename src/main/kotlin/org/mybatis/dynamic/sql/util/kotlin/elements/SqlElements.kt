@@ -16,6 +16,7 @@
 @file:Suppress("TooManyFunctions")
 package org.mybatis.dynamic.sql.util.kotlin.elements
 
+import org.mybatis.dynamic.sql.AndOrCriteriaGroup
 import org.mybatis.dynamic.sql.BasicColumn
 import org.mybatis.dynamic.sql.BindableColumn
 import org.mybatis.dynamic.sql.Constant
@@ -41,6 +42,8 @@ import org.mybatis.dynamic.sql.select.function.Substring
 import org.mybatis.dynamic.sql.select.function.Subtract
 import org.mybatis.dynamic.sql.select.function.Upper
 import org.mybatis.dynamic.sql.select.join.EqualTo
+import org.mybatis.dynamic.sql.util.kotlin.GroupingCriteriaCollector
+import org.mybatis.dynamic.sql.util.kotlin.GroupingCriteriaReceiver
 import org.mybatis.dynamic.sql.util.kotlin.KotlinSubQueryBuilder
 import org.mybatis.dynamic.sql.where.condition.IsBetween
 import org.mybatis.dynamic.sql.where.condition.IsEqualTo
@@ -78,6 +81,23 @@ import org.mybatis.dynamic.sql.where.condition.IsNull
 // join support
 @Deprecated("Please use the infix function in the JoinCollector")
 fun equalTo(column: BasicColumn): EqualTo = SqlBuilder.equalTo(column)
+
+// support for criteria without initial conditions
+fun and(receiver: GroupingCriteriaReceiver): AndOrCriteriaGroup =
+    with(GroupingCriteriaCollector().apply(receiver)) {
+        AndOrCriteriaGroup.Builder().withInitialCriterion(this.initialCriterion)
+            .withSubCriteria(this.subCriteria)
+            .withConnector("and")
+            .build()
+    }
+
+fun or(receiver: GroupingCriteriaReceiver): AndOrCriteriaGroup =
+    with(GroupingCriteriaCollector().apply(receiver)) {
+        AndOrCriteriaGroup.Builder().withInitialCriterion(this.initialCriterion)
+            .withSubCriteria(this.subCriteria)
+            .withConnector("or")
+            .build()
+    }
 
 // aggregate support
 fun count(): CountAll = SqlBuilder.count()

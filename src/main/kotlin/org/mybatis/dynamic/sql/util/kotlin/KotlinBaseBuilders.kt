@@ -43,15 +43,27 @@ abstract class KotlinBaseBuilder<D : AbstractWhereSupport<*>> {
             this@KotlinBaseBuilder.getDsl().where(initialCriterion, subCriteria)
         }
 
+    fun where(criteria: List<AndOrCriteriaGroup>) {
+        this@KotlinBaseBuilder.getDsl().where(criteria)
+    }
+
     fun and(criteria: GroupingCriteriaReceiver): Unit =
         with(GroupingCriteriaCollector().apply(criteria)) {
             this@KotlinBaseBuilder.getDsl().where().and(initialCriterion, subCriteria)
         }
 
+    fun and(criteria: List<AndOrCriteriaGroup>) {
+        this@KotlinBaseBuilder.getDsl().where().and(criteria)
+    }
+
     fun or(criteria: GroupingCriteriaReceiver): Unit =
         with(GroupingCriteriaCollector().apply(criteria)) {
             this@KotlinBaseBuilder.getDsl().where().or(initialCriterion, subCriteria)
         }
+
+    fun or(criteria: List<AndOrCriteriaGroup>) {
+        this@KotlinBaseBuilder.getDsl().where().or(criteria)
+    }
 
     fun applyWhere(whereApplier: WhereApplier) = whereApplier.invoke(this)
 
