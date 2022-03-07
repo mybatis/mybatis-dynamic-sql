@@ -48,8 +48,8 @@ abstract class KotlinBaseBuilder<D : AbstractWhereSupport<*>> {
             this@KotlinBaseBuilder.getDsl().where().and(initialCriterion, subCriteria)
         }
 
-    fun and(conditions: List<AndOrCriteriaGroup>) {
-        this@KotlinBaseBuilder.getDsl().where().and(conditions)
+    fun and(criteria: List<AndOrCriteriaGroup>) {
+        this@KotlinBaseBuilder.getDsl().where().and(criteria)
     }
 
     fun or(criteria: GroupingCriteriaReceiver): Unit =

@@ -110,8 +110,8 @@ public abstract class AbstractWhereDSL<T extends AbstractWhereDSL<T>> {
     }
 
     @NotNull
-    public T and(List<AndOrCriteriaGroup> subCriteria) {
-        addSubCriteria("and", subCriteria);
+    public T and(List<AndOrCriteriaGroup> criteria) {
+        addSubCriteria("and", criteria);
         return getThis();
     }
 
@@ -192,10 +192,10 @@ public abstract class AbstractWhereDSL<T extends AbstractWhereDSL<T>> {
                 .build());
     }
 
-    private void addSubCriteria(String connector, List<AndOrCriteriaGroup> subCriteria) {
+    private void addSubCriteria(String connector, List<AndOrCriteriaGroup> criteria) {
         this.subCriteria.add(new AndOrCriteriaGroup.Builder()
                 .withConnector(connector)
-                .withSubCriteria(subCriteria)
+                .withSubCriteria(criteria)
                 .build());
     }
 

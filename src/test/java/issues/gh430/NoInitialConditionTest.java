@@ -17,9 +17,9 @@ class NoInitialConditionTest {
 
     @Test
     void testNoInitialConditionEmptyList() {
-        List<AndOrCriteriaGroup> conditions = new ArrayList<>();
+        List<AndOrCriteriaGroup> criteria = new ArrayList<>();
 
-        SelectStatementProvider selectStatement = buildSelectStatement(conditions);
+        SelectStatementProvider selectStatement = buildSelectStatement(criteria);
 
         String expected = "select column1, column2 from foo where column1 < :p1";
 
@@ -28,10 +28,10 @@ class NoInitialConditionTest {
 
     @Test
     void testNoInitialConditionSingleSub() {
-        List<AndOrCriteriaGroup> conditions = new ArrayList<>();
-        conditions.add(or(column2, isEqualTo(3)));
+        List<AndOrCriteriaGroup> criteria = new ArrayList<>();
+        criteria.add(or(column2, isEqualTo(3)));
 
-        SelectStatementProvider selectStatement = buildSelectStatement(conditions);
+        SelectStatementProvider selectStatement = buildSelectStatement(criteria);
 
         String expected = "select column1, column2 from foo where column1 < :p1 " +
                 "and column2 = :p2";
@@ -41,12 +41,12 @@ class NoInitialConditionTest {
 
     @Test
     void testNoInitialConditionMultipleSubs() {
-        List<AndOrCriteriaGroup> conditions = new ArrayList<>();
-        conditions.add(or(column2, isEqualTo(3)));
-        conditions.add(or(column2, isEqualTo(4)));
-        conditions.add(or(column2, isEqualTo(5)));
+        List<AndOrCriteriaGroup> criteria = new ArrayList<>();
+        criteria.add(or(column2, isEqualTo(3)));
+        criteria.add(or(column2, isEqualTo(4)));
+        criteria.add(or(column2, isEqualTo(5)));
 
-        SelectStatementProvider selectStatement = buildSelectStatement(conditions);
+        SelectStatementProvider selectStatement = buildSelectStatement(criteria);
 
         String expected = "select column1, column2 from foo where column1 < :p1 " +
                 "and (column2 = :p2 or column2 = :p3 or column2 = :p4)";
@@ -54,11 +54,11 @@ class NoInitialConditionTest {
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
 
-    private SelectStatementProvider buildSelectStatement(List<AndOrCriteriaGroup> conditions) {
+    private SelectStatementProvider buildSelectStatement(List<AndOrCriteriaGroup> criteria) {
         return select(column1, column2)
                 .from(foo)
                 .where(column1, isLessThan(new Date()))
-                .and(conditions)
+                .and(criteria) // this is a new method to support lists of criteria directly
                 .build()
                 .render(RenderingStrategies.SPRING_NAMED_PARAMETER);
     }
