@@ -110,6 +110,12 @@ public abstract class AbstractWhereDSL<T extends AbstractWhereDSL<T>> {
     }
 
     @NotNull
+    public T and(List<AndOrCriteriaGroup> subCriteria) {
+        addSubCriteria("and", subCriteria);
+        return getThis();
+    }
+
+    @NotNull
     public <S> T or(BindableColumn<S> column, VisitableCondition<S> condition,
                     AndOrCriteriaGroup...subCriteria) {
         return or(column, condition, Arrays.asList(subCriteria));
@@ -181,6 +187,13 @@ public abstract class AbstractWhereDSL<T extends AbstractWhereDSL<T>> {
                                 List<AndOrCriteriaGroup> subCriteria) {
         this.subCriteria.add(new AndOrCriteriaGroup.Builder()
                 .withInitialCriterion(initialCriterion)
+                .withConnector(connector)
+                .withSubCriteria(subCriteria)
+                .build());
+    }
+
+    private void addSubCriteria(String connector, List<AndOrCriteriaGroup> subCriteria) {
+        this.subCriteria.add(new AndOrCriteriaGroup.Builder()
                 .withConnector(connector)
                 .withSubCriteria(subCriteria)
                 .build());

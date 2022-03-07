@@ -73,6 +73,10 @@ class GroupingCriteriaCollector {
             )
         }
 
+    fun and(conditions: List<AndOrCriteriaGroup>) {
+        this@GroupingCriteriaCollector.subCriteria.addAll(conditions)
+    }
+
     /**
      * Add sub criterion joined with "or" to the current context. If the receiver adds more than one
      * criterion that renders at runtime then parenthesis will be added.

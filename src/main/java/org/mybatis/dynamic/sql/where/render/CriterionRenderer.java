@@ -87,12 +87,14 @@ public class CriterionRenderer implements SqlCriterionVisitor<Optional<RenderedC
 
     @Override
     public Optional<RenderedCriterion> visit(CriteriaGroup criterion) {
-        return render(criterion.initialCriterion(), criterion.subCriteria(), this::calculateFragment);
+        return criterion.initialCriterion().map(ic -> render(ic, criterion.subCriteria(), this::calculateFragment))
+                .orElseGet(() -> render(criterion.subCriteria(), this::calculateFragment)) ;
     }
 
     @Override
     public Optional<RenderedCriterion> visit(NotCriterion criterion) {
-        return render(criterion.initialCriterion(), criterion.subCriteria(), this::calculateNotFragment);
+        return criterion.initialCriterion().map(ic -> render(ic, criterion.subCriteria(), this::calculateNotFragment))
+                .orElseGet(() -> render(criterion.subCriteria(), this::calculateNotFragment)) ;
     }
 
     public Optional<RenderedCriterion> render(SqlCriterion initialCriterion, List<AndOrCriteriaGroup> subCriteria,

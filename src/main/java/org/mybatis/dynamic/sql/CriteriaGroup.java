@@ -15,7 +15,7 @@
  */
 package org.mybatis.dynamic.sql;
 
-import java.util.Objects;
+import java.util.Optional;
 
 /**
  * This class represents a criteria group without an AND or an OR connector. This is useful
@@ -30,11 +30,11 @@ public class CriteriaGroup extends SqlCriterion {
 
     protected CriteriaGroup(AbstractGroupBuilder<?> builder) {
         super(builder);
-        initialCriterion = Objects.requireNonNull(builder.initialCriterion);
+        initialCriterion = builder.initialCriterion;
     }
 
-    public SqlCriterion initialCriterion() {
-        return initialCriterion;
+    public Optional<SqlCriterion> initialCriterion() {
+        return Optional.ofNullable(initialCriterion);
     }
 
     @Override
