@@ -42,7 +42,10 @@ public abstract class AbstractWhereDSL<T extends AbstractWhereDSL<T>> {
     @NotNull
     public <S> T where(BindableColumn<S> column, VisitableCondition<S> condition,
                        List<AndOrCriteriaGroup> subCriteria) {
-        initialCriterion = buildCriterion(column, condition, subCriteria);
+        initialCriterion = ColumnAndConditionCriterion.withColumn(column)
+                .withCondition(condition)
+                .withSubCriteria(subCriteria)
+                .build();
         return getThis();
     }
 
@@ -53,7 +56,8 @@ public abstract class AbstractWhereDSL<T extends AbstractWhereDSL<T>> {
 
     @NotNull
     public T where(ExistsPredicate existsPredicate, List<AndOrCriteriaGroup> subCriteria) {
-        initialCriterion = buildCriterion(existsPredicate, subCriteria);
+        initialCriterion = new ExistsCriterion.Builder()
+                .withExistsPredicate(existsPredicate).withSubCriteria(subCriteria).build();
         return getThis();
     }
 
@@ -64,7 +68,18 @@ public abstract class AbstractWhereDSL<T extends AbstractWhereDSL<T>> {
 
     @NotNull
     public T where(SqlCriterion initialCriterion, List<AndOrCriteriaGroup> subCriteria) {
-        this.initialCriterion = buildCriterion(initialCriterion, subCriteria);
+        this.initialCriterion = new CriteriaGroup.Builder()
+                .withInitialCriterion(initialCriterion)
+                .withSubCriteria(subCriteria)
+                .build();
+        return getThis();
+    }
+
+    @NotNull
+    public T where(List<AndOrCriteriaGroup> criteria) {
+        initialCriterion = new CriteriaGroup.Builder()
+                .withSubCriteria(criteria)
+                .build();
         return getThis();
     }
 
@@ -83,7 +98,7 @@ public abstract class AbstractWhereDSL<T extends AbstractWhereDSL<T>> {
     @NotNull
     public <S> T and(BindableColumn<S> column, VisitableCondition<S> condition,
                      List<AndOrCriteriaGroup> subCriteria) {
-        addSubCriteria("and", buildCriterion(column, condition), subCriteria);
+        addSubCriteria("and", buildCriterion(column, condition), subCriteria); //$NON-NLS-1$
         return getThis();
     }
 
@@ -94,7 +109,7 @@ public abstract class AbstractWhereDSL<T extends AbstractWhereDSL<T>> {
 
     @NotNull
     public T and(ExistsPredicate existsPredicate, List<AndOrCriteriaGroup> subCriteria) {
-        addSubCriteria("and", buildCriterion(existsPredicate), subCriteria);
+        addSubCriteria("and", buildCriterion(existsPredicate), subCriteria); //$NON-NLS-1$
         return getThis();
     }
 
@@ -105,13 +120,13 @@ public abstract class AbstractWhereDSL<T extends AbstractWhereDSL<T>> {
 
     @NotNull
     public T and(SqlCriterion initialCriterion, List<AndOrCriteriaGroup> subCriteria) {
-        addSubCriteria("and", buildCriterion(initialCriterion), subCriteria);
+        addSubCriteria("and", buildCriterion(initialCriterion), subCriteria); //$NON-NLS-1$
         return getThis();
     }
 
     @NotNull
     public T and(List<AndOrCriteriaGroup> criteria) {
-        addSubCriteria("and", criteria);
+        addSubCriteria("and", criteria); //$NON-NLS-1$
         return getThis();
     }
 
@@ -124,7 +139,7 @@ public abstract class AbstractWhereDSL<T extends AbstractWhereDSL<T>> {
     @NotNull
     public <S> T or(BindableColumn<S> column, VisitableCondition<S> condition,
                     List<AndOrCriteriaGroup> subCriteria) {
-        addSubCriteria("or", buildCriterion(column, condition), subCriteria);
+        addSubCriteria("or", buildCriterion(column, condition), subCriteria); //$NON-NLS-1$
         return getThis();
     }
 
@@ -135,7 +150,7 @@ public abstract class AbstractWhereDSL<T extends AbstractWhereDSL<T>> {
 
     @NotNull
     public T or(ExistsPredicate existsPredicate, List<AndOrCriteriaGroup> subCriteria) {
-        addSubCriteria("or", buildCriterion(existsPredicate), subCriteria);
+        addSubCriteria("or", buildCriterion(existsPredicate), subCriteria); //$NON-NLS-1$
         return getThis();
     }
 
@@ -146,7 +161,13 @@ public abstract class AbstractWhereDSL<T extends AbstractWhereDSL<T>> {
 
     @NotNull
     public T or(SqlCriterion initialCriterion, List<AndOrCriteriaGroup> subCriteria) {
-        addSubCriteria("or", buildCriterion(initialCriterion), subCriteria);
+        addSubCriteria("or", buildCriterion(initialCriterion), subCriteria); //$NON-NLS-1$
+        return getThis();
+    }
+
+    @NotNull
+    public T or(List<AndOrCriteriaGroup> criteria) {
+        addSubCriteria("or", criteria); //$NON-NLS-1$
         return getThis();
     }
 
@@ -158,29 +179,12 @@ public abstract class AbstractWhereDSL<T extends AbstractWhereDSL<T>> {
         return ColumnAndConditionCriterion.withColumn(column).withCondition(condition).build();
     }
 
-    private <R> SqlCriterion buildCriterion(BindableColumn<R> column, VisitableCondition<R> condition,
-                                            List<AndOrCriteriaGroup> subCriteria) {
-        return ColumnAndConditionCriterion.withColumn(column)
-                .withCondition(condition)
-                .withSubCriteria(subCriteria)
-                .build();
-    }
-
     private SqlCriterion buildCriterion(ExistsPredicate existsPredicate) {
         return new ExistsCriterion.Builder().withExistsPredicate(existsPredicate).build();
     }
 
-    private SqlCriterion buildCriterion(ExistsPredicate existsPredicate,
-                                        List<AndOrCriteriaGroup> subCriteria) {
-        return new ExistsCriterion.Builder().withExistsPredicate(existsPredicate).withSubCriteria(subCriteria).build();
-    }
-
     private SqlCriterion buildCriterion(SqlCriterion initialCriterion) {
         return new CriteriaGroup.Builder().withInitialCriterion(initialCriterion).build();
-    }
-
-    private SqlCriterion buildCriterion(SqlCriterion initialCriterion, List<AndOrCriteriaGroup> subCriteria) {
-        return new CriteriaGroup.Builder().withInitialCriterion(initialCriterion).withSubCriteria(subCriteria).build();
     }
 
     private void addSubCriteria(String connector, SqlCriterion initialCriterion,

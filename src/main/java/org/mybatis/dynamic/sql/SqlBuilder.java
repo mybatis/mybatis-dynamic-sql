@@ -265,6 +265,12 @@ public interface SqlBuilder {
                 .build();
     }
 
+    static CriteriaGroup group(List<AndOrCriteriaGroup> subCriteria) {
+        return new CriteriaGroup.Builder()
+                .withSubCriteria(subCriteria)
+                .build();
+    }
+
     static <T> NotCriterion not(BindableColumn<T> column, VisitableCondition<T> condition,
                                 AndOrCriteriaGroup...subCriteria) {
         return not(column, condition, Arrays.asList(subCriteria));
@@ -302,6 +308,12 @@ public interface SqlBuilder {
                 .build();
     }
 
+    static NotCriterion not(List<AndOrCriteriaGroup> subCriteria) {
+        return new NotCriterion.Builder()
+                .withSubCriteria(subCriteria)
+                .build();
+    }
+
     static <T> AndOrCriteriaGroup or(BindableColumn<T> column, VisitableCondition<T> condition,
                                      AndOrCriteriaGroup...subCriteria) {
         return new AndOrCriteriaGroup.Builder()
@@ -330,6 +342,13 @@ public interface SqlBuilder {
                 .build();
     }
 
+    static AndOrCriteriaGroup or(List<AndOrCriteriaGroup> subCriteria) {
+        return new AndOrCriteriaGroup.Builder()
+                .withConnector("or") //$NON-NLS-1$
+                .withSubCriteria(subCriteria)
+                .build();
+    }
+
     static <T> AndOrCriteriaGroup and(BindableColumn<T> column, VisitableCondition<T> condition,
                                       AndOrCriteriaGroup...subCriteria) {
         return new AndOrCriteriaGroup.Builder()
@@ -355,6 +374,13 @@ public interface SqlBuilder {
                 .withConnector("and") //$NON-NLS-1$
                 .withInitialCriterion(initialCriterion)
                 .withSubCriteria(Arrays.asList(subCriteria))
+                .build();
+    }
+
+    static AndOrCriteriaGroup and(List<AndOrCriteriaGroup> subCriteria) {
+        return new AndOrCriteriaGroup.Builder()
+                .withConnector("and") //$NON-NLS-1$
+                .withSubCriteria(subCriteria)
                 .build();
     }
 
