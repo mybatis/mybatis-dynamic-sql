@@ -40,8 +40,8 @@
     <url>https://github.com/mybatis/mybatis-dynamic-sql/issues</url>
   </issueManagement>
   <ciManagement>
-    <system>Travis CI</system>
-    <url>https://travis-ci.org/mybatis/mybatis-dynamic-sql</url>
+    <system>Github</system>
+    <url>https://github.com/mybatis/mybatis-dynamic-sql/actions</url>
   </ciManagement>
   <distributionManagement>
     <site>
