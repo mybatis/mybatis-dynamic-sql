@@ -37,6 +37,7 @@ import org.mybatis.dynamic.sql.util.kotlin.MyBatisDslMarker
 import org.mybatis.dynamic.sql.util.kotlin.SelectCompleter
 import org.mybatis.dynamic.sql.util.kotlin.UpdateCompleter
 import org.springframework.dao.EmptyResultDataAccessException
+import org.springframework.jdbc.core.RowMapper
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
@@ -193,6 +194,11 @@ fun NamedParameterJdbcTemplate.selectDistinct(
 fun <T> NamedParameterJdbcTemplate.selectList(
     selectStatement: SelectStatementProvider,
     rowMapper: (rs: ResultSet, rowNum: Int) -> T
+): List<T> = selectList(selectStatement, RowMapper(rowMapper))
+
+fun <T> NamedParameterJdbcTemplate.selectList(
+    selectStatement: SelectStatementProvider,
+    rowMapper: RowMapper<T>
 ): List<T> =
     query(selectStatement.selectStatement, selectStatement.parameters, rowMapper)
 
@@ -217,10 +223,15 @@ fun NamedParameterJdbcTemplate.selectOne(
         this
     )
 
-@SuppressWarnings("SwallowedException")
 fun <T> NamedParameterJdbcTemplate.selectOne(
     selectStatement: SelectStatementProvider,
     rowMapper: (rs: ResultSet, rowNum: Int) -> T
+): T? = selectOne(selectStatement, RowMapper(rowMapper))
+
+@SuppressWarnings("SwallowedException")
+fun <T> NamedParameterJdbcTemplate.selectOne(
+    selectStatement: SelectStatementProvider,
+    rowMapper: RowMapper<T>
 ): T? = try {
     queryForObject(selectStatement.selectStatement, selectStatement.parameters, rowMapper)
 } catch (e: EmptyResultDataAccessException) {
@@ -251,6 +262,9 @@ class SelectListMapperGatherer(
 ) {
     fun <T> withRowMapper(rowMapper: (rs: ResultSet, rowNum: Int) -> T): List<T> =
         template.selectList(selectStatement, rowMapper)
+
+    fun <T> withRowMapper(rowMapper: RowMapper<T>): List<T> =
+        template.selectList(selectStatement, rowMapper)
 }
 
 @MyBatisDslMarker
@@ -259,6 +273,9 @@ class SelectOneMapperGatherer(
     private val template: NamedParameterJdbcTemplate
 ) {
     fun <T> withRowMapper(rowMapper: (rs: ResultSet, rowNum: Int) -> T): T? =
+        template.selectOne(selectStatement, rowMapper)
+
+    fun <T> withRowMapper(rowMapper: RowMapper<T>): T? =
         template.selectOne(selectStatement, rowMapper)
 }
 
