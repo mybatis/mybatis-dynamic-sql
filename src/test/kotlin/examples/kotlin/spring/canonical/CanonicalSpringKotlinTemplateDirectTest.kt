@@ -45,6 +45,7 @@ import org.mybatis.dynamic.sql.util.kotlin.spring.selectOne
 import org.mybatis.dynamic.sql.util.kotlin.spring.update
 import org.mybatis.dynamic.sql.util.kotlin.spring.withKeyHolder
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.jdbc.core.DataClassRowMapper
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import org.springframework.jdbc.support.GeneratedKeyHolder
 import org.springframework.test.annotation.DirtiesContext
@@ -616,6 +617,24 @@ open class CanonicalSpringKotlinTemplateDirectTest {
         }
 
         assertThat(rows).hasSize(2)
+    }
+
+    @Test
+    fun testAutoMapping() {
+        val rm = DataClassRowMapper.newInstance(AddressRecord::class.java)
+
+        val rows = template.select(address.id.`as`("id"), address.streetAddress, address.city, address.state) {
+            from(address)
+            orderBy(address.id)
+        }.withRowMapper(rm::mapRow)
+
+        assertThat(rows).hasSize(2)
+        with(rows[0]) {
+            assertThat(id).isEqualTo(1)
+            assertThat(streetAddress).isEqualTo("123 Main Street")
+            assertThat(city).isEqualTo("Bedrock")
+            assertThat(state).isEqualTo("IN")
+        }
     }
 
     @Test
