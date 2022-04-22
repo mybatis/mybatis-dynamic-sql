@@ -621,15 +621,30 @@ open class CanonicalSpringKotlinTemplateDirectTest {
 
     @Test
     fun testAutoMapping() {
-        val rm = DataClassRowMapper.newInstance(AddressRecord::class.java)
-
         val rows = template.select(address.id.`as`("id"), address.streetAddress, address.city, address.state) {
             from(address)
             orderBy(address.id)
-        }.withRowMapper(rm::mapRow)
+        }.withRowMapper(DataClassRowMapper(AddressRecord::class.java))
 
         assertThat(rows).hasSize(2)
         with(rows[0]) {
+            assertThat(id).isEqualTo(1)
+            assertThat(streetAddress).isEqualTo("123 Main Street")
+            assertThat(city).isEqualTo("Bedrock")
+            assertThat(state).isEqualTo("IN")
+        }
+    }
+
+    @Test
+    fun testAutoMappingOneRow() {
+        val row = template.selectOne(address.id.`as`("id"), address.streetAddress, address.city, address.state) {
+            from(address)
+            where { address.id isEqualTo 1 }
+            orderBy(address.id)
+        }.withRowMapper(DataClassRowMapper(AddressRecord::class.java))
+
+        assertThat(row).isNotNull
+        with(row!!) {
             assertThat(id).isEqualTo(1)
             assertThat(streetAddress).isEqualTo("123 Main Street")
             assertThat(city).isEqualTo("Bedrock")
