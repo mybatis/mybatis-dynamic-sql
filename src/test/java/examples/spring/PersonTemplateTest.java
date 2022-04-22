@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2021 the original author or authors.
+ *    Copyright 2016-2022 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -36,6 +36,7 @@ import org.mybatis.dynamic.sql.update.UpdateModel;
 import org.mybatis.dynamic.sql.util.Buildable;
 import org.mybatis.dynamic.sql.util.spring.NamedParameterJdbcTemplateExtensions;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import org.springframework.transaction.annotation.Transactional;
@@ -636,6 +637,23 @@ class PersonTemplateTest {
 
         assertThat(rows).hasSize(3);
         assertThat(rows.get(0).getFirstName()).isEqualTo("Barney");
+    }
+
+    @Test
+    void testAutoMapping() {
+        Buildable<SelectModel> selectStatement = select(address.id.as("id"), address.streetAddress,
+                address.city, address.state)
+                .from(address)
+                .orderBy(address.id);
+
+        List<AddressRecord> records = template.selectList(selectStatement,
+                BeanPropertyRowMapper.newInstance(AddressRecord.class));
+
+        assertThat(records).hasSize(2);
+        assertThat(records.get(0).getId()).isEqualTo(1);
+        assertThat(records.get(0).getStreetAddress()).isEqualTo("123 Main Street");
+        assertThat(records.get(0).getCity()).isEqualTo("Bedrock");
+        assertThat(records.get(0).getState()).isEqualTo("IN");
     }
 
     @Test
