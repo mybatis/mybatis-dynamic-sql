@@ -27,7 +27,7 @@ Simple conditions are the most common - they render the basic SQL operators.
 | Not Equals | where(foo, isNotEqualTo(x)) | `where foo <> ?` |
 | Not In | where(foo, isNotIn(x, y)) | `where foo not in (?,?)` |
 | Not In (case insensitive) | where(foo, isNotInCaseInsensitive(x, y)) | `where upper(foo) not in (?,?)` (the framework will transform the values for x and y to upper case)|
-| Not Like | where(foo, isLike(x)) | `where foo not like ?` (the framework DOES NOT add the SQL wild cards to the value - you will need to do that yourself) |
+| Not Like | where(foo, isNotLike(x)) | `where foo not like ?` (the framework DOES NOT add the SQL wild cards to the value - you will need to do that yourself) |
 | Not Like (case insensitive) | where(foo, isNotLikeCaseInsensitive(x)) | `where upper(foo) not like ?` (the framework DOES NOT add the SQL wild cards to the value - you will need to do that yourself, the framework will transform the value of x to upper case) |
 | Not Null | where(foo, isNotNull()) | `where foo is not null` |
 | Null | where(foo, isNull()) | `where foo is null` |
