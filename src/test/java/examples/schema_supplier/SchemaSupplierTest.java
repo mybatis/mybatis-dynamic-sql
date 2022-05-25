@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2020 the original author or authors.
+ *    Copyright 2016-2022 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -99,7 +99,7 @@ class SchemaSupplierTest {
             insertFlintstones(mapper);
 
             List<User> records = mapper.select(SelectDSLCompleter.allRows());
-            assertThat(records.size()).isEqualTo(2);
+            assertThat(records).hasSize(2);
 
 
             System.setProperty(SchemaSupplier.schema_property, "schema2");
