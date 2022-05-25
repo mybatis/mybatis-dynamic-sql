@@ -62,6 +62,9 @@ fun countFrom(table: SqlTable, completer: CountCompleter): SelectModel =
 fun deleteFrom(table: SqlTable, completer: DeleteCompleter): DeleteModel =
     KotlinDeleteBuilder(SqlBuilder.deleteFrom(table)).apply(completer).build()
 
+fun deleteFrom(table: SqlTable, tableAlias: String, completer: DeleteCompleter): DeleteModel =
+    KotlinDeleteBuilder(SqlBuilder.deleteFrom(table, tableAlias)).apply(completer).build()
+
 fun <T> insert(row: T, completer: KotlinInsertCompleter<T>): InsertModel<T> =
     KotlinInsertBuilder(row).apply(completer).build()
 

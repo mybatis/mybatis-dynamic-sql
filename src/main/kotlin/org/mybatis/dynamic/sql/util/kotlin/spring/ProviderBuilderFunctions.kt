@@ -65,6 +65,9 @@ fun countFrom(table: SqlTable, completer: CountCompleter): SelectStatementProvid
 fun deleteFrom(table: SqlTable, completer: DeleteCompleter): DeleteStatementProvider =
     deleteFrom(table, completer).render(RenderingStrategies.SPRING_NAMED_PARAMETER)
 
+fun deleteFrom(table: SqlTable, tableAlias: String, completer: DeleteCompleter): DeleteStatementProvider =
+    deleteFrom(table, tableAlias, completer).render(RenderingStrategies.SPRING_NAMED_PARAMETER)
+
 fun <T> insert(row: T, completer: KotlinInsertCompleter<T>): InsertStatementProvider<T> =
     insert(row, completer).render(RenderingStrategies.SPRING_NAMED_PARAMETER)
 

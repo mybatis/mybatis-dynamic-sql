@@ -27,7 +27,9 @@ import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.mybatis.dynamic.sql.util.kotlin.elements.invoke
+import org.mybatis.dynamic.sql.util.kotlin.mybatis3.deleteFrom
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.select
+import org.mybatis.dynamic.sql.util.mybatis3.CommonDeleteMapper
 import org.mybatis.dynamic.sql.util.mybatis3.CommonSelectMapper
 import java.io.InputStreamReader
 import java.sql.DriverManager
@@ -48,6 +50,7 @@ class ExistsTest {
         val environment = Environment("test", JdbcTransactionFactory(), ds)
         val config = Configuration(environment)
         config.addMapper(CommonSelectMapper::class.java)
+        config.addMapper(CommonDeleteMapper::class.java)
         return SqlSessionFactoryBuilder().build(config).openSession()
     }
 
@@ -660,6 +663,59 @@ class ExistsTest {
                 assertThat(this).containsEntry("ITEM_ID", 22)
                 assertThat(this).containsEntry("DESCRIPTION", "Helmet")
             }
+        }
+    }
+
+    @Test
+    fun testDeleteWithHardAlias() {
+        newSession().use { session ->
+            val mapper = session.getMapper(CommonDeleteMapper::class.java)
+            val im = itemMaster.withAlias("im")
+            val deleteStatement = deleteFrom(im) {
+                where {
+                    not {
+                        exists {
+                            select(orderLine.allColumns()) {
+                                from(orderLine, "ol")
+                                where{orderLine.itemId isEqualTo im.itemId}
+                            }
+                        }
+                    }
+                }
+            }
+
+            val expectedStatement = "delete from ItemMaster im where not exists " +
+                    "(select ol.* from OrderLine ol where ol.item_id = im.item_id)"
+
+            assertThat(deleteStatement.deleteStatement).isEqualTo(expectedStatement)
+            val rows = mapper.delete(deleteStatement)
+            assertThat(rows).isEqualTo(1)
+        }
+    }
+
+    @Test
+    fun testDeleteWithSoftAlias() {
+        newSession().use { session ->
+            val mapper = session.getMapper(CommonDeleteMapper::class.java)
+            val deleteStatement = deleteFrom(itemMaster, "im") {
+                where {
+                    not {
+                        exists {
+                            select(orderLine.allColumns()) {
+                                from(orderLine, "ol")
+                                where{orderLine.itemId isEqualTo itemMaster.itemId}
+                            }
+                        }
+                    }
+                }
+            }
+
+            val expectedStatement = "delete from ItemMaster im where not exists " +
+                    "(select ol.* from OrderLine ol where ol.item_id = im.item_id)"
+
+            assertThat(deleteStatement.deleteStatement).isEqualTo(expectedStatement)
+            val rows = mapper.delete(deleteStatement)
+            assertThat(rows).isEqualTo(1)
         }
     }
 

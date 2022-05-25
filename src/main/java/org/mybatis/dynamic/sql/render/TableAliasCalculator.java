@@ -29,12 +29,12 @@ public interface TableAliasCalculator {
         return new TableAliasCalculator() {
             @Override
             public Optional<String> aliasForColumn(SqlTable table) {
-                return Optional.empty();
+                return table.tableAlias();
             }
 
             @Override
             public Optional<String> aliasForTable(SqlTable table) {
-                return Optional.empty();
+                return table.tableAlias();
             }
         };
     }

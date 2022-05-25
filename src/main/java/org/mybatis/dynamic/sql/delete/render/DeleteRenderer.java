@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2020 the original author or authors.
+ *    Copyright 2016-2022 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -21,7 +21,9 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.delete.DeleteModel;
+import org.mybatis.dynamic.sql.render.ExplicitTableAliasCalculator;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 import org.mybatis.dynamic.sql.where.WhereModel;
@@ -31,10 +33,15 @@ import org.mybatis.dynamic.sql.where.render.WhereRenderer;
 public class DeleteRenderer {
     private final DeleteModel deleteModel;
     private final RenderingStrategy renderingStrategy;
+    private final TableAliasCalculator tableAliasCalculator;
 
     private DeleteRenderer(Builder builder) {
         deleteModel = Objects.requireNonNull(builder.deleteModel);
         renderingStrategy = Objects.requireNonNull(builder.renderingStrategy);
+        tableAliasCalculator = builder.deleteModel.tableAlias()
+                .map(a -> ExplicitTableAliasCalculator.of(deleteModel.table(), a))
+                .orElseGet(TableAliasCalculator::empty);
+
     }
 
     public DeleteStatementProvider render() {
@@ -56,8 +63,12 @@ public class DeleteRenderer {
     }
 
     private String calculateDeleteStatement() {
-        return "delete from" //$NON-NLS-1$
-                + spaceBefore(deleteModel.table().tableNameAtRuntime());
+        SqlTable table = deleteModel.table();
+        String tableName = table.tableNameAtRuntime();
+        String fullTableName = tableAliasCalculator.aliasForTable(table)
+                .map(a -> tableName + " " + a).orElse(tableName); //$NON-NLS-1$
+
+        return "delete from" + spaceBefore(fullTableName); //$NON-NLS-1$
     }
 
     private DeleteStatementProvider renderWithoutWhereClause() {
@@ -69,7 +80,7 @@ public class DeleteRenderer {
         return WhereRenderer.withWhereModel(whereModel)
                 .withRenderingStrategy(renderingStrategy)
                 .withSequence(new AtomicInteger(1))
-                .withTableAliasCalculator(TableAliasCalculator.empty())
+                .withTableAliasCalculator(tableAliasCalculator)
                 .build()
                 .render();
     }
