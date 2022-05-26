@@ -9,6 +9,9 @@ GitHub milestone: [https://github.com/mybatis/mybatis-dynamic-sql/issues?q=miles
 1. Added support for criteria groups without an initial criteria. This makes it possible to create an independent list
    of pre-created criteria and then add the list to a where clause. See the tests in the related pull request for
    usage examples. ([#462](https://github.com/mybatis/mybatis-dynamic-sql/pull/462))
+2. Added the ability to specify a table alias on DELETE and UPDATE statements.
+   This is especially useful when working with a sub-query with an exists or not exists condition.
+   ([#489](https://github.com/mybatis/mybatis-dynamic-sql/pull/489))
 
 ## Release 1.4.0 - March 3, 2022
 

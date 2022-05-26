@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2020 the original author or authors.
+ *    Copyright 2016-2022 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -25,6 +25,8 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
+import org.mybatis.dynamic.sql.SqlTable;
+import org.mybatis.dynamic.sql.render.ExplicitTableAliasCalculator;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 import org.mybatis.dynamic.sql.update.UpdateModel;
@@ -37,14 +39,18 @@ public class UpdateRenderer {
     private final UpdateModel updateModel;
     private final RenderingStrategy renderingStrategy;
     private final AtomicInteger sequence = new AtomicInteger(1);
+    private final TableAliasCalculator tableAliasCalculator;
 
     private UpdateRenderer(Builder builder) {
         updateModel = Objects.requireNonNull(builder.updateModel);
         renderingStrategy = Objects.requireNonNull(builder.renderingStrategy);
+        tableAliasCalculator = builder.updateModel.tableAlias()
+                .map(a -> ExplicitTableAliasCalculator.of(updateModel.table(), a))
+                .orElseGet(TableAliasCalculator::empty);
     }
 
     public UpdateStatementProvider render() {
-        SetPhraseVisitor visitor = new SetPhraseVisitor(sequence, renderingStrategy);
+        SetPhraseVisitor visitor = new SetPhraseVisitor(sequence, renderingStrategy, tableAliasCalculator);
 
         List<Optional<FragmentAndParameters>> fragmentsAndParameters =
                 updateModel.mapColumnMappings(m -> m.accept(visitor))
@@ -72,8 +78,13 @@ public class UpdateRenderer {
     }
 
     private String calculateUpdateStatement(List<Optional<FragmentAndParameters>> fragmentsAndParameters) {
+        SqlTable table = updateModel.table();
+        String tableName = table.tableNameAtRuntime();
+        String aliasedTableName = tableAliasCalculator.aliasForTable(table)
+                .map(a -> tableName + " " + a).orElse(tableName); //$NON-NLS-1$
+
         return "update" //$NON-NLS-1$
-                + spaceBefore(updateModel.table().tableNameAtRuntime())
+                + spaceBefore(aliasedTableName)
                 + spaceBefore(calculateSetPhrase(fragmentsAndParameters));
     }
 
@@ -104,7 +115,7 @@ public class UpdateRenderer {
         return WhereRenderer.withWhereModel(whereModel)
                 .withRenderingStrategy(renderingStrategy)
                 .withSequence(sequence)
-                .withTableAliasCalculator(TableAliasCalculator.empty())
+                .withTableAliasCalculator(tableAliasCalculator)
                 .build()
                 .render();
     }

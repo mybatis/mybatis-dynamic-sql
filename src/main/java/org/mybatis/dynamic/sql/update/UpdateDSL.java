@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2021 the original author or authors.
+ *    Copyright 2016-2022 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -45,10 +45,12 @@ public class UpdateDSL<R> extends AbstractWhereSupport<UpdateDSL<R>.UpdateWhereB
     private final Function<UpdateModel, R> adapterFunction;
     private final List<AbstractColumnMapping> columnMappings = new ArrayList<>();
     private final SqlTable table;
+    private final String tableAlias;
     private final UpdateWhereBuilder whereBuilder = new UpdateWhereBuilder();
 
-    private UpdateDSL(SqlTable table, Function<UpdateModel, R> adapterFunction) {
+    private UpdateDSL(SqlTable table, String tableAlias, Function<UpdateModel, R> adapterFunction) {
         this.table = Objects.requireNonNull(table);
+        this.tableAlias = tableAlias;
         this.adapterFunction = Objects.requireNonNull(adapterFunction);
     }
 
@@ -71,18 +73,23 @@ public class UpdateDSL<R> extends AbstractWhereSupport<UpdateDSL<R>.UpdateWhereB
     @Override
     public R build() {
         UpdateModel updateModel = UpdateModel.withTable(table)
+                .withTableAlias(tableAlias)
                 .withColumnMappings(columnMappings)
                 .withWhereModel(whereBuilder.buildWhereModel())
                 .build();
         return adapterFunction.apply(updateModel);
     }
 
-    public static <R> UpdateDSL<R> update(Function<UpdateModel, R> adapterFunction, SqlTable table) {
-        return new UpdateDSL<>(table, adapterFunction);
+    public static <R> UpdateDSL<R> update(Function<UpdateModel, R> adapterFunction, SqlTable table, String tableAlias) {
+        return new UpdateDSL<>(table, tableAlias, adapterFunction);
     }
 
     public static UpdateDSL<UpdateModel> update(SqlTable table) {
-        return update(Function.identity(), table);
+        return update(Function.identity(), table, null);
+    }
+
+    public static UpdateDSL<UpdateModel> update(SqlTable table, String tableAlias) {
+        return update(Function.identity(), table, tableAlias);
     }
 
     public class SetClauseFinisher<T> {

@@ -128,6 +128,10 @@ public interface SqlBuilder {
         return DeleteDSL.deleteFrom(table);
     }
 
+    static DeleteDSL<DeleteModel> deleteFrom(SqlTable table, String tableAlias) {
+        return DeleteDSL.deleteFrom(table, tableAlias);
+    }
+
     static <T> InsertDSL.IntoGatherer<T> insert(T row) {
         return InsertDSL.insert(row);
     }
@@ -208,6 +212,10 @@ public interface SqlBuilder {
 
     static UpdateDSL<UpdateModel> update(SqlTable table) {
         return UpdateDSL.update(table);
+    }
+
+    static UpdateDSL<UpdateModel> update(SqlTable table, String tableAlias) {
+        return UpdateDSL.update(table, tableAlias);
     }
 
     static WhereDSL where() {

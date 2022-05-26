@@ -15,6 +15,8 @@
  */
 package examples.kotlin.spring.canonical
 
+import examples.kotlin.mybatis3.joins.ItemMasterDynamicSQLSupport.itemMaster
+import examples.kotlin.mybatis3.joins.OrderLineDynamicSQLSupport.orderLine
 import examples.kotlin.spring.canonical.PersonDynamicSqlSupport.person
 import examples.kotlin.spring.canonical.PersonDynamicSqlSupport.firstName
 import examples.kotlin.spring.canonical.PersonDynamicSqlSupport.id
@@ -23,8 +25,10 @@ import org.junit.jupiter.api.Test
 import org.mybatis.dynamic.sql.DerivedColumn
 import org.mybatis.dynamic.sql.util.kotlin.elements.`as`
 import org.mybatis.dynamic.sql.util.kotlin.elements.invoke
+import org.mybatis.dynamic.sql.util.kotlin.spring.deleteFrom
 import org.mybatis.dynamic.sql.util.kotlin.spring.select
 import org.mybatis.dynamic.sql.util.kotlin.spring.selectList
+import org.mybatis.dynamic.sql.util.kotlin.spring.update
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig
@@ -147,5 +151,49 @@ open class SpringKotlinSubQueryTest {
         assertThat(rows[2]).containsEntry("firstName", "Wilma")
         assertThat(rows[2]).containsEntry("PERSONID", 2)
         assertThat(rows[2]).containsEntry("ROWNUM", 3)
+    }
+
+    @Test
+    fun testDeleteWithSoftAliasRendersProperlyWithSpring() {
+        val deleteStatement = deleteFrom(itemMaster, "im") {
+            where {
+                not {
+                    exists {
+                        select(orderLine.allColumns()) {
+                            from(orderLine, "ol")
+                            where { orderLine.itemId isEqualTo itemMaster.itemId }
+                        }
+                    }
+                }
+            }
+        }
+
+        val expectedStatement = "delete from ItemMaster im where not exists " +
+                "(select ol.* from OrderLine ol where ol.item_id = im.item_id)"
+
+        assertThat(deleteStatement.deleteStatement).isEqualTo(expectedStatement)
+    }
+
+    @Test
+    fun testUpdateWithSoftAliasRendersProperlyWithSpring() {
+        val updateStatement = update(itemMaster, "im") {
+            set(itemMaster.description) equalTo "No Orders"
+            where {
+                not {
+                    exists {
+                        select(orderLine.allColumns()) {
+                            from(orderLine, "ol")
+                            where { orderLine.itemId isEqualTo itemMaster.itemId }
+                        }
+                    }
+                }
+            }
+        }
+
+        val expectedStatement = "update ItemMaster im " +
+                "set im.description = :p1 " +
+                "where not exists (select ol.* from OrderLine ol where ol.item_id = im.item_id)"
+
+        assertThat(updateStatement.updateStatement).isEqualTo(expectedStatement)
     }
 }

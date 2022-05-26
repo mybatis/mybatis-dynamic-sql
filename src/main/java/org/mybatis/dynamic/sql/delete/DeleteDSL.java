@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2020 the original author or authors.
+ *    Copyright 2016-2022 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -29,10 +29,12 @@ public class DeleteDSL<R> extends AbstractWhereSupport<DeleteDSL<R>.DeleteWhereB
 
     private final Function<DeleteModel, R> adapterFunction;
     private final SqlTable table;
+    private final String tableAlias;
     private final DeleteWhereBuilder whereBuilder = new DeleteWhereBuilder();
 
-    private DeleteDSL(SqlTable table, Function<DeleteModel, R> adapterFunction) {
+    private DeleteDSL(SqlTable table, String tableAlias, Function<DeleteModel, R> adapterFunction) {
         this.table = Objects.requireNonNull(table);
+        this.tableAlias = tableAlias;
         this.adapterFunction = Objects.requireNonNull(adapterFunction);
     }
 
@@ -42,7 +44,7 @@ public class DeleteDSL<R> extends AbstractWhereSupport<DeleteDSL<R>.DeleteWhereB
     }
 
     /**
-     * WARNING! Calling this method could result in an delete statement that deletes
+     * WARNING! Calling this method could result in a delete statement that deletes
      * all rows in a table.
      *
      * @return the model class
@@ -51,17 +53,22 @@ public class DeleteDSL<R> extends AbstractWhereSupport<DeleteDSL<R>.DeleteWhereB
     @Override
     public R build() {
         DeleteModel deleteModel = DeleteModel.withTable(table)
+                .withTableAlias(tableAlias)
                 .withWhereModel(whereBuilder.buildWhereModel())
                 .build();
         return adapterFunction.apply(deleteModel);
     }
 
-    public static <R> DeleteDSL<R> deleteFrom(Function<DeleteModel, R> adapterFunction, SqlTable table) {
-        return new DeleteDSL<>(table, adapterFunction);
+    public static <R> DeleteDSL<R> deleteFrom(Function<DeleteModel, R> adapterFunction, SqlTable table, String tableAlias) {
+        return new DeleteDSL<>(table, tableAlias, adapterFunction);
     }
 
     public static DeleteDSL<DeleteModel> deleteFrom(SqlTable table) {
-        return deleteFrom(Function.identity(), table);
+        return deleteFrom(Function.identity(), table, null);
+    }
+
+    public static DeleteDSL<DeleteModel> deleteFrom(SqlTable table, String tableAlias) {
+        return deleteFrom(Function.identity(), table, tableAlias);
     }
 
     public class DeleteWhereBuilder extends AbstractWhereDSL<DeleteWhereBuilder> implements Buildable<R> {
