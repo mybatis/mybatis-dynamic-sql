@@ -32,10 +32,10 @@ public class DeleteDSL<R> extends AbstractWhereSupport<DeleteDSL<R>.DeleteWhereB
     private final String tableAlias;
     private final DeleteWhereBuilder whereBuilder = new DeleteWhereBuilder();
 
-    private DeleteDSL(SqlTable table, Function<DeleteModel, R> adapterFunction, String tableAlias) {
+    private DeleteDSL(SqlTable table, String tableAlias, Function<DeleteModel, R> adapterFunction) {
         this.table = Objects.requireNonNull(table);
-        this.adapterFunction = Objects.requireNonNull(adapterFunction);
         this.tableAlias = tableAlias;
+        this.adapterFunction = Objects.requireNonNull(adapterFunction);
     }
 
     @Override
@@ -59,16 +59,16 @@ public class DeleteDSL<R> extends AbstractWhereSupport<DeleteDSL<R>.DeleteWhereB
         return adapterFunction.apply(deleteModel);
     }
 
-    public static <R> DeleteDSL<R> deleteFrom(Function<DeleteModel, R> adapterFunction, SqlTable table) {
-        return new DeleteDSL<>(table, adapterFunction, null);
+    public static <R> DeleteDSL<R> deleteFrom(Function<DeleteModel, R> adapterFunction, SqlTable table, String tableAlias) {
+        return new DeleteDSL<>(table, tableAlias, adapterFunction);
     }
 
     public static DeleteDSL<DeleteModel> deleteFrom(SqlTable table) {
-        return deleteFrom(Function.identity(), table);
+        return deleteFrom(Function.identity(), table, null);
     }
 
     public static DeleteDSL<DeleteModel> deleteFrom(SqlTable table, String tableAlias) {
-        return new DeleteDSL<>(table, Function.identity(), tableAlias);
+        return deleteFrom(Function.identity(), table, tableAlias);
     }
 
     public class DeleteWhereBuilder extends AbstractWhereDSL<DeleteWhereBuilder> implements Buildable<R> {
