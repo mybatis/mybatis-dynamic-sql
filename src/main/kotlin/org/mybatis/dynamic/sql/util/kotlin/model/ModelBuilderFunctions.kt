@@ -117,3 +117,6 @@ fun selectDistinct(columns: List<BasicColumn>, completer: SelectCompleter): Sele
 
 fun update(table: SqlTable, completer: UpdateCompleter): UpdateModel =
     KotlinUpdateBuilder(SqlBuilder.update(table)).apply(completer).build()
+
+fun update(table: SqlTable, tableAlias: String, completer: UpdateCompleter): UpdateModel =
+    KotlinUpdateBuilder(SqlBuilder.update(table, tableAlias)).apply(completer).build()

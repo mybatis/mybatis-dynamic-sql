@@ -214,6 +214,10 @@ public interface SqlBuilder {
         return UpdateDSL.update(table);
     }
 
+    static UpdateDSL<UpdateModel> update(SqlTable table, String tableAlias) {
+        return UpdateDSL.update(table, tableAlias);
+    }
+
     static WhereDSL where() {
         return WhereDSL.where();
     }

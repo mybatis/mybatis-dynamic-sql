@@ -41,7 +41,6 @@ public class DeleteRenderer {
         tableAliasCalculator = builder.deleteModel.tableAlias()
                 .map(a -> ExplicitTableAliasCalculator.of(deleteModel.table(), a))
                 .orElseGet(TableAliasCalculator::empty);
-
     }
 
     public DeleteStatementProvider render() {
@@ -65,10 +64,10 @@ public class DeleteRenderer {
     private String calculateDeleteStatement() {
         SqlTable table = deleteModel.table();
         String tableName = table.tableNameAtRuntime();
-        String fullTableName = tableAliasCalculator.aliasForTable(table)
+        String aliasedTableName = tableAliasCalculator.aliasForTable(table)
                 .map(a -> tableName + " " + a).orElse(tableName); //$NON-NLS-1$
 
-        return "delete from" + spaceBefore(fullTableName); //$NON-NLS-1$
+        return "delete from" + spaceBefore(aliasedTableName); //$NON-NLS-1$
     }
 
     private DeleteStatementProvider renderWithoutWhereClause() {

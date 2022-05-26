@@ -18,7 +18,6 @@ package examples.kotlin.mybatis3.joins
 import org.mybatis.dynamic.sql.AliasableSqlTable
 import org.mybatis.dynamic.sql.util.kotlin.elements.column
 import java.sql.JDBCType
-import java.util.Date
 
 object ItemMasterDynamicSQLSupport {
     val itemMaster = ItemMaster()
@@ -27,6 +26,6 @@ object ItemMasterDynamicSQLSupport {
 
     class ItemMaster : AliasableSqlTable<ItemMaster>("ItemMaster", ::ItemMaster) {
         val itemId = column<Int>(name = "item_id", jdbcType = JDBCType.INTEGER)
-        val description = column<Date>(name = "description", jdbcType = JDBCType.DATE)
+        val description = column<String>(name = "description", jdbcType = JDBCType.VARCHAR)
     }
 }

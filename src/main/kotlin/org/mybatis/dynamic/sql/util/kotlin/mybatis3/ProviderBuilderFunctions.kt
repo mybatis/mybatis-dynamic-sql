@@ -118,3 +118,6 @@ fun selectDistinct(columns: List<BasicColumn>, completer: SelectCompleter): Sele
 
 fun update(table: SqlTable, completer: UpdateCompleter): UpdateStatementProvider =
     update(table, completer).render(RenderingStrategies.MYBATIS3)
+
+fun update(table: SqlTable, tableAlias: String, completer: UpdateCompleter): UpdateStatementProvider =
+    update(table, tableAlias, completer).render(RenderingStrategies.MYBATIS3)
