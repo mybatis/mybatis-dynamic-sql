@@ -21,7 +21,6 @@ fun compileIt(sourceLines: List<String>): List<CompilerErrorReport> {
         destination = System.getProperty("java.io.tmpdir")
         classpath = System.getProperty("java.class.path")
         noStdlib = true
-        useK2 = true
     }
 
     return with(CompilerErrorMessageCollector()) {

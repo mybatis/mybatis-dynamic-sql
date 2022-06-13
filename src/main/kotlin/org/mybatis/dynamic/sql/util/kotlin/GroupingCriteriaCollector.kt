@@ -341,8 +341,8 @@ class GroupingCriteriaCollector {
     infix fun <T : Any> BindableColumn<T>.isNotInWhenPresent(values: Collection<T?>?) =
         invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isNotInWhenPresent(values))
 
-    infix fun <T : Any> BindableColumn<T>.isBetween(value1: T) =
-        SecondValueCollector<T> {
+    infix fun <T> BindableColumn<T>.isBetween(value1: T & Any) =
+        SecondValueCollector<T & Any> {
             invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isBetween(value1).and(it))
         }
 

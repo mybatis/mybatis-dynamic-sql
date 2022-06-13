@@ -261,7 +261,7 @@ fun <T : Any> isNotInWhenPresent(vararg values: T?): IsNotIn<T> = isNotInWhenPre
 
 fun <T : Any> isNotInWhenPresent(values: Collection<T?>?): IsNotIn<T> = SqlBuilder.isNotInWhenPresent(values)
 
-fun <T : Any> isBetween(value1: T): BetweenBuilder<T> = BetweenBuilder(value1)
+fun <T> isBetween(value1: T & Any): BetweenBuilder<T> = BetweenBuilder(value1)
 
 fun <T : Any> isBetweenWhenPresent(value1: T?): BetweenWhenPresentBuilder<T> = BetweenWhenPresentBuilder(value1)
 
@@ -339,7 +339,7 @@ fun sortColumn(tableAlias: String, column: SqlColumn<*>): SortSpecification = Sq
 
 // DSL Support Classes
 class BetweenBuilder<T>(private val value1: T) {
-    fun and(value2: T): IsBetween<T> = SqlBuilder.isBetween(value1).and(value2)
+    fun and(value2: T & Any): IsBetween<T> = SqlBuilder.isBetween(value1).and(value2)
 }
 
 class BetweenWhenPresentBuilder<T>(private val value1: T?) {
