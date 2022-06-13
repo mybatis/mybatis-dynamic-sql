@@ -1,3 +1,18 @@
+/*
+ *    Copyright 2016-2022 the original author or authors.
+ *
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
 package nullability.test
 
 import org.assertj.core.api.Assertions.assertThat
@@ -22,7 +37,7 @@ class BetweenTest {
 
         val compilerErrorReports = compileIt(sourceLines)
         assertThat(compilerErrorReports).hasSize(1)
-        val matchCount = compilerErrorReports.matchCount(ExpectedErrorLocation(9,30))
+        val matchCount = compilerErrorReports.matchCount(ExpectedErrorLocation(9, 30))
         assertThat(matchCount).isEqualTo(1)
     }
 
@@ -44,7 +59,7 @@ class BetweenTest {
 
         val compilerErrorReports = compileIt(sourceLines)
         assertThat(compilerErrorReports).hasSize(1)
-        val matchCount = compilerErrorReports.matchCount(ExpectedErrorLocation(9,36))
+        val matchCount = compilerErrorReports.matchCount(ExpectedErrorLocation(9, 36))
         assertThat(matchCount).isEqualTo(1)
     }
 
@@ -67,7 +82,7 @@ class BetweenTest {
         val compilerErrorReports = compileIt(sourceLines)
         assertThat(compilerErrorReports).hasSize(2)
         val matchCount = compilerErrorReports.matchCount(
-            ExpectedErrorLocation(9,30),
+            ExpectedErrorLocation(9, 30),
             ExpectedErrorLocation(9, 39)
         )
         assertThat(matchCount).isEqualTo(2)
@@ -92,7 +107,7 @@ class BetweenTest {
 
         val compilerErrorReports = compileIt(sourceLines)
         assertThat(compilerErrorReports).hasSize(1)
-        val matchCount = compilerErrorReports.matchCount(ExpectedErrorLocation(10,36))
+        val matchCount = compilerErrorReports.matchCount(ExpectedErrorLocation(10, 36))
         assertThat(matchCount).isEqualTo(1)
     }
 
@@ -115,7 +130,7 @@ class BetweenTest {
 
         val compilerErrorReports = compileIt(sourceLines)
         assertThat(compilerErrorReports).hasSize(1)
-        val matchCount = compilerErrorReports.matchCount(ExpectedErrorLocation(10,38))
+        val matchCount = compilerErrorReports.matchCount(ExpectedErrorLocation(10, 38))
         assertThat(matchCount).isEqualTo(1)
     }
 
@@ -139,8 +154,8 @@ class BetweenTest {
         val compilerErrorReports = compileIt(sourceLines)
         assertThat(compilerErrorReports).hasSize(2)
         val matchCount = compilerErrorReports.matchCount(
-            ExpectedErrorLocation(10,36),
-            ExpectedErrorLocation(10,46)
+            ExpectedErrorLocation(10, 36),
+            ExpectedErrorLocation(10, 46)
         )
         assertThat(matchCount).isEqualTo(2)
     }
