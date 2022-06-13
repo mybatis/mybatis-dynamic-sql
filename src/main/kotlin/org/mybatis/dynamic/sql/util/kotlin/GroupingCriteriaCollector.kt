@@ -328,17 +328,17 @@ class GroupingCriteriaCollector {
     infix fun <T> BindableColumn<T>.isInWhenPresent(values: Collection<T?>?) =
         invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isInWhenPresent(values))
 
-    fun <T : Any> BindableColumn<T>.isNotIn(vararg values: T) = isNotIn(values.asList())
+    fun <T> BindableColumn<T>.isNotIn(vararg values: T & Any) = isNotIn(values.asList())
 
-    infix fun <T : Any> BindableColumn<T>.isNotIn(values: Collection<T>) =
+    infix fun <T> BindableColumn<T>.isNotIn(values: Collection<T & Any>) =
         invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isNotIn(values))
 
     infix fun BindableColumn<*>.isNotIn(subQuery: KotlinSubQueryBuilder.() -> Unit) =
         invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isNotIn(subQuery))
 
-    fun <T : Any> BindableColumn<T>.isNotInWhenPresent(vararg values: T?) = isNotInWhenPresent(values.asList())
+    fun <T> BindableColumn<T>.isNotInWhenPresent(vararg values: T?) = isNotInWhenPresent(values.asList())
 
-    infix fun <T : Any> BindableColumn<T>.isNotInWhenPresent(values: Collection<T?>?) =
+    infix fun <T> BindableColumn<T>.isNotInWhenPresent(values: Collection<T?>?) =
         invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isNotInWhenPresent(values))
 
     infix fun <T> BindableColumn<T>.isBetween(value1: T & Any) =

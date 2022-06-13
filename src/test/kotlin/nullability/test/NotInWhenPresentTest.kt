@@ -18,7 +18,7 @@ package nullability.test
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
-class InWhenPresentTest {
+class NotInWhenPresentTest {
     @Test
     fun `Test That Null In VarAgs Is OK`() {
         val sourceLines = """
@@ -30,7 +30,7 @@ class InWhenPresentTest {
 
             fun testFunction() {
                 countFrom(person) {
-                    where { id.isInWhenPresent(4, null) }
+                    where { id.isNotInWhenPresent(4, null) }
                 }
             }
         """.trimIndent().lines()
@@ -51,7 +51,7 @@ class InWhenPresentTest {
             fun testFunction() {
                 val ids = listOf(4, null)
                 countFrom(person) {
-                    where { id isInWhenPresent ids }
+                    where { id isNotInWhenPresent ids }
                 }
             }
         """.trimIndent().lines()
@@ -71,7 +71,7 @@ class InWhenPresentTest {
 
             fun testFunction() {
                 countFrom(person) {
-                    where { id.isInWhenPresent() }
+                    where { id.isNotInWhenPresent() }
                 }
             }
         """.trimIndent().lines()
@@ -91,7 +91,7 @@ class InWhenPresentTest {
 
             fun testFunction() {
                 countFrom(person) {
-                    where { id.isInWhenPresent(null as List<Int>) }
+                    where { id.isNotInWhenPresent(null as List<Int>) }
                 }
             }
         """.trimIndent().lines()
@@ -108,11 +108,11 @@ class InWhenPresentTest {
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.id
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.person
             import org.mybatis.dynamic.sql.util.kotlin.mybatis3.countFrom
-            import org.mybatis.dynamic.sql.util.kotlin.elements.isInWhenPresent
+            import org.mybatis.dynamic.sql.util.kotlin.elements.isNotInWhenPresent
 
             fun testFunction() {
                 countFrom(person) {
-                    where { id (isInWhenPresent(4, null)) }
+                    where { id (isNotInWhenPresent(4, null)) }
                 }
             }
         """.trimIndent().lines()
@@ -129,12 +129,12 @@ class InWhenPresentTest {
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.id
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.person
             import org.mybatis.dynamic.sql.util.kotlin.mybatis3.countFrom
-            import org.mybatis.dynamic.sql.util.kotlin.elements.isInWhenPresent
+            import org.mybatis.dynamic.sql.util.kotlin.elements.isNotInWhenPresent
 
             fun testFunction() {
                 val ids = listOf(4, null)
                 countFrom(person) {
-                    where { id (isInWhenPresent(ids)) }
+                    where { id (isNotInWhenPresent(ids)) }
                 }
             }
         """.trimIndent().lines()
@@ -151,11 +151,11 @@ class InWhenPresentTest {
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.id
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.person
             import org.mybatis.dynamic.sql.util.kotlin.mybatis3.countFrom
-            import org.mybatis.dynamic.sql.util.kotlin.elements.isInWhenPresent
+            import org.mybatis.dynamic.sql.util.kotlin.elements.isNotInWhenPresent
 
             fun testFunction() {
                 countFrom(person) {
-                    where { id (isInWhenPresent()) }
+                    where { id (isNotInWhenPresent()) }
                 }
             }
         """.trimIndent().lines()
@@ -172,11 +172,11 @@ class InWhenPresentTest {
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.id
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.person
             import org.mybatis.dynamic.sql.util.kotlin.mybatis3.countFrom
-            import org.mybatis.dynamic.sql.util.kotlin.elements.isInWhenPresent
+            import org.mybatis.dynamic.sql.util.kotlin.elements.isNotInWhenPresent
 
             fun testFunction() {
                 countFrom(person) {
-                    where { id (isInWhenPresent(null)) }
+                    where { id (isNotInWhenPresent(null)) }
                 }
             }
         """.trimIndent().lines()

@@ -250,16 +250,16 @@ fun <T> isInWhenPresent(vararg values: T?): IsIn<T> = isInWhenPresent(values.asL
 
 fun <T> isInWhenPresent(values: Collection<T?>?): IsIn<T> = SqlBuilder.isInWhenPresent(values)
 
-fun <T : Any> isNotIn(vararg values: T): IsNotIn<T> = isNotIn(values.asList())
+fun <T> isNotIn(vararg values: T & Any): IsNotIn<T> = isNotIn(values.asList())
 
-fun <T : Any> isNotIn(values: Collection<T>): IsNotIn<T> = SqlBuilder.isNotIn(values)
+fun <T> isNotIn(values: Collection<T & Any>): IsNotIn<T> = SqlBuilder.isNotIn(values)
 
 fun <T> isNotIn(subQuery: KotlinSubQueryBuilder.() -> Unit): IsNotInWithSubselect<T> =
     SqlBuilder.isNotIn(KotlinSubQueryBuilder().apply(subQuery))
 
-fun <T : Any> isNotInWhenPresent(vararg values: T?): IsNotIn<T> = isNotInWhenPresent(values.asList())
+fun <T> isNotInWhenPresent(vararg values: T?): IsNotIn<T> = isNotInWhenPresent(values.asList())
 
-fun <T : Any> isNotInWhenPresent(values: Collection<T?>?): IsNotIn<T> = SqlBuilder.isNotInWhenPresent(values)
+fun <T> isNotInWhenPresent(values: Collection<T?>?): IsNotIn<T> = SqlBuilder.isNotInWhenPresent(values)
 
 fun <T> isBetween(value1: T & Any): BetweenBuilder<T & Any> = BetweenBuilder(value1)
 
