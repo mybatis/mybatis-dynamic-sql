@@ -346,17 +346,17 @@ class GroupingCriteriaCollector {
             invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isBetween(value1).and(it))
         }
 
-    infix fun <T : Any> BindableColumn<T>.isBetweenWhenPresent(value1: T?) =
+    infix fun <T> BindableColumn<T>.isBetweenWhenPresent(value1: T?) =
         NullableSecondValueCollector<T> {
             invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isBetweenWhenPresent(value1).and(it))
         }
 
-    infix fun <T : Any> BindableColumn<T>.isNotBetween(value1: T) =
-        SecondValueCollector<T> {
+    infix fun <T> BindableColumn<T>.isNotBetween(value1: T & Any) =
+        SecondValueCollector<T & Any> {
             invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isNotBetween(value1).and(it))
         }
 
-    infix fun <T : Any> BindableColumn<T>.isNotBetweenWhenPresent(value1: T?) =
+    infix fun <T> BindableColumn<T>.isNotBetweenWhenPresent(value1: T?) =
         NullableSecondValueCollector<T> {
             invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isNotBetweenWhenPresent(value1).and(it))
         }
