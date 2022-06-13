@@ -239,16 +239,16 @@ fun <T> isLessThanOrEqualTo(column: BasicColumn): IsLessThanOrEqualToColumn<T> =
 fun <T : Any> isLessThanOrEqualToWhenPresent(value: T?): IsLessThanOrEqualTo<T> =
     SqlBuilder.isLessThanOrEqualToWhenPresent(value)
 
-fun <T : Any> isIn(vararg values: T): IsIn<T> = isIn(values.asList())
+fun <T> isIn(vararg values: T & Any): IsIn<T> = isIn(values.asList())
 
-fun <T : Any> isIn(values: Collection<T>): IsIn<T> = SqlBuilder.isIn(values)
+fun <T> isIn(values: Collection<T & Any>): IsIn<T> = SqlBuilder.isIn(values)
 
 fun <T> isIn(subQuery: KotlinSubQueryBuilder.() -> Unit): IsInWithSubselect<T> =
     SqlBuilder.isIn(KotlinSubQueryBuilder().apply(subQuery))
 
-fun <T : Any> isInWhenPresent(vararg values: T?): IsIn<T> = isInWhenPresent(values.asList())
+fun <T> isInWhenPresent(vararg values: T?): IsIn<T> = isInWhenPresent(values.asList())
 
-fun <T : Any> isInWhenPresent(values: Collection<T?>?): IsIn<T> = SqlBuilder.isInWhenPresent(values)
+fun <T> isInWhenPresent(values: Collection<T?>?): IsIn<T> = SqlBuilder.isInWhenPresent(values)
 
 fun <T : Any> isNotIn(vararg values: T): IsNotIn<T> = isNotIn(values.asList())
 
