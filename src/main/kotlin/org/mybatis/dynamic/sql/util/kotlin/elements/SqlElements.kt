@@ -271,13 +271,13 @@ fun <T> isNotBetweenWhenPresent(value1: T?): NotBetweenWhenPresentBuilder<T> =
     NotBetweenWhenPresentBuilder(value1)
 
 // for string columns, but generic for columns with type handlers
-fun <T : Any> isLike(value: T): IsLike<T> = SqlBuilder.isLike(value)
+fun <T> isLike(value: T & Any): IsLike<T> = SqlBuilder.isLike(value)
 
-fun <T : Any> isLikeWhenPresent(value: T?): IsLike<T> = SqlBuilder.isLikeWhenPresent(value)
+fun <T> isLikeWhenPresent(value: T?): IsLike<T> = SqlBuilder.isLikeWhenPresent(value)
 
-fun <T : Any> isNotLike(value: T): IsNotLike<T> = SqlBuilder.isNotLike(value)
+fun <T> isNotLike(value: T & Any): IsNotLike<T> = SqlBuilder.isNotLike(value)
 
-fun <T : Any> isNotLikeWhenPresent(value: T?): IsNotLike<T> = SqlBuilder.isNotLikeWhenPresent(value)
+fun <T> isNotLikeWhenPresent(value: T?): IsNotLike<T> = SqlBuilder.isNotLikeWhenPresent(value)
 
 // shortcuts for booleans
 fun isTrue(): IsEqualTo<Boolean> = isEqualTo(true)

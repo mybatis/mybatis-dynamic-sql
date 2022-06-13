@@ -362,16 +362,16 @@ class GroupingCriteriaCollector {
         }
 
     // for string columns, but generic for columns with type handlers
-    infix fun <T : Any> BindableColumn<T>.isLike(value: T) =
+    infix fun <T> BindableColumn<T>.isLike(value: T & Any) =
         invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isLike(value))
 
-    infix fun <T : Any> BindableColumn<T>.isLikeWhenPresent(value: T?) =
+    infix fun <T> BindableColumn<T>.isLikeWhenPresent(value: T?) =
         invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isLikeWhenPresent(value))
 
-    infix fun <T : Any> BindableColumn<T>.isNotLike(value: T) =
+    infix fun <T> BindableColumn<T>.isNotLike(value: T & Any) =
         invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isNotLike(value))
 
-    infix fun <T : Any> BindableColumn<T>.isNotLikeWhenPresent(value: T?) =
+    infix fun <T> BindableColumn<T>.isNotLikeWhenPresent(value: T?) =
         invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isNotLikeWhenPresent(value))
 
     // shortcuts for booleans
