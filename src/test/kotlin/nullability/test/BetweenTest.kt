@@ -35,10 +35,8 @@ class BetweenTest {
             }
         """.trimIndent().lines()
 
-        val compilerErrorReports = compile(sourceLines)
-        assertThat(compilerErrorReports).hasSize(1)
-        val matchCount = compilerErrorReports.matchCount(ExpectedErrorLocation(9, 30))
-        assertThat(matchCount).isEqualTo(1)
+        val compilerMessageCollector = compile(sourceLines)
+        assertThat(compilerMessageCollector.errorLocations()).isEqualTo(listOf(ExpectedErrorLocation(9, 30)))
     }
 
     @Test
@@ -57,10 +55,8 @@ class BetweenTest {
             }
         """.trimIndent().lines()
 
-        val compilerErrorReports = compile(sourceLines)
-        assertThat(compilerErrorReports).hasSize(1)
-        val matchCount = compilerErrorReports.matchCount(ExpectedErrorLocation(9, 36))
-        assertThat(matchCount).isEqualTo(1)
+        val compilerMessageCollector = compile(sourceLines)
+        assertThat(compilerMessageCollector.errorLocations()).isEqualTo(listOf(ExpectedErrorLocation(9, 36)))
     }
 
     @Test
@@ -79,13 +75,11 @@ class BetweenTest {
             }
         """.trimIndent().lines()
 
-        val compilerErrorReports = compile(sourceLines)
-        assertThat(compilerErrorReports).hasSize(2)
-        val matchCount = compilerErrorReports.matchCount(
+        val compilerMessageCollector = compile(sourceLines)
+        assertThat(compilerMessageCollector.errorLocations()).isEqualTo(listOf(
             ExpectedErrorLocation(9, 30),
             ExpectedErrorLocation(9, 39)
-        )
-        assertThat(matchCount).isEqualTo(2)
+        ))
     }
 
     @Test
@@ -105,10 +99,8 @@ class BetweenTest {
             }
         """.trimIndent().lines()
 
-        val compilerErrorReports = compile(sourceLines)
-        assertThat(compilerErrorReports).hasSize(1)
-        val matchCount = compilerErrorReports.matchCount(ExpectedErrorLocation(10, 36))
-        assertThat(matchCount).isEqualTo(1)
+        val compilerMessageCollector = compile(sourceLines)
+        assertThat(compilerMessageCollector.errorLocations()).isEqualTo(listOf(ExpectedErrorLocation(10, 36)))
     }
 
     @Test
@@ -128,10 +120,8 @@ class BetweenTest {
             }
         """.trimIndent().lines()
 
-        val compilerErrorReports = compile(sourceLines)
-        assertThat(compilerErrorReports).hasSize(1)
-        val matchCount = compilerErrorReports.matchCount(ExpectedErrorLocation(10, 38))
-        assertThat(matchCount).isEqualTo(1)
+        val compilerMessageCollector = compile(sourceLines)
+        assertThat(compilerMessageCollector.errorLocations()).isEqualTo(listOf(ExpectedErrorLocation(10, 38)))
     }
 
     @Test
@@ -151,12 +141,10 @@ class BetweenTest {
             }
         """.trimIndent().lines()
 
-        val compilerErrorReports = compile(sourceLines)
-        assertThat(compilerErrorReports).hasSize(2)
-        val matchCount = compilerErrorReports.matchCount(
+        val compilerMessageCollector = compile(sourceLines)
+        assertThat(compilerMessageCollector.errorLocations()).isEqualTo(listOf(
             ExpectedErrorLocation(10, 36),
             ExpectedErrorLocation(10, 46)
-        )
-        assertThat(matchCount).isEqualTo(2)
+        ))
     }
 }

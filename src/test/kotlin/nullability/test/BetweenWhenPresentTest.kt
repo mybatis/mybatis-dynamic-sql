@@ -35,8 +35,8 @@ class BetweenWhenPresentTest {
             }
         """.trimIndent().lines()
 
-        val compilerErrorReports = compile(sourceLines)
-        assertThat(compilerErrorReports).isEmpty()
+        val compilerMessageCollector = compile(sourceLines)
+        assertThat(compilerMessageCollector.errors).isEmpty()
     }
 
     @Test
@@ -55,8 +55,8 @@ class BetweenWhenPresentTest {
             }
         """.trimIndent().lines()
 
-        val compilerErrorReports = compile(sourceLines)
-        assertThat(compilerErrorReports).isEmpty()
+        val compilerMessageCollector = compile(sourceLines)
+        assertThat(compilerMessageCollector.errors).isEmpty()
     }
 
     @Test
@@ -75,8 +75,8 @@ class BetweenWhenPresentTest {
             }
         """.trimIndent().lines()
 
-        val compilerErrorReports = compile(sourceLines)
-        assertThat(compilerErrorReports).isEmpty()
+        val compilerMessageCollector = compile(sourceLines)
+        assertThat(compilerMessageCollector.errors).isEmpty()
     }
 
     @Test
@@ -96,8 +96,8 @@ class BetweenWhenPresentTest {
             }
         """.trimIndent().lines()
 
-        val compilerErrorReports = compile(sourceLines)
-        assertThat(compilerErrorReports).isEmpty()
+        val compilerMessageCollector = compile(sourceLines)
+        assertThat(compilerMessageCollector.errors).isEmpty()
     }
 
     @Test
@@ -117,8 +117,8 @@ class BetweenWhenPresentTest {
             }
         """.trimIndent().lines()
 
-        val compilerErrorReports = compile(sourceLines)
-        assertThat(compilerErrorReports).isEmpty()
+        val compilerMessageCollector = compile(sourceLines)
+        assertThat(compilerMessageCollector.errors).isEmpty()
     }
 
     @Test
@@ -138,7 +138,7 @@ class BetweenWhenPresentTest {
             }
         """.trimIndent().lines()
 
-        val compilerErrorReports = compile(sourceLines)
-        assertThat(compilerErrorReports).isEmpty()
+        val compilerMessageCollector = compile(sourceLines)
+        assertThat(compilerMessageCollector.errors).isEmpty()
     }
 }

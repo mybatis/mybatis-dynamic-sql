@@ -35,10 +35,8 @@ class LikeNotLikeTest {
             }
         """.trimIndent().lines()
 
-        val compilerErrorReports = compile(sourceLines)
-        assertThat(compilerErrorReports).hasSize(1)
-        val matchCount = compilerErrorReports.matchCount(ExpectedErrorLocation(9, 34))
-        assertThat(matchCount).isEqualTo(1)
+        val compilerMessageCollector = compile(sourceLines)
+        assertThat(compilerMessageCollector.errorLocations()).isEqualTo(listOf(ExpectedErrorLocation(9, 34)))
     }
 
     @Test
@@ -57,8 +55,8 @@ class LikeNotLikeTest {
             }
         """.trimIndent().lines()
 
-        val compilerErrorReports = compile(sourceLines)
-        assertThat(compilerErrorReports).isEmpty()
+        val compilerMessageCollector = compile(sourceLines)
+        assertThat(compilerMessageCollector.errors).isEmpty()
     }
 
     @Test
@@ -78,10 +76,8 @@ class LikeNotLikeTest {
             }
         """.trimIndent().lines()
 
-        val compilerErrorReports = compile(sourceLines)
-        assertThat(compilerErrorReports).hasSize(1)
-        val matchCount = compilerErrorReports.matchCount(ExpectedErrorLocation(10, 37))
-        assertThat(matchCount).isEqualTo(1)
+        val compilerMessageCollector = compile(sourceLines)
+        assertThat(compilerMessageCollector.errorLocations()).isEqualTo(listOf(ExpectedErrorLocation(10, 37)))
     }
 
     @Test
@@ -100,8 +96,8 @@ class LikeNotLikeTest {
             }
         """.trimIndent().lines()
 
-        val compilerErrorReports = compile(sourceLines)
-        assertThat(compilerErrorReports).isEmpty()
+        val compilerMessageCollector = compile(sourceLines)
+        assertThat(compilerMessageCollector.errors).isEmpty()
     }
 
     @Test
@@ -121,10 +117,8 @@ class LikeNotLikeTest {
             }
         """.trimIndent().lines()
 
-        val compilerErrorReports = compile(sourceLines)
-        assertThat(compilerErrorReports).hasSize(1)
-        val matchCount = compilerErrorReports.matchCount(ExpectedErrorLocation(10, 35))
-        assertThat(matchCount).isEqualTo(1)
+        val compilerMessageCollector = compile(sourceLines)
+        assertThat(compilerMessageCollector.errorLocations()).isEqualTo(listOf(ExpectedErrorLocation(10, 35)))
     }
 
     @Test
@@ -144,8 +138,8 @@ class LikeNotLikeTest {
             }
         """.trimIndent().lines()
 
-        val compilerErrorReports = compile(sourceLines)
-        assertThat(compilerErrorReports).isEmpty()
+        val compilerMessageCollector = compile(sourceLines)
+        assertThat(compilerMessageCollector.errors).isEmpty()
     }
 
     @Test
@@ -166,10 +160,8 @@ class LikeNotLikeTest {
             }
         """.trimIndent().lines()
 
-        val compilerErrorReports = compile(sourceLines)
-        assertThat(compilerErrorReports).hasSize(1)
-        val matchCount = compilerErrorReports.matchCount(ExpectedErrorLocation(11, 38))
-        assertThat(matchCount).isEqualTo(1)
+        val compilerMessageCollector = compile(sourceLines)
+        assertThat(compilerMessageCollector.errorLocations()).isEqualTo(listOf(ExpectedErrorLocation(11, 38)))
     }
 
     @Test
@@ -189,7 +181,7 @@ class LikeNotLikeTest {
             }
         """.trimIndent().lines()
 
-        val compilerErrorReports = compile(sourceLines)
-        assertThat(compilerErrorReports).isEmpty()
+        val compilerMessageCollector = compile(sourceLines)
+        assertThat(compilerMessageCollector.errors).isEmpty()
     }
 }

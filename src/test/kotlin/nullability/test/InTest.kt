@@ -35,10 +35,8 @@ class InTest {
             }
         """.trimIndent().lines()
 
-        val compilerErrorReports = compile(sourceLines)
-        assertThat(compilerErrorReports).hasSize(1)
-        val matchCount = compilerErrorReports.matchCount(ExpectedErrorLocation(9, 28))
-        assertThat(matchCount).isEqualTo(1)
+        val compilerMessageCollector = compile(sourceLines)
+        assertThat(compilerMessageCollector.errorLocations()).isEqualTo(listOf(ExpectedErrorLocation(9, 28)))
     }
 
     @Test
@@ -58,10 +56,8 @@ class InTest {
             }
         """.trimIndent().lines()
 
-        val compilerErrorReports = compile(sourceLines)
-        assertThat(compilerErrorReports).hasSize(1)
-        val matchCount = compilerErrorReports.matchCount(ExpectedErrorLocation(10, 25))
-        assertThat(matchCount).isEqualTo(1)
+        val compilerMessageCollector = compile(sourceLines)
+        assertThat(compilerMessageCollector.errorLocations()).isEqualTo(listOf(ExpectedErrorLocation(10, 25)))
     }
 
     @Test
@@ -81,10 +77,8 @@ class InTest {
             }
         """.trimIndent().lines()
 
-        val compilerErrorReports = compile(sourceLines)
-        assertThat(compilerErrorReports).hasSize(1)
-        val matchCount = compilerErrorReports.matchCount(ExpectedErrorLocation(10, 29))
-        assertThat(matchCount).isEqualTo(1)
+        val compilerMessageCollector = compile(sourceLines)
+        assertThat(compilerMessageCollector.errorLocations()).isEqualTo(listOf(ExpectedErrorLocation(10, 29)))
     }
 
     @Test
@@ -105,9 +99,7 @@ class InTest {
             }
         """.trimIndent().lines()
 
-        val compilerErrorReports = compile(sourceLines)
-        assertThat(compilerErrorReports).hasSize(1)
-        val matchCount = compilerErrorReports.matchCount(ExpectedErrorLocation(11, 26))
-        assertThat(matchCount).isEqualTo(1)
+        val compilerMessageCollector = compile(sourceLines)
+        assertThat(compilerMessageCollector.errorLocations()).isEqualTo(listOf(ExpectedErrorLocation(11, 26)))
     }
 }
