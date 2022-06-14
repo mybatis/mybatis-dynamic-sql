@@ -21,7 +21,7 @@ import org.junit.jupiter.api.Test
 class NotBetweenTest {
     @Test
     fun `Test That First Null Causes Compile Error`() {
-        val sourceLines = """
+        val source = """
             package temp.kotlin.test
             
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.id
@@ -33,15 +33,15 @@ class NotBetweenTest {
                     where { id isNotBetween null and 4 }
                 }
             }
-        """.trimIndent().lines()
+        """
 
-        val compilerMessageCollector = compile(sourceLines)
+        val compilerMessageCollector = compile(source)
         assertThat(compilerMessageCollector.errorLocations()).isEqualTo(listOf(ExpectedErrorLocation(9, 33)))
     }
 
     @Test
     fun `Test That Second Null Causes Compile Error`() {
-        val sourceLines = """
+        val source = """
             package temp.kotlin.test
             
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.id
@@ -53,15 +53,15 @@ class NotBetweenTest {
                     where { id isNotBetween 4 and null }
                 }
             }
-        """.trimIndent().lines()
+        """
 
-        val compilerMessageCollector = compile(sourceLines)
+        val compilerMessageCollector = compile(source)
         assertThat(compilerMessageCollector.errorLocations()).isEqualTo(listOf(ExpectedErrorLocation(9, 39)))
     }
 
     @Test
     fun `Test That Both Null Causes Compile Errors`() {
-        val sourceLines = """
+        val source = """
             package temp.kotlin.test
             
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.id
@@ -73,9 +73,9 @@ class NotBetweenTest {
                     where { id isNotBetween null and null }
                 }
             }
-        """.trimIndent().lines()
+        """
 
-        val compilerMessageCollector = compile(sourceLines)
+        val compilerMessageCollector = compile(source)
         assertThat(compilerMessageCollector.errorLocations()).isEqualTo(listOf(
             ExpectedErrorLocation(9, 33),
             ExpectedErrorLocation(9, 42)
@@ -84,7 +84,7 @@ class NotBetweenTest {
 
     @Test
     fun `Test That First Null In Elements Method Causes Compile Error`() {
-        val sourceLines = """
+        val source = """
             package temp.kotlin.test
             
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.id
@@ -97,15 +97,15 @@ class NotBetweenTest {
                     where { id (isNotBetween<Int>(null).and(4)) }
                 }
             }
-        """.trimIndent().lines()
+        """
 
-        val compilerMessageCollector = compile(sourceLines)
+        val compilerMessageCollector = compile(source)
         assertThat(compilerMessageCollector.errorLocations()).isEqualTo(listOf(ExpectedErrorLocation(10, 39)))
     }
 
     @Test
     fun `Test That Second Null In Elements Method Causes Compile Error`() {
-        val sourceLines = """
+        val source = """
             package temp.kotlin.test
             
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.id
@@ -118,15 +118,15 @@ class NotBetweenTest {
                     where { id (isNotBetween(4).and(null)) }
                 }
             }
-        """.trimIndent().lines()
+        """
 
-        val compilerMessageCollector = compile(sourceLines)
+        val compilerMessageCollector = compile(source)
         assertThat(compilerMessageCollector.errorLocations()).isEqualTo(listOf(ExpectedErrorLocation(10, 41)))
     }
 
     @Test
     fun `Test That Both Null In Elements Method Causes Compile Error`() {
-        val sourceLines = """
+        val source = """
             package temp.kotlin.test
             
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.id
@@ -139,9 +139,9 @@ class NotBetweenTest {
                     where { id (isNotBetween<Int>(null).and(null)) }
                 }
             }
-        """.trimIndent().lines()
+        """
 
-        val compilerMessageCollector = compile(sourceLines)
+        val compilerMessageCollector = compile(source)
         assertThat(compilerMessageCollector.errorLocations()).isEqualTo(listOf(
             ExpectedErrorLocation(10, 39),
             ExpectedErrorLocation(10, 49)

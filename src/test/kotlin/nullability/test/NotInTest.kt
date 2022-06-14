@@ -21,7 +21,7 @@ import org.junit.jupiter.api.Test
 class NotInTest {
     @Test
     fun `Test That Null In VarAgs Causes Compile Error`() {
-        val sourceLines = """
+        val source = """
             package temp.kotlin.test
             
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.id
@@ -33,15 +33,15 @@ class NotInTest {
                     where { id.isNotIn(4, null) }
                 }
             }
-        """.trimIndent().lines()
+        """
 
-        val compilerMessageCollector = compile(sourceLines)
+        val compilerMessageCollector = compile(source)
         assertThat(compilerMessageCollector.errorLocations()).isEqualTo(listOf(ExpectedErrorLocation(9, 31)))
     }
 
     @Test
     fun `Test That Null in List Causes Compile Error`() {
-        val sourceLines = """
+        val source = """
             package temp.kotlin.test
             
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.id
@@ -54,15 +54,15 @@ class NotInTest {
                     where { id isNotIn ids }
                 }
             }
-        """.trimIndent().lines()
+        """
 
-        val compilerMessageCollector = compile(sourceLines)
+        val compilerMessageCollector = compile(source)
         assertThat(compilerMessageCollector.errorLocations()).isEqualTo(listOf(ExpectedErrorLocation(10, 28)))
     }
 
     @Test
     fun `Test That Null In VarArgs Elements Method Causes Compile Error`() {
-        val sourceLines = """
+        val source = """
             package temp.kotlin.test
             
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.id
@@ -75,15 +75,15 @@ class NotInTest {
                     where { id (isNotIn(4, null)) }
                 }
             }
-        """.trimIndent().lines()
+        """
 
-        val compilerMessageCollector = compile(sourceLines)
+        val compilerMessageCollector = compile(source)
         assertThat(compilerMessageCollector.errorLocations()).isEqualTo(listOf(ExpectedErrorLocation(10, 32)))
     }
 
     @Test
     fun `Test That Null In List Elements Method Causes Compile Error`() {
-        val sourceLines = """
+        val source = """
             package temp.kotlin.test
             
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.id
@@ -97,9 +97,9 @@ class NotInTest {
                     where { id (isNotIn(ids)) }
                 }
             }
-        """.trimIndent().lines()
+        """
 
-        val compilerMessageCollector = compile(sourceLines)
+        val compilerMessageCollector = compile(source)
         assertThat(compilerMessageCollector.errorLocations()).isEqualTo(listOf(ExpectedErrorLocation(11, 29)))
     }
 }

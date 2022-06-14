@@ -21,7 +21,7 @@ import org.junit.jupiter.api.Test
 class BetweenWhenPresentTest {
     @Test
     fun `Test That First Null Is OK`() {
-        val sourceLines = """
+        val source = """
             package temp.kotlin.test
             
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.id
@@ -33,15 +33,15 @@ class BetweenWhenPresentTest {
                     where { id isBetweenWhenPresent null and 4 }
                 }
             }
-        """.trimIndent().lines()
+        """
 
-        val compilerMessageCollector = compile(sourceLines)
+        val compilerMessageCollector = compile(source)
         assertThat(compilerMessageCollector.errors).isEmpty()
     }
 
     @Test
     fun `Test That Second Null Is OK`() {
-        val sourceLines = """
+        val source = """
             package temp.kotlin.test
             
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.id
@@ -53,15 +53,15 @@ class BetweenWhenPresentTest {
                     where { id isBetweenWhenPresent 4 and null }
                 }
             }
-        """.trimIndent().lines()
+        """
 
-        val compilerMessageCollector = compile(sourceLines)
+        val compilerMessageCollector = compile(source)
         assertThat(compilerMessageCollector.errors).isEmpty()
     }
 
     @Test
     fun `Test That Both Null Is OK`() {
-        val sourceLines = """
+        val source = """
             package temp.kotlin.test
             
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.id
@@ -73,15 +73,15 @@ class BetweenWhenPresentTest {
                     where { id isBetweenWhenPresent null and null }
                 }
             }
-        """.trimIndent().lines()
+        """
 
-        val compilerMessageCollector = compile(sourceLines)
+        val compilerMessageCollector = compile(source)
         assertThat(compilerMessageCollector.errors).isEmpty()
     }
 
     @Test
     fun `Test That First Null In Elements Method Is OK`() {
-        val sourceLines = """
+        val source = """
             package temp.kotlin.test
             
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.id
@@ -94,15 +94,15 @@ class BetweenWhenPresentTest {
                     where { id (isBetweenWhenPresent<Int>(null).and(4)) }
                 }
             }
-        """.trimIndent().lines()
+        """
 
-        val compilerMessageCollector = compile(sourceLines)
+        val compilerMessageCollector = compile(source)
         assertThat(compilerMessageCollector.errors).isEmpty()
     }
 
     @Test
     fun `Test That Second Null In Elements Method Is OK`() {
-        val sourceLines = """
+        val source = """
             package temp.kotlin.test
             
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.id
@@ -115,15 +115,15 @@ class BetweenWhenPresentTest {
                     where { id (isBetweenWhenPresent(4).and(null)) }
                 }
             }
-        """.trimIndent().lines()
+        """
 
-        val compilerMessageCollector = compile(sourceLines)
+        val compilerMessageCollector = compile(source)
         assertThat(compilerMessageCollector.errors).isEmpty()
     }
 
     @Test
     fun `Test That Both Null In Elements Method Is OK`() {
-        val sourceLines = """
+        val source = """
             package temp.kotlin.test
             
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.id
@@ -136,9 +136,9 @@ class BetweenWhenPresentTest {
                     where { id (isBetweenWhenPresent<Int>(null).and(null)) }
                 }
             }
-        """.trimIndent().lines()
+        """
 
-        val compilerMessageCollector = compile(sourceLines)
+        val compilerMessageCollector = compile(source)
         assertThat(compilerMessageCollector.errors).isEmpty()
     }
 }

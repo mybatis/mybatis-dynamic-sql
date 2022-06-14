@@ -21,7 +21,7 @@ import org.junit.jupiter.api.Test
 class LikeNotLikeTest {
     @Test
     fun `Test That Null Like Causes Compile Error`() {
-        val sourceLines = """
+        val source = """
             package temp.kotlin.test
             
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.firstName
@@ -33,15 +33,15 @@ class LikeNotLikeTest {
                     where { firstName isLike null }
                 }
             }
-        """.trimIndent().lines()
+        """
 
-        val compilerMessageCollector = compile(sourceLines)
+        val compilerMessageCollector = compile(source)
         assertThat(compilerMessageCollector.errorLocations()).isEqualTo(listOf(ExpectedErrorLocation(9, 34)))
     }
 
     @Test
     fun `Test That Null Like When Present is OK`() {
-        val sourceLines = """
+        val source = """
             package temp.kotlin.test
             
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.firstName
@@ -53,15 +53,15 @@ class LikeNotLikeTest {
                     where { firstName isLikeWhenPresent null }
                 }
             }
-        """.trimIndent().lines()
+        """
 
-        val compilerMessageCollector = compile(sourceLines)
+        val compilerMessageCollector = compile(source)
         assertThat(compilerMessageCollector.errors).isEmpty()
     }
 
     @Test
     fun `Test That Null Not Like Causes Compile Error`() {
-        val sourceLines = """
+        val source = """
             package temp.kotlin.test
             
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.firstName
@@ -74,15 +74,15 @@ class LikeNotLikeTest {
                     where { firstName isNotLike null }
                 }
             }
-        """.trimIndent().lines()
+        """
 
-        val compilerMessageCollector = compile(sourceLines)
+        val compilerMessageCollector = compile(source)
         assertThat(compilerMessageCollector.errorLocations()).isEqualTo(listOf(ExpectedErrorLocation(10, 37)))
     }
 
     @Test
     fun `Test That Null Not Like When Present is OK`() {
-        val sourceLines = """
+        val source = """
             package temp.kotlin.test
             
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.firstName
@@ -94,15 +94,15 @@ class LikeNotLikeTest {
                     where { firstName isNotLikeWhenPresent null }
                 }
             }
-        """.trimIndent().lines()
+        """
 
-        val compilerMessageCollector = compile(sourceLines)
+        val compilerMessageCollector = compile(source)
         assertThat(compilerMessageCollector.errors).isEmpty()
     }
 
     @Test
     fun `Test That Null Elements Like Causes Compile Error`() {
-        val sourceLines = """
+        val source = """
             package temp.kotlin.test
             
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.firstName
@@ -115,15 +115,15 @@ class LikeNotLikeTest {
                     where { firstName (isLike(null)) }
                 }
             }
-        """.trimIndent().lines()
+        """
 
-        val compilerMessageCollector = compile(sourceLines)
+        val compilerMessageCollector = compile(source)
         assertThat(compilerMessageCollector.errorLocations()).isEqualTo(listOf(ExpectedErrorLocation(10, 35)))
     }
 
     @Test
     fun `Test That Null Elements Like When Present is OK`() {
-        val sourceLines = """
+        val source = """
             package temp.kotlin.test
             
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.firstName
@@ -136,15 +136,15 @@ class LikeNotLikeTest {
                     where { firstName (isLikeWhenPresent(null)) }
                 }
             }
-        """.trimIndent().lines()
+        """
 
-        val compilerMessageCollector = compile(sourceLines)
+        val compilerMessageCollector = compile(source)
         assertThat(compilerMessageCollector.errors).isEmpty()
     }
 
     @Test
     fun `Test That Null Elements Not Like Causes Compile Error`() {
-        val sourceLines = """
+        val source = """
             package temp.kotlin.test
             
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.firstName
@@ -158,15 +158,15 @@ class LikeNotLikeTest {
                     where { firstName (isNotLike(null)) }
                 }
             }
-        """.trimIndent().lines()
+        """
 
-        val compilerMessageCollector = compile(sourceLines)
+        val compilerMessageCollector = compile(source)
         assertThat(compilerMessageCollector.errorLocations()).isEqualTo(listOf(ExpectedErrorLocation(11, 38)))
     }
 
     @Test
     fun `Test That Null Elements Not Like When Present is OK`() {
-        val sourceLines = """
+        val source = """
             package temp.kotlin.test
             
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.firstName
@@ -179,9 +179,9 @@ class LikeNotLikeTest {
                     where { firstName (isNotLikeWhenPresent(null)) }
                 }
             }
-        """.trimIndent().lines()
+        """
 
-        val compilerMessageCollector = compile(sourceLines)
+        val compilerMessageCollector = compile(source)
         assertThat(compilerMessageCollector.errors).isEmpty()
     }
 }

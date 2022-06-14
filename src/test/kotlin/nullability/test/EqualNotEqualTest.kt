@@ -21,7 +21,7 @@ import org.junit.jupiter.api.Test
 class EqualNotEqualTest {
     @Test
     fun `Test That Null Equal Causes Compile Error`() {
-        val sourceLines = """
+        val source = """
             package temp.kotlin.test
             
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.firstName
@@ -33,15 +33,15 @@ class EqualNotEqualTest {
                     where { firstName isEqualTo null }
                 }
             }
-        """.trimIndent().lines()
+        """
 
-        val compilerMessageCollector = compile(sourceLines)
+        val compilerMessageCollector = compile(source)
         assertThat(compilerMessageCollector.errorLocations()).isEqualTo(listOf(ExpectedErrorLocation(9, 37)))
     }
 
     @Test
     fun `Test That Null Equal When Present is OK`() {
-        val sourceLines = """
+        val source = """
             package temp.kotlin.test
             
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.firstName
@@ -53,15 +53,15 @@ class EqualNotEqualTest {
                     where { firstName isEqualToWhenPresent null }
                 }
             }
-        """.trimIndent().lines()
+        """
 
-        val compilerMessageCollector = compile(sourceLines)
+        val compilerMessageCollector = compile(source)
         assertThat(compilerMessageCollector.errors).isEmpty()
     }
 
     @Test
     fun `Test That Null Not Equal Causes Compile Error`() {
-        val sourceLines = """
+        val source = """
             package temp.kotlin.test
             
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.firstName
@@ -74,15 +74,15 @@ class EqualNotEqualTest {
                     where { firstName isNotEqualTo null }
                 }
             }
-        """.trimIndent().lines()
+        """
 
-        val compilerMessageCollector = compile(sourceLines)
+        val compilerMessageCollector = compile(source)
         assertThat(compilerMessageCollector.errorLocations()).isEqualTo(listOf(ExpectedErrorLocation(10, 40)))
     }
 
     @Test
     fun `Test That Null Not Equal When Present is OK`() {
-        val sourceLines = """
+        val source = """
             package temp.kotlin.test
             
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.firstName
@@ -94,15 +94,15 @@ class EqualNotEqualTest {
                     where { firstName isNotEqualToWhenPresent null }
                 }
             }
-        """.trimIndent().lines()
+        """
 
-        val compilerMessageCollector = compile(sourceLines)
+        val compilerMessageCollector = compile(source)
         assertThat(compilerMessageCollector.errors).isEmpty()
     }
 
     @Test
     fun `Test That Null Elements Equal Causes Compile Error`() {
-        val sourceLines = """
+        val source = """
             package temp.kotlin.test
             
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.firstName
@@ -115,15 +115,15 @@ class EqualNotEqualTest {
                     where { firstName (isEqualTo(null)) }
                 }
             }
-        """.trimIndent().lines()
+        """
 
-        val compilerMessageCollector = compile(sourceLines)
+        val compilerMessageCollector = compile(source)
         assertThat(compilerMessageCollector.errorLocations()).isEqualTo(listOf(ExpectedErrorLocation(10, 38)))
     }
 
     @Test
     fun `Test That Null Elements Equal When Present is OK`() {
-        val sourceLines = """
+        val source = """
             package temp.kotlin.test
             
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.firstName
@@ -136,15 +136,15 @@ class EqualNotEqualTest {
                     where { firstName (isEqualToWhenPresent(null)) }
                 }
             }
-        """.trimIndent().lines()
+        """
 
-        val compilerMessageCollector = compile(sourceLines)
+        val compilerMessageCollector = compile(source)
         assertThat(compilerMessageCollector.errors).isEmpty()
     }
 
     @Test
     fun `Test That Null Elements Not Equal Causes Compile Error`() {
-        val sourceLines = """
+        val source = """
             package temp.kotlin.test
             
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.firstName
@@ -158,15 +158,15 @@ class EqualNotEqualTest {
                     where { firstName (isNotEqualTo(null)) }
                 }
             }
-        """.trimIndent().lines()
+        """
 
-        val compilerMessageCollector = compile(sourceLines)
+        val compilerMessageCollector = compile(source)
         assertThat(compilerMessageCollector.errorLocations()).isEqualTo(listOf(ExpectedErrorLocation(11, 41)))
     }
 
     @Test
     fun `Test That Null Elements Not Equal When Present is OK`() {
-        val sourceLines = """
+        val source = """
             package temp.kotlin.test
             
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.firstName
@@ -179,9 +179,9 @@ class EqualNotEqualTest {
                     where { firstName (isNotEqualToWhenPresent(null)) }
                 }
             }
-        """.trimIndent().lines()
+        """
 
-        val compilerMessageCollector = compile(sourceLines)
+        val compilerMessageCollector = compile(source)
         assertThat(compilerMessageCollector.errors).isEmpty()
     }
 }

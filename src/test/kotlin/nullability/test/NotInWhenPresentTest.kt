@@ -21,7 +21,7 @@ import org.junit.jupiter.api.Test
 class NotInWhenPresentTest {
     @Test
     fun `Test That Null In VarAgs Is OK`() {
-        val sourceLines = """
+        val source = """
             package temp.kotlin.test
             
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.id
@@ -33,15 +33,15 @@ class NotInWhenPresentTest {
                     where { id.isNotInWhenPresent(4, null) }
                 }
             }
-        """.trimIndent().lines()
+        """
 
-        val compilerMessageCollector = compile(sourceLines)
+        val compilerMessageCollector = compile(source)
         assertThat(compilerMessageCollector.errors).isEmpty()
     }
 
     @Test
     fun `Test That Null in List Is OK`() {
-        val sourceLines = """
+        val source = """
             package temp.kotlin.test
             
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.id
@@ -54,15 +54,15 @@ class NotInWhenPresentTest {
                     where { id isNotInWhenPresent ids }
                 }
             }
-        """.trimIndent().lines()
+        """
 
-        val compilerMessageCollector = compile(sourceLines)
+        val compilerMessageCollector = compile(source)
         assertThat(compilerMessageCollector.errors).isEmpty()
     }
 
     @Test
     fun `Test That Empty VarAgs Is OK`() {
-        val sourceLines = """
+        val source = """
             package temp.kotlin.test
             
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.id
@@ -74,15 +74,15 @@ class NotInWhenPresentTest {
                     where { id.isNotInWhenPresent() }
                 }
             }
-        """.trimIndent().lines()
+        """
 
-        val compilerMessageCollector = compile(sourceLines)
+        val compilerMessageCollector = compile(source)
         assertThat(compilerMessageCollector.errors).isEmpty()
     }
 
     @Test
     fun `Test That Null List Is OK`() {
-        val sourceLines = """
+        val source = """
             package temp.kotlin.test
             
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.id
@@ -94,15 +94,15 @@ class NotInWhenPresentTest {
                     where { id.isNotInWhenPresent(null as List<Int>) }
                 }
             }
-        """.trimIndent().lines()
+        """
 
-        val compilerMessageCollector = compile(sourceLines)
+        val compilerMessageCollector = compile(source)
         assertThat(compilerMessageCollector.errors).isEmpty()
     }
 
     @Test
     fun `Test That Null In VarArgs Elements Method Is OK`() {
-        val sourceLines = """
+        val source = """
             package temp.kotlin.test
             
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.id
@@ -115,15 +115,15 @@ class NotInWhenPresentTest {
                     where { id (isNotInWhenPresent(4, null)) }
                 }
             }
-        """.trimIndent().lines()
+        """
 
-        val compilerMessageCollector = compile(sourceLines)
+        val compilerMessageCollector = compile(source)
         assertThat(compilerMessageCollector.errors).isEmpty()
     }
 
     @Test
     fun `Test That Null In List Elements Method Is OK`() {
-        val sourceLines = """
+        val source = """
             package temp.kotlin.test
             
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.id
@@ -137,15 +137,15 @@ class NotInWhenPresentTest {
                     where { id (isNotInWhenPresent(ids)) }
                 }
             }
-        """.trimIndent().lines()
+        """
 
-        val compilerMessageCollector = compile(sourceLines)
+        val compilerMessageCollector = compile(source)
         assertThat(compilerMessageCollector.errors).isEmpty()
     }
 
     @Test
     fun `Test That Empty VarAgs In Elements Method Is OK`() {
-        val sourceLines = """
+        val source = """
             package temp.kotlin.test
             
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.id
@@ -158,15 +158,15 @@ class NotInWhenPresentTest {
                     where { id (isNotInWhenPresent()) }
                 }
             }
-        """.trimIndent().lines()
+        """
 
-        val compilerMessageCollector = compile(sourceLines)
+        val compilerMessageCollector = compile(source)
         assertThat(compilerMessageCollector.errors).isEmpty()
     }
 
     @Test
     fun `Test That Null List In Elements Method Is OK`() {
-        val sourceLines = """
+        val source = """
             package temp.kotlin.test
             
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.id
@@ -179,9 +179,9 @@ class NotInWhenPresentTest {
                     where { id (isNotInWhenPresent(null)) }
                 }
             }
-        """.trimIndent().lines()
+        """
 
-        val compilerMessageCollector = compile(sourceLines)
+        val compilerMessageCollector = compile(source)
         assertThat(compilerMessageCollector.errors).isEmpty()
     }
 }
