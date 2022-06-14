@@ -35,7 +35,7 @@ class BetweenTest {
             }
         """.trimIndent().lines()
 
-        val compilerErrorReports = compileIt(sourceLines)
+        val compilerErrorReports = compile(sourceLines)
         assertThat(compilerErrorReports).hasSize(1)
         val matchCount = compilerErrorReports.matchCount(ExpectedErrorLocation(9, 30))
         assertThat(matchCount).isEqualTo(1)
@@ -57,7 +57,7 @@ class BetweenTest {
             }
         """.trimIndent().lines()
 
-        val compilerErrorReports = compileIt(sourceLines)
+        val compilerErrorReports = compile(sourceLines)
         assertThat(compilerErrorReports).hasSize(1)
         val matchCount = compilerErrorReports.matchCount(ExpectedErrorLocation(9, 36))
         assertThat(matchCount).isEqualTo(1)
@@ -79,7 +79,7 @@ class BetweenTest {
             }
         """.trimIndent().lines()
 
-        val compilerErrorReports = compileIt(sourceLines)
+        val compilerErrorReports = compile(sourceLines)
         assertThat(compilerErrorReports).hasSize(2)
         val matchCount = compilerErrorReports.matchCount(
             ExpectedErrorLocation(9, 30),
@@ -105,7 +105,7 @@ class BetweenTest {
             }
         """.trimIndent().lines()
 
-        val compilerErrorReports = compileIt(sourceLines)
+        val compilerErrorReports = compile(sourceLines)
         assertThat(compilerErrorReports).hasSize(1)
         val matchCount = compilerErrorReports.matchCount(ExpectedErrorLocation(10, 36))
         assertThat(matchCount).isEqualTo(1)
@@ -128,7 +128,7 @@ class BetweenTest {
             }
         """.trimIndent().lines()
 
-        val compilerErrorReports = compileIt(sourceLines)
+        val compilerErrorReports = compile(sourceLines)
         assertThat(compilerErrorReports).hasSize(1)
         val matchCount = compilerErrorReports.matchCount(ExpectedErrorLocation(10, 38))
         assertThat(matchCount).isEqualTo(1)
@@ -151,7 +151,7 @@ class BetweenTest {
             }
         """.trimIndent().lines()
 
-        val compilerErrorReports = compileIt(sourceLines)
+        val compilerErrorReports = compile(sourceLines)
         assertThat(compilerErrorReports).hasSize(2)
         val matchCount = compilerErrorReports.matchCount(
             ExpectedErrorLocation(10, 36),

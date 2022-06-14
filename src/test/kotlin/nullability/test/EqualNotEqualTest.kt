@@ -35,7 +35,7 @@ class EqualNotEqualTest {
             }
         """.trimIndent().lines()
 
-        val compilerErrorReports = compileIt(sourceLines)
+        val compilerErrorReports = compile(sourceLines)
         assertThat(compilerErrorReports).hasSize(1)
         val matchCount = compilerErrorReports.matchCount(ExpectedErrorLocation(9, 37))
         assertThat(matchCount).isEqualTo(1)
@@ -57,7 +57,7 @@ class EqualNotEqualTest {
             }
         """.trimIndent().lines()
 
-        val compilerErrorReports = compileIt(sourceLines)
+        val compilerErrorReports = compile(sourceLines)
         assertThat(compilerErrorReports).isEmpty()
     }
 
@@ -78,7 +78,7 @@ class EqualNotEqualTest {
             }
         """.trimIndent().lines()
 
-        val compilerErrorReports = compileIt(sourceLines)
+        val compilerErrorReports = compile(sourceLines)
         assertThat(compilerErrorReports).hasSize(1)
         val matchCount = compilerErrorReports.matchCount(ExpectedErrorLocation(10, 40))
         assertThat(matchCount).isEqualTo(1)
@@ -100,7 +100,7 @@ class EqualNotEqualTest {
             }
         """.trimIndent().lines()
 
-        val compilerErrorReports = compileIt(sourceLines)
+        val compilerErrorReports = compile(sourceLines)
         assertThat(compilerErrorReports).isEmpty()
     }
 
@@ -121,7 +121,7 @@ class EqualNotEqualTest {
             }
         """.trimIndent().lines()
 
-        val compilerErrorReports = compileIt(sourceLines)
+        val compilerErrorReports = compile(sourceLines)
         assertThat(compilerErrorReports).hasSize(1)
         val matchCount = compilerErrorReports.matchCount(ExpectedErrorLocation(10, 38))
         assertThat(matchCount).isEqualTo(1)
@@ -144,7 +144,7 @@ class EqualNotEqualTest {
             }
         """.trimIndent().lines()
 
-        val compilerErrorReports = compileIt(sourceLines)
+        val compilerErrorReports = compile(sourceLines)
         assertThat(compilerErrorReports).isEmpty()
     }
 
@@ -166,7 +166,7 @@ class EqualNotEqualTest {
             }
         """.trimIndent().lines()
 
-        val compilerErrorReports = compileIt(sourceLines)
+        val compilerErrorReports = compile(sourceLines)
         assertThat(compilerErrorReports).hasSize(1)
         val matchCount = compilerErrorReports.matchCount(ExpectedErrorLocation(11, 41))
         assertThat(matchCount).isEqualTo(1)
@@ -189,7 +189,7 @@ class EqualNotEqualTest {
             }
         """.trimIndent().lines()
 
-        val compilerErrorReports = compileIt(sourceLines)
+        val compilerErrorReports = compile(sourceLines)
         assertThat(compilerErrorReports).isEmpty()
     }
 }

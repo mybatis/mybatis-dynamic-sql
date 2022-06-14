@@ -35,7 +35,7 @@ class NotInTest {
             }
         """.trimIndent().lines()
 
-        val compilerErrorReports = compileIt(sourceLines)
+        val compilerErrorReports = compile(sourceLines)
         assertThat(compilerErrorReports).hasSize(1)
         val matchCount = compilerErrorReports.matchCount(ExpectedErrorLocation(9, 31))
         assertThat(matchCount).isEqualTo(1)
@@ -58,7 +58,7 @@ class NotInTest {
             }
         """.trimIndent().lines()
 
-        val compilerErrorReports = compileIt(sourceLines)
+        val compilerErrorReports = compile(sourceLines)
         assertThat(compilerErrorReports).hasSize(1)
         val matchCount = compilerErrorReports.matchCount(ExpectedErrorLocation(10, 28))
         assertThat(matchCount).isEqualTo(1)
@@ -81,7 +81,7 @@ class NotInTest {
             }
         """.trimIndent().lines()
 
-        val compilerErrorReports = compileIt(sourceLines)
+        val compilerErrorReports = compile(sourceLines)
         assertThat(compilerErrorReports).hasSize(1)
         val matchCount = compilerErrorReports.matchCount(ExpectedErrorLocation(10, 32))
         assertThat(matchCount).isEqualTo(1)
@@ -105,7 +105,7 @@ class NotInTest {
             }
         """.trimIndent().lines()
 
-        val compilerErrorReports = compileIt(sourceLines)
+        val compilerErrorReports = compile(sourceLines)
         assertThat(compilerErrorReports).hasSize(1)
         val matchCount = compilerErrorReports.matchCount(ExpectedErrorLocation(11, 29))
         assertThat(matchCount).isEqualTo(1)

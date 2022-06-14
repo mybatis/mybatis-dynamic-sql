@@ -35,7 +35,7 @@ class BetweenWhenPresentTest {
             }
         """.trimIndent().lines()
 
-        val compilerErrorReports = compileIt(sourceLines)
+        val compilerErrorReports = compile(sourceLines)
         assertThat(compilerErrorReports).isEmpty()
     }
 
@@ -55,7 +55,7 @@ class BetweenWhenPresentTest {
             }
         """.trimIndent().lines()
 
-        val compilerErrorReports = compileIt(sourceLines)
+        val compilerErrorReports = compile(sourceLines)
         assertThat(compilerErrorReports).isEmpty()
     }
 
@@ -75,7 +75,7 @@ class BetweenWhenPresentTest {
             }
         """.trimIndent().lines()
 
-        val compilerErrorReports = compileIt(sourceLines)
+        val compilerErrorReports = compile(sourceLines)
         assertThat(compilerErrorReports).isEmpty()
     }
 
@@ -96,7 +96,7 @@ class BetweenWhenPresentTest {
             }
         """.trimIndent().lines()
 
-        val compilerErrorReports = compileIt(sourceLines)
+        val compilerErrorReports = compile(sourceLines)
         assertThat(compilerErrorReports).isEmpty()
     }
 
@@ -117,7 +117,7 @@ class BetweenWhenPresentTest {
             }
         """.trimIndent().lines()
 
-        val compilerErrorReports = compileIt(sourceLines)
+        val compilerErrorReports = compile(sourceLines)
         assertThat(compilerErrorReports).isEmpty()
     }
 
@@ -138,7 +138,7 @@ class BetweenWhenPresentTest {
             }
         """.trimIndent().lines()
 
-        val compilerErrorReports = compileIt(sourceLines)
+        val compilerErrorReports = compile(sourceLines)
         assertThat(compilerErrorReports).isEmpty()
     }
 }

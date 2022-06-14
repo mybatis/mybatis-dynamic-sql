@@ -35,7 +35,7 @@ class NotInWhenPresentTest {
             }
         """.trimIndent().lines()
 
-        val compilerErrorReports = compileIt(sourceLines)
+        val compilerErrorReports = compile(sourceLines)
         assertThat(compilerErrorReports).isEmpty()
     }
 
@@ -56,7 +56,7 @@ class NotInWhenPresentTest {
             }
         """.trimIndent().lines()
 
-        val compilerErrorReports = compileIt(sourceLines)
+        val compilerErrorReports = compile(sourceLines)
         assertThat(compilerErrorReports).isEmpty()
     }
 
@@ -76,7 +76,7 @@ class NotInWhenPresentTest {
             }
         """.trimIndent().lines()
 
-        val compilerErrorReports = compileIt(sourceLines)
+        val compilerErrorReports = compile(sourceLines)
         assertThat(compilerErrorReports).isEmpty()
     }
 
@@ -96,7 +96,7 @@ class NotInWhenPresentTest {
             }
         """.trimIndent().lines()
 
-        val compilerErrorReports = compileIt(sourceLines)
+        val compilerErrorReports = compile(sourceLines)
         assertThat(compilerErrorReports).isEmpty()
     }
 
@@ -117,7 +117,7 @@ class NotInWhenPresentTest {
             }
         """.trimIndent().lines()
 
-        val compilerErrorReports = compileIt(sourceLines)
+        val compilerErrorReports = compile(sourceLines)
         assertThat(compilerErrorReports).isEmpty()
     }
 
@@ -139,7 +139,7 @@ class NotInWhenPresentTest {
             }
         """.trimIndent().lines()
 
-        val compilerErrorReports = compileIt(sourceLines)
+        val compilerErrorReports = compile(sourceLines)
         assertThat(compilerErrorReports).isEmpty()
     }
 
@@ -160,7 +160,7 @@ class NotInWhenPresentTest {
             }
         """.trimIndent().lines()
 
-        val compilerErrorReports = compileIt(sourceLines)
+        val compilerErrorReports = compile(sourceLines)
         assertThat(compilerErrorReports).isEmpty()
     }
 
@@ -181,7 +181,7 @@ class NotInWhenPresentTest {
             }
         """.trimIndent().lines()
 
-        val compilerErrorReports = compileIt(sourceLines)
+        val compilerErrorReports = compile(sourceLines)
         assertThat(compilerErrorReports).isEmpty()
     }
 }
