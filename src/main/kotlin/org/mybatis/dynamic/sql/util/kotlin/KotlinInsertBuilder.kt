@@ -33,7 +33,7 @@ class KotlinInsertBuilder<T> (private val row: T): Buildable<InsertModel<T>> {
         this.table = table
     }
 
-    fun <C : Any> map(column: SqlColumn<C>) = SingleRowInsertColumnMapCompleter(column) {
+    fun <C> map(column: SqlColumn<C>) = SingleRowInsertColumnMapCompleter(column) {
         columnMappings.add(it)
     }
 

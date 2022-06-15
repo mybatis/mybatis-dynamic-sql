@@ -33,7 +33,7 @@ class KotlinBatchInsertBuilder<T> (private val rows: Collection<T>): Buildable<B
         this.table = table
     }
 
-    fun <C : Any> map(column: SqlColumn<C>) = MultiRowInsertColumnMapCompleter(column) {
+    fun <C> map(column: SqlColumn<C>) = MultiRowInsertColumnMapCompleter(column) {
         columnMappings.add(it)
     }
 
