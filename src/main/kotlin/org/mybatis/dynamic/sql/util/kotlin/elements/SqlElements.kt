@@ -200,16 +200,16 @@ fun <T> isNotEqualTo(column: BasicColumn): IsNotEqualToColumn<T> = SqlBuilder.is
 
 fun <T> isNotEqualToWhenPresent(value: T?): IsNotEqualTo<T> = SqlBuilder.isNotEqualToWhenPresent(value)
 
-fun <T : Any> isGreaterThan(value: T): IsGreaterThan<T> = SqlBuilder.isGreaterThan(value)
+fun <T> isGreaterThan(value: T & Any): IsGreaterThan<T> = SqlBuilder.isGreaterThan(value)
 
 fun <T> isGreaterThan(subQuery: KotlinSubQueryBuilder.() -> Unit): IsGreaterThanWithSubselect<T> =
     SqlBuilder.isGreaterThan(KotlinSubQueryBuilder().apply(subQuery))
 
 fun <T> isGreaterThan(column: BasicColumn): IsGreaterThanColumn<T> = SqlBuilder.isGreaterThan(column)
 
-fun <T : Any> isGreaterThanWhenPresent(value: T?): IsGreaterThan<T> = SqlBuilder.isGreaterThanWhenPresent(value)
+fun <T> isGreaterThanWhenPresent(value: T?): IsGreaterThan<T> = SqlBuilder.isGreaterThanWhenPresent(value)
 
-fun <T : Any> isGreaterThanOrEqualTo(value: T): IsGreaterThanOrEqualTo<T> = SqlBuilder.isGreaterThanOrEqualTo(value)
+fun <T> isGreaterThanOrEqualTo(value: T & Any): IsGreaterThanOrEqualTo<T> = SqlBuilder.isGreaterThanOrEqualTo(value)
 
 fun <T> isGreaterThanOrEqualTo(subQuery: KotlinSubQueryBuilder.() -> Unit): IsGreaterThanOrEqualToWithSubselect<T> =
     SqlBuilder.isGreaterThanOrEqualTo(KotlinSubQueryBuilder().apply(subQuery))
@@ -217,26 +217,26 @@ fun <T> isGreaterThanOrEqualTo(subQuery: KotlinSubQueryBuilder.() -> Unit): IsGr
 fun <T> isGreaterThanOrEqualTo(column: BasicColumn): IsGreaterThanOrEqualToColumn<T> =
     SqlBuilder.isGreaterThanOrEqualTo(column)
 
-fun <T : Any> isGreaterThanOrEqualToWhenPresent(value: T?): IsGreaterThanOrEqualTo<T> =
+fun <T> isGreaterThanOrEqualToWhenPresent(value: T?): IsGreaterThanOrEqualTo<T> =
     SqlBuilder.isGreaterThanOrEqualToWhenPresent(value)
 
-fun <T : Any> isLessThan(value: T): IsLessThan<T> = SqlBuilder.isLessThan(value)
+fun <T> isLessThan(value: T & Any): IsLessThan<T> = SqlBuilder.isLessThan(value)
 
 fun <T> isLessThan(subQuery: KotlinSubQueryBuilder.() -> Unit): IsLessThanWithSubselect<T> =
     SqlBuilder.isLessThan(KotlinSubQueryBuilder().apply(subQuery))
 
 fun <T> isLessThan(column: BasicColumn): IsLessThanColumn<T> = SqlBuilder.isLessThan(column)
 
-fun <T : Any> isLessThanWhenPresent(value: T?): IsLessThan<T> = SqlBuilder.isLessThanWhenPresent(value)
+fun <T> isLessThanWhenPresent(value: T?): IsLessThan<T> = SqlBuilder.isLessThanWhenPresent(value)
 
-fun <T : Any> isLessThanOrEqualTo(value: T): IsLessThanOrEqualTo<T> = SqlBuilder.isLessThanOrEqualTo(value)
+fun <T> isLessThanOrEqualTo(value: T & Any): IsLessThanOrEqualTo<T> = SqlBuilder.isLessThanOrEqualTo(value)
 
 fun <T> isLessThanOrEqualTo(subQuery: KotlinSubQueryBuilder.() -> Unit): IsLessThanOrEqualToWithSubselect<T> =
     SqlBuilder.isLessThanOrEqualTo(KotlinSubQueryBuilder().apply(subQuery))
 
 fun <T> isLessThanOrEqualTo(column: BasicColumn): IsLessThanOrEqualToColumn<T> = SqlBuilder.isLessThanOrEqualTo(column)
 
-fun <T : Any> isLessThanOrEqualToWhenPresent(value: T?): IsLessThanOrEqualTo<T> =
+fun <T> isLessThanOrEqualToWhenPresent(value: T?): IsLessThanOrEqualTo<T> =
     SqlBuilder.isLessThanOrEqualToWhenPresent(value)
 
 fun <T> isIn(vararg values: T & Any): IsIn<T> = isIn(values.asList())
