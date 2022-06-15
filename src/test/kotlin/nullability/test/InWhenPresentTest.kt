@@ -36,7 +36,7 @@ class InWhenPresentTest {
         """
 
         val compilerMessageCollector = compile(source)
-        assertThat(compilerMessageCollector.errors).isEmpty()
+        assertThat(compilerMessageCollector.hasErrors()).isFalse
     }
 
     @Test
@@ -57,7 +57,7 @@ class InWhenPresentTest {
         """
 
         val compilerMessageCollector = compile(source)
-        assertThat(compilerMessageCollector.errors).isEmpty()
+        assertThat(compilerMessageCollector.hasErrors()).isFalse
     }
 
     @Test
@@ -77,7 +77,7 @@ class InWhenPresentTest {
         """
 
         val compilerMessageCollector = compile(source)
-        assertThat(compilerMessageCollector.errors).isEmpty()
+        assertThat(compilerMessageCollector.hasErrors()).isFalse
     }
 
     @Test
@@ -97,7 +97,7 @@ class InWhenPresentTest {
         """
 
         val compilerMessageCollector = compile(source)
-        assertThat(compilerMessageCollector.errors).isEmpty()
+        assertThat(compilerMessageCollector.hasErrors()).isFalse
     }
 
     @Test
@@ -118,7 +118,7 @@ class InWhenPresentTest {
         """
 
         val compilerMessageCollector = compile(source)
-        assertThat(compilerMessageCollector.errors).isEmpty()
+        assertThat(compilerMessageCollector.hasErrors()).isFalse
     }
 
     @Test
@@ -140,7 +140,7 @@ class InWhenPresentTest {
         """
 
         val compilerMessageCollector = compile(source)
-        assertThat(compilerMessageCollector.errors).isEmpty()
+        assertThat(compilerMessageCollector.hasErrors()).isFalse
     }
 
     @Test
@@ -161,7 +161,7 @@ class InWhenPresentTest {
         """
 
         val compilerMessageCollector = compile(source)
-        assertThat(compilerMessageCollector.errors).isEmpty()
+        assertThat(compilerMessageCollector.hasErrors()).isFalse
     }
 
     @Test
@@ -182,6 +182,6 @@ class InWhenPresentTest {
         """
 
         val compilerMessageCollector = compile(source)
-        assertThat(compilerMessageCollector.errors).isEmpty()
+        assertThat(compilerMessageCollector.hasErrors()).isFalse
     }
 }

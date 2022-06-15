@@ -36,7 +36,7 @@ class NotBetweenTest {
         """
 
         val compilerMessageCollector = compile(source)
-        assertThat(compilerMessageCollector.errorLocations()).isEqualTo(listOf(ExpectedErrorLocation(9, 33)))
+        assertThat(compilerMessageCollector.errorLocations()).isEqualTo(listOf(ErrorLocation(9, 33)))
     }
 
     @Test
@@ -56,7 +56,7 @@ class NotBetweenTest {
         """
 
         val compilerMessageCollector = compile(source)
-        assertThat(compilerMessageCollector.errorLocations()).isEqualTo(listOf(ExpectedErrorLocation(9, 39)))
+        assertThat(compilerMessageCollector.errorLocations()).isEqualTo(listOf(ErrorLocation(9, 39)))
     }
 
     @Test
@@ -77,8 +77,8 @@ class NotBetweenTest {
 
         val compilerMessageCollector = compile(source)
         assertThat(compilerMessageCollector.errorLocations()).isEqualTo(listOf(
-            ExpectedErrorLocation(9, 33),
-            ExpectedErrorLocation(9, 42)
+            ErrorLocation(9, 33),
+            ErrorLocation(9, 42)
         ))
     }
 
@@ -100,7 +100,7 @@ class NotBetweenTest {
         """
 
         val compilerMessageCollector = compile(source)
-        assertThat(compilerMessageCollector.errorLocations()).isEqualTo(listOf(ExpectedErrorLocation(10, 39)))
+        assertThat(compilerMessageCollector.errorLocations()).isEqualTo(listOf(ErrorLocation(10, 39)))
     }
 
     @Test
@@ -121,7 +121,7 @@ class NotBetweenTest {
         """
 
         val compilerMessageCollector = compile(source)
-        assertThat(compilerMessageCollector.errorLocations()).isEqualTo(listOf(ExpectedErrorLocation(10, 41)))
+        assertThat(compilerMessageCollector.errorLocations()).isEqualTo(listOf(ErrorLocation(10, 41)))
     }
 
     @Test
@@ -143,8 +143,8 @@ class NotBetweenTest {
 
         val compilerMessageCollector = compile(source)
         assertThat(compilerMessageCollector.errorLocations()).isEqualTo(listOf(
-            ExpectedErrorLocation(10, 39),
-            ExpectedErrorLocation(10, 49)
+            ErrorLocation(10, 39),
+            ErrorLocation(10, 49)
         ))
     }
 }

@@ -36,7 +36,7 @@ class BetweenTest {
         """
 
         val compilerMessageCollector = compile(source)
-        assertThat(compilerMessageCollector.errorLocations()).isEqualTo(listOf(ExpectedErrorLocation(9, 30)))
+        assertThat(compilerMessageCollector.errorLocations()).isEqualTo(listOf(ErrorLocation(9, 30)))
     }
 
     @Test
@@ -56,11 +56,11 @@ class BetweenTest {
         """
 
         val compilerMessageCollector = compile(source)
-        assertThat(compilerMessageCollector.errorLocations()).isEqualTo(listOf(ExpectedErrorLocation(9, 36)))
+        assertThat(compilerMessageCollector.errorLocations()).isEqualTo(listOf(ErrorLocation(9, 36)))
     }
 
     @Test
-    fun `Test That Both Null Causes Compile Errors`() {
+    fun `Test That Both Null Causes Two Compile Errors`() {
         val source = """
             package temp.kotlin.test
             
@@ -77,8 +77,8 @@ class BetweenTest {
 
         val compilerMessageCollector = compile(source)
         assertThat(compilerMessageCollector.errorLocations()).isEqualTo(listOf(
-            ExpectedErrorLocation(9, 30),
-            ExpectedErrorLocation(9, 39)
+            ErrorLocation(9, 30),
+            ErrorLocation(9, 39)
         ))
     }
 
@@ -100,7 +100,7 @@ class BetweenTest {
         """
 
         val compilerMessageCollector = compile(source)
-        assertThat(compilerMessageCollector.errorLocations()).isEqualTo(listOf(ExpectedErrorLocation(10, 36)))
+        assertThat(compilerMessageCollector.errorLocations()).isEqualTo(listOf(ErrorLocation(10, 36)))
     }
 
     @Test
@@ -121,11 +121,11 @@ class BetweenTest {
         """
 
         val compilerMessageCollector = compile(source)
-        assertThat(compilerMessageCollector.errorLocations()).isEqualTo(listOf(ExpectedErrorLocation(10, 38)))
+        assertThat(compilerMessageCollector.errorLocations()).isEqualTo(listOf(ErrorLocation(10, 38)))
     }
 
     @Test
-    fun `Test That Both Null In Elements Method Causes Compile Error`() {
+    fun `Test That Both Null In Elements Method Causes Two Compile Errors`() {
         val source = """
             package temp.kotlin.test
             
@@ -143,8 +143,8 @@ class BetweenTest {
 
         val compilerMessageCollector = compile(source)
         assertThat(compilerMessageCollector.errorLocations()).isEqualTo(listOf(
-            ExpectedErrorLocation(10, 36),
-            ExpectedErrorLocation(10, 46)
+            ErrorLocation(10, 36),
+            ErrorLocation(10, 46)
         ))
     }
 }

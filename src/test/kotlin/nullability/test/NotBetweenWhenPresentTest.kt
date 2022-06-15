@@ -36,7 +36,7 @@ class NotBetweenWhenPresentTest {
         """
 
         val compilerMessageCollector = compile(source)
-        assertThat(compilerMessageCollector.errors).isEmpty()
+        assertThat(compilerMessageCollector.hasErrors()).isFalse
     }
 
     @Test
@@ -56,7 +56,7 @@ class NotBetweenWhenPresentTest {
         """
 
         val compilerMessageCollector = compile(source)
-        assertThat(compilerMessageCollector.errors).isEmpty()
+        assertThat(compilerMessageCollector.hasErrors()).isFalse
     }
 
     @Test
@@ -76,7 +76,7 @@ class NotBetweenWhenPresentTest {
         """
 
         val compilerMessageCollector = compile(source)
-        assertThat(compilerMessageCollector.errors).isEmpty()
+        assertThat(compilerMessageCollector.hasErrors()).isFalse
     }
 
     @Test
@@ -97,7 +97,7 @@ class NotBetweenWhenPresentTest {
         """
 
         val compilerMessageCollector = compile(source)
-        assertThat(compilerMessageCollector.errors).isEmpty()
+        assertThat(compilerMessageCollector.hasErrors()).isFalse
     }
 
     @Test
@@ -118,7 +118,7 @@ class NotBetweenWhenPresentTest {
         """
 
         val compilerMessageCollector = compile(source)
-        assertThat(compilerMessageCollector.errors).isEmpty()
+        assertThat(compilerMessageCollector.hasErrors()).isFalse
     }
 
     @Test
@@ -139,6 +139,6 @@ class NotBetweenWhenPresentTest {
         """
 
         val compilerMessageCollector = compile(source)
-        assertThat(compilerMessageCollector.errors).isEmpty()
+        assertThat(compilerMessageCollector.hasErrors()).isFalse
     }
 }

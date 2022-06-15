@@ -36,7 +36,7 @@ class LikeNotLikeTest {
         """
 
         val compilerMessageCollector = compile(source)
-        assertThat(compilerMessageCollector.errorLocations()).isEqualTo(listOf(ExpectedErrorLocation(9, 34)))
+        assertThat(compilerMessageCollector.errorLocations()).isEqualTo(listOf(ErrorLocation(9, 34)))
     }
 
     @Test
@@ -56,7 +56,7 @@ class LikeNotLikeTest {
         """
 
         val compilerMessageCollector = compile(source)
-        assertThat(compilerMessageCollector.errors).isEmpty()
+        assertThat(compilerMessageCollector.hasErrors()).isFalse
     }
 
     @Test
@@ -77,7 +77,7 @@ class LikeNotLikeTest {
         """
 
         val compilerMessageCollector = compile(source)
-        assertThat(compilerMessageCollector.errorLocations()).isEqualTo(listOf(ExpectedErrorLocation(10, 37)))
+        assertThat(compilerMessageCollector.errorLocations()).isEqualTo(listOf(ErrorLocation(10, 37)))
     }
 
     @Test
@@ -97,7 +97,7 @@ class LikeNotLikeTest {
         """
 
         val compilerMessageCollector = compile(source)
-        assertThat(compilerMessageCollector.errors).isEmpty()
+        assertThat(compilerMessageCollector.hasErrors()).isFalse
     }
 
     @Test
@@ -118,7 +118,7 @@ class LikeNotLikeTest {
         """
 
         val compilerMessageCollector = compile(source)
-        assertThat(compilerMessageCollector.errorLocations()).isEqualTo(listOf(ExpectedErrorLocation(10, 35)))
+        assertThat(compilerMessageCollector.errorLocations()).isEqualTo(listOf(ErrorLocation(10, 35)))
     }
 
     @Test
@@ -139,7 +139,7 @@ class LikeNotLikeTest {
         """
 
         val compilerMessageCollector = compile(source)
-        assertThat(compilerMessageCollector.errors).isEmpty()
+        assertThat(compilerMessageCollector.hasErrors()).isFalse
     }
 
     @Test
@@ -161,7 +161,7 @@ class LikeNotLikeTest {
         """
 
         val compilerMessageCollector = compile(source)
-        assertThat(compilerMessageCollector.errorLocations()).isEqualTo(listOf(ExpectedErrorLocation(11, 38)))
+        assertThat(compilerMessageCollector.errorLocations()).isEqualTo(listOf(ErrorLocation(11, 38)))
     }
 
     @Test
@@ -182,6 +182,6 @@ class LikeNotLikeTest {
         """
 
         val compilerMessageCollector = compile(source)
-        assertThat(compilerMessageCollector.errors).isEmpty()
+        assertThat(compilerMessageCollector.hasErrors()).isFalse
     }
 }
