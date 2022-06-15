@@ -50,9 +50,9 @@ class KotlinUpdateBuilder(private val dsl: UpdateDSL<UpdateModel>) :
                 set(column).equalToStringConstant(constant)
             }
 
-        infix fun equalTo(value: T): Unit = equalTo { value }
+        infix fun equalTo(value: T & Any): Unit = equalTo { value }
 
-        infix fun equalTo(value: () -> T): Unit =
+        infix fun equalTo(value: () -> T & Any): Unit =
             applyToDsl {
                 set(column).equalTo(value)
             }
