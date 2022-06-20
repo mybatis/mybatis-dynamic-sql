@@ -25,7 +25,7 @@ import org.mybatis.dynamic.sql.util.Buildable
 typealias KotlinInsertCompleter<T> = KotlinInsertBuilder<T>.() -> Unit
 
 @MyBatisDslMarker
-class KotlinInsertBuilder<T> (private val row: T & Any): Buildable<InsertModel<T>> {
+class KotlinInsertBuilder<T : Any> (private val row: T): Buildable<InsertModel<T>> {
     private var table: SqlTable? = null
     private val columnMappings = mutableListOf<AbstractColumnMapping>()
 

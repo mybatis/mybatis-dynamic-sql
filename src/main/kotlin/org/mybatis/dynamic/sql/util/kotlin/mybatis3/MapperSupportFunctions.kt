@@ -19,7 +19,6 @@ package org.mybatis.dynamic.sql.util.kotlin.mybatis3
 import org.mybatis.dynamic.sql.BasicColumn
 import org.mybatis.dynamic.sql.SqlTable
 import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider
-import org.mybatis.dynamic.sql.insert.render.BatchInsert
 import org.mybatis.dynamic.sql.insert.render.GeneralInsertStatementProvider
 import org.mybatis.dynamic.sql.insert.render.InsertSelectStatementProvider
 import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider
@@ -64,9 +63,9 @@ fun countFrom(mapper: (SelectStatementProvider) -> Long, table: SqlTable, comple
 fun deleteFrom(mapper: (DeleteStatementProvider) -> Int, table: SqlTable, completer: DeleteCompleter): Int =
     mapper(deleteFrom(table, completer))
 
-fun <T> insert(
+fun <T : Any> insert(
     mapper: (InsertStatementProvider<T>) -> Int,
-    row: T & Any,
+    row: T,
     table: SqlTable,
     completer: KotlinInsertCompleter<T>
 ): Int =
@@ -82,19 +81,16 @@ fun <T> insert(
  * list will be [org.apache.ibatis.executor.BatchExecutor.BATCH_UPDATE_RETURN_VALUE]).
  * To retrieve update counts, execute [org.apache.ibatis.session.SqlSession.flushStatements].
  */
-fun <T> insertBatch(
+fun <T : Any> insertBatch(
     mapper: (InsertStatementProvider<T>) -> Int,
-    records: Collection<T & Any>,
+    records: Collection<T>,
     table: SqlTable,
     completer: KotlinBatchInsertCompleter<T>
-): List<Int> {
-    val batchInsert: BatchInsert<T> = insertBatch(records) {
+): List<Int> =
+    insertBatch(records) {
         into(table)
         run(completer)
-    }
-
-    return batchInsert.insertStatements().map(mapper)
-}
+    }.insertStatements().map(mapper)
 
 fun insertInto(
     mapper: (GeneralInsertStatementProvider) -> Int,
@@ -103,9 +99,9 @@ fun insertInto(
 ): Int =
     mapper(insertInto(table, completer))
 
-fun <T> insertMultiple(
+fun <T : Any> insertMultiple(
     mapper: (MultiRowInsertStatementProvider<T>) -> Int,
-    records: Collection<T & Any>,
+    records: Collection<T>,
     table: SqlTable,
     completer: KotlinMultiRowInsertCompleter<T>
 ): Int =
@@ -114,19 +110,18 @@ fun <T> insertMultiple(
         run(completer)
     })
 
-fun <T> insertMultipleWithGeneratedKeys(
+fun <T : Any> insertMultipleWithGeneratedKeys(
     mapper: (String, List<T>) -> Int,
-    records: Collection<T & Any>,
+    records: Collection<T>,
     table: SqlTable,
     completer: KotlinMultiRowInsertCompleter<T>
-): Int {
-    val provider: MultiRowInsertStatementProvider<T> = insertMultiple(records) {
+): Int =
+    insertMultiple(records) {
         into(table)
         run(completer)
+    }.run {
+        mapper(insertStatement, this.records)
     }
-
-    return mapper(provider.insertStatement, provider.records)
-}
 
 fun insertSelect(
     mapper: (InsertSelectStatementProvider) -> Int,
