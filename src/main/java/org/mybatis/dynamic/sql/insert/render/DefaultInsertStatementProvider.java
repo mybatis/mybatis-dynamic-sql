@@ -15,9 +15,9 @@
  */
 package org.mybatis.dynamic.sql.insert.render;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.Objects;
+
+import org.jetbrains.annotations.NotNull;
 
 public class DefaultInsertStatementProvider<T> implements InsertStatementProvider<T> {
     private final String insertStatement;

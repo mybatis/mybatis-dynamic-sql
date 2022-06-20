@@ -59,7 +59,8 @@ public class DeleteDSL<R> extends AbstractWhereSupport<DeleteDSL<R>.DeleteWhereB
         return adapterFunction.apply(deleteModel);
     }
 
-    public static <R> DeleteDSL<R> deleteFrom(Function<DeleteModel, R> adapterFunction, SqlTable table, String tableAlias) {
+    public static <R> DeleteDSL<R> deleteFrom(Function<DeleteModel, R> adapterFunction, SqlTable table,
+                                              String tableAlias) {
         return new DeleteDSL<>(table, tableAlias, adapterFunction);
     }
 

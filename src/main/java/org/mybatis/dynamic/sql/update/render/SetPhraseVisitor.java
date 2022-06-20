@@ -55,7 +55,8 @@ public class SetPhraseVisitor extends UpdateMappingVisitor<Optional<FragmentAndP
 
     @Override
     public Optional<FragmentAndParameters> visit(NullMapping mapping) {
-        return FragmentAndParameters.withFragment(mapping.mapColumn(aliasedColumnNameFunction) + " = null") //$NON-NLS-1$
+        return FragmentAndParameters
+                .withFragment(mapping.mapColumn(aliasedColumnNameFunction) + " = null") //$NON-NLS-1$
                 .buildOptional();
     }
 
