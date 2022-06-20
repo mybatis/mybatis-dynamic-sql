@@ -42,10 +42,10 @@ fun count(
     table: SqlTable,
     completer: CountCompleter
 ): Long =
-    count(column) {
+    mapper(count(column) {
         from(table)
         run(completer)
-    }.run(mapper)
+    })
 
 fun countDistinct(
     mapper: (SelectStatementProvider) -> Long,
@@ -53,30 +53,27 @@ fun countDistinct(
     table: SqlTable,
     completer: CountCompleter
 ): Long =
-    countDistinct(column) {
+    mapper(countDistinct(column) {
         from(table)
         run(completer)
-    }.run(mapper)
+    })
 
 fun countFrom(mapper: (SelectStatementProvider) -> Long, table: SqlTable, completer: CountCompleter): Long =
-    countFrom(table, completer).run(mapper)
+    mapper(countFrom(table, completer))
 
 fun deleteFrom(mapper: (DeleteStatementProvider) -> Int, table: SqlTable, completer: DeleteCompleter): Int =
-    deleteFrom(table, completer).run(mapper)
+    mapper(deleteFrom(table, completer))
 
 fun <T> insert(
     mapper: (InsertStatementProvider<T>) -> Int,
     row: T & Any,
     table: SqlTable,
     completer: KotlinInsertCompleter<T>
-): Int {
-    val f : InsertStatementProvider<T> = insert(row) {
+): Int =
+    mapper(insert(row) {
         into(table)
         run(completer)
-    }
-
-    return f.run(mapper)
-}
+    })
 
 /**
  * This function simply inserts all rows using the supplied mapper. It is up
@@ -91,12 +88,12 @@ fun <T> insertBatch(
     table: SqlTable,
     completer: KotlinBatchInsertCompleter<T>
 ): List<Int> {
-    val f: BatchInsert<T> = insertBatch(records) {
+    val batchInsert: BatchInsert<T> = insertBatch(records) {
         into(table)
         run(completer)
     }
 
-    return f.insertStatements().map(mapper)
+    return batchInsert.insertStatements().map(mapper)
 }
 
 fun insertInto(
@@ -104,21 +101,18 @@ fun insertInto(
     table: SqlTable,
     completer: GeneralInsertCompleter
 ): Int =
-    insertInto(table, completer).run(mapper)
+    mapper(insertInto(table, completer))
 
 fun <T> insertMultiple(
     mapper: (MultiRowInsertStatementProvider<T>) -> Int,
     records: Collection<T & Any>,
     table: SqlTable,
     completer: KotlinMultiRowInsertCompleter<T>
-): Int {
-    val f: MultiRowInsertStatementProvider<T> = insertMultiple(records) {
+): Int =
+    mapper(insertMultiple(records) {
         into(table)
         run(completer)
-    }
-
-    return f.run(mapper)
-}
+    })
 
 fun <T> insertMultipleWithGeneratedKeys(
     mapper: (String, List<T>) -> Int,
@@ -126,14 +120,12 @@ fun <T> insertMultipleWithGeneratedKeys(
     table: SqlTable,
     completer: KotlinMultiRowInsertCompleter<T>
 ): Int {
-    val f: MultiRowInsertStatementProvider<T> = insertMultiple(records) {
+    val provider: MultiRowInsertStatementProvider<T> = insertMultiple(records) {
         into(table)
         run(completer)
     }
 
-    return f.run {
-        mapper(insertStatement, this.records)
-    }
+    return mapper(provider.insertStatement, provider.records)
 }
 
 fun insertSelect(
@@ -141,7 +133,7 @@ fun insertSelect(
     table: SqlTable,
     completer: InsertSelectCompleter
 ): Int =
-    insertSelect(table, completer).run(mapper)
+    mapper(insertSelect(table, completer))
 
 fun <T> selectDistinct(
     mapper: (SelectStatementProvider) -> List<T>,
@@ -149,10 +141,10 @@ fun <T> selectDistinct(
     table: SqlTable,
     completer: SelectCompleter
 ): List<T> =
-    selectDistinct(selectList) {
+    mapper(selectDistinct(selectList) {
         from(table)
         run(completer)
-    }.run(mapper)
+    })
 
 fun <T> selectList(
     mapper: (SelectStatementProvider) -> List<T>,
@@ -160,10 +152,10 @@ fun <T> selectList(
     table: SqlTable,
     completer: SelectCompleter
 ): List<T> =
-    select(selectList) {
+    mapper(select(selectList) {
         from(table)
         run(completer)
-    }.run(mapper)
+    })
 
 fun <T> selectOne(
     mapper: (SelectStatementProvider) -> T?,
@@ -171,10 +163,10 @@ fun <T> selectOne(
     table: SqlTable,
     completer: SelectCompleter
 ): T? =
-    select(selectList) {
+    mapper(select(selectList) {
         from(table)
         run(completer)
-    }.run(mapper)
+    })
 
 fun update(mapper: (UpdateStatementProvider) -> Int, table: SqlTable, completer: UpdateCompleter): Int =
-    update(table, completer).run(mapper)
+    mapper(update(table, completer))
