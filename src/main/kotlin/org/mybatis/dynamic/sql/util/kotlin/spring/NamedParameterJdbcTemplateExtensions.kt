@@ -202,9 +202,9 @@ fun <T> NamedParameterJdbcTemplate.selectList(
 ): List<T> =
     query(selectStatement.selectStatement, selectStatement.parameters, rowMapper)
 
-fun <T> NamedParameterJdbcTemplate.selectList(
+fun <T : Any> NamedParameterJdbcTemplate.selectList(
     selectStatement: SelectStatementProvider,
-    type: KClass<T & Any>
+    type: KClass<T>
 ): List<T> =
     queryForList(selectStatement.selectStatement, selectStatement.parameters, type.java)
 
@@ -239,9 +239,9 @@ fun <T> NamedParameterJdbcTemplate.selectOne(
 }
 
 @SuppressWarnings("SwallowedException")
-fun <T> NamedParameterJdbcTemplate.selectOne(
+fun <T : Any> NamedParameterJdbcTemplate.selectOne(
     selectStatement: SelectStatementProvider,
-    type: KClass<T & Any>
+    type: KClass<T>
 ): T? = try {
     queryForObject(selectStatement.selectStatement, selectStatement.parameters, type.java)
 } catch (e: EmptyResultDataAccessException) {
