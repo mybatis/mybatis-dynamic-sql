@@ -12,6 +12,9 @@ GitHub milestone: [https://github.com/mybatis/mybatis-dynamic-sql/issues?q=miles
 2. Added the ability to specify a table alias on DELETE and UPDATE statements.
    This is especially useful when working with a sub-query with an exists or not exists condition.
    ([#489](https://github.com/mybatis/mybatis-dynamic-sql/pull/489))
+3. Updated the Kotlin DSL to use Kotlin 1.7's new "definitely non-null" types where appropriate. This helps us to more
+   accurately represent the nullable/non-nullable expectations for API method calls.
+   ([#496](https://github.com/mybatis/mybatis-dynamic-sql/pull/496))
 
 ## Release 1.4.0 - March 3, 2022
 

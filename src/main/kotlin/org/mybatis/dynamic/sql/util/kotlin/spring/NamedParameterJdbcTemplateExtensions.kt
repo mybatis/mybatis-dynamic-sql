@@ -89,10 +89,10 @@ fun <T : Any> NamedParameterJdbcTemplate.insertBatch(records: List<T>): BatchIns
     BatchInsertHelper(records, this)
 
 // single row insert
-fun <T : Any> NamedParameterJdbcTemplate.insert(insertStatement: InsertStatementProvider<T>): Int =
+fun <T> NamedParameterJdbcTemplate.insert(insertStatement: InsertStatementProvider<T>): Int =
     update(insertStatement.insertStatement, BeanPropertySqlParameterSource(insertStatement.row))
 
-fun <T : Any> NamedParameterJdbcTemplate.insert(
+fun <T> NamedParameterJdbcTemplate.insert(
     insertStatement: InsertStatementProvider<T>,
     keyHolder: KeyHolder
 ): Int =
@@ -120,8 +120,8 @@ fun NamedParameterJdbcTemplate.insertInto(table: SqlTable, completer: GeneralIns
 
 // multiple row insert
 fun <T : Any> NamedParameterJdbcTemplate.insertMultiple(
-    vararg records: T
-    , completer: KotlinMultiRowInsertCompleter<T>
+    vararg records: T,
+    completer: KotlinMultiRowInsertCompleter<T>
 ): Int =
     insertMultiple(records.asList(), completer)
 
@@ -205,7 +205,7 @@ fun <T> NamedParameterJdbcTemplate.selectList(
 fun <T : Any> NamedParameterJdbcTemplate.selectList(
     selectStatement: SelectStatementProvider,
     type: KClass<T>
-): List<T?> =
+): List<T> =
     queryForList(selectStatement.selectStatement, selectStatement.parameters, type.java)
 
 fun NamedParameterJdbcTemplate.selectOne(

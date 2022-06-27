@@ -68,16 +68,16 @@ fun deleteFrom(table: SqlTable, completer: DeleteCompleter): DeleteStatementProv
 fun deleteFrom(table: SqlTable, tableAlias: String, completer: DeleteCompleter): DeleteStatementProvider =
     deleteFrom(table, tableAlias, completer).render(RenderingStrategies.MYBATIS3)
 
-fun <T> insert(row: T, completer: KotlinInsertCompleter<T>): InsertStatementProvider<T> =
+fun <T : Any> insert(row: T, completer: KotlinInsertCompleter<T>): InsertStatementProvider<T> =
     insert(row, completer).render(RenderingStrategies.MYBATIS3)
 
-fun <T> insertBatch(rows: Collection<T>, completer: KotlinBatchInsertCompleter<T>): BatchInsert<T> =
+fun <T : Any> insertBatch(rows: Collection<T>, completer: KotlinBatchInsertCompleter<T>): BatchInsert<T> =
     insertBatch(rows, completer).render(RenderingStrategies.MYBATIS3)
 
 fun insertInto(table: SqlTable, completer: GeneralInsertCompleter): GeneralInsertStatementProvider =
     insertInto(table, completer).render(RenderingStrategies.MYBATIS3)
 
-fun <T> insertMultiple(
+fun <T : Any> insertMultiple(
     rows: Collection<T>,
     completer: KotlinMultiRowInsertCompleter<T>
 ): MultiRowInsertStatementProvider<T> =

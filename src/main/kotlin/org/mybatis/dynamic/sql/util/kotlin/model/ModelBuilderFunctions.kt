@@ -65,16 +65,16 @@ fun deleteFrom(table: SqlTable, completer: DeleteCompleter): DeleteModel =
 fun deleteFrom(table: SqlTable, tableAlias: String, completer: DeleteCompleter): DeleteModel =
     KotlinDeleteBuilder(SqlBuilder.deleteFrom(table, tableAlias)).apply(completer).build()
 
-fun <T> insert(row: T, completer: KotlinInsertCompleter<T>): InsertModel<T> =
+fun <T : Any> insert(row: T, completer: KotlinInsertCompleter<T>): InsertModel<T> =
     KotlinInsertBuilder(row).apply(completer).build()
 
-fun <T> insertBatch(rows: Collection<T>, completer: KotlinBatchInsertCompleter<T>): BatchInsertModel<T> =
+fun <T : Any> insertBatch(rows: Collection<T>, completer: KotlinBatchInsertCompleter<T>): BatchInsertModel<T> =
     KotlinBatchInsertBuilder(rows).apply(completer).build()
 
 fun insertInto(table: SqlTable, completer: GeneralInsertCompleter): GeneralInsertModel =
     KotlinGeneralInsertBuilder(table).apply(completer).build()
 
-fun <T> insertMultiple(rows: Collection<T>, completer: KotlinMultiRowInsertCompleter<T>): MultiRowInsertModel<T> =
+fun <T : Any> insertMultiple(rows: Collection<T>, completer: KotlinMultiRowInsertCompleter<T>): MultiRowInsertModel<T> =
     KotlinMultiRowInsertBuilder(rows).apply(completer).build()
 
 fun insertSelect(table: SqlTable, completer: InsertSelectCompleter): InsertSelectModel =
