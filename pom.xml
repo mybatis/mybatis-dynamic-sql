@@ -168,9 +168,17 @@
       <plugin>
         <groupId>org.eluder.coveralls</groupId>
         <artifactId>coveralls-maven-plugin</artifactId>
+        <version>4.3.0</version>
         <configuration>
           <sourceDirectories>src/main/java,src/main/kotlin</sourceDirectories>
         </configuration>
+        <dependencies>
+          <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+            <version>2.3.1</version>
+          </dependency>
+        </dependencies>
       </plugin>
       <plugin>
         <groupId>com.mycila</groupId>
