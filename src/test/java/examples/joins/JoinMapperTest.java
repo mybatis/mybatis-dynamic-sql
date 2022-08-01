@@ -680,36 +680,36 @@ class JoinMapperTest {
             SelectStatementProvider selectStatement = select(orderLine.orderId, orderLine.quantity, orderLine.itemId.as("ol_itemid"), itemMaster.itemId.as("im_itemid"), itemMaster.description)
                     .from(itemMaster, "im")
                     .fullJoin(orderLine, "ol").on(itemMaster.itemId, equalTo(orderLine.itemId))
-                    .orderBy(sortColumn("im_itemid"))
+                    .orderBy(orderLine.orderId, sortColumn("im_itemid"))
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
 
             String expectedStatement = "select ol.order_id, ol.quantity, ol.item_id as ol_itemid, im.item_id as im_itemid, im.description"
                     + " from ItemMaster im full join OrderLine ol on im.item_id = ol.item_id"
-                    + " order by im_itemid";
+                    + " order by order_id, im_itemid";
             assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedStatement);
 
             List<Map<String, Object>> rows = mapper.selectManyMappedRows(selectStatement);
 
             assertThat(rows).hasSize(6);
             Map<String, Object> row = rows.get(0);
-            assertThat(row).containsEntry("ORDER_ID", 2);
-            assertThat(row).containsEntry("QUANTITY", 6);
-            assertThat(row).containsEntry("OL_ITEMID", 66);
-            assertThat(row).doesNotContainKey("DESCRIPTION");
-            assertThat(row).doesNotContainKey("IM_ITEMID");
+            assertThat(row).doesNotContainKey("ORDER_ID");
+            assertThat(row).doesNotContainKey("QUANTITY");
+            assertThat(row).containsEntry("DESCRIPTION", "Catcher Glove");
+            assertThat(row).containsEntry("IM_ITEMID", 55);
 
-            row = rows.get(3);
+            row = rows.get(2);
             assertThat(row).containsEntry("ORDER_ID", 1);
             assertThat(row).containsEntry("QUANTITY", 1);
             assertThat(row).containsEntry("DESCRIPTION", "First Base Glove");
             assertThat(row).containsEntry("IM_ITEMID", 33);
 
-            row = rows.get(5);
-            assertThat(row).doesNotContainKey("ORDER_ID");
-            assertThat(row).doesNotContainKey("QUANTITY");
-            assertThat(row).containsEntry("DESCRIPTION", "Catcher Glove");
-            assertThat(row).containsEntry("IM_ITEMID", 55);
+            row = rows.get(3);
+            assertThat(row).containsEntry("ORDER_ID", 2);
+            assertThat(row).containsEntry("QUANTITY", 6);
+            assertThat(row).containsEntry("OL_ITEMID", 66);
+            assertThat(row).doesNotContainKey("DESCRIPTION");
+            assertThat(row).doesNotContainKey("IM_ITEMID");
         }
     }
 
