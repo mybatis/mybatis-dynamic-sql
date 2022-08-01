@@ -20,7 +20,7 @@
   <parent>
     <groupId>org.mybatis</groupId>
     <artifactId>mybatis-parent</artifactId>
-    <version>34</version>
+    <version>35</version>
   </parent>
   <groupId>org.mybatis.dynamic-sql</groupId>
   <artifactId>mybatis-dynamic-sql</artifactId>
@@ -52,9 +52,6 @@
   </distributionManagement>
 
   <properties>
-    <java.version>1.8</java.version>
-    <maven.compiler.source>${java.version}</maven.compiler.source>
-    <maven.compiler.target>${java.version}</maven.compiler.target>
     <junit.jupiter.version>5.9.0</junit.jupiter.version>
     <junit.platform.version>1.9.0</junit.platform.version>
     <spring.batch.version>4.3.6</spring.batch.version>
