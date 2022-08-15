@@ -18,11 +18,13 @@ package org.mybatis.dynamic.sql.where;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.mybatis.dynamic.sql.AndOrCriteriaGroup;
 import org.mybatis.dynamic.sql.SqlCriterion;
+import org.mybatis.dynamic.sql.StatementConfiguration;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 import org.mybatis.dynamic.sql.where.render.WhereClauseProvider;
@@ -35,9 +37,13 @@ public class WhereModel {
     private final SqlCriterion initialCriterion;
     private final List<AndOrCriteriaGroup> subCriteria = new ArrayList<>();
 
-    public WhereModel(SqlCriterion initialCriterion, List<AndOrCriteriaGroup> subCriteria) {
+    private final StatementConfiguration statementConfiguration;
+
+    public WhereModel(SqlCriterion initialCriterion, List<AndOrCriteriaGroup> subCriteria,
+                      StatementConfiguration statementConfiguration) {
         this.initialCriterion = initialCriterion;
         this.subCriteria.addAll(subCriteria);
+        this.statementConfiguration = Objects.requireNonNull(statementConfiguration);
     }
 
     public Optional<SqlCriterion> initialCriterion() {
@@ -46,6 +52,15 @@ public class WhereModel {
 
     public List<AndOrCriteriaGroup> subCriteria() {
         return Collections.unmodifiableList(subCriteria);
+    }
+
+    public boolean isUnrenderableClauseAllowed() {
+        // if no criteria were specified, then no where clause was expected
+        if (initialCriterion == null && subCriteria.isEmpty()) {
+            return true;
+        }
+
+        return statementConfiguration.getUnrenderableWhereClauseAllowed();
     }
 
     /**

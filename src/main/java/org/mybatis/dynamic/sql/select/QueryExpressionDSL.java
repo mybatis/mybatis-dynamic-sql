@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2021 the original author or authors.
+ *    Copyright 2016-2022 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -20,31 +20,35 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Consumer;
 
 import org.jetbrains.annotations.NotNull;
 import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.SortSpecification;
 import org.mybatis.dynamic.sql.SqlTable;
+import org.mybatis.dynamic.sql.StatementConfiguration;
 import org.mybatis.dynamic.sql.TableExpression;
 import org.mybatis.dynamic.sql.select.join.JoinCondition;
 import org.mybatis.dynamic.sql.select.join.JoinCriterion;
 import org.mybatis.dynamic.sql.select.join.JoinSpecification;
 import org.mybatis.dynamic.sql.select.join.JoinType;
 import org.mybatis.dynamic.sql.util.Buildable;
+import org.mybatis.dynamic.sql.util.ConfigurableStatement;
 import org.mybatis.dynamic.sql.where.AbstractWhereDSL;
 import org.mybatis.dynamic.sql.where.AbstractWhereSupport;
 import org.mybatis.dynamic.sql.where.WhereModel;
 
 public class QueryExpressionDSL<R>
         extends AbstractQueryExpressionDSL<QueryExpressionDSL<R>.QueryExpressionWhereBuilder, QueryExpressionDSL<R>>
-        implements Buildable<R> {
+        implements Buildable<R>, ConfigurableStatement<QueryExpressionDSL<R>> {
 
     private final String connector;
     private final SelectDSL<R> selectDSL;
     private final boolean isDistinct;
     private final List<BasicColumn> selectList;
-    private final QueryExpressionWhereBuilder whereBuilder = new QueryExpressionWhereBuilder();
+    private final QueryExpressionWhereBuilder whereBuilder;
     private GroupByModel groupByModel;
+    private final StatementConfiguration statementConfiguration = new StatementConfiguration();
 
     QueryExpressionDSL(FromGatherer<R> fromGatherer, TableExpression table) {
         super(table);
@@ -52,6 +56,7 @@ public class QueryExpressionDSL<R>
         selectList = fromGatherer.selectList;
         isDistinct = fromGatherer.isDistinct;
         selectDSL = Objects.requireNonNull(fromGatherer.selectDSL);
+        whereBuilder = new QueryExpressionWhereBuilder(statementConfiguration);
     }
 
     QueryExpressionDSL(FromGatherer<R> fromGatherer, SqlTable table, String tableAlias) {
@@ -62,6 +67,12 @@ public class QueryExpressionDSL<R>
     @Override
     public QueryExpressionWhereBuilder where() {
         return whereBuilder;
+    }
+
+    @Override
+    public QueryExpressionDSL<R> configureStatement(Consumer<StatementConfiguration> consumer) {
+        consumer.accept(statementConfiguration);
+        return this;
     }
 
     @NotNull
@@ -240,7 +251,9 @@ public class QueryExpressionDSL<R>
 
     public class QueryExpressionWhereBuilder extends AbstractWhereDSL<QueryExpressionWhereBuilder>
             implements Buildable<R> {
-        private QueryExpressionWhereBuilder() {}
+        private QueryExpressionWhereBuilder(StatementConfiguration statementConfiguration) {
+            super(statementConfiguration);
+        }
 
         public UnionBuilder union() {
             return QueryExpressionDSL.this.union();

@@ -651,6 +651,7 @@ class AnimalDataTest {
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
                     .where(id, isIn(null, 22, null).filter(Objects::nonNull).filter(i -> i != 22))
+                    .configureStatement(c -> c.setUnrenderableWhereClauseAllowed(true))
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
 
@@ -766,6 +767,7 @@ class AnimalDataTest {
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
                     .where(id, isNotIn(null, 22, null).filter(Objects::nonNull).filter(i -> i != 22))
+                    .configureStatement(c -> c.setUnrenderableWhereClauseAllowed(true))
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
 

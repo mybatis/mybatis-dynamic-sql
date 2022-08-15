@@ -57,6 +57,7 @@ class OptionalConditionsWithPredicatesAnimalDataTest {
     void setup() throws Exception {
         Class.forName(JDBC_DRIVER);
         InputStream is = getClass().getResourceAsStream("/examples/animal/data/CreateAnimalData.sql");
+        assert is != null;
         try (Connection connection = DriverManager.getConnection(JDBC_URL, "sa", "")) {
             ScriptRunner sr = new ScriptRunner(connection);
             sr.setLogWriter(null);
@@ -78,6 +79,7 @@ class OptionalConditionsWithPredicatesAnimalDataTest {
                     .from(animalData)
                     .where(id, isGreaterThan(NULL_INTEGER).filter(Objects::nonNull))  // the where clause should not render
                     .orderBy(id)
+                    .configureStatement(c -> c.setUnrenderableWhereClauseAllowed(true))
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
             List<AnimalData> animals = mapper.selectMany(selectStatement);

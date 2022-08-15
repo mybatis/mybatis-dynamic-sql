@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2021 the original author or authors.
+ *    Copyright 2016-2022 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ import org.jetbrains.annotations.NotNull;
 import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.SqlBuilder;
 import org.mybatis.dynamic.sql.SqlTable;
+import org.mybatis.dynamic.sql.StatementConfiguration;
 import org.mybatis.dynamic.sql.util.Buildable;
 import org.mybatis.dynamic.sql.where.AbstractWhereDSL;
 import org.mybatis.dynamic.sql.where.WhereModel;
@@ -39,13 +40,15 @@ public class CountDSL<R> extends AbstractQueryExpressionDSL<CountDSL<R>.CountWhe
         implements Buildable<R> {
 
     private final Function<SelectModel, R> adapterFunction;
-    private final CountWhereBuilder whereBuilder = new CountWhereBuilder();
+    private final CountWhereBuilder whereBuilder;
     private final BasicColumn countColumn;
+    private final StatementConfiguration statementConfiguration = new StatementConfiguration();
 
     private CountDSL(BasicColumn countColumn, SqlTable table, Function<SelectModel, R> adapterFunction) {
         super(table);
         this.countColumn = Objects.requireNonNull(countColumn);
         this.adapterFunction = Objects.requireNonNull(adapterFunction);
+        whereBuilder = new CountWhereBuilder(statementConfiguration);
     }
 
     @Override
@@ -118,7 +121,9 @@ public class CountDSL<R> extends AbstractQueryExpressionDSL<CountDSL<R>.CountWhe
 
     public class CountWhereBuilder extends AbstractWhereDSL<CountWhereBuilder>
             implements Buildable<R> {
-        private CountWhereBuilder() {}
+        private CountWhereBuilder(StatementConfiguration statementConfiguration) {
+            super(statementConfiguration);
+        }
 
         @NotNull
         @Override

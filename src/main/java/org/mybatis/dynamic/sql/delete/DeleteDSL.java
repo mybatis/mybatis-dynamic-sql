@@ -20,6 +20,7 @@ import java.util.function.Function;
 
 import org.jetbrains.annotations.NotNull;
 import org.mybatis.dynamic.sql.SqlTable;
+import org.mybatis.dynamic.sql.StatementConfiguration;
 import org.mybatis.dynamic.sql.util.Buildable;
 import org.mybatis.dynamic.sql.where.AbstractWhereDSL;
 import org.mybatis.dynamic.sql.where.AbstractWhereSupport;
@@ -30,12 +31,14 @@ public class DeleteDSL<R> extends AbstractWhereSupport<DeleteDSL<R>.DeleteWhereB
     private final Function<DeleteModel, R> adapterFunction;
     private final SqlTable table;
     private final String tableAlias;
-    private final DeleteWhereBuilder whereBuilder = new DeleteWhereBuilder();
+    private final DeleteWhereBuilder whereBuilder;
+    private final StatementConfiguration statementConfiguration = new StatementConfiguration();
 
     private DeleteDSL(SqlTable table, String tableAlias, Function<DeleteModel, R> adapterFunction) {
         this.table = Objects.requireNonNull(table);
         this.tableAlias = tableAlias;
         this.adapterFunction = Objects.requireNonNull(adapterFunction);
+        whereBuilder = new DeleteWhereBuilder();
     }
 
     @Override
@@ -74,7 +77,9 @@ public class DeleteDSL<R> extends AbstractWhereSupport<DeleteDSL<R>.DeleteWhereB
 
     public class DeleteWhereBuilder extends AbstractWhereDSL<DeleteWhereBuilder> implements Buildable<R> {
 
-        private DeleteWhereBuilder() {}
+        private DeleteWhereBuilder() {
+            super(statementConfiguration);
+        }
 
         @NotNull
         @Override

@@ -18,6 +18,8 @@ package org.mybatis.dynamic.sql.where;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
+import java.util.function.Consumer;
 
 import org.jetbrains.annotations.NotNull;
 import org.mybatis.dynamic.sql.AndOrCriteriaGroup;
@@ -27,11 +29,25 @@ import org.mybatis.dynamic.sql.CriteriaGroup;
 import org.mybatis.dynamic.sql.ExistsCriterion;
 import org.mybatis.dynamic.sql.ExistsPredicate;
 import org.mybatis.dynamic.sql.SqlCriterion;
+import org.mybatis.dynamic.sql.StatementConfiguration;
 import org.mybatis.dynamic.sql.VisitableCondition;
+import org.mybatis.dynamic.sql.util.ConfigurableStatement;
 
-public abstract class AbstractWhereDSL<T extends AbstractWhereDSL<T>> {
+public abstract class AbstractWhereDSL<T extends AbstractWhereDSL<T>> implements ConfigurableStatement<T> {
     private SqlCriterion initialCriterion; // WARNING - may be null!
     private final List<AndOrCriteriaGroup> subCriteria = new ArrayList<>();
+
+    private final StatementConfiguration statementConfiguration;
+
+    protected AbstractWhereDSL(StatementConfiguration statementConfiguration) {
+        this.statementConfiguration = Objects.requireNonNull(statementConfiguration);
+    }
+
+    @Override
+    public T configureStatement(Consumer<StatementConfiguration> consumer) {
+        consumer.accept(statementConfiguration);
+        return getThis();
+    }
 
     @NotNull
     public <S> T where(BindableColumn<S> column, VisitableCondition<S> condition,
@@ -172,7 +188,7 @@ public abstract class AbstractWhereDSL<T extends AbstractWhereDSL<T>> {
     }
 
     protected WhereModel internalBuild() {
-        return new WhereModel(initialCriterion, subCriteria);
+        return new WhereModel(initialCriterion, subCriteria, statementConfiguration);
     }
 
     private <R> SqlCriterion buildCriterion(BindableColumn<R> column, VisitableCondition<R> condition) {

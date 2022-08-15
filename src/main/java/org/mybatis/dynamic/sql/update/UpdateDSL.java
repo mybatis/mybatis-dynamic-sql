@@ -25,6 +25,7 @@ import org.jetbrains.annotations.NotNull;
 import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
+import org.mybatis.dynamic.sql.StatementConfiguration;
 import org.mybatis.dynamic.sql.select.SelectModel;
 import org.mybatis.dynamic.sql.util.AbstractColumnMapping;
 import org.mybatis.dynamic.sql.util.Buildable;
@@ -46,12 +47,14 @@ public class UpdateDSL<R> extends AbstractWhereSupport<UpdateDSL<R>.UpdateWhereB
     private final List<AbstractColumnMapping> columnMappings = new ArrayList<>();
     private final SqlTable table;
     private final String tableAlias;
-    private final UpdateWhereBuilder whereBuilder = new UpdateWhereBuilder();
+    private final UpdateWhereBuilder whereBuilder;
+    private final StatementConfiguration statementConfiguration = new StatementConfiguration();
 
     private UpdateDSL(SqlTable table, String tableAlias, Function<UpdateModel, R> adapterFunction) {
         this.table = Objects.requireNonNull(table);
         this.tableAlias = tableAlias;
         this.adapterFunction = Objects.requireNonNull(adapterFunction);
+        whereBuilder = new UpdateWhereBuilder(statementConfiguration);
     }
 
     public <T> SetClauseFinisher<T> set(SqlColumn<T> column) {
@@ -155,7 +158,9 @@ public class UpdateDSL<R> extends AbstractWhereSupport<UpdateDSL<R>.UpdateWhereB
 
     public class UpdateWhereBuilder extends AbstractWhereDSL<UpdateWhereBuilder> implements Buildable<R> {
 
-        private UpdateWhereBuilder() {}
+        private UpdateWhereBuilder(StatementConfiguration statementConfiguration) {
+            super(statementConfiguration);
+        }
 
         @NotNull
         @Override

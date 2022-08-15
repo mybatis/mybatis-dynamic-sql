@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2020 the original author or authors.
+ *    Copyright 2016-2022 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -27,9 +28,11 @@ import org.jetbrains.annotations.NotNull;
 import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.SortSpecification;
 import org.mybatis.dynamic.sql.SqlTable;
+import org.mybatis.dynamic.sql.StatementConfiguration;
 import org.mybatis.dynamic.sql.TableExpression;
 import org.mybatis.dynamic.sql.select.QueryExpressionDSL.FromGatherer;
 import org.mybatis.dynamic.sql.util.Buildable;
+import org.mybatis.dynamic.sql.util.ConfigurableStatement;
 
 /**
  * Implements a SQL DSL for building select statements.
@@ -38,7 +41,7 @@ import org.mybatis.dynamic.sql.util.Buildable;
  *
  * @param <R> the type of model produced by this builder, typically SelectModel
  */
-public class SelectDSL<R> implements Buildable<R> {
+public class SelectDSL<R> implements Buildable<R>, ConfigurableStatement<SelectDSL<R>> {
 
     private final Function<SelectModel, R> adapterFunction;
     private final List<QueryExpressionDSL<R>> queryExpressions = new ArrayList<>();
@@ -123,6 +126,12 @@ public class SelectDSL<R> implements Buildable<R> {
     public FetchFirstFinisher fetchFirst(long fetchFirstRows) {
         this.fetchFirstRows = fetchFirstRows;
         return new FetchFirstFinisher();
+    }
+
+    @Override
+    public SelectDSL<R> configureStatement(Consumer<StatementConfiguration> consumer) {
+        queryExpressions.forEach(q -> q.configureStatement(consumer));
+        return this;
     }
 
     @NotNull

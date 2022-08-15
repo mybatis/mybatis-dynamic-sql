@@ -21,6 +21,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import org.mybatis.dynamic.sql.SqlCriterion;
+import org.mybatis.dynamic.sql.exception.UnrenderableWhereClauseException;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 import org.mybatis.dynamic.sql.util.FragmentCollector;
@@ -42,12 +43,18 @@ public class WhereRenderer {
     }
 
     public Optional<WhereClauseProvider> render() {
-        return whereModel.initialCriterion().map(this::renderWithInitialCriterion)
+        Optional<WhereClauseProvider> whereClause = whereModel.initialCriterion().map(this::renderWithInitialCriterion)
                 .orElseGet(this::renderWithoutInitialCriterion)
                 .map(rc -> WhereClauseProvider.withWhereClause(rc.fragmentAndParameters().fragment())
                         .withParameters(rc.fragmentAndParameters().parameters())
                         .build()
                 );
+
+        if (whereClause.isPresent() || whereModel.isUnrenderableClauseAllowed()) {
+            return whereClause;
+        }
+
+        throw new UnrenderableWhereClauseException();
     }
 
     private Optional<RenderedCriterion> renderWithInitialCriterion(SqlCriterion initialCriterion) {

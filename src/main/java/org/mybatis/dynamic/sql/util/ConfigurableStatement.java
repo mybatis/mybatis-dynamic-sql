@@ -13,25 +13,12 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.mybatis.dynamic.sql.where;
+package org.mybatis.dynamic.sql.util;
 
 import org.mybatis.dynamic.sql.StatementConfiguration;
 
-public class WhereDSL extends AbstractWhereDSL<WhereDSL> {
-    private WhereDSL() {
-        super(new StatementConfiguration());
-    }
+import java.util.function.Consumer;
 
-    @Override
-    protected WhereDSL getThis() {
-        return this;
-    }
-
-    public static WhereDSL where() {
-        return new WhereDSL();
-    }
-
-    public WhereModel build() {
-        return internalBuild();
-    }
+public interface ConfigurableStatement<R> {
+    R configureStatement(Consumer<StatementConfiguration> consumer);
 }

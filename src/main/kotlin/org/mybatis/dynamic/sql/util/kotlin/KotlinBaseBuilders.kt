@@ -19,6 +19,7 @@ import org.mybatis.dynamic.sql.BindableColumn
 import org.mybatis.dynamic.sql.AndOrCriteriaGroup
 import org.mybatis.dynamic.sql.ExistsPredicate
 import org.mybatis.dynamic.sql.SqlTable
+import org.mybatis.dynamic.sql.StatementConfiguration
 import org.mybatis.dynamic.sql.VisitableCondition
 import org.mybatis.dynamic.sql.select.AbstractQueryExpressionDSL
 import org.mybatis.dynamic.sql.where.AbstractWhereDSL
@@ -38,13 +39,18 @@ fun WhereApplier.andThen(after: WhereApplier): WhereApplier = {
 @MyBatisDslMarker
 @Suppress("TooManyFunctions")
 abstract class KotlinBaseBuilder<D : AbstractWhereSupport<*>> {
+
+    fun configureStatement(c: StatementConfiguration.() -> Unit) {
+        getDsl().where().configureStatement(c)
+    }
+
     fun where(criteria: GroupingCriteriaReceiver): Unit =
         with(GroupingCriteriaCollector().apply(criteria)) {
             this@KotlinBaseBuilder.getDsl().where(initialCriterion, subCriteria)
         }
 
     fun where(criteria: List<AndOrCriteriaGroup>) {
-        this@KotlinBaseBuilder.getDsl().where(criteria)
+        getDsl().where(criteria)
     }
 
     fun and(criteria: GroupingCriteriaReceiver): Unit =
@@ -53,7 +59,7 @@ abstract class KotlinBaseBuilder<D : AbstractWhereSupport<*>> {
         }
 
     fun and(criteria: List<AndOrCriteriaGroup>) {
-        this@KotlinBaseBuilder.getDsl().where().and(criteria)
+        getDsl().where().and(criteria)
     }
 
     fun or(criteria: GroupingCriteriaReceiver): Unit =
@@ -62,7 +68,7 @@ abstract class KotlinBaseBuilder<D : AbstractWhereSupport<*>> {
         }
 
     fun or(criteria: List<AndOrCriteriaGroup>) {
-        this@KotlinBaseBuilder.getDsl().where().or(criteria)
+        getDsl().where().or(criteria)
     }
 
     fun applyWhere(whereApplier: WhereApplier) = whereApplier.invoke(this)

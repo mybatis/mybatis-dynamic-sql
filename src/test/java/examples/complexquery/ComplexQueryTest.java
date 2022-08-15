@@ -110,7 +110,8 @@ class ComplexQueryTest {
     SelectStatementProvider search(Integer targetId, String fName, String lName) {
         QueryExpressionDSL<SelectModel>.QueryExpressionWhereBuilder builder = select(id, firstName, lastName)
                 .from(person)
-                .where();
+                .where()
+                .configureStatement(c -> c.setUnrenderableWhereClauseAllowed(true));
 
         if (targetId != null) {
             builder
