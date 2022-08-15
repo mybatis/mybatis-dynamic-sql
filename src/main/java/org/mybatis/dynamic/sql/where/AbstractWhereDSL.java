@@ -29,8 +29,8 @@ import org.mybatis.dynamic.sql.CriteriaGroup;
 import org.mybatis.dynamic.sql.ExistsCriterion;
 import org.mybatis.dynamic.sql.ExistsPredicate;
 import org.mybatis.dynamic.sql.SqlCriterion;
-import org.mybatis.dynamic.sql.StatementConfiguration;
 import org.mybatis.dynamic.sql.VisitableCondition;
+import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
 import org.mybatis.dynamic.sql.util.ConfigurableStatement;
 
 public abstract class AbstractWhereDSL<T extends AbstractWhereDSL<T>> implements ConfigurableStatement<T> {

@@ -13,7 +13,7 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.mybatis.dynamic.sql;
+package org.mybatis.dynamic.sql.configuration;
 
 /**
  * This class can be used to change some behaviors of the framework. Every configurable statement

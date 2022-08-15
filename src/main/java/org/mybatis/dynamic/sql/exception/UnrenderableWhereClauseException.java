@@ -15,6 +15,9 @@
  */
 package org.mybatis.dynamic.sql.exception;
 
+import org.mybatis.dynamic.sql.configuration.GlobalConfiguration;
+import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
+
 /**
  * This exception is thrown when the where clause in a statement will not render.
  * This can happen if all the optional conditions in a where clause fail to
@@ -28,8 +31,8 @@ package org.mybatis.dynamic.sql.exception;
  * If you intend to allow an unrenderable where clause, then configure the
  * statement to allow it, or change the global configuration.
  *
- * @see org.mybatis.dynamic.sql.GlobalConfiguration
- * @see org.mybatis.dynamic.sql.StatementConfiguration
+ * @see GlobalConfiguration
+ * @see StatementConfiguration
  * @since 1.4.1
  * @author Jeff Butler
  */

@@ -19,8 +19,8 @@ import org.mybatis.dynamic.sql.BindableColumn
 import org.mybatis.dynamic.sql.AndOrCriteriaGroup
 import org.mybatis.dynamic.sql.ExistsPredicate
 import org.mybatis.dynamic.sql.SqlTable
-import org.mybatis.dynamic.sql.StatementConfiguration
 import org.mybatis.dynamic.sql.VisitableCondition
+import org.mybatis.dynamic.sql.configuration.StatementConfiguration
 import org.mybatis.dynamic.sql.select.AbstractQueryExpressionDSL
 import org.mybatis.dynamic.sql.where.AbstractWhereDSL
 import org.mybatis.dynamic.sql.where.AbstractWhereSupport

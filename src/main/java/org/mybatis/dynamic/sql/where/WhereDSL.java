@@ -15,7 +15,7 @@
  */
 package org.mybatis.dynamic.sql.where;
 
-import org.mybatis.dynamic.sql.StatementConfiguration;
+import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
 
 public class WhereDSL extends AbstractWhereDSL<WhereDSL> {
     private WhereDSL() {

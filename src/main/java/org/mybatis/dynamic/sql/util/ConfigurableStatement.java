@@ -15,7 +15,7 @@
  */
 package org.mybatis.dynamic.sql.util;
 
-import org.mybatis.dynamic.sql.StatementConfiguration;
+import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
 
 import java.util.function.Consumer;
 
