@@ -41,7 +41,7 @@ public class SpringBatchUtility {
     /**
      * Select builder that renders in a manner appropriate for the MyBatisPagingItemReader.
      *
-     * <b>Important</b> rendered SQL will contain LIMIT and OFFSET clauses in the SELECT statement. If your database
+     * <p><b>Important</b> rendered SQL will contain LIMIT and OFFSET clauses in the SELECT statement. If your database
      * (Oracle) does not support LIMIT and OFFSET, the queries will fail.
      *
      * @param selectList a column list for the SELECT statement
