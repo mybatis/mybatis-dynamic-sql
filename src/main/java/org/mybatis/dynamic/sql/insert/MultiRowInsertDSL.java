@@ -56,7 +56,7 @@ public class MultiRowInsertDSL<T> implements Buildable<MultiRowInsertModel<T>> {
     }
 
     @SafeVarargs
-    public static <T> IntoGatherer<T> insert(T...records) {
+    public static <T> IntoGatherer<T> insert(T... records) {
         return MultiRowInsertDSL.insert(Arrays.asList(records));
     }
 

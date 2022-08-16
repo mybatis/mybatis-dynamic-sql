@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2020 the original author or authors.
+ *    Copyright 2016-2022 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -89,7 +89,7 @@ public interface SelectDSLCompleter extends
      * @param columns list of sort specifications for an order by clause
      * @return the completer that will select every row in a table with specified order
      */
-    static SelectDSLCompleter allRowsOrderedBy(SortSpecification...columns) {
+    static SelectDSLCompleter allRowsOrderedBy(SortSpecification... columns) {
         return c -> c.orderBy(columns);
     }
 }

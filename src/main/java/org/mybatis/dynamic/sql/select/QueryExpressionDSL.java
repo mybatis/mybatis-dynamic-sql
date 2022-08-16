@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2021 the original author or authors.
+ *    Copyright 2016-2022 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -122,7 +122,7 @@ public class QueryExpressionDSL<R>
         return new JoinSpecificationStarter(buildSubQuery(joinTable, tableAlias), JoinType.FULL);
     }
 
-    public GroupByFinisher groupBy(BasicColumn...columns) {
+    public GroupByFinisher groupBy(BasicColumn... columns) {
         return groupBy(Arrays.asList(columns));
     }
 
@@ -131,7 +131,7 @@ public class QueryExpressionDSL<R>
         return new GroupByFinisher();
     }
 
-    public SelectDSL<R> orderBy(SortSpecification...columns) {
+    public SelectDSL<R> orderBy(SortSpecification... columns) {
         return orderBy(Arrays.asList(columns));
     }
 
@@ -250,7 +250,7 @@ public class QueryExpressionDSL<R>
             return QueryExpressionDSL.this.unionAll();
         }
 
-        public SelectDSL<R> orderBy(SortSpecification...columns) {
+        public SelectDSL<R> orderBy(SortSpecification... columns) {
             return orderBy(Arrays.asList(columns));
         }
 
@@ -258,7 +258,7 @@ public class QueryExpressionDSL<R>
             return QueryExpressionDSL.this.orderBy(columns);
         }
 
-        public GroupByFinisher groupBy(BasicColumn...columns) {
+        public GroupByFinisher groupBy(BasicColumn... columns) {
             return groupBy(Arrays.asList(columns));
         }
 
@@ -308,7 +308,7 @@ public class QueryExpressionDSL<R>
         }
 
         public JoinSpecificationFinisher on(BasicColumn joinColumn, JoinCondition onJoinCondition,
-                JoinCriterion...andJoinCriteria) {
+                JoinCriterion... andJoinCriteria) {
             return new JoinSpecificationFinisher(joinTable, joinColumn, onJoinCondition, joinType, andJoinCriteria);
         }
     }
@@ -333,7 +333,7 @@ public class QueryExpressionDSL<R>
         }
 
         public JoinSpecificationFinisher(TableExpression table, BasicColumn joinColumn,
-                JoinCondition joinCondition, JoinType joinType, JoinCriterion...andJoinCriteria) {
+                JoinCondition joinCondition, JoinType joinType, JoinCriterion... andJoinCriteria) {
             JoinCriterion onJoinCriterion = new JoinCriterion.Builder()
                     .withConnector("on") //$NON-NLS-1$
                     .withJoinColumn(joinColumn)
@@ -417,7 +417,7 @@ public class QueryExpressionDSL<R>
             return QueryExpressionDSL.this.fullJoin(joinTable, tableAlias);
         }
 
-        public GroupByFinisher groupBy(BasicColumn...columns) {
+        public GroupByFinisher groupBy(BasicColumn... columns) {
             return groupBy(Arrays.asList(columns));
         }
 
@@ -433,7 +433,7 @@ public class QueryExpressionDSL<R>
             return QueryExpressionDSL.this.unionAll();
         }
 
-        public SelectDSL<R> orderBy(SortSpecification...columns) {
+        public SelectDSL<R> orderBy(SortSpecification... columns) {
             return orderBy(Arrays.asList(columns));
         }
 
@@ -455,7 +455,7 @@ public class QueryExpressionDSL<R>
     }
 
     public class GroupByFinisher implements Buildable<R> {
-        public SelectDSL<R> orderBy(SortSpecification...columns) {
+        public SelectDSL<R> orderBy(SortSpecification... columns) {
             return orderBy(Arrays.asList(columns));
         }
 
@@ -497,7 +497,7 @@ public class QueryExpressionDSL<R>
             this.connector = connector;
         }
 
-        public FromGatherer<R> select(BasicColumn...selectList) {
+        public FromGatherer<R> select(BasicColumn... selectList) {
             return select(Arrays.asList(selectList));
         }
 
@@ -509,7 +509,7 @@ public class QueryExpressionDSL<R>
                     .build();
         }
 
-        public FromGatherer<R> selectDistinct(BasicColumn...selectList) {
+        public FromGatherer<R> selectDistinct(BasicColumn... selectList) {
             return selectDistinct(Arrays.asList(selectList));
         }
 

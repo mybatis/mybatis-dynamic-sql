@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2020 the original author or authors.
+ *    Copyright 2016-2022 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -51,7 +51,7 @@ public class SelectDSL<R> implements Buildable<R> {
         this.adapterFunction = Objects.requireNonNull(adapterFunction);
     }
 
-    public static QueryExpressionDSL.FromGatherer<SelectModel> select(BasicColumn...selectList) {
+    public static QueryExpressionDSL.FromGatherer<SelectModel> select(BasicColumn... selectList) {
         return select(Arrays.asList(selectList));
     }
 
@@ -60,7 +60,7 @@ public class SelectDSL<R> implements Buildable<R> {
     }
 
     public static <R> QueryExpressionDSL.FromGatherer<R> select(Function<SelectModel, R> adapterFunction,
-            BasicColumn...selectList) {
+            BasicColumn... selectList) {
         return select(adapterFunction, Arrays.asList(selectList));
     }
 
@@ -72,7 +72,7 @@ public class SelectDSL<R> implements Buildable<R> {
                 .build();
     }
 
-    public static QueryExpressionDSL.FromGatherer<SelectModel> selectDistinct(BasicColumn...selectList) {
+    public static QueryExpressionDSL.FromGatherer<SelectModel> selectDistinct(BasicColumn... selectList) {
         return selectDistinct(Function.identity(), selectList);
     }
 
@@ -81,7 +81,7 @@ public class SelectDSL<R> implements Buildable<R> {
     }
 
     public static <R> QueryExpressionDSL.FromGatherer<R> selectDistinct(Function<SelectModel, R> adapterFunction,
-            BasicColumn...selectList) {
+            BasicColumn... selectList) {
         return selectDistinct(adapterFunction, Arrays.asList(selectList));
     }
 
