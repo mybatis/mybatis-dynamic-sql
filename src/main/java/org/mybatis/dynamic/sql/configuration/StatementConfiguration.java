@@ -15,19 +15,23 @@
  */
 package org.mybatis.dynamic.sql.configuration;
 
+import org.mybatis.dynamic.sql.exception.UnrenderableWhereClauseException;
+
 /**
  * This class can be used to change some behaviors of the framework. Every configurable statement
  * contains a unique instance of this class, so changes here will only impact a single statement.
- * If you intend to change the behavior for all statements, use the {@link GlobalConfiguration}
- * configuration class.
+ * If you intend to change the behavior for all statements, use the {@link GlobalConfiguration}.
+ * Initial values for this class in each statement are set from the {@link GlobalConfiguration}.
+ * Configurable behaviors are detailed below:
  *
  * <dl>
  *     <dt>unrenderableWhereClauseAllowed</dt>
  *     <dd>If false (default), the framework will throw an
- *         {@link org.mybatis.dynamic.sql.exception.UnrenderableWhereClauseException}
+ *         {@link UnrenderableWhereClauseException}
  *         if a where clause is specified in the statement, but it fails to render because all
  *         optional conditions do not render. For example, if an "in" condition specifies an
- *         empty list of values.
+ *         empty list of values. If no criteria are specified in a where clause, the framework
+ *         assumes that no where clause was intended and will not throw an exception.
  *     </dd>
  * </dl>
  *
