@@ -47,14 +47,13 @@ public class UpdateDSL<R> extends AbstractWhereSupport<UpdateDSL<R>.UpdateWhereB
     private final List<AbstractColumnMapping> columnMappings = new ArrayList<>();
     private final SqlTable table;
     private final String tableAlias;
-    private final UpdateWhereBuilder whereBuilder;
+    private UpdateWhereBuilder whereBuilder;
     private final StatementConfiguration statementConfiguration = new StatementConfiguration();
 
     private UpdateDSL(SqlTable table, String tableAlias, Function<UpdateModel, R> adapterFunction) {
         this.table = Objects.requireNonNull(table);
         this.tableAlias = tableAlias;
         this.adapterFunction = Objects.requireNonNull(adapterFunction);
-        whereBuilder = new UpdateWhereBuilder(statementConfiguration);
     }
 
     public <T> SetClauseFinisher<T> set(SqlColumn<T> column) {
@@ -63,6 +62,10 @@ public class UpdateDSL<R> extends AbstractWhereSupport<UpdateDSL<R>.UpdateWhereB
 
     @Override
     public UpdateWhereBuilder where() {
+        if (whereBuilder == null) {
+            whereBuilder = new UpdateWhereBuilder();
+        }
+
         return whereBuilder;
     }
 
@@ -75,12 +78,15 @@ public class UpdateDSL<R> extends AbstractWhereSupport<UpdateDSL<R>.UpdateWhereB
     @NotNull
     @Override
     public R build() {
-        UpdateModel updateModel = UpdateModel.withTable(table)
+        UpdateModel.Builder updateModelBuilder = UpdateModel.withTable(table)
                 .withTableAlias(tableAlias)
-                .withColumnMappings(columnMappings)
-                .withWhereModel(whereBuilder.buildWhereModel())
-                .build();
-        return adapterFunction.apply(updateModel);
+                .withColumnMappings(columnMappings);
+
+        if (whereBuilder != null) {
+            updateModelBuilder.withWhereModel(whereBuilder.buildWhereModel());
+        }
+
+        return adapterFunction.apply(updateModelBuilder.build());
     }
 
     public static <R> UpdateDSL<R> update(Function<UpdateModel, R> adapterFunction, SqlTable table, String tableAlias) {
@@ -158,7 +164,7 @@ public class UpdateDSL<R> extends AbstractWhereSupport<UpdateDSL<R>.UpdateWhereB
 
     public class UpdateWhereBuilder extends AbstractWhereDSL<UpdateWhereBuilder> implements Buildable<R> {
 
-        private UpdateWhereBuilder(StatementConfiguration statementConfiguration) {
+        private UpdateWhereBuilder() {
             super(statementConfiguration);
         }
 

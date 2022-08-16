@@ -40,7 +40,7 @@ public class CountDSL<R> extends AbstractQueryExpressionDSL<CountDSL<R>.CountWhe
         implements Buildable<R> {
 
     private final Function<SelectModel, R> adapterFunction;
-    private final CountWhereBuilder whereBuilder;
+    private CountWhereBuilder whereBuilder;
     private final BasicColumn countColumn;
     private final StatementConfiguration statementConfiguration = new StatementConfiguration();
 
@@ -48,11 +48,13 @@ public class CountDSL<R> extends AbstractQueryExpressionDSL<CountDSL<R>.CountWhe
         super(table);
         this.countColumn = Objects.requireNonNull(countColumn);
         this.adapterFunction = Objects.requireNonNull(adapterFunction);
-        whereBuilder = new CountWhereBuilder(statementConfiguration);
     }
 
     @Override
     public CountWhereBuilder where() {
+        if (whereBuilder == null) {
+            whereBuilder = new CountWhereBuilder();
+        }
         return whereBuilder;
     }
 
@@ -66,8 +68,11 @@ public class CountDSL<R> extends AbstractQueryExpressionDSL<CountDSL<R>.CountWhe
         QueryExpressionModel.Builder b = new QueryExpressionModel.Builder()
                 .withSelectColumn(countColumn)
                 .withTable(table())
-                .withTableAliases(tableAliases())
-                .withWhereModel(whereBuilder.buildWhereModel());
+                .withTableAliases(tableAliases());
+
+        if (whereBuilder != null){
+            b.withWhereModel(whereBuilder.buildWhereModel());
+        }
 
         buildJoinModel().ifPresent(b::withJoinModel);
 
@@ -121,7 +126,7 @@ public class CountDSL<R> extends AbstractQueryExpressionDSL<CountDSL<R>.CountWhe
 
     public class CountWhereBuilder extends AbstractWhereDSL<CountWhereBuilder>
             implements Buildable<R> {
-        private CountWhereBuilder(StatementConfiguration statementConfiguration) {
+        private CountWhereBuilder() {
             super(statementConfiguration);
         }
 

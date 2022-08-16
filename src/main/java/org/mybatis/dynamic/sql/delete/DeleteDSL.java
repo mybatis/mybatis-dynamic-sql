@@ -31,18 +31,20 @@ public class DeleteDSL<R> extends AbstractWhereSupport<DeleteDSL<R>.DeleteWhereB
     private final Function<DeleteModel, R> adapterFunction;
     private final SqlTable table;
     private final String tableAlias;
-    private final DeleteWhereBuilder whereBuilder;
+    private DeleteWhereBuilder whereBuilder;
     private final StatementConfiguration statementConfiguration = new StatementConfiguration();
 
     private DeleteDSL(SqlTable table, String tableAlias, Function<DeleteModel, R> adapterFunction) {
         this.table = Objects.requireNonNull(table);
         this.tableAlias = tableAlias;
         this.adapterFunction = Objects.requireNonNull(adapterFunction);
-        whereBuilder = new DeleteWhereBuilder();
     }
 
     @Override
     public DeleteWhereBuilder where() {
+        if (whereBuilder == null) {
+            whereBuilder = new DeleteWhereBuilder();
+        }
         return whereBuilder;
     }
 
@@ -55,11 +57,13 @@ public class DeleteDSL<R> extends AbstractWhereSupport<DeleteDSL<R>.DeleteWhereB
     @NotNull
     @Override
     public R build() {
-        DeleteModel deleteModel = DeleteModel.withTable(table)
-                .withTableAlias(tableAlias)
-                .withWhereModel(whereBuilder.buildWhereModel())
-                .build();
-        return adapterFunction.apply(deleteModel);
+        DeleteModel.Builder deleteModelBuilder = DeleteModel.withTable(table)
+                .withTableAlias(tableAlias);
+        if (whereBuilder != null) {
+            deleteModelBuilder.withWhereModel(whereBuilder.buildWhereModel());
+        }
+
+        return adapterFunction.apply(deleteModelBuilder.build());
     }
 
     public static <R> DeleteDSL<R> deleteFrom(Function<DeleteModel, R> adapterFunction, SqlTable table,

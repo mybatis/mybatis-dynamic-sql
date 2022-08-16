@@ -55,11 +55,6 @@ public class WhereModel {
     }
 
     public boolean isUnrenderableClauseAllowed() {
-        // if no criteria were specified, then no where clause was expected
-        if (initialCriterion == null && subCriteria.isEmpty()) {
-            return true;
-        }
-
         return statementConfiguration.getUnrenderableWhereClauseAllowed();
     }
 

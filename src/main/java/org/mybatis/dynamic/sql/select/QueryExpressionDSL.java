@@ -46,7 +46,7 @@ public class QueryExpressionDSL<R>
     private final SelectDSL<R> selectDSL;
     private final boolean isDistinct;
     private final List<BasicColumn> selectList;
-    private final QueryExpressionWhereBuilder whereBuilder;
+    private QueryExpressionWhereBuilder whereBuilder;
     private GroupByModel groupByModel;
     private final StatementConfiguration statementConfiguration = new StatementConfiguration();
 
@@ -56,7 +56,6 @@ public class QueryExpressionDSL<R>
         selectList = fromGatherer.selectList;
         isDistinct = fromGatherer.isDistinct;
         selectDSL = Objects.requireNonNull(fromGatherer.selectDSL);
-        whereBuilder = new QueryExpressionWhereBuilder(statementConfiguration);
     }
 
     QueryExpressionDSL(FromGatherer<R> fromGatherer, SqlTable table, String tableAlias) {
@@ -66,6 +65,9 @@ public class QueryExpressionDSL<R>
 
     @Override
     public QueryExpressionWhereBuilder where() {
+        if (whereBuilder == null) {
+            whereBuilder = new QueryExpressionWhereBuilder();
+        }
         return whereBuilder;
     }
 
@@ -160,15 +162,19 @@ public class QueryExpressionDSL<R>
     }
 
     protected QueryExpressionModel buildModel() {
-        return QueryExpressionModel.withSelectList(selectList)
+        QueryExpressionModel.Builder builder = QueryExpressionModel.withSelectList(selectList)
                 .withConnector(connector)
                 .withTable(table())
                 .isDistinct(isDistinct)
                 .withTableAliases(tableAliases())
-                .withWhereModel(whereBuilder.buildWhereModel())
                 .withJoinModel(buildJoinModel().orElse(null))
-                .withGroupByModel(groupByModel)
-                .build();
+                .withGroupByModel(groupByModel);
+
+        if (whereBuilder != null) {
+            builder.withWhereModel(whereBuilder.buildWhereModel());
+        }
+
+        return builder.build();
     }
 
     public SelectDSL<R>.LimitFinisher limit(long limit) {
@@ -251,7 +257,7 @@ public class QueryExpressionDSL<R>
 
     public class QueryExpressionWhereBuilder extends AbstractWhereDSL<QueryExpressionWhereBuilder>
             implements Buildable<R> {
-        private QueryExpressionWhereBuilder(StatementConfiguration statementConfiguration) {
+        private QueryExpressionWhereBuilder() {
             super(statementConfiguration);
         }
 
