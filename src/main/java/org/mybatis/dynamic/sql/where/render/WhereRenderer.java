@@ -52,9 +52,9 @@ public class WhereRenderer {
 
         if (whereClause.isPresent() || whereModel.isUnrenderableClauseAllowed()) {
             return whereClause;
+        } else {
+            throw new UnrenderableWhereClauseException();
         }
-
-        throw new UnrenderableWhereClauseException();
     }
 
     private Optional<RenderedCriterion> renderWithInitialCriterion(SqlCriterion initialCriterion) {

@@ -70,7 +70,7 @@ public class CountDSL<R> extends AbstractQueryExpressionDSL<CountDSL<R>.CountWhe
                 .withTable(table())
                 .withTableAliases(tableAliases());
 
-        if (whereBuilder != null){
+        if (whereBuilder != null) {
             b.withWhereModel(whereBuilder.buildWhereModel());
         }
 

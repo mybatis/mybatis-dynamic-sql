@@ -24,7 +24,6 @@ import examples.kotlin.spring.canonical.PersonDynamicSqlSupport.lastName
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.junit.jupiter.api.Test
-import org.mybatis.dynamic.sql.exception.UnrenderableWhereClauseException
 import org.mybatis.dynamic.sql.util.kotlin.KInvalidSQLException
 import org.mybatis.dynamic.sql.util.kotlin.elements.isLike
 import org.mybatis.dynamic.sql.util.kotlin.elements.stringConstant
@@ -94,17 +93,6 @@ open class InfixElementsTest {
 
         assertThat(rows).hasSize(1)
         assertThat(rows[0]).isEqualTo("Bamm Bamm")
-    }
-
-    @Test
-    fun testVanishingWhereClause() {
-        assertThatExceptionOfType(UnrenderableWhereClauseException::class.java).isThrownBy {
-            select(firstName) {
-                from(person)
-                where { id isEqualToWhenPresent null }
-                orderBy(id)
-            }
-        }
     }
 
     @Test
