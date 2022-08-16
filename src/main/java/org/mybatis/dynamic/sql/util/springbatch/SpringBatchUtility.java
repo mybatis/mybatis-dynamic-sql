@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2020 the original author or authors.
+ *    Copyright 2016-2022 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -41,14 +41,14 @@ public class SpringBatchUtility {
     /**
      * Select builder that renders in a manner appropriate for the MyBatisPagingItemReader.
      *
-     * <b>Important</b> rendered SQL will contain LIMIT and OFFSET clauses in the SELECT statement. If your database
+     * <p><b>Important</b> rendered SQL will contain LIMIT and OFFSET clauses in the SELECT statement. If your database
      * (Oracle) does not support LIMIT and OFFSET, the queries will fail.
      *
      * @param selectList a column list for the SELECT statement
      * @return FromGatherer used to continue a SELECT statement
      */
     public static QueryExpressionDSL.FromGatherer<SpringBatchPagingReaderSelectModel> selectForPaging(
-            BasicColumn...selectList) {
+            BasicColumn... selectList) {
         return SelectDSL.select(SpringBatchPagingReaderSelectModel::new, selectList);
     }
 
@@ -59,7 +59,7 @@ public class SpringBatchUtility {
      * @return FromGatherer used to continue a SELECT statement
      */
     public static QueryExpressionDSL.FromGatherer<SpringBatchCursorReaderSelectModel> selectForCursor(
-            BasicColumn...selectList) {
+            BasicColumn... selectList) {
         return SelectDSL.select(SpringBatchCursorReaderSelectModel::new, selectList);
     }
 }
