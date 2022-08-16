@@ -22,13 +22,13 @@ import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
  * This exception is thrown when the where clause in a statement will not render.
  * This can happen if all the optional conditions in a where clause fail to
  * render - for example, if an "in" condition specifies an empty list.
- * <p>
- * By default, the framework will throw this exception if a where clause
+ *
+ * <p>By default, the framework will throw this exception if a where clause
  * fails to render. A where clause that fails to render can be very dangerous in that
  * it could cause all rows in a table to be affected by a statement - for example,
  * all rows could be deleted.
- * <p>
- * If you intend to allow an unrenderable where clause, then configure the
+ *
+ * <p>If you intend to allow an unrenderable where clause, then configure the
  * statement to allow it, or change the global configuration.
  *
  * @see GlobalConfiguration

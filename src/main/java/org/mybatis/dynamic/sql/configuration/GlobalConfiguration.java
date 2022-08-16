@@ -24,7 +24,7 @@ public class GlobalConfiguration {
     private static boolean unrenderableWhereClauseAllowed = false;
 
     static {
-        String propertyFile = "mybatis-dynamic-sql.properties";   
+        String propertyFile = "mybatis-dynamic-sql.properties";
         try (InputStream is = GlobalConfiguration.class.getResourceAsStream(propertyFile)) {
             if (is != null) {
                 Properties p = new Properties();

@@ -54,7 +54,7 @@ public class SelectDSL<R> implements Buildable<R>, ConfigurableStatement<SelectD
         this.adapterFunction = Objects.requireNonNull(adapterFunction);
     }
 
-    public static QueryExpressionDSL.FromGatherer<SelectModel> select(BasicColumn...selectList) {
+    public static QueryExpressionDSL.FromGatherer<SelectModel> select(BasicColumn... selectList) {
         return select(Arrays.asList(selectList));
     }
 
@@ -63,7 +63,7 @@ public class SelectDSL<R> implements Buildable<R>, ConfigurableStatement<SelectD
     }
 
     public static <R> QueryExpressionDSL.FromGatherer<R> select(Function<SelectModel, R> adapterFunction,
-            BasicColumn...selectList) {
+            BasicColumn... selectList) {
         return select(adapterFunction, Arrays.asList(selectList));
     }
 
@@ -75,7 +75,7 @@ public class SelectDSL<R> implements Buildable<R>, ConfigurableStatement<SelectD
                 .build();
     }
 
-    public static QueryExpressionDSL.FromGatherer<SelectModel> selectDistinct(BasicColumn...selectList) {
+    public static QueryExpressionDSL.FromGatherer<SelectModel> selectDistinct(BasicColumn... selectList) {
         return selectDistinct(Function.identity(), selectList);
     }
 
@@ -84,7 +84,7 @@ public class SelectDSL<R> implements Buildable<R>, ConfigurableStatement<SelectD
     }
 
     public static <R> QueryExpressionDSL.FromGatherer<R> selectDistinct(Function<SelectModel, R> adapterFunction,
-            BasicColumn...selectList) {
+            BasicColumn... selectList) {
         return selectDistinct(adapterFunction, Arrays.asList(selectList));
     }
 

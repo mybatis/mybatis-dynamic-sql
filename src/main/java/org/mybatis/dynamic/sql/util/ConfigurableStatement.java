@@ -15,9 +15,9 @@
  */
 package org.mybatis.dynamic.sql.util;
 
-import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
-
 import java.util.function.Consumer;
+
+import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
 
 public interface ConfigurableStatement<R> {
     R configureStatement(Consumer<StatementConfiguration> consumer);
