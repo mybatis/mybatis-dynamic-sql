@@ -34,6 +34,11 @@ public class IsInCaseInsensitive extends AbstractListValueCondition<String> {
         return EMPTY;
     }
 
+    /**
+     * @deprecated in favor of the statement configuration functions
+     * @return a new empty condition
+     */
+    @Deprecated
     private IsInCaseInsensitive emptyWithCallback() {
         return new IsInCaseInsensitive(Collections.emptyList(), emptyCallback);
     }
@@ -42,6 +47,12 @@ public class IsInCaseInsensitive extends AbstractListValueCondition<String> {
         super(values);
     }
 
+    /**
+     * @deprecated in favor of the statement configuration functions
+     * @param values values
+     * @param emptyCallback empty callback
+     */
+    @Deprecated
     protected  IsInCaseInsensitive(Collection<String> values, Callback emptyCallback) {
         super(values, emptyCallback);
     }
@@ -53,6 +64,12 @@ public class IsInCaseInsensitive extends AbstractListValueCondition<String> {
                         Collectors.joining(",", "in (", ")")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
 
+    /**
+     * @deprecated in favor of the statement configuration functions
+     * @param callback a callback function - typically throws an exception to block the statement from executing
+     * @return this condition
+     */
+    @Deprecated
     @Override
     public IsInCaseInsensitive withListEmptyCallback(Callback callback) {
         return new IsInCaseInsensitive(values, callback);
