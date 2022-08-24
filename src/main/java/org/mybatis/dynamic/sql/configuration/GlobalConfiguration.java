@@ -23,6 +23,8 @@ import java.util.Properties;
 public class GlobalConfiguration {
     private static boolean unrenderableWhereClauseAllowed = false;
 
+    private GlobalConfiguration() {}
+
     static {
         String propertyFile = "mybatis-dynamic-sql.properties";
         try (InputStream is = GlobalConfiguration.class.getResourceAsStream(propertyFile)) {
