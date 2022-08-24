@@ -36,7 +36,7 @@ public class GlobalConfiguration {
         initializeNonRenderingWhereClauseAllowed();
     }
 
-    private void initializeProperties(){
+    private void initializeProperties() {
         String configFileName = getConfigurationFileName();
         InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream(configFileName);
         if (inputStream != null) {
