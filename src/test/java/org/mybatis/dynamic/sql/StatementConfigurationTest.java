@@ -27,20 +27,24 @@ import static org.mybatis.dynamic.sql.SqlBuilder.select;
 import static org.mybatis.dynamic.sql.SqlBuilder.update;
 
 import org.junit.jupiter.api.Test;
+import org.mybatis.dynamic.sql.delete.DeleteModel;
 import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider;
 import org.mybatis.dynamic.sql.exception.UnrenderableWhereClauseException;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
+import org.mybatis.dynamic.sql.select.SelectModel;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
+import org.mybatis.dynamic.sql.update.UpdateModel;
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
 
-public class StatementConfigurationTest {
+class StatementConfigurationTest {
     @Test
     void testCountWhereCalledButNoCriteriaThrowsException() {
+        SelectModel selectModel = countFrom(person)
+                .where()
+                .build();
+
         assertThatExceptionOfType(UnrenderableWhereClauseException.class).isThrownBy(() ->
-                countFrom(person)
-                        .where()
-                        .build()
-                        .render(RenderingStrategies.MYBATIS3)
+                selectModel.render(RenderingStrategies.MYBATIS3)
         );
     }
 
@@ -52,8 +56,7 @@ public class StatementConfigurationTest {
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
-        assertThat(selectStatement.getSelectStatement())
-                .isEqualTo("select count(*) from Person");
+        assertThat(selectStatement.getSelectStatement()).isEqualTo("select count(*) from Person");
     }
 
     @Test
@@ -62,17 +65,17 @@ public class StatementConfigurationTest {
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
-        assertThat(selectStatement.getSelectStatement())
-                .isEqualTo("select count(*) from Person");
+        assertThat(selectStatement.getSelectStatement()).isEqualTo("select count(*) from Person");
     }
 
     @Test
     void testDeleteWhereCalledButNoCriteriaThrowsException() {
+        DeleteModel deleteModel = deleteFrom(person)
+                .where()
+                .build();
+
         assertThatExceptionOfType(UnrenderableWhereClauseException.class).isThrownBy(() ->
-                deleteFrom(person)
-                        .where()
-                        .build()
-                        .render(RenderingStrategies.MYBATIS3)
+            deleteModel.render(RenderingStrategies.MYBATIS3)
         );
     }
 
@@ -84,8 +87,7 @@ public class StatementConfigurationTest {
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
-        assertThat(deleteStatement.getDeleteStatement())
-                .isEqualTo("delete from Person");
+        assertThat(deleteStatement.getDeleteStatement()).isEqualTo("delete from Person");
     }
 
     @Test
@@ -94,18 +96,18 @@ public class StatementConfigurationTest {
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
-        assertThat(deleteStatement.getDeleteStatement())
-                .isEqualTo("delete from Person");
+        assertThat(deleteStatement.getDeleteStatement()).isEqualTo("delete from Person");
     }
 
     @Test
     void testSelectWhereCalledButNoCriteriaThrowsException() {
+        SelectModel selectModel = select(id, firstName, lastName)
+                .from(person)
+                .where()
+                .build();
+
         assertThatExceptionOfType(UnrenderableWhereClauseException.class).isThrownBy(() ->
-                select(id, firstName, lastName)
-                        .from(person)
-                        .where()
-                        .build()
-                        .render(RenderingStrategies.MYBATIS3)
+            selectModel.render(RenderingStrategies.MYBATIS3)
         );
     }
 
@@ -135,12 +137,13 @@ public class StatementConfigurationTest {
 
     @Test
     void testUpdateWhereCalledButNoCriteriaThrowsException() {
+        UpdateModel updateModel = update(person)
+                .set(id).equalTo(1)
+                .where()
+                .build();
+
         assertThatExceptionOfType(UnrenderableWhereClauseException.class).isThrownBy(() ->
-                update(person)
-                        .set(id).equalTo(1)
-                        .where()
-                        .build()
-                        .render(RenderingStrategies.MYBATIS3)
+            updateModel.render(RenderingStrategies.MYBATIS3)
         );
     }
 
