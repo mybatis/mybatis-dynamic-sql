@@ -37,5 +37,7 @@ import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
  * @author Jeff Butler
  */
 public class NonRenderingWhereClauseException extends RuntimeException {
-    public NonRenderingWhereClauseException() {}
+    public NonRenderingWhereClauseException() {
+        super("A where clause was specified, but failed to render."); //$NON-NLS-1$
+    }
 }
