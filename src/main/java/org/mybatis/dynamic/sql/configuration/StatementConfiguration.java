@@ -39,7 +39,8 @@ import org.mybatis.dynamic.sql.exception.NonRenderingWhereClauseException;
  * @author Jeff Butler
  */
 public class StatementConfiguration {
-    private boolean isNonRenderingWhereClauseAllowed = GlobalConfiguration.isIsNonRenderingWhereClauseAllowed();
+    private boolean isNonRenderingWhereClauseAllowed =
+            GlobalContext.getConfiguration().isIsNonRenderingWhereClauseAllowed();
 
     public boolean isNonRenderingWhereClauseAllowed() {
         return isNonRenderingWhereClauseAllowed;

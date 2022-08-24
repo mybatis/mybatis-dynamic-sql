@@ -19,29 +19,51 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-// TODO - read initial value from a properties file!
 public class GlobalConfiguration {
-    private static boolean isNonRenderingWhereClauseAllowed = false;
+    public static final String CONFIGURATION_FILE_PROPERTY = "mybatis-dynamic-sql.configurationFile"; //$NON-NLS-1$
+    private static final String DEFAULT_PROPERTY_FILE = "mybatis-dynamic-sql.properties"; //$NON-NLS-1$
+    private boolean isNonRenderingWhereClauseAllowed = false;
+    private final Properties properties = new Properties();
 
-    private GlobalConfiguration() {}
+    public GlobalConfiguration() {
+        initialize();
+    }
 
-    static {
-        String propertyFile = "mybatis-dynamic-sql.properties";
-        try (InputStream is = GlobalConfiguration.class.getResourceAsStream(propertyFile)) {
-            if (is != null) {
-                Properties p = new Properties();
-                p.load(is);
-                String value = p.getProperty("nonRenderingWhereClauseAllowed");
-                if (value != null) {
-                    isNonRenderingWhereClauseAllowed = Boolean.parseBoolean(value);
-                }
-            }
-        } catch (IOException e) {
-            // ignore
+    private void initialize() {
+        initializeProperties();
+        initializeNonRenderingWhereClauseAllowed();
+    }
+
+    private void initializeProperties(){
+        InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream(getConfigurationFileName());
+        if (inputStream != null) {
+            loadProperties(inputStream);
         }
     }
 
-    public static boolean isIsNonRenderingWhereClauseAllowed() {
+    private String getConfigurationFileName() {
+        String property = System.getProperty(CONFIGURATION_FILE_PROPERTY);
+        if (property == null) {
+            return DEFAULT_PROPERTY_FILE;
+        } else {
+            return property;
+        }
+    }
+
+    private void loadProperties(InputStream inputStream) {
+        try {
+            properties.load(inputStream);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void initializeNonRenderingWhereClauseAllowed() {
+        String value = properties.getProperty("nonRenderingWhereClauseAllowed", "false"); //$NON-NLS-1$ //$NON-NLS-2$
+        isNonRenderingWhereClauseAllowed = Boolean.parseBoolean(value);
+    }
+
+    public boolean isIsNonRenderingWhereClauseAllowed() {
         return isNonRenderingWhereClauseAllowed;
     }
 }
