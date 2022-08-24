@@ -111,7 +111,7 @@ class ComplexQueryTest {
         QueryExpressionDSL<SelectModel>.QueryExpressionWhereBuilder builder = select(id, firstName, lastName)
                 .from(person)
                 .where()
-                .configureStatement(c -> c.setUnrenderableWhereClauseAllowed(true));
+                .configureStatement(c -> c.setNonRenderingWhereClauseAllowed(true));
 
         if (targetId != null) {
             builder

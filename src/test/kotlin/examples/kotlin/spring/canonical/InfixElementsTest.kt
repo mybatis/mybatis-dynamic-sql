@@ -101,7 +101,7 @@ open class InfixElementsTest {
             from(person)
             where { id isEqualToWhenPresent null }
             orderBy(id)
-            configureStatement { unrenderableWhereClauseAllowed = true }
+            configureStatement { isNonRenderingWhereClauseAllowed = true }
         }
 
         assertThat(selectStatement.selectStatement).isEqualTo(
@@ -136,7 +136,7 @@ open class InfixElementsTest {
     fun testDeleteIsNotEqualToWhenPresentNull() {
         val deleteStatement = deleteFrom(person) {
             where { id isNotEqualToWhenPresent null }
-            configureStatement { unrenderableWhereClauseAllowed = true }
+            configureStatement { isNonRenderingWhereClauseAllowed = true }
         }
 
         assertThat(deleteStatement.deleteStatement).isEqualTo(
@@ -154,7 +154,7 @@ open class InfixElementsTest {
             from(person)
             where { id isNotEqualToWhenPresent null }
             orderBy(id)
-            configureStatement { unrenderableWhereClauseAllowed = true }
+            configureStatement { isNonRenderingWhereClauseAllowed = true }
         }
 
         assertThat(selectStatement.selectStatement).isEqualTo(
@@ -191,7 +191,7 @@ open class InfixElementsTest {
             from(person)
             where { id isGreaterThanWhenPresent null }
             orderBy(id)
-            configureStatement { unrenderableWhereClauseAllowed = true }
+            configureStatement { isNonRenderingWhereClauseAllowed = true }
         }
 
         assertThat(selectStatement.selectStatement).isEqualTo(
@@ -228,7 +228,7 @@ open class InfixElementsTest {
             from(person)
             where { id isGreaterThanOrEqualToWhenPresent null }
             orderBy(id)
-            configureStatement { unrenderableWhereClauseAllowed = true }
+            configureStatement { isNonRenderingWhereClauseAllowed = true }
         }
 
         assertThat(selectStatement.selectStatement).isEqualTo(
@@ -265,7 +265,7 @@ open class InfixElementsTest {
             from(person)
             where { id isGreaterThanWhenPresent null }
             orderBy(id)
-            configureStatement { unrenderableWhereClauseAllowed = true }
+            configureStatement { isNonRenderingWhereClauseAllowed = true }
         }
 
         assertThat(selectStatement.selectStatement).isEqualTo(
@@ -320,7 +320,7 @@ open class InfixElementsTest {
             from(person)
             where { id isLessThanOrEqualToWhenPresent null }
             orderBy(id)
-            configureStatement { unrenderableWhereClauseAllowed = true }
+            configureStatement { isNonRenderingWhereClauseAllowed = true }
         }
 
         assertThat(selectStatement.selectStatement).isEqualTo(
@@ -489,7 +489,7 @@ open class InfixElementsTest {
             from(person)
             where { id isBetweenWhenPresent null and 3 }
             orderBy(id)
-            configureStatement { unrenderableWhereClauseAllowed = true }
+            configureStatement { isNonRenderingWhereClauseAllowed = true }
         }
 
         assertThat(selectStatement.selectStatement).isEqualTo(
@@ -508,7 +508,7 @@ open class InfixElementsTest {
             from(person)
             where { id isBetweenWhenPresent 2 and null }
             orderBy(id)
-            configureStatement { unrenderableWhereClauseAllowed = true }
+            configureStatement { isNonRenderingWhereClauseAllowed = true }
         }
 
         assertThat(selectStatement.selectStatement).isEqualTo(
@@ -527,7 +527,7 @@ open class InfixElementsTest {
             from(person)
             where { id isBetweenWhenPresent null and null }
             orderBy(id)
-            configureStatement { unrenderableWhereClauseAllowed = true }
+            configureStatement { isNonRenderingWhereClauseAllowed = true }
         }
 
         assertThat(selectStatement.selectStatement).isEqualTo(
@@ -582,7 +582,7 @@ open class InfixElementsTest {
             from(person)
             where { id isNotBetweenWhenPresent null and 3 }
             orderBy(id)
-            configureStatement { unrenderableWhereClauseAllowed = true }
+            configureStatement { isNonRenderingWhereClauseAllowed = true }
         }
 
         assertThat(selectStatement.selectStatement).isEqualTo(
@@ -601,7 +601,7 @@ open class InfixElementsTest {
             from(person)
             where { id isNotBetweenWhenPresent 2 and null }
             orderBy(id)
-            configureStatement { unrenderableWhereClauseAllowed = true }
+            configureStatement { isNonRenderingWhereClauseAllowed = true }
         }
 
         assertThat(selectStatement.selectStatement).isEqualTo(
@@ -620,7 +620,7 @@ open class InfixElementsTest {
             from(person)
             where { id isNotBetweenWhenPresent null and null }
             orderBy(id)
-            configureStatement { unrenderableWhereClauseAllowed = true }
+            configureStatement { isNonRenderingWhereClauseAllowed = true }
         }
 
         assertThat(selectStatement.selectStatement).isEqualTo(
@@ -657,7 +657,7 @@ open class InfixElementsTest {
             from(person)
             where { firstName isLikeWhenPresent null }
             orderBy(id)
-            configureStatement { unrenderableWhereClauseAllowed = true }
+            configureStatement { isNonRenderingWhereClauseAllowed = true }
         }
 
         assertThat(selectStatement.selectStatement).isEqualTo(
@@ -712,7 +712,7 @@ open class InfixElementsTest {
             from(person)
             where { firstName isNotLikeWhenPresent null }
             orderBy(id)
-            configureStatement { unrenderableWhereClauseAllowed = true }
+            configureStatement { isNonRenderingWhereClauseAllowed = true }
         }
 
         assertThat(selectStatement.selectStatement).isEqualTo(
@@ -767,7 +767,7 @@ open class InfixElementsTest {
             from(person)
             where { firstName isLikeCaseInsensitiveWhenPresent null }
             orderBy(id)
-            configureStatement { unrenderableWhereClauseAllowed = true }
+            configureStatement { isNonRenderingWhereClauseAllowed = true }
         }
 
         assertThat(selectStatement.selectStatement).isEqualTo(
@@ -822,7 +822,7 @@ open class InfixElementsTest {
             from(person)
             where { firstName isNotLikeCaseInsensitiveWhenPresent null }
             orderBy(id)
-            configureStatement { unrenderableWhereClauseAllowed = true }
+            configureStatement { isNonRenderingWhereClauseAllowed = true }
         }
 
         assertThat(selectStatement.selectStatement).isEqualTo(
@@ -877,7 +877,7 @@ open class InfixElementsTest {
             from(person)
             where { firstName.isInCaseInsensitiveWhenPresent(null, null) }
             orderBy(id)
-            configureStatement { unrenderableWhereClauseAllowed = true }
+            configureStatement { isNonRenderingWhereClauseAllowed = true }
         }
 
         assertThat(selectStatement.selectStatement).isEqualTo(
@@ -932,7 +932,7 @@ open class InfixElementsTest {
             from(person)
             where { firstName.isNotInCaseInsensitiveWhenPresent(null, null) }
             orderBy(id)
-            configureStatement { unrenderableWhereClauseAllowed = true }
+            configureStatement { isNonRenderingWhereClauseAllowed = true }
         }
 
         assertThat(selectStatement.selectStatement).isEqualTo(
@@ -958,7 +958,7 @@ open class InfixElementsTest {
                     .map { "%$it%" })
             }
             orderBy(id)
-            configureStatement { unrenderableWhereClauseAllowed = true }
+            configureStatement { isNonRenderingWhereClauseAllowed = true }
         }
 
         assertThat(selectStatement.selectStatement).isEqualTo(

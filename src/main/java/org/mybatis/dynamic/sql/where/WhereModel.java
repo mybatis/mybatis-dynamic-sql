@@ -55,7 +55,7 @@ public class WhereModel {
     }
 
     public boolean isUnrenderableClauseAllowed() {
-        return statementConfiguration.getUnrenderableWhereClauseAllowed();
+        return statementConfiguration.isNonRenderingWhereClauseAllowed();
     }
 
     /**

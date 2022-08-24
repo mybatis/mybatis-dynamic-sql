@@ -15,7 +15,7 @@
  */
 package org.mybatis.dynamic.sql.configuration;
 
-import org.mybatis.dynamic.sql.exception.UnrenderableWhereClauseException;
+import org.mybatis.dynamic.sql.exception.NonRenderingWhereClauseException;
 
 /**
  * This class can be used to change some behaviors of the framework. Every configurable statement
@@ -25,9 +25,8 @@ import org.mybatis.dynamic.sql.exception.UnrenderableWhereClauseException;
  * Configurable behaviors are detailed below:
  *
  * <dl>
- *     <dt>unrenderableWhereClauseAllowed</dt>
- *     <dd>If false (default), the framework will throw an
- *         {@link UnrenderableWhereClauseException}
+ *     <dt>nonRenderingWhereClauseAllowed</dt>
+ *     <dd>If false (default), the framework will throw a {@link NonRenderingWhereClauseException}
  *         if a where clause is specified in the statement, but it fails to render because all
  *         optional conditions do not render. For example, if an "in" condition specifies an
  *         empty list of values. If no criteria are specified in a where clause, the framework
@@ -40,13 +39,13 @@ import org.mybatis.dynamic.sql.exception.UnrenderableWhereClauseException;
  * @author Jeff Butler
  */
 public class StatementConfiguration {
-    private boolean unrenderableWhereClauseAllowed = GlobalConfiguration.getUnrenderableWhereClauseAllowed();
+    private boolean isNonRenderingWhereClauseAllowed = GlobalConfiguration.isIsNonRenderingWhereClauseAllowed();
 
-    public boolean getUnrenderableWhereClauseAllowed() {
-        return unrenderableWhereClauseAllowed;
+    public boolean isNonRenderingWhereClauseAllowed() {
+        return isNonRenderingWhereClauseAllowed;
     }
 
-    public void setUnrenderableWhereClauseAllowed(boolean unrenderableWhereClauseAllowed) {
-        this.unrenderableWhereClauseAllowed = unrenderableWhereClauseAllowed;
+    public void setNonRenderingWhereClauseAllowed(boolean nonRenderingWhereClauseAllowed) {
+        this.isNonRenderingWhereClauseAllowed = nonRenderingWhereClauseAllowed;
     }
 }

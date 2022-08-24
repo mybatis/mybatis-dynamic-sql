@@ -21,7 +21,7 @@ import java.util.Properties;
 
 // TODO - read initial value from a properties file!
 public class GlobalConfiguration {
-    private static boolean unrenderableWhereClauseAllowed = false;
+    private static boolean isNonRenderingWhereClauseAllowed = false;
 
     private GlobalConfiguration() {}
 
@@ -31,9 +31,9 @@ public class GlobalConfiguration {
             if (is != null) {
                 Properties p = new Properties();
                 p.load(is);
-                String value = p.getProperty("unrenderableWhereClauseAllowed");
+                String value = p.getProperty("nonRenderingWhereClauseAllowed");
                 if (value != null) {
-                    unrenderableWhereClauseAllowed = Boolean.parseBoolean(value);
+                    isNonRenderingWhereClauseAllowed = Boolean.parseBoolean(value);
                 }
             }
         } catch (IOException e) {
@@ -41,7 +41,7 @@ public class GlobalConfiguration {
         }
     }
 
-    public static boolean getUnrenderableWhereClauseAllowed() {
-        return unrenderableWhereClauseAllowed;
+    public static boolean isIsNonRenderingWhereClauseAllowed() {
+        return isNonRenderingWhereClauseAllowed;
     }
 }

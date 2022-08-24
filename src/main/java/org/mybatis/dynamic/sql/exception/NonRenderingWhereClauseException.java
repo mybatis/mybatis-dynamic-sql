@@ -28,7 +28,7 @@ import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
  * it could cause all rows in a table to be affected by a statement - for example,
  * all rows could be deleted.
  *
- * <p>If you intend to allow an unrenderable where clause, then configure the
+ * <p>If you intend to allow a where clause to not render, then configure the
  * statement to allow it, or change the global configuration.
  *
  * @see GlobalConfiguration
@@ -36,6 +36,6 @@ import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
  * @since 1.4.1
  * @author Jeff Butler
  */
-public class UnrenderableWhereClauseException extends RuntimeException {
-    public UnrenderableWhereClauseException() {}
+public class NonRenderingWhereClauseException extends RuntimeException {
+    public NonRenderingWhereClauseException() {}
 }

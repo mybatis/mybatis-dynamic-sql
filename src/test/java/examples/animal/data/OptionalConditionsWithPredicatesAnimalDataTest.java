@@ -79,7 +79,7 @@ class OptionalConditionsWithPredicatesAnimalDataTest {
                     .from(animalData)
                     .where(id, isGreaterThan(NULL_INTEGER).filter(Objects::nonNull))  // the where clause should not render
                     .orderBy(id)
-                    .configureStatement(c -> c.setUnrenderableWhereClauseAllowed(true))
+                    .configureStatement(c -> c.setNonRenderingWhereClauseAllowed(true))
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
             List<AnimalData> animals = mapper.selectMany(selectStatement);

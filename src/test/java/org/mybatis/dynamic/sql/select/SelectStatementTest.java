@@ -398,7 +398,7 @@ class SelectStatementTest {
         SelectStatementProvider selectStatement = select(column1, column3)
                 .from(table)
                 .where(column3, isInWhenPresent((Collection<String>) null))
-                .configureStatement(c -> c.setUnrenderableWhereClauseAllowed(true))
+                .configureStatement(c -> c.setNonRenderingWhereClauseAllowed(true))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
@@ -410,7 +410,7 @@ class SelectStatementTest {
         SelectStatementProvider selectStatement = select(column1, column3)
                 .from(table)
                 .where(column3, isInCaseInsensitiveWhenPresent((Collection<String>) null))
-                .configureStatement(c -> c.setUnrenderableWhereClauseAllowed(true))
+                .configureStatement(c -> c.setNonRenderingWhereClauseAllowed(true))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
@@ -422,7 +422,7 @@ class SelectStatementTest {
         SelectStatementProvider selectStatement = select(column1, column3)
                 .from(table)
                 .where(column3, isNotInWhenPresent((Collection<String>) null))
-                .configureStatement(c -> c.setUnrenderableWhereClauseAllowed(true))
+                .configureStatement(c -> c.setNonRenderingWhereClauseAllowed(true))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
@@ -434,7 +434,7 @@ class SelectStatementTest {
         SelectStatementProvider selectStatement = select(column1, column3)
                 .from(table)
                 .where(column3, isNotInCaseInsensitiveWhenPresent((Collection<String>) null))
-                .configureStatement(c -> c.setUnrenderableWhereClauseAllowed(true))
+                .configureStatement(c -> c.setNonRenderingWhereClauseAllowed(true))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 

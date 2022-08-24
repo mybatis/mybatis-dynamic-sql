@@ -29,7 +29,7 @@ import static org.mybatis.dynamic.sql.SqlBuilder.update;
 import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.delete.DeleteModel;
 import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider;
-import org.mybatis.dynamic.sql.exception.UnrenderableWhereClauseException;
+import org.mybatis.dynamic.sql.exception.NonRenderingWhereClauseException;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.SelectModel;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
@@ -43,7 +43,7 @@ class StatementConfigurationTest {
                 .where()
                 .build();
 
-        assertThatExceptionOfType(UnrenderableWhereClauseException.class).isThrownBy(() ->
+        assertThatExceptionOfType(NonRenderingWhereClauseException.class).isThrownBy(() ->
                 selectModel.render(RenderingStrategies.MYBATIS3)
         );
     }
@@ -52,7 +52,7 @@ class StatementConfigurationTest {
     void testCountWhereCalledButNoCriteriaRequiresConfiguration() {
         SelectStatementProvider selectStatement = countFrom(person)
                 .where()
-                .configureStatement(c -> c.setUnrenderableWhereClauseAllowed(true))
+                .configureStatement(c -> c.setNonRenderingWhereClauseAllowed(true))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
@@ -74,7 +74,7 @@ class StatementConfigurationTest {
                 .where()
                 .build();
 
-        assertThatExceptionOfType(UnrenderableWhereClauseException.class).isThrownBy(() ->
+        assertThatExceptionOfType(NonRenderingWhereClauseException.class).isThrownBy(() ->
             deleteModel.render(RenderingStrategies.MYBATIS3)
         );
     }
@@ -83,7 +83,7 @@ class StatementConfigurationTest {
     void testDeleteWhereCalledButNoCriteriaRequiresConfiguration() {
         DeleteStatementProvider deleteStatement = deleteFrom(person)
                 .where()
-                .configureStatement(c -> c.setUnrenderableWhereClauseAllowed(true))
+                .configureStatement(c -> c.setNonRenderingWhereClauseAllowed(true))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
@@ -106,7 +106,7 @@ class StatementConfigurationTest {
                 .where()
                 .build();
 
-        assertThatExceptionOfType(UnrenderableWhereClauseException.class).isThrownBy(() ->
+        assertThatExceptionOfType(NonRenderingWhereClauseException.class).isThrownBy(() ->
             selectModel.render(RenderingStrategies.MYBATIS3)
         );
     }
@@ -116,7 +116,7 @@ class StatementConfigurationTest {
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
                 .where()
-                .configureStatement(c -> c.setUnrenderableWhereClauseAllowed(true))
+                .configureStatement(c -> c.setNonRenderingWhereClauseAllowed(true))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
@@ -142,7 +142,7 @@ class StatementConfigurationTest {
                 .where()
                 .build();
 
-        assertThatExceptionOfType(UnrenderableWhereClauseException.class).isThrownBy(() ->
+        assertThatExceptionOfType(NonRenderingWhereClauseException.class).isThrownBy(() ->
             updateModel.render(RenderingStrategies.MYBATIS3)
         );
     }
@@ -152,7 +152,7 @@ class StatementConfigurationTest {
         UpdateStatementProvider updateStatement = update(person)
                 .set(id).equalTo(1)
                 .where()
-                .configureStatement(c -> c.setUnrenderableWhereClauseAllowed(true))
+                .configureStatement(c -> c.setNonRenderingWhereClauseAllowed(true))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
