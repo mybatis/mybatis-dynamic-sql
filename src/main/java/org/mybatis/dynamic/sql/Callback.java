@@ -18,6 +18,8 @@ package org.mybatis.dynamic.sql;
 import java.util.function.Function;
 
 /**
+ * Provides a callback function for empty "in" conditions.
+ *
  * @deprecated in favor of the new statement configuration functionality
  */
 @Deprecated
