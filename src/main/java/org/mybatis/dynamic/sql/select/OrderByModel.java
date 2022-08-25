@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2020 the original author or authors.
+ *    Copyright 2016-2022 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -18,15 +18,21 @@ package org.mybatis.dynamic.sql.select;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
 import org.mybatis.dynamic.sql.SortSpecification;
+import org.mybatis.dynamic.sql.exception.InvalidSqlException;
 
 public class OrderByModel {
     private final List<SortSpecification> columns = new ArrayList<>();
 
     private OrderByModel(Collection<SortSpecification> columns) {
+        Objects.requireNonNull(columns);
+        if (columns.isEmpty()) {
+            throw new InvalidSqlException("Order by expressions must have at least one column");
+        }
         this.columns.addAll(columns);
     }
 

@@ -27,6 +27,7 @@ import java.util.stream.Stream;
 import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.TableExpression;
+import org.mybatis.dynamic.sql.exception.InvalidSqlException;
 import org.mybatis.dynamic.sql.select.join.JoinModel;
 import org.mybatis.dynamic.sql.where.WhereModel;
 
@@ -49,6 +50,10 @@ public class QueryExpressionModel {
         tableAliases = builder.tableAliases;
         whereModel = builder.whereModel;
         groupByModel = builder.groupByModel;
+
+        if (selectList.isEmpty()) {
+            throw new InvalidSqlException("Query expressions must have at least one column in the select list");
+        }
     }
 
     public Optional<String> connector() {

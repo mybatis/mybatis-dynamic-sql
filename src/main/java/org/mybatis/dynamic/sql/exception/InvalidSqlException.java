@@ -13,22 +13,10 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.mybatis.dynamic.sql.select.join;
+package org.mybatis.dynamic.sql.exception;
 
-import java.util.Objects;
-
-import org.mybatis.dynamic.sql.BasicColumn;
-
-public abstract class JoinCondition {
-    private final BasicColumn rightColumn;
-
-    protected JoinCondition(BasicColumn rightColumn) {
-        this.rightColumn = Objects.requireNonNull(rightColumn);
+public class InvalidSqlException extends RuntimeException {
+    public InvalidSqlException(String message) {
+        super(message);
     }
-
-    public BasicColumn rightColumn() {
-        return rightColumn;
-    }
-
-    public abstract String operator();
 }

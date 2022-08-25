@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2020 the original author or authors.
+ *    Copyright 2016-2022 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 import org.mybatis.dynamic.sql.TableExpression;
+import org.mybatis.dynamic.sql.exception.InvalidSqlException;
 
 public class JoinSpecification {
 
@@ -33,6 +34,10 @@ public class JoinSpecification {
         table = Objects.requireNonNull(builder.table);
         joinCriteria = Objects.requireNonNull(builder.joinCriteria);
         joinType = Objects.requireNonNull(builder.joinType);
+
+        if (joinCriteria.isEmpty()) {
+            throw new InvalidSqlException("Join specifications must have at least one join criterion");
+        }
     }
 
     public TableExpression table() {
