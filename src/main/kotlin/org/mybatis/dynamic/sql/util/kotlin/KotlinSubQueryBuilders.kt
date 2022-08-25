@@ -20,6 +20,7 @@ import org.mybatis.dynamic.sql.SqlBuilder
 import org.mybatis.dynamic.sql.SqlColumn
 import org.mybatis.dynamic.sql.select.SelectModel
 import org.mybatis.dynamic.sql.util.Buildable
+import java.lang.NullPointerException
 
 @MyBatisDslMarker
 sealed class KotlinBaseSubQueryBuilder : Buildable<SelectModel> {
@@ -40,7 +41,11 @@ sealed class KotlinBaseSubQueryBuilder : Buildable<SelectModel> {
     }
 
     override fun build(): SelectModel =
-        selectBuilder?.build()?: throw KInvalidSQLException("You must specify a select statement in a sub query")
+        try {
+            selectBuilder!!.build()
+        } catch (e: NullPointerException) {
+            throw KInvalidSQLException("You must specify a select statement in a sub query")
+        }
 }
 
 class KotlinSubQueryBuilder : KotlinBaseSubQueryBuilder()

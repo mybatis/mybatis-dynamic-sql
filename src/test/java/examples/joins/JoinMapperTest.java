@@ -163,6 +163,7 @@ class JoinMapperTest {
         SelectStatementProvider selectStatement = select(orderMaster.orderId, orderDate, orderDetail.lineNumber, orderDetail.description, orderDetail.quantity)
                 .from(orderMaster, "om")
                 .join(orderDetail, "od").on(orderMaster.orderId, equalTo(orderDetail.orderId))
+                .configureStatement(c -> c.setNonRenderingWhereClauseAllowed(true))
                 .and(orderMaster.orderId, equalTo(orderDetail.orderId))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);

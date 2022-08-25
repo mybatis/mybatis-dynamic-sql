@@ -24,6 +24,7 @@ import org.mybatis.dynamic.sql.BindableColumn;
 import org.mybatis.dynamic.sql.ExistsPredicate;
 import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.VisitableCondition;
+import org.mybatis.dynamic.sql.util.ConfigurableStatement;
 
 /**
  * Base class for DSLs that support where clauses - which is every DSL except Insert.
@@ -33,7 +34,8 @@ import org.mybatis.dynamic.sql.VisitableCondition;
  *
  * @param <W> the implementation of the Where DSL customized for a particular SQL statement.
  */
-public abstract class AbstractWhereSupport<W extends AbstractWhereDSL<?>> {
+public abstract class AbstractWhereSupport<W extends AbstractWhereDSL<?>, D extends AbstractWhereSupport<W, D>>
+        implements ConfigurableStatement<D> {
 
     public abstract W where();
 

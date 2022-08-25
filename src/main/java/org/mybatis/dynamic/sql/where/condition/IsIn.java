@@ -38,6 +38,11 @@ public class IsIn<T> extends AbstractListValueCondition<T> {
         return t;
     }
 
+    /**
+     * @deprecated in favor of the statement configuration functions
+     * @return a new empty condition
+     */
+    @Deprecated
     private <S> IsIn<S> emptyWithCallBack() {
         return new IsIn<>(Collections.emptyList(), emptyCallback);
     }
@@ -46,6 +51,12 @@ public class IsIn<T> extends AbstractListValueCondition<T> {
         super(values);
     }
 
+    /**
+     * @deprecated in favor of the statement configuration functions
+     * @param values values
+     * @param emptyCallback empty callback
+     */
+    @Deprecated
     protected IsIn(Collection<T> values, Callback emptyCallback) {
         super(values, emptyCallback);
     }
@@ -56,6 +67,12 @@ public class IsIn<T> extends AbstractListValueCondition<T> {
                 + placeholders.collect(Collectors.joining(",", "in (", ")")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
 
+    /**
+     * @deprecated in favor of the statement configuration functions
+     * @param callback a callback function - typically throws an exception to block the statement from executing
+     * @return this condition
+     */
+    @Deprecated
     @Override
     public IsIn<T> withListEmptyCallback(Callback callback) {
         return new IsIn<>(values, callback);

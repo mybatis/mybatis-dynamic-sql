@@ -200,29 +200,6 @@ of the *values* of the condition. The library comes with functions that will fil
 case String values to enable case insensitive queries. There are extension points to add additional filtering and 
 mapping if you so desire.
 
-We think it is a good thing that the library will not render invalid SQL. An "in" condition will always be dropped from
-rendering if the list of values is empty. But there is some danger with this stance. Because the condition could be
-dropped from the rendered SQL, more rows could be impacted than expected if the list ends up empty for whatever reason.
-Our recommended solution is to make sure that you validate list values - especially if they are coming from direct user
-input. Another option is to take some action when the list is empty. This can be especially helpful when you are
-applying filters to the value list or using one of the built-in "when present" conditions. In that case, it is
-possible that the list of values could end up empty after a validation check.
-
-The "In" conditions support a callback that will be invoked when the value list is empty and just before the statement
-is rendered. You could use the callback to create a condition that will throw an exception when the list is empty.
-For example:
-
-```java
-    private static <T> IsIn<T> isInRequired(Collection<T> values) {
-        return IsIn.of(values).withListEmptyCallback(() -> { throw new RuntimeException("In values cannot be empty"); } );
-    }
-
-    // Alternatively, there is a convenience method in the Callback interface
-    private static <T> IsIn<T> isInRequired(Collection<T> values) {
-        return IsIn.of(values).withListEmptyCallback(Callback.exceptionThrowingCallback("In values cannot be empty"));
-    }
-```
-
 The following table shows the different supplied In conditions and how they will render for different sets of inputs.
 The table assumes the following types of input:
 
@@ -286,3 +263,21 @@ Then the condition could be used in a query as follows:
             .build()
             .render(RenderingStrategies.MYBATIS3);
 ```
+
+## Potential for Non Rendering Where Clauses
+
+An "in" condition will always be dropped from rendering if the list of values is empty. Other conditions could be
+dropped from a where clause due to filtering. If all conditions fail to render, then the entire where clause will be
+dropped from the rendered SQL. In general, we think it is a good thing that the library will not render invalid SQL.
+But this stance does present a danger - if a where clause is dropped from the rendered SQL, then the statement could
+end up impacting all rows in a table. For example, a delete statement could inadvertently delete all rows in a table.
+
+By default, and out of an abundance of caution, the library will not allow a statement to render if the entire where
+clause will be dropped. If a where clause is coded, but fails to render, then the library will throw a
+`NonRenderingWhereClauseException` by default.
+
+If no where clause is coded in a statement, then we assume the statement is intended to affect all rows in a table.
+In that case no exception will be thrown.
+
+This behavior can be modified through configuration - either globally for the entire library, or for each statement
+individually. See the "Configuration of the Library" page for details on configuration options.

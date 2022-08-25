@@ -20,12 +20,14 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Consumer;
 
 import org.jetbrains.annotations.NotNull;
 import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.SortSpecification;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.TableExpression;
+import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
 import org.mybatis.dynamic.sql.select.join.JoinCondition;
 import org.mybatis.dynamic.sql.select.join.JoinCriterion;
 import org.mybatis.dynamic.sql.select.join.JoinSpecification;
@@ -43,8 +45,9 @@ public class QueryExpressionDSL<R>
     private final SelectDSL<R> selectDSL;
     private final boolean isDistinct;
     private final List<BasicColumn> selectList;
-    private final QueryExpressionWhereBuilder whereBuilder = new QueryExpressionWhereBuilder();
+    private QueryExpressionWhereBuilder whereBuilder;
     private GroupByModel groupByModel;
+    private final StatementConfiguration statementConfiguration = new StatementConfiguration();
 
     QueryExpressionDSL(FromGatherer<R> fromGatherer, TableExpression table) {
         super(table);
@@ -61,7 +64,16 @@ public class QueryExpressionDSL<R>
 
     @Override
     public QueryExpressionWhereBuilder where() {
+        if (whereBuilder == null) {
+            whereBuilder = new QueryExpressionWhereBuilder();
+        }
         return whereBuilder;
+    }
+
+    @Override
+    public QueryExpressionDSL<R> configureStatement(Consumer<StatementConfiguration> consumer) {
+        consumer.accept(statementConfiguration);
+        return this;
     }
 
     @NotNull
@@ -149,15 +161,19 @@ public class QueryExpressionDSL<R>
     }
 
     protected QueryExpressionModel buildModel() {
-        return QueryExpressionModel.withSelectList(selectList)
+        QueryExpressionModel.Builder builder = QueryExpressionModel.withSelectList(selectList)
                 .withConnector(connector)
                 .withTable(table())
                 .isDistinct(isDistinct)
                 .withTableAliases(tableAliases())
-                .withWhereModel(whereBuilder.buildWhereModel())
                 .withJoinModel(buildJoinModel().orElse(null))
-                .withGroupByModel(groupByModel)
-                .build();
+                .withGroupByModel(groupByModel);
+
+        if (whereBuilder != null) {
+            builder.withWhereModel(whereBuilder.buildWhereModel());
+        }
+
+        return builder.build();
     }
 
     public SelectDSL<R>.LimitFinisher limit(long limit) {
@@ -240,7 +256,9 @@ public class QueryExpressionDSL<R>
 
     public class QueryExpressionWhereBuilder extends AbstractWhereDSL<QueryExpressionWhereBuilder>
             implements Buildable<R> {
-        private QueryExpressionWhereBuilder() {}
+        private QueryExpressionWhereBuilder() {
+            super(statementConfiguration);
+        }
 
         public UnionBuilder union() {
             return QueryExpressionDSL.this.union();
@@ -313,7 +331,8 @@ public class QueryExpressionDSL<R>
         }
     }
 
-    public class JoinSpecificationFinisher extends AbstractWhereSupport<QueryExpressionWhereBuilder>
+    public class JoinSpecificationFinisher
+            extends AbstractWhereSupport<QueryExpressionWhereBuilder, JoinSpecificationFinisher>
             implements Buildable<R> {
         private final JoinSpecification.Builder joinSpecificationBuilder;
 
@@ -352,6 +371,12 @@ public class QueryExpressionDSL<R>
         @Override
         public R build() {
             return QueryExpressionDSL.this.build();
+        }
+
+        @Override
+        public JoinSpecificationFinisher configureStatement(Consumer<StatementConfiguration> consumer) {
+            consumer.accept(statementConfiguration);
+            return this;
         }
 
         @Override

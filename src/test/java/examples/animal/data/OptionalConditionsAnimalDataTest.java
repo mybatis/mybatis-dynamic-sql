@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2020 the original author or authors.
+ *    Copyright 2016-2022 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -51,6 +51,7 @@ class OptionalConditionsAnimalDataTest {
     void setup() throws Exception {
         Class.forName(JDBC_DRIVER);
         InputStream is = getClass().getResourceAsStream("/examples/animal/data/CreateAnimalData.sql");
+        assert is != null;
         try (Connection connection = DriverManager.getConnection(JDBC_URL, "sa", "")) {
             ScriptRunner sr = new ScriptRunner(connection);
             sr.setLogWriter(null);
@@ -72,6 +73,7 @@ class OptionalConditionsAnimalDataTest {
                     .from(animalData)
                     .where(id, isGreaterThanWhenPresent(NULL_INTEGER))  // the where clause should not render
                     .orderBy(id)
+                    .configureStatement(c -> c.setNonRenderingWhereClauseAllowed(true))
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
             List<AnimalData> animals = mapper.selectMany(selectStatement);

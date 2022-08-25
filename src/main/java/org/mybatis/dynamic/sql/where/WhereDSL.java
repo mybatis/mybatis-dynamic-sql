@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2020 the original author or authors.
+ *    Copyright 2016-2022 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -15,9 +15,12 @@
  */
 package org.mybatis.dynamic.sql.where;
 
-public class WhereDSL extends AbstractWhereDSL<WhereDSL> {
+import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
 
-    private WhereDSL() {}
+public class WhereDSL extends AbstractWhereDSL<WhereDSL> {
+    private WhereDSL() {
+        super(new StatementConfiguration());
+    }
 
     @Override
     protected WhereDSL getThis() {

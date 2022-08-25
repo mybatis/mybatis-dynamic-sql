@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2021 the original author or authors.
+ *    Copyright 2016-2022 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -16,12 +16,14 @@
 package org.mybatis.dynamic.sql.select;
 
 import java.util.Objects;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 import org.jetbrains.annotations.NotNull;
 import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.SqlBuilder;
 import org.mybatis.dynamic.sql.SqlTable;
+import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
 import org.mybatis.dynamic.sql.util.Buildable;
 import org.mybatis.dynamic.sql.where.AbstractWhereDSL;
 import org.mybatis.dynamic.sql.where.WhereModel;
@@ -39,8 +41,9 @@ public class CountDSL<R> extends AbstractQueryExpressionDSL<CountDSL<R>.CountWhe
         implements Buildable<R> {
 
     private final Function<SelectModel, R> adapterFunction;
-    private final CountWhereBuilder whereBuilder = new CountWhereBuilder();
+    private CountWhereBuilder whereBuilder;
     private final BasicColumn countColumn;
+    private final StatementConfiguration statementConfiguration = new StatementConfiguration();
 
     private CountDSL(BasicColumn countColumn, SqlTable table, Function<SelectModel, R> adapterFunction) {
         super(table);
@@ -50,6 +53,9 @@ public class CountDSL<R> extends AbstractQueryExpressionDSL<CountDSL<R>.CountWhe
 
     @Override
     public CountWhereBuilder where() {
+        if (whereBuilder == null) {
+            whereBuilder = new CountWhereBuilder();
+        }
         return whereBuilder;
     }
 
@@ -59,12 +65,21 @@ public class CountDSL<R> extends AbstractQueryExpressionDSL<CountDSL<R>.CountWhe
         return adapterFunction.apply(buildModel());
     }
 
+    @Override
+    public CountDSL<R> configureStatement(Consumer<StatementConfiguration> consumer) {
+        consumer.accept(statementConfiguration);
+        return this;
+    }
+
     private SelectModel buildModel() {
         QueryExpressionModel.Builder b = new QueryExpressionModel.Builder()
                 .withSelectColumn(countColumn)
                 .withTable(table())
-                .withTableAliases(tableAliases())
-                .withWhereModel(whereBuilder.buildWhereModel());
+                .withTableAliases(tableAliases());
+
+        if (whereBuilder != null) {
+            b.withWhereModel(whereBuilder.buildWhereModel());
+        }
 
         buildJoinModel().ifPresent(b::withJoinModel);
 
@@ -118,7 +133,9 @@ public class CountDSL<R> extends AbstractQueryExpressionDSL<CountDSL<R>.CountWhe
 
     public class CountWhereBuilder extends AbstractWhereDSL<CountWhereBuilder>
             implements Buildable<R> {
-        private CountWhereBuilder() {}
+        private CountWhereBuilder() {
+            super(statementConfiguration);
+        }
 
         @NotNull
         @Override

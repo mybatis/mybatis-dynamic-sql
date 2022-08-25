@@ -13,26 +13,12 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.mybatis.dynamic.sql;
+package org.mybatis.dynamic.sql.util;
 
-import java.util.function.Function;
+import java.util.function.Consumer;
 
-/**
- * @deprecated in favor of the new statement configuration functionality
- */
-@Deprecated
-@FunctionalInterface
-public interface Callback {
-    void call();
+import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
 
-    static Callback exceptionThrowingCallback(String message) {
-        return exceptionThrowingCallback(message, RuntimeException::new);
-    }
-
-    static Callback exceptionThrowingCallback(String message,
-            Function<String, ? extends RuntimeException> exceptionBuilder) {
-        return () -> {
-            throw exceptionBuilder.apply(message);
-        };
-    }
+public interface ConfigurableStatement<R> {
+    R configureStatement(Consumer<StatementConfiguration> consumer);
 }

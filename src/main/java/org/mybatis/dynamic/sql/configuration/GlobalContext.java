@@ -13,26 +13,17 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.mybatis.dynamic.sql;
+package org.mybatis.dynamic.sql.configuration;
 
-import java.util.function.Function;
+public class GlobalContext {
 
-/**
- * @deprecated in favor of the new statement configuration functionality
- */
-@Deprecated
-@FunctionalInterface
-public interface Callback {
-    void call();
+    private static final GlobalContext instance = new GlobalContext();
 
-    static Callback exceptionThrowingCallback(String message) {
-        return exceptionThrowingCallback(message, RuntimeException::new);
-    }
+    private final GlobalConfiguration globalConfiguration = new GlobalConfiguration();
 
-    static Callback exceptionThrowingCallback(String message,
-            Function<String, ? extends RuntimeException> exceptionBuilder) {
-        return () -> {
-            throw exceptionBuilder.apply(message);
-        };
+    private GlobalContext() {}
+
+    public static GlobalConfiguration getConfiguration() {
+        return instance.globalConfiguration;
     }
 }

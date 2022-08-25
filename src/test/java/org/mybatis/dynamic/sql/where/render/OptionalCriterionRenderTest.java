@@ -38,6 +38,7 @@ class OptionalCriterionRenderTest {
         Integer nullId = null;
 
         WhereClauseProvider whereClause = where(id, isEqualToWhenPresent(nullId))
+                .configureStatement(c -> c.setNonRenderingWhereClauseAllowed(true))
                 .build()
                 .render(RenderingStrategies.SPRING_NAMED_PARAMETER);
 
@@ -52,6 +53,7 @@ class OptionalCriterionRenderTest {
         Integer nullId = null;
 
         WhereClauseProvider whereClause = where(id, isEqualTo(nullId).filter(Objects::nonNull))
+                .configureStatement(c -> c.setNonRenderingWhereClauseAllowed(true))
                 .build()
                 .render(RenderingStrategies.SPRING_NAMED_PARAMETER);
 
@@ -64,6 +66,7 @@ class OptionalCriterionRenderTest {
     @Test
     void testDisabledIsNull() {
         WhereClauseProvider whereClause = where(id, isNull().filter(() -> false))
+                .configureStatement(c -> c.setNonRenderingWhereClauseAllowed(true))
                 .build()
                 .render(RenderingStrategies.SPRING_NAMED_PARAMETER);
 
@@ -88,6 +91,7 @@ class OptionalCriterionRenderTest {
     @Test
     void testDisabledIsNotNull() {
         WhereClauseProvider whereClause = where(id, isNotNull().filter(() -> false))
+                .configureStatement(c -> c.setNonRenderingWhereClauseAllowed(true))
                 .build()
                 .render(RenderingStrategies.SPRING_NAMED_PARAMETER);
 
@@ -308,6 +312,7 @@ class OptionalCriterionRenderTest {
 
         WhereClauseProvider whereClause = where(
                 group(firstName, isEqualToWhenPresent(name1)), or(lastName, isEqualToWhenPresent(name1)))
+                .configureStatement(c -> c.setNonRenderingWhereClauseAllowed(true))
                 .build()
                 .render(RenderingStrategies.SPRING_NAMED_PARAMETER);
 
