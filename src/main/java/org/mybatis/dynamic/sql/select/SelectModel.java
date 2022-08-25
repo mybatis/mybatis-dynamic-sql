@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2020 the original author or authors.
+ *    Copyright 2016-2022 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 import org.jetbrains.annotations.NotNull;
+import org.mybatis.dynamic.sql.exception.InvalidSqlException;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.select.render.SelectRenderer;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
@@ -34,6 +35,10 @@ public class SelectModel {
 
     private SelectModel(Builder builder) {
         queryExpressions = Objects.requireNonNull(builder.queryExpressions);
+        if (queryExpressions.isEmpty()) {
+            throw new InvalidSqlException("Select statements must have at least one query expression");
+        }
+
         orderByModel = builder.orderByModel;
         pagingModel = builder.pagingModel;
     }

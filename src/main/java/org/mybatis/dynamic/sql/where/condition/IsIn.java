@@ -39,8 +39,10 @@ public class IsIn<T> extends AbstractListValueCondition<T> {
     }
 
     /**
-     * @deprecated in favor of the statement configuration functions
+     * Build an empty condition.
+     *
      * @return a new empty condition
+     * @deprecated in favor of the statement configuration functions
      */
     @Deprecated
     private <S> IsIn<S> emptyWithCallBack() {
@@ -52,9 +54,11 @@ public class IsIn<T> extends AbstractListValueCondition<T> {
     }
 
     /**
-     * @deprecated in favor of the statement configuration functions
+     * Build a new condition with a callback.
+     *
      * @param values values
      * @param emptyCallback empty callback
+     * @deprecated in favor of the statement configuration functions
      */
     @Deprecated
     protected IsIn(Collection<T> values, Callback emptyCallback) {
@@ -68,9 +72,11 @@ public class IsIn<T> extends AbstractListValueCondition<T> {
     }
 
     /**
-     * @deprecated in favor of the statement configuration functions
+     * Build a new condition with a callback.
+     *
      * @param callback a callback function - typically throws an exception to block the statement from executing
      * @return this condition
+     * @deprecated in favor of the statement configuration functions
      */
     @Deprecated
     @Override

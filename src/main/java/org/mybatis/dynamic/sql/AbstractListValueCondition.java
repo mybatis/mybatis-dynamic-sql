@@ -28,6 +28,8 @@ public abstract class AbstractListValueCondition<T> implements VisitableConditio
     protected final Collection<T> values;
 
     /**
+     * Callback to execute when the list is empty.
+     *
      * @deprecated in favor of the statement configuration functions
      */
     @Deprecated
@@ -38,9 +40,11 @@ public abstract class AbstractListValueCondition<T> implements VisitableConditio
     }
 
     /**
-     * @deprecated in favor of the statement configuration functions
+     * Construct a new condition with a callback.
+     *
      * @param values values
      * @param emptyCallback empty callback
+     * @deprecated in favor of the statement configuration functions
      */
     @Deprecated
     protected AbstractListValueCondition(Collection<T> values, Callback emptyCallback) {
@@ -110,9 +114,9 @@ public abstract class AbstractListValueCondition<T> implements VisitableConditio
     /**
      * Specifies a callback function to be called if the value list is empty when rendered.
      *
-     * @deprecated in favor of the statement configuration functions
      * @param callback a callback function - typically throws an exception to block the statement from executing
      * @return this condition
+     * @deprecated in favor of the statement configuration functions
      */
     @Deprecated
     public abstract AbstractListValueCondition<T> withListEmptyCallback(Callback callback);

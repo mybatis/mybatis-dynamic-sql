@@ -24,6 +24,7 @@ import java.util.stream.Stream;
 
 import org.jetbrains.annotations.NotNull;
 import org.mybatis.dynamic.sql.SqlTable;
+import org.mybatis.dynamic.sql.exception.InvalidSqlException;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.update.render.UpdateRenderer;
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
@@ -41,6 +42,10 @@ public class UpdateModel {
         whereModel = builder.whereModel;
         columnMappings = Objects.requireNonNull(builder.columnMappings);
         tableAlias = builder.tableAlias;
+
+        if (columnMappings.isEmpty()) {
+            throw new InvalidSqlException("Update statements must have at least one set phrase");
+        }
     }
 
     public SqlTable table() {

@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2020 the original author or authors.
+ *    Copyright 2016-2022 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ import java.util.stream.Stream;
 
 import org.jetbrains.annotations.NotNull;
 import org.mybatis.dynamic.sql.SqlTable;
+import org.mybatis.dynamic.sql.exception.InvalidSqlException;
 import org.mybatis.dynamic.sql.insert.render.GeneralInsertRenderer;
 import org.mybatis.dynamic.sql.insert.render.GeneralInsertStatementProvider;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
@@ -35,6 +36,9 @@ public class GeneralInsertModel {
 
     private GeneralInsertModel(Builder builder) {
         table = Objects.requireNonNull(builder.table);
+        if (builder.insertMappings.isEmpty()) {
+            throw new InvalidSqlException("General insert statements must have at least one column mapping");
+        }
         insertMappings = builder.insertMappings;
     }
 
