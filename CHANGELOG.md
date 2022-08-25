@@ -38,6 +38,7 @@ For examples of global and statement configuration, see the "Configuration of th
 4. Added the ability to configure the library and change some default behaviors. Currently, this is limited to changing
    the behavior of the library in regard to where clauses that will not render. See the "Configuration of the Library"
    page for details. ([#515](https://github.com/mybatis/mybatis-dynamic-sql/pull/515))
+5. Added several checks for invalid SQL ([#516](https://github.com/mybatis/mybatis-dynamic-sql/pull/516))
 
 ## Release 1.4.0 - March 3, 2022
 
