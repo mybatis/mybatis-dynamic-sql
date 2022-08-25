@@ -38,10 +38,10 @@ fun WhereApplier.andThen(after: WhereApplier): WhereApplier = {
 
 @MyBatisDslMarker
 @Suppress("TooManyFunctions")
-abstract class KotlinBaseBuilder<D : AbstractWhereSupport<*>> {
+abstract class KotlinBaseBuilder<D : AbstractWhereSupport<*,*>> {
 
     fun configureStatement(c: StatementConfiguration.() -> Unit) {
-        getDsl().where().configureStatement(c)
+        getDsl().configureStatement(c)
     }
 
     fun where(criteria: GroupingCriteriaReceiver): Unit =

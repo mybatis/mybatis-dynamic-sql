@@ -33,14 +33,13 @@ import org.mybatis.dynamic.sql.select.join.JoinCriterion;
 import org.mybatis.dynamic.sql.select.join.JoinSpecification;
 import org.mybatis.dynamic.sql.select.join.JoinType;
 import org.mybatis.dynamic.sql.util.Buildable;
-import org.mybatis.dynamic.sql.util.ConfigurableStatement;
 import org.mybatis.dynamic.sql.where.AbstractWhereDSL;
 import org.mybatis.dynamic.sql.where.AbstractWhereSupport;
 import org.mybatis.dynamic.sql.where.WhereModel;
 
 public class QueryExpressionDSL<R>
         extends AbstractQueryExpressionDSL<QueryExpressionDSL<R>.QueryExpressionWhereBuilder, QueryExpressionDSL<R>>
-        implements Buildable<R>, ConfigurableStatement<QueryExpressionDSL<R>> {
+        implements Buildable<R> {
 
     private final String connector;
     private final SelectDSL<R> selectDSL;
@@ -332,7 +331,8 @@ public class QueryExpressionDSL<R>
         }
     }
 
-    public class JoinSpecificationFinisher extends AbstractWhereSupport<QueryExpressionWhereBuilder>
+    public class JoinSpecificationFinisher
+            extends AbstractWhereSupport<QueryExpressionWhereBuilder, JoinSpecificationFinisher>
             implements Buildable<R> {
         private final JoinSpecification.Builder joinSpecificationBuilder;
 
@@ -371,6 +371,12 @@ public class QueryExpressionDSL<R>
         @Override
         public R build() {
             return QueryExpressionDSL.this.build();
+        }
+
+        @Override
+        public JoinSpecificationFinisher configureStatement(Consumer<StatementConfiguration> consumer) {
+            consumer.accept(statementConfiguration);
+            return this;
         }
 
         @Override

@@ -16,6 +16,7 @@
 package org.mybatis.dynamic.sql.select;
 
 import java.util.Objects;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 import org.jetbrains.annotations.NotNull;
@@ -62,6 +63,12 @@ public class CountDSL<R> extends AbstractQueryExpressionDSL<CountDSL<R>.CountWhe
     @Override
     public R build() {
         return adapterFunction.apply(buildModel());
+    }
+
+    @Override
+    public CountDSL<R> configureStatement(Consumer<StatementConfiguration> consumer) {
+        consumer.accept(statementConfiguration);
+        return this;
     }
 
     private SelectModel buildModel() {

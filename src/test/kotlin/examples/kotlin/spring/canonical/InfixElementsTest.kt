@@ -28,11 +28,14 @@ import org.mybatis.dynamic.sql.util.kotlin.KInvalidSQLException
 import org.mybatis.dynamic.sql.util.kotlin.elements.isLike
 import org.mybatis.dynamic.sql.util.kotlin.elements.stringConstant
 import org.mybatis.dynamic.sql.util.kotlin.elements.upper
+import org.mybatis.dynamic.sql.util.kotlin.mybatis3.count
+import org.mybatis.dynamic.sql.util.kotlin.spring.countFrom
 import org.mybatis.dynamic.sql.util.kotlin.spring.delete
 import org.mybatis.dynamic.sql.util.kotlin.spring.deleteFrom
 import org.mybatis.dynamic.sql.util.kotlin.spring.select
 import org.mybatis.dynamic.sql.util.kotlin.spring.selectList
 import org.mybatis.dynamic.sql.util.kotlin.spring.selectOne
+import org.mybatis.dynamic.sql.util.kotlin.spring.update
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig
@@ -1228,5 +1231,37 @@ open class InfixElementsTest {
 
         assertThat(rows).hasSize(2)
         assertThat(rows[0]).isEqualTo("Pebbles")
+    }
+
+    @Test
+    fun testUpdate() {
+        val updateStatement = update(person) {
+            set(id) equalTo 1
+            // following should have no impact - where clause not specified
+            configureStatement { isNonRenderingWhereClauseAllowed = false }
+        }
+
+        assertThat(updateStatement.updateStatement).isEqualTo("update Person set id = :p1")
+    }
+
+    @Test
+    fun testCount() {
+        val selectStatement = countFrom(person) {
+            // following should have no impact - where clause not specified
+            configureStatement { isNonRenderingWhereClauseAllowed = false }
+        }
+
+        assertThat(selectStatement.selectStatement).isEqualTo("select count(*) from Person")
+    }
+
+    @Test
+    fun testQueryExpression() {
+        val selectStatement = select(id) {
+            from(person)
+            // following should have no impact - where clause not specified
+            configureStatement { isNonRenderingWhereClauseAllowed = false }
+        }
+
+        assertThat(selectStatement.selectStatement).isEqualTo("select id from Person")
     }
 }

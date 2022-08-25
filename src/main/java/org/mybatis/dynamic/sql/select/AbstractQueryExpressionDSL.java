@@ -38,7 +38,7 @@ import org.mybatis.dynamic.sql.where.AbstractWhereSupport;
 
 public abstract class AbstractQueryExpressionDSL<W extends AbstractWhereDSL<?>,
             T extends AbstractQueryExpressionDSL<W, T>>
-        extends AbstractWhereSupport<W> {
+        extends AbstractWhereSupport<W, T> {
 
     private final List<JoinSpecification.Builder> joinSpecificationBuilders = new ArrayList<>();
     private final Map<SqlTable, String> tableAliases = new HashMap<>();
