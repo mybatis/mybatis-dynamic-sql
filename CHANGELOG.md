@@ -13,7 +13,11 @@ but fails to render because all the optional conditionals drop out of the where 
 throw a `NonRenderingWhereClauseException`. We have made this change out of an abundance of caution. The prior
 behavior would allow generation of statements that inadvertently affected all rows in a table.
 
-Because of this change, we have also deprecated the "empty callback" functions in the "in" conditions.
+We have also deprecated the "empty callback" functions in the "in" conditions in favor of this new configuration
+strategy. The "empty callback" methods were effective for "in" conditions that failed to render, but they offered
+no help for other conditions that failed to render, or if all conditions fail to render - which is arguably a more
+dangerous outcome. If you were using any of these methods, you should remove the calls to those methods and catch the
+new `NonRenderingWhereClauseException`.
 
 If you desire the prior behavior where non rendering where clauses are allowed, you can change the global configuration
 of the library or - even better - change the configuration of individual statements where this behavior should be allowed.
@@ -32,8 +36,8 @@ For examples of global and statement configuration, see the "Configuration of th
    accurately represent the nullable/non-nullable expectations for API method calls.
    ([#496](https://github.com/mybatis/mybatis-dynamic-sql/pull/496))
 4. Added the ability to configure the library and change some default behaviors. Currently, this is limited to changing
-   the behavior of the library in regard to where clauses that will not render. See the new configuration page for
-   details.
+   the behavior of the library in regard to where clauses that will not render. See the "Configuration of the Library"
+   page for details.
 
 ## Release 1.4.0 - March 3, 2022
 
