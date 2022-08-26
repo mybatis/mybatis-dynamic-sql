@@ -159,6 +159,7 @@
       </plugin>
       <!-- Copy the changelog into the generated site -->
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-resources-plugin</artifactId>
         <executions>
           <execution>
@@ -208,7 +209,7 @@
             </goals>
             <configuration>
               <sources>
-                <source>src/main/kotlin</source>
+                <source>${project.basedir}/src/main/kotlin</source>
               </sources>
             </configuration>
           </execution>
