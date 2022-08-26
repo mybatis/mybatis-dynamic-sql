@@ -19,4 +19,8 @@ public class DynamicSqlException extends RuntimeException {
     public DynamicSqlException(String message) {
         super(message);
     }
+
+    public DynamicSqlException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }
