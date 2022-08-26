@@ -15,11 +15,11 @@
  */
 package org.mybatis.dynamic.sql.configuration;
 
-import org.mybatis.dynamic.sql.exception.DynamicSqlException;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
+
+import org.mybatis.dynamic.sql.exception.DynamicSqlException;
 
 public class GlobalConfiguration {
     public static final String CONFIGURATION_FILE_PROPERTY = "mybatis-dynamic-sql.configurationFile"; //$NON-NLS-1$

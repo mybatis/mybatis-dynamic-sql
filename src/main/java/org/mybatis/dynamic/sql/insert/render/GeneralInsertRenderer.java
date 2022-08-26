@@ -43,7 +43,7 @@ public class GeneralInsertRenderer {
         List<Optional<FieldAndValueAndParameters>> fieldsAndValues = model.mapColumnMappings(m -> m.accept(visitor))
                 .collect(Collectors.toList());
 
-        if(fieldsAndValues.stream().noneMatch(Optional::isPresent)) {
+        if (fieldsAndValues.stream().noneMatch(Optional::isPresent)) {
             throw new InvalidSqlException(
                     "All optional set phrases were dropped when rendering the general insert statement");
         }
