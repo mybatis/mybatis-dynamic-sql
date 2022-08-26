@@ -18,8 +18,8 @@ package org.mybatis.dynamic.sql.configuration;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.mybatis.dynamic.sql.exception.DynamicSqlException;
 
 public class GlobalConfiguration {
     public static final String CONFIGURATION_FILE_PROPERTY = "mybatis-dynamic-sql.configurationFile"; //$NON-NLS-1$
@@ -57,8 +57,7 @@ public class GlobalConfiguration {
         try {
             properties.load(inputStream);
         } catch (IOException e) {
-            Logger logger = Logger.getLogger(GlobalConfiguration.class.getName());
-            logger.log(Level.SEVERE, e, () -> "IOException reading property file \"" + propertyFile + "\"");
+            throw new DynamicSqlException("IOException reading property file \"" + propertyFile + "\"", e);
         }
     }
 
