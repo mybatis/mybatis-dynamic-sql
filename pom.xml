@@ -55,7 +55,6 @@
     <java.test.version>11</java.test.version>
     <java.test.release.version>11</java.test.release.version>
     <junit.jupiter.version>5.9.0</junit.jupiter.version>
-    <junit.platform.version>1.9.0</junit.platform.version>
     <spring.batch.version>4.3.6</spring.batch.version>
 
     <checkstyle.config>checkstyle-override.xml</checkstyle.config>
@@ -159,6 +158,7 @@
       </plugin>
       <!-- Copy the changelog into the generated site -->
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-resources-plugin</artifactId>
         <executions>
           <execution>
@@ -180,28 +180,10 @@
         </executions>
       </plugin>
       <plugin>
-        <groupId>org.eluder.coveralls</groupId>
+        <groupId>io.jsonwebtoken.coveralls</groupId>
         <artifactId>coveralls-maven-plugin</artifactId>
-        <version>4.3.0</version>
         <configuration>
           <sourceDirectories>src/main/java,src/main/kotlin</sourceDirectories>
-        </configuration>
-        <dependencies>
-          <dependency>
-            <groupId>javax.xml.bind</groupId>
-            <artifactId>jaxb-api</artifactId>
-            <version>2.3.1</version>
-          </dependency>
-        </dependencies>
-      </plugin>
-      <plugin>
-        <groupId>com.mycila</groupId>
-        <artifactId>license-maven-plugin</artifactId>
-        <configuration>
-          <mapping>
-            <java>SLASHSTAR_STYLE</java>
-            <kt>SLASHSTAR_STYLE</kt>
-          </mapping>
         </configuration>
       </plugin>
       <!-- Add Kotlin source to the generated source JAR file-->
@@ -217,7 +199,7 @@
             </goals>
             <configuration>
               <sources>
-                <source>src/main/kotlin</source>
+                <source>${project.basedir}/src/main/kotlin</source>
               </sources>
             </configuration>
           </execution>
@@ -257,12 +239,6 @@
     </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-api</artifactId>
-      <version>${junit.jupiter.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-engine</artifactId>
       <version>${junit.jupiter.version}</version>
       <scope>test</scope>
@@ -271,12 +247,6 @@
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-params</artifactId>
       <version>${junit.jupiter.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.junit.platform</groupId>
-      <artifactId>junit-platform-launcher</artifactId>
-      <version>${junit.platform.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
