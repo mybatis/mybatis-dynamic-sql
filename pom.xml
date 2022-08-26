@@ -186,15 +186,6 @@
         <configuration>
           <sourceDirectories>src/main/java,src/main/kotlin</sourceDirectories>
         </configuration>
-      <plugin>
-        <groupId>com.mycila</groupId>
-        <artifactId>license-maven-plugin</artifactId>
-        <configuration>
-          <mapping>
-            <java>SLASHSTAR_STYLE</java>
-            <kt>SLASHSTAR_STYLE</kt>
-          </mapping>
-        </configuration>
       </plugin>
       <!-- Add Kotlin source to the generated source JAR file-->
       <plugin>
