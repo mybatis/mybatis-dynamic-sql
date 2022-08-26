@@ -15,8 +15,8 @@
  */
 package org.mybatis.dynamic.sql.exception;
 
-public class InvalidSqlException extends DynamicSqlException {
-    public InvalidSqlException(String message) {
+public class DynamicSqlException extends RuntimeException {
+    public DynamicSqlException(String message) {
         super(message);
     }
 }
