@@ -15,9 +15,9 @@
  */
 package org.mybatis.dynamic.sql.util.kotlin
 
-import org.mybatis.dynamic.sql.exception.DynamicSqlException
+import org.mybatis.dynamic.sql.exception.InvalidSqlException
 
 /**
  * This exception is thrown if the library detects misuse of the Kotlin DSL that would result in invalid SQL
  */
-class KInvalidSQLException(message: String) : DynamicSqlException(message)
+class KInvalidSQLException(message: String) : InvalidSqlException(message)
