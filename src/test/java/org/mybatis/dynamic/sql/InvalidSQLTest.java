@@ -16,6 +16,9 @@
 package org.mybatis.dynamic.sql;
 
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.mybatis.dynamic.sql.SqlBuilder.insert;
+import static org.mybatis.dynamic.sql.SqlBuilder.insertInto;
+import static org.mybatis.dynamic.sql.SqlBuilder.update;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -28,6 +31,7 @@ import org.mybatis.dynamic.sql.insert.GeneralInsertModel;
 import org.mybatis.dynamic.sql.insert.InsertColumnListModel;
 import org.mybatis.dynamic.sql.insert.InsertModel;
 import org.mybatis.dynamic.sql.insert.MultiRowInsertModel;
+import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.GroupByModel;
 import org.mybatis.dynamic.sql.select.OrderByModel;
 import org.mybatis.dynamic.sql.select.QueryExpressionModel;
@@ -40,6 +44,7 @@ import org.mybatis.dynamic.sql.update.UpdateModel;
 class InvalidSQLTest {
 
     private static final SqlTable person = new SqlTable("person");
+    private static final SqlColumn<Integer> id = person.column("id");
 
     @Test
     void testInvalidGeneralInsertStatement() {
@@ -51,6 +56,17 @@ class InvalidSQLTest {
     }
 
     @Test
+    void testInvalidGeneralInsertStatementWhenAllOptionalsAreDropped() {
+        GeneralInsertModel model = insertInto(person)
+                .set(id).toValueWhenPresent((Integer) null)
+                .build();
+
+        assertThatExceptionOfType(InvalidSqlException.class)
+                .isThrownBy(() -> model.render(RenderingStrategies.SPRING_NAMED_PARAMETER))
+                .withMessage("All optional set phrases were dropped when rendering the general insert statement");
+    }
+
+    @Test
     void testInvalidInsertStatement() {
         InsertModel.Builder<String> builder = new InsertModel.Builder<String>()
                 .withTable(person)
@@ -58,6 +74,20 @@ class InvalidSQLTest {
 
         assertThatExceptionOfType(InvalidSqlException.class).isThrownBy(builder::build)
                 .withMessage("Insert statements must have at least one column mapping");
+    }
+
+    @Test
+    void testInvalidInsertStatementWhenAllOptionalsAreDropped() {
+        TestRow testRow = new TestRow();
+
+        InsertModel<TestRow> model = insert(testRow)
+                .into(person)
+                .map(id).toPropertyWhenPresent("id", testRow::getId)
+                .build();
+
+        assertThatExceptionOfType(InvalidSqlException.class)
+                .isThrownBy(() -> model.render(RenderingStrategies.SPRING_NAMED_PARAMETER))
+                .withMessage("All optional column mappings were dropped when rendering the insert statement");
     }
 
     @Test
@@ -175,5 +205,28 @@ class InvalidSQLTest {
 
         assertThatExceptionOfType(InvalidSqlException.class).isThrownBy(builder::build)
                 .withMessage("Update statements must have at least one set phrase");
+    }
+
+    @Test
+    void testInvalidUpdateStatementWhenAllOptionalsAreDropped() {
+        UpdateModel model = update(person)
+                .set(id).equalToWhenPresent((Integer) null)
+                .build();
+
+        assertThatExceptionOfType(InvalidSqlException.class)
+                .isThrownBy(() -> model.render(RenderingStrategies.SPRING_NAMED_PARAMETER))
+                .withMessage("All optional set phrases were dropped when rendering the update statement");
+    }
+
+    static class TestRow {
+        private Integer id;
+
+        public Integer getId() {
+            return id;
+        }
+
+        public void setId(Integer id) {
+            this.id = id;
+        }
     }
 }

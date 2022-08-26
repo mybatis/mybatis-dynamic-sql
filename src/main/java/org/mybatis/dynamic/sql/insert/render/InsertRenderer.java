@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2021 the original author or authors.
+ *    Copyright 2016-2022 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.mybatis.dynamic.sql.exception.InvalidSqlException;
 import org.mybatis.dynamic.sql.insert.InsertModel;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 
@@ -40,6 +41,11 @@ public class InsertRenderer<T> {
 
         List<Optional<FieldAndValue>> fieldsAndValues = model.mapColumnMappings(m -> m.accept(visitor))
                 .collect(Collectors.toList());
+
+        if (fieldsAndValues.stream().noneMatch(Optional::isPresent)) {
+            throw new InvalidSqlException(
+                    "All optional column mappings were dropped when rendering the insert statement");
+        }
 
         return DefaultInsertStatementProvider.withRow(model.row())
                 .withInsertStatement(calculateInsertStatement(fieldsAndValues))

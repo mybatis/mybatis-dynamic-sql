@@ -26,6 +26,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import org.mybatis.dynamic.sql.SqlTable;
+import org.mybatis.dynamic.sql.exception.InvalidSqlException;
 import org.mybatis.dynamic.sql.render.ExplicitTableAliasCalculator;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.render.TableAliasCalculator;
@@ -55,6 +56,10 @@ public class UpdateRenderer {
         List<Optional<FragmentAndParameters>> fragmentsAndParameters =
                 updateModel.mapColumnMappings(m -> m.accept(visitor))
                 .collect(Collectors.toList());
+
+        if (fragmentsAndParameters.stream().noneMatch(Optional::isPresent)) {
+            throw new InvalidSqlException("All optional set phrases were dropped when rendering the update statement");
+        }
 
         return updateModel.whereModel()
                 .flatMap(this::renderWhereClause)
