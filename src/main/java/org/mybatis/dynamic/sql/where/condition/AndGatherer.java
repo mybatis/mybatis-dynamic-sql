@@ -18,13 +18,14 @@ package org.mybatis.dynamic.sql.where.condition;
 import java.util.function.Supplier;
 
 /**
- * Utility class supporting the "and" part of a between condition. This class supports builders,
- * so it is mutable.
+ * Utility class supporting the "and" part of a between condition. This class supports builders, so it is mutable.
  *
  * @author Jeff Butler
  *
- * @param <T> the type of field for the between condition
- * @param <R> the type of condition being built
+ * @param <T>
+ *            the type of field for the between condition
+ * @param <R>
+ *            the type of condition being built
  */
 public abstract class AndGatherer<T, R> {
     protected final T value1;

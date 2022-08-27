@@ -15,10 +15,10 @@
  */
 package examples.array;
 
+import java.sql.JDBCType;
+
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
-
-import java.sql.JDBCType;
 
 public class NamesTableDynamicSqlSupport {
     public static final NamesTable namesTable = new NamesTable();
@@ -29,6 +29,7 @@ public class NamesTableDynamicSqlSupport {
         public NamesTable() {
             super("NamesTable");
         }
+
         public final SqlColumn<Integer> id = column("id", JDBCType.INTEGER);
         public final SqlColumn<String[]> names = column("names", JDBCType.ARRAY,
                 "examples.array.StringArrayTypeHandler");

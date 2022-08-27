@@ -28,8 +28,8 @@ import org.mybatis.dynamic.sql.render.TableAliasCalculator;
  * qualifier set in a query. If a table qualifier is required it can be set directly in the
  * builder for this class.
  *
- * @param <T> The Java type that corresponds to this column - not used except for compiler type checking
- *           for conditions
+ * @param <T>
+ *            The Java type that corresponds to this column - not used except for compiler type checking for conditions
  */
 public class DerivedColumn<T> implements BindableColumn<T> {
     private final String name;

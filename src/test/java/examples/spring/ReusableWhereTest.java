@@ -99,5 +99,5 @@ class ReusableWhereTest {
 
     }
 
-    private final WhereApplier commonWhere =  d -> d.where(id, isEqualTo(1)).or(occupation, isNull());
+    private final WhereApplier commonWhere = d -> d.where(id, isEqualTo(1)).or(occupation, isNull());
 }

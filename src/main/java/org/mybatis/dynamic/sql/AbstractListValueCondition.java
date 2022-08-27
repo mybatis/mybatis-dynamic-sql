@@ -42,8 +42,11 @@ public abstract class AbstractListValueCondition<T> implements VisitableConditio
     /**
      * Construct a new condition with a callback.
      *
-     * @param values values
-     * @param emptyCallback empty callback
+     * @param values
+     *            values
+     * @param emptyCallback
+     *            empty callback
+     *
      * @deprecated in favor of the statement configuration functions
      */
     @Deprecated
@@ -105,17 +108,21 @@ public abstract class AbstractListValueCondition<T> implements VisitableConditio
      *     Else returns a condition that will not render (this). If all values are filtered out of the value
      *     list, then the condition will not render.
      *
-     * @param predicate predicate applied to the values, if renderable
-     * @return a new condition with filtered values if renderable, otherwise a condition
-     *     that will not render.
+     * @param predicate
+     *            predicate applied to the values, if renderable
+     *
+     * @return a new condition with filtered values if renderable, otherwise a condition that will not render.
      */
     public abstract AbstractListValueCondition<T> filter(Predicate<? super T> predicate);
 
     /**
      * Specifies a callback function to be called if the value list is empty when rendered.
      *
-     * @param callback a callback function - typically throws an exception to block the statement from executing
+     * @param callback
+     *            a callback function - typically throws an exception to block the statement from executing
+     *
      * @return this condition
+     *
      * @deprecated in favor of the statement configuration functions
      */
     @Deprecated

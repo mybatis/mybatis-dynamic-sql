@@ -16,8 +16,8 @@
 package examples.groupby;
 
 import static examples.groupby.AddressDynamicSqlSupport.*;
-import static examples.groupby.PersonDynamicSqlSupport.*;
 import static examples.groupby.Person2DynamicSqlSupport.person2;
+import static examples.groupby.PersonDynamicSqlSupport.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
 

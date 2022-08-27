@@ -27,6 +27,7 @@ import java.util.Optional;
  * available where an AND or an OR condition is appropriate.
  *
  * @author Jeff Butler
+ *
  * @since 1.4.0
  */
 public class AndOrCriteriaGroup {

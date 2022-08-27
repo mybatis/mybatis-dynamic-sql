@@ -15,9 +15,6 @@
  */
 package examples.array;
 
-import org.apache.ibatis.type.BaseTypeHandler;
-import org.apache.ibatis.type.JdbcType;
-
 import java.sql.Array;
 import java.sql.CallableStatement;
 import java.sql.PreparedStatement;
@@ -26,6 +23,9 @@ import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import org.apache.ibatis.type.BaseTypeHandler;
+import org.apache.ibatis.type.JdbcType;
 
 public class StringArrayTypeHandler extends BaseTypeHandler<String[]> {
     @Override

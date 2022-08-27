@@ -37,9 +37,9 @@ import org.mybatis.dynamic.sql.insert.render.MultiRowInsertStatementProvider;
 import org.mybatis.dynamic.sql.select.SelectDSLCompleter;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.util.SqlProviderAdapter;
+import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
 
 import examples.generated.always.PersonRecord;
-import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
 
 public interface PersonMapper {
 

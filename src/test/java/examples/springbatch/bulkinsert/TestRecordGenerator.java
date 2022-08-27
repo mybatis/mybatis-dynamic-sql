@@ -35,7 +35,7 @@ public class TestRecordGenerator implements ItemReader<PersonRecord> {
     @Override
     public PersonRecord read() {
         if (index < testRecords.length) {
-            return(testRecords[index++]);
+            return (testRecords[index++]);
         } else {
             return null;
         }

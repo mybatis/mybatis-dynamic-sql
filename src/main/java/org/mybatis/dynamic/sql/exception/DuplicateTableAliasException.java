@@ -28,6 +28,7 @@ import org.mybatis.dynamic.sql.SqlTable;
  * a second instance of the SqlTable object to use in the self-join.
  *
  * @since 1.3.1
+ *
  * @author Jeff Butler
  */
 public class DuplicateTableAliasException extends DynamicSqlException {

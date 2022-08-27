@@ -47,9 +47,7 @@ import org.mybatis.dynamic.sql.util.SqlProviderAdapter;
 import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
 
 /**
- *
  * This is a mapper that shows coding a join
- *
  */
 @Mapper
 public interface PersonWithAddressMapper {

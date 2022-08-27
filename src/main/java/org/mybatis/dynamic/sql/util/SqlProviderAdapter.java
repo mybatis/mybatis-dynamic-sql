@@ -31,7 +31,6 @@ import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
  * Adapter for use with MyBatis SQL provider annotations.
  *
  * @author Jeff Butler
- *
  */
 public class SqlProviderAdapter {
 
@@ -53,8 +52,8 @@ public class SqlProviderAdapter {
 
     /**
      * This adapter method is intended for use with MyBatis' &#064;InsertProvider annotation when there are generated
-     * values expected from executing the insert statement. The canonical method signature for using this
-     * adapter method is as follows:
+     * values expected from executing the insert statement. The canonical method signature for using this adapter method
+     * is as follows:
      *
      * <pre>
      * public interface FooMapper {
@@ -64,10 +63,12 @@ public class SqlProviderAdapter {
      * }
      * </pre>
      *
-     * @param parameterMap The parameter map is automatically created by MyBatis when there are multiple
-     *     parameters in the insert method.
-     * @return the SQL statement contained in the parameter map. This is assumed to be the one
-     *     and only map entry of type String.
+     * @param parameterMap
+     *            The parameter map is automatically created by MyBatis when there are multiple parameters in the insert
+     *            method.
+     *
+     * @return the SQL statement contained in the parameter map. This is assumed to be the one and only map entry of
+     *         type String.
      */
     public String insertMultipleWithGeneratedKeys(Map<String, Object> parameterMap) {
         List<String> entries = parameterMap.entrySet().stream()

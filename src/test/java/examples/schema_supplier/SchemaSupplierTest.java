@@ -101,7 +101,6 @@ class SchemaSupplierTest {
             List<User> records = mapper.select(SelectDSLCompleter.allRows());
             assertThat(records).hasSize(2);
 
-
             System.setProperty(SchemaSupplier.schema_property, "schema2");
             insertRubbles(mapper);
 

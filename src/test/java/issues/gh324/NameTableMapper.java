@@ -18,6 +18,9 @@ package issues.gh324;
 import static issues.gh324.NameTableDynamicSqlSupport.*;
 import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
 
+import java.util.List;
+import java.util.Optional;
+
 import org.apache.ibatis.annotations.*;
 import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.delete.DeleteDSLCompleter;
@@ -26,9 +29,6 @@ import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.update.UpdateDSLCompleter;
 import org.mybatis.dynamic.sql.util.SqlProviderAdapter;
 import org.mybatis.dynamic.sql.util.mybatis3.*;
-
-import java.util.List;
-import java.util.Optional;
 
 @CacheNamespace(implementation = ObservableCache.class)
 public interface NameTableMapper extends CommonCountMapper, CommonDeleteMapper, CommonInsertMapper<NameRecord>, CommonUpdateMapper {

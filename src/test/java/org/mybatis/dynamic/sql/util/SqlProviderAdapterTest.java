@@ -17,10 +17,10 @@ package org.mybatis.dynamic.sql.util;
 
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
-import org.junit.jupiter.api.Test;
-
 import java.util.HashMap;
 import java.util.Map;
+
+import org.junit.jupiter.api.Test;
 
 class SqlProviderAdapterTest {
     @Test
@@ -29,7 +29,7 @@ class SqlProviderAdapterTest {
         SqlProviderAdapter adapter = new SqlProviderAdapter();
 
         assertThatExceptionOfType(IllegalArgumentException.class)
-                .isThrownBy(() -> adapter.insertMultipleWithGeneratedKeys(parameters))
-                .withMessage("The parameters for insertMultipleWithGeneratedKeys must contain exactly one parameter of type String");
+                .isThrownBy(() -> adapter.insertMultipleWithGeneratedKeys(parameters)).withMessage(
+                        "The parameters for insertMultipleWithGeneratedKeys must contain exactly one parameter of type String");
     }
 }

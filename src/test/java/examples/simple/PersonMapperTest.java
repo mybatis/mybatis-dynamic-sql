@@ -15,6 +15,30 @@
  */
 package examples.simple;
 
+import static examples.simple.AddressDynamicSqlSupport.address;
+import static examples.simple.PersonDynamicSqlSupport.addressId;
+import static examples.simple.PersonDynamicSqlSupport.birthDate;
+import static examples.simple.PersonDynamicSqlSupport.employed;
+import static examples.simple.PersonDynamicSqlSupport.firstName;
+import static examples.simple.PersonDynamicSqlSupport.id;
+import static examples.simple.PersonDynamicSqlSupport.lastName;
+import static examples.simple.PersonDynamicSqlSupport.occupation;
+import static examples.simple.PersonDynamicSqlSupport.person;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mybatis.dynamic.sql.SqlBuilder.*;
+
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+
 import org.apache.ibatis.datasource.unpooled.UnpooledDataSource;
 import org.apache.ibatis.jdbc.ScriptRunner;
 import org.apache.ibatis.mapping.Environment;
@@ -33,30 +57,6 @@ import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.CountDSLCompleter;
 import org.mybatis.dynamic.sql.select.SelectDSLCompleter;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
-
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-
-import static examples.simple.AddressDynamicSqlSupport.address;
-import static examples.simple.PersonDynamicSqlSupport.addressId;
-import static examples.simple.PersonDynamicSqlSupport.birthDate;
-import static examples.simple.PersonDynamicSqlSupport.employed;
-import static examples.simple.PersonDynamicSqlSupport.firstName;
-import static examples.simple.PersonDynamicSqlSupport.id;
-import static examples.simple.PersonDynamicSqlSupport.lastName;
-import static examples.simple.PersonDynamicSqlSupport.occupation;
-import static examples.simple.PersonDynamicSqlSupport.person;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.mybatis.dynamic.sql.SqlBuilder.*;
 
 class PersonMapperTest {
 

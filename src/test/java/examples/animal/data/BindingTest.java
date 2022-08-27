@@ -39,7 +39,6 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Tests for understanding where bind parameters are allowed
- *
  */
 class BindingTest {
 

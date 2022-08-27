@@ -15,6 +15,9 @@
  */
 package examples.array;
 
+import java.util.List;
+import java.util.Optional;
+
 import org.apache.ibatis.annotations.InsertProvider;
 import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.ResultMap;
@@ -24,9 +27,6 @@ import org.mybatis.dynamic.sql.insert.render.GeneralInsertStatementProvider;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.util.SqlProviderAdapter;
 
-import java.util.List;
-import java.util.Optional;
-
 public interface NamesTableMapper {
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
     @Results(id="NamesTableResult", value={
@@ -35,10 +35,10 @@ public interface NamesTableMapper {
     })
     List<NamesRecord> selectMany(SelectStatementProvider selectStatement);
 
-    @SelectProvider(type=SqlProviderAdapter.class, method="select")
+    @SelectProvider(type = SqlProviderAdapter.class, method = "select")
     @ResultMap("NamesTableResult")
     Optional<NamesRecord> selectOne(SelectStatementProvider selectStatement);
 
-    @InsertProvider(type= SqlProviderAdapter.class, method="generalInsert")
+    @InsertProvider(type = SqlProviderAdapter.class, method = "generalInsert")
     int generalInsert(GeneralInsertStatementProvider insertStatement);
 }

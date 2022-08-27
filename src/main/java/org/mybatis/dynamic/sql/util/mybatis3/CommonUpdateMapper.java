@@ -30,7 +30,9 @@ public interface CommonUpdateMapper {
     /**
      * Execute an update statement.
      *
-     * @param updateStatement the update statement
+     * @param updateStatement
+     *            the update statement
+     *
      * @return the number of rows affected
      */
     @UpdateProvider(type = SqlProviderAdapter.class, method = "update")

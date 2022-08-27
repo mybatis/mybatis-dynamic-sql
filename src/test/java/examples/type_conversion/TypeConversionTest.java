@@ -16,10 +16,11 @@
 package examples.type_conversion;
 
 import static examples.type_conversion.MyFilesDynamicSqlSupport.*;
+import static examples.type_conversion.ToBase64.toBase64;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.entry;
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
-import static examples.type_conversion.ToBase64.toBase64;
+
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.sql.Connection;

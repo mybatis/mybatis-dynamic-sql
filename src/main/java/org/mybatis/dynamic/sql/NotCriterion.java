@@ -19,6 +19,7 @@ package org.mybatis.dynamic.sql;
  * This class represents a criteria group with a NOT.
  *
  * @author Jeff Butler
+ *
  * @since 1.4.0
  */
 public class NotCriterion extends CriteriaGroup {

@@ -15,6 +15,18 @@
  */
 package examples.joins;
 
+import static examples.joins.ItemMasterDynamicSQLSupport.itemMaster;
+import static examples.joins.OrderLineDynamicSQLSupport.orderLine;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mybatis.dynamic.sql.SqlBuilder.*;
+
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.ibatis.datasource.unpooled.UnpooledDataSource;
 import org.apache.ibatis.jdbc.ScriptRunner;
 import org.apache.ibatis.mapping.Environment;
@@ -32,18 +44,6 @@ import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
 import org.mybatis.dynamic.sql.util.mybatis3.CommonDeleteMapper;
 import org.mybatis.dynamic.sql.util.mybatis3.CommonSelectMapper;
 import org.mybatis.dynamic.sql.util.mybatis3.CommonUpdateMapper;
-
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.util.List;
-import java.util.Map;
-
-import static examples.joins.ItemMasterDynamicSQLSupport.itemMaster;
-import static examples.joins.OrderLineDynamicSQLSupport.orderLine;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mybatis.dynamic.sql.SqlBuilder.*;
 
 class ExistsTest {
 

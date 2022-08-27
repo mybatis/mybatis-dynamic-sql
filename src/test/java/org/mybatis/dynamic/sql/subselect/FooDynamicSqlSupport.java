@@ -15,11 +15,11 @@
  */
 package org.mybatis.dynamic.sql.subselect;
 
-import org.mybatis.dynamic.sql.SqlColumn;
-import org.mybatis.dynamic.sql.SqlTable;
-
 import java.sql.JDBCType;
 import java.util.Date;
+
+import org.mybatis.dynamic.sql.SqlColumn;
+import org.mybatis.dynamic.sql.SqlTable;
 
 public class FooDynamicSqlSupport {
     public static final Foo foo = new Foo();

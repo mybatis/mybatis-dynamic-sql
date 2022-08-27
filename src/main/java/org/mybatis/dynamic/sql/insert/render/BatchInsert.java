@@ -31,7 +31,7 @@ public class BatchInsert<T> {
     }
 
     /**
-     * Returns a list of InsertStatement objects.  This is useful for MyBatis batch support.
+     * Returns a list of InsertStatement objects. This is useful for MyBatis batch support.
      *
      * @return a List of InsertStatements
      */
@@ -48,7 +48,7 @@ public class BatchInsert<T> {
     }
 
     /**
-     * Returns the generated SQL for this batch.  This is useful for Spring JDBC batch support.
+     * Returns the generated SQL for this batch. This is useful for Spring JDBC batch support.
      *
      * @return the generated INSERT statement
      */
