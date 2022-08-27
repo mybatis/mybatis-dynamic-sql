@@ -54,7 +54,7 @@ public class IsGreaterThanOrEqualTo<T> extends AbstractSingleValueCondition<T> {
 
     /**
      * If renderable, apply the mapping to the value and return a new condition with the new value. Else return a
-     *     condition that will not render (this).
+     * condition that will not render (this).
      *
      * @param mapper a mapping function to apply to the value, if renderable
      * @param <R> type of the new condition

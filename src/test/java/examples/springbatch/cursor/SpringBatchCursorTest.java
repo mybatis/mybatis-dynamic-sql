@@ -15,9 +15,9 @@
  */
 package examples.springbatch.cursor;
 
-import static org.mybatis.dynamic.sql.SqlBuilder.*;
 import static examples.springbatch.mapper.PersonDynamicSqlSupport.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mybatis.dynamic.sql.SqlBuilder.*;
 
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -37,7 +37,7 @@ import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import examples.springbatch.mapper.PersonMapper;
 
 @SpringBatchTest
-@SpringJUnitConfig(classes=CursorReaderBatchConfiguration.class)
+@SpringJUnitConfig(classes = CursorReaderBatchConfiguration.class)
 class SpringBatchCursorTest {
 
     @Autowired

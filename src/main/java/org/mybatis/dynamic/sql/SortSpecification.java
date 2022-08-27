@@ -19,7 +19,6 @@ package org.mybatis.dynamic.sql;
  * Defines attributes of columns that are necessary for rendering an order by expression.
  *
  * @author Jeff Butler
- *
  */
 public interface SortSpecification {
     /**

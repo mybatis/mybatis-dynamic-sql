@@ -25,8 +25,10 @@ import org.mybatis.dynamic.sql.BindableColumn;
  *
  * @author Jeff Butler
  *
- * @param <T> The type of the underlying column
- * @param <U> the specific subtype that implements the function
+ * @param <T>
+ *            The type of the underlying column
+ * @param <U>
+ *            the specific subtype that implements the function
  */
 public abstract class AbstractUniTypeFunction<T, U extends AbstractUniTypeFunction<T, U>>
         extends AbstractTypeConvertingFunction<T, T, U> {

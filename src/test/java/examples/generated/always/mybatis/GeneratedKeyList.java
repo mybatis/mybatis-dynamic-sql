@@ -17,7 +17,6 @@ package examples.generated.always.mybatis;
 
 import java.util.ArrayList;
 
-
 public class GeneratedKeyList extends ArrayList<GeneratedKey> {
 
     public GeneratedKeyList(int estimatedCapacity) {

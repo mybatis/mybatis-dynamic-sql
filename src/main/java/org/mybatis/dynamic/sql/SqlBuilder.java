@@ -97,7 +97,9 @@ public interface SqlBuilder {
     /**
      * Renders as select count(distinct column) from table...
      *
-     * @param column the column to count
+     * @param column
+     *            the column to count
+     *
      * @return the next step in the DSL
      */
     static CountDSL.FromGatherer<SelectModel> countDistinctColumn(BasicColumn column) {
@@ -107,7 +109,9 @@ public interface SqlBuilder {
     /**
      * Renders as select count(column) from table...
      *
-     * @param column the column to count
+     * @param column
+     *            the column to count
+     *
      * @return the next step in the DSL
      */
     static CountDSL.FromGatherer<SelectModel> countColumn(BasicColumn column) {
@@ -117,7 +121,9 @@ public interface SqlBuilder {
     /**
      * Renders as select count(*) from table...
      *
-     * @param table the table to count
+     * @param table
+     *            the table to count
+     *
      * @return the next step in the DSL
      */
     static CountDSL<SelectModel> countFrom(SqlTable table) {
@@ -139,8 +145,11 @@ public interface SqlBuilder {
     /**
      * Insert a Batch of records. The model object is structured to support bulk inserts with JDBC batch support.
      *
-     * @param records records to insert
-     * @param <T> the type of record to insert
+     * @param records
+     *            records to insert
+     * @param <T>
+     *            the type of record to insert
+     *
      * @return the next step in the DSL
      */
     @SafeVarargs
@@ -151,8 +160,11 @@ public interface SqlBuilder {
     /**
      * Insert a Batch of records. The model object is structured to support bulk inserts with JDBC batch support.
      *
-     * @param records records to insert
-     * @param <T> the type of record to insert
+     * @param records
+     *            records to insert
+     * @param <T>
+     *            the type of record to insert
+     *
      * @return the next step in the DSL
      */
     static <T> BatchInsertDSL.IntoGatherer<T> insertBatch(Collection<T> records) {
@@ -165,9 +177,11 @@ public interface SqlBuilder {
      * for large bulk inserts as it is possible to exceed the limit of parameter markers in a prepared statement.
      *
      * <p>For large bulk inserts, see {@link SqlBuilder#insertBatch(Object[])}
+     * @param records
+     *            records to insert
+     * @param <T>
+     *            the type of record to insert
      *
-     * @param records records to insert
-     * @param <T> the type of record to insert
      * @return the next step in the DSL
      */
     @SafeVarargs
@@ -181,9 +195,11 @@ public interface SqlBuilder {
      * for large bulk inserts as it is possible to exceed the limit of parameter markers in a prepared statement.
      *
      * <p>For large bulk inserts, see {@link SqlBuilder#insertBatch(Collection)}
+     * @param records
+     *            records to insert
+     * @param <T>
+     *            the type of record to insert
      *
-     * @param records records to insert
-     * @param <T> the type of record to insert
      * @return the next step in the DSL
      */
     static <T> MultiRowInsertDSL.IntoGatherer<T> insertMultiple(Collection<T> records) {

@@ -15,6 +15,23 @@
  */
 package examples.joins;
 
+import static examples.joins.ItemMasterDynamicSQLSupport.itemMaster;
+import static examples.joins.OrderDetailDynamicSQLSupport.orderDetail;
+import static examples.joins.OrderLineDynamicSQLSupport.orderLine;
+import static examples.joins.OrderMasterDynamicSQLSupport.orderMaster;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mybatis.dynamic.sql.SqlBuilder.equalTo;
+import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
+import static org.mybatis.dynamic.sql.SqlBuilder.select;
+import static org.mybatis.dynamic.sql.SqlBuilder.sortColumn;
+
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.ibatis.datasource.unpooled.UnpooledDataSource;
 import org.apache.ibatis.jdbc.ScriptRunner;
 import org.apache.ibatis.mapping.Environment;
@@ -28,23 +45,6 @@ import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.util.mybatis3.CommonSelectMapper;
-
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.util.List;
-import java.util.Map;
-
-import static examples.joins.ItemMasterDynamicSQLSupport.itemMaster;
-import static examples.joins.OrderDetailDynamicSQLSupport.orderDetail;
-import static examples.joins.OrderLineDynamicSQLSupport.orderLine;
-import static examples.joins.OrderMasterDynamicSQLSupport.orderMaster;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mybatis.dynamic.sql.SqlBuilder.equalTo;
-import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
-import static org.mybatis.dynamic.sql.SqlBuilder.select;
-import static org.mybatis.dynamic.sql.SqlBuilder.sortColumn;
 
 class JoinSubQueryTest {
 

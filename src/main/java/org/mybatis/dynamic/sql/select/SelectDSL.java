@@ -39,7 +39,8 @@ import org.mybatis.dynamic.sql.util.ConfigurableStatement;
  *
  * @author Jeff Butler
  *
- * @param <R> the type of model produced by this builder, typically SelectModel
+ * @param <R>
+ *            the type of model produced by this builder, typically SelectModel
  */
 public class SelectDSL<R> implements Buildable<R>, ConfigurableStatement<SelectDSL<R>> {
 

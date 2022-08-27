@@ -27,7 +27,8 @@ package org.mybatis.dynamic.sql.util;
  *
  * @author Jeff Butler
  *
- * @param <R> The type of object created by the visitor
+ * @param <R>
+ *            The type of object created by the visitor
  */
 public interface ColumnMappingVisitor<R> {
     R visit(NullMapping mapping);

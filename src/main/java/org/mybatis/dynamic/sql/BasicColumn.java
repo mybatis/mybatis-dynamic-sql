@@ -25,7 +25,6 @@ import org.mybatis.dynamic.sql.render.TableAliasCalculator;
  * are typically not bound.
  *
  * @author Jeff Butler
- *
  */
 public interface BasicColumn {
 
@@ -39,7 +38,9 @@ public interface BasicColumn {
     /**
      * Returns a new instance of a BasicColumn with the alias set.
      *
-     * @param alias the column alias to set
+     * @param alias
+     *            the column alias to set
+     *
      * @return new instance with alias set
      */
     BasicColumn as(String alias);

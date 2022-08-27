@@ -48,7 +48,6 @@ import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
  * Utility functions for building MyBatis3 mappers.
  *
  * @author Jeff Butler
- *
  */
 public class MyBatis3Utils {
     private MyBatis3Utils() {}

@@ -33,7 +33,9 @@ import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
  *
  * @see GlobalConfiguration
  * @see StatementConfiguration
+ *
  * @since 1.4.1
+ *
  * @author Jeff Butler
  */
 public class NonRenderingWhereClauseException extends DynamicSqlException {

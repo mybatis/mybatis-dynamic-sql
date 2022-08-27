@@ -15,9 +15,9 @@
  */
 package issues.gh324;
 
-import org.junit.jupiter.api.Test;
-
 import static org.assertj.core.api.Assertions.assertThat;
+
+import org.junit.jupiter.api.Test;
 
 class Issue324Test {
     private NameService nameService = new NameService();

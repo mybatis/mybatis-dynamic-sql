@@ -61,7 +61,9 @@ public class WhereModel {
     /**
      * Renders a where clause without table aliases.
      *
-     * @param renderingStrategy rendering strategy
+     * @param renderingStrategy
+     *            rendering strategy
+     *
      * @return rendered where clause
      */
     public WhereClauseProvider render(RenderingStrategy renderingStrategy) {

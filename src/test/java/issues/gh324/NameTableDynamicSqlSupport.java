@@ -15,10 +15,10 @@
  */
 package issues.gh324;
 
+import java.sql.JDBCType;
+
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
-
-import java.sql.JDBCType;
 
 public class NameTableDynamicSqlSupport {
     public static final NameTable nameTable = new NameTable();
@@ -29,6 +29,7 @@ public class NameTableDynamicSqlSupport {
         public NameTable() {
             super("NameTable");
         }
+
         public final SqlColumn<Integer> id = column("id", JDBCType.INTEGER);
         public final SqlColumn<String> name = column("name", JDBCType.VARCHAR);
     }

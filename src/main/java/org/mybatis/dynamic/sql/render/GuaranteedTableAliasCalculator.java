@@ -25,7 +25,6 @@ import org.mybatis.dynamic.sql.SqlTable;
  * This is useful for join rendering when we always want to have an alias for the table.
  *
  * @author Jeff Butler
- *
  */
 public class GuaranteedTableAliasCalculator extends ExplicitTableAliasCalculator {
 

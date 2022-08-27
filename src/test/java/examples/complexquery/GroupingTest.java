@@ -15,21 +15,21 @@
  */
 package examples.complexquery;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mybatis.dynamic.sql.SqlBuilder.and;
+import static org.mybatis.dynamic.sql.SqlBuilder.exists;
+import static org.mybatis.dynamic.sql.SqlBuilder.group;
+import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
+import static org.mybatis.dynamic.sql.SqlBuilder.isGreaterThan;
+import static org.mybatis.dynamic.sql.SqlBuilder.isLessThan;
+import static org.mybatis.dynamic.sql.SqlBuilder.or;
+import static org.mybatis.dynamic.sql.SqlBuilder.select;
+
 import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mybatis.dynamic.sql.SqlBuilder.exists;
-import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
-import static org.mybatis.dynamic.sql.SqlBuilder.and;
-import static org.mybatis.dynamic.sql.SqlBuilder.group;
-import static org.mybatis.dynamic.sql.SqlBuilder.isGreaterThan;
-import static org.mybatis.dynamic.sql.SqlBuilder.isLessThan;
-import static org.mybatis.dynamic.sql.SqlBuilder.or;
-import static org.mybatis.dynamic.sql.SqlBuilder.select;
 
 class GroupingTest {
     private static class Foo extends SqlTable {

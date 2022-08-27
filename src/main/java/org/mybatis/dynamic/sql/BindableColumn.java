@@ -26,8 +26,9 @@ import org.mybatis.dynamic.sql.render.RenderingStrategy;
  *
  * @author Jeff Butler
  *
- * @param <T> - the Java type that corresponds to this column
-*/
+ * @param <T>
+ *            - the Java type that corresponds to this column
+ */
 public interface BindableColumn<T> extends BasicColumn {
 
     /**

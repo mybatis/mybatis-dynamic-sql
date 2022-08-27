@@ -30,7 +30,9 @@ public interface CommonDeleteMapper {
     /**
      * Execute a delete statement.
      *
-     * @param deleteStatement the delete statement
+     * @param deleteStatement
+     *            the delete statement
+     *
      * @return the number of rows affected
      */
     @DeleteProvider(type = SqlProviderAdapter.class, method = "delete")

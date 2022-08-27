@@ -57,7 +57,7 @@ public class IsBetween<T> extends AbstractTwoValueCondition<T> {
 
     /**
      * If renderable, apply the mappings to the values and return a new condition with the new values. Else return a
-     *     condition that will not render (this).
+     * condition that will not render (this).
      *
      * @param mapper1 a mapping function to apply to the first value, if renderable
      * @param mapper2 a mapping function to apply to the second value, if renderable

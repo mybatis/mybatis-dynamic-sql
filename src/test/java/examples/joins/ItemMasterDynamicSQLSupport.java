@@ -16,7 +16,6 @@
 package examples.joins;
 
 import java.sql.JDBCType;
-import java.util.Date;
 
 import org.mybatis.dynamic.sql.AliasableSqlTable;
 import org.mybatis.dynamic.sql.SqlColumn;

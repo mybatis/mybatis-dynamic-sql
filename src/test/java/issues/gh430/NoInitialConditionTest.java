@@ -15,18 +15,18 @@
  */
 package issues.gh430;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
 import static org.mybatis.dynamic.sql.subselect.FooDynamicSqlSupport.*;
-import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.AndOrCriteriaGroup;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 class NoInitialConditionTest {
 

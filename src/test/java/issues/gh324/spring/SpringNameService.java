@@ -15,8 +15,8 @@
  */
 package issues.gh324.spring;
 
-import issues.gh324.NameRecord;
-import issues.gh324.NameTableMapper;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -25,7 +25,8 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
-import java.util.Optional;
+import issues.gh324.NameRecord;
+import issues.gh324.NameTableMapper;
 
 @Service
 public class SpringNameService {

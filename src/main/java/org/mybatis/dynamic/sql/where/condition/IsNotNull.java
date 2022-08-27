@@ -43,13 +43,15 @@ public class IsNotNull<T> extends AbstractNoValueCondition<T> {
     }
 
     /**
-     * If renderable and the supplier returns true, returns this condition. Else returns a condition
-     *     that will not render.
+     * If renderable and the supplier returns true, returns this condition. Else returns a condition that will not
+     * render.
      *
-     * @param booleanSupplier function that specifies whether the condition should render
-     * @param <S> condition type - not used except for compilation compliance
-     * @return this condition if renderable and the supplier returns true, otherwise a condition
-     *     that will not render.
+     * @param booleanSupplier
+     *            function that specifies whether the condition should render
+     * @param <S>
+     *            condition type - not used except for compilation compliance
+     *
+     * @return this condition if renderable and the supplier returns true, otherwise a condition that will not render.
      */
     public <S> IsNotNull<S> filter(BooleanSupplier booleanSupplier) {
         @SuppressWarnings("unchecked")

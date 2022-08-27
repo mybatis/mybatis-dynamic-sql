@@ -42,6 +42,7 @@ public class IsNotIn<T> extends AbstractListValueCondition<T> {
      * Build an empty condition.
      *
      * @return a new empty condition
+     *
      * @deprecated in favor of the statement configuration functions
      */
     @Deprecated
@@ -56,8 +57,11 @@ public class IsNotIn<T> extends AbstractListValueCondition<T> {
     /**
      * Build a new condition with a callback.
      *
-     * @param values values
-     * @param emptyCallback empty callback
+     * @param values
+     *            values
+     * @param emptyCallback
+     *            empty callback
+     *
      * @deprecated in favor of the statement configuration functions
      */
     @Deprecated
@@ -75,8 +79,11 @@ public class IsNotIn<T> extends AbstractListValueCondition<T> {
     /**
      * Build a new instance with a callback.
      *
-     * @param callback a callback function - typically throws an exception to block the statement from executing
+     * @param callback
+     *            a callback function - typically throws an exception to block the statement from executing
+     *
      * @return this condition
+     *
      * @deprecated in favor of the statement configuration functions
      */
     @Deprecated

@@ -27,16 +27,19 @@ import org.mybatis.dynamic.sql.insert.render.MultiRowInsertStatementProvider;
 import org.mybatis.dynamic.sql.util.SqlProviderAdapter;
 
 /**
- * This is a general purpose mapper for executing various types of insert statements.
- * This mapper is appropriate for insert statements that do NOT expect generated keys.
+ * This is a general purpose mapper for executing various types of insert statements. This mapper is appropriate for
+ * insert statements that do NOT expect generated keys.
  *
- * @param <T> the type of record associated with this mapper
+ * @param <T>
+ *            the type of record associated with this mapper
  */
 public interface CommonInsertMapper<T> {
     /**
      * Execute an insert statement with input fields mapped to values in a POJO.
      *
-     * @param insertStatement the insert statement
+     * @param insertStatement
+     *            the insert statement
+     *
      * @return the number of rows affected
      */
     @InsertProvider(type = SqlProviderAdapter.class, method = "insert")
@@ -45,7 +48,9 @@ public interface CommonInsertMapper<T> {
     /**
      * Execute an insert statement with input fields supplied directly.
      *
-     * @param insertStatement the insert statement
+     * @param insertStatement
+     *            the insert statement
+     *
      * @return the number of rows affected
      */
     @InsertProvider(type = SqlProviderAdapter.class, method = "generalInsert")
@@ -54,25 +59,29 @@ public interface CommonInsertMapper<T> {
     /**
      * Execute an insert statement with input fields supplied by a select statement.
      *
-     * @param insertSelectStatement the insert statement
+     * @param insertSelectStatement
+     *            the insert statement
+     *
      * @return the number of rows affected
      */
     @InsertProvider(type = SqlProviderAdapter.class, method = "insertSelect")
     int insertSelect(InsertSelectStatementProvider insertSelectStatement);
 
     /**
-     * Execute an insert statement that inserts multiple rows. The row values are supplied by mapping
-     * to values in a List of POJOs.
+     * Execute an insert statement that inserts multiple rows. The row values are supplied by mapping to values in a
+     * List of POJOs.
      *
-     * @param insertStatement the insert statement
+     * @param insertStatement
+     *            the insert statement
+     *
      * @return the number of rows affected
      */
     @InsertProvider(type = SqlProviderAdapter.class, method = "insertMultiple")
     int insertMultiple(MultiRowInsertStatementProvider<T> insertStatement);
 
     /**
-     * Flush batched insert statements and return details of the current batch.
-     * This is useful when there is no direct access to the @link({@link org.apache.ibatis.session.SqlSession}.
+     * Flush batched insert statements and return details of the current batch. This is useful when there is no direct
+     * access to the @link({@link org.apache.ibatis.session.SqlSession}.
      *
      * @return details about the current batch including update counts, etc.
      */

@@ -15,12 +15,12 @@
  */
 package examples.animal.data;
 
+import java.sql.JDBCType;
+import java.util.Optional;
+
 import org.mybatis.dynamic.sql.BindableColumn;
 import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 import org.mybatis.dynamic.sql.select.function.AbstractTypeConvertingFunction;
-
-import java.sql.JDBCType;
-import java.util.Optional;
 
 public class Length extends AbstractTypeConvertingFunction<Object, Integer, Length> {
     private Length(BindableColumn<Object> column) {
@@ -55,4 +55,3 @@ public class Length extends AbstractTypeConvertingFunction<Object, Integer, Leng
         return new Length(c);
     }
 }
-

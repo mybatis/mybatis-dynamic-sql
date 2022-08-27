@@ -36,7 +36,7 @@ import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import examples.springbatch.mapper.PersonMapper;
 
 @SpringBatchTest
-@SpringJUnitConfig(classes=BulkInsertConfiguration.class)
+@SpringJUnitConfig(classes = BulkInsertConfiguration.class)
 class SpringBatchBulkInsertTest {
 
     @Autowired
