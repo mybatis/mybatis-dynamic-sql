@@ -28,6 +28,7 @@ import examples.kotlin.spring.canonical.PersonDynamicSqlSupport.occupation
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.junit.jupiter.api.Test
+import org.mybatis.dynamic.sql.exception.InvalidSqlException
 import org.mybatis.dynamic.sql.util.Messages
 import org.mybatis.dynamic.sql.util.kotlin.KInvalidSQLException
 import org.mybatis.dynamic.sql.util.kotlin.elements.`as`
@@ -548,14 +549,34 @@ open class CanonicalSpringKotlinTest {
 
     @Test
     fun testInsertSelectNoColumns() {
-        assertThatExceptionOfType(KInvalidSQLException::class.java).isThrownBy {
+        val insertStatement = insertSelect(person) {
+            select(add(id, constant<Int>("100")), firstName, lastName, birthDate, employed, occupation, addressId) {
+                from(person)
+                orderBy(id)
+            }
+        }
+
+        assertThat(insertStatement.insertStatement).isEqualTo(
+            "insert into Person " +
+                    "select (id + 100), first_name, last_name, birth_date, employed, occupation, address_id " +
+                    "from Person " +
+                    "order by id"
+        )
+        val rows = template.insertSelect(insertStatement)
+        assertThat(rows).isEqualTo(6)
+    }
+
+    @Test
+    fun testInsertSelectEmptyColumnList() {
+        assertThatExceptionOfType(InvalidSqlException::class.java).isThrownBy {
             insertSelect(person) {
+                columns()
                 select(add(id, constant<Int>("100")), firstName, lastName, birthDate, employed, occupation, addressId) {
                     from(person)
                     orderBy(id)
                 }
             }
-        }.withMessage(Messages.getString("ERROR.29")) //$NON-NLS-1$
+        }.withMessage(Messages.getString("ERROR.4")) //$NON-NLS-1$
     }
 
     @Test

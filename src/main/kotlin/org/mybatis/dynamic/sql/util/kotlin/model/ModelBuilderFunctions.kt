@@ -79,10 +79,16 @@ fun <T : Any> insertMultiple(rows: Collection<T>, completer: KotlinMultiRowInser
 
 fun insertSelect(table: SqlTable, completer: InsertSelectCompleter): InsertSelectModel =
     with(KotlinInsertSelectSubQueryBuilder().apply(completer)) {
-        SqlBuilder.insertInto(table)
-            .withColumnList(columnList())
-            .withSelectStatement(this)
-            .build()
+        if (columnList == null) {
+            SqlBuilder.insertInto(table)
+                .withSelectStatement(this)
+                .build()
+        } else {
+            SqlBuilder.insertInto(table)
+                .withColumnList(columnList)
+                .withSelectStatement(this)
+                .build()
+        }
     }
 
 @Deprecated("Please switch to the insertBatch statement in the model package")
