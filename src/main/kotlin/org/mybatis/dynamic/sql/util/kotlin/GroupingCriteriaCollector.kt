@@ -25,6 +25,7 @@ import org.mybatis.dynamic.sql.NotCriterion
 import org.mybatis.dynamic.sql.SqlBuilder
 import org.mybatis.dynamic.sql.SqlCriterion
 import org.mybatis.dynamic.sql.VisitableCondition
+import org.mybatis.dynamic.sql.util.Messages
 
 typealias GroupingCriteriaReceiver = GroupingCriteriaCollector.() -> Unit
 
@@ -47,8 +48,7 @@ class GroupingCriteriaCollector {
     internal var initialCriterion: SqlCriterion? = null
         private set(value) {
             if (field != null) {
-                throw KInvalidSQLException("Setting more than one initial criterion is not allowed. " +
-                        "Additional criteria should be added with \"and\" or \"or\" expression")
+                throw KInvalidSQLException(Messages.getString("ERROR.21")) //$NON-NLS-1$
             }
             field = value
         }
@@ -66,7 +66,7 @@ class GroupingCriteriaCollector {
     fun and(criteriaReceiver: GroupingCriteriaReceiver): Unit =
         with(GroupingCriteriaCollector().apply(criteriaReceiver)) {
             this@GroupingCriteriaCollector.subCriteria.add(
-                AndOrCriteriaGroup.Builder().withConnector("and")
+                AndOrCriteriaGroup.Builder().withConnector("and") //$NON-NLS-1$
                     .withInitialCriterion(initialCriterion)
                     .withSubCriteria(subCriteria)
                     .build()
@@ -86,7 +86,7 @@ class GroupingCriteriaCollector {
      */
     fun and(criteria: List<AndOrCriteriaGroup>) {
         this@GroupingCriteriaCollector.subCriteria.add(
-            AndOrCriteriaGroup.Builder().withConnector("and")
+            AndOrCriteriaGroup.Builder().withConnector("and") //$NON-NLS-1$
                 .withSubCriteria(criteria)
                 .build()
         )
@@ -103,7 +103,7 @@ class GroupingCriteriaCollector {
     fun or(criteriaReceiver: GroupingCriteriaReceiver): Unit =
         with(GroupingCriteriaCollector().apply(criteriaReceiver)) {
             this@GroupingCriteriaCollector.subCriteria.add(
-                AndOrCriteriaGroup.Builder().withConnector("or")
+                AndOrCriteriaGroup.Builder().withConnector("or") //$NON-NLS-1$
                     .withInitialCriterion(initialCriterion)
                     .withSubCriteria(subCriteria)
                     .build()
@@ -123,7 +123,7 @@ class GroupingCriteriaCollector {
      */
     fun or(criteria: List<AndOrCriteriaGroup>) {
         this@GroupingCriteriaCollector.subCriteria.add(
-            AndOrCriteriaGroup.Builder().withConnector("or")
+            AndOrCriteriaGroup.Builder().withConnector("or") //$NON-NLS-1$
                 .withSubCriteria(criteria)
                 .build()
         )

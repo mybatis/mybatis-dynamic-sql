@@ -27,6 +27,7 @@ import java.util.stream.Collectors;
 import org.mybatis.dynamic.sql.exception.InvalidSqlException;
 import org.mybatis.dynamic.sql.insert.GeneralInsertModel;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
+import org.mybatis.dynamic.sql.util.Messages;
 
 public class GeneralInsertRenderer {
 
@@ -44,8 +45,7 @@ public class GeneralInsertRenderer {
                 .collect(Collectors.toList());
 
         if (fieldsAndValues.stream().noneMatch(Optional::isPresent)) {
-            throw new InvalidSqlException(
-                    "All optional set phrases were dropped when rendering the general insert statement");
+            throw new InvalidSqlException(Messages.getString("ERROR.9")); //$NON-NLS-1$
         }
 
         return DefaultGeneralInsertStatementProvider.withInsertStatement(calculateInsertStatement(fieldsAndValues))

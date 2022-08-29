@@ -27,6 +27,7 @@ import org.mybatis.dynamic.sql.exception.InvalidSqlException;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.select.render.SelectRenderer;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
+import org.mybatis.dynamic.sql.util.Messages;
 
 public class SelectModel {
     private final List<QueryExpressionModel> queryExpressions;
@@ -36,7 +37,7 @@ public class SelectModel {
     private SelectModel(Builder builder) {
         queryExpressions = Objects.requireNonNull(builder.queryExpressions);
         if (queryExpressions.isEmpty()) {
-            throw new InvalidSqlException("Select statements must have at least one query expression");
+            throw new InvalidSqlException(Messages.getString("ERROR.14")); //$NON-NLS-1$
         }
 
         orderByModel = builder.orderByModel;

@@ -21,6 +21,7 @@ import org.mybatis.dynamic.sql.insert.BatchInsertDSL
 import org.mybatis.dynamic.sql.insert.BatchInsertModel
 import org.mybatis.dynamic.sql.util.AbstractColumnMapping
 import org.mybatis.dynamic.sql.util.Buildable
+import org.mybatis.dynamic.sql.util.Messages
 
 typealias KotlinBatchInsertCompleter<T> = KotlinBatchInsertBuilder<T>.() -> Unit
 
@@ -39,7 +40,7 @@ class KotlinBatchInsertBuilder<T : Any> (private val rows: Collection<T>): Build
 
     override fun build(): BatchInsertModel<T> =
         if (table == null) {
-            throw KInvalidSQLException("Batch Insert Statements Must Contain an \"into\" phrase.")
+            throw KInvalidSQLException(Messages.getString("ERROR.23")) //$NON-NLS-1$
         } else {
             with(BatchInsertDSL.Builder<T>()) {
                 withRecords(rows)

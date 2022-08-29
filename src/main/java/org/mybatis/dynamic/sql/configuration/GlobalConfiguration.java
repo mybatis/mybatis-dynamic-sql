@@ -20,6 +20,7 @@ import java.io.InputStream;
 import java.util.Properties;
 
 import org.mybatis.dynamic.sql.exception.DynamicSqlException;
+import org.mybatis.dynamic.sql.util.Messages;
 
 public class GlobalConfiguration {
     public static final String CONFIGURATION_FILE_PROPERTY = "mybatis-dynamic-sql.configurationFile"; //$NON-NLS-1$
@@ -57,7 +58,7 @@ public class GlobalConfiguration {
         try {
             properties.load(inputStream);
         } catch (IOException e) {
-            throw new DynamicSqlException("IOException reading property file \"" + propertyFile + "\"", e);
+            throw new DynamicSqlException(Messages.getString("ERROR.3", propertyFile), e); //$NON-NLS-1$
         }
     }
 

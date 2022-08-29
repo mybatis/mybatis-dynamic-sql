@@ -24,11 +24,11 @@ import examples.kotlin.spring.canonical.PersonDynamicSqlSupport.lastName
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.junit.jupiter.api.Test
+import org.mybatis.dynamic.sql.util.Messages
 import org.mybatis.dynamic.sql.util.kotlin.KInvalidSQLException
 import org.mybatis.dynamic.sql.util.kotlin.elements.isLike
 import org.mybatis.dynamic.sql.util.kotlin.elements.stringConstant
 import org.mybatis.dynamic.sql.util.kotlin.elements.upper
-import org.mybatis.dynamic.sql.util.kotlin.mybatis3.count
 import org.mybatis.dynamic.sql.util.kotlin.spring.countFrom
 import org.mybatis.dynamic.sql.util.kotlin.spring.delete
 import org.mybatis.dynamic.sql.util.kotlin.spring.deleteFrom
@@ -1008,7 +1008,7 @@ open class InfixElementsTest {
                     firstName isEqualTo "Betty"
                 }
             }
-        }
+        }.withMessage(Messages.getString("ERROR.21")) //$NON-NLS-1$
     }
 
     @Test

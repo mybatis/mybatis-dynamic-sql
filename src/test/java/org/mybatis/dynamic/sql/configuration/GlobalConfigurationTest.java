@@ -23,6 +23,7 @@ import java.io.InputStream;
 
 import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.exception.DynamicSqlException;
+import org.mybatis.dynamic.sql.util.Messages;
 
 class GlobalConfigurationTest {
     @Test
@@ -61,6 +62,7 @@ class GlobalConfigurationTest {
 
         assertThatExceptionOfType(DynamicSqlException.class)
                 .isThrownBy(() -> configuration.loadProperties(inputStream, "empty.properties"))
-                .withMessage("IOException reading property file \"empty.properties\"");
+                .withMessage(Messages.getString("ERROR.3", "empty.properties"))
+                .withCauseInstanceOf(IOException.class);
     }
 }

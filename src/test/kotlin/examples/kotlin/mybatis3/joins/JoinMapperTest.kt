@@ -31,6 +31,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.assertj.core.api.Assertions.entry
 import org.junit.jupiter.api.Test
+import org.mybatis.dynamic.sql.util.Messages
 import org.mybatis.dynamic.sql.util.kotlin.KInvalidSQLException
 import org.mybatis.dynamic.sql.util.kotlin.elements.equalTo
 import org.mybatis.dynamic.sql.util.kotlin.elements.invoke
@@ -772,7 +773,7 @@ class JoinMapperTest {
                 }
                 where { user2.userId isEqualTo 4 }
             }
-        }.withMessage("You must specify an \"on\" condition in a join")
+        }.withMessage(Messages.getString("ERROR.22")) //$NON-NLS-1$
     }
 
     @Test

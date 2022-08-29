@@ -17,6 +17,7 @@ package org.mybatis.dynamic.sql.exception;
 
 import org.mybatis.dynamic.sql.configuration.GlobalConfiguration;
 import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
+import org.mybatis.dynamic.sql.util.Messages;
 
 /**
  * This exception is thrown when the where clause in a statement will not render.
@@ -39,7 +40,9 @@ import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
  * @author Jeff Butler
  */
 public class NonRenderingWhereClauseException extends DynamicSqlException {
+    private static final long serialVersionUID = 6619119078542625135L;
+
     public NonRenderingWhereClauseException() {
-        super("A where clause was specified, but failed to render."); //$NON-NLS-1$
+        super(Messages.getString("ERROR.2")); //$NON-NLS-1$
     }
 }

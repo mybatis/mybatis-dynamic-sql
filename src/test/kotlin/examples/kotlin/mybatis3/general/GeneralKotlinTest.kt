@@ -41,6 +41,7 @@ import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.junit.jupiter.api.Test
+import org.mybatis.dynamic.sql.util.Messages
 import org.mybatis.dynamic.sql.util.kotlin.KInvalidSQLException
 import org.mybatis.dynamic.sql.util.kotlin.elements.`as`
 import org.mybatis.dynamic.sql.util.kotlin.elements.count
@@ -670,7 +671,7 @@ class GeneralKotlinTest {
                 orderBy(id)
                 limit(3)
             }
-        }.withMessage("You must specify a \"from\" clause before any other clauses in a select statement")
+        }.withMessage(Messages.getString("ERROR.27")) //$NON-NLS-1$
     }
 
     @Test
@@ -686,7 +687,7 @@ class GeneralKotlinTest {
                     }
                 }
             }
-        }.withMessage("You must specify a \"from\" clause before any other clauses in a count statement")
+        }.withMessage(Messages.getString("ERROR.24")) //$NON-NLS-1$
     }
 
     @Test

@@ -21,6 +21,7 @@ import org.mybatis.dynamic.sql.insert.MultiRowInsertDSL
 import org.mybatis.dynamic.sql.insert.MultiRowInsertModel
 import org.mybatis.dynamic.sql.util.AbstractColumnMapping
 import org.mybatis.dynamic.sql.util.Buildable
+import org.mybatis.dynamic.sql.util.Messages
 
 typealias KotlinMultiRowInsertCompleter<T> = KotlinMultiRowInsertBuilder<T>.() -> Unit
 
@@ -39,7 +40,7 @@ class KotlinMultiRowInsertBuilder<T : Any> (private val rows: Collection<T>): Bu
 
     override fun build(): MultiRowInsertModel<T> =
         if (table == null) {
-            throw KInvalidSQLException("Multi Row Insert Statements Must Contain an \"into\" phrase.")
+            throw KInvalidSQLException(Messages.getString("ERROR.26")) //$NON-NLS-1$
         } else {
             with(MultiRowInsertDSL.Builder<T>()) {
                 withRecords(rows)

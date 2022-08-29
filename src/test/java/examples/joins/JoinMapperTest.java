@@ -47,6 +47,7 @@ import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.QueryExpressionDSL;
 import org.mybatis.dynamic.sql.select.SelectModel;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
+import org.mybatis.dynamic.sql.util.Messages;
 import org.mybatis.dynamic.sql.util.mybatis3.CommonSelectMapper;
 
 class JoinMapperTest {
@@ -956,7 +957,7 @@ class JoinMapperTest {
                 .from(user, "u1");
 
         assertThatExceptionOfType(DuplicateTableAliasException.class).isThrownBy(() -> dsl.join(user, "u2"))
-                .withMessage("Table \"User\" with requested alias \"u2\" is already aliased in this query with alias \"u1\". Attempting to re-alias a table in the same query is not supported.");
+                .withMessage(Messages.getString("ERROR.1", user.tableNameAtRuntime(), "u2", "u1"));
     }
 
     @Test

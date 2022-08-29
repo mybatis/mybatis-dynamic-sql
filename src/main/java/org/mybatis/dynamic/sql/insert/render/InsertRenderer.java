@@ -25,6 +25,7 @@ import java.util.stream.Collectors;
 import org.mybatis.dynamic.sql.exception.InvalidSqlException;
 import org.mybatis.dynamic.sql.insert.InsertModel;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
+import org.mybatis.dynamic.sql.util.Messages;
 
 public class InsertRenderer<T> {
 
@@ -43,8 +44,7 @@ public class InsertRenderer<T> {
                 .collect(Collectors.toList());
 
         if (fieldsAndValues.stream().noneMatch(Optional::isPresent)) {
-            throw new InvalidSqlException(
-                    "All optional column mappings were dropped when rendering the insert statement");
+            throw new InvalidSqlException(Messages.getString("ERROR.10")); //$NON-NLS-1$
         }
 
         return DefaultInsertStatementProvider.withRow(model.row())

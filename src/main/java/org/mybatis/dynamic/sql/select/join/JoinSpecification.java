@@ -23,6 +23,7 @@ import java.util.stream.Stream;
 
 import org.mybatis.dynamic.sql.TableExpression;
 import org.mybatis.dynamic.sql.exception.InvalidSqlException;
+import org.mybatis.dynamic.sql.util.Messages;
 
 public class JoinSpecification {
 
@@ -36,7 +37,7 @@ public class JoinSpecification {
         joinType = Objects.requireNonNull(builder.joinType);
 
         if (joinCriteria.isEmpty()) {
-            throw new InvalidSqlException("Join specifications must have at least one join criterion");
+            throw new InvalidSqlException(Messages.getString("ERROR.16")); //$NON-NLS-1$
         }
     }
 

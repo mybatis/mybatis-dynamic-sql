@@ -15,6 +15,7 @@
  */
 package org.mybatis.dynamic.sql;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mybatis.dynamic.sql.SqlBuilder.insert;
 import static org.mybatis.dynamic.sql.SqlBuilder.insertInto;
@@ -40,6 +41,7 @@ import org.mybatis.dynamic.sql.select.join.JoinModel;
 import org.mybatis.dynamic.sql.select.join.JoinSpecification;
 import org.mybatis.dynamic.sql.select.join.JoinType;
 import org.mybatis.dynamic.sql.update.UpdateModel;
+import org.mybatis.dynamic.sql.util.Messages;
 
 class InvalidSQLTest {
 
@@ -52,7 +54,7 @@ class InvalidSQLTest {
                 .withTable(person);
 
         assertThatExceptionOfType(InvalidSqlException.class).isThrownBy(builder::build)
-                .withMessage("General insert statements must have at least one column mapping");
+                .withMessage(Messages.getString("ERROR.6"));
     }
 
     @Test
@@ -63,17 +65,17 @@ class InvalidSQLTest {
 
         assertThatExceptionOfType(InvalidSqlException.class)
                 .isThrownBy(() -> model.render(RenderingStrategies.SPRING_NAMED_PARAMETER))
-                .withMessage("All optional set phrases were dropped when rendering the general insert statement");
+                .withMessage(Messages.getString("ERROR.9"));
     }
 
     @Test
     void testInvalidInsertStatement() {
-        InsertModel.Builder<String> builder = new InsertModel.Builder<String>()
+        InsertModel.Builder<TestRow> builder = new InsertModel.Builder<TestRow>()
                 .withTable(person)
-                .withRow("fred");
+                .withRow(new TestRow());
 
         assertThatExceptionOfType(InvalidSqlException.class).isThrownBy(builder::build)
-                .withMessage("Insert statements must have at least one column mapping");
+                .withMessage(Messages.getString("ERROR.7"));
     }
 
     @Test
@@ -87,58 +89,58 @@ class InvalidSQLTest {
 
         assertThatExceptionOfType(InvalidSqlException.class)
                 .isThrownBy(() -> model.render(RenderingStrategies.SPRING_NAMED_PARAMETER))
-                .withMessage("All optional column mappings were dropped when rendering the insert statement");
+                .withMessage(Messages.getString("ERROR.10"));
     }
 
     @Test
     void testInvalidMultipleInsertStatementNoRecords() {
-        MultiRowInsertModel.Builder<String> builder = new MultiRowInsertModel.Builder<String>()
+        MultiRowInsertModel.Builder<TestRow> builder = new MultiRowInsertModel.Builder<TestRow>()
                 .withTable(person);
 
         assertThatExceptionOfType(InvalidSqlException.class).isThrownBy(builder::build)
-                .withMessage("Multi row insert statements must have at least one column mapping");
+                .withMessage(Messages.getString("ERROR.20"));
     }
 
     @Test
     void testInvalidMultipleInsertStatementNoMappings() {
-        List<String> records = new ArrayList<>();
-        records.add("fred");
+        List<TestRow> records = new ArrayList<>();
+        records.add(new TestRow());
 
-        MultiRowInsertModel.Builder<String> builder = new MultiRowInsertModel.Builder<String>()
+        MultiRowInsertModel.Builder<TestRow> builder = new MultiRowInsertModel.Builder<TestRow>()
                 .withRecords(records)
                 .withTable(person);
 
         assertThatExceptionOfType(InvalidSqlException.class).isThrownBy(builder::build)
-                .withMessage("Multi row insert statements must have at least one column mapping");
+                .withMessage(Messages.getString("ERROR.8"));
     }
 
     @Test
     void testInvalidBatchInsertStatementNoRecords() {
-        BatchInsertModel.Builder<String> builder = new BatchInsertModel.Builder<String>()
+        BatchInsertModel.Builder<TestRow> builder = new BatchInsertModel.Builder<TestRow>()
                 .withTable(person);
 
         assertThatExceptionOfType(InvalidSqlException.class).isThrownBy(builder::build)
-                .withMessage("Batch insert statements must have at least one column mapping");
+                .withMessage(Messages.getString("ERROR.19"));
     }
 
     @Test
     void testInvalidBatchInsertStatementNoMappings() {
-        List<String> records = new ArrayList<>();
-        records.add("fred");
+        List<TestRow> records = new ArrayList<>();
+        records.add(new TestRow());
 
-        BatchInsertModel.Builder<String> builder = new BatchInsertModel.Builder<String>()
+        BatchInsertModel.Builder<TestRow> builder = new BatchInsertModel.Builder<TestRow>()
                 .withRecords(records)
                 .withTable(person);
 
         assertThatExceptionOfType(InvalidSqlException.class).isThrownBy(builder::build)
-                .withMessage("Batch insert statements must have at least one column mapping");
+                .withMessage(Messages.getString("ERROR.5"));
     }
 
     @Test
     void testInvalidEmptyInsertColumnList() {
         List<SqlColumn<?>> list = Collections.emptyList();
         assertThatExceptionOfType(InvalidSqlException.class).isThrownBy(() -> InsertColumnListModel.of(list))
-                .withMessage("Insert select statements require at least one column in the column list");
+                .withMessage(Messages.getString("ERROR.4"));
     }
 
     @Test
@@ -151,7 +153,7 @@ class InvalidSQLTest {
         SelectModel.Builder builder = new SelectModel.Builder();
 
         assertThatExceptionOfType(InvalidSqlException.class).isThrownBy(builder::build)
-                .withMessage("Select statements must have at least one query expression");
+                .withMessage(Messages.getString("ERROR.14"));
     }
 
     @Test
@@ -160,14 +162,14 @@ class InvalidSQLTest {
                 .withTable(person);
 
         assertThatExceptionOfType(InvalidSqlException.class).isThrownBy(builder::build)
-                .withMessage("Query expressions must have at least one column in the select list");
+                .withMessage(Messages.getString("ERROR.13"));
     }
 
     @Test
     void testInvalidSelectStatementEmptyJoinModel() {
         List<JoinSpecification> list = Collections.emptyList();
         assertThatExceptionOfType(InvalidSqlException.class).isThrownBy(() -> JoinModel.of(list))
-                .withMessage("Joins must have at least one join specification");
+                .withMessage(Messages.getString("ERROR.15"));
     }
 
     @Test
@@ -182,20 +184,20 @@ class InvalidSQLTest {
                 .withJoinType(JoinType.LEFT);
 
         assertThatExceptionOfType(InvalidSqlException.class).isThrownBy(builder::build)
-                .withMessage("Join specifications must have at least one join criterion");
+                .withMessage(Messages.getString("ERROR.16"));
     }
     @Test
     void testInvalidSelectStatementWithEmptyOrderByList() {
         List<SortSpecification> list = Collections.emptyList();
         assertThatExceptionOfType(InvalidSqlException.class).isThrownBy(() -> OrderByModel.of(list))
-                .withMessage("Order by expressions must have at least one column");
+                .withMessage(Messages.getString("ERROR.12"));
     }
 
     @Test
     void testInvalidSelectStatementWithEmptyGroupByList() {
         List<BasicColumn> list = Collections.emptyList();
         assertThatExceptionOfType(InvalidSqlException.class).isThrownBy(() -> GroupByModel.of(list))
-                .withMessage("Group by expressions must have at least one column");
+                .withMessage(Messages.getString("ERROR.11"));
     }
 
     @Test
@@ -204,7 +206,7 @@ class InvalidSQLTest {
                 .withTable(person);
 
         assertThatExceptionOfType(InvalidSqlException.class).isThrownBy(builder::build)
-                .withMessage("Update statements must have at least one set phrase");
+                .withMessage(Messages.getString("ERROR.17"));
     }
 
     @Test
@@ -215,7 +217,22 @@ class InvalidSQLTest {
 
         assertThatExceptionOfType(InvalidSqlException.class)
                 .isThrownBy(() -> model.render(RenderingStrategies.SPRING_NAMED_PARAMETER))
-                .withMessage("All optional set phrases were dropped when rendering the update statement");
+                .withMessage(Messages.getString("ERROR.18"));
+    }
+
+    @Test
+    void testMissingMessage1() {
+        assertThat(Messages.getString("MISSING_MESSAGE")).isEqualTo("!MISSING_MESSAGE!");
+    }
+
+    @Test
+    void testMissingMessage2() {
+        assertThat(Messages.getString("MISSING_MESSAGE", "s1")).isEqualTo("!MISSING_MESSAGE!");
+    }
+
+    @Test
+    void testMissingMessage3() {
+        assertThat(Messages.getString("MISSING_MESSAGE", "s1", "s2", "s3")).isEqualTo("!MISSING_MESSAGE!");
     }
 
     static class TestRow {

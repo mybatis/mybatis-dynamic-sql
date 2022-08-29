@@ -19,6 +19,7 @@ import org.mybatis.dynamic.sql.BasicColumn
 import org.mybatis.dynamic.sql.SqlBuilder
 import org.mybatis.dynamic.sql.select.join.JoinCondition
 import org.mybatis.dynamic.sql.select.join.JoinCriterion
+import org.mybatis.dynamic.sql.util.Messages
 
 typealias JoinReceiver = JoinCollector.() -> Unit
 
@@ -28,11 +29,11 @@ class JoinCollector {
     internal val andJoinCriteria = mutableListOf<JoinCriterion>()
 
     internal fun onJoinCriterion() : JoinCriterion =
-        onJoinCriterion?: throw KInvalidSQLException("You must specify an \"on\" condition in a join")
+        onJoinCriterion?: throw KInvalidSQLException(Messages.getString("ERROR.22")) //$NON-NLS-1$
 
     fun on(leftColumn: BasicColumn): RightColumnCollector = RightColumnCollector {
         onJoinCriterion = JoinCriterion.Builder()
-            .withConnector("on")
+            .withConnector("on") //$NON-NLS-1$
             .withJoinColumn(leftColumn)
             .withJoinCondition(it)
             .build()
@@ -41,7 +42,7 @@ class JoinCollector {
     fun and(leftColumn: BasicColumn): RightColumnCollector = RightColumnCollector {
         andJoinCriteria.add(
             JoinCriterion.Builder()
-                .withConnector("and")
+                .withConnector("and") //$NON-NLS-1$
                 .withJoinColumn(leftColumn)
                 .withJoinCondition(it)
                 .build()
@@ -51,7 +52,7 @@ class JoinCollector {
     @Deprecated("Please use: on(leftColumn) equalTo rightColumn")
     fun on(column: BasicColumn, condition: JoinCondition) {
         onJoinCriterion = JoinCriterion.Builder()
-            .withConnector("on")
+            .withConnector("on") //$NON-NLS-1$
             .withJoinColumn(column)
             .withJoinCondition(condition)
             .build()
@@ -61,7 +62,7 @@ class JoinCollector {
     fun and(column: BasicColumn, condition: JoinCondition) {
         andJoinCriteria.add(
             JoinCriterion.Builder()
-                .withConnector("and")
+                .withConnector("and") //$NON-NLS-1$
                 .withJoinColumn(column)
                 .withJoinCondition(condition)
                 .build()

@@ -36,20 +36,20 @@ class CriteriaCollector {
         condition: VisitableCondition<T>,
         criteriaReceiver: CriteriaReceiver = {}
     ): Unit =
-        addCriteriaGroup("and", buildCriterion(column, condition), criteriaReceiver)
+        addCriteriaGroup("and", buildCriterion(column, condition), criteriaReceiver) //$NON-NLS-1$
 
     fun and(existsPredicate: ExistsPredicate, criteriaReceiver: CriteriaReceiver = {}): Unit =
-        addCriteriaGroup("and", buildCriterion(existsPredicate), criteriaReceiver)
+        addCriteriaGroup("and", buildCriterion(existsPredicate), criteriaReceiver) //$NON-NLS-1$
 
     fun <T> or(
         column: BindableColumn<T>,
         condition: VisitableCondition<T>,
         criteriaReceiver: CriteriaReceiver = {}
     ): Unit =
-        addCriteriaGroup("or", buildCriterion(column, condition), criteriaReceiver)
+        addCriteriaGroup("or", buildCriterion(column, condition), criteriaReceiver) //$NON-NLS-1$
 
     fun or(existsPredicate: ExistsPredicate, criteriaReceiver: CriteriaReceiver = {}): Unit =
-        addCriteriaGroup("or", buildCriterion(existsPredicate), criteriaReceiver)
+        addCriteriaGroup("or", buildCriterion(existsPredicate), criteriaReceiver) //$NON-NLS-1$
 
     private fun <T> buildCriterion(
         column: BindableColumn<T>,
