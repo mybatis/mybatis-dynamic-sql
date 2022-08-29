@@ -32,6 +32,7 @@ import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 import org.mybatis.dynamic.sql.update.UpdateModel;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
+import org.mybatis.dynamic.sql.util.Messages;
 import org.mybatis.dynamic.sql.where.WhereModel;
 import org.mybatis.dynamic.sql.where.render.WhereClauseProvider;
 import org.mybatis.dynamic.sql.where.render.WhereRenderer;
@@ -58,7 +59,7 @@ public class UpdateRenderer {
                 .collect(Collectors.toList());
 
         if (fragmentsAndParameters.stream().noneMatch(Optional::isPresent)) {
-            throw new InvalidSqlException("All optional set phrases were dropped when rendering the update statement");
+            throw new InvalidSqlException(Messages.getString("ERROR.18")); //$NON-NLS-1$
         }
 
         return updateModel.whereModel()

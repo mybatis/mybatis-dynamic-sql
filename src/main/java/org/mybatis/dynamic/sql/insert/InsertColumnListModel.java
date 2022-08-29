@@ -23,6 +23,7 @@ import java.util.stream.Stream;
 
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.exception.InvalidSqlException;
+import org.mybatis.dynamic.sql.util.Messages;
 
 public class InsertColumnListModel {
     private final List<SqlColumn<?>> columns = new ArrayList<>();
@@ -30,7 +31,7 @@ public class InsertColumnListModel {
     private InsertColumnListModel(List<SqlColumn<?>> columns) {
         Objects.requireNonNull(columns);
         if (columns.isEmpty()) {
-            throw new InvalidSqlException("Insert select statements require at least one column in the column list");
+            throw new InvalidSqlException(Messages.getString("ERROR.4")); //$NON-NLS-1$
         }
 
         this.columns.addAll(columns);

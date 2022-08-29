@@ -20,6 +20,7 @@ import org.mybatis.dynamic.sql.SqlBuilder
 import org.mybatis.dynamic.sql.SqlColumn
 import org.mybatis.dynamic.sql.select.SelectModel
 import org.mybatis.dynamic.sql.util.Buildable
+import org.mybatis.dynamic.sql.util.Messages
 import java.lang.NullPointerException
 
 @MyBatisDslMarker
@@ -44,7 +45,7 @@ sealed class KotlinBaseSubQueryBuilder : Buildable<SelectModel> {
         try {
             selectBuilder!!.build()
         } catch (e: NullPointerException) {
-            throw KInvalidSQLException("You must specify a select statement in a sub query")
+            throw KInvalidSQLException(Messages.getString("ERROR.28")) //$NON-NLS-1$
         }
 }
 
@@ -64,7 +65,7 @@ class KotlinInsertSelectSubQueryBuilder : KotlinBaseSubQueryBuilder() {
     private var columnList: List<SqlColumn<*>>? = null
 
     internal fun columnList(): List<SqlColumn<*>> =
-        columnList?: throw KInvalidSQLException("You must specify a column list in an insert select statement")
+        columnList?: throw KInvalidSQLException(Messages.getString("ERROR.29")) //$NON-NLS-1$
 
     fun columns(vararg columnList: SqlColumn<*>): Unit = columns(columnList.asList())
 

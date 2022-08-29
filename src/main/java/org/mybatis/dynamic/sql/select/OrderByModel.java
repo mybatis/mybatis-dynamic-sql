@@ -24,6 +24,7 @@ import java.util.stream.Stream;
 
 import org.mybatis.dynamic.sql.SortSpecification;
 import org.mybatis.dynamic.sql.exception.InvalidSqlException;
+import org.mybatis.dynamic.sql.util.Messages;
 
 public class OrderByModel {
     private final List<SortSpecification> columns = new ArrayList<>();
@@ -31,7 +32,7 @@ public class OrderByModel {
     private OrderByModel(Collection<SortSpecification> columns) {
         Objects.requireNonNull(columns);
         if (columns.isEmpty()) {
-            throw new InvalidSqlException("Order by expressions must have at least one column");
+            throw new InvalidSqlException(Messages.getString("ERROR.12")); //$NON-NLS-1$
         }
         this.columns.addAll(columns);
     }

@@ -22,13 +22,17 @@ import org.mybatis.dynamic.sql.exception.InvalidSqlException;
 import org.mybatis.dynamic.sql.insert.render.BatchInsert;
 import org.mybatis.dynamic.sql.insert.render.BatchInsertRenderer;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
+import org.mybatis.dynamic.sql.util.Messages;
 
 public class BatchInsertModel<T> extends AbstractMultiRowInsertModel<T> {
 
     private BatchInsertModel(Builder<T> builder) {
         super(builder);
+        if (records().isEmpty()) {
+            throw new InvalidSqlException(Messages.getString("ERROR.19")); //$NON-NLS-1$
+        }
         if (columnMappings.isEmpty()) {
-            throw new InvalidSqlException("Batch insert statements must have at least one column mapping");
+            throw new InvalidSqlException(Messages.getString("ERROR.5")); //$NON-NLS-1$
         }
     }
 

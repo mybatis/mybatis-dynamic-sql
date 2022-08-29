@@ -28,6 +28,7 @@ import examples.kotlin.spring.canonical.PersonDynamicSqlSupport.occupation
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.junit.jupiter.api.Test
+import org.mybatis.dynamic.sql.util.Messages
 import org.mybatis.dynamic.sql.util.kotlin.KInvalidSQLException
 import org.mybatis.dynamic.sql.util.kotlin.elements.`as`
 import org.mybatis.dynamic.sql.util.kotlin.elements.add
@@ -554,7 +555,7 @@ open class CanonicalSpringKotlinTest {
                     orderBy(id)
                 }
             }
-        }.withMessage("You must specify a column list in an insert select statement")
+        }.withMessage(Messages.getString("ERROR.29")) //$NON-NLS-1$
     }
 
     @Test
@@ -563,7 +564,7 @@ open class CanonicalSpringKotlinTest {
             insertSelect(person) {
                 columns(id, firstName, lastName, birthDate, employed, occupation, addressId)
             }
-        }.withMessage("You must specify a select statement in a sub query")
+        }.withMessage(Messages.getString("ERROR.28")) //$NON-NLS-1$
     }
 
     @Test
@@ -575,7 +576,7 @@ open class CanonicalSpringKotlinTest {
             insertBatch(listOf(record1, record2)) {
                 map(person.firstName) toProperty "firstName"
             }
-        }.withMessage("Batch Insert Statements Must Contain an \"into\" phrase.")
+        }.withMessage(Messages.getString("ERROR.23")) //$NON-NLS-1$
     }
 
     @Test
@@ -586,7 +587,7 @@ open class CanonicalSpringKotlinTest {
             insert(record) {
                 map(person.firstName) toProperty "firstName"
             }
-        }.withMessage("Insert Statements Must Contain an \"into\" phrase.")
+        }.withMessage(Messages.getString("ERROR.25")) //$NON-NLS-1$
     }
 
     @Test
@@ -598,7 +599,7 @@ open class CanonicalSpringKotlinTest {
             insertMultiple(listOf(record1, record2)) {
                 map(person.firstName) toProperty "firstName"
             }
-        }.withMessage("Multi Row Insert Statements Must Contain an \"into\" phrase.")
+        }.withMessage(Messages.getString("ERROR.26")) //$NON-NLS-1$
     }
 
     @Test

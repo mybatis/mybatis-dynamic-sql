@@ -18,6 +18,7 @@ package org.mybatis.dynamic.sql.exception;
 import java.util.Objects;
 
 import org.mybatis.dynamic.sql.SqlTable;
+import org.mybatis.dynamic.sql.util.Messages;
 
 /**
  * This exception is thrown when a query is built that attempts to specify more than one
@@ -33,6 +34,8 @@ import org.mybatis.dynamic.sql.SqlTable;
  */
 public class DuplicateTableAliasException extends DynamicSqlException {
 
+    private static final long serialVersionUID = -2631664872557787391L;
+
     public DuplicateTableAliasException(SqlTable table, String newAlias, String existingAlias) {
         super(generateMessage(Objects.requireNonNull(table),
                 Objects.requireNonNull(newAlias),
@@ -40,9 +43,6 @@ public class DuplicateTableAliasException extends DynamicSqlException {
     }
 
     private static String generateMessage(SqlTable table, String newAlias, String existingAlias) {
-        return "Table \"" + table.tableNameAtRuntime() //$NON-NLS-1$
-                + "\" with requested alias \"" + newAlias //$NON-NLS-1$
-                + "\" is already aliased in this query with alias \"" + existingAlias //$NON-NLS-1$
-                + "\". Attempting to re-alias a table in the same query is not supported."; //$NON-NLS-1$
+        return Messages.getString("ERROR.1", table.tableNameAtRuntime(), newAlias, existingAlias); //$NON-NLS-1$
     }
 }

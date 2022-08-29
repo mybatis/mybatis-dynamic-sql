@@ -29,6 +29,7 @@ import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.update.render.UpdateRenderer;
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
 import org.mybatis.dynamic.sql.util.AbstractColumnMapping;
+import org.mybatis.dynamic.sql.util.Messages;
 import org.mybatis.dynamic.sql.where.WhereModel;
 
 public class UpdateModel {
@@ -44,7 +45,7 @@ public class UpdateModel {
         tableAlias = builder.tableAlias;
 
         if (columnMappings.isEmpty()) {
-            throw new InvalidSqlException("Update statements must have at least one set phrase");
+            throw new InvalidSqlException(Messages.getString("ERROR.17")); //$NON-NLS-1$
         }
     }
 

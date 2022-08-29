@@ -24,6 +24,7 @@ import java.util.stream.Stream;
 
 import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.exception.InvalidSqlException;
+import org.mybatis.dynamic.sql.util.Messages;
 
 public class GroupByModel {
     private final List<BasicColumn> columns = new ArrayList<>();
@@ -31,7 +32,7 @@ public class GroupByModel {
     private GroupByModel(Collection<BasicColumn> columns) {
         Objects.requireNonNull(columns);
         if (columns.isEmpty()) {
-            throw new InvalidSqlException("Group by expressions must have at least one column");
+            throw new InvalidSqlException(Messages.getString("ERROR.11")); //$NON-NLS-1$
         }
         this.columns.addAll(columns);
     }

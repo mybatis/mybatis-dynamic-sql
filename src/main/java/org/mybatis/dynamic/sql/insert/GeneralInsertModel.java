@@ -28,6 +28,7 @@ import org.mybatis.dynamic.sql.insert.render.GeneralInsertRenderer;
 import org.mybatis.dynamic.sql.insert.render.GeneralInsertStatementProvider;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.util.AbstractColumnMapping;
+import org.mybatis.dynamic.sql.util.Messages;
 
 public class GeneralInsertModel {
 
@@ -37,7 +38,7 @@ public class GeneralInsertModel {
     private GeneralInsertModel(Builder builder) {
         table = Objects.requireNonNull(builder.table);
         if (builder.insertMappings.isEmpty()) {
-            throw new InvalidSqlException("General insert statements must have at least one column mapping");
+            throw new InvalidSqlException(Messages.getString("ERROR.6")); //$NON-NLS-1$
         }
         insertMappings = builder.insertMappings;
     }

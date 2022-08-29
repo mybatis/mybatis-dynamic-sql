@@ -28,6 +28,7 @@ import org.mybatis.dynamic.sql.insert.render.InsertRenderer;
 import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.util.AbstractColumnMapping;
+import org.mybatis.dynamic.sql.util.Messages;
 
 public class InsertModel<T> {
     private final SqlTable table;
@@ -39,7 +40,7 @@ public class InsertModel<T> {
         row = Objects.requireNonNull(builder.row);
         columnMappings = Objects.requireNonNull(builder.columnMappings);
         if (columnMappings.isEmpty()) {
-            throw new InvalidSqlException("Insert statements must have at least one column mapping"); // $NON-NLS-1$
+            throw new InvalidSqlException(Messages.getString("ERROR.7")); //$NON-NLS-1$
         }
     }
 

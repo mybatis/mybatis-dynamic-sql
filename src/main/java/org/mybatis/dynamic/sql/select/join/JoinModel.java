@@ -23,6 +23,7 @@ import java.util.stream.Stream;
 
 import org.mybatis.dynamic.sql.TableExpression;
 import org.mybatis.dynamic.sql.exception.InvalidSqlException;
+import org.mybatis.dynamic.sql.util.Messages;
 
 public class JoinModel {
     private final List<JoinSpecification> joinSpecifications = new ArrayList<>();
@@ -30,7 +31,7 @@ public class JoinModel {
     private JoinModel(List<JoinSpecification> joinSpecifications) {
         Objects.requireNonNull(joinSpecifications);
         if (joinSpecifications.isEmpty()) {
-            throw new InvalidSqlException("Joins must have at least one join specification");
+            throw new InvalidSqlException(Messages.getString("ERROR.15")); //$NON-NLS-1$
         }
 
         this.joinSpecifications.addAll(joinSpecifications);
