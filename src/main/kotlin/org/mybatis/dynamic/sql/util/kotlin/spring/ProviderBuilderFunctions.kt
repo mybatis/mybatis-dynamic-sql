@@ -83,8 +83,12 @@ fun <T : Any> insertMultiple(
 ): MultiRowInsertStatementProvider<T> =
     insertMultiple(rows, completer).render(RenderingStrategies.SPRING_NAMED_PARAMETER)
 
+@Deprecated("Please use the new form - move the table into the lambda with into(table)")
 fun insertSelect(table: SqlTable, completer: InsertSelectCompleter): InsertSelectStatementProvider =
     insertSelect(table, completer).render(RenderingStrategies.SPRING_NAMED_PARAMETER)
+
+fun insertSelect(completer: InsertSelectCompleter): InsertSelectStatementProvider =
+    insertSelect(completer).render(RenderingStrategies.SPRING_NAMED_PARAMETER)
 
 @Deprecated("Please switch to the insertBatch statement in the spring package")
 fun <T> BatchInsertDSL.IntoGatherer<T>.into(table: SqlTable, completer: BatchInsertDSL<T>.() -> Unit): BatchInsert<T> =

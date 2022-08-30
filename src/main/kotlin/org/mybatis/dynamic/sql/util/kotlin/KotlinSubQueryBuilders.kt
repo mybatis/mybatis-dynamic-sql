@@ -18,12 +18,14 @@ package org.mybatis.dynamic.sql.util.kotlin
 import org.mybatis.dynamic.sql.BasicColumn
 import org.mybatis.dynamic.sql.SqlBuilder
 import org.mybatis.dynamic.sql.SqlColumn
+import org.mybatis.dynamic.sql.SqlTable
+import org.mybatis.dynamic.sql.insert.InsertSelectModel
 import org.mybatis.dynamic.sql.select.SelectModel
 import org.mybatis.dynamic.sql.util.Buildable
 import org.mybatis.dynamic.sql.util.Messages
 
 @MyBatisDslMarker
-sealed class KotlinBaseSubQueryBuilder : Buildable<SelectModel> {
+sealed class KotlinBaseSubQueryBuilder {
     private var selectBuilder: KotlinSelectBuilder? = null
 
     fun select(vararg selectList: BasicColumn, completer: SelectCompleter): Unit =
@@ -40,28 +42,54 @@ sealed class KotlinBaseSubQueryBuilder : Buildable<SelectModel> {
         selectBuilder = KotlinSelectBuilder(SqlBuilder.selectDistinct(selectList)).apply(completer)
     }
 
-    override fun build(): SelectModel =
+    internal fun buildSelectModel(): SelectModel =
         selectBuilder?.build()?: throw KInvalidSQLException(Messages.getString("ERROR.28")) //$NON-NLS-1$
 }
 
-class KotlinSubQueryBuilder : KotlinBaseSubQueryBuilder()
+class KotlinSubQueryBuilder : KotlinBaseSubQueryBuilder(), Buildable<SelectModel> {
+    override fun build(): SelectModel = buildSelectModel()
+}
 
-class KotlinQualifiedSubQueryBuilder : KotlinBaseSubQueryBuilder() {
+class KotlinQualifiedSubQueryBuilder : KotlinBaseSubQueryBuilder(), Buildable<SelectModel> {
     var correlationName: String? = null
 
     operator fun String.unaryPlus() {
         correlationName = this
     }
+
+    override fun build(): SelectModel = buildSelectModel()
 }
 
 typealias InsertSelectCompleter = KotlinInsertSelectSubQueryBuilder.() -> Unit
 
-class KotlinInsertSelectSubQueryBuilder : KotlinBaseSubQueryBuilder() {
-    internal var columnList: List<SqlColumn<*>>? = null
+class KotlinInsertSelectSubQueryBuilder : KotlinBaseSubQueryBuilder(), Buildable<InsertSelectModel> {
+    private var columnList: List<SqlColumn<*>>? = null
+    private var table: SqlTable? = null
+
+    fun into(table: SqlTable) {
+        this.table = table
+    }
 
     fun columns(vararg columnList: SqlColumn<*>): Unit = columns(columnList.asList())
 
     fun columns(columnList: List<SqlColumn<*>>) {
         this.columnList = columnList
+    }
+
+    override fun build(): InsertSelectModel {
+        if (table == null) {
+            throw KInvalidSQLException(Messages.getString("ERROR.29")) //$NON-NLS-1$
+        }
+
+        return if (columnList == null) {
+            SqlBuilder.insertInto(table)
+                .withSelectStatement { buildSelectModel() }
+                .build()
+        } else {
+            SqlBuilder.insertInto(table)
+                .withColumnList(columnList)
+                .withSelectStatement { buildSelectModel() }
+                .build()
+        }
     }
 }

@@ -40,6 +40,7 @@ For examples of global and statement configuration, see the "Configuration of th
    page for details. ([#515](https://github.com/mybatis/mybatis-dynamic-sql/pull/515))
 5. Added several checks for invalid SQL ([#516](https://github.com/mybatis/mybatis-dynamic-sql/pull/516))
 6. Added documentation for the various exceptions thrown by the library ([#517](https://github.com/mybatis/mybatis-dynamic-sql/pull/517))
+7. Update the "insertSelect" method in the Kotlin DSL to make it consistent with the other insert methods ([#524](https://github.com/mybatis/mybatis-dynamic-sql/pull/524))
 
 ## Release 1.4.0 - March 3, 2022
 

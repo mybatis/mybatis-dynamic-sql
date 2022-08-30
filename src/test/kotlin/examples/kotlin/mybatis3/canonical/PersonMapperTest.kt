@@ -38,6 +38,7 @@ import org.mybatis.dynamic.sql.util.kotlin.elements.add
 import org.mybatis.dynamic.sql.util.kotlin.elements.constant
 import org.mybatis.dynamic.sql.util.kotlin.elements.isIn
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.insertInto
+import org.mybatis.dynamic.sql.util.kotlin.mybatis3.insertSelect
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.select
 import java.io.InputStreamReader
 import java.sql.DriverManager
@@ -253,6 +254,32 @@ class PersonMapperTest {
                     orderBy(id)
                 }
             }
+
+            assertThat(rows).isEqualTo(6)
+        }
+    }
+
+    @Test
+    fun testDeprecatedInsertSelect() {
+        newSession().use { session ->
+            val mapper = session.getMapper(PersonMapper::class.java)
+
+            val insertStatement = insertSelect(person) {
+                columns(id, firstName, lastName, employed, occupation, addressId, birthDate)
+                select(add(id, constant<Int>("100")), firstName, lastName, employed, occupation, addressId, birthDate) {
+                    from(person)
+                    orderBy(id)
+                }
+            }
+
+            val expected = "insert into Person " +
+                    "(id, first_name, last_name, employed, occupation, address_id, birth_date) " +
+                    "select (id + 100), first_name, last_name, employed, occupation, address_id, birth_date " +
+                    "from Person order by id"
+
+            assertThat(insertStatement.insertStatement).isEqualTo(expected)
+
+            val rows = mapper.insertSelect(insertStatement)
 
             assertThat(rows).isEqualTo(6)
         }
