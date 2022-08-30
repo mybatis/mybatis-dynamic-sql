@@ -83,8 +83,12 @@ fun <T : Any> insertMultiple(
 ): MultiRowInsertStatementProvider<T> =
     insertMultiple(rows, completer).render(RenderingStrategies.MYBATIS3)
 
+@Deprecated("Please use the new form - move the table into the lambda with into(table)")
 fun insertSelect(table: SqlTable, completer: InsertSelectCompleter): InsertSelectStatementProvider =
     insertSelect(table, completer).render(RenderingStrategies.MYBATIS3)
+
+fun insertSelect(completer: InsertSelectCompleter): InsertSelectStatementProvider =
+    insertSelect(completer).render(RenderingStrategies.MYBATIS3)
 
 @Deprecated("Please switch to the insertBatch statement in the mybatis3 package")
 fun <T> BatchInsertDSL.IntoGatherer<T>.into(table: SqlTable, completer: BatchInsertDSL<T>.() -> Unit): BatchInsert<T> =

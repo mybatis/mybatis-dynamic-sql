@@ -148,8 +148,12 @@ fun <T> NamedParameterJdbcTemplate.insertMultiple(
 ): Int =
     update(insertStatement.insertStatement, BeanPropertySqlParameterSource(insertStatement), keyHolder)
 
+@Deprecated("Please use the new form - move the table into the lambda with into(table)")
 fun NamedParameterJdbcTemplate.insertSelect(table: SqlTable, completer: InsertSelectCompleter): Int =
     insertSelect(org.mybatis.dynamic.sql.util.kotlin.spring.insertSelect(table, completer))
+
+fun NamedParameterJdbcTemplate.insertSelect(completer: InsertSelectCompleter): Int =
+    insertSelect(org.mybatis.dynamic.sql.util.kotlin.spring.insertSelect(completer))
 
 fun NamedParameterJdbcTemplate.insertSelect(insertStatement: InsertSelectStatementProvider): Int =
     update(insertStatement.insertStatement, MapSqlParameterSource(insertStatement.parameters))

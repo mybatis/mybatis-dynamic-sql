@@ -77,19 +77,16 @@ fun insertInto(table: SqlTable, completer: GeneralInsertCompleter): GeneralInser
 fun <T : Any> insertMultiple(rows: Collection<T>, completer: KotlinMultiRowInsertCompleter<T>): MultiRowInsertModel<T> =
     KotlinMultiRowInsertBuilder(rows).apply(completer).build()
 
+@Deprecated("Please use the new form - move the table into the lambda with into(table)")
 fun insertSelect(table: SqlTable, completer: InsertSelectCompleter): InsertSelectModel =
-    with(KotlinInsertSelectSubQueryBuilder().apply(completer)) {
-        if (columnList == null) {
-            SqlBuilder.insertInto(table)
-                .withSelectStatement(this)
-                .build()
-        } else {
-            SqlBuilder.insertInto(table)
-                .withColumnList(columnList)
-                .withSelectStatement(this)
-                .build()
-        }
+    with(KotlinInsertSelectSubQueryBuilder()) {
+        into(table)
+        apply(completer)
+        buildInsertSelectModel()
     }
+
+fun insertSelect(completer: InsertSelectCompleter): InsertSelectModel =
+    KotlinInsertSelectSubQueryBuilder().apply(completer).buildInsertSelectModel()
 
 @Deprecated("Please switch to the insertBatch statement in the model package")
 fun <T> BatchInsertDSL.IntoGatherer<T>.into(

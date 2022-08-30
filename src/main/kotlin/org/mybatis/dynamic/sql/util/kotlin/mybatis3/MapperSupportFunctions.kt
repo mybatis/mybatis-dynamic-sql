@@ -128,7 +128,10 @@ fun insertSelect(
     table: SqlTable,
     completer: InsertSelectCompleter
 ): Int =
-    insertSelect(table, completer).run(mapper)
+    insertSelect {
+        into(table)
+        run(completer)
+    }.run(mapper)
 
 fun <T> selectDistinct(
     mapper: (SelectStatementProvider) -> List<T>,
