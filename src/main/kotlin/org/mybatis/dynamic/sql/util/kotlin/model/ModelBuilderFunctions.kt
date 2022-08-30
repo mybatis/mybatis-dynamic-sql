@@ -82,11 +82,11 @@ fun insertSelect(table: SqlTable, completer: InsertSelectCompleter): InsertSelec
     with(KotlinInsertSelectSubQueryBuilder()) {
         into(table)
         apply(completer)
-        buildInsertSelectModel()
+        build()
     }
 
 fun insertSelect(completer: InsertSelectCompleter): InsertSelectModel =
-    KotlinInsertSelectSubQueryBuilder().apply(completer).buildInsertSelectModel()
+    KotlinInsertSelectSubQueryBuilder().apply(completer).build()
 
 @Deprecated("Please switch to the insertBatch statement in the model package")
 fun <T> BatchInsertDSL.IntoGatherer<T>.into(
