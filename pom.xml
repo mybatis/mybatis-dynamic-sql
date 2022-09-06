@@ -52,8 +52,6 @@
   </distributionManagement>
 
   <properties>
-    <java.test.version>11</java.test.version>
-    <java.test.release.version>11</java.test.release.version>
     <junit.jupiter.version>5.9.0</junit.jupiter.version>
     <spring.batch.version>4.3.6</spring.batch.version>
 
@@ -84,7 +82,6 @@
           <rules>
             <enforceBytecodeVersion>
               <maxJdkVersion>${java.version}</maxJdkVersion>
-              <ignoredScopes>test</ignoredScopes>
             </enforceBytecodeVersion>
           </rules>
         </configuration>
