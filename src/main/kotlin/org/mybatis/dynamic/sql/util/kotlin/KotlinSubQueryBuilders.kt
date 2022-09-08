@@ -43,7 +43,7 @@ sealed class KotlinBaseSubQueryBuilder {
     }
 
     internal fun buildSelectModel(): SelectModel =
-        selectBuilder?.build()?: throw KInvalidSQLException(Messages.getString("ERROR.28")) //$NON-NLS-1$
+        (selectBuilder?: throw KInvalidSQLException(Messages.getString("ERROR.28"))).build() //$NON-NLS-1$
 }
 
 class KotlinSubQueryBuilder : KotlinBaseSubQueryBuilder(), Buildable<SelectModel> {
