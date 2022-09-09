@@ -19,6 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
 
 import java.sql.JDBCType;
+import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.SqlColumn;
@@ -33,9 +34,11 @@ class WhereModelTest {
         SqlTable table = SqlTable.of("foo");
         SqlColumn<Integer> id = table.column("id", JDBCType.INTEGER);
 
-        WhereClauseProvider wc = where(id, isEqualTo(3), or(id, isEqualTo(4))).build()
+        Optional<WhereClauseProvider> whereClause = where(id, isEqualTo(3), or(id, isEqualTo(4))).build()
                 .render(RenderingStrategies.MYBATIS3, "myName");
 
-        assertThat(wc.getWhereClause()).isEqualTo("where (id = #{myName.parameters.p1,jdbcType=INTEGER} or id = #{myName.parameters.p2,jdbcType=INTEGER})");
+        assertThat(whereClause.map(WhereClauseProvider::getWhereClause)).hasValueSatisfying(wc ->
+            assertThat(wc).isEqualTo("where (id = #{myName.parameters.p1,jdbcType=INTEGER} or id = #{myName.parameters.p2,jdbcType=INTEGER})")
+        );
     }
 }
