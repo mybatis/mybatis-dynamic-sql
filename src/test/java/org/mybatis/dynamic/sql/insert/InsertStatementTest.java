@@ -115,6 +115,24 @@ class InsertStatementTest {
         assertThat(insertStatement.getInsertStatement()).isEqualTo(expected);
     }
 
+    @Test
+    void testDeprecatedMethod() {
+        TestRecord record = new TestRecord();
+        record.setLastName("jones");
+        record.setOccupation("dino driver");
+
+        InsertStatementProvider<TestRecord> insertStatement = insert(record)
+                .into(foo)
+                .map(id).toPropertyWhenPresent("id", record::getId)
+                .map(firstName).toPropertyWhenPresent("firstName", record::getFirstName)
+                .map(lastName).toPropertyWhenPresent("lastName", record::getLastName)
+                .map(occupation).toPropertyWhenPresent("occupation", record::getOccupation)
+                .build()
+                .render(RenderingStrategies.MYBATIS3);
+
+        assertThat(insertStatement.getRow()).isEqualTo(insertStatement.getRecord());
+    }
+
     static class TestRecord {
         private Integer id;
         private String firstName;
