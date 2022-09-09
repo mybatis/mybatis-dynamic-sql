@@ -18,11 +18,11 @@ package org.mybatis.dynamic.sql.util;
 public abstract class UpdateMappingVisitor<R> implements ColumnMappingVisitor<R> {
     @Override
     public final R visit(PropertyMapping mapping) {
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException(Messages.getString("ERROR.31", "10")); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     @Override
     public final R visit(PropertyWhenPresentMapping mapping) {
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException(Messages.getString("ERROR.31", "11")); //$NON-NLS-1$ //$NON-NLS-2$
     }
 }
