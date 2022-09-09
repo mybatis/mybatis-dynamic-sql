@@ -54,7 +54,7 @@ public class WhereModel {
         return Collections.unmodifiableList(subCriteria);
     }
 
-    public boolean isUnrenderableClauseAllowed() {
+    public boolean isNonRenderingClauseAllowed() {
         return statementConfiguration.isNonRenderingWhereClauseAllowed();
     }
 
