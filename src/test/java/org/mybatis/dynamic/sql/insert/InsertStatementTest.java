@@ -52,7 +52,7 @@ class InsertStatementTest {
 
         String expectedStatement = "insert into foo "
                 + "(id, first_name, last_name, occupation) "
-                + "values (#{record.id,jdbcType=INTEGER}, #{record.firstName,jdbcType=VARCHAR}, #{record.lastName,jdbcType=VARCHAR}, #{record.occupation,jdbcType=VARCHAR})";
+                + "values (#{row.id,jdbcType=INTEGER}, #{row.firstName,jdbcType=VARCHAR}, #{row.lastName,jdbcType=VARCHAR}, #{row.occupation,jdbcType=VARCHAR})";
 
         assertThat(insertStatement.getInsertStatement()).isEqualTo(expectedStatement);
     }
@@ -72,7 +72,7 @@ class InsertStatementTest {
                 .render(RenderingStrategies.MYBATIS3);
 
         String expected = "insert into foo (id, first_name, last_name, occupation) "
-                + "values (#{record.id,jdbcType=INTEGER}, #{record.firstName,jdbcType=VARCHAR}, #{record.lastName,jdbcType=VARCHAR}, null)";
+                + "values (#{row.id,jdbcType=INTEGER}, #{row.firstName,jdbcType=VARCHAR}, #{row.lastName,jdbcType=VARCHAR}, null)";
         assertThat(insertStatement.getInsertStatement()).isEqualTo(expected);
     }
 
@@ -91,7 +91,7 @@ class InsertStatementTest {
                 .render(RenderingStrategies.MYBATIS3);
 
         String expected = "insert into foo (id, first_name, last_name, occupation) "
-                + "values (3, #{record.firstName,jdbcType=VARCHAR}, #{record.lastName,jdbcType=VARCHAR}, 'Y')";
+                + "values (3, #{row.firstName,jdbcType=VARCHAR}, #{row.lastName,jdbcType=VARCHAR}, 'Y')";
         assertThat(insertStatement.getInsertStatement()).isEqualTo(expected);
     }
 
@@ -111,7 +111,7 @@ class InsertStatementTest {
                 .render(RenderingStrategies.MYBATIS3);
 
         String expected = "insert into foo (last_name, occupation) "
-                + "values (#{record.lastName,jdbcType=VARCHAR}, #{record.occupation,jdbcType=VARCHAR})";
+                + "values (#{row.lastName,jdbcType=VARCHAR}, #{row.occupation,jdbcType=VARCHAR})";
         assertThat(insertStatement.getInsertStatement()).isEqualTo(expected);
     }
 

@@ -90,8 +90,8 @@ class KCustomRenderingTest {
                 map(info) toProperty "info"
             }
             val expected = "insert into JsonTest (id, description, info) " +
-                "values (#{record.id,jdbcType=INTEGER}, #{record.description,jdbcType=VARCHAR}, " +
-                "#{record.info,jdbcType=VARCHAR}::json)"
+                "values (#{row.id,jdbcType=INTEGER}, #{row.description,jdbcType=VARCHAR}, " +
+                "#{row.info,jdbcType=VARCHAR}::json)"
             assertThat(insertStatement.insertStatement).isEqualTo(expected)
             var rows = mapper.insert(insertStatement)
             assertThat(rows).isEqualTo(1)

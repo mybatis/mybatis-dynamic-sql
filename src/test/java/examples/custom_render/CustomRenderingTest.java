@@ -102,8 +102,8 @@ class CustomRenderingTest {
                     .render(RenderingStrategies.MYBATIS3);
 
             String expected = "insert into JsonTest (id, description, info) "
-                    + "values (#{record.id,jdbcType=INTEGER}, #{record.description,jdbcType=VARCHAR}, "
-                    + "#{record.info,jdbcType=VARCHAR}::json)";
+                    + "values (#{row.id,jdbcType=INTEGER}, #{row.description,jdbcType=VARCHAR}, "
+                    + "#{row.info,jdbcType=VARCHAR}::json)";
 
             assertThat(insertStatement.getInsertStatement()).isEqualTo(expected);
 

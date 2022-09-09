@@ -49,9 +49,9 @@ class InsertStatementTest {
                 .render(RenderingStrategies.MYBATIS3);
 
         String expected = "insert into foo (id, first_name, last_name, occupation) "
-                + "values (#{record.id,jdbcType=INTEGER}, "
-                + "#{record.firstName,jdbcType=VARCHAR}, " + "#{record.lastName,jdbcType=VARCHAR}, "
-                + "#{record.occupation,jdbcType=VARCHAR})";
+                + "values (#{row.id,jdbcType=INTEGER}, "
+                + "#{row.firstName,jdbcType=VARCHAR}, " + "#{row.lastName,jdbcType=VARCHAR}, "
+                + "#{row.occupation,jdbcType=VARCHAR})";
         assertThat(insertStatement.getInsertStatement()).isEqualTo(expected);
     }
 
@@ -71,8 +71,8 @@ class InsertStatementTest {
                 .render(RenderingStrategies.MYBATIS3);
 
         String expected = "insert into foo (last_name, occupation) "
-                + "values (#{record.lastName,jdbcType=VARCHAR}, "
-                + "#{record.occupation,jdbcType=VARCHAR})";
+                + "values (#{row.lastName,jdbcType=VARCHAR}, "
+                + "#{row.occupation,jdbcType=VARCHAR})";
         assertThat(insertStatement.getInsertStatement()).isEqualTo(expected);
     }
 
