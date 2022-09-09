@@ -58,7 +58,7 @@ public interface GeneratedAlwaysMapper extends CommonUpdateMapper {
     Optional<GeneratedAlwaysRecord> selectOne(SelectStatementProvider selectStatement);
 
     @InsertProvider(type=SqlProviderAdapter.class, method="insert")
-    @Options(useGeneratedKeys=true, keyProperty="record.fullName")
+    @Options(useGeneratedKeys=true, keyProperty="row.fullName")
     int insert(InsertStatementProvider<GeneratedAlwaysRecord> insertStatement);
 
     @InsertProvider(type=SqlProviderAdapter.class, method="insertMultipleWithGeneratedKeys")
