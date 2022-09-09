@@ -31,9 +31,6 @@ import org.mybatis.dynamic.sql.where.render.WhereClauseProvider;
 import org.mybatis.dynamic.sql.where.render.WhereRenderer;
 
 public class WhereModel {
-    private static final WhereClauseProvider EMPTY_WHERE_CLAUSE =
-            new WhereClauseProvider.Builder().withWhereClause("").build(); //$NON-NLS-1$
-
     private final SqlCriterion initialCriterion;
     private final List<AndOrCriteriaGroup> subCriteria = new ArrayList<>();
 
@@ -54,7 +51,7 @@ public class WhereModel {
         return Collections.unmodifiableList(subCriteria);
     }
 
-    public boolean isUnrenderableClauseAllowed() {
+    public boolean isNonRenderingClauseAllowed() {
         return statementConfiguration.isNonRenderingWhereClauseAllowed();
     }
 
@@ -66,28 +63,26 @@ public class WhereModel {
      *
      * @return rendered where clause
      */
-    public WhereClauseProvider render(RenderingStrategy renderingStrategy) {
+    public Optional<WhereClauseProvider> render(RenderingStrategy renderingStrategy) {
         return WhereRenderer.withWhereModel(this)
                 .withRenderingStrategy(renderingStrategy)
                 .withSequence(new AtomicInteger(1))
                 .withTableAliasCalculator(TableAliasCalculator.empty())
                 .build()
-                .render()
-                .orElse(EMPTY_WHERE_CLAUSE);
+                .render();
     }
 
-    public WhereClauseProvider render(RenderingStrategy renderingStrategy,
+    public Optional<WhereClauseProvider> render(RenderingStrategy renderingStrategy,
             TableAliasCalculator tableAliasCalculator) {
         return WhereRenderer.withWhereModel(this)
                 .withRenderingStrategy(renderingStrategy)
                 .withSequence(new AtomicInteger(1))
                 .withTableAliasCalculator(tableAliasCalculator)
                 .build()
-                .render()
-                .orElse(EMPTY_WHERE_CLAUSE);
+                .render();
     }
 
-    public WhereClauseProvider render(RenderingStrategy renderingStrategy,
+    public Optional<WhereClauseProvider> render(RenderingStrategy renderingStrategy,
             String parameterName) {
         return WhereRenderer.withWhereModel(this)
                 .withRenderingStrategy(renderingStrategy)
@@ -95,11 +90,10 @@ public class WhereModel {
                 .withTableAliasCalculator(TableAliasCalculator.empty())
                 .withParameterName(parameterName)
                 .build()
-                .render()
-                .orElse(EMPTY_WHERE_CLAUSE);
+                .render();
     }
 
-    public WhereClauseProvider render(RenderingStrategy renderingStrategy,
+    public Optional<WhereClauseProvider> render(RenderingStrategy renderingStrategy,
             TableAliasCalculator tableAliasCalculator, String parameterName) {
         return WhereRenderer.withWhereModel(this)
                 .withRenderingStrategy(renderingStrategy)
@@ -107,7 +101,6 @@ public class WhereModel {
                 .withTableAliasCalculator(tableAliasCalculator)
                 .withParameterName(parameterName)
                 .build()
-                .render()
-                .orElse(EMPTY_WHERE_CLAUSE);
+                .render();
     }
 }

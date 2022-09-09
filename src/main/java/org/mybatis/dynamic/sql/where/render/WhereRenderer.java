@@ -50,7 +50,7 @@ public class WhereRenderer {
                         .build()
                 );
 
-        if (whereClause.isPresent() || whereModel.isUnrenderableClauseAllowed()) {
+        if (whereClause.isPresent() || whereModel.isNonRenderingClauseAllowed()) {
             return whereClause;
         } else {
             throw new NonRenderingWhereClauseException();

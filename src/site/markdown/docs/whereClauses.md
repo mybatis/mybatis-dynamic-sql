@@ -87,11 +87,11 @@ library. If you want to use a stand alone where clause, you can code a mapper me
 You can build a stand alone where clause and call your mapper like this:
 
 ```java
-    WhereClauseProvider whereClause = where(id, isNotBetween(10).and(60))
+    Optional<WhereClauseProvider> whereClause = where(id, isNotBetween(10).and(60))
             .build()
             .render(RenderingStrategies.MYBATIS3);
 
-    List<AnimalData> animals = mapper.selectWithWhereClause(whereClause);
+    List<AnimalData> animals = whereClause.map(wc -> mapper.selectWithWhereClause(wc)).orElse(Collections.emptyList());
 ```
 This method works well when there are no other parameters needed for the statement and when there are no table aliases
 involved.  If you have those other needs, then see the following.
@@ -112,11 +112,11 @@ If you need to use a table alias in the generated where clause you can supply it
 Then you can specify the alias for the generated WHERE clause on the render method like this:
 
 ```java
-    WhereClauseProvider whereClause = where(id, isEqualTo(1), or(bodyWeight, isGreaterThan(1.0)))
+    Optional<WhereClauseProvider> whereClause = where(id, isEqualTo(1), or(bodyWeight, isGreaterThan(1.0)))
             .build()
             .render(RenderingStrategies.MYBATIS3, TableAliasCalculator.of(animalData, "a"));
 
-    List<AnimalData> animals = mapper.selectWithWhereClauseAndAlias(whereClause);
+    List<AnimalData> animals = whereClause.map(wc -> mapper.selectWithWhereClauseAndAlias(wc)).orElse(Collections.emptyList());
 ```
 It is more likely that you will be using table aliases with hand coded joins where there is more than on table alias.
 In this case, you supply a `Map<SqlTable, String>` to the TableAliasCalculator that holds an alias for each table
@@ -143,11 +143,11 @@ In this mapper method there are three parameters.  So in this case it will be ne
 parameter name to use the for rendered where clause.  That code looks like this:
 
 ```java
-    WhereClauseProvider whereClause = where(id, isLessThan(60))
+    Optional<WhereClauseProvider> whereClause = where(id, isLessThan(60))
             .build()
             .render(RenderingStrategies.MYBATIS3, "whereClauseProvider");
             
-    List<AnimalData> animals = mapper.selectWithWhereClauseLimitAndOffset(whereClause, 5, 15);
+    List<AnimalData> animals = whereClause.map(wc -> mapper.selectWithWhereClauseLimitAndOffset(wc, 5, 15)).orElse(Collections.emptyList());
 ```
 Notice that the string `whereClauseProvider` is used both as the parameter name in the mapper `@Param` annotation,
 and the parameter name in the `render` method.

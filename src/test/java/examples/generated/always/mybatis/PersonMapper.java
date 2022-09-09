@@ -48,7 +48,7 @@ public interface PersonMapper {
     int insertSelect(InsertSelectStatementProvider insertSelectStatement);
 
     @InsertProvider(type = SqlProviderAdapter.class, method = "insert")
-    @Options(useGeneratedKeys = true, keyProperty = "record.id")
+    @Options(useGeneratedKeys = true, keyProperty = "row.id")
     int insert(InsertStatementProvider<PersonRecord> insertStatement);
 
     @InsertProvider(type=SqlProviderAdapter.class, method="insertMultipleWithGeneratedKeys")

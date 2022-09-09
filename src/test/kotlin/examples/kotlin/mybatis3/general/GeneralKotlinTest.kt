@@ -312,13 +312,13 @@ class GeneralKotlinTest {
             val expected =
                 "insert into Person (id, first_name, last_name, birth_date, employed, occupation, address_id) " +
                     "values " +
-                    "(#{record.id,jdbcType=INTEGER}, #{record.firstName,jdbcType=VARCHAR}, " +
-                    "#{record.lastName,jdbcType=VARCHAR," +
+                    "(#{row.id,jdbcType=INTEGER}, #{row.firstName,jdbcType=VARCHAR}, " +
+                    "#{row.lastName,jdbcType=VARCHAR," +
                     "typeHandler=examples.kotlin.mybatis3.canonical.LastNameTypeHandler}, " +
-                    "#{record.birthDate,jdbcType=DATE}, " +
-                    "#{record.employed,jdbcType=VARCHAR," +
+                    "#{row.birthDate,jdbcType=DATE}, " +
+                    "#{row.employed,jdbcType=VARCHAR," +
                     "typeHandler=examples.kotlin.mybatis3.canonical.YesNoTypeHandler}, " +
-                    "#{record.occupation,jdbcType=VARCHAR}, #{record.addressId,jdbcType=INTEGER})"
+                    "#{row.occupation,jdbcType=VARCHAR}, #{row.addressId,jdbcType=INTEGER})"
 
             assertThat(insertStatement.insertStatement).isEqualTo(expected)
 
