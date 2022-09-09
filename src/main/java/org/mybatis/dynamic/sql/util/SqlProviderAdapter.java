@@ -81,8 +81,7 @@ public class SqlProviderAdapter {
         if (entries.size() == 1) {
             return entries.get(0);
         } else {
-            throw new IllegalArgumentException("The parameters for insertMultipleWithGeneratedKeys" //$NON-NLS-1$
-                    + " must contain exactly one parameter of type String"); //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages.getString("ERROR.30")); //$NON-NLS-1$
         }
     }
 
