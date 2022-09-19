@@ -18,26 +18,26 @@ package org.mybatis.dynamic.sql.util;
 public abstract class InsertMappingVisitor<R> implements ColumnMappingVisitor<R> {
     @Override
     public final <T> R visit(ValueMapping<T> mapping) {
-        throw new UnsupportedOperationException(Messages.getString("ERROR.31", "5")); //$NON-NLS-1$ //$NON-NLS-2$
+        throw new UnsupportedOperationException(Messages.getInternalErrorString(5));
     }
 
     @Override
     public final <T> R visit(ValueOrNullMapping<T> mapping) {
-        throw new UnsupportedOperationException(Messages.getString("ERROR.31", "6")); //$NON-NLS-1$ //$NON-NLS-2$
+        throw new UnsupportedOperationException(Messages.getInternalErrorString(6));
     }
 
     @Override
     public final <T> R visit(ValueWhenPresentMapping<T> mapping) {
-        throw new UnsupportedOperationException(Messages.getString("ERROR.31", "7")); //$NON-NLS-1$ //$NON-NLS-2$
+        throw new UnsupportedOperationException(Messages.getInternalErrorString(7));
     }
 
     @Override
     public final R visit(SelectMapping mapping) {
-        throw new UnsupportedOperationException(Messages.getString("ERROR.31", "8")); //$NON-NLS-1$ //$NON-NLS-2$
+        throw new UnsupportedOperationException(Messages.getInternalErrorString(8));
     }
 
     @Override
     public final R visit(ColumnToColumnMapping columnMapping) {
-        throw new UnsupportedOperationException(Messages.getString("ERROR.31", "9")); //$NON-NLS-1$ //$NON-NLS-2$
+        throw new UnsupportedOperationException(Messages.getInternalErrorString(9));
     }
 }
