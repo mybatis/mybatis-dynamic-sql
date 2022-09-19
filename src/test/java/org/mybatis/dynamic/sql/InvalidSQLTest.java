@@ -15,7 +15,6 @@
  */
 package org.mybatis.dynamic.sql;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mybatis.dynamic.sql.SqlBuilder.insert;
 import static org.mybatis.dynamic.sql.SqlBuilder.insertInto;
@@ -24,6 +23,7 @@ import static org.mybatis.dynamic.sql.SqlBuilder.update;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.MissingResourceException;
 
 import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.exception.InvalidSqlException;
@@ -221,18 +221,9 @@ class InvalidSQLTest {
     }
 
     @Test
-    void testMissingMessage1() {
-        assertThat(Messages.getString("MISSING_MESSAGE")).isEqualTo("!MISSING_MESSAGE!");
-    }
-
-    @Test
-    void testMissingMessage2() {
-        assertThat(Messages.getString("MISSING_MESSAGE", "s1")).isEqualTo("!MISSING_MESSAGE!");
-    }
-
-    @Test
-    void testMissingMessage3() {
-        assertThat(Messages.getString("MISSING_MESSAGE", "s1", "s2", "s3")).isEqualTo("!MISSING_MESSAGE!");
+    void testMissingMessage() {
+        assertThatExceptionOfType(MissingResourceException.class)
+                .isThrownBy(() -> Messages.getString("MISSING_MESSAGE"));
     }
 
     static class TestRow {
