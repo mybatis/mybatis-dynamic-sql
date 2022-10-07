@@ -7,13 +7,13 @@
 <body>
 <div id="overview"><a href="../../../../../testapidocs/examples/generated/always/mybatis/GeneratedAlwaysMapper.html">View Javadoc</a></div><pre>
 <a class="jxr_linenumber" name="L1" href="#L1">1</a>   <em class="jxr_comment">/*</em>
-<a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_comment"> *    Copyright 2016-2021 the original author or authors.</em>
+<a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_comment"> *    Copyright 2016-2022 the original author or authors.</em>
 <a class="jxr_linenumber" name="L3" href="#L3">3</a>   <em class="jxr_comment"> *</em>
 <a class="jxr_linenumber" name="L4" href="#L4">4</a>   <em class="jxr_comment"> *    Licensed under the Apache License, Version 2.0 (the "License");</em>
 <a class="jxr_linenumber" name="L5" href="#L5">5</a>   <em class="jxr_comment"> *    you may not use this file except in compliance with the License.</em>
 <a class="jxr_linenumber" name="L6" href="#L6">6</a>   <em class="jxr_comment"> *    You may obtain a copy of the License at</em>
 <a class="jxr_linenumber" name="L7" href="#L7">7</a>   <em class="jxr_comment"> *</em>
-<a class="jxr_linenumber" name="L8" href="#L8">8</a>   <em class="jxr_comment"> *       <a href="http://www.apache.org/licenses/LICENSE-2.0" target="alexandria_uri">http://www.apache.org/licenses/LICENSE-2.0</a></em>
+<a class="jxr_linenumber" name="L8" href="#L8">8</a>   <em class="jxr_comment"> *       <a href="https://www.apache.org/licenses/LICENSE-2.0" target="alexandria_uri">https://www.apache.org/licenses/LICENSE-2.0</a></em>
 <a class="jxr_linenumber" name="L9" href="#L9">9</a>   <em class="jxr_comment"> *</em>
 <a class="jxr_linenumber" name="L10" href="#L10">10</a>  <em class="jxr_comment"> *    Unless required by applicable law or agreed to in writing, software</em>
 <a class="jxr_linenumber" name="L11" href="#L11">11</a>  <em class="jxr_comment"> *    distributed under the License is distributed on an "AS IS" BASIS,</em>
@@ -46,10 +46,10 @@
 <a class="jxr_linenumber" name="L38" href="#L38">38</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.update.UpdateDSLCompleter;
 <a class="jxr_linenumber" name="L39" href="#L39">39</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.update.UpdateModel;
 <a class="jxr_linenumber" name="L40" href="#L40">40</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.util.SqlProviderAdapter;
-<a class="jxr_linenumber" name="L41" href="#L41">41</a>  
-<a class="jxr_linenumber" name="L42" href="#L42">42</a>  <strong class="jxr_keyword">import</strong> examples.generated.always.GeneratedAlwaysRecord;
-<a class="jxr_linenumber" name="L43" href="#L43">43</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.util.mybatis3.CommonUpdateMapper;
-<a class="jxr_linenumber" name="L44" href="#L44">44</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
+<a class="jxr_linenumber" name="L41" href="#L41">41</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.util.mybatis3.CommonUpdateMapper;
+<a class="jxr_linenumber" name="L42" href="#L42">42</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
+<a class="jxr_linenumber" name="L43" href="#L43">43</a>  
+<a class="jxr_linenumber" name="L44" href="#L44">44</a>  <strong class="jxr_keyword">import</strong> examples.generated.always.GeneratedAlwaysRecord;
 <a class="jxr_linenumber" name="L45" href="#L45">45</a>  
 <a class="jxr_linenumber" name="L46" href="#L46">46</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">interface</strong> <a name="GeneratedAlwaysMapper" href="../../../../examples/generated/always/mybatis/GeneratedAlwaysMapper.html#GeneratedAlwaysMapper">GeneratedAlwaysMapper</a> <strong class="jxr_keyword">extends</strong> CommonUpdateMapper {
 <a class="jxr_linenumber" name="L47" href="#L47">47</a>      @SelectProvider(type=SqlProviderAdapter.<strong class="jxr_keyword">class</strong>, method=<span class="jxr_string">"select"</span>)
@@ -66,7 +66,7 @@
 <a class="jxr_linenumber" name="L58" href="#L58">58</a>      Optional&lt;GeneratedAlwaysRecord&gt; selectOne(SelectStatementProvider selectStatement);
 <a class="jxr_linenumber" name="L59" href="#L59">59</a>  
 <a class="jxr_linenumber" name="L60" href="#L60">60</a>      @InsertProvider(type=SqlProviderAdapter.<strong class="jxr_keyword">class</strong>, method=<span class="jxr_string">"insert"</span>)
-<a class="jxr_linenumber" name="L61" href="#L61">61</a>      @Options(useGeneratedKeys=<strong class="jxr_keyword">true</strong>, keyProperty=<span class="jxr_string">"record.fullName"</span>)
+<a class="jxr_linenumber" name="L61" href="#L61">61</a>      @Options(useGeneratedKeys=<strong class="jxr_keyword">true</strong>, keyProperty=<span class="jxr_string">"row.fullName"</span>)
 <a class="jxr_linenumber" name="L62" href="#L62">62</a>      <strong class="jxr_keyword">int</strong> insert(InsertStatementProvider&lt;GeneratedAlwaysRecord&gt; insertStatement);
 <a class="jxr_linenumber" name="L63" href="#L63">63</a>  
 <a class="jxr_linenumber" name="L64" href="#L64">64</a>      @InsertProvider(type=SqlProviderAdapter.<strong class="jxr_keyword">class</strong>, method=<span class="jxr_string">"insertMultipleWithGeneratedKeys"</span>)

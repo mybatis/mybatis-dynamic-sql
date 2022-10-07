@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UpdateDSL.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.update</a> &gt; <span class="el_source">UpdateDSL.java</span></div><h1>UpdateDSL.java</h1><pre class="source lang-java linenums">/*
- *    Copyright 2016-2021 the original author or authors.
+ *    Copyright 2016-2022 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  *    you may not use this file except in compliance with the License.
  *    You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *       https://www.apache.org/licenses/LICENSE-2.0
  *
  *    Unless required by applicable law or agreed to in writing, software
  *    distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
@@ -18,6 +18,7 @@ package org.mybatis.dynamic.sql.update;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -25,6 +26,7 @@ import org.jetbrains.annotations.NotNull;
 import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
+import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
 import org.mybatis.dynamic.sql.select.SelectModel;
 import org.mybatis.dynamic.sql.util.AbstractColumnMapping;
 import org.mybatis.dynamic.sql.util.Buildable;
@@ -40,25 +42,33 @@ import org.mybatis.dynamic.sql.where.AbstractWhereDSL;
 import org.mybatis.dynamic.sql.where.AbstractWhereSupport;
 import org.mybatis.dynamic.sql.where.WhereModel;
 
-public class UpdateDSL&lt;R&gt; extends AbstractWhereSupport&lt;UpdateDSL&lt;R&gt;.UpdateWhereBuilder&gt; implements Buildable&lt;R&gt; {
+public class UpdateDSL&lt;R&gt; extends AbstractWhereSupport&lt;UpdateDSL&lt;R&gt;.UpdateWhereBuilder, UpdateDSL&lt;R&gt;&gt;
+        implements Buildable&lt;R&gt; {
 
     private final Function&lt;UpdateModel, R&gt; adapterFunction;
-<span class="fc" id="L46">    private final List&lt;AbstractColumnMapping&gt; columnMappings = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L49">    private final List&lt;AbstractColumnMapping&gt; columnMappings = new ArrayList&lt;&gt;();</span>
     private final SqlTable table;
-<span class="fc" id="L48">    private final UpdateWhereBuilder whereBuilder = new UpdateWhereBuilder();</span>
+    private final String tableAlias;
+    private UpdateWhereBuilder whereBuilder;
+<span class="fc" id="L53">    private final StatementConfiguration statementConfiguration = new StatementConfiguration();</span>
 
-<span class="fc" id="L50">    private UpdateDSL(SqlTable table, Function&lt;UpdateModel, R&gt; adapterFunction) {</span>
-<span class="fc" id="L51">        this.table = Objects.requireNonNull(table);</span>
-<span class="fc" id="L52">        this.adapterFunction = Objects.requireNonNull(adapterFunction);</span>
-<span class="fc" id="L53">    }</span>
+<span class="fc" id="L55">    private UpdateDSL(SqlTable table, String tableAlias, Function&lt;UpdateModel, R&gt; adapterFunction) {</span>
+<span class="fc" id="L56">        this.table = Objects.requireNonNull(table);</span>
+<span class="fc" id="L57">        this.tableAlias = tableAlias;</span>
+<span class="fc" id="L58">        this.adapterFunction = Objects.requireNonNull(adapterFunction);</span>
+<span class="fc" id="L59">    }</span>
 
     public &lt;T&gt; SetClauseFinisher&lt;T&gt; set(SqlColumn&lt;T&gt; column) {
-<span class="fc" id="L56">        return new SetClauseFinisher&lt;&gt;(column);</span>
+<span class="fc" id="L62">        return new SetClauseFinisher&lt;&gt;(column);</span>
     }
 
     @Override
     public UpdateWhereBuilder where() {
-<span class="fc" id="L61">        return whereBuilder;</span>
+<span class="fc bfc" id="L67" title="All 2 branches covered.">        if (whereBuilder == null) {</span>
+<span class="fc" id="L68">            whereBuilder = new UpdateWhereBuilder();</span>
+        }
+
+<span class="fc" id="L71">        return whereBuilder;</span>
     }
 
     /**
@@ -70,100 +80,116 @@ public class UpdateDSL&lt;R&gt; extends AbstractWhereSupport&lt;UpdateDSL&lt;R&g
     @NotNull
     @Override
     public R build() {
-<span class="fc" id="L73">        UpdateModel updateModel = UpdateModel.withTable(table)</span>
-<span class="fc" id="L74">                .withColumnMappings(columnMappings)</span>
-<span class="fc" id="L75">                .withWhereModel(whereBuilder.buildWhereModel())</span>
-<span class="fc" id="L76">                .build();</span>
-<span class="fc" id="L77">        return adapterFunction.apply(updateModel);</span>
+<span class="fc" id="L83">        UpdateModel.Builder updateModelBuilder = UpdateModel.withTable(table)</span>
+<span class="fc" id="L84">                .withTableAlias(tableAlias)</span>
+<span class="fc" id="L85">                .withColumnMappings(columnMappings);</span>
+
+<span class="fc bfc" id="L87" title="All 2 branches covered.">        if (whereBuilder != null) {</span>
+<span class="fc" id="L88">            updateModelBuilder.withWhereModel(whereBuilder.buildWhereModel());</span>
+        }
+
+<span class="fc" id="L91">        return adapterFunction.apply(updateModelBuilder.build());</span>
     }
 
-    public static &lt;R&gt; UpdateDSL&lt;R&gt; update(Function&lt;UpdateModel, R&gt; adapterFunction, SqlTable table) {
-<span class="fc" id="L81">        return new UpdateDSL&lt;&gt;(table, adapterFunction);</span>
+    @Override
+    public UpdateDSL&lt;R&gt; configureStatement(Consumer&lt;StatementConfiguration&gt; consumer) {
+<span class="fc" id="L96">        consumer.accept(statementConfiguration);</span>
+<span class="fc" id="L97">        return this;</span>
+    }
+
+    public static &lt;R&gt; UpdateDSL&lt;R&gt; update(Function&lt;UpdateModel, R&gt; adapterFunction, SqlTable table, String tableAlias) {
+<span class="fc" id="L101">        return new UpdateDSL&lt;&gt;(table, tableAlias, adapterFunction);</span>
     }
 
     public static UpdateDSL&lt;UpdateModel&gt; update(SqlTable table) {
-<span class="fc" id="L85">        return update(Function.identity(), table);</span>
+<span class="fc" id="L105">        return update(Function.identity(), table, null);</span>
+    }
+
+    public static UpdateDSL&lt;UpdateModel&gt; update(SqlTable table, String tableAlias) {
+<span class="fc" id="L109">        return update(Function.identity(), table, tableAlias);</span>
     }
 
     public class SetClauseFinisher&lt;T&gt; {
 
         private final SqlColumn&lt;T&gt; column;
 
-<span class="fc" id="L92">        public SetClauseFinisher(SqlColumn&lt;T&gt; column) {</span>
-<span class="fc" id="L93">            this.column = column;</span>
-<span class="fc" id="L94">        }</span>
+<span class="fc" id="L116">        public SetClauseFinisher(SqlColumn&lt;T&gt; column) {</span>
+<span class="fc" id="L117">            this.column = column;</span>
+<span class="fc" id="L118">        }</span>
 
         public UpdateDSL&lt;R&gt; equalToNull() {
-<span class="fc" id="L97">            columnMappings.add(NullMapping.of(column));</span>
-<span class="fc" id="L98">            return UpdateDSL.this;</span>
-        }
-
-        public UpdateDSL&lt;R&gt; equalToConstant(String constant) {
-<span class="fc" id="L102">            columnMappings.add(ConstantMapping.of(column, constant));</span>
-<span class="fc" id="L103">            return UpdateDSL.this;</span>
-        }
-
-        public UpdateDSL&lt;R&gt; equalToStringConstant(String constant) {
-<span class="fc" id="L107">            columnMappings.add(StringConstantMapping.of(column, constant));</span>
-<span class="fc" id="L108">            return UpdateDSL.this;</span>
-        }
-
-        public UpdateDSL&lt;R&gt; equalTo(T value) {
-<span class="fc" id="L112">            return equalTo(() -&gt; value);</span>
-        }
-
-        public UpdateDSL&lt;R&gt; equalTo(Supplier&lt;T&gt; valueSupplier) {
-<span class="fc" id="L116">            columnMappings.add(ValueMapping.of(column, valueSupplier));</span>
-<span class="fc" id="L117">            return UpdateDSL.this;</span>
-        }
-
-        public UpdateDSL&lt;R&gt; equalTo(Buildable&lt;SelectModel&gt; buildable) {
-<span class="fc" id="L121">            columnMappings.add(SelectMapping.of(column, buildable));</span>
+<span class="fc" id="L121">            columnMappings.add(NullMapping.of(column));</span>
 <span class="fc" id="L122">            return UpdateDSL.this;</span>
         }
 
-        public UpdateDSL&lt;R&gt; equalTo(BasicColumn rightColumn) {
-<span class="fc" id="L126">            columnMappings.add(ColumnToColumnMapping.of(column, rightColumn));</span>
+        public UpdateDSL&lt;R&gt; equalToConstant(String constant) {
+<span class="fc" id="L126">            columnMappings.add(ConstantMapping.of(column, constant));</span>
 <span class="fc" id="L127">            return UpdateDSL.this;</span>
         }
 
+        public UpdateDSL&lt;R&gt; equalToStringConstant(String constant) {
+<span class="fc" id="L131">            columnMappings.add(StringConstantMapping.of(column, constant));</span>
+<span class="fc" id="L132">            return UpdateDSL.this;</span>
+        }
+
+        public UpdateDSL&lt;R&gt; equalTo(T value) {
+<span class="fc" id="L136">            return equalTo(() -&gt; value);</span>
+        }
+
+        public UpdateDSL&lt;R&gt; equalTo(Supplier&lt;T&gt; valueSupplier) {
+<span class="fc" id="L140">            columnMappings.add(ValueMapping.of(column, valueSupplier));</span>
+<span class="fc" id="L141">            return UpdateDSL.this;</span>
+        }
+
+        public UpdateDSL&lt;R&gt; equalTo(Buildable&lt;SelectModel&gt; buildable) {
+<span class="fc" id="L145">            columnMappings.add(SelectMapping.of(column, buildable));</span>
+<span class="fc" id="L146">            return UpdateDSL.this;</span>
+        }
+
+        public UpdateDSL&lt;R&gt; equalTo(BasicColumn rightColumn) {
+<span class="fc" id="L150">            columnMappings.add(ColumnToColumnMapping.of(column, rightColumn));</span>
+<span class="fc" id="L151">            return UpdateDSL.this;</span>
+        }
+
         public UpdateDSL&lt;R&gt; equalToOrNull(T value) {
-<span class="fc" id="L131">            return equalToOrNull(() -&gt; value);</span>
+<span class="fc" id="L155">            return equalToOrNull(() -&gt; value);</span>
         }
 
         public UpdateDSL&lt;R&gt; equalToOrNull(Supplier&lt;T&gt; valueSupplier) {
-<span class="fc" id="L135">            columnMappings.add(ValueOrNullMapping.of(column, valueSupplier));</span>
-<span class="fc" id="L136">            return UpdateDSL.this;</span>
+<span class="fc" id="L159">            columnMappings.add(ValueOrNullMapping.of(column, valueSupplier));</span>
+<span class="fc" id="L160">            return UpdateDSL.this;</span>
         }
 
         public UpdateDSL&lt;R&gt; equalToWhenPresent(T value) {
-<span class="fc" id="L140">            return equalToWhenPresent(() -&gt; value);</span>
+<span class="fc" id="L164">            return equalToWhenPresent(() -&gt; value);</span>
         }
 
         public UpdateDSL&lt;R&gt; equalToWhenPresent(Supplier&lt;T&gt; valueSupplier) {
-<span class="fc" id="L144">            columnMappings.add(ValueWhenPresentMapping.of(column, valueSupplier));</span>
-<span class="fc" id="L145">            return UpdateDSL.this;</span>
+<span class="fc" id="L168">            columnMappings.add(ValueWhenPresentMapping.of(column, valueSupplier));</span>
+<span class="fc" id="L169">            return UpdateDSL.this;</span>
         }
     }
 
     public class UpdateWhereBuilder extends AbstractWhereDSL&lt;UpdateWhereBuilder&gt; implements Buildable&lt;R&gt; {
 
-<span class="fc" id="L151">        private UpdateWhereBuilder() {}</span>
+<span class="fc" id="L175">        private UpdateWhereBuilder() {</span>
+<span class="fc" id="L176">            super(statementConfiguration);</span>
+<span class="fc" id="L177">        }</span>
 
         @NotNull
         @Override
         public R build() {
-<span class="fc" id="L156">            return UpdateDSL.this.build();</span>
+<span class="fc" id="L182">            return UpdateDSL.this.build();</span>
         }
 
         @Override
         protected UpdateWhereBuilder getThis() {
-<span class="fc" id="L161">            return this;</span>
+<span class="fc" id="L187">            return this;</span>
         }
 
         protected WhereModel buildWhereModel() {
-<span class="fc" id="L165">            return internalBuild();</span>
+<span class="fc" id="L191">            return internalBuild();</span>
         }
     }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

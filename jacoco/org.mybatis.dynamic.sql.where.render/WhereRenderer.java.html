@@ -5,7 +5,7 @@
  *    you may not use this file except in compliance with the License.
  *    You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *       https://www.apache.org/licenses/LICENSE-2.0
  *
  *    Unless required by applicable law or agreed to in writing, software
  *    distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
@@ -20,6 +20,8 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
+import org.mybatis.dynamic.sql.SqlCriterion;
+import org.mybatis.dynamic.sql.exception.NonRenderingWhereClauseException;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 import org.mybatis.dynamic.sql.util.FragmentCollector;
@@ -29,37 +31,50 @@ public class WhereRenderer {
     private final WhereModel whereModel;
     private final CriterionRenderer criterionRenderer;
 
-<span class="fc" id="L32">    private WhereRenderer(Builder builder) {</span>
-<span class="fc" id="L33">        whereModel = Objects.requireNonNull(builder.whereModel);</span>
+<span class="fc" id="L34">    private WhereRenderer(Builder builder) {</span>
+<span class="fc" id="L35">        whereModel = Objects.requireNonNull(builder.whereModel);</span>
 
-<span class="fc" id="L35">        criterionRenderer = new CriterionRenderer.Builder()</span>
-<span class="fc" id="L36">                .withSequence(builder.sequence)</span>
-<span class="fc" id="L37">                .withRenderingStrategy(builder.renderingStrategy)</span>
-<span class="fc" id="L38">                .withTableAliasCalculator(builder.tableAliasCalculator)</span>
-<span class="fc" id="L39">                .withParameterName(builder.parameterName)</span>
-<span class="fc" id="L40">                .build();</span>
-<span class="fc" id="L41">    }</span>
+<span class="fc" id="L37">        criterionRenderer = new CriterionRenderer.Builder()</span>
+<span class="fc" id="L38">                .withSequence(builder.sequence)</span>
+<span class="fc" id="L39">                .withRenderingStrategy(builder.renderingStrategy)</span>
+<span class="fc" id="L40">                .withTableAliasCalculator(builder.tableAliasCalculator)</span>
+<span class="fc" id="L41">                .withParameterName(builder.parameterName)</span>
+<span class="fc" id="L42">                .build();</span>
+<span class="fc" id="L43">    }</span>
 
     public Optional&lt;WhereClauseProvider&gt; render() {
-<span class="fc" id="L44">        return whereModel.initialCriterion().map(ic -&gt;</span>
-<span class="fc" id="L45">                        criterionRenderer.render(ic, whereModel.subCriteria(), this::calculateWhereClause))</span>
-<span class="fc" id="L46">                .orElseGet(() -&gt; criterionRenderer.render(whereModel.subCriteria(), this::calculateWhereClause))</span>
-<span class="fc" id="L47">                .map(rc -&gt; WhereClauseProvider.withWhereClause(rc.fragmentAndParameters().fragment())</span>
-<span class="fc" id="L48">                        .withParameters(rc.fragmentAndParameters().parameters())</span>
-<span class="fc" id="L49">                        .build()</span>
+<span class="fc" id="L46">        Optional&lt;WhereClauseProvider&gt; whereClause = whereModel.initialCriterion().map(this::renderWithInitialCriterion)</span>
+<span class="fc" id="L47">                .orElseGet(this::renderWithoutInitialCriterion)</span>
+<span class="fc" id="L48">                .map(rc -&gt; WhereClauseProvider.withWhereClause(rc.fragmentAndParameters().fragment())</span>
+<span class="fc" id="L49">                        .withParameters(rc.fragmentAndParameters().parameters())</span>
+<span class="fc" id="L50">                        .build()</span>
                 );
+
+<span class="fc bfc" id="L53" title="All 4 branches covered.">        if (whereClause.isPresent() || whereModel.isNonRenderingClauseAllowed()) {</span>
+<span class="fc" id="L54">            return whereClause;</span>
+        } else {
+<span class="fc" id="L56">            throw new NonRenderingWhereClauseException();</span>
+        }
+    }
+
+    private Optional&lt;RenderedCriterion&gt; renderWithInitialCriterion(SqlCriterion initialCriterion) {
+<span class="fc" id="L61">        return criterionRenderer.render(initialCriterion, whereModel.subCriteria(), this::calculateWhereClause);</span>
+    }
+
+    private Optional&lt;RenderedCriterion&gt; renderWithoutInitialCriterion() {
+<span class="fc" id="L65">        return criterionRenderer.render(whereModel.subCriteria(), this::calculateWhereClause);</span>
     }
 
     private String calculateWhereClause(FragmentCollector collector) {
-<span class="fc" id="L54">        return collector.fragments()</span>
-<span class="fc" id="L55">                .collect(Collectors.joining(&quot; &quot;, &quot;where &quot;, &quot;&quot;)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$</span>
+<span class="fc" id="L69">        return collector.fragments()</span>
+<span class="fc" id="L70">                .collect(Collectors.joining(&quot; &quot;, &quot;where &quot;, &quot;&quot;)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$</span>
     }
 
     public static Builder withWhereModel(WhereModel whereModel) {
-<span class="fc" id="L59">        return new Builder().withWhereModel(whereModel);</span>
+<span class="fc" id="L74">        return new Builder().withWhereModel(whereModel);</span>
     }
 
-<span class="fc" id="L62">    public static class Builder {</span>
+<span class="fc" id="L77">    public static class Builder {</span>
         private WhereModel whereModel;
         private RenderingStrategy renderingStrategy;
         private TableAliasCalculator tableAliasCalculator;
@@ -67,33 +82,33 @@ public class WhereRenderer {
         private String parameterName;
 
         public Builder withWhereModel(WhereModel whereModel) {
-<span class="fc" id="L70">            this.whereModel = whereModel;</span>
-<span class="fc" id="L71">            return this;</span>
-        }
-
-        public Builder withRenderingStrategy(RenderingStrategy renderingStrategy) {
-<span class="fc" id="L75">            this.renderingStrategy = renderingStrategy;</span>
-<span class="fc" id="L76">            return this;</span>
-        }
-
-        public Builder withTableAliasCalculator(TableAliasCalculator tableAliasCalculator) {
-<span class="fc" id="L80">            this.tableAliasCalculator = tableAliasCalculator;</span>
-<span class="fc" id="L81">            return this;</span>
-        }
-
-        public Builder withSequence(AtomicInteger sequence) {
-<span class="fc" id="L85">            this.sequence = sequence;</span>
+<span class="fc" id="L85">            this.whereModel = whereModel;</span>
 <span class="fc" id="L86">            return this;</span>
         }
 
-        public Builder withParameterName(String parameterName) {
-<span class="fc" id="L90">            this.parameterName = parameterName;</span>
+        public Builder withRenderingStrategy(RenderingStrategy renderingStrategy) {
+<span class="fc" id="L90">            this.renderingStrategy = renderingStrategy;</span>
 <span class="fc" id="L91">            return this;</span>
         }
 
+        public Builder withTableAliasCalculator(TableAliasCalculator tableAliasCalculator) {
+<span class="fc" id="L95">            this.tableAliasCalculator = tableAliasCalculator;</span>
+<span class="fc" id="L96">            return this;</span>
+        }
+
+        public Builder withSequence(AtomicInteger sequence) {
+<span class="fc" id="L100">            this.sequence = sequence;</span>
+<span class="fc" id="L101">            return this;</span>
+        }
+
+        public Builder withParameterName(String parameterName) {
+<span class="fc" id="L105">            this.parameterName = parameterName;</span>
+<span class="fc" id="L106">            return this;</span>
+        }
+
         public WhereRenderer build() {
-<span class="fc" id="L95">            return new WhereRenderer(this);</span>
+<span class="fc" id="L110">            return new WhereRenderer(this);</span>
         }
     }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

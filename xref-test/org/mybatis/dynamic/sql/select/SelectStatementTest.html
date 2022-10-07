@@ -7,13 +7,13 @@
 <body>
 <div id="overview"><a href="../../../../../../testapidocs/org/mybatis/dynamic/sql/select/SelectStatementTest.html">View Javadoc</a></div><pre>
 <a class="jxr_linenumber" name="L1" href="#L1">1</a>   <em class="jxr_comment">/*</em>
-<a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_comment"> *    Copyright 2016-2021 the original author or authors.</em>
+<a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_comment"> *    Copyright 2016-2022 the original author or authors.</em>
 <a class="jxr_linenumber" name="L3" href="#L3">3</a>   <em class="jxr_comment"> *</em>
 <a class="jxr_linenumber" name="L4" href="#L4">4</a>   <em class="jxr_comment"> *    Licensed under the Apache License, Version 2.0 (the "License");</em>
 <a class="jxr_linenumber" name="L5" href="#L5">5</a>   <em class="jxr_comment"> *    you may not use this file except in compliance with the License.</em>
 <a class="jxr_linenumber" name="L6" href="#L6">6</a>   <em class="jxr_comment"> *    You may obtain a copy of the License at</em>
 <a class="jxr_linenumber" name="L7" href="#L7">7</a>   <em class="jxr_comment"> *</em>
-<a class="jxr_linenumber" name="L8" href="#L8">8</a>   <em class="jxr_comment"> *       <a href="http://www.apache.org/licenses/LICENSE-2.0" target="alexandria_uri">http://www.apache.org/licenses/LICENSE-2.0</a></em>
+<a class="jxr_linenumber" name="L8" href="#L8">8</a>   <em class="jxr_comment"> *       <a href="https://www.apache.org/licenses/LICENSE-2.0" target="alexandria_uri">https://www.apache.org/licenses/LICENSE-2.0</a></em>
 <a class="jxr_linenumber" name="L9" href="#L9">9</a>   <em class="jxr_comment"> *</em>
 <a class="jxr_linenumber" name="L10" href="#L10">10</a>  <em class="jxr_comment"> *    Unless required by applicable law or agreed to in writing, software</em>
 <a class="jxr_linenumber" name="L11" href="#L11">11</a>  <em class="jxr_comment"> *    distributed under the License is distributed on an "AS IS" BASIS,</em>
@@ -406,45 +406,49 @@
 <a class="jxr_linenumber" name="L398" href="#L398">398</a>         SelectStatementProvider selectStatement = select(column1, column3)
 <a class="jxr_linenumber" name="L399" href="#L399">399</a>                 .from(table)
 <a class="jxr_linenumber" name="L400" href="#L400">400</a>                 .where(column3, isInWhenPresent((Collection&lt;String&gt;) <strong class="jxr_keyword">null</strong>))
-<a class="jxr_linenumber" name="L401" href="#L401">401</a>                 .build()
-<a class="jxr_linenumber" name="L402" href="#L402">402</a>                 .render(RenderingStrategies.MYBATIS3);
-<a class="jxr_linenumber" name="L403" href="#L403">403</a> 
-<a class="jxr_linenumber" name="L404" href="#L404">404</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(<span class="jxr_string">"select column1, column3 from foo"</span>);
-<a class="jxr_linenumber" name="L405" href="#L405">405</a>     }
-<a class="jxr_linenumber" name="L406" href="#L406">406</a> 
-<a class="jxr_linenumber" name="L407" href="#L407">407</a>     @Test
-<a class="jxr_linenumber" name="L408" href="#L408">408</a>     <strong class="jxr_keyword">void</strong> testInCaseInsensitiveWhenPresentNullList() {
-<a class="jxr_linenumber" name="L409" href="#L409">409</a>         SelectStatementProvider selectStatement = select(column1, column3)
-<a class="jxr_linenumber" name="L410" href="#L410">410</a>                 .from(table)
-<a class="jxr_linenumber" name="L411" href="#L411">411</a>                 .where(column3, isInCaseInsensitiveWhenPresent((Collection&lt;String&gt;) <strong class="jxr_keyword">null</strong>))
-<a class="jxr_linenumber" name="L412" href="#L412">412</a>                 .build()
-<a class="jxr_linenumber" name="L413" href="#L413">413</a>                 .render(RenderingStrategies.MYBATIS3);
-<a class="jxr_linenumber" name="L414" href="#L414">414</a> 
-<a class="jxr_linenumber" name="L415" href="#L415">415</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(<span class="jxr_string">"select column1, column3 from foo"</span>);
-<a class="jxr_linenumber" name="L416" href="#L416">416</a>     }
-<a class="jxr_linenumber" name="L417" href="#L417">417</a> 
-<a class="jxr_linenumber" name="L418" href="#L418">418</a>     @Test
-<a class="jxr_linenumber" name="L419" href="#L419">419</a>     <strong class="jxr_keyword">void</strong> testNotInWhenPresentNullList() {
-<a class="jxr_linenumber" name="L420" href="#L420">420</a>         SelectStatementProvider selectStatement = select(column1, column3)
-<a class="jxr_linenumber" name="L421" href="#L421">421</a>                 .from(table)
-<a class="jxr_linenumber" name="L422" href="#L422">422</a>                 .where(column3, isNotInWhenPresent((Collection&lt;String&gt;) <strong class="jxr_keyword">null</strong>))
-<a class="jxr_linenumber" name="L423" href="#L423">423</a>                 .build()
-<a class="jxr_linenumber" name="L424" href="#L424">424</a>                 .render(RenderingStrategies.MYBATIS3);
-<a class="jxr_linenumber" name="L425" href="#L425">425</a> 
-<a class="jxr_linenumber" name="L426" href="#L426">426</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(<span class="jxr_string">"select column1, column3 from foo"</span>);
-<a class="jxr_linenumber" name="L427" href="#L427">427</a>     }
+<a class="jxr_linenumber" name="L401" href="#L401">401</a>                 .configureStatement(c -&gt; c.setNonRenderingWhereClauseAllowed(<strong class="jxr_keyword">true</strong>))
+<a class="jxr_linenumber" name="L402" href="#L402">402</a>                 .build()
+<a class="jxr_linenumber" name="L403" href="#L403">403</a>                 .render(RenderingStrategies.MYBATIS3);
+<a class="jxr_linenumber" name="L404" href="#L404">404</a> 
+<a class="jxr_linenumber" name="L405" href="#L405">405</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(<span class="jxr_string">"select column1, column3 from foo"</span>);
+<a class="jxr_linenumber" name="L406" href="#L406">406</a>     }
+<a class="jxr_linenumber" name="L407" href="#L407">407</a> 
+<a class="jxr_linenumber" name="L408" href="#L408">408</a>     @Test
+<a class="jxr_linenumber" name="L409" href="#L409">409</a>     <strong class="jxr_keyword">void</strong> testInCaseInsensitiveWhenPresentNullList() {
+<a class="jxr_linenumber" name="L410" href="#L410">410</a>         SelectStatementProvider selectStatement = select(column1, column3)
+<a class="jxr_linenumber" name="L411" href="#L411">411</a>                 .from(table)
+<a class="jxr_linenumber" name="L412" href="#L412">412</a>                 .where(column3, isInCaseInsensitiveWhenPresent((Collection&lt;String&gt;) <strong class="jxr_keyword">null</strong>))
+<a class="jxr_linenumber" name="L413" href="#L413">413</a>                 .configureStatement(c -&gt; c.setNonRenderingWhereClauseAllowed(<strong class="jxr_keyword">true</strong>))
+<a class="jxr_linenumber" name="L414" href="#L414">414</a>                 .build()
+<a class="jxr_linenumber" name="L415" href="#L415">415</a>                 .render(RenderingStrategies.MYBATIS3);
+<a class="jxr_linenumber" name="L416" href="#L416">416</a> 
+<a class="jxr_linenumber" name="L417" href="#L417">417</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(<span class="jxr_string">"select column1, column3 from foo"</span>);
+<a class="jxr_linenumber" name="L418" href="#L418">418</a>     }
+<a class="jxr_linenumber" name="L419" href="#L419">419</a> 
+<a class="jxr_linenumber" name="L420" href="#L420">420</a>     @Test
+<a class="jxr_linenumber" name="L421" href="#L421">421</a>     <strong class="jxr_keyword">void</strong> testNotInWhenPresentNullList() {
+<a class="jxr_linenumber" name="L422" href="#L422">422</a>         SelectStatementProvider selectStatement = select(column1, column3)
+<a class="jxr_linenumber" name="L423" href="#L423">423</a>                 .from(table)
+<a class="jxr_linenumber" name="L424" href="#L424">424</a>                 .where(column3, isNotInWhenPresent((Collection&lt;String&gt;) <strong class="jxr_keyword">null</strong>))
+<a class="jxr_linenumber" name="L425" href="#L425">425</a>                 .configureStatement(c -&gt; c.setNonRenderingWhereClauseAllowed(<strong class="jxr_keyword">true</strong>))
+<a class="jxr_linenumber" name="L426" href="#L426">426</a>                 .build()
+<a class="jxr_linenumber" name="L427" href="#L427">427</a>                 .render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L428" href="#L428">428</a> 
-<a class="jxr_linenumber" name="L429" href="#L429">429</a>     @Test
-<a class="jxr_linenumber" name="L430" href="#L430">430</a>     <strong class="jxr_keyword">void</strong> testNotInCaseInsensitiveWhenPresentNullList() {
-<a class="jxr_linenumber" name="L431" href="#L431">431</a>         SelectStatementProvider selectStatement = select(column1, column3)
-<a class="jxr_linenumber" name="L432" href="#L432">432</a>                 .from(table)
-<a class="jxr_linenumber" name="L433" href="#L433">433</a>                 .where(column3, isNotInCaseInsensitiveWhenPresent((Collection&lt;String&gt;) <strong class="jxr_keyword">null</strong>))
-<a class="jxr_linenumber" name="L434" href="#L434">434</a>                 .build()
-<a class="jxr_linenumber" name="L435" href="#L435">435</a>                 .render(RenderingStrategies.MYBATIS3);
-<a class="jxr_linenumber" name="L436" href="#L436">436</a> 
-<a class="jxr_linenumber" name="L437" href="#L437">437</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(<span class="jxr_string">"select column1, column3 from foo"</span>);
-<a class="jxr_linenumber" name="L438" href="#L438">438</a>     }
-<a class="jxr_linenumber" name="L439" href="#L439">439</a> }
+<a class="jxr_linenumber" name="L429" href="#L429">429</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(<span class="jxr_string">"select column1, column3 from foo"</span>);
+<a class="jxr_linenumber" name="L430" href="#L430">430</a>     }
+<a class="jxr_linenumber" name="L431" href="#L431">431</a> 
+<a class="jxr_linenumber" name="L432" href="#L432">432</a>     @Test
+<a class="jxr_linenumber" name="L433" href="#L433">433</a>     <strong class="jxr_keyword">void</strong> testNotInCaseInsensitiveWhenPresentNullList() {
+<a class="jxr_linenumber" name="L434" href="#L434">434</a>         SelectStatementProvider selectStatement = select(column1, column3)
+<a class="jxr_linenumber" name="L435" href="#L435">435</a>                 .from(table)
+<a class="jxr_linenumber" name="L436" href="#L436">436</a>                 .where(column3, isNotInCaseInsensitiveWhenPresent((Collection&lt;String&gt;) <strong class="jxr_keyword">null</strong>))
+<a class="jxr_linenumber" name="L437" href="#L437">437</a>                 .configureStatement(c -&gt; c.setNonRenderingWhereClauseAllowed(<strong class="jxr_keyword">true</strong>))
+<a class="jxr_linenumber" name="L438" href="#L438">438</a>                 .build()
+<a class="jxr_linenumber" name="L439" href="#L439">439</a>                 .render(RenderingStrategies.MYBATIS3);
+<a class="jxr_linenumber" name="L440" href="#L440">440</a> 
+<a class="jxr_linenumber" name="L441" href="#L441">441</a>         assertThat(selectStatement.getSelectStatement()).isEqualTo(<span class="jxr_string">"select column1, column3 from foo"</span>);
+<a class="jxr_linenumber" name="L442" href="#L442">442</a>     }
+<a class="jxr_linenumber" name="L443" href="#L443">443</a> }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2016&#x2013;2022 <a href="https://www.mybatis.org/">MyBatis.org</a>. All rights reserved.</div>

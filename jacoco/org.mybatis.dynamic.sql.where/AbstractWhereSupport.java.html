@@ -5,7 +5,7 @@
  *    you may not use this file except in compliance with the License.
  *    You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *       https://www.apache.org/licenses/LICENSE-2.0
  *
  *    Unless required by applicable law or agreed to in writing, software
  *    distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
@@ -24,6 +24,7 @@ import org.mybatis.dynamic.sql.BindableColumn;
 import org.mybatis.dynamic.sql.ExistsPredicate;
 import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.VisitableCondition;
+import org.mybatis.dynamic.sql.util.ConfigurableStatement;
 
 /**
  * Base class for DSLs that support where clauses - which is every DSL except Insert.
@@ -33,43 +34,48 @@ import org.mybatis.dynamic.sql.VisitableCondition;
  *
  * @param &lt;W&gt; the implementation of the Where DSL customized for a particular SQL statement.
  */
-<span class="fc" id="L36">public abstract class AbstractWhereSupport&lt;W extends AbstractWhereDSL&lt;?&gt;&gt; {</span>
+<span class="fc" id="L37">public abstract class AbstractWhereSupport&lt;W extends AbstractWhereDSL&lt;?&gt;, D extends AbstractWhereSupport&lt;W, D&gt;&gt;</span>
+        implements ConfigurableStatement&lt;D&gt; {
 
     public abstract W where();
 
-    public &lt;T&gt; W where(BindableColumn&lt;T&gt; column, VisitableCondition&lt;T&gt; condition, AndOrCriteriaGroup...subCriteria) {
-<span class="fc" id="L41">        return where(column, condition, Arrays.asList(subCriteria));</span>
+    public &lt;T&gt; W where(BindableColumn&lt;T&gt; column, VisitableCondition&lt;T&gt; condition, AndOrCriteriaGroup... subCriteria) {
+<span class="fc" id="L43">        return where(column, condition, Arrays.asList(subCriteria));</span>
     }
 
     public &lt;T&gt; W where(BindableColumn&lt;T&gt; column, VisitableCondition&lt;T&gt; condition,
                        List&lt;AndOrCriteriaGroup&gt; subCriteria) {
-<span class="fc" id="L46">        return apply(w -&gt; w.where(column, condition, subCriteria));</span>
+<span class="fc" id="L48">        return apply(w -&gt; w.where(column, condition, subCriteria));</span>
     }
 
-    public W where(ExistsPredicate existsPredicate, AndOrCriteriaGroup...subCriteria) {
-<span class="fc" id="L50">        return where(existsPredicate, Arrays.asList(subCriteria));</span>
+    public W where(ExistsPredicate existsPredicate, AndOrCriteriaGroup... subCriteria) {
+<span class="fc" id="L52">        return where(existsPredicate, Arrays.asList(subCriteria));</span>
     }
 
     public W where(ExistsPredicate existsPredicate, List&lt;AndOrCriteriaGroup&gt; subCriteria) {
-<span class="fc" id="L54">        return apply(w -&gt; w.where(existsPredicate, subCriteria));</span>
+<span class="fc" id="L56">        return apply(w -&gt; w.where(existsPredicate, subCriteria));</span>
     }
 
-    public W where(SqlCriterion initialCriterion, AndOrCriteriaGroup...subCriteria) {
-<span class="fc" id="L58">        return where(initialCriterion, Arrays.asList(subCriteria));</span>
+    public W where(SqlCriterion initialCriterion, AndOrCriteriaGroup... subCriteria) {
+<span class="fc" id="L60">        return where(initialCriterion, Arrays.asList(subCriteria));</span>
     }
 
     public W where(SqlCriterion initialCriterion, List&lt;AndOrCriteriaGroup&gt; subCriteria) {
-<span class="fc" id="L62">        return apply(w -&gt; w.where(initialCriterion, subCriteria));</span>
+<span class="fc" id="L64">        return apply(w -&gt; w.where(initialCriterion, subCriteria));</span>
+    }
+
+    public W where(List&lt;AndOrCriteriaGroup&gt; subCriteria) {
+<span class="fc" id="L68">        return apply(w -&gt; w.where(subCriteria));</span>
     }
 
     public W applyWhere(WhereApplier whereApplier) {
-<span class="fc" id="L66">        return apply(w -&gt; w.applyWhere(whereApplier));</span>
+<span class="fc" id="L72">        return apply(w -&gt; w.applyWhere(whereApplier));</span>
     }
 
     private W apply(Consumer&lt;W&gt; block) {
-<span class="fc" id="L70">        W dsl = where();</span>
-<span class="fc" id="L71">        block.accept(dsl);</span>
-<span class="fc" id="L72">        return dsl;</span>
+<span class="fc" id="L76">        W dsl = where();</span>
+<span class="fc" id="L77">        block.accept(dsl);</span>
+<span class="fc" id="L78">        return dsl;</span>
     }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

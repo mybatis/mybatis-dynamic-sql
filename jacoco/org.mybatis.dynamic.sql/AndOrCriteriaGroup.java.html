@@ -5,7 +5,7 @@
  *    you may not use this file except in compliance with the License.
  *    You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *       https://www.apache.org/licenses/LICENSE-2.0
  *
  *    Unless required by applicable law or agreed to in writing, software
  *    distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
@@ -27,6 +27,7 @@ import java.util.Optional;
  * available where an AND or an OR condition is appropriate.
  *
  * @author Jeff Butler
+ *
  * @since 1.4.0
  */
 public class AndOrCriteriaGroup {
@@ -34,47 +35,47 @@ public class AndOrCriteriaGroup {
     private final SqlCriterion initialCriterion;
     private final List&lt;AndOrCriteriaGroup&gt; subCriteria;
 
-<span class="fc" id="L37">    private AndOrCriteriaGroup(Builder builder) {</span>
-<span class="fc" id="L38">        connector = Objects.requireNonNull(builder.connector);</span>
-<span class="fc" id="L39">        initialCriterion = builder.initialCriterion;</span>
-<span class="fc" id="L40">        subCriteria = builder.subCriteria;</span>
-<span class="fc" id="L41">    }</span>
+<span class="fc" id="L38">    private AndOrCriteriaGroup(Builder builder) {</span>
+<span class="fc" id="L39">        connector = Objects.requireNonNull(builder.connector);</span>
+<span class="fc" id="L40">        initialCriterion = builder.initialCriterion;</span>
+<span class="fc" id="L41">        subCriteria = builder.subCriteria;</span>
+<span class="fc" id="L42">    }</span>
 
     public String connector() {
-<span class="fc" id="L44">        return connector;</span>
+<span class="fc" id="L45">        return connector;</span>
     }
 
     public Optional&lt;SqlCriterion&gt; initialCriterion() {
-<span class="fc" id="L48">        return Optional.ofNullable(initialCriterion);</span>
+<span class="fc" id="L49">        return Optional.ofNullable(initialCriterion);</span>
     }
 
     public List&lt;AndOrCriteriaGroup&gt; subCriteria() {
-<span class="fc" id="L52">        return Collections.unmodifiableList(subCriteria);</span>
+<span class="fc" id="L53">        return Collections.unmodifiableList(subCriteria);</span>
     }
 
-<span class="fc" id="L55">    public static class Builder {</span>
+<span class="fc" id="L56">    public static class Builder {</span>
         private String connector;
         private SqlCriterion initialCriterion;
-<span class="fc" id="L58">        private final List&lt;AndOrCriteriaGroup&gt; subCriteria = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L59">        private final List&lt;AndOrCriteriaGroup&gt; subCriteria = new ArrayList&lt;&gt;();</span>
 
         public Builder withConnector(String connector) {
-<span class="fc" id="L61">            this.connector = connector;</span>
-<span class="fc" id="L62">            return this;</span>
+<span class="fc" id="L62">            this.connector = connector;</span>
+<span class="fc" id="L63">            return this;</span>
         }
 
         public Builder withInitialCriterion(SqlCriterion initialCriterion) {
-<span class="fc" id="L66">            this.initialCriterion = initialCriterion;</span>
-<span class="fc" id="L67">            return this;</span>
+<span class="fc" id="L67">            this.initialCriterion = initialCriterion;</span>
+<span class="fc" id="L68">            return this;</span>
         }
 
         public Builder withSubCriteria(List&lt;AndOrCriteriaGroup&gt; subCriteria) {
-<span class="fc" id="L71">            this.subCriteria.addAll(subCriteria);</span>
-<span class="fc" id="L72">            return this;</span>
+<span class="fc" id="L72">            this.subCriteria.addAll(subCriteria);</span>
+<span class="fc" id="L73">            return this;</span>
         }
 
         public AndOrCriteriaGroup build() {
-<span class="fc" id="L76">            return new AndOrCriteriaGroup(this);</span>
+<span class="fc" id="L77">            return new AndOrCriteriaGroup(this);</span>
         }
     }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

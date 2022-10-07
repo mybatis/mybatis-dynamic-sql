@@ -5,7 +5,7 @@
  *    you may not use this file except in compliance with the License.
  *    You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *       https://www.apache.org/licenses/LICENSE-2.0
  *
  *    Unless required by applicable law or agreed to in writing, software
  *    distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
@@ -18,85 +18,90 @@ package org.mybatis.dynamic.sql.where;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.mybatis.dynamic.sql.AndOrCriteriaGroup;
 import org.mybatis.dynamic.sql.SqlCriterion;
+import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 import org.mybatis.dynamic.sql.where.render.WhereClauseProvider;
 import org.mybatis.dynamic.sql.where.render.WhereRenderer;
 
 public class WhereModel {
-<span class="fc" id="L32">    private static final WhereClauseProvider EMPTY_WHERE_CLAUSE =</span>
-<span class="fc" id="L33">            new WhereClauseProvider.Builder().withWhereClause(&quot;&quot;).build(); //$NON-NLS-1$</span>
-
     private final SqlCriterion initialCriterion;
-<span class="fc" id="L36">    private final List&lt;AndOrCriteriaGroup&gt; subCriteria = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L35">    private final List&lt;AndOrCriteriaGroup&gt; subCriteria = new ArrayList&lt;&gt;();</span>
 
-<span class="fc" id="L38">    public WhereModel(SqlCriterion initialCriterion, List&lt;AndOrCriteriaGroup&gt; subCriteria) {</span>
-<span class="fc" id="L39">        this.initialCriterion = initialCriterion;</span>
-<span class="fc" id="L40">        this.subCriteria.addAll(subCriteria);</span>
-<span class="fc" id="L41">    }</span>
+    private final StatementConfiguration statementConfiguration;
+
+<span class="fc" id="L39">    public WhereModel(SqlCriterion initialCriterion, List&lt;AndOrCriteriaGroup&gt; subCriteria,</span>
+                      StatementConfiguration statementConfiguration) {
+<span class="fc" id="L41">        this.initialCriterion = initialCriterion;</span>
+<span class="fc" id="L42">        this.subCriteria.addAll(subCriteria);</span>
+<span class="fc" id="L43">        this.statementConfiguration = Objects.requireNonNull(statementConfiguration);</span>
+<span class="fc" id="L44">    }</span>
 
     public Optional&lt;SqlCriterion&gt; initialCriterion() {
-<span class="fc" id="L44">        return Optional.ofNullable(initialCriterion);</span>
+<span class="fc" id="L47">        return Optional.ofNullable(initialCriterion);</span>
     }
 
     public List&lt;AndOrCriteriaGroup&gt; subCriteria() {
-<span class="fc" id="L48">        return Collections.unmodifiableList(subCriteria);</span>
+<span class="fc" id="L51">        return Collections.unmodifiableList(subCriteria);</span>
+    }
+
+    public boolean isNonRenderingClauseAllowed() {
+<span class="fc" id="L55">        return statementConfiguration.isNonRenderingWhereClauseAllowed();</span>
     }
 
     /**
      * Renders a where clause without table aliases.
      *
-     * @param renderingStrategy rendering strategy
+     * @param renderingStrategy
+     *            rendering strategy
+     *
      * @return rendered where clause
      */
-    public WhereClauseProvider render(RenderingStrategy renderingStrategy) {
-<span class="fc" id="L58">        return WhereRenderer.withWhereModel(this)</span>
-<span class="fc" id="L59">                .withRenderingStrategy(renderingStrategy)</span>
-<span class="fc" id="L60">                .withSequence(new AtomicInteger(1))</span>
-<span class="fc" id="L61">                .withTableAliasCalculator(TableAliasCalculator.empty())</span>
-<span class="fc" id="L62">                .build()</span>
-<span class="fc" id="L63">                .render()</span>
-<span class="fc" id="L64">                .orElse(EMPTY_WHERE_CLAUSE);</span>
+    public Optional&lt;WhereClauseProvider&gt; render(RenderingStrategy renderingStrategy) {
+<span class="fc" id="L67">        return WhereRenderer.withWhereModel(this)</span>
+<span class="fc" id="L68">                .withRenderingStrategy(renderingStrategy)</span>
+<span class="fc" id="L69">                .withSequence(new AtomicInteger(1))</span>
+<span class="fc" id="L70">                .withTableAliasCalculator(TableAliasCalculator.empty())</span>
+<span class="fc" id="L71">                .build()</span>
+<span class="fc" id="L72">                .render();</span>
     }
 
-    public WhereClauseProvider render(RenderingStrategy renderingStrategy,
+    public Optional&lt;WhereClauseProvider&gt; render(RenderingStrategy renderingStrategy,
             TableAliasCalculator tableAliasCalculator) {
-<span class="fc" id="L69">        return WhereRenderer.withWhereModel(this)</span>
-<span class="fc" id="L70">                .withRenderingStrategy(renderingStrategy)</span>
-<span class="fc" id="L71">                .withSequence(new AtomicInteger(1))</span>
-<span class="fc" id="L72">                .withTableAliasCalculator(tableAliasCalculator)</span>
-<span class="fc" id="L73">                .build()</span>
-<span class="fc" id="L74">                .render()</span>
-<span class="fc" id="L75">                .orElse(EMPTY_WHERE_CLAUSE);</span>
+<span class="fc" id="L77">        return WhereRenderer.withWhereModel(this)</span>
+<span class="fc" id="L78">                .withRenderingStrategy(renderingStrategy)</span>
+<span class="fc" id="L79">                .withSequence(new AtomicInteger(1))</span>
+<span class="fc" id="L80">                .withTableAliasCalculator(tableAliasCalculator)</span>
+<span class="fc" id="L81">                .build()</span>
+<span class="fc" id="L82">                .render();</span>
     }
 
-    public WhereClauseProvider render(RenderingStrategy renderingStrategy,
+    public Optional&lt;WhereClauseProvider&gt; render(RenderingStrategy renderingStrategy,
             String parameterName) {
-<span class="fc" id="L80">        return WhereRenderer.withWhereModel(this)</span>
-<span class="fc" id="L81">                .withRenderingStrategy(renderingStrategy)</span>
-<span class="fc" id="L82">                .withSequence(new AtomicInteger(1))</span>
-<span class="fc" id="L83">                .withTableAliasCalculator(TableAliasCalculator.empty())</span>
-<span class="fc" id="L84">                .withParameterName(parameterName)</span>
-<span class="fc" id="L85">                .build()</span>
-<span class="fc" id="L86">                .render()</span>
-<span class="fc" id="L87">                .orElse(EMPTY_WHERE_CLAUSE);</span>
+<span class="fc" id="L87">        return WhereRenderer.withWhereModel(this)</span>
+<span class="fc" id="L88">                .withRenderingStrategy(renderingStrategy)</span>
+<span class="fc" id="L89">                .withSequence(new AtomicInteger(1))</span>
+<span class="fc" id="L90">                .withTableAliasCalculator(TableAliasCalculator.empty())</span>
+<span class="fc" id="L91">                .withParameterName(parameterName)</span>
+<span class="fc" id="L92">                .build()</span>
+<span class="fc" id="L93">                .render();</span>
     }
 
-    public WhereClauseProvider render(RenderingStrategy renderingStrategy,
+    public Optional&lt;WhereClauseProvider&gt; render(RenderingStrategy renderingStrategy,
             TableAliasCalculator tableAliasCalculator, String parameterName) {
-<span class="fc" id="L92">        return WhereRenderer.withWhereModel(this)</span>
-<span class="fc" id="L93">                .withRenderingStrategy(renderingStrategy)</span>
-<span class="fc" id="L94">                .withSequence(new AtomicInteger(1))</span>
-<span class="fc" id="L95">                .withTableAliasCalculator(tableAliasCalculator)</span>
-<span class="fc" id="L96">                .withParameterName(parameterName)</span>
-<span class="fc" id="L97">                .build()</span>
-<span class="fc" id="L98">                .render()</span>
-<span class="fc" id="L99">                .orElse(EMPTY_WHERE_CLAUSE);</span>
+<span class="fc" id="L98">        return WhereRenderer.withWhereModel(this)</span>
+<span class="fc" id="L99">                .withRenderingStrategy(renderingStrategy)</span>
+<span class="fc" id="L100">                .withSequence(new AtomicInteger(1))</span>
+<span class="fc" id="L101">                .withTableAliasCalculator(tableAliasCalculator)</span>
+<span class="fc" id="L102">                .withParameterName(parameterName)</span>
+<span class="fc" id="L103">                .build()</span>
+<span class="fc" id="L104">                .render();</span>
     }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

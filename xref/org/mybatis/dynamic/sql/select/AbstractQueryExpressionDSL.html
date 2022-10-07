@@ -7,13 +7,13 @@
 <body>
 <div id="overview"><a href="../../../../../../apidocs/org/mybatis/dynamic/sql/select/AbstractQueryExpressionDSL.html">View Javadoc</a></div><pre>
 <a class="jxr_linenumber" name="L1" href="#L1">1</a>   <em class="jxr_comment">/*</em>
-<a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_comment"> *    Copyright 2016-2021 the original author or authors.</em>
+<a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_comment"> *    Copyright 2016-2022 the original author or authors.</em>
 <a class="jxr_linenumber" name="L3" href="#L3">3</a>   <em class="jxr_comment"> *</em>
 <a class="jxr_linenumber" name="L4" href="#L4">4</a>   <em class="jxr_comment"> *    Licensed under the Apache License, Version 2.0 (the "License");</em>
 <a class="jxr_linenumber" name="L5" href="#L5">5</a>   <em class="jxr_comment"> *    you may not use this file except in compliance with the License.</em>
 <a class="jxr_linenumber" name="L6" href="#L6">6</a>   <em class="jxr_comment"> *    You may obtain a copy of the License at</em>
 <a class="jxr_linenumber" name="L7" href="#L7">7</a>   <em class="jxr_comment"> *</em>
-<a class="jxr_linenumber" name="L8" href="#L8">8</a>   <em class="jxr_comment"> *       <a href="http://www.apache.org/licenses/LICENSE-2.0" target="alexandria_uri">http://www.apache.org/licenses/LICENSE-2.0</a></em>
+<a class="jxr_linenumber" name="L8" href="#L8">8</a>   <em class="jxr_comment"> *       <a href="https://www.apache.org/licenses/LICENSE-2.0" target="alexandria_uri">https://www.apache.org/licenses/LICENSE-2.0</a></em>
 <a class="jxr_linenumber" name="L9" href="#L9">9</a>   <em class="jxr_comment"> *</em>
 <a class="jxr_linenumber" name="L10" href="#L10">10</a>  <em class="jxr_comment"> *    Unless required by applicable law or agreed to in writing, software</em>
 <a class="jxr_linenumber" name="L11" href="#L11">11</a>  <em class="jxr_comment"> *    distributed under the License is distributed on an "AS IS" BASIS,</em>
@@ -46,7 +46,7 @@
 <a class="jxr_linenumber" name="L38" href="#L38">38</a>  
 <a class="jxr_linenumber" name="L39" href="#L39">39</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">abstract</strong> <strong class="jxr_keyword">class</strong> AbstractQueryExpressionDSL&lt;W <strong class="jxr_keyword">extends</strong> AbstractWhereDSL&lt;?&gt;,
 <a class="jxr_linenumber" name="L40" href="#L40">40</a>              T <strong class="jxr_keyword">extends</strong> AbstractQueryExpressionDSL&lt;W, T&gt;&gt;
-<a class="jxr_linenumber" name="L41" href="#L41">41</a>          <strong class="jxr_keyword">extends</strong> AbstractWhereSupport&lt;W&gt; {
+<a class="jxr_linenumber" name="L41" href="#L41">41</a>          <strong class="jxr_keyword">extends</strong> AbstractWhereSupport&lt;W, T&gt; {
 <a class="jxr_linenumber" name="L42" href="#L42">42</a>  
 <a class="jxr_linenumber" name="L43" href="#L43">43</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> List&lt;JoinSpecification.Builder&gt; joinSpecificationBuilders = <strong class="jxr_keyword">new</strong> ArrayList&lt;&gt;();
 <a class="jxr_linenumber" name="L44" href="#L44">44</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> Map&lt;SqlTable, String&gt; tableAliases = <strong class="jxr_keyword">new</strong> HashMap&lt;&gt;();
@@ -61,13 +61,13 @@
 <a class="jxr_linenumber" name="L53" href="#L53">53</a>      }
 <a class="jxr_linenumber" name="L54" href="#L54">54</a>  
 <a class="jxr_linenumber" name="L55" href="#L55">55</a>      <strong class="jxr_keyword">public</strong> T join(<a name="SqlTable" href="../../../../../org/mybatis/dynamic/sql/SqlTable.html#SqlTable">SqlTable</a> joinTable, <a name="JoinCriterion" href="../../../../../org/mybatis/dynamic/sql/select/join/JoinCriterion.html#JoinCriterion">JoinCriterion</a> onJoinCriterion,
-<a class="jxr_linenumber" name="L56" href="#L56">56</a>              JoinCriterion...andJoinCriteria) {
+<a class="jxr_linenumber" name="L56" href="#L56">56</a>              JoinCriterion... andJoinCriteria) {
 <a class="jxr_linenumber" name="L57" href="#L57">57</a>          addJoinSpecificationBuilder(joinTable, onJoinCriterion, JoinType.INNER, Arrays.asList(andJoinCriteria));
 <a class="jxr_linenumber" name="L58" href="#L58">58</a>          <strong class="jxr_keyword">return</strong> getThis();
 <a class="jxr_linenumber" name="L59" href="#L59">59</a>      }
 <a class="jxr_linenumber" name="L60" href="#L60">60</a>  
 <a class="jxr_linenumber" name="L61" href="#L61">61</a>      <strong class="jxr_keyword">public</strong> T join(<a name="SqlTable" href="../../../../../org/mybatis/dynamic/sql/SqlTable.html#SqlTable">SqlTable</a> joinTable, String tableAlias, <a name="JoinCriterion" href="../../../../../org/mybatis/dynamic/sql/select/join/JoinCriterion.html#JoinCriterion">JoinCriterion</a> onJoinCriterion,
-<a class="jxr_linenumber" name="L62" href="#L62">62</a>              JoinCriterion...andJoinCriteria) {
+<a class="jxr_linenumber" name="L62" href="#L62">62</a>              JoinCriterion... andJoinCriteria) {
 <a class="jxr_linenumber" name="L63" href="#L63">63</a>          addTableAlias(joinTable, tableAlias);
 <a class="jxr_linenumber" name="L64" href="#L64">64</a>          <strong class="jxr_keyword">return</strong> join(joinTable, onJoinCriterion, andJoinCriteria);
 <a class="jxr_linenumber" name="L65" href="#L65">65</a>      }
@@ -92,13 +92,13 @@
 <a class="jxr_linenumber" name="L84" href="#L84">84</a>      }
 <a class="jxr_linenumber" name="L85" href="#L85">85</a>  
 <a class="jxr_linenumber" name="L86" href="#L86">86</a>      <strong class="jxr_keyword">public</strong> T leftJoin(<a name="SqlTable" href="../../../../../org/mybatis/dynamic/sql/SqlTable.html#SqlTable">SqlTable</a> joinTable, <a name="JoinCriterion" href="../../../../../org/mybatis/dynamic/sql/select/join/JoinCriterion.html#JoinCriterion">JoinCriterion</a> onJoinCriterion,
-<a class="jxr_linenumber" name="L87" href="#L87">87</a>              JoinCriterion...andJoinCriteria) {
+<a class="jxr_linenumber" name="L87" href="#L87">87</a>              JoinCriterion... andJoinCriteria) {
 <a class="jxr_linenumber" name="L88" href="#L88">88</a>          addJoinSpecificationBuilder(joinTable, onJoinCriterion, JoinType.LEFT, Arrays.asList(andJoinCriteria));
 <a class="jxr_linenumber" name="L89" href="#L89">89</a>          <strong class="jxr_keyword">return</strong> getThis();
 <a class="jxr_linenumber" name="L90" href="#L90">90</a>      }
 <a class="jxr_linenumber" name="L91" href="#L91">91</a>  
 <a class="jxr_linenumber" name="L92" href="#L92">92</a>      <strong class="jxr_keyword">public</strong> T leftJoin(<a name="SqlTable" href="../../../../../org/mybatis/dynamic/sql/SqlTable.html#SqlTable">SqlTable</a> joinTable, String tableAlias, <a name="JoinCriterion" href="../../../../../org/mybatis/dynamic/sql/select/join/JoinCriterion.html#JoinCriterion">JoinCriterion</a> onJoinCriterion,
-<a class="jxr_linenumber" name="L93" href="#L93">93</a>              JoinCriterion...andJoinCriteria) {
+<a class="jxr_linenumber" name="L93" href="#L93">93</a>              JoinCriterion... andJoinCriteria) {
 <a class="jxr_linenumber" name="L94" href="#L94">94</a>          addTableAlias(joinTable, tableAlias);
 <a class="jxr_linenumber" name="L95" href="#L95">95</a>          <strong class="jxr_keyword">return</strong> leftJoin(joinTable, onJoinCriterion, andJoinCriteria);
 <a class="jxr_linenumber" name="L96" href="#L96">96</a>      }
@@ -123,13 +123,13 @@
 <a class="jxr_linenumber" name="L115" href="#L115">115</a>     }
 <a class="jxr_linenumber" name="L116" href="#L116">116</a> 
 <a class="jxr_linenumber" name="L117" href="#L117">117</a>     <strong class="jxr_keyword">public</strong> T rightJoin(<a name="SqlTable" href="../../../../../org/mybatis/dynamic/sql/SqlTable.html#SqlTable">SqlTable</a> joinTable, <a name="JoinCriterion" href="../../../../../org/mybatis/dynamic/sql/select/join/JoinCriterion.html#JoinCriterion">JoinCriterion</a> onJoinCriterion,
-<a class="jxr_linenumber" name="L118" href="#L118">118</a>             JoinCriterion...andJoinCriteria) {
+<a class="jxr_linenumber" name="L118" href="#L118">118</a>             JoinCriterion... andJoinCriteria) {
 <a class="jxr_linenumber" name="L119" href="#L119">119</a>         addJoinSpecificationBuilder(joinTable, onJoinCriterion, JoinType.RIGHT, Arrays.asList(andJoinCriteria));
 <a class="jxr_linenumber" name="L120" href="#L120">120</a>         <strong class="jxr_keyword">return</strong> getThis();
 <a class="jxr_linenumber" name="L121" href="#L121">121</a>     }
 <a class="jxr_linenumber" name="L122" href="#L122">122</a> 
 <a class="jxr_linenumber" name="L123" href="#L123">123</a>     <strong class="jxr_keyword">public</strong> T rightJoin(<a name="SqlTable" href="../../../../../org/mybatis/dynamic/sql/SqlTable.html#SqlTable">SqlTable</a> joinTable, String tableAlias, <a name="JoinCriterion" href="../../../../../org/mybatis/dynamic/sql/select/join/JoinCriterion.html#JoinCriterion">JoinCriterion</a> onJoinCriterion,
-<a class="jxr_linenumber" name="L124" href="#L124">124</a>             JoinCriterion...andJoinCriteria) {
+<a class="jxr_linenumber" name="L124" href="#L124">124</a>             JoinCriterion... andJoinCriteria) {
 <a class="jxr_linenumber" name="L125" href="#L125">125</a>         addTableAlias(joinTable, tableAlias);
 <a class="jxr_linenumber" name="L126" href="#L126">126</a>         <strong class="jxr_keyword">return</strong> rightJoin(joinTable, onJoinCriterion, andJoinCriteria);
 <a class="jxr_linenumber" name="L127" href="#L127">127</a>     }
@@ -154,13 +154,13 @@
 <a class="jxr_linenumber" name="L146" href="#L146">146</a>     }
 <a class="jxr_linenumber" name="L147" href="#L147">147</a> 
 <a class="jxr_linenumber" name="L148" href="#L148">148</a>     <strong class="jxr_keyword">public</strong> T fullJoin(<a name="SqlTable" href="../../../../../org/mybatis/dynamic/sql/SqlTable.html#SqlTable">SqlTable</a> joinTable, <a name="JoinCriterion" href="../../../../../org/mybatis/dynamic/sql/select/join/JoinCriterion.html#JoinCriterion">JoinCriterion</a> onJoinCriterion,
-<a class="jxr_linenumber" name="L149" href="#L149">149</a>             JoinCriterion...andJoinCriteria) {
+<a class="jxr_linenumber" name="L149" href="#L149">149</a>             JoinCriterion... andJoinCriteria) {
 <a class="jxr_linenumber" name="L150" href="#L150">150</a>         addJoinSpecificationBuilder(joinTable, onJoinCriterion, JoinType.FULL, Arrays.asList(andJoinCriteria));
 <a class="jxr_linenumber" name="L151" href="#L151">151</a>         <strong class="jxr_keyword">return</strong> getThis();
 <a class="jxr_linenumber" name="L152" href="#L152">152</a>     }
 <a class="jxr_linenumber" name="L153" href="#L153">153</a> 
 <a class="jxr_linenumber" name="L154" href="#L154">154</a>     <strong class="jxr_keyword">public</strong> T fullJoin(<a name="SqlTable" href="../../../../../org/mybatis/dynamic/sql/SqlTable.html#SqlTable">SqlTable</a> joinTable, String tableAlias, <a name="JoinCriterion" href="../../../../../org/mybatis/dynamic/sql/select/join/JoinCriterion.html#JoinCriterion">JoinCriterion</a> onJoinCriterion,
-<a class="jxr_linenumber" name="L155" href="#L155">155</a>             JoinCriterion...andJoinCriteria) {
+<a class="jxr_linenumber" name="L155" href="#L155">155</a>             JoinCriterion... andJoinCriteria) {
 <a class="jxr_linenumber" name="L156" href="#L156">156</a>         addTableAlias(joinTable, tableAlias);
 <a class="jxr_linenumber" name="L157" href="#L157">157</a>         <strong class="jxr_keyword">return</strong> fullJoin(joinTable, onJoinCriterion, andJoinCriteria);
 <a class="jxr_linenumber" name="L158" href="#L158">158</a>     }

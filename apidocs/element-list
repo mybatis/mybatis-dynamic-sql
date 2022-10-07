@@ -1,4 +1,5 @@
 org.mybatis.dynamic.sql
+org.mybatis.dynamic.sql.configuration
 org.mybatis.dynamic.sql.delete
 org.mybatis.dynamic.sql.delete.render
 org.mybatis.dynamic.sql.exception

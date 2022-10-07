@@ -5,7 +5,7 @@
  *    you may not use this file except in compliance with the License.
  *    You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *       https://www.apache.org/licenses/LICENSE-2.0
  *
  *    Unless required by applicable law or agreed to in writing, software
  *    distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
@@ -27,7 +27,9 @@ import java.util.stream.Stream;
 import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.TableExpression;
+import org.mybatis.dynamic.sql.exception.InvalidSqlException;
 import org.mybatis.dynamic.sql.select.join.JoinModel;
+import org.mybatis.dynamic.sql.util.Messages;
 import org.mybatis.dynamic.sql.where.WhereModel;
 
 public class QueryExpressionModel {
@@ -40,111 +42,115 @@ public class QueryExpressionModel {
     private final WhereModel whereModel;
     private final GroupByModel groupByModel;
 
-<span class="fc" id="L43">    private QueryExpressionModel(Builder builder) {</span>
-<span class="fc" id="L44">        connector = builder.connector;</span>
-<span class="fc" id="L45">        isDistinct = builder.isDistinct;</span>
-<span class="fc" id="L46">        selectList = Objects.requireNonNull(builder.selectList);</span>
-<span class="fc" id="L47">        table = Objects.requireNonNull(builder.table);</span>
-<span class="fc" id="L48">        joinModel = builder.joinModel;</span>
-<span class="fc" id="L49">        tableAliases = builder.tableAliases;</span>
-<span class="fc" id="L50">        whereModel = builder.whereModel;</span>
-<span class="fc" id="L51">        groupByModel = builder.groupByModel;</span>
-<span class="fc" id="L52">    }</span>
+<span class="fc" id="L45">    private QueryExpressionModel(Builder builder) {</span>
+<span class="fc" id="L46">        connector = builder.connector;</span>
+<span class="fc" id="L47">        isDistinct = builder.isDistinct;</span>
+<span class="fc" id="L48">        selectList = Objects.requireNonNull(builder.selectList);</span>
+<span class="fc" id="L49">        table = Objects.requireNonNull(builder.table);</span>
+<span class="fc" id="L50">        joinModel = builder.joinModel;</span>
+<span class="fc" id="L51">        tableAliases = builder.tableAliases;</span>
+<span class="fc" id="L52">        whereModel = builder.whereModel;</span>
+<span class="fc" id="L53">        groupByModel = builder.groupByModel;</span>
+
+<span class="fc bfc" id="L55" title="All 2 branches covered.">        if (selectList.isEmpty()) {</span>
+<span class="fc" id="L56">            throw new InvalidSqlException(Messages.getString(&quot;ERROR.13&quot;)); //$NON-NLS-1$</span>
+        }
+<span class="fc" id="L58">    }</span>
 
     public Optional&lt;String&gt; connector() {
-<span class="fc" id="L55">        return Optional.ofNullable(connector);</span>
+<span class="fc" id="L61">        return Optional.ofNullable(connector);</span>
     }
 
     public boolean isDistinct() {
-<span class="fc" id="L59">        return isDistinct;</span>
+<span class="fc" id="L65">        return isDistinct;</span>
     }
 
     public &lt;R&gt; Stream&lt;R&gt; mapColumns(Function&lt;BasicColumn, R&gt; mapper) {
-<span class="fc" id="L63">        return selectList.stream().map(mapper);</span>
+<span class="fc" id="L69">        return selectList.stream().map(mapper);</span>
     }
 
     public TableExpression table() {
-<span class="fc" id="L67">        return table;</span>
+<span class="fc" id="L73">        return table;</span>
     }
 
     public Map&lt;SqlTable, String&gt; tableAliases() {
-<span class="fc" id="L71">        return tableAliases;</span>
+<span class="fc" id="L77">        return tableAliases;</span>
     }
 
     public Optional&lt;WhereModel&gt; whereModel() {
-<span class="fc" id="L75">        return Optional.ofNullable(whereModel);</span>
+<span class="fc" id="L81">        return Optional.ofNullable(whereModel);</span>
     }
 
     public Optional&lt;JoinModel&gt; joinModel() {
-<span class="fc" id="L79">        return Optional.ofNullable(joinModel);</span>
+<span class="fc" id="L85">        return Optional.ofNullable(joinModel);</span>
     }
 
     public Optional&lt;GroupByModel&gt; groupByModel() {
-<span class="fc" id="L83">        return Optional.ofNullable(groupByModel);</span>
+<span class="fc" id="L89">        return Optional.ofNullable(groupByModel);</span>
     }
 
     public static Builder withSelectList(List&lt;BasicColumn&gt; columnList) {
-<span class="fc" id="L87">        return new Builder().withSelectList(columnList);</span>
+<span class="fc" id="L93">        return new Builder().withSelectList(columnList);</span>
     }
 
-<span class="fc" id="L90">    public static class Builder {</span>
+<span class="fc" id="L96">    public static class Builder {</span>
         private String connector;
         private boolean isDistinct;
-<span class="fc" id="L93">        private final List&lt;BasicColumn&gt; selectList = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L99">        private final List&lt;BasicColumn&gt; selectList = new ArrayList&lt;&gt;();</span>
         private TableExpression table;
-<span class="fc" id="L95">        private final Map&lt;SqlTable, String&gt; tableAliases = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L101">        private final Map&lt;SqlTable, String&gt; tableAliases = new HashMap&lt;&gt;();</span>
         private WhereModel whereModel;
         private JoinModel joinModel;
         private GroupByModel groupByModel;
 
         public Builder withConnector(String connector) {
-<span class="fc" id="L101">            this.connector = connector;</span>
-<span class="fc" id="L102">            return this;</span>
+<span class="fc" id="L107">            this.connector = connector;</span>
+<span class="fc" id="L108">            return this;</span>
         }
 
         public Builder withTable(TableExpression table) {
-<span class="fc" id="L106">            this.table = table;</span>
-<span class="fc" id="L107">            return this;</span>
+<span class="fc" id="L112">            this.table = table;</span>
+<span class="fc" id="L113">            return this;</span>
         }
 
         public Builder isDistinct(boolean isDistinct) {
-<span class="fc" id="L111">            this.isDistinct = isDistinct;</span>
-<span class="fc" id="L112">            return this;</span>
+<span class="fc" id="L117">            this.isDistinct = isDistinct;</span>
+<span class="fc" id="L118">            return this;</span>
         }
 
         public Builder withSelectColumn(BasicColumn selectColumn) {
-<span class="fc" id="L116">            this.selectList.add(selectColumn);</span>
-<span class="fc" id="L117">            return this;</span>
+<span class="fc" id="L122">            this.selectList.add(selectColumn);</span>
+<span class="fc" id="L123">            return this;</span>
         }
 
         public Builder withSelectList(List&lt;BasicColumn&gt; selectList) {
-<span class="fc" id="L121">            this.selectList.addAll(selectList);</span>
-<span class="fc" id="L122">            return this;</span>
+<span class="fc" id="L127">            this.selectList.addAll(selectList);</span>
+<span class="fc" id="L128">            return this;</span>
         }
 
         public Builder withTableAliases(Map&lt;SqlTable, String&gt; tableAliases) {
-<span class="fc" id="L126">            this.tableAliases.putAll(tableAliases);</span>
-<span class="fc" id="L127">            return this;</span>
+<span class="fc" id="L132">            this.tableAliases.putAll(tableAliases);</span>
+<span class="fc" id="L133">            return this;</span>
         }
 
         public Builder withWhereModel(WhereModel whereModel) {
-<span class="fc" id="L131">            this.whereModel = whereModel;</span>
-<span class="fc" id="L132">            return this;</span>
+<span class="fc" id="L137">            this.whereModel = whereModel;</span>
+<span class="fc" id="L138">            return this;</span>
         }
 
         public Builder withJoinModel(JoinModel joinModel) {
-<span class="fc" id="L136">            this.joinModel = joinModel;</span>
-<span class="fc" id="L137">            return this;</span>
+<span class="fc" id="L142">            this.joinModel = joinModel;</span>
+<span class="fc" id="L143">            return this;</span>
         }
 
         public Builder withGroupByModel(GroupByModel groupByModel) {
-<span class="fc" id="L141">            this.groupByModel = groupByModel;</span>
-<span class="fc" id="L142">            return this;</span>
+<span class="fc" id="L147">            this.groupByModel = groupByModel;</span>
+<span class="fc" id="L148">            return this;</span>
         }
 
         public QueryExpressionModel build() {
-<span class="fc" id="L146">            return new QueryExpressionModel(this);</span>
+<span class="fc" id="L152">            return new QueryExpressionModel(this);</span>
         }
     }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GeneralInsertModel.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.insert</a> &gt; <span class="el_source">GeneralInsertModel.java</span></div><h1>GeneralInsertModel.java</h1><pre class="source lang-java linenums">/*
- *    Copyright 2016-2020 the original author or authors.
+ *    Copyright 2016-2022 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  *    you may not use this file except in compliance with the License.
  *    You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *       https://www.apache.org/licenses/LICENSE-2.0
  *
  *    Unless required by applicable law or agreed to in writing, software
  *    distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
@@ -23,54 +23,59 @@ import java.util.stream.Stream;
 
 import org.jetbrains.annotations.NotNull;
 import org.mybatis.dynamic.sql.SqlTable;
+import org.mybatis.dynamic.sql.exception.InvalidSqlException;
 import org.mybatis.dynamic.sql.insert.render.GeneralInsertRenderer;
 import org.mybatis.dynamic.sql.insert.render.GeneralInsertStatementProvider;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.util.AbstractColumnMapping;
+import org.mybatis.dynamic.sql.util.Messages;
 
 public class GeneralInsertModel {
 
     private final SqlTable table;
     private final List&lt;AbstractColumnMapping&gt; insertMappings;
 
-<span class="fc" id="L36">    private GeneralInsertModel(Builder builder) {</span>
-<span class="fc" id="L37">        table = Objects.requireNonNull(builder.table);</span>
-<span class="fc" id="L38">        insertMappings = builder.insertMappings;</span>
-<span class="fc" id="L39">    }</span>
+<span class="fc" id="L38">    private GeneralInsertModel(Builder builder) {</span>
+<span class="fc" id="L39">        table = Objects.requireNonNull(builder.table);</span>
+<span class="fc bfc" id="L40" title="All 2 branches covered.">        if (builder.insertMappings.isEmpty()) {</span>
+<span class="fc" id="L41">            throw new InvalidSqlException(Messages.getString(&quot;ERROR.6&quot;)); //$NON-NLS-1$</span>
+        }
+<span class="fc" id="L43">        insertMappings = builder.insertMappings;</span>
+<span class="fc" id="L44">    }</span>
 
     public &lt;R&gt; Stream&lt;R&gt; mapColumnMappings(Function&lt;AbstractColumnMapping, R&gt; mapper) {
-<span class="fc" id="L42">        return insertMappings.stream().map(mapper);</span>
+<span class="fc" id="L47">        return insertMappings.stream().map(mapper);</span>
     }
 
     public SqlTable table() {
-<span class="fc" id="L46">        return table;</span>
+<span class="fc" id="L51">        return table;</span>
     }
 
     @NotNull
     public GeneralInsertStatementProvider render(RenderingStrategy renderingStrategy) {
-<span class="fc" id="L51">        return GeneralInsertRenderer.withInsertModel(this)</span>
-<span class="fc" id="L52">                .withRenderingStrategy(renderingStrategy)</span>
-<span class="fc" id="L53">                .build()</span>
-<span class="fc" id="L54">                .render();</span>
+<span class="fc" id="L56">        return GeneralInsertRenderer.withInsertModel(this)</span>
+<span class="fc" id="L57">                .withRenderingStrategy(renderingStrategy)</span>
+<span class="fc" id="L58">                .build()</span>
+<span class="fc" id="L59">                .render();</span>
     }
 
-<span class="fc" id="L57">    public static class Builder {</span>
+<span class="fc" id="L62">    public static class Builder {</span>
         private SqlTable table;
-<span class="fc" id="L59">        private final List&lt;AbstractColumnMapping&gt; insertMappings = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L64">        private final List&lt;AbstractColumnMapping&gt; insertMappings = new ArrayList&lt;&gt;();</span>
 
         public Builder withTable(SqlTable table) {
-<span class="fc" id="L62">            this.table = table;</span>
-<span class="fc" id="L63">            return this;</span>
-        }
-
-        public Builder withInsertMappings(List&lt;AbstractColumnMapping&gt; insertMappings) {
-<span class="fc" id="L67">            this.insertMappings.addAll(insertMappings);</span>
+<span class="fc" id="L67">            this.table = table;</span>
 <span class="fc" id="L68">            return this;</span>
         }
 
+        public Builder withInsertMappings(List&lt;AbstractColumnMapping&gt; insertMappings) {
+<span class="fc" id="L72">            this.insertMappings.addAll(insertMappings);</span>
+<span class="fc" id="L73">            return this;</span>
+        }
+
         public GeneralInsertModel build() {
-<span class="fc" id="L72">            return new GeneralInsertModel(this);</span>
+<span class="fc" id="L77">            return new GeneralInsertModel(this);</span>
         }
     }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

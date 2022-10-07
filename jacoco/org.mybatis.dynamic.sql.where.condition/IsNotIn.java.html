@@ -5,7 +5,7 @@
  *    you may not use this file except in compliance with the License.
  *    You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *       https://www.apache.org/licenses/LICENSE-2.0
  *
  *    Unless required by applicable law or agreed to in writing, software
  *    distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
@@ -38,33 +38,63 @@ public class IsNotIn&lt;T&gt; extends AbstractListValueCondition&lt;T&gt; {
 <span class="fc" id="L38">        return t;</span>
     }
 
+    /**
+     * Build an empty condition.
+     *
+     * @return a new empty condition
+     *
+     * @deprecated in favor of the statement configuration functions
+     */
+    @Deprecated
     private &lt;S&gt; IsNotIn&lt;S&gt; emptyWithCallback() {
-<span class="fc" id="L42">        return new IsNotIn&lt;&gt;(Collections.emptyList(), emptyCallback);</span>
+<span class="fc" id="L50">        return new IsNotIn&lt;&gt;(Collections.emptyList(), emptyCallback);</span>
     }
 
     protected IsNotIn(Collection&lt;T&gt; values) {
-<span class="fc" id="L46">        super(values);</span>
-<span class="fc" id="L47">    }</span>
+<span class="fc" id="L54">        super(values);</span>
+<span class="fc" id="L55">    }</span>
 
+    /**
+     * Build a new condition with a callback.
+     *
+     * @param values
+     *            values
+     * @param emptyCallback
+     *            empty callback
+     *
+     * @deprecated in favor of the statement configuration functions
+     */
+    @Deprecated
     protected IsNotIn(Collection&lt;T&gt; values, Callback emptyCallback) {
-<span class="fc" id="L50">        super(values, emptyCallback);</span>
-<span class="fc" id="L51">    }</span>
+<span class="fc" id="L69">        super(values, emptyCallback);</span>
+<span class="fc" id="L70">    }</span>
 
     @Override
     public String renderCondition(String columnName, Stream&lt;String&gt; placeholders) {
-<span class="fc" id="L55">        return spaceAfter(columnName)</span>
-<span class="fc" id="L56">                + placeholders.collect(</span>
-<span class="fc" id="L57">                        Collectors.joining(&quot;,&quot;, &quot;not in (&quot;, &quot;)&quot;)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$</span>
+<span class="fc" id="L74">        return spaceAfter(columnName)</span>
+<span class="fc" id="L75">                + placeholders.collect(</span>
+<span class="fc" id="L76">                        Collectors.joining(&quot;,&quot;, &quot;not in (&quot;, &quot;)&quot;)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$</span>
     }
 
+    /**
+     * Build a new instance with a callback.
+     *
+     * @param callback
+     *            a callback function - typically throws an exception to block the statement from executing
+     *
+     * @return this condition
+     *
+     * @deprecated in favor of the statement configuration functions
+     */
+    @Deprecated
     @Override
     public IsNotIn&lt;T&gt; withListEmptyCallback(Callback callback) {
-<span class="fc" id="L62">        return new IsNotIn&lt;&gt;(values, callback);</span>
+<span class="fc" id="L92">        return new IsNotIn&lt;&gt;(values, callback);</span>
     }
 
     @Override
     public IsNotIn&lt;T&gt; filter(Predicate&lt;? super T&gt; predicate) {
-<span class="fc" id="L67">        return filterSupport(predicate, IsNotIn::new, this, this::emptyWithCallback);</span>
+<span class="fc" id="L97">        return filterSupport(predicate, IsNotIn::new, this, this::emptyWithCallback);</span>
     }
 
     /**
@@ -77,17 +107,17 @@ public class IsNotIn&lt;T&gt; extends AbstractListValueCondition&lt;T&gt; {
      *     that will not render.
      */
     public &lt;R&gt; IsNotIn&lt;R&gt; map(Function&lt;? super T, ? extends R&gt; mapper) {
-<span class="fc" id="L80">        BiFunction&lt;Collection&lt;R&gt;, Callback, IsNotIn&lt;R&gt;&gt; constructor = IsNotIn::new;</span>
-<span class="fc" id="L81">        return mapSupport(mapper, constructor, this::emptyWithCallback);</span>
+<span class="fc" id="L110">        BiFunction&lt;Collection&lt;R&gt;, Callback, IsNotIn&lt;R&gt;&gt; constructor = IsNotIn::new;</span>
+<span class="fc" id="L111">        return mapSupport(mapper, constructor, this::emptyWithCallback);</span>
     }
 
     @SafeVarargs
     public static &lt;T&gt; IsNotIn&lt;T&gt; of(T... values) {
-<span class="fc" id="L86">        return of(Arrays.asList(values));</span>
+<span class="fc" id="L116">        return of(Arrays.asList(values));</span>
     }
 
     public static &lt;T&gt; IsNotIn&lt;T&gt; of(Collection&lt;T&gt; values) {
-<span class="fc" id="L90">        return new IsNotIn&lt;&gt;(values);</span>
+<span class="fc" id="L120">        return new IsNotIn&lt;&gt;(values);</span>
     }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

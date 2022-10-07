@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UpdateModel.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.update</a> &gt; <span class="el_source">UpdateModel.java</span></div><h1>UpdateModel.java</h1><pre class="source lang-java linenums">/*
- *    Copyright 2016-2020 the original author or authors.
+ *    Copyright 2016-2022 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  *    you may not use this file except in compliance with the License.
  *    You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *       https://www.apache.org/licenses/LICENSE-2.0
  *
  *    Unless required by applicable law or agreed to in writing, software
  *    distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
@@ -24,70 +24,88 @@ import java.util.stream.Stream;
 
 import org.jetbrains.annotations.NotNull;
 import org.mybatis.dynamic.sql.SqlTable;
+import org.mybatis.dynamic.sql.exception.InvalidSqlException;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.update.render.UpdateRenderer;
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
 import org.mybatis.dynamic.sql.util.AbstractColumnMapping;
+import org.mybatis.dynamic.sql.util.Messages;
 import org.mybatis.dynamic.sql.where.WhereModel;
 
 public class UpdateModel {
     private final SqlTable table;
+    private final String tableAlias;
     private final WhereModel whereModel;
     private final List&lt;AbstractColumnMapping&gt; columnMappings;
 
-<span class="fc" id="L38">    private UpdateModel(Builder builder) {</span>
-<span class="fc" id="L39">        table = Objects.requireNonNull(builder.table);</span>
-<span class="fc" id="L40">        whereModel = builder.whereModel;</span>
-<span class="fc" id="L41">        columnMappings = Objects.requireNonNull(builder.columnMappings);</span>
-<span class="fc" id="L42">    }</span>
+<span class="fc" id="L41">    private UpdateModel(Builder builder) {</span>
+<span class="fc" id="L42">        table = Objects.requireNonNull(builder.table);</span>
+<span class="fc" id="L43">        whereModel = builder.whereModel;</span>
+<span class="fc" id="L44">        columnMappings = Objects.requireNonNull(builder.columnMappings);</span>
+<span class="fc" id="L45">        tableAlias = builder.tableAlias;</span>
+
+<span class="fc bfc" id="L47" title="All 2 branches covered.">        if (columnMappings.isEmpty()) {</span>
+<span class="fc" id="L48">            throw new InvalidSqlException(Messages.getString(&quot;ERROR.17&quot;)); //$NON-NLS-1$</span>
+        }
+<span class="fc" id="L50">    }</span>
 
     public SqlTable table() {
-<span class="fc" id="L45">        return table;</span>
+<span class="fc" id="L53">        return table;</span>
+    }
+
+    public Optional&lt;String&gt; tableAlias() {
+<span class="fc" id="L57">        return Optional.ofNullable(tableAlias);</span>
     }
 
     public Optional&lt;WhereModel&gt; whereModel() {
-<span class="fc" id="L49">        return Optional.ofNullable(whereModel);</span>
+<span class="fc" id="L61">        return Optional.ofNullable(whereModel);</span>
     }
 
     public &lt;R&gt; Stream&lt;R&gt; mapColumnMappings(Function&lt;AbstractColumnMapping, R&gt; mapper) {
-<span class="fc" id="L53">        return columnMappings.stream().map(mapper);</span>
+<span class="fc" id="L65">        return columnMappings.stream().map(mapper);</span>
     }
 
     @NotNull
     public UpdateStatementProvider render(RenderingStrategy renderingStrategy) {
-<span class="fc" id="L58">        return UpdateRenderer.withUpdateModel(this)</span>
-<span class="fc" id="L59">                .withRenderingStrategy(renderingStrategy)</span>
-<span class="fc" id="L60">                .build()</span>
-<span class="fc" id="L61">                .render();</span>
+<span class="fc" id="L70">        return UpdateRenderer.withUpdateModel(this)</span>
+<span class="fc" id="L71">                .withRenderingStrategy(renderingStrategy)</span>
+<span class="fc" id="L72">                .build()</span>
+<span class="fc" id="L73">                .render();</span>
     }
 
     public static Builder withTable(SqlTable table) {
-<span class="fc" id="L65">        return new Builder().withTable(table);</span>
+<span class="fc" id="L77">        return new Builder().withTable(table);</span>
     }
 
-<span class="fc" id="L68">    public static class Builder {</span>
+<span class="fc" id="L80">    public static class Builder {</span>
         private SqlTable table;
+        private String tableAlias;
         private WhereModel whereModel;
-<span class="fc" id="L71">        private final List&lt;AbstractColumnMapping&gt; columnMappings = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L84">        private final List&lt;AbstractColumnMapping&gt; columnMappings = new ArrayList&lt;&gt;();</span>
 
         public Builder withTable(SqlTable table) {
-<span class="fc" id="L74">            this.table = table;</span>
-<span class="fc" id="L75">            return this;</span>
+<span class="fc" id="L87">            this.table = table;</span>
+<span class="fc" id="L88">            return this;</span>
+        }
+
+        public Builder withTableAlias(String tableAlias) {
+<span class="fc" id="L92">            this.tableAlias = tableAlias;</span>
+<span class="fc" id="L93">            return this;</span>
         }
 
         public Builder withColumnMappings(List&lt;AbstractColumnMapping&gt; columnMappings) {
-<span class="fc" id="L79">            this.columnMappings.addAll(columnMappings);</span>
-<span class="fc" id="L80">            return this;</span>
+<span class="fc" id="L97">            this.columnMappings.addAll(columnMappings);</span>
+<span class="fc" id="L98">            return this;</span>
         }
 
         public Builder withWhereModel(WhereModel whereModel) {
-<span class="fc" id="L84">            this.whereModel = whereModel;</span>
-<span class="fc" id="L85">            return this;</span>
+<span class="fc" id="L102">            this.whereModel = whereModel;</span>
+<span class="fc" id="L103">            return this;</span>
         }
 
         public UpdateModel build() {
-<span class="fc" id="L89">            return new UpdateModel(this);</span>
+<span class="fc" id="L107">            return new UpdateModel(this);</span>
         }
     }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

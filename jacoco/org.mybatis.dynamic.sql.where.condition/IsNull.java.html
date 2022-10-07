@@ -5,7 +5,7 @@
  *    you may not use this file except in compliance with the License.
  *    You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *       https://www.apache.org/licenses/LICENSE-2.0
  *
  *    Unless required by applicable law or agreed to in writing, software
  *    distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
@@ -25,7 +25,7 @@ public class IsNull&lt;T&gt; extends AbstractNoValueCondition&lt;T&gt; {
         public boolean shouldRender() {
 <span class="fc" id="L26">            return false;</span>
         }
-    };
+<span class="fc" id="L28">    };</span>
 
     public static &lt;T&gt; IsNull&lt;T&gt; empty() {
         @SuppressWarnings(&quot;unchecked&quot;)
@@ -43,18 +43,20 @@ public class IsNull&lt;T&gt; extends AbstractNoValueCondition&lt;T&gt; {
     }
 
     /**
-     * If renderable and the supplier returns true, returns this condition. Else returns a condition
-     *     that will not render.
+     * If renderable and the supplier returns true, returns this condition. Else returns a condition that will not
+     * render.
      *
-     * @param booleanSupplier function that specifies whether the condition should render
-     * @param &lt;S&gt; condition type - not used except for compilation compliance
-     * @return this condition if renderable and the supplier returns true, otherwise a condition
-     *     that will not render.
+     * @param booleanSupplier
+     *            function that specifies whether the condition should render
+     * @param &lt;S&gt;
+     *            condition type - not used except for compilation compliance
+     *
+     * @return this condition if renderable and the supplier returns true, otherwise a condition that will not render.
      */
     public &lt;S&gt; IsNull&lt;S&gt; filter(BooleanSupplier booleanSupplier) {
         @SuppressWarnings(&quot;unchecked&quot;)
-<span class="fc" id="L56">        IsNull&lt;S&gt; self = (IsNull&lt;S&gt;) this;</span>
-<span class="fc" id="L57">        return filterSupport(booleanSupplier, IsNull::empty, self);</span>
+<span class="fc" id="L58">        IsNull&lt;S&gt; self = (IsNull&lt;S&gt;) this;</span>
+<span class="fc" id="L59">        return filterSupport(booleanSupplier, IsNull::empty, self);</span>
     }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

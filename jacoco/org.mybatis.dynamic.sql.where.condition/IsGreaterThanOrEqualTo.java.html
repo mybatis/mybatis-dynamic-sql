@@ -5,7 +5,7 @@
  *    you may not use this file except in compliance with the License.
  *    You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *       https://www.apache.org/licenses/LICENSE-2.0
  *
  *    Unless required by applicable law or agreed to in writing, software
  *    distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
@@ -26,7 +26,7 @@ public class IsGreaterThanOrEqualTo&lt;T&gt; extends AbstractSingleValueConditio
         public boolean shouldRender() {
 <span class="fc" id="L27">            return false;</span>
         }
-    };
+<span class="fc" id="L29">    };</span>
 
     public static &lt;T&gt; IsGreaterThanOrEqualTo&lt;T&gt; empty() {
         @SuppressWarnings(&quot;unchecked&quot;)
@@ -54,7 +54,7 @@ public class IsGreaterThanOrEqualTo&lt;T&gt; extends AbstractSingleValueConditio
 
     /**
      * If renderable, apply the mapping to the value and return a new condition with the new value. Else return a
-     *     condition that will not render (this).
+     * condition that will not render (this).
      *
      * @param mapper a mapping function to apply to the value, if renderable
      * @param &lt;R&gt; type of the new condition
@@ -65,4 +65,4 @@ public class IsGreaterThanOrEqualTo&lt;T&gt; extends AbstractSingleValueConditio
 <span class="fc" id="L65">        return mapSupport(mapper, IsGreaterThanOrEqualTo::new, IsGreaterThanOrEqualTo::empty);</span>
     }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>
