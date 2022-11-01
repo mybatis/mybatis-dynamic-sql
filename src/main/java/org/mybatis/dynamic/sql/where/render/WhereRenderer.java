@@ -44,7 +44,8 @@ public class WhereRenderer {
     }
 
     public Optional<FragmentAndParameters> render() {
-        Optional<FragmentAndParameters> whereClause = whereModel.initialCriterion().map(this::renderWithInitialCriterion)
+        Optional<FragmentAndParameters> whereClause = whereModel.initialCriterion()
+                .map(this::renderWithInitialCriterion)
                 .orElseGet(this::renderWithoutInitialCriterion)
                 .map(rc -> FragmentAndParameters.withFragment(rc.fragmentAndParameters().fragment())
                         .withParameters(rc.fragmentAndParameters().parameters())
