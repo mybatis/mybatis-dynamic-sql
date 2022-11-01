@@ -15,11 +15,7 @@
  */
 package org.mybatis.dynamic.sql.update.render;
 
-import static org.mybatis.dynamic.sql.util.StringUtilities.spaceBefore;
-
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -32,9 +28,9 @@ import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 import org.mybatis.dynamic.sql.update.UpdateModel;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
+import org.mybatis.dynamic.sql.util.FragmentCollector;
 import org.mybatis.dynamic.sql.util.Messages;
 import org.mybatis.dynamic.sql.where.WhereModel;
-import org.mybatis.dynamic.sql.where.render.WhereClauseProvider;
 import org.mybatis.dynamic.sql.where.render.WhereRenderer;
 
 public class UpdateRenderer {
@@ -52,72 +48,62 @@ public class UpdateRenderer {
     }
 
     public UpdateStatementProvider render() {
-        SetPhraseVisitor visitor = new SetPhraseVisitor(sequence, renderingStrategy, tableAliasCalculator);
+        FragmentCollector fragmentCollector = new FragmentCollector();
 
-        List<Optional<FragmentAndParameters>> fragmentsAndParameters =
-                updateModel.mapColumnMappings(m -> m.accept(visitor))
-                .collect(Collectors.toList());
+        fragmentCollector.add(calculateUpdateStatementStart());
+        fragmentCollector.add(calculateSetPhrase());
+        calculateWhereClause().ifPresent(fragmentCollector::add);
 
-        if (fragmentsAndParameters.stream().noneMatch(Optional::isPresent)) {
-            throw new InvalidSqlException(Messages.getString("ERROR.18")); //$NON-NLS-1$
-        }
-
-        return updateModel.whereModel()
-                .flatMap(this::renderWhereClause)
-                .map(wc -> renderWithWhereClause(fragmentsAndParameters, wc))
-                .orElseGet(() -> renderWithoutWhereClause(fragmentsAndParameters));
+        return fragmentCollector.map(this::toUpdateStatementProvider);
     }
 
-    private UpdateStatementProvider renderWithWhereClause(List<Optional<FragmentAndParameters>> fragmentsAndParameters,
-            WhereClauseProvider whereClause) {
+    private UpdateStatementProvider toUpdateStatementProvider(FragmentCollector fragmentCollector) {
         return DefaultUpdateStatementProvider
-                .withUpdateStatement(calculateUpdateStatement(fragmentsAndParameters, whereClause))
-                .withParameters(calculateParameters(fragmentsAndParameters))
-                .withParameters(whereClause.getParameters())
+                .withUpdateStatement(fragmentCollector.fragments().collect(Collectors.joining(" "))) //$NON-NLS-1$
+                .withParameters(fragmentCollector.parameters())
                 .build();
     }
 
-    private String calculateUpdateStatement(List<Optional<FragmentAndParameters>> fragmentsAndParameters,
-            WhereClauseProvider whereClause) {
-        return calculateUpdateStatement(fragmentsAndParameters)
-                + spaceBefore(whereClause.getWhereClause());
-    }
-
-    private String calculateUpdateStatement(List<Optional<FragmentAndParameters>> fragmentsAndParameters) {
+    private FragmentAndParameters calculateUpdateStatementStart() {
         SqlTable table = updateModel.table();
         String tableName = table.tableNameAtRuntime();
         String aliasedTableName = tableAliasCalculator.aliasForTable(table)
                 .map(a -> tableName + " " + a).orElse(tableName); //$NON-NLS-1$
 
-        return "update" //$NON-NLS-1$
-                + spaceBefore(aliasedTableName)
-                + spaceBefore(calculateSetPhrase(fragmentsAndParameters));
-    }
-
-    private UpdateStatementProvider renderWithoutWhereClause(
-            List<Optional<FragmentAndParameters>> fragmentsAndParameters) {
-        return DefaultUpdateStatementProvider.withUpdateStatement(calculateUpdateStatement(fragmentsAndParameters))
-                .withParameters(calculateParameters(fragmentsAndParameters))
+        return FragmentAndParameters.withFragment("update " + aliasedTableName) //$NON-NLS-1$
                 .build();
     }
 
-    private String calculateSetPhrase(List<Optional<FragmentAndParameters>> fragmentsAndParameters) {
+    private FragmentAndParameters calculateSetPhrase() {
+        SetPhraseVisitor visitor = new SetPhraseVisitor(sequence, renderingStrategy, tableAliasCalculator);
+
+        List<Optional<FragmentAndParameters>> fragmentsAndParameters =
+                updateModel.mapColumnMappings(m -> m.accept(visitor))
+                        .collect(Collectors.toList());
+
+        if (fragmentsAndParameters.stream().noneMatch(Optional::isPresent)) {
+            throw new InvalidSqlException(Messages.getString("ERROR.18")); //$NON-NLS-1$
+        }
+
         return fragmentsAndParameters.stream()
                 .filter(Optional::isPresent)
                 .map(Optional::get)
-                .map(FragmentAndParameters::fragment)
-                .collect(Collectors.joining(", ", "set ", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                .collect(FragmentCollector.collect())
+                .map(this::toSetPhrase);
     }
 
-    private Map<String, Object> calculateParameters(List<Optional<FragmentAndParameters>> fragmentsAndParameters) {
-        return fragmentsAndParameters.stream()
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .map(FragmentAndParameters::parameters)
-                .collect(HashMap::new, HashMap::putAll, HashMap::putAll);
+    private FragmentAndParameters toSetPhrase(FragmentCollector fragmentCollector) {
+        return FragmentAndParameters.withFragment(fragmentCollector.fragments().collect(
+                    Collectors.joining(", ", "set ", ""))) //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                .withParameters(fragmentCollector.parameters())
+                .build();
     }
 
-    private Optional<WhereClauseProvider> renderWhereClause(WhereModel whereModel) {
+    private Optional<FragmentAndParameters> calculateWhereClause() {
+        return updateModel.whereModel().flatMap(this::renderWhereClause);
+    }
+
+    private Optional<FragmentAndParameters> renderWhereClause(WhereModel whereModel) {
         return WhereRenderer.withWhereModel(whereModel)
                 .withRenderingStrategy(renderingStrategy)
                 .withSequence(sequence)

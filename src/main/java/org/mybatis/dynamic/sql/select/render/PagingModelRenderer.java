@@ -16,7 +16,6 @@
 package org.mybatis.dynamic.sql.select.render;
 
 import java.util.Objects;
-import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
@@ -34,17 +33,17 @@ public class PagingModelRenderer {
         sequence = Objects.requireNonNull(builder.sequence);
     }
 
-    public Optional<FragmentAndParameters> render() {
+    public FragmentAndParameters render() {
         return pagingModel.limit().map(this::limitAndOffsetRender)
                 .orElseGet(this::fetchFirstRender);
     }
 
-    private Optional<FragmentAndParameters> limitAndOffsetRender(Long limit) {
+    private FragmentAndParameters limitAndOffsetRender(Long limit) {
         return new LimitAndOffsetPagingModelRenderer(renderingStrategy, limit,
                 pagingModel, sequence).render();
     }
 
-    private Optional<FragmentAndParameters> fetchFirstRender() {
+    private FragmentAndParameters fetchFirstRender() {
         return new FetchFirstPagingModelRenderer(renderingStrategy, pagingModel, sequence).render();
     }
 

@@ -152,6 +152,10 @@ public class SelectDSL<R> implements Buildable<R>, ConfigurableStatement<SelectD
     }
 
     private PagingModel buildPagingModel() {
+        if (limit == null && offset == null && fetchFirstRows == null) {
+            return  null;
+        }
+
         return new PagingModel.Builder()
                 .withLimit(limit)
                 .withOffset(offset)
@@ -161,7 +165,7 @@ public class SelectDSL<R> implements Buildable<R>, ConfigurableStatement<SelectD
 
     public class LimitFinisher implements Buildable<R> {
         public OffsetFinisher offset(long offset) {
-            SelectDSL.this.offset = offset;
+            SelectDSL.this.offset(offset);
             return new OffsetFinisher();
         }
 
@@ -182,7 +186,7 @@ public class SelectDSL<R> implements Buildable<R>, ConfigurableStatement<SelectD
 
     public class OffsetFirstFinisher implements Buildable<R> {
         public FetchFirstFinisher fetchFirst(long fetchFirstRows) {
-            SelectDSL.this.fetchFirstRows = fetchFirstRows;
+            SelectDSL.this.fetchFirst(fetchFirstRows);
             return new FetchFirstFinisher();
         }
 

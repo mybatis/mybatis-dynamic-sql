@@ -52,12 +52,16 @@ public class SelectRenderer {
         FragmentCollector fragmentCollector = selectModel
                 .mapQueryExpressions(this::renderQueryExpression)
                 .collect(FragmentCollector.collect());
-        renderOrderBy(fragmentCollector);
-        renderPagingModel(fragmentCollector);
 
-        String selectStatement = fragmentCollector.fragments().collect(Collectors.joining(" ")); //$NON-NLS-1$
+        renderOrderBy().ifPresent(fragmentCollector::add);
+        renderPagingModel().ifPresent(fragmentCollector::add);
 
-        return DefaultSelectStatementProvider.withSelectStatement(selectStatement)
+        return fragmentCollector.map(this::toSelectStatementProvider);
+    }
+
+    private SelectStatementProvider toSelectStatementProvider(FragmentCollector fragmentCollector) {
+        return DefaultSelectStatementProvider
+                .withSelectStatement(fragmentCollector.fragments().collect(Collectors.joining(" "))) //$NON-NLS-1$
                 .withParameters(fragmentCollector.parameters())
                 .build();
     }
@@ -71,14 +75,14 @@ public class SelectRenderer {
                 .render();
     }
 
-    private void renderOrderBy(FragmentCollector fragmentCollector) {
-        selectModel.orderByModel().ifPresent(om -> renderOrderBy(fragmentCollector, om));
+    private Optional<FragmentAndParameters> renderOrderBy() {
+        return selectModel.orderByModel().map(this::renderOrderBy);
     }
 
-    private void renderOrderBy(FragmentCollector fragmentCollector, OrderByModel orderByModel) {
+    private FragmentAndParameters renderOrderBy(OrderByModel orderByModel) {
         String phrase = orderByModel.mapColumns(this::calculateOrderByPhrase)
                 .collect(CustomCollectors.joining(", ", "order by ", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        fragmentCollector.add(FragmentAndParameters.withFragment(phrase).build());
+        return FragmentAndParameters.withFragment(phrase).build();
     }
 
     private String calculateOrderByPhrase(SortSpecification column) {
@@ -89,12 +93,11 @@ public class SelectRenderer {
         return phrase;
     }
 
-    private void renderPagingModel(FragmentCollector fragmentCollector) {
-        selectModel.pagingModel().flatMap(this::renderPagingModel)
-            .ifPresent(fragmentCollector::add);
+    private Optional<FragmentAndParameters> renderPagingModel() {
+        return selectModel.pagingModel().map(this::renderPagingModel);
     }
 
-    private Optional<FragmentAndParameters> renderPagingModel(PagingModel pagingModel) {
+    private FragmentAndParameters renderPagingModel(PagingModel pagingModel) {
         return new PagingModelRenderer.Builder()
                 .withPagingModel(pagingModel)
                 .withRenderingStrategy(renderingStrategy)

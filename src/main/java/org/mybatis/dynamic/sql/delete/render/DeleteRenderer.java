@@ -15,25 +15,26 @@
  */
 package org.mybatis.dynamic.sql.delete.render;
 
-import static org.mybatis.dynamic.sql.util.StringUtilities.spaceBefore;
-
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.delete.DeleteModel;
 import org.mybatis.dynamic.sql.render.ExplicitTableAliasCalculator;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.render.TableAliasCalculator;
+import org.mybatis.dynamic.sql.util.FragmentAndParameters;
+import org.mybatis.dynamic.sql.util.FragmentCollector;
 import org.mybatis.dynamic.sql.where.WhereModel;
-import org.mybatis.dynamic.sql.where.render.WhereClauseProvider;
 import org.mybatis.dynamic.sql.where.render.WhereRenderer;
 
 public class DeleteRenderer {
     private final DeleteModel deleteModel;
     private final RenderingStrategy renderingStrategy;
     private final TableAliasCalculator tableAliasCalculator;
+    private final AtomicInteger sequence = new AtomicInteger(1);
 
     private DeleteRenderer(Builder builder) {
         deleteModel = Objects.requireNonNull(builder.deleteModel);
@@ -44,41 +45,39 @@ public class DeleteRenderer {
     }
 
     public DeleteStatementProvider render() {
-        return deleteModel.whereModel()
-                .flatMap(this::renderWhereClause)
-                .map(this::renderWithWhereClause)
-                .orElseGet(this::renderWithoutWhereClause);
+        FragmentCollector fragmentCollector = new FragmentCollector();
+
+        fragmentCollector.add(calculateDeleteStatementStart());
+        calculateWhereClause().ifPresent(fragmentCollector::add);
+
+        return fragmentCollector.map(this::toDeleteStatementProvider);
     }
 
-    private DeleteStatementProvider renderWithWhereClause(WhereClauseProvider whereClauseProvider) {
-        return DefaultDeleteStatementProvider.withDeleteStatement(calculateDeleteStatement(whereClauseProvider))
-                .withParameters(whereClauseProvider.getParameters())
+    private DeleteStatementProvider toDeleteStatementProvider(FragmentCollector fragmentCollector) {
+        return DefaultDeleteStatementProvider
+                .withDeleteStatement(fragmentCollector.fragments().collect(Collectors.joining(" "))) //$NON-NLS-1$
+                .withParameters(fragmentCollector.parameters())
                 .build();
     }
 
-    private String calculateDeleteStatement(WhereClauseProvider whereClause) {
-        return calculateDeleteStatement()
-                + spaceBefore(whereClause.getWhereClause());
-    }
-
-    private String calculateDeleteStatement() {
+    private FragmentAndParameters calculateDeleteStatementStart() {
         SqlTable table = deleteModel.table();
         String tableName = table.tableNameAtRuntime();
         String aliasedTableName = tableAliasCalculator.aliasForTable(table)
                 .map(a -> tableName + " " + a).orElse(tableName); //$NON-NLS-1$
 
-        return "delete from" + spaceBefore(aliasedTableName); //$NON-NLS-1$
-    }
-
-    private DeleteStatementProvider renderWithoutWhereClause() {
-        return DefaultDeleteStatementProvider.withDeleteStatement(calculateDeleteStatement())
+        return FragmentAndParameters.withFragment("delete from " + aliasedTableName) //$NON-NLS-1$
                 .build();
     }
 
-    private Optional<WhereClauseProvider> renderWhereClause(WhereModel whereModel) {
+    private Optional<FragmentAndParameters> calculateWhereClause() {
+        return deleteModel.whereModel().flatMap(this::renderWhereClause);
+    }
+
+    private Optional<FragmentAndParameters> renderWhereClause(WhereModel whereModel) {
         return WhereRenderer.withWhereModel(whereModel)
                 .withRenderingStrategy(renderingStrategy)
-                .withSequence(new AtomicInteger(1))
+                .withSequence(sequence)
                 .withTableAliasCalculator(tableAliasCalculator)
                 .build()
                 .render();
