@@ -24,6 +24,10 @@ typealias DeleteCompleter = KotlinDeleteBuilder.() -> Unit
 class KotlinDeleteBuilder(private val dsl: DeleteDSL<DeleteModel>) :
     KotlinBaseBuilder<DeleteDSL<DeleteModel>>(), Buildable<DeleteModel> {
 
+    fun limit(limit: Long) {
+        dsl.limit(limit)
+    }
+
     override fun build(): DeleteModel = dsl.build()
 
     override fun getDsl(): DeleteDSL<DeleteModel> = dsl

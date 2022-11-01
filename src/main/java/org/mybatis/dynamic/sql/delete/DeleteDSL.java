@@ -35,6 +35,7 @@ public class DeleteDSL<R> extends AbstractWhereSupport<DeleteDSL<R>.DeleteWhereB
     private final String tableAlias;
     private DeleteWhereBuilder whereBuilder;
     private final StatementConfiguration statementConfiguration = new StatementConfiguration();
+    private Long limit;
 
     private DeleteDSL(SqlTable table, String tableAlias, Function<DeleteModel, R> adapterFunction) {
         this.table = Objects.requireNonNull(table);
@@ -50,6 +51,11 @@ public class DeleteDSL<R> extends AbstractWhereSupport<DeleteDSL<R>.DeleteWhereB
         return whereBuilder;
     }
 
+    public DeleteDSL<R> limit(long limit) {
+        this.limit = limit;
+        return this;
+    }
+
     /**
      * WARNING! Calling this method could result in a delete statement that deletes
      * all rows in a table.
@@ -60,7 +66,8 @@ public class DeleteDSL<R> extends AbstractWhereSupport<DeleteDSL<R>.DeleteWhereB
     @Override
     public R build() {
         DeleteModel.Builder deleteModelBuilder = DeleteModel.withTable(table)
-                .withTableAlias(tableAlias);
+                .withTableAlias(tableAlias)
+                .withLimit(limit);
         if (whereBuilder != null) {
             deleteModelBuilder.withWhereModel(whereBuilder.buildWhereModel());
         }
@@ -91,6 +98,10 @@ public class DeleteDSL<R> extends AbstractWhereSupport<DeleteDSL<R>.DeleteWhereB
 
         private DeleteWhereBuilder() {
             super(statementConfiguration);
+        }
+
+        public DeleteDSL<R> limit(long limit) {
+            return DeleteDSL.this.limit(limit);
         }
 
         @NotNull

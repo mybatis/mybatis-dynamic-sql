@@ -29,11 +29,13 @@ public class DeleteModel {
     private final SqlTable table;
     private final String tableAlias;
     private final WhereModel whereModel;
+    private final Long limit;
 
     private DeleteModel(Builder builder) {
         table = Objects.requireNonNull(builder.table);
         whereModel = builder.whereModel;
         tableAlias = builder.tableAlias;
+        limit = builder.limit;
     }
 
     public SqlTable table() {
@@ -46,6 +48,10 @@ public class DeleteModel {
 
     public Optional<WhereModel> whereModel() {
         return Optional.ofNullable(whereModel);
+    }
+
+    public Optional<Long> limit() {
+        return Optional.ofNullable(limit);
     }
 
     @NotNull
@@ -64,6 +70,7 @@ public class DeleteModel {
         private SqlTable table;
         private String tableAlias;
         private WhereModel whereModel;
+        private Long limit;
 
         public Builder withTable(SqlTable table) {
             this.table = table;
@@ -77,6 +84,11 @@ public class DeleteModel {
 
         public Builder withWhereModel(WhereModel whereModel) {
             this.whereModel = whereModel;
+            return this;
+        }
+
+        public Builder withLimit(Long limit) {
+            this.limit = limit;
             return this;
         }
 
