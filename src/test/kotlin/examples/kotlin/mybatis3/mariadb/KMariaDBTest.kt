@@ -15,6 +15,7 @@
  */
 package examples.kotlin.mybatis3.mariadb
 
+import config.TestContainersConfiguration
 import examples.kotlin.mybatis3.mariadb.KItemsDynamicSQLSupport.id
 import examples.kotlin.mybatis3.mariadb.KItemsDynamicSQLSupport.items
 import examples.kotlin.mybatis3.mariadb.KItemsDynamicSQLSupport.description
@@ -36,7 +37,6 @@ import org.mybatis.dynamic.sql.util.mybatis3.CommonSelectMapper
 import org.testcontainers.containers.MariaDBContainer
 import org.testcontainers.junit.jupiter.Container
 import org.testcontainers.junit.jupiter.Testcontainers
-import org.testcontainers.utility.DockerImageName
 
 @Testcontainers
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -47,14 +47,13 @@ class KMariaDBTest {
     @BeforeAll
     fun setUp() {
         val dataSource = UnpooledDataSource(
-            container.driverClassName,
-            container.jdbcUrl,
-            container.username,
-            container.password
+            mariadb.driverClassName,
+            mariadb.jdbcUrl,
+            mariadb.username,
+            mariadb.password
         )
         val environment = Environment("test", JdbcTransactionFactory(), dataSource)
-        with(Configuration()) {
-            this.environment = environment
+        with(Configuration(environment)) {
             addMapper(CommonDeleteMapper::class.java)
             addMapper(CommonSelectMapper::class.java)
             sqlSessionFactory = SqlSessionFactoryBuilder().build(this)
@@ -97,7 +96,7 @@ class KMariaDBTest {
 
     companion object {
         @Container
-        private val container = MariaDBContainer(DockerImageName.parse("mariadb:10.9.3"))
+        private val mariadb = MariaDBContainer(TestContainersConfiguration.MARIADB_LATEST)
             .withInitScript("examples/mariadb/CreateDB.sql")
     }
 }

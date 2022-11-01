@@ -25,6 +25,7 @@ import static org.mybatis.dynamic.sql.SqlBuilder.isLessThan;
 import static org.mybatis.dynamic.sql.SqlBuilder.select;
 import static org.mybatis.dynamic.sql.SqlBuilder.deleteFrom;
 
+import config.TestContainersConfiguration;
 import org.apache.ibatis.datasource.unpooled.UnpooledDataSource;
 import org.apache.ibatis.mapping.Environment;
 import org.apache.ibatis.session.Configuration;
@@ -43,7 +44,6 @@ import org.mybatis.dynamic.sql.util.mybatis3.CommonUpdateMapper;
 import org.testcontainers.containers.MariaDBContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
-import org.testcontainers.utility.DockerImageName;
 
 import java.util.List;
 import java.util.Map;
@@ -52,14 +52,16 @@ import java.util.Map;
 class MariaDBTest {
 
     @Container
-    private static final MariaDBContainer<?> container = new MariaDBContainer<>(DockerImageName.parse("mariadb:10.9.3"))
-            .withInitScript("examples/mariadb/CreateDB.sql");
+    private static final MariaDBContainer<?> mariadb =
+            new MariaDBContainer<>(TestContainersConfiguration.MARIADB_LATEST)
+                    .withInitScript("examples/mariadb/CreateDB.sql");
 
     private static SqlSessionFactory sqlSessionFactory;
 
     @BeforeAll
     static void setup() {
-        UnpooledDataSource ds = new UnpooledDataSource(container.getDriverClassName(), container.getJdbcUrl(), container.getUsername(), container.getPassword());
+        UnpooledDataSource ds = new UnpooledDataSource(mariadb.getDriverClassName(), mariadb.getJdbcUrl(),
+                mariadb.getUsername(), mariadb.getPassword());
         Environment environment = new Environment("test", new JdbcTransactionFactory(), ds);
         Configuration config = new Configuration(environment);
         config.addMapper(CommonDeleteMapper.class);

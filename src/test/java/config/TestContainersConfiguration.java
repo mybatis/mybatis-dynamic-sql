@@ -13,20 +13,14 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package examples.kotlin.mybatis3.custom.render
+package config;
 
-import org.testcontainers.containers.PostgreSQLContainer
-import org.testcontainers.utility.DockerImageName
-import org.apache.ibatis.datasource.unpooled.UnpooledDataSource
-import javax.sql.DataSource
+import org.testcontainers.utility.DockerImageName;
 
-class KPgContainer(initScriptPath: String) : PostgreSQLContainer<KPgContainer>(
-    DockerImageName.parse(IMAGE).withTag(DEFAULT_TAG)
-) {
-    val unPooledDataSource: DataSource
-        get() = UnpooledDataSource(driverClassName, jdbcUrl, username, password)
-
-    init {
-        withInitScript(initScriptPath)
-    }
+/**
+ * Utility interface to hold Docker image tags for the test containers we use
+ */
+public interface TestContainersConfiguration {
+    DockerImageName POSTGRES_LATEST = DockerImageName.parse("postgres:15.0");
+    DockerImageName MARIADB_LATEST = DockerImageName.parse("mariadb:10.9.3");
 }
