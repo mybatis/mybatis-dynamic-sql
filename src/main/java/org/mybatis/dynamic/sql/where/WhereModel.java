@@ -27,6 +27,7 @@ import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.render.TableAliasCalculator;
+import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 import org.mybatis.dynamic.sql.where.render.WhereClauseProvider;
 import org.mybatis.dynamic.sql.where.render.WhereRenderer;
 
@@ -69,7 +70,8 @@ public class WhereModel {
                 .withSequence(new AtomicInteger(1))
                 .withTableAliasCalculator(TableAliasCalculator.empty())
                 .build()
-                .render();
+                .render()
+                .map(this::toWhereClauseProvider);
     }
 
     public Optional<WhereClauseProvider> render(RenderingStrategy renderingStrategy,
@@ -79,7 +81,8 @@ public class WhereModel {
                 .withSequence(new AtomicInteger(1))
                 .withTableAliasCalculator(tableAliasCalculator)
                 .build()
-                .render();
+                .render()
+                .map(this::toWhereClauseProvider);
     }
 
     public Optional<WhereClauseProvider> render(RenderingStrategy renderingStrategy,
@@ -90,7 +93,8 @@ public class WhereModel {
                 .withTableAliasCalculator(TableAliasCalculator.empty())
                 .withParameterName(parameterName)
                 .build()
-                .render();
+                .render()
+                .map(this::toWhereClauseProvider);
     }
 
     public Optional<WhereClauseProvider> render(RenderingStrategy renderingStrategy,
@@ -101,6 +105,13 @@ public class WhereModel {
                 .withTableAliasCalculator(tableAliasCalculator)
                 .withParameterName(parameterName)
                 .build()
-                .render();
+                .render()
+                .map(this::toWhereClauseProvider);
+    }
+
+    private WhereClauseProvider toWhereClauseProvider(FragmentAndParameters fragmentAndParameters) {
+        return WhereClauseProvider.withWhereClause(fragmentAndParameters.fragment())
+                .withParameters(fragmentAndParameters.parameters())
+                .build();
     }
 }

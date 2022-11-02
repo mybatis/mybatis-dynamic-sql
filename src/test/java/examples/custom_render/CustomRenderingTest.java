@@ -20,7 +20,6 @@ import static examples.custom_render.JsonTestDynamicSqlSupport.id;
 import static examples.custom_render.JsonTestDynamicSqlSupport.info;
 import static examples.custom_render.JsonTestDynamicSqlSupport.jsonTest;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mybatis.dynamic.sql.SqlBuilder.deleteFrom;
 import static org.mybatis.dynamic.sql.SqlBuilder.insert;
 import static org.mybatis.dynamic.sql.SqlBuilder.insertInto;
 import static org.mybatis.dynamic.sql.SqlBuilder.insertMultiple;
@@ -33,6 +32,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import config.TestContainersConfiguration;
+import org.apache.ibatis.datasource.unpooled.UnpooledDataSource;
 import org.apache.ibatis.mapping.Environment;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSession;
@@ -40,10 +41,8 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.SqlColumn;
-import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider;
 import org.mybatis.dynamic.sql.insert.render.GeneralInsertStatementProvider;
 import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider;
 import org.mybatis.dynamic.sql.insert.render.MultiRowInsertStatementProvider;
@@ -51,37 +50,30 @@ import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
 import org.mybatis.dynamic.sql.util.mybatis3.CommonSelectMapper;
+import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 @Testcontainers
 class CustomRenderingTest {
 
+    @SuppressWarnings("resource")
     @Container
-    private static final PgContainer postgres = new PgContainer("examples/custom_render/dbInit.sql");
+    private static final PostgreSQLContainer<?> postgres =
+            new PostgreSQLContainer<>(TestContainersConfiguration.POSTGRES_LATEST)
+                    .withInitScript("examples/custom_render/dbInit.sql");
 
     private static SqlSessionFactory sqlSessionFactory;
 
     @BeforeAll
     static void setUp() {
-        Configuration configuration = new Configuration();
-        Environment environment = new Environment("development", new JdbcTransactionFactory(),
-                postgres.getUnpooledDataSource());
-        configuration.setEnvironment(environment);
+        UnpooledDataSource ds = new UnpooledDataSource(postgres.getDriverClassName(), postgres.getJdbcUrl(),
+                postgres.getUsername(), postgres.getPassword());
+        Environment environment = new Environment("test", new JdbcTransactionFactory(), ds);
+        Configuration configuration = new Configuration(environment);
         configuration.addMapper(JsonTestMapper.class);
         configuration.addMapper(CommonSelectMapper.class);
         sqlSessionFactory = new SqlSessionFactoryBuilder().build(configuration);
-    }
-
-    @BeforeEach
-    void resetDatabase() {
-        try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
-            JsonTestMapper mapper = sqlSession.getMapper(JsonTestMapper.class);
-
-            DeleteStatementProvider deleteStatement = deleteFrom(jsonTest).build().render(RenderingStrategies.MYBATIS3);
-
-            mapper.delete(deleteStatement);
-        }
     }
 
     @Test

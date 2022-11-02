@@ -13,20 +13,21 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package examples.kotlin.mybatis3.custom.render
+package examples.kotlin.mybatis3.mariadb
 
-import org.testcontainers.containers.PostgreSQLContainer
-import org.testcontainers.utility.DockerImageName
-import org.apache.ibatis.datasource.unpooled.UnpooledDataSource
-import javax.sql.DataSource
+import java.sql.JDBCType
+import org.mybatis.dynamic.sql.SqlTable
+import org.mybatis.dynamic.sql.util.kotlin.elements.column
 
-class KPgContainer(initScriptPath: String) : PostgreSQLContainer<KPgContainer>(
-    DockerImageName.parse(IMAGE).withTag(DEFAULT_TAG)
-) {
-    val unPooledDataSource: DataSource
-        get() = UnpooledDataSource(driverClassName, jdbcUrl, username, password)
+object KItemsDynamicSQLSupport {
+    val items = Items()
+    val id = items.id
+    val description = items.description
+    val amount = items.amount
 
-    init {
-        withInitScript(initScriptPath)
+    class Items : SqlTable("items") {
+        val id = column<Int>(name = "id", jdbcType = JDBCType.INTEGER)
+        val description = column<String>(name = "description", jdbcType = JDBCType.VARCHAR)
+        val amount = column<Int>(name = "amount", jdbcType = JDBCType.INTEGER)
     }
 }

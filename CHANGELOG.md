@@ -2,6 +2,18 @@
 
 This log will detail notable changes to MyBatis Dynamic SQL. Full details are available on the GitHub milestone pages.
 
+## Release 1.5.0 - Unreleased
+
+GitHub milestone: [https://github.com/mybatis/mybatis-dynamic-sql/milestone/12](https://github.com/mybatis/mybatis-dynamic-sql/milestone/12)
+
+Added:
+
+1. Added support for specifying "limit" and "order by" on the DELETE and UPDATE statements. Not all databases support
+   this SQL extension, and different databases have different levels of support. For example, MySQL/MariaDB have full
+   support but HSQLDB only supports limit as an extension to the WHERE clause. If you choose to use this new capability,
+   please test to make sure it is supported in your database. ([#544](https://github.com/mybatis/mybatis-dynamic-sql/pull/544))
+
+
 ## Release 1.4.1 - October 7, 2022
 
 GitHub milestone: [https://github.com/mybatis/mybatis-dynamic-sql/issues?q=milestone%3A1.4.1+](https://github.com/mybatis/mybatis-dynamic-sql/issues?q=milestone%3A1.4.1+)

@@ -15,6 +15,7 @@
  */
 package org.mybatis.dynamic.sql.util.kotlin
 
+import org.mybatis.dynamic.sql.SortSpecification
 import org.mybatis.dynamic.sql.delete.DeleteDSL
 import org.mybatis.dynamic.sql.delete.DeleteModel
 import org.mybatis.dynamic.sql.util.Buildable
@@ -23,6 +24,14 @@ typealias DeleteCompleter = KotlinDeleteBuilder.() -> Unit
 
 class KotlinDeleteBuilder(private val dsl: DeleteDSL<DeleteModel>) :
     KotlinBaseBuilder<DeleteDSL<DeleteModel>>(), Buildable<DeleteModel> {
+
+    fun orderBy(vararg columns: SortSpecification) {
+        dsl.orderBy(columns.toList())
+    }
+
+    fun limit(limit: Long) {
+        dsl.limit(limit)
+    }
 
     override fun build(): DeleteModel = dsl.build()
 

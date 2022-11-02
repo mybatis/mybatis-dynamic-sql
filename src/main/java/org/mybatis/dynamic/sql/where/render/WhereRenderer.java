@@ -24,6 +24,7 @@ import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.exception.NonRenderingWhereClauseException;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.render.TableAliasCalculator;
+import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 import org.mybatis.dynamic.sql.util.FragmentCollector;
 import org.mybatis.dynamic.sql.where.WhereModel;
 
@@ -42,10 +43,11 @@ public class WhereRenderer {
                 .build();
     }
 
-    public Optional<WhereClauseProvider> render() {
-        Optional<WhereClauseProvider> whereClause = whereModel.initialCriterion().map(this::renderWithInitialCriterion)
+    public Optional<FragmentAndParameters> render() {
+        Optional<FragmentAndParameters> whereClause = whereModel.initialCriterion()
+                .map(this::renderWithInitialCriterion)
                 .orElseGet(this::renderWithoutInitialCriterion)
-                .map(rc -> WhereClauseProvider.withWhereClause(rc.fragmentAndParameters().fragment())
+                .map(rc -> FragmentAndParameters.withFragment(rc.fragmentAndParameters().fragment())
                         .withParameters(rc.fragmentAndParameters().parameters())
                         .build()
                 );

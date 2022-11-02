@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.MissingResourceException;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.exception.InvalidSqlException;
@@ -34,12 +35,14 @@ import org.mybatis.dynamic.sql.insert.InsertModel;
 import org.mybatis.dynamic.sql.insert.MultiRowInsertModel;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.GroupByModel;
-import org.mybatis.dynamic.sql.select.OrderByModel;
+import org.mybatis.dynamic.sql.common.OrderByModel;
+import org.mybatis.dynamic.sql.select.PagingModel;
 import org.mybatis.dynamic.sql.select.QueryExpressionModel;
 import org.mybatis.dynamic.sql.select.SelectModel;
 import org.mybatis.dynamic.sql.select.join.JoinModel;
 import org.mybatis.dynamic.sql.select.join.JoinSpecification;
 import org.mybatis.dynamic.sql.select.join.JoinType;
+import org.mybatis.dynamic.sql.select.render.PagingModelRenderer;
 import org.mybatis.dynamic.sql.update.UpdateModel;
 import org.mybatis.dynamic.sql.util.Messages;
 
@@ -224,6 +227,21 @@ class InvalidSQLTest {
     void testMissingMessage() {
         assertThatExceptionOfType(MissingResourceException.class)
                 .isThrownBy(() -> Messages.getString("MISSING_MESSAGE"));
+    }
+
+    @Test
+    void testInvalidPagingModel() {
+        PagingModel pagingModel = new PagingModel.Builder().build();
+
+        PagingModelRenderer renderer = new PagingModelRenderer.Builder()
+                .withPagingModel(pagingModel)
+                .withRenderingStrategy(RenderingStrategies.MYBATIS3)
+                .withSequence(new AtomicInteger(1))
+                .build();
+
+        assertThatExceptionOfType(InvalidSqlException.class)
+                .isThrownBy(renderer::render)
+                .withMessage(Messages.getInternalErrorString(13));
     }
 
     static class TestRow {

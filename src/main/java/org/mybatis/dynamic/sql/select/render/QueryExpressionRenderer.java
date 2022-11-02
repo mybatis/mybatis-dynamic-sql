@@ -16,7 +16,6 @@
 package org.mybatis.dynamic.sql.select.render;
 
 import static org.mybatis.dynamic.sql.util.StringUtilities.spaceAfter;
-import static org.mybatis.dynamic.sql.util.StringUtilities.spaceBefore;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -33,10 +32,9 @@ import org.mybatis.dynamic.sql.render.TableAliasCalculatorWithParent;
 import org.mybatis.dynamic.sql.select.GroupByModel;
 import org.mybatis.dynamic.sql.select.QueryExpressionModel;
 import org.mybatis.dynamic.sql.select.join.JoinModel;
-import org.mybatis.dynamic.sql.util.CustomCollectors;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
+import org.mybatis.dynamic.sql.util.FragmentCollector;
 import org.mybatis.dynamic.sql.where.WhereModel;
-import org.mybatis.dynamic.sql.where.render.WhereClauseProvider;
 import org.mybatis.dynamic.sql.where.render.WhereRenderer;
 
 public class QueryExpressionRenderer {
@@ -119,11 +117,21 @@ public class QueryExpressionRenderer {
     }
 
     public FragmentAndParameters render() {
-        FragmentAndParameters answer = calculateQueryExpressionStart();
-        answer = addJoinClause(answer);
-        answer = addWhereClause(answer);
-        answer = addGroupByClause(answer);
-        return answer;
+        FragmentCollector fragmentCollector = new FragmentCollector();
+
+        fragmentCollector.add(calculateQueryExpressionStart());
+        calculateJoinClause().ifPresent(fragmentCollector::add);
+        calculateWhereClause().ifPresent(fragmentCollector::add);
+        calculateGroupByClause().ifPresent(fragmentCollector::add);
+
+        return toFragmentAndParameters(fragmentCollector);
+    }
+
+    private FragmentAndParameters toFragmentAndParameters(FragmentCollector fragmentCollector) {
+        return FragmentAndParameters.withFragment(fragmentCollector.fragments().collect(
+                    Collectors.joining(" "))) //$NON-NLS-1$
+                .withParameters(fragmentCollector.parameters())
+                .build();
     }
 
     private FragmentAndParameters calculateQueryExpressionStart() {
@@ -154,11 +162,8 @@ public class QueryExpressionRenderer {
         return table.accept(tableExpressionRenderer);
     }
 
-    private FragmentAndParameters addJoinClause(FragmentAndParameters partial) {
-        return queryExpression.joinModel()
-                .map(this::renderJoin)
-                .map(fp -> partial.add(spaceBefore(fp.fragment()), fp.parameters()))
-                .orElse(partial);
+    private Optional<FragmentAndParameters> calculateJoinClause() {
+        return queryExpression.joinModel().map(this::renderJoin);
     }
 
     private FragmentAndParameters renderJoin(JoinModel joinModel) {
@@ -169,14 +174,11 @@ public class QueryExpressionRenderer {
                 .render();
     }
 
-    private FragmentAndParameters addWhereClause(FragmentAndParameters partial) {
-        return queryExpression.whereModel()
-                .flatMap(this::renderWhereClause)
-                .map(wc -> partial.add(spaceBefore(wc.getWhereClause()), wc.getParameters()))
-                .orElse(partial);
+    private Optional<FragmentAndParameters> calculateWhereClause() {
+        return queryExpression.whereModel().flatMap(this::renderWhereClause);
     }
 
-    private Optional<WhereClauseProvider> renderWhereClause(WhereModel whereModel) {
+    private Optional<FragmentAndParameters> renderWhereClause(WhereModel whereModel) {
         return WhereRenderer.withWhereModel(whereModel)
                 .withRenderingStrategy(renderingStrategy)
                 .withTableAliasCalculator(tableAliasCalculator)
@@ -185,16 +187,14 @@ public class QueryExpressionRenderer {
                 .render();
     }
 
-    private FragmentAndParameters addGroupByClause(FragmentAndParameters partial) {
-        return queryExpression.groupByModel()
-                .map(this::renderGroupBy)
-                .map(s -> partial.add(spaceBefore(s)))
-                .orElse(partial);
+    private Optional<FragmentAndParameters> calculateGroupByClause() {
+        return queryExpression.groupByModel().map(this::renderGroupBy);
     }
 
-    private String renderGroupBy(GroupByModel groupByModel) {
-        return groupByModel.mapColumns(this::applyTableAlias)
-                .collect(CustomCollectors.joining(", ", "group by ", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    private FragmentAndParameters renderGroupBy(GroupByModel groupByModel) {
+        String groupBy = groupByModel.mapColumns(this::applyTableAlias)
+                .collect(Collectors.joining(", ", "group by ", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        return FragmentAndParameters.withFragment(groupBy).build();
     }
 
     private String applyTableAlias(BasicColumn column) {

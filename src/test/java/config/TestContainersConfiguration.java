@@ -13,22 +13,14 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package examples.custom_render;
+package config;
 
-import javax.sql.DataSource;
-
-import org.apache.ibatis.datasource.unpooled.UnpooledDataSource;
-import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.utility.DockerImageName;
 
-public class PgContainer extends PostgreSQLContainer<PgContainer> {
-
-    public PgContainer(String initScriptPath) {
-        super(DockerImageName.parse(IMAGE).withTag(DEFAULT_TAG));
-        withInitScript(initScriptPath);
-    }
-
-    public DataSource getUnpooledDataSource() {
-        return new UnpooledDataSource(getDriverClassName(), getJdbcUrl(), getUsername(), getPassword());
-    }
+/**
+ * Utility interface to hold Docker image tags for the test containers we use
+ */
+public interface TestContainersConfiguration {
+    DockerImageName POSTGRES_LATEST = DockerImageName.parse("postgres:15.0");
+    DockerImageName MARIADB_LATEST = DockerImageName.parse("mariadb:10.9.3");
 }

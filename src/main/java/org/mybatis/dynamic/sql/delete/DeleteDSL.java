@@ -15,12 +15,16 @@
  */
 package org.mybatis.dynamic.sql.delete;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
 import org.jetbrains.annotations.NotNull;
+import org.mybatis.dynamic.sql.SortSpecification;
 import org.mybatis.dynamic.sql.SqlTable;
+import org.mybatis.dynamic.sql.common.OrderByModel;
 import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
 import org.mybatis.dynamic.sql.util.Buildable;
 import org.mybatis.dynamic.sql.where.AbstractWhereDSL;
@@ -35,6 +39,8 @@ public class DeleteDSL<R> extends AbstractWhereSupport<DeleteDSL<R>.DeleteWhereB
     private final String tableAlias;
     private DeleteWhereBuilder whereBuilder;
     private final StatementConfiguration statementConfiguration = new StatementConfiguration();
+    private Long limit;
+    private OrderByModel orderByModel;
 
     private DeleteDSL(SqlTable table, String tableAlias, Function<DeleteModel, R> adapterFunction) {
         this.table = Objects.requireNonNull(table);
@@ -50,6 +56,20 @@ public class DeleteDSL<R> extends AbstractWhereSupport<DeleteDSL<R>.DeleteWhereB
         return whereBuilder;
     }
 
+    public DeleteDSL<R> limit(long limit) {
+        this.limit = limit;
+        return this;
+    }
+
+    public DeleteDSL<R> orderBy(SortSpecification... columns) {
+        return orderBy(Arrays.asList(columns));
+    }
+
+    public DeleteDSL<R> orderBy(Collection<SortSpecification> columns) {
+        orderByModel = OrderByModel.of(columns);
+        return this;
+    }
+
     /**
      * WARNING! Calling this method could result in a delete statement that deletes
      * all rows in a table.
@@ -60,7 +80,9 @@ public class DeleteDSL<R> extends AbstractWhereSupport<DeleteDSL<R>.DeleteWhereB
     @Override
     public R build() {
         DeleteModel.Builder deleteModelBuilder = DeleteModel.withTable(table)
-                .withTableAlias(tableAlias);
+                .withTableAlias(tableAlias)
+                .withLimit(limit)
+                .withOrderByModel(orderByModel);
         if (whereBuilder != null) {
             deleteModelBuilder.withWhereModel(whereBuilder.buildWhereModel());
         }
@@ -91,6 +113,19 @@ public class DeleteDSL<R> extends AbstractWhereSupport<DeleteDSL<R>.DeleteWhereB
 
         private DeleteWhereBuilder() {
             super(statementConfiguration);
+        }
+
+        public DeleteDSL<R> limit(long limit) {
+            return DeleteDSL.this.limit(limit);
+        }
+
+        public DeleteDSL<R> orderBy(SortSpecification... columns) {
+            return orderBy(Arrays.asList(columns));
+        }
+
+        public DeleteDSL<R> orderBy(Collection<SortSpecification> columns) {
+            orderByModel = OrderByModel.of(columns);
+            return DeleteDSL.this;
         }
 
         @NotNull

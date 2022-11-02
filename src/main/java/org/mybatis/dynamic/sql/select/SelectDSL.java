@@ -29,6 +29,7 @@ import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.SortSpecification;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.TableExpression;
+import org.mybatis.dynamic.sql.common.OrderByModel;
 import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
 import org.mybatis.dynamic.sql.select.QueryExpressionDSL.FromGatherer;
 import org.mybatis.dynamic.sql.util.Buildable;
@@ -152,6 +153,10 @@ public class SelectDSL<R> implements Buildable<R>, ConfigurableStatement<SelectD
     }
 
     private PagingModel buildPagingModel() {
+        if (limit == null && offset == null && fetchFirstRows == null) {
+            return  null;
+        }
+
         return new PagingModel.Builder()
                 .withLimit(limit)
                 .withOffset(offset)
@@ -161,7 +166,7 @@ public class SelectDSL<R> implements Buildable<R>, ConfigurableStatement<SelectD
 
     public class LimitFinisher implements Buildable<R> {
         public OffsetFinisher offset(long offset) {
-            SelectDSL.this.offset = offset;
+            SelectDSL.this.offset(offset);
             return new OffsetFinisher();
         }
 
@@ -182,7 +187,7 @@ public class SelectDSL<R> implements Buildable<R>, ConfigurableStatement<SelectD
 
     public class OffsetFirstFinisher implements Buildable<R> {
         public FetchFirstFinisher fetchFirst(long fetchFirstRows) {
-            SelectDSL.this.fetchFirstRows = fetchFirstRows;
+            SelectDSL.this.fetchFirst(fetchFirstRows);
             return new FetchFirstFinisher();
         }
 

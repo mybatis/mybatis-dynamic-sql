@@ -15,7 +15,7 @@
  */
 package org.mybatis.dynamic.sql.select.render;
 
-import java.util.Optional;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
@@ -31,31 +31,31 @@ public class LimitAndOffsetPagingModelRenderer {
     public LimitAndOffsetPagingModelRenderer(RenderingStrategy renderingStrategy,
             Long limit, PagingModel pagingModel, AtomicInteger sequence) {
         this.renderingStrategy = renderingStrategy;
-        this.limit = limit;
+        this.limit = Objects.requireNonNull(limit);
         this.pagingModel = pagingModel;
         this.sequence = sequence;
     }
 
-    public Optional<FragmentAndParameters> render() {
+    public FragmentAndParameters render() {
         return pagingModel.offset().map(this::renderLimitAndOffset)
                 .orElseGet(this::renderLimitOnly);
     }
 
-    private Optional<FragmentAndParameters> renderLimitOnly() {
+    private FragmentAndParameters renderLimitOnly() {
         String mapKey = RenderingStrategy.formatParameterMapKey(sequence);
         return FragmentAndParameters.withFragment("limit " + renderPlaceholder(mapKey)) //$NON-NLS-1$
                 .withParameter(mapKey, limit)
-                .buildOptional();
+                .build();
     }
 
-    private Optional<FragmentAndParameters> renderLimitAndOffset(Long offset) {
+    private FragmentAndParameters renderLimitAndOffset(Long offset) {
         String mapKey1 = RenderingStrategy.formatParameterMapKey(sequence);
         String mapKey2 = RenderingStrategy.formatParameterMapKey(sequence);
         return FragmentAndParameters.withFragment("limit " + renderPlaceholder(mapKey1) //$NON-NLS-1$
                     + " offset " + renderPlaceholder(mapKey2)) //$NON-NLS-1$
                 .withParameter(mapKey1, limit)
                 .withParameter(mapKey2, offset)
-                .buildOptional();
+                .build();
     }
 
     private String renderPlaceholder(String parameterName) {

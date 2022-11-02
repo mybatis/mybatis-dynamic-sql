@@ -20,14 +20,13 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
-import org.mybatis.dynamic.sql.SortSpecification;
+import org.mybatis.dynamic.sql.common.OrderByModel;
+import org.mybatis.dynamic.sql.common.OrderByRenderer;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.render.TableAliasCalculator;
-import org.mybatis.dynamic.sql.select.OrderByModel;
 import org.mybatis.dynamic.sql.select.PagingModel;
 import org.mybatis.dynamic.sql.select.QueryExpressionModel;
 import org.mybatis.dynamic.sql.select.SelectModel;
-import org.mybatis.dynamic.sql.util.CustomCollectors;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 import org.mybatis.dynamic.sql.util.FragmentCollector;
 
@@ -52,12 +51,16 @@ public class SelectRenderer {
         FragmentCollector fragmentCollector = selectModel
                 .mapQueryExpressions(this::renderQueryExpression)
                 .collect(FragmentCollector.collect());
-        renderOrderBy(fragmentCollector);
-        renderPagingModel(fragmentCollector);
 
-        String selectStatement = fragmentCollector.fragments().collect(Collectors.joining(" ")); //$NON-NLS-1$
+        renderOrderBy().ifPresent(fragmentCollector::add);
+        renderPagingModel().ifPresent(fragmentCollector::add);
 
-        return DefaultSelectStatementProvider.withSelectStatement(selectStatement)
+        return toSelectStatementProvider(fragmentCollector);
+    }
+
+    private SelectStatementProvider toSelectStatementProvider(FragmentCollector fragmentCollector) {
+        return DefaultSelectStatementProvider
+                .withSelectStatement(fragmentCollector.fragments().collect(Collectors.joining(" "))) //$NON-NLS-1$
                 .withParameters(fragmentCollector.parameters())
                 .build();
     }
@@ -71,30 +74,19 @@ public class SelectRenderer {
                 .render();
     }
 
-    private void renderOrderBy(FragmentCollector fragmentCollector) {
-        selectModel.orderByModel().ifPresent(om -> renderOrderBy(fragmentCollector, om));
+    private Optional<FragmentAndParameters> renderOrderBy() {
+        return selectModel.orderByModel().map(this::renderOrderBy);
     }
 
-    private void renderOrderBy(FragmentCollector fragmentCollector, OrderByModel orderByModel) {
-        String phrase = orderByModel.mapColumns(this::calculateOrderByPhrase)
-                .collect(CustomCollectors.joining(", ", "order by ", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        fragmentCollector.add(FragmentAndParameters.withFragment(phrase).build());
+    private FragmentAndParameters renderOrderBy(OrderByModel orderByModel) {
+        return new OrderByRenderer().render(orderByModel);
     }
 
-    private String calculateOrderByPhrase(SortSpecification column) {
-        String phrase = column.orderByName();
-        if (column.isDescending()) {
-            phrase = phrase + " DESC"; //$NON-NLS-1$
-        }
-        return phrase;
+    private Optional<FragmentAndParameters> renderPagingModel() {
+        return selectModel.pagingModel().map(this::renderPagingModel);
     }
 
-    private void renderPagingModel(FragmentCollector fragmentCollector) {
-        selectModel.pagingModel().flatMap(this::renderPagingModel)
-            .ifPresent(fragmentCollector::add);
-    }
-
-    private Optional<FragmentAndParameters> renderPagingModel(PagingModel pagingModel) {
+    private FragmentAndParameters renderPagingModel(PagingModel pagingModel) {
         return new PagingModelRenderer.Builder()
                 .withPagingModel(pagingModel)
                 .withRenderingStrategy(renderingStrategy)

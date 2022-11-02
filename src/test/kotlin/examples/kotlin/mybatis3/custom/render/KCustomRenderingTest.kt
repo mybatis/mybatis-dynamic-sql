@@ -15,29 +15,31 @@
  */
 package examples.kotlin.mybatis3.custom.render
 
+import config.TestContainersConfiguration
 import examples.kotlin.mybatis3.custom.render.KJsonTestDynamicSqlSupport.description
 import examples.kotlin.mybatis3.custom.render.KJsonTestDynamicSqlSupport.id
 import examples.kotlin.mybatis3.custom.render.KJsonTestDynamicSqlSupport.info
 import examples.kotlin.mybatis3.custom.render.KJsonTestDynamicSqlSupport.jsonTest
+import org.apache.ibatis.datasource.unpooled.UnpooledDataSource
 import org.apache.ibatis.mapping.Environment
 import org.apache.ibatis.session.Configuration
+import org.apache.ibatis.session.SqlSession
 import org.apache.ibatis.session.SqlSessionFactory
 import org.apache.ibatis.session.SqlSessionFactoryBuilder
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeAll
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import org.mybatis.dynamic.sql.SqlColumn
 import org.mybatis.dynamic.sql.util.kotlin.elements.`as`
-import org.mybatis.dynamic.sql.util.kotlin.mybatis3.deleteFrom
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.insert
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.insertInto
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.insertMultiple
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.select
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.update
 import org.mybatis.dynamic.sql.util.mybatis3.CommonSelectMapper
+import org.testcontainers.containers.PostgreSQLContainer
 import org.testcontainers.junit.jupiter.Container
 import org.testcontainers.junit.jupiter.Testcontainers
 import java.sql.JDBCType
@@ -50,33 +52,26 @@ class KCustomRenderingTest {
 
     @BeforeAll
     fun setUp() {
-        val configuration = Configuration()
-        val environment = Environment(
-            "development",
-            JdbcTransactionFactory(),
-            postgres.unPooledDataSource
+        val dataSource = UnpooledDataSource(
+            postgres.driverClassName,
+            postgres.jdbcUrl,
+            postgres.username,
+            postgres.password
         )
-        configuration.environment = environment
-        configuration.addMapper(KJsonTestMapper::class.java)
-        configuration.addMapper(CommonSelectMapper::class.java)
-        sqlSessionFactory = SqlSessionFactoryBuilder().build(configuration)
-    }
-
-    @BeforeEach
-    fun resetDatabase() {
-        sqlSessionFactory.openSession().use { sqlSession ->
-            val mapper = sqlSession.getMapper(KJsonTestMapper::class.java)
-            val deleteStatement = deleteFrom(jsonTest) {
-                allRows()
-            }
-            mapper.delete(deleteStatement)
+        val environment = Environment("test", JdbcTransactionFactory(), dataSource)
+        with(Configuration(environment)) {
+            addMapper(KJsonTestMapper::class.java)
+            addMapper(CommonSelectMapper::class.java)
+            sqlSessionFactory = SqlSessionFactoryBuilder().build(this)
         }
     }
 
+    private fun newSession(): SqlSession = sqlSessionFactory.openSession()
+
     @Test
     fun testInsertRecord() {
-        sqlSessionFactory.openSession().use { sqlSession ->
-            val mapper = sqlSession.getMapper(KJsonTestMapper::class.java)
+        newSession().use {
+            val mapper = it.getMapper(KJsonTestMapper::class.java)
             var record = KJsonTestRecord(
                 id = 1,
                 description = "Fred",
@@ -124,8 +119,8 @@ class KCustomRenderingTest {
 
     @Test
     fun testGeneralInsert() {
-        sqlSessionFactory.openSession().use { sqlSession ->
-            val mapper = sqlSession.getMapper(KJsonTestMapper::class.java)
+        newSession().use {
+            val mapper = it.getMapper(KJsonTestMapper::class.java)
             var insertStatement = insertInto(jsonTest) {
                 set(id) toValue 1
                 set(description) toValue "Fred"
@@ -159,8 +154,8 @@ class KCustomRenderingTest {
 
     @Test
     fun testInsertMultiple() {
-        sqlSessionFactory.openSession().use { sqlSession ->
-            val mapper = sqlSession.getMapper(KJsonTestMapper::class.java)
+        newSession().use {
+            val mapper = it.getMapper(KJsonTestMapper::class.java)
             val record1 = KJsonTestRecord(
                 id = 1,
                 description = "Fred",
@@ -200,8 +195,8 @@ class KCustomRenderingTest {
 
     @Test
     fun testUpdate() {
-        sqlSessionFactory.openSession().use { sqlSession ->
-            val mapper = sqlSession.getMapper(KJsonTestMapper::class.java)
+        newSession().use {
+            val mapper = it.getMapper(KJsonTestMapper::class.java)
             val record1 = KJsonTestRecord(
                 id = 1,
                 description = "Fred",
@@ -245,8 +240,8 @@ class KCustomRenderingTest {
 
     @Test
     fun testDeReference() {
-        sqlSessionFactory.openSession().use { sqlSession ->
-            val mapper = sqlSession.getMapper(KJsonTestMapper::class.java)
+        newSession().use {
+            val mapper = it.getMapper(KJsonTestMapper::class.java)
             val record1 = KJsonTestRecord(
                 id = 1,
                 description = "Fred",
@@ -283,8 +278,8 @@ class KCustomRenderingTest {
 
     @Test
     fun testDereference2() {
-        sqlSessionFactory.openSession().use { sqlSession ->
-            val mapper = sqlSession.getMapper(KJsonTestMapper::class.java)
+        newSession().use {
+            val mapper = it.getMapper(KJsonTestMapper::class.java)
             val record1 = KJsonTestRecord(
                 id = 1,
                 description = "Fred",
@@ -322,6 +317,7 @@ class KCustomRenderingTest {
 
     companion object {
         @Container
-        private val postgres = KPgContainer("examples/custom_render/dbInit.sql")
+        private val postgres = PostgreSQLContainer(TestContainersConfiguration.POSTGRES_LATEST)
+            .withInitScript("examples/custom_render/dbInit.sql")
     }
 }
