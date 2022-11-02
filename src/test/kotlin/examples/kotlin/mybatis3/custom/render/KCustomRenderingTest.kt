@@ -66,9 +66,7 @@ class KCustomRenderingTest {
         }
     }
 
-    private fun newSession(): SqlSession {
-        return sqlSessionFactory.openSession()
-    }
+    private fun newSession(): SqlSession = sqlSessionFactory.openSession()
 
     @Test
     fun testInsertRecord() {
