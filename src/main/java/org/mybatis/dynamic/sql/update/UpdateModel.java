@@ -37,12 +37,14 @@ public class UpdateModel {
     private final String tableAlias;
     private final WhereModel whereModel;
     private final List<AbstractColumnMapping> columnMappings;
+    private final Long limit;
 
     private UpdateModel(Builder builder) {
         table = Objects.requireNonNull(builder.table);
         whereModel = builder.whereModel;
         columnMappings = Objects.requireNonNull(builder.columnMappings);
         tableAlias = builder.tableAlias;
+        limit = builder.limit;
 
         if (columnMappings.isEmpty()) {
             throw new InvalidSqlException(Messages.getString("ERROR.17")); //$NON-NLS-1$
@@ -65,6 +67,10 @@ public class UpdateModel {
         return columnMappings.stream().map(mapper);
     }
 
+    public Optional<Long> limit() {
+        return Optional.ofNullable(limit);
+    }
+
     @NotNull
     public UpdateStatementProvider render(RenderingStrategy renderingStrategy) {
         return UpdateRenderer.withUpdateModel(this)
@@ -82,6 +88,7 @@ public class UpdateModel {
         private String tableAlias;
         private WhereModel whereModel;
         private final List<AbstractColumnMapping> columnMappings = new ArrayList<>();
+        private Long limit;
 
         public Builder withTable(SqlTable table) {
             this.table = table;
@@ -100,6 +107,11 @@ public class UpdateModel {
 
         public Builder withWhereModel(WhereModel whereModel) {
             this.whereModel = whereModel;
+            return this;
+        }
+
+        public Builder withLimit(Long limit) {
+            this.limit = limit;
             return this;
         }
 

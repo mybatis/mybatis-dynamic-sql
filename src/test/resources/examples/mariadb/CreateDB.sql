@@ -17,26 +17,27 @@
 create table items (
     id int not null,
     description varchar(50) not null,
+    amount int not null,
     primary key (id)
 );
 
-insert into items values (1, 'Item 1');
-insert into items values (2, 'Item 2');
-insert into items values (3, 'Item 3');
-insert into items values (4, 'Item 4');
-insert into items values (5, 'Item 5');
-insert into items values (6, 'Item 6');
-insert into items values (7, 'Item 7');
-insert into items values (8, 'Item 8');
-insert into items values (9, 'Item 9');
-insert into items values (10, 'Item 10');
-insert into items values (11, 'Item 11');
-insert into items values (12, 'Item 12');
-insert into items values (13, 'Item 13');
-insert into items values (14, 'Item 14');
-insert into items values (15, 'Item 15');
-insert into items values (16, 'Item 16');
-insert into items values (17, 'Item 17');
-insert into items values (18, 'Item 18');
-insert into items values (19, 'Item 19');
-insert into items values (20, 'Item 20');
+insert into items values (1, 'Item 1', 101);
+insert into items values (2, 'Item 2', 102);
+insert into items values (3, 'Item 3', 103);
+insert into items values (4, 'Item 4', 104);
+insert into items values (5, 'Item 5', 105);
+insert into items values (6, 'Item 6', 106);
+insert into items values (7, 'Item 7', 107);
+insert into items values (8, 'Item 8', 108);
+insert into items values (9, 'Item 9', 109);
+insert into items values (10, 'Item 10', 110);
+insert into items values (11, 'Item 11', 111);
+insert into items values (12, 'Item 12', 112);
+insert into items values (13, 'Item 13', 113);
+insert into items values (14, 'Item 14', 114);
+insert into items values (15, 'Item 15', 115);
+insert into items values (16, 'Item 16', 116);
+insert into items values (17, 'Item 17', 117);
+insert into items values (18, 'Item 18', 118);
+insert into items values (19, 'Item 19', 119);
+insert into items values (20, 'Item 20', 120);

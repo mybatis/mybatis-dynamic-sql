@@ -24,10 +24,12 @@ public final class ItemsDynamicSQLSupport {
     public static final Items items = new Items();
     public static final SqlColumn<Integer> id = items.id;
     public static final SqlColumn<String> description = items.description;
+    public static final SqlColumn<Integer> amount = items.amount;
 
     public static final class Items extends SqlTable {
         public final SqlColumn<Integer> id = column("id", JDBCType.INTEGER);
         public final SqlColumn<String> description = column("description", JDBCType.VARCHAR);
+        public final SqlColumn<Integer> amount = column("amount", JDBCType.INTEGER);
 
         public Items() {
             super("items");

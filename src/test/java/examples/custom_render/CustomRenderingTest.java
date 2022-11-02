@@ -57,6 +57,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @Testcontainers
 class CustomRenderingTest {
 
+    @SuppressWarnings("resource")
     @Container
     private static final PostgreSQLContainer<?> postgres =
             new PostgreSQLContainer<>(TestContainersConfiguration.POSTGRES_LATEST)

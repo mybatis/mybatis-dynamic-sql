@@ -53,6 +53,7 @@ public class UpdateRenderer {
         fragmentCollector.add(calculateUpdateStatementStart());
         fragmentCollector.add(calculateSetPhrase());
         calculateWhereClause().ifPresent(fragmentCollector::add);
+        calculateLimitClause().ifPresent(fragmentCollector::add);
 
         return toUpdateStatementProvider(fragmentCollector);
     }
@@ -111,6 +112,20 @@ public class UpdateRenderer {
                 .withTableAliasCalculator(tableAliasCalculator)
                 .build()
                 .render();
+    }
+
+    private Optional<FragmentAndParameters> calculateLimitClause() {
+        return updateModel.limit().map(this::renderLimitClause);
+    }
+
+    private FragmentAndParameters renderLimitClause(Long limit) {
+        String mapKey = RenderingStrategy.formatParameterMapKey(sequence);
+        String jdbcPlaceholder =
+                renderingStrategy.getFormattedJdbcPlaceholder(RenderingStrategy.DEFAULT_PARAMETER_PREFIX, mapKey);
+
+        return FragmentAndParameters.withFragment("limit " + jdbcPlaceholder) //$NON-NLS-1$
+                .withParameter(mapKey, limit)
+                .build();
     }
 
     public static Builder withUpdateModel(UpdateModel updateModel) {

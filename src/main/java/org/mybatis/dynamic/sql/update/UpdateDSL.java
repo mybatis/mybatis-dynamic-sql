@@ -51,6 +51,7 @@ public class UpdateDSL<R> extends AbstractWhereSupport<UpdateDSL<R>.UpdateWhereB
     private final String tableAlias;
     private UpdateWhereBuilder whereBuilder;
     private final StatementConfiguration statementConfiguration = new StatementConfiguration();
+    private Long limit;
 
     private UpdateDSL(SqlTable table, String tableAlias, Function<UpdateModel, R> adapterFunction) {
         this.table = Objects.requireNonNull(table);
@@ -71,6 +72,11 @@ public class UpdateDSL<R> extends AbstractWhereSupport<UpdateDSL<R>.UpdateWhereB
         return whereBuilder;
     }
 
+    public UpdateDSL<R> limit(long limit) {
+        this.limit = limit;
+        return this;
+    }
+
     /**
      * WARNING! Calling this method could result in an update statement that updates
      * all rows in a table.
@@ -82,7 +88,8 @@ public class UpdateDSL<R> extends AbstractWhereSupport<UpdateDSL<R>.UpdateWhereB
     public R build() {
         UpdateModel.Builder updateModelBuilder = UpdateModel.withTable(table)
                 .withTableAlias(tableAlias)
-                .withColumnMappings(columnMappings);
+                .withColumnMappings(columnMappings)
+                .withLimit(limit);
 
         if (whereBuilder != null) {
             updateModelBuilder.withWhereModel(whereBuilder.buildWhereModel());
@@ -174,6 +181,10 @@ public class UpdateDSL<R> extends AbstractWhereSupport<UpdateDSL<R>.UpdateWhereB
 
         private UpdateWhereBuilder() {
             super(statementConfiguration);
+        }
+
+        public UpdateDSL<R> limit(long limit) {
+            return UpdateDSL.this.limit(limit);
         }
 
         @NotNull

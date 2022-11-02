@@ -17,13 +17,17 @@ package examples.mariadb;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import static examples.mariadb.ItemsDynamicSQLSupport.amount;
 import static examples.mariadb.ItemsDynamicSQLSupport.id;
 import static examples.mariadb.ItemsDynamicSQLSupport.items;
 import static examples.mariadb.ItemsDynamicSQLSupport.description;
 import static org.assertj.core.api.Assertions.entry;
+import static org.mybatis.dynamic.sql.SqlBuilder.add;
+import static org.mybatis.dynamic.sql.SqlBuilder.constant;
 import static org.mybatis.dynamic.sql.SqlBuilder.isLessThan;
-import static org.mybatis.dynamic.sql.SqlBuilder.select;
 import static org.mybatis.dynamic.sql.SqlBuilder.deleteFrom;
+import static org.mybatis.dynamic.sql.SqlBuilder.select;
+import static org.mybatis.dynamic.sql.SqlBuilder.update;
 
 import config.TestContainersConfiguration;
 import org.apache.ibatis.datasource.unpooled.UnpooledDataSource;
@@ -38,6 +42,7 @@ import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
+import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
 import org.mybatis.dynamic.sql.util.mybatis3.CommonDeleteMapper;
 import org.mybatis.dynamic.sql.util.mybatis3.CommonSelectMapper;
 import org.mybatis.dynamic.sql.util.mybatis3.CommonUpdateMapper;
@@ -51,6 +56,7 @@ import java.util.Map;
 @Testcontainers
 class MariaDBTest {
 
+    @SuppressWarnings("resource")
     @Container
     private static final MariaDBContainer<?> mariadb =
             new MariaDBContainer<>(TestContainersConfiguration.MARIADB_LATEST)
@@ -120,6 +126,48 @@ class MariaDBTest {
             assertThat(deleteStatement.getParameters()).containsOnly(entry("p1", 10), entry("p2", 5L));
 
             int rows = mapper.delete(deleteStatement);
+            assertThat(rows).isEqualTo(5);
+        }
+    }
+
+    @Test
+    void testUpdateWithLimit() {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
+            CommonUpdateMapper mapper = session.getMapper(CommonUpdateMapper.class);
+
+            UpdateStatementProvider updateStatement = update(items)
+                    .set(amount).equalTo(add(amount, constant("100")))
+                    .limit(5)
+                    .build()
+                    .render(RenderingStrategies.MYBATIS3);
+
+            String expected = "update items set amount = (amount + 100) limit #{parameters.p1}";
+            assertThat(updateStatement.getUpdateStatement()).isEqualTo(expected);
+            assertThat(updateStatement.getParameters()).containsOnly(entry("p1", 5L));
+
+            int rows = mapper.update(updateStatement);
+            assertThat(rows).isEqualTo(5);
+        }
+    }
+
+    @Test
+    void testUpdateWithWhereAndLimit() {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
+            CommonUpdateMapper mapper = session.getMapper(CommonUpdateMapper.class);
+
+            UpdateStatementProvider updateStatement = update(items)
+                    .set(amount).equalTo(add(amount, constant("100")))
+                    .where(id, isLessThan(10))
+                    .limit(5)
+                    .build()
+                    .render(RenderingStrategies.MYBATIS3);
+
+            String expected = "update items set amount = (amount + 100) where id < #{parameters.p1,jdbcType=INTEGER} "
+                    + "limit #{parameters.p2}";
+            assertThat(updateStatement.getUpdateStatement()).isEqualTo(expected);
+            assertThat(updateStatement.getParameters()).containsOnly(entry("p1", 10), entry("p2", 5L));
+
+            int rows = mapper.update(updateStatement);
             assertThat(rows).isEqualTo(5);
         }
     }
