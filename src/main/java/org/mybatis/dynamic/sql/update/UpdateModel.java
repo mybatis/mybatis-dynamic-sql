@@ -24,6 +24,7 @@ import java.util.stream.Stream;
 
 import org.jetbrains.annotations.NotNull;
 import org.mybatis.dynamic.sql.SqlTable;
+import org.mybatis.dynamic.sql.common.OrderByModel;
 import org.mybatis.dynamic.sql.exception.InvalidSqlException;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.update.render.UpdateRenderer;
@@ -38,6 +39,7 @@ public class UpdateModel {
     private final WhereModel whereModel;
     private final List<AbstractColumnMapping> columnMappings;
     private final Long limit;
+    private final OrderByModel orderByModel;
 
     private UpdateModel(Builder builder) {
         table = Objects.requireNonNull(builder.table);
@@ -45,6 +47,7 @@ public class UpdateModel {
         columnMappings = Objects.requireNonNull(builder.columnMappings);
         tableAlias = builder.tableAlias;
         limit = builder.limit;
+        orderByModel = builder.orderByModel;
 
         if (columnMappings.isEmpty()) {
             throw new InvalidSqlException(Messages.getString("ERROR.17")); //$NON-NLS-1$
@@ -71,6 +74,10 @@ public class UpdateModel {
         return Optional.ofNullable(limit);
     }
 
+    public Optional<OrderByModel> orderByModel() {
+        return Optional.ofNullable(orderByModel);
+    }
+
     @NotNull
     public UpdateStatementProvider render(RenderingStrategy renderingStrategy) {
         return UpdateRenderer.withUpdateModel(this)
@@ -89,6 +96,7 @@ public class UpdateModel {
         private WhereModel whereModel;
         private final List<AbstractColumnMapping> columnMappings = new ArrayList<>();
         private Long limit;
+        private OrderByModel orderByModel;
 
         public Builder withTable(SqlTable table) {
             this.table = table;
@@ -112,6 +120,11 @@ public class UpdateModel {
 
         public Builder withLimit(Long limit) {
             this.limit = limit;
+            return this;
+        }
+
+        public Builder withOrderByModel(OrderByModel orderByModel) {
+            this.orderByModel = orderByModel;
             return this;
         }
 

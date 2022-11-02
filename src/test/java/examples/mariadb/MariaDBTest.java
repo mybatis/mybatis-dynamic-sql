@@ -232,6 +232,47 @@ class MariaDBTest {
     }
 
     @Test
+    void testUpdateWithOrderBy() {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
+            CommonUpdateMapper mapper = session.getMapper(CommonUpdateMapper.class);
+
+            UpdateStatementProvider updateStatement = update(items)
+                    .set(amount).equalTo(add(amount, constant("100")))
+                    .orderBy(amount.descending())
+                    .build()
+                    .render(RenderingStrategies.MYBATIS3);
+
+            assertThat(updateStatement.getUpdateStatement())
+                    .isEqualTo("update items set amount = (amount + 100) order by amount DESC");
+            assertThat(updateStatement.getParameters()).isEmpty();
+
+            int rows = mapper.update(updateStatement);
+            assertThat(rows).isEqualTo(20);
+        }
+    }
+
+    @Test
+    void testUpdateWithOrderByAndLimit() {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
+            CommonUpdateMapper mapper = session.getMapper(CommonUpdateMapper.class);
+
+            UpdateStatementProvider updateStatement = update(items)
+                    .set(amount).equalTo(add(amount, constant("100")))
+                    .orderBy(amount.descending())
+                    .limit(5)
+                    .build()
+                    .render(RenderingStrategies.MYBATIS3);
+
+            String expected = "update items set amount = (amount + 100) order by amount DESC limit #{parameters.p1}";
+            assertThat(updateStatement.getUpdateStatement()).isEqualTo(expected);
+            assertThat(updateStatement.getParameters()).containsOnly(entry("p1", 5L));
+
+            int rows = mapper.update(updateStatement);
+            assertThat(rows).isEqualTo(5);
+        }
+    }
+
+    @Test
     void testUpdateWithWhereAndLimit() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             CommonUpdateMapper mapper = session.getMapper(CommonUpdateMapper.class);
@@ -245,6 +286,51 @@ class MariaDBTest {
 
             String expected = "update items set amount = (amount + 100) where id < #{parameters.p1,jdbcType=INTEGER} "
                     + "limit #{parameters.p2}";
+            assertThat(updateStatement.getUpdateStatement()).isEqualTo(expected);
+            assertThat(updateStatement.getParameters()).containsOnly(entry("p1", 10), entry("p2", 5L));
+
+            int rows = mapper.update(updateStatement);
+            assertThat(rows).isEqualTo(5);
+        }
+    }
+
+    @Test
+    void testUpdateWithWhereAndOrderBy() {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
+            CommonUpdateMapper mapper = session.getMapper(CommonUpdateMapper.class);
+
+            UpdateStatementProvider updateStatement = update(items)
+                    .set(amount).equalTo(add(amount, constant("100")))
+                    .where(id, isLessThan(10))
+                    .orderBy(amount.descending())
+                    .build()
+                    .render(RenderingStrategies.MYBATIS3);
+
+            String expected = "update items set amount = (amount + 100) where id < #{parameters.p1,jdbcType=INTEGER} "
+                    + "order by amount DESC";
+            assertThat(updateStatement.getUpdateStatement()).isEqualTo(expected);
+            assertThat(updateStatement.getParameters()).containsOnly(entry("p1", 10));
+
+            int rows = mapper.update(updateStatement);
+            assertThat(rows).isEqualTo(9);
+        }
+    }
+
+    @Test
+    void testUpdateWithWhereAndOrderByAndLimit() {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
+            CommonUpdateMapper mapper = session.getMapper(CommonUpdateMapper.class);
+
+            UpdateStatementProvider updateStatement = update(items)
+                    .set(amount).equalTo(add(amount, constant("100")))
+                    .where(id, isLessThan(10))
+                    .orderBy(amount)
+                    .limit(5)
+                    .build()
+                    .render(RenderingStrategies.MYBATIS3);
+
+            String expected = "update items set amount = (amount + 100) where id < #{parameters.p1,jdbcType=INTEGER} "
+                    + "order by amount limit #{parameters.p2}";
             assertThat(updateStatement.getUpdateStatement()).isEqualTo(expected);
             assertThat(updateStatement.getParameters()).containsOnly(entry("p1", 10), entry("p2", 5L));
 

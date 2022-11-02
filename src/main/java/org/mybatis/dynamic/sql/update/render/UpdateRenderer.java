@@ -22,6 +22,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import org.mybatis.dynamic.sql.SqlTable;
+import org.mybatis.dynamic.sql.common.OrderByModel;
+import org.mybatis.dynamic.sql.common.OrderByRenderer;
 import org.mybatis.dynamic.sql.exception.InvalidSqlException;
 import org.mybatis.dynamic.sql.render.ExplicitTableAliasCalculator;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
@@ -53,6 +55,7 @@ public class UpdateRenderer {
         fragmentCollector.add(calculateUpdateStatementStart());
         fragmentCollector.add(calculateSetPhrase());
         calculateWhereClause().ifPresent(fragmentCollector::add);
+        calculateOrderByClause().ifPresent(fragmentCollector::add);
         calculateLimitClause().ifPresent(fragmentCollector::add);
 
         return toUpdateStatementProvider(fragmentCollector);
@@ -126,6 +129,14 @@ public class UpdateRenderer {
         return FragmentAndParameters.withFragment("limit " + jdbcPlaceholder) //$NON-NLS-1$
                 .withParameter(mapKey, limit)
                 .build();
+    }
+
+    private Optional<FragmentAndParameters> calculateOrderByClause() {
+        return updateModel.orderByModel().map(this::renderOrderByClause);
+    }
+
+    private FragmentAndParameters renderOrderByClause(OrderByModel orderByModel) {
+        return new OrderByRenderer().render(orderByModel);
     }
 
     public static Builder withUpdateModel(UpdateModel updateModel) {

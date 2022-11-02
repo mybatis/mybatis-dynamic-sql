@@ -16,6 +16,8 @@
 package org.mybatis.dynamic.sql.update;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
@@ -24,8 +26,10 @@ import java.util.function.Supplier;
 
 import org.jetbrains.annotations.NotNull;
 import org.mybatis.dynamic.sql.BasicColumn;
+import org.mybatis.dynamic.sql.SortSpecification;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
+import org.mybatis.dynamic.sql.common.OrderByModel;
 import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
 import org.mybatis.dynamic.sql.select.SelectModel;
 import org.mybatis.dynamic.sql.util.AbstractColumnMapping;
@@ -52,6 +56,7 @@ public class UpdateDSL<R> extends AbstractWhereSupport<UpdateDSL<R>.UpdateWhereB
     private UpdateWhereBuilder whereBuilder;
     private final StatementConfiguration statementConfiguration = new StatementConfiguration();
     private Long limit;
+    private OrderByModel orderByModel;
 
     private UpdateDSL(SqlTable table, String tableAlias, Function<UpdateModel, R> adapterFunction) {
         this.table = Objects.requireNonNull(table);
@@ -77,6 +82,15 @@ public class UpdateDSL<R> extends AbstractWhereSupport<UpdateDSL<R>.UpdateWhereB
         return this;
     }
 
+    public UpdateDSL<R> orderBy(SortSpecification... columns) {
+        return orderBy(Arrays.asList(columns));
+    }
+
+    public UpdateDSL<R> orderBy(Collection<SortSpecification> columns) {
+        orderByModel = OrderByModel.of(columns);
+        return this;
+    }
+
     /**
      * WARNING! Calling this method could result in an update statement that updates
      * all rows in a table.
@@ -89,7 +103,8 @@ public class UpdateDSL<R> extends AbstractWhereSupport<UpdateDSL<R>.UpdateWhereB
         UpdateModel.Builder updateModelBuilder = UpdateModel.withTable(table)
                 .withTableAlias(tableAlias)
                 .withColumnMappings(columnMappings)
-                .withLimit(limit);
+                .withLimit(limit)
+                .withOrderByModel(orderByModel);
 
         if (whereBuilder != null) {
             updateModelBuilder.withWhereModel(whereBuilder.buildWhereModel());
@@ -185,6 +200,15 @@ public class UpdateDSL<R> extends AbstractWhereSupport<UpdateDSL<R>.UpdateWhereB
 
         public UpdateDSL<R> limit(long limit) {
             return UpdateDSL.this.limit(limit);
+        }
+
+        public UpdateDSL<R> orderBy(SortSpecification... columns) {
+            return orderBy(Arrays.asList(columns));
+        }
+
+        public UpdateDSL<R> orderBy(Collection<SortSpecification> columns) {
+            orderByModel = OrderByModel.of(columns);
+            return UpdateDSL.this;
         }
 
         @NotNull
