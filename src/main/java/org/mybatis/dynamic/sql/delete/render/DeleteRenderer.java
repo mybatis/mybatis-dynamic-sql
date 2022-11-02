@@ -21,10 +21,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import org.mybatis.dynamic.sql.SqlTable;
+import org.mybatis.dynamic.sql.common.OrderByRenderer;
 import org.mybatis.dynamic.sql.delete.DeleteModel;
 import org.mybatis.dynamic.sql.render.ExplicitTableAliasCalculator;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.render.TableAliasCalculator;
+import org.mybatis.dynamic.sql.common.OrderByModel;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 import org.mybatis.dynamic.sql.util.FragmentCollector;
 import org.mybatis.dynamic.sql.where.WhereModel;
@@ -49,6 +51,7 @@ public class DeleteRenderer {
 
         fragmentCollector.add(calculateDeleteStatementStart());
         calculateWhereClause().ifPresent(fragmentCollector::add);
+        calculateOrderByClause().ifPresent(fragmentCollector::add);
         calculateLimitClause().ifPresent(fragmentCollector::add);
 
         return toDeleteStatementProvider(fragmentCollector);
@@ -96,6 +99,15 @@ public class DeleteRenderer {
         return FragmentAndParameters.withFragment("limit " + jdbcPlaceholder) //$NON-NLS-1$
                 .withParameter(mapKey, limit)
                 .build();
+    }
+
+    private Optional<FragmentAndParameters> calculateOrderByClause() {
+        return deleteModel.orderByModel().map(this::renderOrderByClause);
+    }
+
+    private FragmentAndParameters renderOrderByClause(OrderByModel orderByModel) {
+        OrderByRenderer renderer = new OrderByRenderer();
+        return renderer.render(orderByModel);
     }
 
     public static Builder withDeleteModel(DeleteModel deleteModel) {

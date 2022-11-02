@@ -20,14 +20,13 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
-import org.mybatis.dynamic.sql.SortSpecification;
+import org.mybatis.dynamic.sql.common.OrderByRenderer;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.render.TableAliasCalculator;
-import org.mybatis.dynamic.sql.select.OrderByModel;
+import org.mybatis.dynamic.sql.common.OrderByModel;
 import org.mybatis.dynamic.sql.select.PagingModel;
 import org.mybatis.dynamic.sql.select.QueryExpressionModel;
 import org.mybatis.dynamic.sql.select.SelectModel;
-import org.mybatis.dynamic.sql.util.CustomCollectors;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 import org.mybatis.dynamic.sql.util.FragmentCollector;
 
@@ -80,17 +79,8 @@ public class SelectRenderer {
     }
 
     private FragmentAndParameters renderOrderBy(OrderByModel orderByModel) {
-        String phrase = orderByModel.mapColumns(this::calculateOrderByPhrase)
-                .collect(CustomCollectors.joining(", ", "order by ", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        return FragmentAndParameters.withFragment(phrase).build();
-    }
-
-    private String calculateOrderByPhrase(SortSpecification column) {
-        String phrase = column.orderByName();
-        if (column.isDescending()) {
-            phrase = phrase + " DESC"; //$NON-NLS-1$
-        }
-        return phrase;
+        OrderByRenderer renderer = new OrderByRenderer();
+        return renderer.render(orderByModel);
     }
 
     private Optional<FragmentAndParameters> renderPagingModel() {

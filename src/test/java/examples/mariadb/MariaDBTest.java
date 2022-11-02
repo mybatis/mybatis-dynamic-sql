@@ -111,6 +111,45 @@ class MariaDBTest {
     }
 
     @Test
+    void testDeleteWithOrderBy() {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
+            CommonDeleteMapper mapper = session.getMapper(CommonDeleteMapper.class);
+
+            DeleteStatementProvider deleteStatement = deleteFrom(items)
+                    .orderBy(amount.descending())
+                    .build()
+                    .render(RenderingStrategies.MYBATIS3);
+
+            assertThat(deleteStatement.getDeleteStatement())
+                    .isEqualTo("delete from items order by amount DESC");
+            assertThat(deleteStatement.getParameters()).isEmpty();
+
+            int rows = mapper.delete(deleteStatement);
+            assertThat(rows).isEqualTo(20);
+        }
+    }
+
+    @Test
+    void testDeleteWithOrderByAndLimit() {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
+            CommonDeleteMapper mapper = session.getMapper(CommonDeleteMapper.class);
+
+            DeleteStatementProvider deleteStatement = deleteFrom(items)
+                    .orderBy(amount.descending())
+                    .limit(5)
+                    .build()
+                    .render(RenderingStrategies.MYBATIS3);
+
+            assertThat(deleteStatement.getDeleteStatement())
+                    .isEqualTo("delete from items order by amount DESC limit #{parameters.p1}");
+            assertThat(deleteStatement.getParameters()).containsOnly(entry("p1", 5L));
+
+            int rows = mapper.delete(deleteStatement);
+            assertThat(rows).isEqualTo(5);
+        }
+    }
+
+    @Test
     void testDeleteWithWhereAndLimit() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             CommonDeleteMapper mapper = session.getMapper(CommonDeleteMapper.class);
@@ -122,6 +161,48 @@ class MariaDBTest {
                     .render(RenderingStrategies.MYBATIS3);
 
             String expected = "delete from items where id < #{parameters.p1,jdbcType=INTEGER} limit #{parameters.p2}";
+            assertThat(deleteStatement.getDeleteStatement()).isEqualTo(expected);
+            assertThat(deleteStatement.getParameters()).containsOnly(entry("p1", 10), entry("p2", 5L));
+
+            int rows = mapper.delete(deleteStatement);
+            assertThat(rows).isEqualTo(5);
+        }
+    }
+
+    @Test
+    void testDeleteWithWhereAndOrderBy() {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
+            CommonDeleteMapper mapper = session.getMapper(CommonDeleteMapper.class);
+
+            DeleteStatementProvider deleteStatement = deleteFrom(items)
+                    .where(id, isLessThan(10))
+                    .orderBy(amount.descending())
+                    .build()
+                    .render(RenderingStrategies.MYBATIS3);
+
+            String expected = "delete from items where id < #{parameters.p1,jdbcType=INTEGER} order by amount DESC";
+            assertThat(deleteStatement.getDeleteStatement()).isEqualTo(expected);
+            assertThat(deleteStatement.getParameters()).containsOnly(entry("p1", 10));
+
+            int rows = mapper.delete(deleteStatement);
+            assertThat(rows).isEqualTo(9);
+        }
+    }
+
+    @Test
+    void testDeleteWithWhereAndOrderByAndLimit() {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
+            CommonDeleteMapper mapper = session.getMapper(CommonDeleteMapper.class);
+
+            DeleteStatementProvider deleteStatement = deleteFrom(items)
+                    .where(id, isLessThan(10))
+                    .orderBy(amount)
+                    .limit(5)
+                    .build()
+                    .render(RenderingStrategies.MYBATIS3);
+
+            String expected = "delete from items where id < #{parameters.p1,jdbcType=INTEGER} order by amount "
+                    + "limit #{parameters.p2}";
             assertThat(deleteStatement.getDeleteStatement()).isEqualTo(expected);
             assertThat(deleteStatement.getParameters()).containsOnly(entry("p1", 10), entry("p2", 5L));
 
