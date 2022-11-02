@@ -20,10 +20,10 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
+import org.mybatis.dynamic.sql.common.OrderByModel;
 import org.mybatis.dynamic.sql.common.OrderByRenderer;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.render.TableAliasCalculator;
-import org.mybatis.dynamic.sql.common.OrderByModel;
 import org.mybatis.dynamic.sql.select.PagingModel;
 import org.mybatis.dynamic.sql.select.QueryExpressionModel;
 import org.mybatis.dynamic.sql.select.SelectModel;
@@ -79,8 +79,7 @@ public class SelectRenderer {
     }
 
     private FragmentAndParameters renderOrderBy(OrderByModel orderByModel) {
-        OrderByRenderer renderer = new OrderByRenderer();
-        return renderer.render(orderByModel);
+        return new OrderByRenderer().render(orderByModel);
     }
 
     private Optional<FragmentAndParameters> renderPagingModel() {

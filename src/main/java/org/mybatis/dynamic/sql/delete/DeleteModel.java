@@ -20,10 +20,10 @@ import java.util.Optional;
 
 import org.jetbrains.annotations.NotNull;
 import org.mybatis.dynamic.sql.SqlTable;
+import org.mybatis.dynamic.sql.common.OrderByModel;
 import org.mybatis.dynamic.sql.delete.render.DeleteRenderer;
 import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
-import org.mybatis.dynamic.sql.common.OrderByModel;
 import org.mybatis.dynamic.sql.where.WhereModel;
 
 public class DeleteModel {
