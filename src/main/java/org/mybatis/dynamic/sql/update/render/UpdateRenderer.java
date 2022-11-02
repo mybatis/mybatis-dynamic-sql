@@ -54,7 +54,7 @@ public class UpdateRenderer {
         fragmentCollector.add(calculateSetPhrase());
         calculateWhereClause().ifPresent(fragmentCollector::add);
 
-        return fragmentCollector.map(this::toUpdateStatementProvider);
+        return toUpdateStatementProvider(fragmentCollector);
     }
 
     private UpdateStatementProvider toUpdateStatementProvider(FragmentCollector fragmentCollector) {
@@ -85,11 +85,12 @@ public class UpdateRenderer {
             throw new InvalidSqlException(Messages.getString("ERROR.18")); //$NON-NLS-1$
         }
 
-        return fragmentsAndParameters.stream()
+        FragmentCollector fragmentCollector = fragmentsAndParameters.stream()
                 .filter(Optional::isPresent)
                 .map(Optional::get)
-                .collect(FragmentCollector.collect())
-                .map(this::toSetPhrase);
+                .collect(FragmentCollector.collect());
+
+        return toSetPhrase(fragmentCollector);
     }
 
     private FragmentAndParameters toSetPhrase(FragmentCollector fragmentCollector) {

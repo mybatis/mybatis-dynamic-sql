@@ -125,7 +125,7 @@ public class QueryExpressionRenderer {
         calculateWhereClause().ifPresent(fragmentCollector::add);
         calculateGroupByClause().ifPresent(fragmentCollector::add);
 
-        return fragmentCollector.map(this::toFragmentAndParameters);
+        return toFragmentAndParameters(fragmentCollector);
     }
 
     private FragmentAndParameters toFragmentAndParameters(FragmentCollector fragmentCollector) {

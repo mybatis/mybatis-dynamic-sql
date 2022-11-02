@@ -51,7 +51,7 @@ public class DeleteRenderer {
         calculateWhereClause().ifPresent(fragmentCollector::add);
         calculateLimitClause().ifPresent(fragmentCollector::add);
 
-        return fragmentCollector.map(this::toDeleteStatementProvider);
+        return toDeleteStatementProvider(fragmentCollector);
     }
 
     private DeleteStatementProvider toDeleteStatementProvider(FragmentCollector fragmentCollector) {

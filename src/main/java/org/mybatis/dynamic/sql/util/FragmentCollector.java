@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 import java.util.stream.Collector;
 import java.util.stream.Stream;
 
@@ -56,10 +55,6 @@ public class FragmentCollector {
 
     public boolean hasMultipleFragments() {
         return fragments.size() > 1;
-    }
-
-    public <R> R map(Function<FragmentCollector, R> mapper) {
-        return mapper.apply(this);
     }
 
     public static Collector<FragmentAndParameters, FragmentCollector, FragmentCollector> collect() {

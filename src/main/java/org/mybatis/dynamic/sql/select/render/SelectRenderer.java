@@ -56,7 +56,7 @@ public class SelectRenderer {
         renderOrderBy().ifPresent(fragmentCollector::add);
         renderPagingModel().ifPresent(fragmentCollector::add);
 
-        return fragmentCollector.map(this::toSelectStatementProvider);
+        return toSelectStatementProvider(fragmentCollector);
     }
 
     private SelectStatementProvider toSelectStatementProvider(FragmentCollector fragmentCollector) {
