@@ -16,6 +16,7 @@
 package org.mybatis.dynamic.sql.util.kotlin
 
 import org.mybatis.dynamic.sql.BasicColumn
+import org.mybatis.dynamic.sql.SortSpecification
 import org.mybatis.dynamic.sql.SqlColumn
 import org.mybatis.dynamic.sql.update.UpdateDSL
 import org.mybatis.dynamic.sql.update.UpdateModel
@@ -27,6 +28,14 @@ class KotlinUpdateBuilder(private val dsl: UpdateDSL<UpdateModel>) :
     KotlinBaseBuilder<UpdateDSL<UpdateModel>>(), Buildable<UpdateModel> {
 
     fun <T> set(column: SqlColumn<T>): KotlinSetClauseFinisher<T> = KotlinSetClauseFinisher(column)
+
+    fun orderBy(vararg columns: SortSpecification) {
+        dsl.orderBy(columns.toList())
+    }
+
+    fun limit(limit: Long) {
+        dsl.limit(limit)
+    }
 
     override fun build(): UpdateModel = dsl.build()
 

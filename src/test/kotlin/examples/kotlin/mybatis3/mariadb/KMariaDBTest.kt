@@ -16,6 +16,7 @@
 package examples.kotlin.mybatis3.mariadb
 
 import config.TestContainersConfiguration
+import examples.kotlin.mybatis3.mariadb.KItemsDynamicSQLSupport.amount
 import examples.kotlin.mybatis3.mariadb.KItemsDynamicSQLSupport.id
 import examples.kotlin.mybatis3.mariadb.KItemsDynamicSQLSupport.items
 import examples.kotlin.mybatis3.mariadb.KItemsDynamicSQLSupport.description
@@ -30,10 +31,14 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
+import org.mybatis.dynamic.sql.util.kotlin.elements.add
+import org.mybatis.dynamic.sql.util.kotlin.elements.constant
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.deleteFrom
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.select
+import org.mybatis.dynamic.sql.util.kotlin.mybatis3.update
 import org.mybatis.dynamic.sql.util.mybatis3.CommonDeleteMapper
 import org.mybatis.dynamic.sql.util.mybatis3.CommonSelectMapper
+import org.mybatis.dynamic.sql.util.mybatis3.CommonUpdateMapper
 import org.testcontainers.containers.MariaDBContainer
 import org.testcontainers.junit.jupiter.Container
 import org.testcontainers.junit.jupiter.Testcontainers
@@ -56,6 +61,7 @@ class KMariaDBTest {
         with(Configuration(environment)) {
             addMapper(CommonDeleteMapper::class.java)
             addMapper(CommonSelectMapper::class.java)
+            addMapper(CommonUpdateMapper::class.java)
             sqlSessionFactory = SqlSessionFactoryBuilder().build(this)
         }
     }
@@ -89,6 +95,58 @@ class KMariaDBTest {
 
             val rows = mapper.delete(deleteStatement)
             assertThat(rows).isEqualTo(4)
+        }
+    }
+
+    @Test
+    fun testDeleteWithOrderBy() {
+        newSession().use {
+            val mapper = it.getMapper(CommonDeleteMapper::class.java)
+
+            val deleteStatement = deleteFrom(items) {
+                orderBy(id)
+            }
+
+            assertThat(deleteStatement.deleteStatement).isEqualTo("delete from items order by id")
+
+            val rows = mapper.delete(deleteStatement)
+            assertThat(rows).isEqualTo(20)
+        }
+    }
+
+    @Test
+    fun testUpdateWithLimit() {
+        newSession().use {
+            val mapper = it.getMapper(CommonUpdateMapper::class.java)
+
+            val updateStatement = update(items) {
+                set(amount) equalTo add(amount, constant<Int>("100"))
+                limit(4)
+            }
+
+            assertThat(updateStatement.updateStatement)
+                .isEqualTo("update items set amount = (amount + 100) limit #{parameters.p1}")
+
+            val rows = mapper.update(updateStatement)
+            assertThat(rows).isEqualTo(4)
+        }
+    }
+
+    @Test
+    fun testUpdateWithOrderBy() {
+        newSession().use {
+            val mapper = it.getMapper(CommonUpdateMapper::class.java)
+
+            val updateStatement = update(items) {
+                set(amount) equalTo add(amount, constant<Int>("100"))
+                orderBy(id)
+            }
+
+            assertThat(updateStatement.updateStatement)
+                .isEqualTo("update items set amount = (amount + 100) order by id")
+
+            val rows = mapper.update(updateStatement)
+            assertThat(rows).isEqualTo(20)
         }
     }
 

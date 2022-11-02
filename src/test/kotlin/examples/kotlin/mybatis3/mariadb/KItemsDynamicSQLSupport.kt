@@ -23,9 +23,11 @@ object KItemsDynamicSQLSupport {
     val items = Items()
     val id = items.id
     val description = items.description
+    val amount = items.amount
 
     class Items : SqlTable("items") {
         val id = column<Int>(name = "id", jdbcType = JDBCType.INTEGER)
         val description = column<String>(name = "description", jdbcType = JDBCType.VARCHAR)
+        val amount = column<Int>(name = "amount", jdbcType = JDBCType.INTEGER)
     }
 }
