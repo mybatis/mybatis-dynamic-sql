@@ -26,7 +26,7 @@ import org.mybatis.dynamic.sql.util.PropertyMapping;
 import org.mybatis.dynamic.sql.util.PropertyWhenPresentMapping;
 import org.mybatis.dynamic.sql.util.StringConstantMapping;
 
-public class ValuePhraseVisitor extends InsertMappingVisitor<Optional<FieldAndValue>> {
+public class ValuePhraseVisitor extends InsertMappingVisitor<Optional<FieldAndValueAndParameters>> {
 
     protected final RenderingStrategy renderingStrategy;
 
@@ -35,35 +35,35 @@ public class ValuePhraseVisitor extends InsertMappingVisitor<Optional<FieldAndVa
     }
 
     @Override
-    public Optional<FieldAndValue> visit(NullMapping mapping) {
-        return FieldAndValue.withFieldName(mapping.columnName())
+    public Optional<FieldAndValueAndParameters> visit(NullMapping mapping) {
+        return FieldAndValueAndParameters.withFieldName(mapping.columnName())
                 .withValuePhrase("null") //$NON-NLS-1$
                 .buildOptional();
     }
 
     @Override
-    public Optional<FieldAndValue> visit(ConstantMapping mapping) {
-        return FieldAndValue.withFieldName(mapping.columnName())
+    public Optional<FieldAndValueAndParameters> visit(ConstantMapping mapping) {
+        return FieldAndValueAndParameters.withFieldName(mapping.columnName())
                 .withValuePhrase(mapping.constant())
                 .buildOptional();
     }
 
     @Override
-    public Optional<FieldAndValue> visit(StringConstantMapping mapping) {
-        return FieldAndValue.withFieldName(mapping.columnName())
+    public Optional<FieldAndValueAndParameters> visit(StringConstantMapping mapping) {
+        return FieldAndValueAndParameters.withFieldName(mapping.columnName())
                 .withValuePhrase("'" + mapping.constant() + "'") //$NON-NLS-1$ //$NON-NLS-2$
                 .buildOptional();
     }
 
     @Override
-    public Optional<FieldAndValue> visit(PropertyMapping mapping) {
-        return FieldAndValue.withFieldName(mapping.columnName())
+    public Optional<FieldAndValueAndParameters> visit(PropertyMapping mapping) {
+        return FieldAndValueAndParameters.withFieldName(mapping.columnName())
                 .withValuePhrase(mapping.mapColumn(c -> calculateJdbcPlaceholder(c, mapping.property())))
                 .buildOptional();
     }
 
     @Override
-    public Optional<FieldAndValue> visit(PropertyWhenPresentMapping mapping) {
+    public Optional<FieldAndValueAndParameters> visit(PropertyWhenPresentMapping mapping) {
         if (mapping.shouldRender()) {
             return visit((PropertyMapping) mapping);
         } else {

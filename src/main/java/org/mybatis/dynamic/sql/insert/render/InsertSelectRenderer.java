@@ -40,21 +40,19 @@ public class InsertSelectRenderer {
     public InsertSelectStatementProvider render() {
         SelectStatementProvider selectStatement = model.selectModel().render(renderingStrategy);
 
-        return DefaultGeneralInsertStatementProvider.withInsertStatement(calculateInsertStatement(selectStatement))
+        String statementStart = InsertRenderingUtilities.calculateInsertStatementStart(model.table());
+        Optional<String> columnsPhrase = calculateColumnsPhrase();
+        String selectStatementS = selectStatement.getSelectStatement();
+
+        String insertStatement = statementStart + spaceBefore(columnsPhrase) + spaceBefore(selectStatementS);
+
+        return DefaultGeneralInsertStatementProvider.withInsertStatement(insertStatement)
                 .withParameters(selectStatement.getParameters())
                 .build();
     }
 
-    private String calculateInsertStatement(SelectStatementProvider selectStatement) {
-        return "insert into" //$NON-NLS-1$
-                + spaceBefore(model.table().tableNameAtRuntime())
-                + spaceBefore(calculateColumnsPhrase())
-                + spaceBefore(selectStatement.getSelectStatement());
-    }
-
     private Optional<String> calculateColumnsPhrase() {
-        return model.columnList()
-                .map(this::calculateColumnsPhrase);
+        return model.columnList().map(this::calculateColumnsPhrase);
     }
 
     private String calculateColumnsPhrase(InsertColumnListModel columnList) {

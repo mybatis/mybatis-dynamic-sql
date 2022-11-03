@@ -23,7 +23,7 @@ import org.mybatis.dynamic.sql.util.NullMapping;
 import org.mybatis.dynamic.sql.util.PropertyMapping;
 import org.mybatis.dynamic.sql.util.StringConstantMapping;
 
-public abstract class AbstractMultiRowValuePhraseVisitor extends MultiRowInsertMappingVisitor<FieldAndValue> {
+public abstract class AbstractMultiRowValuePhraseVisitor extends MultiRowInsertMappingVisitor<FieldAndValueAndParameters> {
 
     protected final RenderingStrategy renderingStrategy;
     protected final String prefix;
@@ -34,29 +34,29 @@ public abstract class AbstractMultiRowValuePhraseVisitor extends MultiRowInsertM
     }
 
     @Override
-    public FieldAndValue visit(NullMapping mapping) {
-        return FieldAndValue.withFieldName(mapping.columnName())
+    public FieldAndValueAndParameters visit(NullMapping mapping) {
+        return FieldAndValueAndParameters.withFieldName(mapping.columnName())
                 .withValuePhrase("null") //$NON-NLS-1$
                 .build();
     }
 
     @Override
-    public FieldAndValue visit(ConstantMapping mapping) {
-        return FieldAndValue.withFieldName(mapping.columnName())
+    public FieldAndValueAndParameters visit(ConstantMapping mapping) {
+        return FieldAndValueAndParameters.withFieldName(mapping.columnName())
                 .withValuePhrase(mapping.constant())
                 .build();
     }
 
     @Override
-    public FieldAndValue visit(StringConstantMapping mapping) {
-        return FieldAndValue.withFieldName(mapping.columnName())
+    public FieldAndValueAndParameters visit(StringConstantMapping mapping) {
+        return FieldAndValueAndParameters.withFieldName(mapping.columnName())
                 .withValuePhrase("'" + mapping.constant() + "'") //$NON-NLS-1$ //$NON-NLS-2$
                 .build();
     }
 
     @Override
-    public FieldAndValue visit(PropertyMapping mapping) {
-        return FieldAndValue.withFieldName(mapping.columnName())
+    public FieldAndValueAndParameters visit(PropertyMapping mapping) {
+        return FieldAndValueAndParameters.withFieldName(mapping.columnName())
                 .withValuePhrase(mapping.mapColumn(c -> calculateJdbcPlaceholder(c, mapping.property())))
                 .build();
     }

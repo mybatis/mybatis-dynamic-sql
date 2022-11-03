@@ -15,12 +15,8 @@
  */
 package org.mybatis.dynamic.sql.insert.render;
 
-import static org.mybatis.dynamic.sql.util.StringUtilities.spaceBefore;
-
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.mybatis.dynamic.sql.exception.InvalidSqlException;
 import org.mybatis.dynamic.sql.insert.InsertModel;
@@ -40,39 +36,20 @@ public class InsertRenderer<T> {
     public InsertStatementProvider<T> render() {
         ValuePhraseVisitor visitor = new ValuePhraseVisitor(renderingStrategy);
 
-        List<Optional<FieldAndValue>> fieldsAndValues = model.mapColumnMappings(m -> m.accept(visitor))
-                .collect(Collectors.toList());
+        FieldAndValueCollector collector = model.mapColumnMappings(m -> m.accept(visitor))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .collect(FieldAndValueCollector.collect());
 
-        if (fieldsAndValues.stream().noneMatch(Optional::isPresent)) {
+        if (collector.isEmpty()) {
             throw new InvalidSqlException(Messages.getString("ERROR.10")); //$NON-NLS-1$
         }
 
+        String insertStatement = InsertRenderingUtilities.calculateInsertStatement(model.table(), collector);
+
         return DefaultInsertStatementProvider.withRow(model.row())
-                .withInsertStatement(calculateInsertStatement(fieldsAndValues))
+                .withInsertStatement(insertStatement)
                 .build();
-    }
-
-    private String calculateInsertStatement(List<Optional<FieldAndValue>> fieldsAndValues) {
-        return "insert into" //$NON-NLS-1$
-                + spaceBefore(model.table().tableNameAtRuntime())
-                + spaceBefore(calculateColumnsPhrase(fieldsAndValues))
-                + spaceBefore(calculateValuesPhrase(fieldsAndValues));
-    }
-
-    private String calculateColumnsPhrase(List<Optional<FieldAndValue>> fieldsAndValues) {
-        return fieldsAndValues.stream()
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .map(FieldAndValue::fieldName)
-                .collect(Collectors.joining(", ", "(", ")")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-    }
-
-    private String calculateValuesPhrase(List<Optional<FieldAndValue>> fieldsAndValues) {
-        return fieldsAndValues.stream()
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .map(FieldAndValue::valuePhrase)
-                .collect(Collectors.joining(", ", "values (", ")")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
 
     public static <T> Builder<T> withInsertModel(InsertModel<T> model) {
