@@ -15,48 +15,36 @@
  */
 package examples.kotlin.mybatis3.joins
 
+import examples.kotlin.mybatis3.TestUtils
 import examples.kotlin.mybatis3.joins.ItemMasterDynamicSQLSupport.itemMaster
 import examples.kotlin.mybatis3.joins.OrderLineDynamicSQLSupport.orderLine
-import org.apache.ibatis.datasource.unpooled.UnpooledDataSource
-import org.apache.ibatis.jdbc.ScriptRunner
-import org.apache.ibatis.mapping.Environment
-import org.apache.ibatis.session.Configuration
-import org.apache.ibatis.session.SqlSession
-import org.apache.ibatis.session.SqlSessionFactoryBuilder
-import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory
+import org.apache.ibatis.session.SqlSessionFactory
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestInstance
 import org.mybatis.dynamic.sql.util.kotlin.elements.exists
 import org.mybatis.dynamic.sql.util.kotlin.elements.isEqualTo
 import org.mybatis.dynamic.sql.util.kotlin.elements.isGreaterThan
 import org.mybatis.dynamic.sql.util.kotlin.elements.notExists
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.select
 import org.mybatis.dynamic.sql.util.mybatis3.CommonSelectMapper
-import java.io.InputStreamReader
-import java.sql.DriverManager
 
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class DeprecatedWhereDSLTest {
+    private lateinit var sqlSessionFactory: SqlSessionFactory
 
-    private fun newSession(): SqlSession {
-        Class.forName(JDBC_DRIVER)
-        val script = javaClass.getResourceAsStream("/examples/kotlin/mybatis3/joins/CreateJoinDB.sql")
-
-        DriverManager.getConnection(JDBC_URL, "sa", "").use { connection ->
-            val sr = ScriptRunner(connection)
-            sr.setLogWriter(null)
-            sr.runScript(InputStreamReader(script))
+    @BeforeAll
+    fun setup() {
+        sqlSessionFactory = TestUtils.buildSqlSessionFactory {
+            withInitializationScript("/examples/kotlin/mybatis3/joins/CreateJoinDB.sql")
+            withMapper(CommonSelectMapper::class)
         }
-
-        val ds = UnpooledDataSource(JDBC_DRIVER, JDBC_URL, "sa", "")
-        val environment = Environment("test", JdbcTransactionFactory(), ds)
-        val config = Configuration(environment)
-        config.addMapper(CommonSelectMapper::class.java)
-        return SqlSessionFactoryBuilder().build(config).openSession()
     }
 
     @Test
     fun testExists() {
-        newSession().use { session ->
+        sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(CommonSelectMapper::class.java)
 
             val selectStatement = select(itemMaster.allColumns()) {
@@ -99,7 +87,7 @@ class DeprecatedWhereDSLTest {
 
     @Test
     fun testNotExists() {
-        newSession().use { session ->
+        sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(CommonSelectMapper::class.java)
 
             val selectStatement = select(itemMaster.allColumns()) {
@@ -132,7 +120,7 @@ class DeprecatedWhereDSLTest {
 
     @Test
     fun testAndExists() {
-        newSession().use { session ->
+        sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(CommonSelectMapper::class.java)
 
             val selectStatement = select(itemMaster.allColumns()) {
@@ -168,7 +156,7 @@ class DeprecatedWhereDSLTest {
 
     @Test
     fun testAndExistsAnd() {
-        newSession().use { session ->
+        sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(CommonSelectMapper::class.java)
 
             val selectStatement = select(itemMaster.allColumns()) {
@@ -206,7 +194,7 @@ class DeprecatedWhereDSLTest {
 
     @Test
     fun testAndExistsAnd2() {
-        newSession().use { session ->
+        sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(CommonSelectMapper::class.java)
 
             val selectStatement = select(itemMaster.allColumns()) {
@@ -244,7 +232,7 @@ class DeprecatedWhereDSLTest {
 
     @Test
     fun testAndExistsAnd3() {
-        newSession().use { session ->
+        sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(CommonSelectMapper::class.java)
 
             val selectStatement = select(itemMaster.allColumns()) {
@@ -283,7 +271,7 @@ class DeprecatedWhereDSLTest {
 
     @Test
     fun testOrExists() {
-        newSession().use { session ->
+        sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(CommonSelectMapper::class.java)
 
             val selectStatement = select(itemMaster.allColumns()) {
@@ -328,7 +316,7 @@ class DeprecatedWhereDSLTest {
 
     @Test
     fun testOrExistsAnd() {
-        newSession().use { session ->
+        sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(CommonSelectMapper::class.java)
 
             val selectStatement = select(itemMaster.allColumns()) {
@@ -381,7 +369,7 @@ class DeprecatedWhereDSLTest {
 
     @Test
     fun testOrExistsAnd2() {
-        newSession().use { session ->
+        sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(CommonSelectMapper::class.java)
 
             val selectStatement = select(itemMaster.allColumns()) {
@@ -429,7 +417,7 @@ class DeprecatedWhereDSLTest {
 
     @Test
     fun testOrExistsAnd3() {
-        newSession().use { session ->
+        sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(CommonSelectMapper::class.java)
 
             val selectStatement = select(itemMaster.allColumns()) {
@@ -478,7 +466,7 @@ class DeprecatedWhereDSLTest {
 
     @Test
     fun testWhereExistsOr() {
-        newSession().use { session ->
+        sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(CommonSelectMapper::class.java)
 
             val selectStatement = select(itemMaster.allColumns()) {
@@ -524,7 +512,7 @@ class DeprecatedWhereDSLTest {
 
     @Test
     fun testWhereExistsAnd() {
-        newSession().use { session ->
+        sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(CommonSelectMapper::class.java)
 
             val selectStatement = select(itemMaster.allColumns()) {
@@ -560,7 +548,7 @@ class DeprecatedWhereDSLTest {
 
     @Test
     fun testWhereAnd() {
-        newSession().use { session ->
+        sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(CommonSelectMapper::class.java)
 
             val selectStatement = select(itemMaster.allColumns()) {
@@ -588,7 +576,7 @@ class DeprecatedWhereDSLTest {
 
     @Test
     fun testWhereAndAnd() {
-        newSession().use { session ->
+        sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(CommonSelectMapper::class.java)
 
             val selectStatement = select(itemMaster.allColumns()) {
@@ -619,7 +607,7 @@ class DeprecatedWhereDSLTest {
 
     @Test
     fun testWhereOr() {
-        newSession().use { session ->
+        sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(CommonSelectMapper::class.java)
 
             val selectStatement = select(itemMaster.allColumns()) {
@@ -647,7 +635,7 @@ class DeprecatedWhereDSLTest {
 
     @Test
     fun testWhereOrOr() {
-        newSession().use { session ->
+        sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(CommonSelectMapper::class.java)
 
             val selectStatement = select(itemMaster.allColumns()) {
@@ -674,10 +662,5 @@ class DeprecatedWhereDSLTest {
                 assertThat(this).containsEntry("DESCRIPTION", "Helmet")
             }
         }
-    }
-
-    companion object {
-        const val JDBC_URL = "jdbc:hsqldb:mem:aname"
-        const val JDBC_DRIVER = "org.hsqldb.jdbcDriver"
     }
 }

@@ -15,48 +15,37 @@
  */
 package examples.kotlin.mybatis3.canonical
 
+import examples.kotlin.mybatis3.TestUtils
 import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.person
 import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.addressId
 import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.birthDate
 import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.id
 import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.occupation
-import org.apache.ibatis.datasource.unpooled.UnpooledDataSource
-import org.apache.ibatis.jdbc.ScriptRunner
-import org.apache.ibatis.mapping.Environment
-import org.apache.ibatis.session.Configuration
-import org.apache.ibatis.session.SqlSession
-import org.apache.ibatis.session.SqlSessionFactoryBuilder
-import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory
+import org.apache.ibatis.session.SqlSessionFactory
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestInstance
 import org.mybatis.dynamic.sql.util.kotlin.WhereApplier
 import org.mybatis.dynamic.sql.util.kotlin.andThen
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.select
-import java.io.InputStreamReader
-import java.sql.DriverManager
 
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class ReusableWhereTest {
-    private fun newSession(): SqlSession {
-        Class.forName(JDBC_DRIVER)
-        val script = javaClass.getResourceAsStream("/examples/kotlin/mybatis3/CreateSimpleDB.sql")
-        DriverManager.getConnection(JDBC_URL, "sa", "").use { connection ->
-            val sr = ScriptRunner(connection)
-            sr.setLogWriter(null)
-            sr.runScript(InputStreamReader(script))
-        }
+    private lateinit var sqlSessionFactory: SqlSessionFactory
 
-        val ds = UnpooledDataSource(JDBC_DRIVER, JDBC_URL, "sa", "")
-        val environment = Environment("test", JdbcTransactionFactory(), ds)
-        val config = Configuration(environment)
-        config.typeHandlerRegistry.register(YesNoTypeHandler::class.java)
-        config.addMapper(PersonMapper::class.java)
-        config.addMapper(PersonWithAddressMapper::class.java)
-        return SqlSessionFactoryBuilder().build(config).openSession()
+    @BeforeAll
+    fun setup() {
+        sqlSessionFactory = TestUtils.buildSqlSessionFactory {
+            withInitializationScript("/examples/kotlin/mybatis3/CreateSimpleDB.sql")
+            withTypeHandler(YesNoTypeHandler::class)
+            withMapper(PersonMapper::class)
+        }
     }
 
     @Test
     fun testCount() {
-        newSession().use { session ->
+        sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(PersonMapper::class.java)
 
             val rows = mapper.count {
@@ -69,7 +58,7 @@ class ReusableWhereTest {
 
     @Test
     fun testDelete() {
-        newSession().use { session ->
+        sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(PersonMapper::class.java)
 
             val rows = mapper.delete {
@@ -82,7 +71,7 @@ class ReusableWhereTest {
 
     @Test
     fun testSelect() {
-        newSession().use { session ->
+        sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(PersonMapper::class.java)
 
             val rows = mapper.select {
@@ -96,7 +85,7 @@ class ReusableWhereTest {
 
     @Test
     fun testUpdate() {
-        newSession().use { session ->
+        sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(PersonMapper::class.java)
 
             val rows = mapper.update {
@@ -132,10 +121,5 @@ class ReusableWhereTest {
     private val commonWhere: WhereApplier = {
         where { id isEqualTo 1 }
         or { occupation.isNull() }
-    }
-
-    companion object {
-        const val JDBC_URL = "jdbc:hsqldb:mem:aname"
-        const val JDBC_DRIVER = "org.hsqldb.jdbcDriver"
     }
 }

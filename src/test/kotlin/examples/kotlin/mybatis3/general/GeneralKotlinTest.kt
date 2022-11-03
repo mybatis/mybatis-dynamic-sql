@@ -15,6 +15,7 @@
  */
 package examples.kotlin.mybatis3.general
 
+import examples.kotlin.mybatis3.TestUtils
 import examples.kotlin.mybatis3.canonical.AddressDynamicSqlSupport.address
 import examples.kotlin.mybatis3.canonical.LastName
 import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.person
@@ -26,21 +27,16 @@ import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.id
 import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.lastName
 import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.occupation
 import examples.kotlin.mybatis3.canonical.PersonMapper
-import examples.kotlin.mybatis3.canonical.PersonMapperTest
 import examples.kotlin.mybatis3.canonical.PersonRecord
 import examples.kotlin.mybatis3.canonical.PersonWithAddressMapper
 import examples.kotlin.mybatis3.canonical.YesNoTypeHandler
 import examples.kotlin.mybatis3.canonical.select
-import org.apache.ibatis.datasource.unpooled.UnpooledDataSource
-import org.apache.ibatis.jdbc.ScriptRunner
-import org.apache.ibatis.mapping.Environment
-import org.apache.ibatis.session.Configuration
-import org.apache.ibatis.session.SqlSession
-import org.apache.ibatis.session.SqlSessionFactoryBuilder
-import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory
+import org.apache.ibatis.session.SqlSessionFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
+import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestInstance
 import org.mybatis.dynamic.sql.util.Messages
 import org.mybatis.dynamic.sql.util.kotlin.KInvalidSQLException
 import org.mybatis.dynamic.sql.util.kotlin.elements.`as`
@@ -55,33 +51,26 @@ import org.mybatis.dynamic.sql.util.kotlin.mybatis3.into
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.select
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.selectDistinct
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.update
-import java.io.InputStreamReader
-import java.sql.DriverManager
 import java.util.Date
 
 @Suppress("LargeClass")
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class GeneralKotlinTest {
-    private fun newSession(): SqlSession {
-        Class.forName(PersonMapperTest.JDBC_DRIVER)
-        val script = javaClass.getResourceAsStream("/examples/kotlin/mybatis3/CreateSimpleDB.sql")
-        DriverManager.getConnection(PersonMapperTest.JDBC_URL, "sa", "").use { connection ->
-            val sr = ScriptRunner(connection)
-            sr.setLogWriter(null)
-            sr.runScript(InputStreamReader(script))
-        }
+    private lateinit var sqlSessionFactory: SqlSessionFactory
 
-        val ds = UnpooledDataSource(PersonMapperTest.JDBC_DRIVER, PersonMapperTest.JDBC_URL, "sa", "")
-        val environment = Environment("test", JdbcTransactionFactory(), ds)
-        val config = Configuration(environment)
-        config.typeHandlerRegistry.register(YesNoTypeHandler::class.java)
-        config.addMapper(PersonMapper::class.java)
-        config.addMapper(PersonWithAddressMapper::class.java)
-        return SqlSessionFactoryBuilder().build(config).openSession()
+    @BeforeAll
+    fun setup() {
+        sqlSessionFactory = TestUtils.buildSqlSessionFactory {
+            withInitializationScript("/examples/kotlin/mybatis3/CreateSimpleDB.sql")
+            withTypeHandler(YesNoTypeHandler::class)
+            withMapper(PersonMapper::class)
+            withMapper(PersonWithAddressMapper::class)
+        }
     }
 
     @Test
     fun testRawCount() {
-        newSession().use { session ->
+        sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(PersonMapper::class.java)
 
             val countStatement = countFrom(person) {
@@ -100,7 +89,7 @@ class GeneralKotlinTest {
 
     @Test
     fun testRawCountAllRows() {
-        newSession().use { session ->
+        sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(PersonMapper::class.java)
 
             val countStatement = countFrom(person) {
@@ -117,7 +106,7 @@ class GeneralKotlinTest {
 
     @Test
     fun testRawCountColumn() {
-        newSession().use { session ->
+        sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(PersonMapper::class.java)
 
             val countStatement = count(lastName) {
@@ -137,7 +126,7 @@ class GeneralKotlinTest {
 
     @Test
     fun testRawCountDistinctColumn() {
-        newSession().use { session ->
+        sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(PersonMapper::class.java)
 
             val countStatement = countDistinct(lastName) {
@@ -157,7 +146,7 @@ class GeneralKotlinTest {
 
     @Test
     fun testRawDelete1() {
-        newSession().use { session ->
+        sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(PersonMapper::class.java)
 
             val deleteStatement = deleteFrom(person) {
@@ -176,7 +165,7 @@ class GeneralKotlinTest {
 
     @Test
     fun testRawDelete2() {
-        newSession().use { session ->
+        sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(PersonMapper::class.java)
 
             val deleteStatement = deleteFrom(person) {
@@ -196,7 +185,7 @@ class GeneralKotlinTest {
 
     @Test
     fun testRawDelete3() {
-        newSession().use { session ->
+        sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(PersonMapper::class.java)
 
             val deleteStatement = deleteFrom(person) {
@@ -216,7 +205,7 @@ class GeneralKotlinTest {
 
     @Test
     fun testRawDelete4() {
-        newSession().use { session ->
+        sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(PersonMapper::class.java)
 
             val deleteStatement = deleteFrom(person) {
@@ -242,7 +231,7 @@ class GeneralKotlinTest {
 
     @Test
     fun testRawDelete5() {
-        newSession().use { session ->
+        sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(PersonMapper::class.java)
 
             val deleteStatement = deleteFrom(person) {
@@ -268,7 +257,7 @@ class GeneralKotlinTest {
 
     @Test
     fun testRawDelete6() {
-        newSession().use { session ->
+        sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(PersonMapper::class.java)
 
             val deleteStatement = deleteFrom(person) {
@@ -294,7 +283,7 @@ class GeneralKotlinTest {
 
     @Test
     fun testDeprecatedInsert() {
-        newSession().use { session ->
+        sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(PersonMapper::class.java)
 
             val record = PersonRecord(100, "Joe", LastName("Jones"), Date(), true, "Developer", 1)
@@ -329,7 +318,7 @@ class GeneralKotlinTest {
 
     @Test
     fun testDeprecatedInsertMultiple() {
-        newSession().use { session ->
+        sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(PersonMapper::class.java)
 
             val record1 = PersonRecord(100, "Joe", LastName("Jones"), Date(), true, "Developer", 1)
@@ -378,7 +367,7 @@ class GeneralKotlinTest {
 
     @Test
     fun testRawSelectDistinct() {
-        newSession().use { session ->
+        sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(PersonMapper::class.java)
 
             val selectStatement = selectDistinct(
@@ -412,7 +401,7 @@ class GeneralKotlinTest {
 
     @Test
     fun testRawSelect() {
-        newSession().use { session ->
+        sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(PersonMapper::class.java)
 
             val selectStatement = select(
@@ -446,7 +435,7 @@ class GeneralKotlinTest {
 
     @Test
     fun testRawSelectWithJoin() {
-        newSession().use { session ->
+        sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(PersonWithAddressMapper::class.java)
 
             val selectStatement = select(
@@ -482,7 +471,7 @@ class GeneralKotlinTest {
 
     @Test
     fun testRawSelectWithJoinAndComplexWhere1() {
-        newSession().use { session ->
+        sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(PersonWithAddressMapper::class.java)
 
             val selectStatement = select(
@@ -523,7 +512,7 @@ class GeneralKotlinTest {
 
     @Test
     fun testRawSelectWithJoinAndComplexWhere2() {
-        newSession().use { session ->
+        sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(PersonWithAddressMapper::class.java)
 
             val selectStatement = select(
@@ -566,7 +555,7 @@ class GeneralKotlinTest {
 
     @Test
     fun testRawSelectWithComplexWhere1() {
-        newSession().use { session ->
+        sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(PersonMapper::class.java)
 
             val selectStatement = select(
@@ -612,7 +601,7 @@ class GeneralKotlinTest {
 
     @Test
     fun testRawSelectWithComplexWhere2() {
-        newSession().use { session ->
+        sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(PersonMapper::class.java)
 
             val selectStatement = select(
@@ -692,7 +681,7 @@ class GeneralKotlinTest {
 
     @Test
     fun testSelect() {
-        newSession().use { session ->
+        sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(PersonMapper::class.java)
 
             val rows = mapper.select {
@@ -717,7 +706,7 @@ class GeneralKotlinTest {
 
     @Test
     fun testSelectWithFetchFirst() {
-        newSession().use { session ->
+        sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(PersonMapper::class.java)
 
             val rows = mapper.select {
@@ -760,7 +749,7 @@ class GeneralKotlinTest {
 
     @Test
     fun testRawUpdate1() {
-        newSession().use { session ->
+        sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(PersonMapper::class.java)
 
             val updateStatement = update(person) {
@@ -782,7 +771,7 @@ class GeneralKotlinTest {
 
     @Test
     fun testRawUpdate2() {
-        newSession().use { session ->
+        sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(PersonMapper::class.java)
 
             val updateStatement = update(person) {
@@ -807,7 +796,7 @@ class GeneralKotlinTest {
 
     @Test
     fun testRawUpdate3() {
-        newSession().use { session ->
+        sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(PersonMapper::class.java)
 
             val updateStatement = update(person) {
@@ -834,7 +823,7 @@ class GeneralKotlinTest {
 
     @Test
     fun testRawUpdate4() {
-        newSession().use { session ->
+        sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(PersonMapper::class.java)
 
             val updateStatement = update(person) {
@@ -861,7 +850,7 @@ class GeneralKotlinTest {
 
     @Test
     fun testRawUpdate5() {
-        newSession().use { session ->
+        sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(PersonMapper::class.java)
 
             val updateStatement = update(person) {

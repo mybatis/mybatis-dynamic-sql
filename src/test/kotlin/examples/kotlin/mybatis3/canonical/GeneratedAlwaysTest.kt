@@ -15,40 +15,25 @@
  */
 package examples.kotlin.mybatis3.canonical
 
+import examples.kotlin.mybatis3.TestUtils
 import examples.kotlin.mybatis3.canonical.GeneratedAlwaysDynamicSqlSupport.firstName
 import examples.kotlin.mybatis3.canonical.GeneratedAlwaysDynamicSqlSupport.generatedAlways
 import examples.kotlin.mybatis3.canonical.GeneratedAlwaysDynamicSqlSupport.lastName
-import org.apache.ibatis.datasource.unpooled.UnpooledDataSource
-import org.apache.ibatis.jdbc.ScriptRunner
-import org.apache.ibatis.mapping.Environment
-import org.apache.ibatis.session.Configuration
 import org.apache.ibatis.session.ExecutorType
 import org.apache.ibatis.session.SqlSession
-import org.apache.ibatis.session.SqlSessionFactoryBuilder
-import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.mybatis.dynamic.sql.util.kotlin.elements.insertBatch
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.insertInto
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.into
-import java.io.InputStreamReader
-import java.sql.DriverManager
 
 class GeneratedAlwaysTest {
     private fun newSession(executorType: ExecutorType = ExecutorType.REUSE): SqlSession {
-        Class.forName(JDBC_DRIVER)
-        val script = javaClass.getResourceAsStream("/examples/kotlin/spring/CreateGeneratedAlwaysDB.sql")
-        DriverManager.getConnection(JDBC_URL, "sa", "").use { connection ->
-            val sr = ScriptRunner(connection)
-            sr.setLogWriter(null)
-            sr.runScript(InputStreamReader(script))
-        }
-
-        val ds = UnpooledDataSource(JDBC_DRIVER, JDBC_URL, "sa", "")
-        val environment = Environment("test", JdbcTransactionFactory(), ds)
-        val config = Configuration(environment)
-        config.addMapper(GeneratedAlwaysMapper::class.java)
-        return SqlSessionFactoryBuilder().build(config).openSession(executorType)
+        // this method re-initializes the database with every test - needed because of autoincrement fields
+        return TestUtils.buildSqlSessionFactory {
+            withInitializationScript("/examples/kotlin/spring/CreateGeneratedAlwaysDB.sql")
+            withMapper(GeneratedAlwaysMapper::class)
+        }.openSession(executorType)
     }
 
     @Test
@@ -177,10 +162,5 @@ class GeneratedAlwaysTest {
             assertThat(id).isEqualTo(22)
             assertThat(fullName).isEqualTo("Fred Flintstone")
         }
-    }
-
-    companion object {
-        const val JDBC_URL = "jdbc:hsqldb:mem:aname"
-        const val JDBC_DRIVER = "org.hsqldb.jdbcDriver"
     }
 }

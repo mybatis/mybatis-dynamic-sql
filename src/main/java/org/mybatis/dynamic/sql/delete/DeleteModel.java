@@ -20,6 +20,7 @@ import java.util.Optional;
 
 import org.jetbrains.annotations.NotNull;
 import org.mybatis.dynamic.sql.SqlTable;
+import org.mybatis.dynamic.sql.common.CommonBuilder;
 import org.mybatis.dynamic.sql.common.OrderByModel;
 import org.mybatis.dynamic.sql.delete.render.DeleteRenderer;
 import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider;
@@ -34,11 +35,11 @@ public class DeleteModel {
     private final OrderByModel orderByModel;
 
     private DeleteModel(Builder builder) {
-        table = Objects.requireNonNull(builder.table);
-        whereModel = builder.whereModel;
-        tableAlias = builder.tableAlias;
-        limit = builder.limit;
-        orderByModel = builder.orderByModel;
+        table = Objects.requireNonNull(builder.table());
+        whereModel = builder.whereModel();
+        tableAlias = builder.tableAlias();
+        limit = builder.limit();
+        orderByModel = builder.orderByModel();
     }
 
     public SqlTable table() {
@@ -73,35 +74,9 @@ public class DeleteModel {
         return new Builder().withTable(table);
     }
 
-    public static class Builder {
-        private SqlTable table;
-        private String tableAlias;
-        private WhereModel whereModel;
-        private Long limit;
-        private OrderByModel orderByModel;
-
-        public Builder withTable(SqlTable table) {
-            this.table = table;
-            return this;
-        }
-
-        public Builder withTableAlias(String tableAlias) {
-            this.tableAlias = tableAlias;
-            return this;
-        }
-
-        public Builder withWhereModel(WhereModel whereModel) {
-            this.whereModel = whereModel;
-            return this;
-        }
-
-        public Builder withLimit(Long limit) {
-            this.limit = limit;
-            return this;
-        }
-
-        public Builder withOrderByModel(OrderByModel orderByModel) {
-            this.orderByModel = orderByModel;
+    public static class Builder extends CommonBuilder<Builder> {
+        @Override
+        protected Builder getThis() {
             return this;
         }
 

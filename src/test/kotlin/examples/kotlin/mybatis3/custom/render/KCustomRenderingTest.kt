@@ -16,17 +16,13 @@
 package examples.kotlin.mybatis3.custom.render
 
 import config.TestContainersConfiguration
+import examples.kotlin.mybatis3.TestUtils
 import examples.kotlin.mybatis3.custom.render.KJsonTestDynamicSqlSupport.description
 import examples.kotlin.mybatis3.custom.render.KJsonTestDynamicSqlSupport.id
 import examples.kotlin.mybatis3.custom.render.KJsonTestDynamicSqlSupport.info
 import examples.kotlin.mybatis3.custom.render.KJsonTestDynamicSqlSupport.jsonTest
 import org.apache.ibatis.datasource.unpooled.UnpooledDataSource
-import org.apache.ibatis.mapping.Environment
-import org.apache.ibatis.session.Configuration
-import org.apache.ibatis.session.SqlSession
 import org.apache.ibatis.session.SqlSessionFactory
-import org.apache.ibatis.session.SqlSessionFactoryBuilder
-import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
@@ -52,25 +48,21 @@ class KCustomRenderingTest {
 
     @BeforeAll
     fun setUp() {
-        val dataSource = UnpooledDataSource(
-            postgres.driverClassName,
-            postgres.jdbcUrl,
-            postgres.username,
-            postgres.password
-        )
-        val environment = Environment("test", JdbcTransactionFactory(), dataSource)
-        with(Configuration(environment)) {
-            addMapper(KJsonTestMapper::class.java)
-            addMapper(CommonSelectMapper::class.java)
-            sqlSessionFactory = SqlSessionFactoryBuilder().build(this)
+        sqlSessionFactory = TestUtils.buildSqlSessionFactory {
+            withDataSource(UnpooledDataSource(
+                postgres.driverClassName,
+                postgres.jdbcUrl,
+                postgres.username,
+                postgres.password
+            ))
+            withMapper(KJsonTestMapper::class)
+            withMapper(CommonSelectMapper::class)
         }
     }
 
-    private fun newSession(): SqlSession = sqlSessionFactory.openSession()
-
     @Test
     fun testInsertRecord() {
-        newSession().use {
+        sqlSessionFactory.openSession().use {
             val mapper = it.getMapper(KJsonTestMapper::class.java)
             var record = KJsonTestRecord(
                 id = 1,
@@ -119,7 +111,7 @@ class KCustomRenderingTest {
 
     @Test
     fun testGeneralInsert() {
-        newSession().use {
+        sqlSessionFactory.openSession().use {
             val mapper = it.getMapper(KJsonTestMapper::class.java)
             var insertStatement = insertInto(jsonTest) {
                 set(id) toValue 1
@@ -154,7 +146,7 @@ class KCustomRenderingTest {
 
     @Test
     fun testInsertMultiple() {
-        newSession().use {
+        sqlSessionFactory.openSession().use {
             val mapper = it.getMapper(KJsonTestMapper::class.java)
             val record1 = KJsonTestRecord(
                 id = 1,
@@ -195,7 +187,7 @@ class KCustomRenderingTest {
 
     @Test
     fun testUpdate() {
-        newSession().use {
+        sqlSessionFactory.openSession().use {
             val mapper = it.getMapper(KJsonTestMapper::class.java)
             val record1 = KJsonTestRecord(
                 id = 1,
@@ -240,7 +232,7 @@ class KCustomRenderingTest {
 
     @Test
     fun testDeReference() {
-        newSession().use {
+        sqlSessionFactory.openSession().use {
             val mapper = it.getMapper(KJsonTestMapper::class.java)
             val record1 = KJsonTestRecord(
                 id = 1,
@@ -278,7 +270,7 @@ class KCustomRenderingTest {
 
     @Test
     fun testDereference2() {
-        newSession().use {
+        sqlSessionFactory.openSession().use {
             val mapper = it.getMapper(KJsonTestMapper::class.java)
             val record1 = KJsonTestRecord(
                 id = 1,

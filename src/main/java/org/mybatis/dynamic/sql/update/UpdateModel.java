@@ -24,6 +24,7 @@ import java.util.stream.Stream;
 
 import org.jetbrains.annotations.NotNull;
 import org.mybatis.dynamic.sql.SqlTable;
+import org.mybatis.dynamic.sql.common.CommonBuilder;
 import org.mybatis.dynamic.sql.common.OrderByModel;
 import org.mybatis.dynamic.sql.exception.InvalidSqlException;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
@@ -42,12 +43,12 @@ public class UpdateModel {
     private final OrderByModel orderByModel;
 
     private UpdateModel(Builder builder) {
-        table = Objects.requireNonNull(builder.table);
-        whereModel = builder.whereModel;
+        table = Objects.requireNonNull(builder.table());
+        whereModel = builder.whereModel();
         columnMappings = Objects.requireNonNull(builder.columnMappings);
-        tableAlias = builder.tableAlias;
-        limit = builder.limit;
-        orderByModel = builder.orderByModel;
+        tableAlias = builder.tableAlias();
+        limit = builder.limit();
+        orderByModel = builder.orderByModel();
 
         if (columnMappings.isEmpty()) {
             throw new InvalidSqlException(Messages.getString("ERROR.17")); //$NON-NLS-1$
@@ -90,41 +91,16 @@ public class UpdateModel {
         return new Builder().withTable(table);
     }
 
-    public static class Builder {
-        private SqlTable table;
-        private String tableAlias;
-        private WhereModel whereModel;
+    public static class Builder extends CommonBuilder<Builder> {
         private final List<AbstractColumnMapping> columnMappings = new ArrayList<>();
-        private Long limit;
-        private OrderByModel orderByModel;
-
-        public Builder withTable(SqlTable table) {
-            this.table = table;
-            return this;
-        }
-
-        public Builder withTableAlias(String tableAlias) {
-            this.tableAlias = tableAlias;
-            return this;
-        }
 
         public Builder withColumnMappings(List<AbstractColumnMapping> columnMappings) {
             this.columnMappings.addAll(columnMappings);
             return this;
         }
 
-        public Builder withWhereModel(WhereModel whereModel) {
-            this.whereModel = whereModel;
-            return this;
-        }
-
-        public Builder withLimit(Long limit) {
-            this.limit = limit;
-            return this;
-        }
-
-        public Builder withOrderByModel(OrderByModel orderByModel) {
-            this.orderByModel = orderByModel;
+        @Override
+        protected Builder getThis() {
             return this;
         }
 

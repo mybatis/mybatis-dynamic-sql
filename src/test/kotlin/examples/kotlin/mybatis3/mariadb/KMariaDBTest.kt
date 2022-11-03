@@ -16,17 +16,13 @@
 package examples.kotlin.mybatis3.mariadb
 
 import config.TestContainersConfiguration
+import examples.kotlin.mybatis3.TestUtils
 import examples.kotlin.mybatis3.mariadb.KItemsDynamicSQLSupport.amount
 import examples.kotlin.mybatis3.mariadb.KItemsDynamicSQLSupport.id
 import examples.kotlin.mybatis3.mariadb.KItemsDynamicSQLSupport.items
 import examples.kotlin.mybatis3.mariadb.KItemsDynamicSQLSupport.description
 import org.apache.ibatis.datasource.unpooled.UnpooledDataSource
-import org.apache.ibatis.mapping.Environment
-import org.apache.ibatis.session.Configuration
-import org.apache.ibatis.session.SqlSession
 import org.apache.ibatis.session.SqlSessionFactory
-import org.apache.ibatis.session.SqlSessionFactoryBuilder
-import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
@@ -51,27 +47,23 @@ class KMariaDBTest {
 
     @BeforeAll
     fun setUp() {
-        val dataSource = UnpooledDataSource(
-            mariadb.driverClassName,
-            mariadb.jdbcUrl,
-            mariadb.username,
-            mariadb.password
-        )
-        val environment = Environment("test", JdbcTransactionFactory(), dataSource)
-        with(Configuration(environment)) {
-            addMapper(CommonDeleteMapper::class.java)
-            addMapper(CommonSelectMapper::class.java)
-            addMapper(CommonUpdateMapper::class.java)
-            sqlSessionFactory = SqlSessionFactoryBuilder().build(this)
+        sqlSessionFactory = TestUtils.buildSqlSessionFactory {
+            withDataSource(UnpooledDataSource(
+                mariadb.driverClassName,
+                mariadb.jdbcUrl,
+                mariadb.username,
+                mariadb.password
+            ))
+            withMapper(CommonDeleteMapper::class)
+            withMapper(CommonSelectMapper::class)
+            withMapper(CommonUpdateMapper::class)
         }
     }
 
-    private fun newSession(): SqlSession = sqlSessionFactory.openSession()
-
     @Test
     fun smokeTest() {
-        newSession().use {
-            val mapper = it.getMapper(CommonSelectMapper::class.java)
+        sqlSessionFactory.openSession().use { session ->
+            val mapper = session.getMapper(CommonSelectMapper::class.java)
 
             val selectStatement = select(id, description) {
                 from(items)
@@ -84,8 +76,8 @@ class KMariaDBTest {
 
     @Test
     fun testDeleteWithLimit() {
-        newSession().use {
-            val mapper = it.getMapper(CommonDeleteMapper::class.java)
+        sqlSessionFactory.openSession().use { session ->
+            val mapper = session.getMapper(CommonDeleteMapper::class.java)
 
             val deleteStatement = deleteFrom(items) {
                 limit(4)
@@ -100,8 +92,8 @@ class KMariaDBTest {
 
     @Test
     fun testDeleteWithOrderBy() {
-        newSession().use {
-            val mapper = it.getMapper(CommonDeleteMapper::class.java)
+        sqlSessionFactory.openSession().use { session ->
+            val mapper = session.getMapper(CommonDeleteMapper::class.java)
 
             val deleteStatement = deleteFrom(items) {
                 orderBy(id)
@@ -116,8 +108,8 @@ class KMariaDBTest {
 
     @Test
     fun testUpdateWithLimit() {
-        newSession().use {
-            val mapper = it.getMapper(CommonUpdateMapper::class.java)
+        sqlSessionFactory.openSession().use { session ->
+            val mapper = session.getMapper(CommonUpdateMapper::class.java)
 
             val updateStatement = update(items) {
                 set(amount) equalTo add(amount, constant<Int>("100"))
@@ -134,8 +126,8 @@ class KMariaDBTest {
 
     @Test
     fun testUpdateWithOrderBy() {
-        newSession().use {
-            val mapper = it.getMapper(CommonUpdateMapper::class.java)
+        sqlSessionFactory.openSession().use { session ->
+            val mapper = session.getMapper(CommonUpdateMapper::class.java)
 
             val updateStatement = update(items) {
                 set(amount) equalTo add(amount, constant<Int>("100"))
