@@ -26,7 +26,6 @@ import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.id
 import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.lastName
 import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.occupation
 import examples.kotlin.mybatis3.canonical.PersonMapper
-import examples.kotlin.mybatis3.canonical.PersonMapperTest
 import examples.kotlin.mybatis3.canonical.PersonRecord
 import examples.kotlin.mybatis3.canonical.PersonWithAddressMapper
 import examples.kotlin.mybatis3.canonical.YesNoTypeHandler
@@ -36,11 +35,14 @@ import org.apache.ibatis.jdbc.ScriptRunner
 import org.apache.ibatis.mapping.Environment
 import org.apache.ibatis.session.Configuration
 import org.apache.ibatis.session.SqlSession
+import org.apache.ibatis.session.SqlSessionFactory
 import org.apache.ibatis.session.SqlSessionFactoryBuilder
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
+import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestInstance
 import org.mybatis.dynamic.sql.util.Messages
 import org.mybatis.dynamic.sql.util.kotlin.KInvalidSQLException
 import org.mybatis.dynamic.sql.util.kotlin.elements.`as`
@@ -60,24 +62,31 @@ import java.sql.DriverManager
 import java.util.Date
 
 @Suppress("LargeClass")
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class GeneralKotlinTest {
-    private fun newSession(): SqlSession {
-        Class.forName(PersonMapperTest.JDBC_DRIVER)
+    private lateinit var sqlSessionFactory: SqlSessionFactory
+
+    @BeforeAll
+    fun setup() {
+        Class.forName(JDBC_DRIVER)
         val script = javaClass.getResourceAsStream("/examples/kotlin/mybatis3/CreateSimpleDB.sql")
-        DriverManager.getConnection(PersonMapperTest.JDBC_URL, "sa", "").use { connection ->
+        DriverManager.getConnection(JDBC_URL, "sa", "").use { connection ->
             val sr = ScriptRunner(connection)
             sr.setLogWriter(null)
-            sr.runScript(InputStreamReader(script))
+            sr.runScript(InputStreamReader(script!!))
         }
 
-        val ds = UnpooledDataSource(PersonMapperTest.JDBC_DRIVER, PersonMapperTest.JDBC_URL, "sa", "")
-        val environment = Environment("test", JdbcTransactionFactory(), ds)
-        val config = Configuration(environment)
-        config.typeHandlerRegistry.register(YesNoTypeHandler::class.java)
-        config.addMapper(PersonMapper::class.java)
-        config.addMapper(PersonWithAddressMapper::class.java)
-        return SqlSessionFactoryBuilder().build(config).openSession()
+        val dataSource = UnpooledDataSource(JDBC_DRIVER, JDBC_URL, "sa", "")
+        val environment = Environment("test", JdbcTransactionFactory(), dataSource)
+        with(Configuration(environment)) {
+            typeHandlerRegistry.register(YesNoTypeHandler::class.java)
+            addMapper(PersonMapper::class.java)
+            addMapper(PersonWithAddressMapper::class.java)
+            sqlSessionFactory = SqlSessionFactoryBuilder().build(this)
+        }
     }
+
+    private fun newSession(): SqlSession = sqlSessionFactory.openSession()
 
     @Test
     fun testRawCount() {
@@ -881,5 +890,10 @@ class GeneralKotlinTest {
 
             assertThat(rows).isEqualTo(2)
         }
+    }
+
+    companion object {
+        const val JDBC_URL = "jdbc:hsqldb:mem:aname"
+        const val JDBC_DRIVER = "org.hsqldb.jdbcDriver"
     }
 }

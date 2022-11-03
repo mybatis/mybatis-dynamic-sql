@@ -70,8 +70,8 @@ class KMariaDBTest {
 
     @Test
     fun smokeTest() {
-        newSession().use {
-            val mapper = it.getMapper(CommonSelectMapper::class.java)
+        newSession().use { session ->
+            val mapper = session.getMapper(CommonSelectMapper::class.java)
 
             val selectStatement = select(id, description) {
                 from(items)
@@ -84,8 +84,8 @@ class KMariaDBTest {
 
     @Test
     fun testDeleteWithLimit() {
-        newSession().use {
-            val mapper = it.getMapper(CommonDeleteMapper::class.java)
+        newSession().use { session ->
+            val mapper = session.getMapper(CommonDeleteMapper::class.java)
 
             val deleteStatement = deleteFrom(items) {
                 limit(4)
@@ -100,8 +100,8 @@ class KMariaDBTest {
 
     @Test
     fun testDeleteWithOrderBy() {
-        newSession().use {
-            val mapper = it.getMapper(CommonDeleteMapper::class.java)
+        newSession().use { session ->
+            val mapper = session.getMapper(CommonDeleteMapper::class.java)
 
             val deleteStatement = deleteFrom(items) {
                 orderBy(id)
@@ -116,8 +116,8 @@ class KMariaDBTest {
 
     @Test
     fun testUpdateWithLimit() {
-        newSession().use {
-            val mapper = it.getMapper(CommonUpdateMapper::class.java)
+        newSession().use { session ->
+            val mapper = session.getMapper(CommonUpdateMapper::class.java)
 
             val updateStatement = update(items) {
                 set(amount) equalTo add(amount, constant<Int>("100"))
@@ -134,8 +134,8 @@ class KMariaDBTest {
 
     @Test
     fun testUpdateWithOrderBy() {
-        newSession().use {
-            val mapper = it.getMapper(CommonUpdateMapper::class.java)
+        newSession().use { session ->
+            val mapper = session.getMapper(CommonUpdateMapper::class.java)
 
             val updateStatement = update(items) {
                 set(amount) equalTo add(amount, constant<Int>("100"))

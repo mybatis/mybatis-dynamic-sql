@@ -36,19 +36,22 @@ import java.sql.DriverManager
 
 class GeneratedAlwaysTest {
     private fun newSession(executorType: ExecutorType = ExecutorType.REUSE): SqlSession {
+        // this method re-initializes the database with every test - needed because of autoincrement fields
+
         Class.forName(JDBC_DRIVER)
         val script = javaClass.getResourceAsStream("/examples/kotlin/spring/CreateGeneratedAlwaysDB.sql")
         DriverManager.getConnection(JDBC_URL, "sa", "").use { connection ->
             val sr = ScriptRunner(connection)
             sr.setLogWriter(null)
-            sr.runScript(InputStreamReader(script))
+            sr.runScript(InputStreamReader(script!!))
         }
 
-        val ds = UnpooledDataSource(JDBC_DRIVER, JDBC_URL, "sa", "")
-        val environment = Environment("test", JdbcTransactionFactory(), ds)
-        val config = Configuration(environment)
-        config.addMapper(GeneratedAlwaysMapper::class.java)
-        return SqlSessionFactoryBuilder().build(config).openSession(executorType)
+        val dataSource = UnpooledDataSource(JDBC_DRIVER, JDBC_URL, "sa", "")
+        val environment = Environment("test", JdbcTransactionFactory(), dataSource)
+        with(Configuration(environment)) {
+            addMapper(GeneratedAlwaysMapper::class.java)
+            return SqlSessionFactoryBuilder().build(this).openSession(executorType)
+        }
     }
 
     @Test

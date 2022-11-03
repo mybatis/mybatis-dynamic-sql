@@ -22,10 +22,13 @@ import org.apache.ibatis.jdbc.ScriptRunner
 import org.apache.ibatis.mapping.Environment
 import org.apache.ibatis.session.Configuration
 import org.apache.ibatis.session.SqlSession
+import org.apache.ibatis.session.SqlSessionFactory
 import org.apache.ibatis.session.SqlSessionFactoryBuilder
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestInstance
 import org.mybatis.dynamic.sql.util.kotlin.elements.invoke
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.deleteFrom
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.select
@@ -36,26 +39,31 @@ import org.mybatis.dynamic.sql.util.mybatis3.CommonUpdateMapper
 import java.io.InputStreamReader
 import java.sql.DriverManager
 
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class ExistsTest {
+    private lateinit var sqlSessionFactory: SqlSessionFactory
 
-    private fun newSession(): SqlSession {
+    @BeforeAll
+    fun setup() {
         Class.forName(JDBC_DRIVER)
         val script = javaClass.getResourceAsStream("/examples/kotlin/mybatis3/joins/CreateJoinDB.sql")
-
         DriverManager.getConnection(JDBC_URL, "sa", "").use { connection ->
             val sr = ScriptRunner(connection)
             sr.setLogWriter(null)
-            sr.runScript(InputStreamReader(script))
+            sr.runScript(InputStreamReader(script!!))
         }
 
-        val ds = UnpooledDataSource(JDBC_DRIVER, JDBC_URL, "sa", "")
-        val environment = Environment("test", JdbcTransactionFactory(), ds)
-        val config = Configuration(environment)
-        config.addMapper(CommonSelectMapper::class.java)
-        config.addMapper(CommonDeleteMapper::class.java)
-        config.addMapper(CommonUpdateMapper::class.java)
-        return SqlSessionFactoryBuilder().build(config).openSession()
+        val dataSource = UnpooledDataSource(JDBC_DRIVER, JDBC_URL, "sa", "")
+        val environment = Environment("test", JdbcTransactionFactory(), dataSource)
+        with(Configuration(environment)) {
+            addMapper(CommonSelectMapper::class.java)
+            addMapper(CommonDeleteMapper::class.java)
+            addMapper(CommonUpdateMapper::class.java)
+            sqlSessionFactory = SqlSessionFactoryBuilder().build(this)
+        }
     }
+
+    private fun newSession(): SqlSession = sqlSessionFactory.openSession()
 
     @Test
     fun testExists() {
