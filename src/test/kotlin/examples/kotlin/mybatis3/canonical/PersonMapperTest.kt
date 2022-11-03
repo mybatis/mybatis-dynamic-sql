@@ -15,6 +15,7 @@
  */
 package examples.kotlin.mybatis3.canonical
 
+import examples.kotlin.mybatis3.TestUtils
 import examples.kotlin.mybatis3.canonical.AddressDynamicSqlSupport.address
 import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.addressId
 import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.birthDate
@@ -24,15 +25,8 @@ import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.id
 import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.lastName
 import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.occupation
 import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.person
-import org.apache.ibatis.datasource.unpooled.UnpooledDataSource
-import org.apache.ibatis.jdbc.ScriptRunner
-import org.apache.ibatis.mapping.Environment
-import org.apache.ibatis.session.Configuration
 import org.apache.ibatis.session.ExecutorType
-import org.apache.ibatis.session.SqlSession
 import org.apache.ibatis.session.SqlSessionFactory
-import org.apache.ibatis.session.SqlSessionFactoryBuilder
-import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
@@ -44,8 +38,6 @@ import org.mybatis.dynamic.sql.util.kotlin.elements.isIn
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.insertInto
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.insertSelect
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.select
-import java.io.InputStreamReader
-import java.sql.DriverManager
 import java.util.*
 
 @TestInstance(Lifecycle.PER_CLASS)
@@ -54,31 +46,18 @@ class PersonMapperTest {
 
     @BeforeAll
     fun setup() {
-        Class.forName(JDBC_DRIVER)
-        val script = javaClass.getResourceAsStream("/examples/kotlin/mybatis3/CreateSimpleDB.sql")
-        DriverManager.getConnection(JDBC_URL, "sa", "").use { connection ->
-            val sr = ScriptRunner(connection)
-            sr.setLogWriter(null)
-            sr.runScript(InputStreamReader(script!!))
-        }
-
-        val dataSource = UnpooledDataSource(JDBC_DRIVER, JDBC_URL, "sa", "")
-        val environment = Environment("test", JdbcTransactionFactory(), dataSource)
-        with(Configuration(environment)) {
-            typeHandlerRegistry.register(YesNoTypeHandler::class.java)
-            addMapper(PersonMapper::class.java)
-            addMapper(PersonWithAddressMapper::class.java)
-            addMapper(AddressMapper::class.java)
-            sqlSessionFactory = SqlSessionFactoryBuilder().build(this)
+        sqlSessionFactory = TestUtils.buildSqlSessionFactory {
+            withInitializationScript("/examples/kotlin/mybatis3/CreateSimpleDB.sql")
+            withMapper(PersonMapper::class)
+            withMapper(PersonWithAddressMapper::class)
+            withMapper(AddressMapper::class)
+            withTypeHandler(YesNoTypeHandler::class)
         }
     }
 
-    private fun newSession(executorType: ExecutorType = ExecutorType.REUSE): SqlSession =
-        sqlSessionFactory.openSession(executorType)
-
     @Test
     fun testSelect() {
-        newSession().use { session ->
+        sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(PersonMapper::class.java)
 
             val rows = mapper.select {
@@ -92,7 +71,7 @@ class PersonMapperTest {
 
     @Test
     fun testSelectAll() {
-        newSession().use { session ->
+        sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(PersonMapper::class.java)
 
             val rows = mapper.select { allRows() }
@@ -105,7 +84,7 @@ class PersonMapperTest {
 
     @Test
     fun testSelectAllOrdered() {
-        newSession().use { session ->
+        sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(PersonMapper::class.java)
 
             val rows = mapper.select {
@@ -121,7 +100,7 @@ class PersonMapperTest {
 
     @Test
     fun testSelectDistinct() {
-        newSession().use { session ->
+        sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(PersonMapper::class.java)
 
             val rows = mapper.selectDistinct {
@@ -135,7 +114,7 @@ class PersonMapperTest {
 
     @Test
     fun testSelectWithTypeHandler() {
-        newSession().use { session ->
+        sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(PersonMapper::class.java)
 
             val rows = mapper.select {
@@ -151,7 +130,7 @@ class PersonMapperTest {
 
     @Test
     fun testSelectByPrimaryKeyWithMissingRecord() {
-        newSession().use { session ->
+        sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(PersonMapper::class.java)
 
             val record = mapper.selectByPrimaryKey(300)
@@ -161,7 +140,7 @@ class PersonMapperTest {
 
     @Test
     fun testFirstNameIn() {
-        newSession().use { session ->
+        sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(PersonMapper::class.java)
 
             val rows = mapper.select {
@@ -176,7 +155,7 @@ class PersonMapperTest {
 
     @Test
     fun testFirstNameNotIn() {
-        newSession().use { session ->
+        sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(PersonMapper::class.java)
 
             val rows = mapper.select {
@@ -191,7 +170,7 @@ class PersonMapperTest {
 
     @Test
     fun testDelete() {
-        newSession().use { session ->
+        sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(PersonMapper::class.java)
 
             val rows = mapper.delete {
@@ -203,7 +182,7 @@ class PersonMapperTest {
 
     @Test
     fun testDeleteAll() {
-        newSession().use { session ->
+        sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(PersonMapper::class.java)
 
             val rows = mapper.delete { allRows() }
@@ -214,7 +193,7 @@ class PersonMapperTest {
 
     @Test
     fun testDeleteByPrimaryKey() {
-        newSession().use { session ->
+        sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(PersonMapper::class.java)
 
             val rows = mapper.deleteByPrimaryKey(2)
@@ -225,7 +204,7 @@ class PersonMapperTest {
 
     @Test
     fun testInsert() {
-        newSession().use { session ->
+        sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(PersonMapper::class.java)
 
             val record = PersonRecord(100, "Joe", LastName("Jones"), Date(), true, "Developer", 1)
@@ -237,7 +216,7 @@ class PersonMapperTest {
 
     @Test
     fun testGeneralInsert() {
-        newSession().use { session ->
+        sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(PersonMapper::class.java)
 
             val rows = mapper.generalInsert {
@@ -256,7 +235,7 @@ class PersonMapperTest {
 
     @Test
     fun testInsertSelect() {
-        newSession().use { session ->
+        sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(PersonMapper::class.java)
 
             val rows = mapper.insertSelect {
@@ -273,7 +252,7 @@ class PersonMapperTest {
 
     @Test
     fun testDeprecatedInsertSelect() {
-        newSession().use { session ->
+        sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(PersonMapper::class.java)
 
             val insertStatement = insertSelect(person) {
@@ -299,7 +278,7 @@ class PersonMapperTest {
 
     @Test
     fun testInsertBatch() {
-        newSession(ExecutorType.BATCH).use { session ->
+        sqlSessionFactory.openSession(ExecutorType.BATCH).use { session ->
             val mapper = session.getMapper(PersonMapper::class.java)
 
             val record1 = PersonRecord(100, "Joe", LastName("Jones"), Date(), true, "Developer", 1)
@@ -315,7 +294,7 @@ class PersonMapperTest {
 
     @Test
     fun testInsertMultiple() {
-        newSession().use { session ->
+        sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(PersonMapper::class.java)
 
             val record1 = PersonRecord(100, "Joe", LastName("Jones"), Date(), true, "Developer", 1)
@@ -328,7 +307,7 @@ class PersonMapperTest {
 
     @Test
     fun testInsertSelective() {
-        newSession().use { session ->
+        sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(PersonMapper::class.java)
 
             val record = PersonRecord(100, "Joe", LastName("Jones"), Date(), false, null, 1)
@@ -340,7 +319,7 @@ class PersonMapperTest {
 
     @Test
     fun testUpdateByPrimaryKey() {
-        newSession().use { session ->
+        sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(PersonMapper::class.java)
 
             val record = PersonRecord(100, "Joe", LastName("Jones"), Date(), true, "Developer", 1)
@@ -361,7 +340,7 @@ class PersonMapperTest {
 
     @Test
     fun testUpdateByPrimaryKeySelective() {
-        newSession().use { session ->
+        sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(PersonMapper::class.java)
 
             val record = PersonRecord(100, "Joe", LastName("Jones"), Date(), true, "Developer", 1)
@@ -383,7 +362,7 @@ class PersonMapperTest {
 
     @Test
     fun testUpdate() {
-        newSession().use { session ->
+        sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(PersonMapper::class.java)
 
             val record = PersonRecord(100, "Joe", LastName("Jones"), Date(), true, "Developer", 1)
@@ -406,7 +385,7 @@ class PersonMapperTest {
 
     @Test
     fun testUpdateOneField() {
-        newSession().use { session ->
+        sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(PersonMapper::class.java)
 
             val record = PersonRecord(100, "Joe", LastName("Jones"), Date(), true, "Developer", 1)
@@ -428,7 +407,7 @@ class PersonMapperTest {
 
     @Test
     fun testUpdateOneFieldInAllRows() {
-        newSession().use { session ->
+        sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(PersonMapper::class.java)
 
             val record = PersonRecord(100, "Joe", LastName("Jones"), Date(), true, "Developer", 1)
@@ -449,7 +428,7 @@ class PersonMapperTest {
 
     @Test
     fun testUpdateAll() {
-        newSession().use { session ->
+        sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(PersonMapper::class.java)
 
             val record = PersonRecord(100, "Joe", LastName("Jones"), Date(), true, "Developer", 1)
@@ -470,7 +449,7 @@ class PersonMapperTest {
 
     @Test
     fun testUpdateSelective() {
-        newSession().use { session ->
+        sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(PersonMapper::class.java)
 
             val record = PersonRecord(100, "Joe", LastName("Jones"), Date(), true, "Developer", 1)
@@ -492,7 +471,7 @@ class PersonMapperTest {
 
     @Test
     fun testCount1() {
-        newSession().use { session ->
+        sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(PersonMapper::class.java)
 
             val rows = mapper.count {
@@ -508,7 +487,7 @@ class PersonMapperTest {
 
     @Test
     fun testCount2() {
-        newSession().use { session ->
+        sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(PersonMapper::class.java)
 
             val rows = mapper.count {
@@ -522,7 +501,7 @@ class PersonMapperTest {
 
     @Test
     fun testCount3() {
-        newSession().use { session ->
+        sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(PersonMapper::class.java)
 
             val rows = mapper.count {
@@ -538,7 +517,7 @@ class PersonMapperTest {
 
     @Test
     fun testCount4() {
-        newSession().use { session ->
+        sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(PersonMapper::class.java)
 
             val rows = mapper.count {
@@ -555,7 +534,7 @@ class PersonMapperTest {
 
     @Test
     fun testCount5() {
-        newSession().use { session ->
+        sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(PersonMapper::class.java)
 
             val rows = mapper.count {
@@ -572,7 +551,7 @@ class PersonMapperTest {
 
     @Test
     fun testCountAll() {
-        newSession().use { session ->
+        sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(PersonMapper::class.java)
 
             val rows = mapper.count { allRows() }
@@ -583,7 +562,7 @@ class PersonMapperTest {
 
     @Test
     fun testCountLastName() {
-        newSession().use { session ->
+        sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(PersonMapper::class.java)
 
             val rows = mapper.count(lastName) { allRows() }
@@ -594,7 +573,7 @@ class PersonMapperTest {
 
     @Test
     fun testCountDistinctLastName() {
-        newSession().use { session ->
+        sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(PersonMapper::class.java)
 
             val rows = mapper.countDistinct(lastName) { allRows() }
@@ -605,7 +584,7 @@ class PersonMapperTest {
 
     @Test
     fun testTypeHandledLike() {
-        newSession().use { session ->
+        sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(PersonMapper::class.java)
 
             val rows = mapper.select {
@@ -620,7 +599,7 @@ class PersonMapperTest {
 
     @Test
     fun testTypeHandledNotLike() {
-        newSession().use { session ->
+        sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(PersonMapper::class.java)
 
             val rows = mapper.select {
@@ -635,7 +614,7 @@ class PersonMapperTest {
 
     @Test
     fun testJoinAllRows() {
-        newSession().use { session ->
+        sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(PersonWithAddressMapper::class.java)
 
             val records = mapper.select {
@@ -666,7 +645,7 @@ class PersonMapperTest {
 
     @Test
     fun testJoinOneRow() {
-        newSession().use { session ->
+        sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(PersonWithAddressMapper::class.java)
 
             val records = mapper.select {
@@ -692,7 +671,7 @@ class PersonMapperTest {
 
     @Test
     fun testJoinDistinct() {
-        newSession().use { session ->
+        sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(PersonWithAddressMapper::class.java)
 
             val records = mapper.selectDistinct {
@@ -718,7 +697,7 @@ class PersonMapperTest {
 
     @Test
     fun testJoinPrimaryKey() {
-        newSession().use { session ->
+        sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(PersonWithAddressMapper::class.java)
 
             val record = mapper.selectByPrimaryKey(1)
@@ -742,7 +721,7 @@ class PersonMapperTest {
 
     @Test
     fun testJoinPrimaryKeyInvalidRecord() {
-        newSession().use { session ->
+        sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(PersonWithAddressMapper::class.java)
 
             val record = mapper.selectByPrimaryKey(55)
@@ -753,7 +732,7 @@ class PersonMapperTest {
 
     @Test
     fun testWithEnumOrdinalTypeHandler() {
-        newSession().use { session ->
+        sqlSessionFactory.openSession().use { session ->
             val mapper: AddressMapper = session.getMapper(AddressMapper::class.java)
 
             val insertStatement = insertInto(address) {
@@ -776,10 +755,5 @@ class PersonMapperTest {
 
             assertThat(type).hasValueSatisfying { assertThat(it).isEqualTo(0) }
         }
-    }
-
-    companion object {
-        const val JDBC_URL = "jdbc:hsqldb:mem:aname"
-        const val JDBC_DRIVER = "org.hsqldb.jdbcDriver"
     }
 }

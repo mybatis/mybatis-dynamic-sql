@@ -15,19 +15,13 @@
  */
 package examples.kotlin.mybatis3.joins
 
+import examples.kotlin.mybatis3.TestUtils
 import examples.kotlin.mybatis3.joins.ItemMasterDynamicSQLSupport.itemMaster
 import examples.kotlin.mybatis3.joins.OrderDetailDynamicSQLSupport.orderDetail
 import examples.kotlin.mybatis3.joins.OrderLineDynamicSQLSupport.orderLine
 import examples.kotlin.mybatis3.joins.OrderMasterDynamicSQLSupport.orderMaster
 import examples.kotlin.mybatis3.joins.UserDynamicSQLSupport.user
-import org.apache.ibatis.datasource.unpooled.UnpooledDataSource
-import org.apache.ibatis.jdbc.ScriptRunner
-import org.apache.ibatis.mapping.Environment
-import org.apache.ibatis.session.Configuration
-import org.apache.ibatis.session.SqlSession
 import org.apache.ibatis.session.SqlSessionFactory
-import org.apache.ibatis.session.SqlSessionFactoryBuilder
-import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.assertj.core.api.Assertions.entry
@@ -40,8 +34,6 @@ import org.mybatis.dynamic.sql.util.kotlin.elements.equalTo
 import org.mybatis.dynamic.sql.util.kotlin.elements.invoke
 import org.mybatis.dynamic.sql.util.kotlin.elements.max
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.select
-import java.io.InputStreamReader
-import java.sql.DriverManager
 
 @Suppress("LargeClass")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -50,27 +42,15 @@ class JoinMapperTest {
 
     @BeforeAll
     fun setup() {
-        Class.forName(JDBC_DRIVER)
-        val script = javaClass.getResourceAsStream("/examples/kotlin/mybatis3/joins/CreateJoinDB.sql")
-        DriverManager.getConnection(JDBC_URL, "sa", "").use { connection ->
-            val sr = ScriptRunner(connection)
-            sr.setLogWriter(null)
-            sr.runScript(InputStreamReader(script!!))
-        }
-
-        val dataSource = UnpooledDataSource(JDBC_DRIVER, JDBC_URL, "sa", "")
-        val environment = Environment("test", JdbcTransactionFactory(), dataSource)
-        with(Configuration(environment)) {
-            addMapper(JoinMapper::class.java)
-            sqlSessionFactory = SqlSessionFactoryBuilder().build(this)
+        sqlSessionFactory = TestUtils.buildSqlSessionFactory {
+            withInitializationScript("/examples/kotlin/mybatis3/joins/CreateJoinDB.sql")
+            withMapper(JoinMapper::class)
         }
     }
 
-    private fun newSession(): SqlSession = sqlSessionFactory.openSession()
-
     @Test
     fun testSingleTableJoin() {
-        newSession().use { session ->
+        sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(JoinMapper::class.java)
 
             val selectStatement = select(
@@ -170,7 +150,7 @@ class JoinMapperTest {
 
     @Test
     fun testMultipleTableJoinWithWhereClause() {
-        newSession().use { session ->
+        sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(JoinMapper::class.java)
 
             val selectStatement = select(
@@ -207,7 +187,7 @@ class JoinMapperTest {
 
     @Test
     fun testFullJoinWithAliases() {
-        newSession().use { session ->
+        sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(JoinMapper::class.java)
 
             val selectStatement = select(
@@ -269,7 +249,7 @@ class JoinMapperTest {
     @Test
     @Suppress("LongMethod")
     fun testFullJoinWithSubQuery() {
-        newSession().use { session ->
+        sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(JoinMapper::class.java)
 
             val selectStatement = select(
@@ -354,7 +334,7 @@ class JoinMapperTest {
 
     @Test
     fun testFullJoinWithoutAliases() {
-        newSession().use { session ->
+        sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(JoinMapper::class.java)
 
             val selectStatement = select(
@@ -402,7 +382,7 @@ class JoinMapperTest {
 
     @Test
     fun testLeftJoinWithAliases() {
-        newSession().use { session ->
+        sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(JoinMapper::class.java)
 
             val selectStatement = select(
@@ -445,7 +425,7 @@ class JoinMapperTest {
 
     @Test
     fun testLeftJoinWithSubQuery() {
-        newSession().use { session ->
+        sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(JoinMapper::class.java)
 
             val selectStatement = select(
@@ -496,7 +476,7 @@ class JoinMapperTest {
 
     @Test
     fun testLeftJoinWithoutAliases() {
-        newSession().use { session ->
+        sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(JoinMapper::class.java)
 
             val selectStatement = select(
@@ -539,7 +519,7 @@ class JoinMapperTest {
 
     @Test
     fun testRightJoinWithAliases() {
-        newSession().use { session ->
+        sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(JoinMapper::class.java)
 
             val selectStatement = select(
@@ -582,7 +562,7 @@ class JoinMapperTest {
 
     @Test
     fun testRightJoinWithSubQuery() {
-        newSession().use { session ->
+        sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(JoinMapper::class.java)
 
             val selectStatement = select(
@@ -633,7 +613,7 @@ class JoinMapperTest {
 
     @Test
     fun testRightJoinWithoutAliases() {
-        newSession().use { session ->
+        sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(JoinMapper::class.java)
 
             val selectStatement = select(
@@ -676,7 +656,7 @@ class JoinMapperTest {
 
     @Test
     fun testSelf() {
-        newSession().use { session ->
+        sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(JoinMapper::class.java)
 
             // create second table instance for self-join
@@ -707,7 +687,7 @@ class JoinMapperTest {
 
     @Test
     fun testSelfWithNewAlias() {
-        newSession().use { session ->
+        sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(JoinMapper::class.java)
 
             // create second table instance for self-join
@@ -739,7 +719,7 @@ class JoinMapperTest {
 
     @Test
     fun testSelfWithNewAliasAndOverride() {
-        newSession().use { session ->
+        sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(JoinMapper::class.java)
 
             // create second table instance for self-join
@@ -786,7 +766,7 @@ class JoinMapperTest {
 
     @Test
     fun testThatAliasesPropagateToSubQueryConditions() {
-        newSession().use { session ->
+        sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(JoinMapper::class.java)
 
             val orderLine2 = OrderLineDynamicSQLSupport.OrderLine()
@@ -826,10 +806,5 @@ class JoinMapperTest {
                 entry("LINE_NUMBER", 3)
             )
         }
-    }
-
-    companion object {
-        const val JDBC_URL = "jdbc:hsqldb:mem:aname"
-        const val JDBC_DRIVER = "org.hsqldb.jdbcDriver"
     }
 }
