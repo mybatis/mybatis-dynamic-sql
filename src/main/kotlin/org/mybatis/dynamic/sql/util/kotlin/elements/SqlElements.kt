@@ -20,7 +20,6 @@ import org.mybatis.dynamic.sql.AndOrCriteriaGroup
 import org.mybatis.dynamic.sql.BasicColumn
 import org.mybatis.dynamic.sql.BindableColumn
 import org.mybatis.dynamic.sql.Constant
-import org.mybatis.dynamic.sql.ExistsPredicate
 import org.mybatis.dynamic.sql.SortSpecification
 import org.mybatis.dynamic.sql.SqlBuilder
 import org.mybatis.dynamic.sql.SqlColumn
@@ -41,7 +40,6 @@ import org.mybatis.dynamic.sql.select.function.OperatorFunction
 import org.mybatis.dynamic.sql.select.function.Substring
 import org.mybatis.dynamic.sql.select.function.Subtract
 import org.mybatis.dynamic.sql.select.function.Upper
-import org.mybatis.dynamic.sql.select.join.EqualTo
 import org.mybatis.dynamic.sql.util.kotlin.GroupingCriteriaCollector
 import org.mybatis.dynamic.sql.util.kotlin.GroupingCriteriaReceiver
 import org.mybatis.dynamic.sql.util.kotlin.KotlinSubQueryBuilder
@@ -77,10 +75,6 @@ import org.mybatis.dynamic.sql.where.condition.IsNotLike
 import org.mybatis.dynamic.sql.where.condition.IsNotLikeCaseInsensitive
 import org.mybatis.dynamic.sql.where.condition.IsNotNull
 import org.mybatis.dynamic.sql.where.condition.IsNull
-
-// join support
-@Deprecated("Please use the infix function in the JoinCollector")
-fun equalTo(column: BasicColumn): EqualTo = SqlBuilder.equalTo(column)
 
 // support for criteria without initial conditions
 fun and(receiver: GroupingCriteriaReceiver): AndOrCriteriaGroup =
@@ -171,16 +165,6 @@ fun <T> upper(column: BindableColumn<T>): Upper<T> = SqlBuilder.upper(column)
 fun <T> isNull(): IsNull<T> = SqlBuilder.isNull()
 
 fun <T> isNotNull(): IsNotNull<T> = SqlBuilder.isNotNull()
-
-@Deprecated("Deprecated in favor of the new where clause DSL. " +
-        "Rewrite to use the exists function inside a lambda.")
-fun exists(subQuery: KotlinSubQueryBuilder.() -> Unit): ExistsPredicate =
-    SqlBuilder.exists(KotlinSubQueryBuilder().apply(subQuery))
-
-@Deprecated("Deprecated in favor of the new where clause DSL. " +
-        "Rewrite to use the exists function inside a \"not\" expression.")
-fun notExists(subQuery: KotlinSubQueryBuilder.() -> Unit): ExistsPredicate =
-    SqlBuilder.notExists(KotlinSubQueryBuilder().apply(subQuery))
 
 fun <T> isEqualTo(value: T & Any): IsEqualTo<T> = SqlBuilder.isEqualTo(value)
 

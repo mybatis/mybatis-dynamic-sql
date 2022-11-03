@@ -74,14 +74,6 @@ fun insertInto(table: SqlTable, completer: GeneralInsertCompleter): GeneralInser
 fun <T : Any> insertMultiple(rows: Collection<T>, completer: KotlinMultiRowInsertCompleter<T>): MultiRowInsertModel<T> =
     KotlinMultiRowInsertBuilder(rows).apply(completer).build()
 
-@Deprecated("Please use the new form - move the table into the lambda with into(table)")
-fun insertSelect(table: SqlTable, completer: InsertSelectCompleter): InsertSelectModel =
-    with(KotlinInsertSelectSubQueryBuilder()) {
-        into(table)
-        apply(completer)
-        build()
-    }
-
 fun insertSelect(completer: InsertSelectCompleter): InsertSelectModel =
     KotlinInsertSelectSubQueryBuilder().apply(completer).build()
 
