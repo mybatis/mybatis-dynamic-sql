@@ -15,8 +15,6 @@
  */
 package org.mybatis.dynamic.sql.select.render;
 
-import static org.mybatis.dynamic.sql.util.StringUtilities.spaceAfter;
-
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -34,6 +32,7 @@ import org.mybatis.dynamic.sql.select.QueryExpressionModel;
 import org.mybatis.dynamic.sql.select.join.JoinModel;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 import org.mybatis.dynamic.sql.util.FragmentCollector;
+import org.mybatis.dynamic.sql.util.StringUtilities;
 import org.mybatis.dynamic.sql.where.WhereModel;
 import org.mybatis.dynamic.sql.where.render.WhereRenderer;
 
@@ -135,7 +134,7 @@ public class QueryExpressionRenderer {
     }
 
     private FragmentAndParameters calculateQueryExpressionStart() {
-        String start = spaceAfter(queryExpression.connector())
+        String start = queryExpression.connector().map(StringUtilities::spaceAfter).orElse("") //$NON-NLS-1$
                 + "select " //$NON-NLS-1$
                 + (queryExpression.isDistinct() ? "distinct " : "") //$NON-NLS-1$ //$NON-NLS-2$
                 + calculateColumnList()

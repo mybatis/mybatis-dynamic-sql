@@ -15,7 +15,6 @@
  */
 package org.mybatis.dynamic.sql.select.render;
 
-import static org.mybatis.dynamic.sql.util.StringUtilities.spaceAfter;
 import static org.mybatis.dynamic.sql.util.StringUtilities.spaceBefore;
 
 import java.util.Objects;
@@ -52,8 +51,7 @@ public class JoinRenderer {
     private FragmentAndParameters renderJoinSpecification(JoinSpecification joinSpecification) {
         FragmentAndParameters renderedTable = joinSpecification.table().accept(tableExpressionRenderer);
 
-        String fragment = spaceAfter(joinSpecification.joinType().shortType())
-                + "join" //$NON-NLS-1$
+        String fragment = joinSpecification.joinType().type()
                 + spaceBefore(renderedTable.fragment())
                 + spaceBefore(renderConditions(joinSpecification));
 

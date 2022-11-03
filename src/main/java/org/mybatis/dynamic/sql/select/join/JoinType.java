@@ -15,25 +15,19 @@
  */
 package org.mybatis.dynamic.sql.select.join;
 
-import java.util.Optional;
-
 public enum JoinType {
-    INNER(),
-    LEFT("left"), //$NON-NLS-1$
-    RIGHT("right"), //$NON-NLS-1$
-    FULL("full"); //$NON-NLS-1$
+    INNER("join"), //$NON-NLS-1$
+    LEFT("left join"), //$NON-NLS-1$
+    RIGHT("right join"), //$NON-NLS-1$
+    FULL("full join"); //$NON-NLS-1$
 
-    private final String shortType;
+    private final String type;
 
-    JoinType() {
-        shortType = null;
+    JoinType(String type) {
+        this.type = type;
     }
 
-    JoinType(String shortType) {
-        this.shortType = shortType;
-    }
-
-    public Optional<String> shortType() {
-        return Optional.ofNullable(shortType);
+    public String type() {
+        return type;
     }
 }

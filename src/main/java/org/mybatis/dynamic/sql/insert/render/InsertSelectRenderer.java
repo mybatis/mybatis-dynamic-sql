@@ -26,6 +26,7 @@ import org.mybatis.dynamic.sql.insert.InsertColumnListModel;
 import org.mybatis.dynamic.sql.insert.InsertSelectModel;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
+import org.mybatis.dynamic.sql.util.StringUtilities;
 
 public class InsertSelectRenderer {
 
@@ -42,9 +43,11 @@ public class InsertSelectRenderer {
 
         String statementStart = InsertRenderingUtilities.calculateInsertStatementStart(model.table());
         Optional<String> columnsPhrase = calculateColumnsPhrase();
-        String selectStatementS = selectStatement.getSelectStatement();
+        String renderedSelectStatement = selectStatement.getSelectStatement();
 
-        String insertStatement = statementStart + spaceBefore(columnsPhrase) + spaceBefore(selectStatementS);
+        String insertStatement = statementStart
+                + columnsPhrase.map(StringUtilities::spaceBefore).orElse("") //$NON-NLS-1$
+                + spaceBefore(renderedSelectStatement);
 
         return DefaultGeneralInsertStatementProvider.withInsertStatement(insertStatement)
                 .withParameters(selectStatement.getParameters())

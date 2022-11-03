@@ -15,22 +15,10 @@
  */
 package org.mybatis.dynamic.sql.util;
 
-import java.util.Optional;
-
 public interface StringUtilities {
-
-    static String spaceAfter(Optional<String> in) {
-        return in.map(StringUtilities::spaceAfter)
-                .orElse(""); //$NON-NLS-1$
-    }
 
     static String spaceAfter(String in) {
         return in + " "; //$NON-NLS-1$
-    }
-
-    static String spaceBefore(Optional<String> in) {
-        return in.map(StringUtilities::spaceBefore)
-                .orElse(""); //$NON-NLS-1$
     }
 
     static String spaceBefore(String in) {
