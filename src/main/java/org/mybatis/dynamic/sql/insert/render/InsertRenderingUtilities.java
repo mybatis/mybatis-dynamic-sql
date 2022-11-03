@@ -15,9 +15,9 @@
  */
 package org.mybatis.dynamic.sql.insert.render;
 
-import org.mybatis.dynamic.sql.SqlTable;
-
 import static org.mybatis.dynamic.sql.util.StringUtilities.spaceBefore;
+
+import org.mybatis.dynamic.sql.SqlTable;
 
 public class InsertRenderingUtilities {
     private InsertRenderingUtilities() {}

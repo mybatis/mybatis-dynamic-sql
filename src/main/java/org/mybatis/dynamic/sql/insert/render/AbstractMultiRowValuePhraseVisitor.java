@@ -23,7 +23,8 @@ import org.mybatis.dynamic.sql.util.NullMapping;
 import org.mybatis.dynamic.sql.util.PropertyMapping;
 import org.mybatis.dynamic.sql.util.StringConstantMapping;
 
-public abstract class AbstractMultiRowValuePhraseVisitor extends MultiRowInsertMappingVisitor<FieldAndValueAndParameters> {
+public abstract class AbstractMultiRowValuePhraseVisitor
+        extends MultiRowInsertMappingVisitor<FieldAndValueAndParameters> {
 
     protected final RenderingStrategy renderingStrategy;
     protected final String prefix;
