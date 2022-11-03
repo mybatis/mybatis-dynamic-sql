@@ -17,7 +17,6 @@ package org.mybatis.dynamic.sql;
 
 import java.util.Collection;
 import java.util.Objects;
-import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -27,32 +26,8 @@ import java.util.stream.Stream;
 public abstract class AbstractListValueCondition<T> implements VisitableCondition<T> {
     protected final Collection<T> values;
 
-    /**
-     * Callback to execute when the list is empty.
-     *
-     * @deprecated in favor of the statement configuration functions
-     */
-    @Deprecated
-    protected final Callback emptyCallback;
-
     protected AbstractListValueCondition(Collection<T> values) {
-        this(values, () -> { });
-    }
-
-    /**
-     * Construct a new condition with a callback.
-     *
-     * @param values
-     *            values
-     * @param emptyCallback
-     *            empty callback
-     *
-     * @deprecated in favor of the statement configuration functions
-     */
-    @Deprecated
-    protected AbstractListValueCondition(Collection<T> values, Callback emptyCallback) {
         this.values = Objects.requireNonNull(values);
-        this.emptyCallback = Objects.requireNonNull(emptyCallback);
     }
 
     public final <R> Stream<R> mapValues(Function<T, R> mapper) {
@@ -62,11 +37,6 @@ public abstract class AbstractListValueCondition<T> implements VisitableConditio
     @Override
     public boolean shouldRender() {
         return !values.isEmpty();
-    }
-
-    @Override
-    public void renderingSkipped() {
-        emptyCallback.call();
     }
 
     @Override
@@ -85,19 +55,19 @@ public abstract class AbstractListValueCondition<T> implements VisitableConditio
     }
 
     protected <S extends AbstractListValueCondition<T>> S filterSupport(Predicate<? super T> predicate,
-            BiFunction<Collection<T>, Callback, S> constructor, S self, Supplier<S> emptySupplier) {
+            Function<Collection<T>, S> constructor, S self, Supplier<S> emptySupplier) {
         if (shouldRender()) {
             Collection<T> filtered = applyFilter(predicate);
-            return filtered.isEmpty() ? emptySupplier.get() : constructor.apply(filtered, emptyCallback);
+            return filtered.isEmpty() ? emptySupplier.get() : constructor.apply(filtered);
         } else {
             return self;
         }
     }
 
     protected <R, S extends AbstractListValueCondition<R>> S mapSupport(Function<? super T, ? extends R> mapper,
-            BiFunction<Collection<R>, Callback, S> constructor, Supplier<S> emptySupplier) {
+            Function<Collection<R>, S> constructor, Supplier<S> emptySupplier) {
         if (shouldRender()) {
-            return constructor.apply(applyMapper(mapper), emptyCallback);
+            return constructor.apply(applyMapper(mapper));
         } else {
             return emptySupplier.get();
         }
@@ -114,19 +84,6 @@ public abstract class AbstractListValueCondition<T> implements VisitableConditio
      * @return a new condition with filtered values if renderable, otherwise a condition that will not render.
      */
     public abstract AbstractListValueCondition<T> filter(Predicate<? super T> predicate);
-
-    /**
-     * Specifies a callback function to be called if the value list is empty when rendered.
-     *
-     * @param callback
-     *            a callback function - typically throws an exception to block the statement from executing
-     *
-     * @return this condition
-     *
-     * @deprecated in favor of the statement configuration functions
-     */
-    @Deprecated
-    public abstract AbstractListValueCondition<T> withListEmptyCallback(Callback callback);
 
     public abstract String renderCondition(String columnName, Stream<String> placeholders);
 }

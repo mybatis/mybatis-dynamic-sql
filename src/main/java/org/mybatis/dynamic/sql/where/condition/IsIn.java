@@ -20,14 +20,12 @@ import static org.mybatis.dynamic.sql.util.StringUtilities.spaceAfter;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.mybatis.dynamic.sql.AbstractListValueCondition;
-import org.mybatis.dynamic.sql.Callback;
 
 public class IsIn<T> extends AbstractListValueCondition<T> {
     private static final IsIn<?> EMPTY = new IsIn<>(Collections.emptyList());
@@ -38,35 +36,8 @@ public class IsIn<T> extends AbstractListValueCondition<T> {
         return t;
     }
 
-    /**
-     * Build an empty condition.
-     *
-     * @return a new empty condition
-     *
-     * @deprecated in favor of the statement configuration functions
-     */
-    @Deprecated
-    private <S> IsIn<S> emptyWithCallBack() {
-        return new IsIn<>(Collections.emptyList(), emptyCallback);
-    }
-
     protected IsIn(Collection<T> values) {
         super(values);
-    }
-
-    /**
-     * Build a new condition with a callback.
-     *
-     * @param values
-     *            values
-     * @param emptyCallback
-     *            empty callback
-     *
-     * @deprecated in favor of the statement configuration functions
-     */
-    @Deprecated
-    protected IsIn(Collection<T> values, Callback emptyCallback) {
-        super(values, emptyCallback);
     }
 
     @Override
@@ -75,25 +46,9 @@ public class IsIn<T> extends AbstractListValueCondition<T> {
                 + placeholders.collect(Collectors.joining(",", "in (", ")")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
 
-    /**
-     * Build a new condition with a callback.
-     *
-     * @param callback
-     *            a callback function - typically throws an exception to block the statement from executing
-     *
-     * @return this condition
-     *
-     * @deprecated in favor of the statement configuration functions
-     */
-    @Deprecated
-    @Override
-    public IsIn<T> withListEmptyCallback(Callback callback) {
-        return new IsIn<>(values, callback);
-    }
-
     @Override
     public IsIn<T> filter(Predicate<? super T> predicate) {
-        return filterSupport(predicate, IsIn::new, this, this::emptyWithCallBack);
+        return filterSupport(predicate, IsIn::new, this, IsIn::empty);
     }
 
     /**
@@ -106,8 +61,8 @@ public class IsIn<T> extends AbstractListValueCondition<T> {
      *     that will not render.
      */
     public <R> IsIn<R> map(Function<? super T, ? extends R> mapper) {
-        BiFunction<Collection<R>, Callback, IsIn<R>> constructor = IsIn::new;
-        return mapSupport(mapper, constructor, this::emptyWithCallBack);
+        Function<Collection<R>, IsIn<R>> constructor = IsIn::new;
+        return mapSupport(mapper, constructor, IsIn::empty);
     }
 
     @SafeVarargs
