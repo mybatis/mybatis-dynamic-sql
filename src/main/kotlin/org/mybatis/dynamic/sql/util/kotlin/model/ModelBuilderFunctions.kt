@@ -20,13 +20,10 @@ import org.mybatis.dynamic.sql.BasicColumn
 import org.mybatis.dynamic.sql.SqlBuilder
 import org.mybatis.dynamic.sql.SqlTable
 import org.mybatis.dynamic.sql.delete.DeleteModel
-import org.mybatis.dynamic.sql.insert.BatchInsertDSL
 import org.mybatis.dynamic.sql.insert.BatchInsertModel
 import org.mybatis.dynamic.sql.insert.GeneralInsertModel
-import org.mybatis.dynamic.sql.insert.InsertDSL
 import org.mybatis.dynamic.sql.insert.InsertModel
 import org.mybatis.dynamic.sql.insert.InsertSelectModel
-import org.mybatis.dynamic.sql.insert.MultiRowInsertDSL
 import org.mybatis.dynamic.sql.insert.MultiRowInsertModel
 import org.mybatis.dynamic.sql.select.SelectModel
 import org.mybatis.dynamic.sql.update.UpdateModel
@@ -87,24 +84,6 @@ fun insertSelect(table: SqlTable, completer: InsertSelectCompleter): InsertSelec
 
 fun insertSelect(completer: InsertSelectCompleter): InsertSelectModel =
     KotlinInsertSelectSubQueryBuilder().apply(completer).build()
-
-@Deprecated("Please switch to the insertBatch statement in the model package")
-fun <T> BatchInsertDSL.IntoGatherer<T>.into(
-    table: SqlTable,
-    completer: BatchInsertDSL<T>.() -> Unit
-): BatchInsertModel<T> =
-    into(table).apply(completer).build()
-
-@Deprecated("Please switch to the insert statement in the model package")
-fun <T> InsertDSL.IntoGatherer<T>.into(table: SqlTable, completer: InsertDSL<T>.() -> Unit): InsertModel<T> =
-    into(table).apply(completer).build()
-
-@Deprecated("Please switch to the insertMultiple statement in the model package")
-fun <T> MultiRowInsertDSL.IntoGatherer<T>.into(
-    table: SqlTable,
-    completer: MultiRowInsertDSL<T>.() -> Unit
-): MultiRowInsertModel<T> =
-    into(table).apply(completer).build()
 
 fun select(vararg columns: BasicColumn, completer: SelectCompleter): SelectModel =
     select(columns.asList(), completer)

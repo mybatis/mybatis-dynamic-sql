@@ -255,7 +255,8 @@ class PersonMapperTest {
         sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(PersonMapper::class.java)
 
-            val insertStatement = insertSelect(person) {
+            val insertStatement = insertSelect {
+                into(person)
                 columns(id, firstName, lastName, employed, occupation, addressId, birthDate)
                 select(add(id, constant<Int>("100")), firstName, lastName, employed, occupation, addressId, birthDate) {
                     from(person)

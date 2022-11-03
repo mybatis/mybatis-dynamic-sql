@@ -34,9 +34,6 @@ import org.mybatis.dynamic.sql.util.kotlin.KInvalidSQLException
 import org.mybatis.dynamic.sql.util.kotlin.elements.`as`
 import org.mybatis.dynamic.sql.util.kotlin.elements.add
 import org.mybatis.dynamic.sql.util.kotlin.elements.constant
-import org.mybatis.dynamic.sql.util.kotlin.elements.insert
-import org.mybatis.dynamic.sql.util.kotlin.elements.insertBatch
-import org.mybatis.dynamic.sql.util.kotlin.elements.insertMultiple
 import org.mybatis.dynamic.sql.util.kotlin.elements.isLikeWhenPresent
 import org.mybatis.dynamic.sql.util.kotlin.elements.max
 import org.mybatis.dynamic.sql.util.kotlin.elements.sortColumn
@@ -52,7 +49,6 @@ import org.mybatis.dynamic.sql.util.kotlin.spring.insertBatch
 import org.mybatis.dynamic.sql.util.kotlin.spring.insertInto
 import org.mybatis.dynamic.sql.util.kotlin.spring.insertMultiple
 import org.mybatis.dynamic.sql.util.kotlin.spring.insertSelect
-import org.mybatis.dynamic.sql.util.kotlin.spring.into
 import org.mybatis.dynamic.sql.util.kotlin.spring.select
 import org.mybatis.dynamic.sql.util.kotlin.spring.selectDistinct
 import org.mybatis.dynamic.sql.util.kotlin.spring.selectList
@@ -274,36 +270,6 @@ open class CanonicalSpringKotlinTest {
     }
 
     @Test
-    fun testDeprecatedInsert() {
-
-        val record = PersonRecord(100, "Joe", LastName("Jones"), Date(), true, "Developer", 1)
-
-        val insertStatement = insert(record).into(person) {
-            map(id).toProperty("id")
-            map(firstName).toProperty("firstName")
-            map(lastName).toProperty("lastNameAsString")
-            map(birthDate).toProperty("birthDate")
-            map(employed).toProperty("employedAsString")
-            map(occupation).toProperty("occupation")
-            map(addressId).toProperty("addressId")
-        }
-
-        val expected =
-            "insert into Person (id, first_name, last_name, birth_date, employed, occupation, address_id)" +
-                    " values" +
-                    " (:id, :firstName," +
-                    " :lastNameAsString," +
-                    " :birthDate, :employedAsString," +
-                    " :occupation, :addressId)"
-
-        assertThat(insertStatement.insertStatement).isEqualTo(expected)
-
-        val rows = template.insert(insertStatement)
-
-        assertThat(rows).isEqualTo(1)
-    }
-
-    @Test
     fun testGeneralInsert() {
 
         val insertStatement = insertInto(person) {
@@ -407,35 +373,6 @@ open class CanonicalSpringKotlinTest {
     }
 
     @Test
-    fun testDeprecatedMultiRowInsert() {
-        val record1 = PersonRecord(100, "Joe", LastName("Jones"), Date(), true, "Developer", 1)
-        val record2 = PersonRecord(101, "Sarah", LastName("Smith"), Date(), true, "Architect", 2)
-
-        val insertStatement = insertMultiple(record1, record2).into(person) {
-            map(id).toProperty("id")
-            map(firstName).toProperty("firstName")
-            map(lastName).toProperty("lastNameAsString")
-            map(birthDate).toProperty("birthDate")
-            map(employed).toProperty("employedAsString")
-            map(occupation).toProperty("occupation")
-            map(addressId).toProperty("addressId")
-        }
-
-        assertThat(insertStatement.insertStatement).isEqualTo(
-            "insert into Person (id, first_name, last_name, birth_date, employed, occupation, address_id) " +
-                    "values (:records[0].id, :records[0].firstName, :records[0].lastNameAsString, " +
-                    ":records[0].birthDate, :records[0].employedAsString, " +
-                    ":records[0].occupation, :records[0].addressId), " +
-                    "(:records[1].id, :records[1].firstName, :records[1].lastNameAsString, " +
-                    ":records[1].birthDate, :records[1].employedAsString, :records[1].occupation, " +
-                    ":records[1].addressId)"
-        )
-
-        val rows = template.insertMultiple(insertStatement)
-        assertThat(rows).isEqualTo(2)
-    }
-
-    @Test
     fun testBatchInsert() {
         val record1 = PersonRecord(
             100,
@@ -465,43 +402,6 @@ open class CanonicalSpringKotlinTest {
             map(employed) toProperty "employedAsString"
             map(occupation) toProperty "occupation"
             map(addressId) toProperty "addressId"
-        }
-
-        val rows = template.insertBatch(insertStatement)
-        assertThat(rows).hasSize(2)
-        assertThat(rows[0]).isEqualTo(1)
-        assertThat(rows[1]).isEqualTo(1)
-    }
-
-    @Test
-    fun testDeprecatedBatchInsert() {
-        val record1 = PersonRecord(
-            100,
-            "Joe",
-            LastName("Jones"),
-            Date(),
-            true,
-            "Developer",
-            1
-        )
-        val record2 = PersonRecord(
-            101,
-            "Sarah",
-            LastName("Smith"),
-            Date(),
-            true,
-            "Architect",
-            2
-        )
-
-        val insertStatement = insertBatch(record1, record2).into(person) {
-            map(id).toProperty("id")
-            map(firstName).toProperty("firstName")
-            map(lastName).toProperty("lastNameAsString")
-            map(birthDate).toProperty("birthDate")
-            map(employed).toProperty("employedAsString")
-            map(occupation).toProperty("occupation")
-            map(addressId).toProperty("addressId")
         }
 
         val rows = template.insertBatch(insertStatement)
@@ -562,45 +462,9 @@ open class CanonicalSpringKotlinTest {
     }
 
     @Test
-    fun testDeprecatedInsertSelect() {
-        val insertStatement = insertSelect(person) {
-            columns(id, firstName, lastName, birthDate, employed, occupation, addressId)
-            select(add(id, constant<Int>("100")), firstName, lastName, birthDate, employed, occupation, addressId) {
-                from(person)
-                orderBy(id)
-            }
-        }
-
-        assertThat(insertStatement.insertStatement).isEqualTo(
-            "insert into Person (id, first_name, last_name, birth_date, employed, occupation, address_id) " +
-                    "select (id + 100), first_name, last_name, birth_date, employed, occupation, address_id " +
-                    "from Person " +
-                    "order by id"
-        )
-        val rows = template.insertSelect(insertStatement)
-        assertThat(rows).isEqualTo(6)
-
-        val records = template.select(id, firstName, lastName, birthDate, employed, occupation, addressId) {
-            from(person)
-            where { id isGreaterThanOrEqualTo 100 }
-            orderBy(id)
-        }.withRowMapper(personRowMapper)
-
-        assertThat(records).hasSize(6)
-        with(records[1]) {
-            assertThat(id).isEqualTo(102)
-            assertThat(firstName).isEqualTo("Wilma")
-            assertThat(lastName).isEqualTo(LastName("Flintstone"))
-            assertThat(birthDate).isNotNull
-            assertThat(employed).isTrue
-            assertThat(occupation).isEqualTo("Accountant")
-            assertThat(addressId).isEqualTo(1)
-        }
-    }
-
-    @Test
     fun testInsertSelectNoColumns() {
-        val insertStatement = insertSelect(person) {
+        val insertStatement = insertSelect {
+            into(person)
             select(add(id, constant<Int>("100")), firstName, lastName, birthDate, employed, occupation, addressId) {
                 from(person)
                 orderBy(id)
@@ -620,7 +484,8 @@ open class CanonicalSpringKotlinTest {
     @Test
     fun testInsertSelectEmptyColumnList() {
         assertThatExceptionOfType(InvalidSqlException::class.java).isThrownBy {
-            insertSelect(person) {
+            insertSelect {
+                into(person)
                 columns()
                 select(add(id, constant<Int>("100")), firstName, lastName, birthDate, employed, occupation, addressId) {
                     from(person)
@@ -633,7 +498,8 @@ open class CanonicalSpringKotlinTest {
     @Test
     fun testInsertSelectNoSelectStatement() {
         assertThatExceptionOfType(KInvalidSQLException::class.java).isThrownBy {
-            insertSelect(person) {
+            insertSelect {
+                into(person)
                 columns(id, firstName, lastName, birthDate, employed, occupation, addressId)
             }
         }.withMessage(Messages.getString("ERROR.28")) //$NON-NLS-1$
@@ -734,7 +600,8 @@ open class CanonicalSpringKotlinTest {
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     fun testInsertSelectWithGeneratedKey() {
-        val insertStatement = insertSelect(generatedAlways) {
+        val insertStatement = insertSelect {
+            into(generatedAlways)
             columns(generatedAlways.firstName, generatedAlways.lastName)
             select(person.firstName, person.lastName) {
                 from(person)
