@@ -24,6 +24,9 @@ public class DefaultInsertStatementProvider<T> implements InsertStatementProvide
     // need to keep both row and record for now so we don't break
     // old code. The MyBatis reflection utilities don't handle
     // the case where the attribute name is different from the getter.
+    //
+    // MyBatis Generator version 1.4.1 (March 8, 2022) changed to use "row" instead of "record".
+    // Target March 2023 for removing "record" from MyBatis Dynamic SQL.
     private final T record;
     private final T row;
 
