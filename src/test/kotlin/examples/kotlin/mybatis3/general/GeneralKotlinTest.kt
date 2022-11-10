@@ -17,7 +17,6 @@ package examples.kotlin.mybatis3.general
 
 import examples.kotlin.mybatis3.TestUtils
 import examples.kotlin.mybatis3.canonical.AddressDynamicSqlSupport.address
-import examples.kotlin.mybatis3.canonical.LastName
 import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.person
 import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.addressId
 import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.birthDate
@@ -27,7 +26,6 @@ import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.id
 import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.lastName
 import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.occupation
 import examples.kotlin.mybatis3.canonical.PersonMapper
-import examples.kotlin.mybatis3.canonical.PersonRecord
 import examples.kotlin.mybatis3.canonical.PersonWithAddressMapper
 import examples.kotlin.mybatis3.canonical.YesNoTypeHandler
 import examples.kotlin.mybatis3.canonical.select
@@ -41,17 +39,13 @@ import org.mybatis.dynamic.sql.util.Messages
 import org.mybatis.dynamic.sql.util.kotlin.KInvalidSQLException
 import org.mybatis.dynamic.sql.util.kotlin.elements.`as`
 import org.mybatis.dynamic.sql.util.kotlin.elements.count
-import org.mybatis.dynamic.sql.util.kotlin.elements.insert
-import org.mybatis.dynamic.sql.util.kotlin.elements.insertMultiple
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.count
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.countDistinct
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.countFrom
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.deleteFrom
-import org.mybatis.dynamic.sql.util.kotlin.mybatis3.into
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.select
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.selectDistinct
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.update
-import java.util.Date
 
 @Suppress("LargeClass")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -276,90 +270,6 @@ class GeneralKotlinTest {
             assertThat(deleteStatement.deleteStatement).isEqualTo(expected)
 
             val rows = mapper.delete(deleteStatement)
-
-            assertThat(rows).isEqualTo(2)
-        }
-    }
-
-    @Test
-    fun testDeprecatedInsert() {
-        sqlSessionFactory.openSession().use { session ->
-            val mapper = session.getMapper(PersonMapper::class.java)
-
-            val record = PersonRecord(100, "Joe", LastName("Jones"), Date(), true, "Developer", 1)
-
-            val insertStatement = insert(record).into(person) {
-                map(id).toProperty("id")
-                map(firstName).toProperty("firstName")
-                map(lastName).toProperty("lastName")
-                map(birthDate).toProperty("birthDate")
-                map(employed).toProperty("employed")
-                map(occupation).toProperty("occupation")
-                map(addressId).toProperty("addressId")
-            }
-
-            val expected =
-                "insert into Person (id, first_name, last_name, birth_date, employed, occupation, address_id) " +
-                    "values " +
-                    "(#{row.id,jdbcType=INTEGER}, #{row.firstName,jdbcType=VARCHAR}, " +
-                    "#{row.lastName,jdbcType=VARCHAR," +
-                    "typeHandler=examples.kotlin.mybatis3.canonical.LastNameTypeHandler}, " +
-                    "#{row.birthDate,jdbcType=DATE}, " +
-                    "#{row.employed,jdbcType=VARCHAR," +
-                    "typeHandler=examples.kotlin.mybatis3.canonical.YesNoTypeHandler}, " +
-                    "#{row.occupation,jdbcType=VARCHAR}, #{row.addressId,jdbcType=INTEGER})"
-
-            assertThat(insertStatement.insertStatement).isEqualTo(expected)
-
-            val rows = mapper.insert(insertStatement)
-            assertThat(rows).isEqualTo(1)
-        }
-    }
-
-    @Test
-    fun testDeprecatedInsertMultiple() {
-        sqlSessionFactory.openSession().use { session ->
-            val mapper = session.getMapper(PersonMapper::class.java)
-
-            val record1 = PersonRecord(100, "Joe", LastName("Jones"), Date(), true, "Developer", 1)
-            val record2 = PersonRecord(101, "Sarah", LastName("Smith"), Date(), true, "Architect", 2)
-
-            val insertStatement =
-                insertMultiple(listOf(record1, record2)).into(person) {
-                    map(id).toProperty("id")
-                    map(firstName).toProperty("firstName")
-                    map(lastName).toProperty("lastName")
-                    map(birthDate).toProperty("birthDate")
-                    map(employed).toProperty("employed")
-                    map(occupation).toProperty("occupation")
-                    map(addressId).toProperty("addressId")
-                }
-
-            val expected =
-                "insert into Person (id, first_name, last_name, birth_date, employed, occupation, address_id)" +
-                    " values" +
-                    " (#{records[0].id,jdbcType=INTEGER}," +
-                    " #{records[0].firstName,jdbcType=VARCHAR}," +
-                    " #{records[0].lastName,jdbcType=VARCHAR," +
-                    "typeHandler=examples.kotlin.mybatis3.canonical.LastNameTypeHandler}," +
-                    " #{records[0].birthDate,jdbcType=DATE}," +
-                    " #{records[0].employed,jdbcType=VARCHAR," +
-                    "typeHandler=examples.kotlin.mybatis3.canonical.YesNoTypeHandler}," +
-                    " #{records[0].occupation,jdbcType=VARCHAR}," +
-                    " #{records[0].addressId,jdbcType=INTEGER})" +
-                    ", (#{records[1].id,jdbcType=INTEGER}," +
-                    " #{records[1].firstName,jdbcType=VARCHAR}," +
-                    " #{records[1].lastName,jdbcType=VARCHAR," +
-                    "typeHandler=examples.kotlin.mybatis3.canonical.LastNameTypeHandler}," +
-                    " #{records[1].birthDate,jdbcType=DATE}," +
-                    " #{records[1].employed,jdbcType=VARCHAR," +
-                    "typeHandler=examples.kotlin.mybatis3.canonical.YesNoTypeHandler}," +
-                    " #{records[1].occupation,jdbcType=VARCHAR}," +
-                    " #{records[1].addressId,jdbcType=INTEGER})"
-
-            assertThat(insertStatement.insertStatement).isEqualTo(expected)
-
-            val rows = mapper.insertMultiple(insertStatement)
 
             assertThat(rows).isEqualTo(2)
         }

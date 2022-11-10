@@ -48,26 +48,6 @@ class JoinCollector {
                 .build()
         )
     }
-
-    @Deprecated("Please use: on(leftColumn) equalTo rightColumn")
-    fun on(column: BasicColumn, condition: JoinCondition) {
-        onJoinCriterion = JoinCriterion.Builder()
-            .withConnector("on") //$NON-NLS-1$
-            .withJoinColumn(column)
-            .withJoinCondition(condition)
-            .build()
-    }
-
-    @Deprecated("Please use: and(leftColumn) equalTo rightColumn")
-    fun and(column: BasicColumn, condition: JoinCondition) {
-        andJoinCriteria.add(
-            JoinCriterion.Builder()
-                .withConnector("and") //$NON-NLS-1$
-                .withJoinColumn(column)
-                .withJoinCondition(condition)
-                .build()
-        )
-    }
 }
 
 class RightColumnCollector(private val joinConditionConsumer: (JoinCondition) -> Unit) {

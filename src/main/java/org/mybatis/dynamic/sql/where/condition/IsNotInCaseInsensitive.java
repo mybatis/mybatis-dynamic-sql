@@ -24,7 +24,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.mybatis.dynamic.sql.AbstractListValueCondition;
-import org.mybatis.dynamic.sql.Callback;
 import org.mybatis.dynamic.sql.util.StringUtilities;
 
 public class IsNotInCaseInsensitive extends AbstractListValueCondition<String> {
@@ -34,35 +33,8 @@ public class IsNotInCaseInsensitive extends AbstractListValueCondition<String> {
         return EMPTY;
     }
 
-    /**
-     * Build an empty condition.
-     *
-     * @return a new empty condition
-     *
-     * @deprecated in favor of the statement configuration functions
-     */
-    @Deprecated
-    private IsNotInCaseInsensitive emptyWithCallback() {
-        return new IsNotInCaseInsensitive(Collections.emptyList(), emptyCallback);
-    }
-
     protected IsNotInCaseInsensitive(Collection<String> values) {
         super(values);
-    }
-
-    /**
-     * Build a new instance with a callback.
-     *
-     * @param values
-     *            values
-     * @param emptyCallback
-     *            empty callback
-     *
-     * @deprecated in favor of the statement configuration functions
-     */
-    @Deprecated
-    protected IsNotInCaseInsensitive(Collection<String> values, Callback emptyCallback) {
-        super(values, emptyCallback);
     }
 
     @Override
@@ -72,25 +44,9 @@ public class IsNotInCaseInsensitive extends AbstractListValueCondition<String> {
                         Collectors.joining(",", "not in (", ")")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
 
-    /**
-     * Build a new instance with a callback.
-     *
-     * @param callback
-     *            a callback function - typically throws an exception to block the statement from executing
-     *
-     * @return this condition
-     *
-     * @deprecated in favor of the statement configuration functions
-     */
-    @Deprecated
-    @Override
-    public IsNotInCaseInsensitive withListEmptyCallback(Callback callback) {
-        return new IsNotInCaseInsensitive(values, callback);
-    }
-
     @Override
     public IsNotInCaseInsensitive filter(Predicate<? super String> predicate) {
-        return filterSupport(predicate, IsNotInCaseInsensitive::new, this, this::emptyWithCallback);
+        return filterSupport(predicate, IsNotInCaseInsensitive::new, this, IsNotInCaseInsensitive::empty);
     }
 
     /**
@@ -102,7 +58,7 @@ public class IsNotInCaseInsensitive extends AbstractListValueCondition<String> {
      *     that will not render.
      */
     public IsNotInCaseInsensitive map(UnaryOperator<String> mapper) {
-        return mapSupport(mapper, IsNotInCaseInsensitive::new, this::emptyWithCallback);
+        return mapSupport(mapper, IsNotInCaseInsensitive::new, IsNotInCaseInsensitive::empty);
     }
 
     public static IsNotInCaseInsensitive of(String... values) {

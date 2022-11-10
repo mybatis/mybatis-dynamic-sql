@@ -19,9 +19,6 @@ package org.mybatis.dynamic.sql.util.kotlin.mybatis3
 import org.mybatis.dynamic.sql.BasicColumn
 import org.mybatis.dynamic.sql.SqlTable
 import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider
-import org.mybatis.dynamic.sql.insert.BatchInsertDSL
-import org.mybatis.dynamic.sql.insert.InsertDSL
-import org.mybatis.dynamic.sql.insert.MultiRowInsertDSL
 import org.mybatis.dynamic.sql.insert.render.BatchInsert
 import org.mybatis.dynamic.sql.insert.render.GeneralInsertStatementProvider
 import org.mybatis.dynamic.sql.insert.render.InsertSelectStatementProvider
@@ -48,7 +45,6 @@ import org.mybatis.dynamic.sql.util.kotlin.model.insertBatch
 import org.mybatis.dynamic.sql.util.kotlin.model.insertInto
 import org.mybatis.dynamic.sql.util.kotlin.model.insertMultiple
 import org.mybatis.dynamic.sql.util.kotlin.model.insertSelect
-import org.mybatis.dynamic.sql.util.kotlin.model.into
 import org.mybatis.dynamic.sql.util.kotlin.model.select
 import org.mybatis.dynamic.sql.util.kotlin.model.selectDistinct
 import org.mybatis.dynamic.sql.util.kotlin.model.update
@@ -83,30 +79,8 @@ fun <T : Any> insertMultiple(
 ): MultiRowInsertStatementProvider<T> =
     insertMultiple(rows, completer).render(RenderingStrategies.MYBATIS3)
 
-@Deprecated("Please use the new form - move the table into the lambda with into(table)")
-fun insertSelect(table: SqlTable, completer: InsertSelectCompleter): InsertSelectStatementProvider =
-    insertSelect(table, completer).render(RenderingStrategies.MYBATIS3)
-
 fun insertSelect(completer: InsertSelectCompleter): InsertSelectStatementProvider =
     insertSelect(completer).render(RenderingStrategies.MYBATIS3)
-
-@Deprecated("Please switch to the insertBatch statement in the mybatis3 package")
-fun <T> BatchInsertDSL.IntoGatherer<T>.into(table: SqlTable, completer: BatchInsertDSL<T>.() -> Unit): BatchInsert<T> =
-    into(table, completer).render(RenderingStrategies.MYBATIS3)
-
-@Deprecated("Please switch to the insert statement in the mybatis3 package")
-fun <T> InsertDSL.IntoGatherer<T>.into(
-    table: SqlTable,
-    completer: InsertDSL<T>.() -> Unit
-): InsertStatementProvider<T> =
-    into(table, completer).render(RenderingStrategies.MYBATIS3)
-
-@Deprecated("Please switch to the insertMultiple statement in the mybatis3 package")
-fun <T> MultiRowInsertDSL.IntoGatherer<T>.into(
-    table: SqlTable,
-    completer: MultiRowInsertDSL<T>.() -> Unit
-): MultiRowInsertStatementProvider<T> =
-    into(table, completer).render(RenderingStrategies.MYBATIS3)
 
 fun select(vararg columns: BasicColumn, completer: SelectCompleter): SelectStatementProvider =
     select(columns.asList(), completer).render(RenderingStrategies.MYBATIS3)

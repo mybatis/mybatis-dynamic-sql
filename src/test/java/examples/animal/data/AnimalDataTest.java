@@ -27,8 +27,6 @@ import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -47,9 +45,9 @@ import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.BasicColumn;
-import org.mybatis.dynamic.sql.Callback;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider;
+import org.mybatis.dynamic.sql.exception.NonRenderingWhereClauseException;
 import org.mybatis.dynamic.sql.insert.render.BatchInsert;
 import org.mybatis.dynamic.sql.insert.render.GeneralInsertStatementProvider;
 import org.mybatis.dynamic.sql.insert.render.InsertSelectStatementProvider;
@@ -61,8 +59,6 @@ import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
 import org.mybatis.dynamic.sql.util.mybatis3.CommonSelectMapper;
 import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
-import org.mybatis.dynamic.sql.where.condition.IsIn;
-import org.mybatis.dynamic.sql.where.condition.IsNotIn;
 import org.mybatis.dynamic.sql.where.render.WhereClauseProvider;
 
 class AnimalDataTest {
@@ -677,28 +673,24 @@ class AnimalDataTest {
 
         SelectModel selectModel = select(id, animalName, bodyWeight, brainWeight)
                 .from(animalData)
-                .where(id, isInRequired(inValues).filter(Objects::nonNull).filter(i -> i != 22))
+                .where(id, isIn(inValues).filter(Objects::nonNull).filter(i -> i != 22))
                 .build();
 
-        assertThatExceptionOfType(RuntimeException.class).isThrownBy(() ->
+        assertThatExceptionOfType(NonRenderingWhereClauseException.class).isThrownBy(() ->
                 selectModel.render(RenderingStrategies.MYBATIS3)
-        ).withMessage("Fred");
+        );
     }
 
     @Test
     void testInConditionWithEmptyList() {
         SelectModel selectModel = select(id, animalName, bodyWeight, brainWeight)
                 .from(animalData)
-                .where(id, isInRequired(Collections.emptyList()))
+                .where(id, isIn(Collections.emptyList()))
                 .build();
 
-        assertThatExceptionOfType(RuntimeException.class).isThrownBy(() ->
+        assertThatExceptionOfType(NonRenderingWhereClauseException.class).isThrownBy(() ->
                 selectModel.render(RenderingStrategies.MYBATIS3)
-        ).withMessage("Fred");
-    }
-
-    private static <T> IsIn<T> isInRequired(Collection<T> values) {
-        return IsIn.of(values).withListEmptyCallback(Callback.exceptionThrowingCallback("Fred"));
+        );
     }
 
     @Test
@@ -788,18 +780,13 @@ class AnimalDataTest {
     void testNotInConditionWithEventuallyEmptyListForceRendering() {
         SelectModel selectModel = select(id, animalName, bodyWeight, brainWeight)
                 .from(animalData)
-                .where(id, isNotInRequired(null, 22, null)
+                .where(id, isNotIn(null, 22, null)
                         .filter(Objects::nonNull).filter(i -> i != 22))
                 .build();
 
-        assertThatExceptionOfType(RuntimeException.class).isThrownBy(() ->
+        assertThatExceptionOfType(NonRenderingWhereClauseException.class).isThrownBy(() ->
                 selectModel.render(RenderingStrategies.MYBATIS3)
-        ).withMessage("Fred");
-    }
-
-    @SafeVarargs
-    private static <T> IsNotIn<T> isNotInRequired(T...values) {
-        return IsNotIn.of(Arrays.asList(values)).withListEmptyCallback(Callback.exceptionThrowingCallback("Fred"));
+        );
     }
 
     @Test

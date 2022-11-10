@@ -30,7 +30,6 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import org.mybatis.dynamic.sql.util.Messages
 import org.mybatis.dynamic.sql.util.kotlin.KInvalidSQLException
-import org.mybatis.dynamic.sql.util.kotlin.elements.equalTo
 import org.mybatis.dynamic.sql.util.kotlin.elements.invoke
 import org.mybatis.dynamic.sql.util.kotlin.elements.max
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.select
@@ -124,27 +123,6 @@ class JoinMapperTest {
         val expectedStatement = "select om.order_id, om.order_date, od.line_number, od.description, od.quantity" +
             " from OrderMaster om join OrderDetail od on om.order_id = od.order_id and om.order_id = od.order_id" +
             " where om.order_id = #{parameters.p1,jdbcType=INTEGER}"
-        assertThat(selectStatement.selectStatement).isEqualTo(expectedStatement)
-    }
-
-    @Test
-    fun testDeprecatedJoin() {
-        // this is a nonsensical join, but it does test the "and" capability
-        val selectStatement = select(
-            orderMaster.orderId, orderMaster.orderDate, orderDetail.lineNumber,
-            orderDetail.description, orderDetail.quantity
-        ) {
-            from(orderMaster, "om")
-            join(orderDetail, "od") {
-                on(orderMaster.orderId, equalTo(orderDetail.orderId))
-                and(orderMaster.orderId, equalTo(orderDetail.orderId))
-            }
-            where { orderMaster.orderId isEqualTo 1 }
-        }
-
-        val expectedStatement = "select om.order_id, om.order_date, od.line_number, od.description, od.quantity" +
-                " from OrderMaster om join OrderDetail od on om.order_id = od.order_id and om.order_id = od.order_id" +
-                " where om.order_id = #{parameters.p1,jdbcType=INTEGER}"
         assertThat(selectStatement.selectStatement).isEqualTo(expectedStatement)
     }
 
