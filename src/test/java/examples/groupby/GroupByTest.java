@@ -53,6 +53,7 @@ class GroupByTest {
     void setup() throws Exception {
         Class.forName(JDBC_DRIVER);
         InputStream is = getClass().getResourceAsStream("/examples/groupby/CreateGroupByDB.sql");
+        assert is != null;
         try (Connection connection = DriverManager.getConnection(JDBC_URL, "sa", "")) {
             ScriptRunner sr = new ScriptRunner(connection);
             sr.setLogWriter(null);
@@ -523,6 +524,29 @@ class GroupByTest {
             assertThat(rows).hasSize(1);
             Map<String, Object> row = rows.get(0);
             assertThat(row).containsEntry("COUNT", 2L);
+        }
+    }
+
+    @Test
+    void testHaving() {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
+            CommonSelectMapper mapper = session.getMapper(CommonSelectMapper.class);
+
+            SelectStatementProvider selectStatement = select(lastName, count())
+                    .from(person)
+                    .groupBy(lastName)
+                    .having(count(), isEqualTo(3L))
+                    .orderBy(lastName)
+                    .build()
+                    .render(RenderingStrategies.MYBATIS3);
+
+            String expected = "select last_name, count(*) from Person group by last_name having count(*) = #{parameters.p1} order by last_name";
+            assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
+
+            List<Map<String, Object>> rows = mapper.selectManyMappedRows(selectStatement);
+            assertThat(rows).hasSize(1);
+            Map<String, Object> row = rows.get(0);
+            assertThat(row).containsEntry("LAST_NAME", "Rubble");
         }
     }
 }

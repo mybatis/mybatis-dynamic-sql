@@ -15,96 +15,40 @@
  */
 package org.mybatis.dynamic.sql.where.render;
 
-import java.util.Objects;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 
-import org.mybatis.dynamic.sql.SqlCriterion;
+import org.mybatis.dynamic.sql.common.AbstractBooleanExpressionRenderer;
 import org.mybatis.dynamic.sql.exception.NonRenderingWhereClauseException;
-import org.mybatis.dynamic.sql.render.RenderingStrategy;
-import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
-import org.mybatis.dynamic.sql.util.FragmentCollector;
 import org.mybatis.dynamic.sql.where.WhereModel;
 
-public class WhereRenderer {
-    private final WhereModel whereModel;
-    private final CriterionRenderer criterionRenderer;
-
+public class WhereRenderer extends AbstractBooleanExpressionRenderer<WhereModel> {
     private WhereRenderer(Builder builder) {
-        whereModel = Objects.requireNonNull(builder.whereModel);
-
-        criterionRenderer = new CriterionRenderer.Builder()
-                .withSequence(builder.sequence)
-                .withRenderingStrategy(builder.renderingStrategy)
-                .withTableAliasCalculator(builder.tableAliasCalculator)
-                .withParameterName(builder.parameterName)
-                .build();
+        super(builder);
     }
 
+    @Override
     public Optional<FragmentAndParameters> render() {
-        Optional<FragmentAndParameters> whereClause = whereModel.initialCriterion()
-                .map(this::renderWithInitialCriterion)
-                .orElseGet(this::renderWithoutInitialCriterion)
-                .map(rc -> FragmentAndParameters.withFragment(rc.fragmentAndParameters().fragment())
-                        .withParameters(rc.fragmentAndParameters().parameters())
-                        .build()
-                );
+        Optional<FragmentAndParameters> whereClause = super.render();
 
-        if (whereClause.isPresent() || whereModel.isNonRenderingClauseAllowed()) {
+        if (whereClause.isPresent() || model.isNonRenderingClauseAllowed()) {
             return whereClause;
         } else {
             throw new NonRenderingWhereClauseException();
         }
     }
 
-    private Optional<RenderedCriterion> renderWithInitialCriterion(SqlCriterion initialCriterion) {
-        return criterionRenderer.render(initialCriterion, whereModel.subCriteria(), this::calculateWhereClause);
-    }
-
-    private Optional<RenderedCriterion> renderWithoutInitialCriterion() {
-        return criterionRenderer.render(whereModel.subCriteria(), this::calculateWhereClause);
-    }
-
-    private String calculateWhereClause(FragmentCollector collector) {
-        return collector.fragments()
-                .collect(Collectors.joining(" ", "where ", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-    }
-
     public static Builder withWhereModel(WhereModel whereModel) {
-        return new Builder().withWhereModel(whereModel);
+        return new Builder(whereModel);
     }
 
-    public static class Builder {
-        private WhereModel whereModel;
-        private RenderingStrategy renderingStrategy;
-        private TableAliasCalculator tableAliasCalculator;
-        private AtomicInteger sequence;
-        private String parameterName;
-
-        public Builder withWhereModel(WhereModel whereModel) {
-            this.whereModel = whereModel;
-            return this;
+    public static class Builder extends AbstractBuilder<WhereModel, Builder> {
+        public Builder(WhereModel whereModel) {
+            super("where", whereModel); //$NON-NLS-1$
         }
 
-        public Builder withRenderingStrategy(RenderingStrategy renderingStrategy) {
-            this.renderingStrategy = renderingStrategy;
-            return this;
-        }
-
-        public Builder withTableAliasCalculator(TableAliasCalculator tableAliasCalculator) {
-            this.tableAliasCalculator = tableAliasCalculator;
-            return this;
-        }
-
-        public Builder withSequence(AtomicInteger sequence) {
-            this.sequence = sequence;
-            return this;
-        }
-
-        public Builder withParameterName(String parameterName) {
-            this.parameterName = parameterName;
+        @Override
+        protected Builder getThis() {
             return this;
         }
 
