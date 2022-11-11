@@ -68,8 +68,22 @@ public class WhereRenderer {
     }
 
     private String calculateWhereClause(FragmentCollector collector) {
-        return collector.fragments()
-                .collect(Collectors.joining(" ", "where ", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        if (collector.hasMultipleFragments()) {
+            return collector.fragments()
+                    .collect(Collectors.joining(" ", "where ", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        } else {
+            return "where " + stripEnclosingParenthesesIfPresent(collector.firstFragment()); //$NON-NLS-1$
+        }
+    }
+
+    private String stripEnclosingParenthesesIfPresent(String fragment) {
+        // The fragment will have surrounding open/close parentheses if there is more than one rendered condition.
+        // Since there is only a single fragment, we don't need these in the where clause
+        if (fragment.startsWith("(") && fragment.endsWith(")")) { //$NON-NLS-1$ //$NON-NLS-2$
+            return fragment.substring(1, fragment.length() - 1);
+        } else {
+            return fragment;
+        }
     }
 
     public static Builder withWhereModel(WhereModel whereModel) {

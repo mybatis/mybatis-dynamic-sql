@@ -42,6 +42,10 @@ public class FragmentCollector {
         return this;
     }
 
+    public String firstFragment() {
+        return fragments.get(0).fragment();
+    }
+
     public Stream<String> fragments() {
         return fragments.stream()
                 .map(FragmentAndParameters::fragment);

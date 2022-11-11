@@ -169,7 +169,7 @@ class OptionalCriterionRenderTest {
 
         assertThat(whereClause).hasValueSatisfying(wc -> {
             assertThat(wc.getParameters()).containsExactly(entry("p1", "fred"), entry("p2", "flintstone"));
-            assertThat(wc.getWhereClause()).isEqualTo("where (first_name = :p1 or last_name = :p2)");
+            assertThat(wc.getWhereClause()).isEqualTo("where first_name = :p1 or last_name = :p2");
         });
     }
 
@@ -206,8 +206,8 @@ class OptionalCriterionRenderTest {
                 .build()
                 .render(RenderingStrategies.SPRING_NAMED_PARAMETER);
 
-        String expected = "where (exists (select * from person where id = :p1) " +
-                "or exists (select * from person where id = :p2))";
+        String expected = "where exists (select * from person where id = :p1) " +
+                "or exists (select * from person where id = :p2)";
 
         assertThat(whereClause).hasValueSatisfying(wc -> {
             assertThat(wc.getParameters()).containsExactly(entry("p1", 3), entry("p2", 4));
@@ -237,9 +237,9 @@ class OptionalCriterionRenderTest {
                 .build()
                 .render(RenderingStrategies.SPRING_NAMED_PARAMETER);
 
-        String expected = "where (exists (select * from person where id = :p1) " +
+        String expected = "where exists (select * from person where id = :p1) " +
                 "or (exists (select * from person where id = :p2) " +
-                "or exists (select * from person where id = :p3)))";
+                "or exists (select * from person where id = :p3))";
 
         assertThat(whereClause).hasValueSatisfying(wc -> {
             assertThat(wc.getParameters()).containsExactly(entry("p1", 3), entry("p2", 4), entry("p3", 5));
@@ -263,8 +263,8 @@ class OptionalCriterionRenderTest {
                 .build()
                 .render(RenderingStrategies.SPRING_NAMED_PARAMETER);
 
-        String expected = "where (exists (select * from person where id = :p1) " +
-                "and exists (select * from person where id = :p2))";
+        String expected = "where exists (select * from person where id = :p1) " +
+                "and exists (select * from person where id = :p2)";
 
         assertThat(whereClause).hasValueSatisfying(wc -> {
             assertThat(wc.getParameters()).containsExactly(entry("p1", 3), entry("p2", 4));
@@ -294,9 +294,9 @@ class OptionalCriterionRenderTest {
                 .build()
                 .render(RenderingStrategies.SPRING_NAMED_PARAMETER);
 
-        String expected = "where (exists (select * from person where id = :p1) " +
+        String expected = "where exists (select * from person where id = :p1) " +
                 "and (exists (select * from person where id = :p2) " +
-                "and exists (select * from person where id = :p3)))";
+                "and exists (select * from person where id = :p3))";
 
         assertThat(whereClause).hasValueSatisfying(wc -> {
             assertThat(wc.getParameters()).containsExactly(entry("p1", 3), entry("p2", 4), entry("p3", 5));
@@ -343,7 +343,7 @@ class OptionalCriterionRenderTest {
                 .build()
                 .render(RenderingStrategies.SPRING_NAMED_PARAMETER);
 
-        String expected = "where (first_name = :p1 or first_name = :p2)";
+        String expected = "where first_name = :p1 or first_name = :p2";
 
         assertThat(whereClause).hasValueSatisfying(wc -> {
             assertThat(wc.getParameters()).containsExactly(entry("p1", "Fred"), entry("p2", "Betty"));

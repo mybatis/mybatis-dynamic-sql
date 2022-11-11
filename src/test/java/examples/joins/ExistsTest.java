@@ -56,6 +56,7 @@ class ExistsTest {
     void setup() throws Exception {
         Class.forName(JDBC_DRIVER);
         InputStream is = getClass().getResourceAsStream("/examples/joins/CreateJoinDB.sql");
+        assert is != null;
         try (Connection connection = DriverManager.getConnection(JDBC_URL, "sa", "")) {
             ScriptRunner sr = new ScriptRunner(connection);
             sr.setLogWriter(null);
@@ -333,8 +334,8 @@ class ExistsTest {
                     .render(RenderingStrategies.MYBATIS3);
 
             String expectedStatement = "select im.* from ItemMaster im"
-                    + " where (exists (select ol.* from OrderLine ol where ol.item_id = im.item_id)"
-                    + " or im.item_id = #{parameters.p1,jdbcType=INTEGER})"
+                    + " where exists (select ol.* from OrderLine ol where ol.item_id = im.item_id)"
+                    + " or im.item_id = #{parameters.p1,jdbcType=INTEGER}"
                     + " order by item_id";
             assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedStatement);
 
@@ -372,8 +373,8 @@ class ExistsTest {
                     .render(RenderingStrategies.MYBATIS3);
 
             String expectedStatement = "select im.* from ItemMaster im"
-                    + " where (exists (select ol.* from OrderLine ol where ol.item_id = im.item_id)"
-                    + " and im.item_id = #{parameters.p1,jdbcType=INTEGER})"
+                    + " where exists (select ol.* from OrderLine ol where ol.item_id = im.item_id)"
+                    + " and im.item_id = #{parameters.p1,jdbcType=INTEGER}"
                     + " order by item_id";
             assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedStatement);
 
