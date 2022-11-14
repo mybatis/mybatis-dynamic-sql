@@ -72,7 +72,10 @@ public class WhereRenderer {
             return collector.fragments()
                     .collect(Collectors.joining(" ", "where ", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         } else {
-            return "where " + stripEnclosingParenthesesIfPresent(collector.firstFragment()); //$NON-NLS-1$
+            return collector.firstFragment()
+                    .map(this::stripEnclosingParenthesesIfPresent)
+                    .map(s -> "where " + s) //$NON-NLS-1$
+                    .orElse(""); //$NON-NLS-1$
         }
     }
 
