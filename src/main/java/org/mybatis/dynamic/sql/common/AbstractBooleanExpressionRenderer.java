@@ -65,10 +65,26 @@ public abstract class AbstractBooleanExpressionRenderer<M extends AbstractBoolea
     }
 
     private String calculateClause(FragmentCollector collector) {
-        return collector.fragments()
-                .collect(Collectors.joining(" ", prefix + " ", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        if (collector.hasMultipleFragments()) {
+            return collector.fragments()
+                    .collect(Collectors.joining(" ", prefix + " ", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        } else {
+            return collector.firstFragment()
+                    .map(this::stripEnclosingParenthesesIfPresent)
+                    .map(s -> prefix + " " + s) //$NON-NLS-1$
+                    .orElse(""); //$NON-NLS-1$
+        }
     }
 
+    private String stripEnclosingParenthesesIfPresent(String fragment) {
+        // The fragment will have surrounding open/close parentheses if there is more than one rendered condition.
+        // Since there is only a single fragment, we don't need these in the where clause
+        if (fragment.startsWith("(") && fragment.endsWith(")")) { //$NON-NLS-1$ //$NON-NLS-2$
+            return fragment.substring(1, fragment.length() - 1);
+        } else {
+            return fragment;
+        }
+    }
     public abstract static class AbstractBuilder<M, B extends AbstractBuilder<M, B>> {
         private final M model;
         private RenderingStrategy renderingStrategy;
