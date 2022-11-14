@@ -38,7 +38,7 @@ class WhereModelTest {
                 .render(RenderingStrategies.MYBATIS3, "myName");
 
         assertThat(whereClause.map(WhereClauseProvider::getWhereClause)).hasValueSatisfying(wc ->
-            assertThat(wc).isEqualTo("where (id = #{myName.parameters.p1,jdbcType=INTEGER} or id = #{myName.parameters.p2,jdbcType=INTEGER})")
+            assertThat(wc).isEqualTo("where id = #{myName.parameters.p1,jdbcType=INTEGER} or id = #{myName.parameters.p2,jdbcType=INTEGER}")
         );
     }
 }

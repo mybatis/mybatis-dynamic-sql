@@ -281,4 +281,62 @@ class KGroupingTest {
         assertThat(selectStatement.parameters).containsEntry("p5", 6)
         assertThat(selectStatement.parameters).containsEntry("p6", 7)
     }
+
+    @Test
+    fun testNotGroupAndOrCriteriaGroupsNested() {
+        val selectStatement = select(A, B, C) {
+            from(foo)
+            where {
+                not {
+                    group {
+                        B isEqualTo 4
+                        and { A isLessThan 5 }
+                    }
+                    and { A isGreaterThan 3 }
+                }
+                and { not { A isGreaterThan 4 } }
+                or {
+                    not {
+                        group {
+                            B isLessThan 6
+                            and { A isGreaterThanOrEqualTo 7 }
+                        }
+                    }
+                }
+            }
+        }
+
+        val expected = "select A, B, C" +
+                " from Foo" +
+                " where not ((B = #{parameters.p1} and A < #{parameters.p2}) and A > #{parameters.p3})" +
+                " and not A > #{parameters.p4}" +
+                " or not (B < #{parameters.p5} and A >= #{parameters.p6})"
+
+        assertThat(selectStatement.selectStatement).isEqualTo(expected)
+        assertThat(selectStatement.parameters).containsEntry("p1", 4)
+        assertThat(selectStatement.parameters).containsEntry("p2", 5)
+        assertThat(selectStatement.parameters).containsEntry("p3", 3)
+        assertThat(selectStatement.parameters).containsEntry("p4", 4)
+        assertThat(selectStatement.parameters).containsEntry("p5", 6)
+        assertThat(selectStatement.parameters).containsEntry("p6", 7)
+    }
+
+    @Test
+    fun testNotGroupAndOrCriteriaGroupsNested2() {
+        val selectStatement = select(A, B, C) {
+            from(foo)
+            where {
+                B isEqualTo 4
+                or { B isEqualTo 5 }
+            }
+        }
+
+        val expected = "select A, B, C" +
+                " from Foo" +
+                " where B = #{parameters.p1} or B = #{parameters.p2}"
+
+        assertThat(selectStatement.selectStatement).isEqualTo(expected)
+        assertThat(selectStatement.parameters).containsEntry("p1", 4)
+        assertThat(selectStatement.parameters).containsEntry("p2", 5)
+    }
 }

@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collector;
 import java.util.stream.Stream;
 
@@ -42,9 +43,12 @@ public class FragmentCollector {
         return this;
     }
 
+    public Optional<String> firstFragment() {
+        return fragments.stream().findFirst().map(FragmentAndParameters::fragment);
+    }
+
     public Stream<String> fragments() {
-        return fragments.stream()
-                .map(FragmentAndParameters::fragment);
+        return fragments.stream().map(FragmentAndParameters::fragment);
     }
 
     public Map<String, Object> parameters() {
