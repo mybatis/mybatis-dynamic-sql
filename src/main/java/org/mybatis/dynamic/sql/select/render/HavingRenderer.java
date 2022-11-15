@@ -20,7 +20,7 @@ import org.mybatis.dynamic.sql.select.HavingModel;
 
 public class HavingRenderer extends AbstractBooleanExpressionRenderer<HavingModel> {
     private HavingRenderer(Builder builder) {
-        super(builder);
+        super("having", builder); //$NON-NLS-1$
     }
 
     public static Builder withHavingModel(HavingModel havingModel) {
@@ -29,7 +29,7 @@ public class HavingRenderer extends AbstractBooleanExpressionRenderer<HavingMode
 
     public static class Builder extends AbstractBuilder<HavingModel, Builder> {
         public Builder(HavingModel havingModel) {
-            super("having", havingModel);  //$NON-NLS-1$
+            super(havingModel);
         }
 
         @Override

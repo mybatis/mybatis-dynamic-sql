@@ -33,7 +33,7 @@ public abstract class AbstractBooleanExpressionRenderer<M extends AbstractBoolea
     private final CriterionRenderer criterionRenderer;
     private final String prefix;
 
-    protected AbstractBooleanExpressionRenderer(AbstractBuilder<M, ?> builder) {
+    protected AbstractBooleanExpressionRenderer(String prefix, AbstractBuilder<M, ?> builder) {
         model = Objects.requireNonNull(builder.model);
 
         criterionRenderer = new CriterionRenderer.Builder()
@@ -43,7 +43,7 @@ public abstract class AbstractBooleanExpressionRenderer<M extends AbstractBoolea
                 .withParameterName(builder.parameterName)
                 .build();
 
-        prefix = Objects.requireNonNull(builder.prefix);
+        this.prefix = Objects.requireNonNull(prefix);
     }
 
     public Optional<FragmentAndParameters> render() {
@@ -92,10 +92,7 @@ public abstract class AbstractBooleanExpressionRenderer<M extends AbstractBoolea
         private AtomicInteger sequence;
         private String parameterName;
 
-        private final String prefix;
-
-        protected AbstractBuilder(String prefix, M model) {
-            this.prefix = prefix;
+        protected AbstractBuilder(M model) {
             this.model = model;
         }
 

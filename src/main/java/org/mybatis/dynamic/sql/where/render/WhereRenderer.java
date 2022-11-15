@@ -24,7 +24,7 @@ import org.mybatis.dynamic.sql.where.WhereModel;
 
 public class WhereRenderer extends AbstractBooleanExpressionRenderer<WhereModel> {
     private WhereRenderer(Builder builder) {
-        super(builder);
+        super("where", builder); //$NON-NLS-1$
     }
 
     @Override
@@ -44,7 +44,7 @@ public class WhereRenderer extends AbstractBooleanExpressionRenderer<WhereModel>
 
     public static class Builder extends AbstractBuilder<WhereModel, Builder> {
         public Builder(WhereModel whereModel) {
-            super("where", whereModel); //$NON-NLS-1$
+            super(whereModel);
         }
 
         @Override
