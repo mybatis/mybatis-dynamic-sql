@@ -15,6 +15,8 @@
  */
 package org.mybatis.dynamic.sql.common;
 
+import static org.mybatis.dynamic.sql.util.StringUtilities.spaceAfter;
+
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -30,11 +32,12 @@ import org.mybatis.dynamic.sql.where.render.RenderedCriterion;
 
 public abstract class AbstractBooleanExpressionRenderer<M extends AbstractBooleanExpressionModel> {
     protected final M model;
-    private final CriterionRenderer criterionRenderer;
     private final String prefix;
+    private final CriterionRenderer criterionRenderer;
 
     protected AbstractBooleanExpressionRenderer(String prefix, AbstractBuilder<M, ?> builder) {
         model = Objects.requireNonNull(builder.model);
+        this.prefix = Objects.requireNonNull(prefix);
 
         criterionRenderer = new CriterionRenderer.Builder()
                 .withSequence(builder.sequence)
@@ -42,8 +45,6 @@ public abstract class AbstractBooleanExpressionRenderer<M extends AbstractBoolea
                 .withTableAliasCalculator(builder.tableAliasCalculator)
                 .withParameterName(builder.parameterName)
                 .build();
-
-        this.prefix = Objects.requireNonNull(prefix);
     }
 
     public Optional<FragmentAndParameters> render() {
@@ -67,24 +68,29 @@ public abstract class AbstractBooleanExpressionRenderer<M extends AbstractBoolea
     private String calculateClause(FragmentCollector collector) {
         if (collector.hasMultipleFragments()) {
             return collector.fragments()
-                    .collect(Collectors.joining(" ", prefix + " ", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                    .collect(Collectors.joining(" ", spaceAfter(prefix), "")); //$NON-NLS-1$ //$NON-NLS-2$
         } else {
             return collector.firstFragment()
                     .map(this::stripEnclosingParenthesesIfPresent)
-                    .map(s -> prefix + " " + s) //$NON-NLS-1$
+                    .map(this::addPrefix)
                     .orElse(""); //$NON-NLS-1$
         }
     }
 
     private String stripEnclosingParenthesesIfPresent(String fragment) {
         // The fragment will have surrounding open/close parentheses if there is more than one rendered condition.
-        // Since there is only a single fragment, we don't need these in the where clause
+        // Since there is only a single fragment, we don't need these in the final rendered clause
         if (fragment.startsWith("(") && fragment.endsWith(")")) { //$NON-NLS-1$ //$NON-NLS-2$
             return fragment.substring(1, fragment.length() - 1);
         } else {
             return fragment;
         }
     }
+
+    private String addPrefix(String fragment) {
+        return spaceAfter(prefix) + fragment;
+    }
+
     public abstract static class AbstractBuilder<M, B extends AbstractBuilder<M, B>> {
         private final M model;
         private RenderingStrategy renderingStrategy;
