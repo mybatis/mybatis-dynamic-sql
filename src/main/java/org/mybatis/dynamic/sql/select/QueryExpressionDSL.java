@@ -557,6 +557,10 @@ public class QueryExpressionDSL<R>
                     .build());
         }
 
+        public QueryExpressionHavingBuilder having(SqlCriterion initialCriterion, AndOrCriteriaGroup... subCriteria) {
+            return having(initialCriterion, Arrays.asList(subCriteria));
+        }
+
         public QueryExpressionHavingBuilder having(SqlCriterion initialCriterion, List<AndOrCriteriaGroup> subCriteria) {
             return QueryExpressionDSL.this.having(initialCriterion, subCriteria);
         }
@@ -601,6 +605,18 @@ public class QueryExpressionDSL<R>
             this.initialCriterion = initialCriterion;
         }
 
+        public SelectDSL<R>.FetchFirstFinisher fetchFirst(long fetchFirstRows) {
+            return QueryExpressionDSL.this.fetchFirst(fetchFirstRows);
+        }
+
+        public SelectDSL<R>.OffsetFirstFinisher offset(long offset) {
+            return QueryExpressionDSL.this.offset(offset);
+        }
+
+        public SelectDSL<R>.LimitFinisher limit(long limit) {
+            return QueryExpressionDSL.this.limit(limit);
+        }
+
         public SelectDSL<R> orderBy(SortSpecification... columns) {
             return orderBy(Arrays.asList(columns));
         }
@@ -615,18 +631,6 @@ public class QueryExpressionDSL<R>
 
         public UnionBuilder unionAll() {
             return QueryExpressionDSL.this.unionAll();
-        }
-
-        public SelectDSL<R>.LimitFinisher limit(long limit) {
-            return QueryExpressionDSL.this.limit(limit);
-        }
-
-        public SelectDSL<R>.OffsetFirstFinisher offset(long offset) {
-            return QueryExpressionDSL.this.offset(offset);
-        }
-
-        public SelectDSL<R>.FetchFirstFinisher fetchFirst(long fetchFirstRows) {
-            return QueryExpressionDSL.this.fetchFirst(fetchFirstRows);
         }
 
         @NotNull
