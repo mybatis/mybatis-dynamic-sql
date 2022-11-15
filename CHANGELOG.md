@@ -4,14 +4,46 @@ This log will detail notable changes to MyBatis Dynamic SQL. Full details are av
 
 ## Release 1.5.0 - Unreleased
 
-GitHub milestone: [https://github.com/mybatis/mybatis-dynamic-sql/milestone/12](https://github.com/mybatis/mybatis-dynamic-sql/milestone/12)
+GitHub milestone: [https://github.com/mybatis/mybatis-dynamic-sql/milestone/12?closed=1](https://github.com/mybatis/mybatis-dynamic-sql/milestone/12?closed=1)
 
-Added:
+### "Having" Clause Support
+
+This release adds support for "having" clauses in select statements. This includes a refactoring of the "where"
+support, so we can reuse the and/or logic and rendering that is already present in the "where" clause support.
+This because "having" and "where" are essentially the same.
+
+One slight behavior change with this refactoring is that the renderer will now remove a useless open/close
+parentheses around certain rendered where clauses. Previously it was possible to have a rendered where clause like
+this:
+
+```sql
+where (a < 2 and b > 3)
+```
+
+The renderer will now remove the open/close parentheses in a case like this.
+
+The "having" support is not as full-featured as the "where" support in that we don't support independent and
+reusable having clauses, and we don't support composable having functions. If you have a reasonable use case
+for that kind of support, please let us know.
+
+In the Java DSL, a "having" clause can only be coded after a "group by" clause - which is a reasonable restriction
+as "having" is only needed if there is a "group by".
+
+In the Kotlin DSL, the "group by" restriction is not present because of the free form nature of that DSL - but you 
+should probably only use "having" if there is a "group by". Also note that the freestanding "and" and "or"
+functions in the Kotlin DSL still only apply to the where clause.
+
+The pull request for this change is ([#550](https://github.com/mybatis/mybatis-dynamic-sql/pull/550))
+
+### Other Changes
 
 1. Added support for specifying "limit" and "order by" on the DELETE and UPDATE statements. Not all databases support
    this SQL extension, and different databases have different levels of support. For example, MySQL/MariaDB have full
    support but HSQLDB only supports limit as an extension to the WHERE clause. If you choose to use this new capability,
    please test to make sure it is supported in your database. ([#544](https://github.com/mybatis/mybatis-dynamic-sql/pull/544))
+2. Deprecated Kotlin DSL functions have been removed, as well as deprecated support for "EmptyListCallback" in the "in"
+   conditions. ([#548](https://github.com/mybatis/mybatis-dynamic-sql/pull/548))
+      
 
 
 ## Release 1.4.1 - October 7, 2022
