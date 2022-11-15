@@ -15,8 +15,6 @@
  */
 package org.mybatis.dynamic.sql.where;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -24,6 +22,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.mybatis.dynamic.sql.AndOrCriteriaGroup;
 import org.mybatis.dynamic.sql.SqlCriterion;
+import org.mybatis.dynamic.sql.common.AbstractBooleanExpressionModel;
 import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.render.TableAliasCalculator;
@@ -31,25 +30,13 @@ import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 import org.mybatis.dynamic.sql.where.render.WhereClauseProvider;
 import org.mybatis.dynamic.sql.where.render.WhereRenderer;
 
-public class WhereModel {
-    private final SqlCriterion initialCriterion;
-    private final List<AndOrCriteriaGroup> subCriteria = new ArrayList<>();
-
+public class WhereModel extends AbstractBooleanExpressionModel {
     private final StatementConfiguration statementConfiguration;
 
     public WhereModel(SqlCriterion initialCriterion, List<AndOrCriteriaGroup> subCriteria,
                       StatementConfiguration statementConfiguration) {
-        this.initialCriterion = initialCriterion;
-        this.subCriteria.addAll(subCriteria);
+        super(initialCriterion, subCriteria);
         this.statementConfiguration = Objects.requireNonNull(statementConfiguration);
-    }
-
-    public Optional<SqlCriterion> initialCriterion() {
-        return Optional.ofNullable(initialCriterion);
-    }
-
-    public List<AndOrCriteriaGroup> subCriteria() {
-        return Collections.unmodifiableList(subCriteria);
     }
 
     public boolean isNonRenderingClauseAllowed() {

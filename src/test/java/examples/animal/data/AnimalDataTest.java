@@ -317,7 +317,7 @@ class AnimalDataTest {
                     .render(RenderingStrategies.MYBATIS3, ExplicitTableAliasCalculator.of(animalData, "a"));
 
             assertThat(whereClause).hasValueSatisfying(wc -> {
-                assertThat(wc.getWhereClause()).isEqualTo("where (a.id = #{parameters.p1,jdbcType=INTEGER} or a.body_weight > #{parameters.p2,jdbcType=DOUBLE})");
+                assertThat(wc.getWhereClause()).isEqualTo("where a.id = #{parameters.p1,jdbcType=INTEGER} or a.body_weight > #{parameters.p2,jdbcType=DOUBLE}");
                 List<AnimalData> animals = mapper.selectWithWhereClauseAndAlias(wc);
                 assertThat(animals).hasSize(59);
             });

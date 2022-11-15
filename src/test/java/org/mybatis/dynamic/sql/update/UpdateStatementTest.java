@@ -45,7 +45,7 @@ class UpdateStatementTest {
                 .render(RenderingStrategies.MYBATIS3);
 
         String expected = "update foo set firstName = #{parameters.p1,jdbcType=VARCHAR}, lastName = #{parameters.p2,jdbcType=VARCHAR}, occupation = null "
-                + "where (id = #{parameters.p3,jdbcType=INTEGER} or id = #{parameters.p4,jdbcType=INTEGER} or id = #{parameters.p5,jdbcType=INTEGER})";
+                + "where id = #{parameters.p3,jdbcType=INTEGER} or id = #{parameters.p4,jdbcType=INTEGER} or id = #{parameters.p5,jdbcType=INTEGER}";
 
         assertAll(
                 () -> assertThat(updateStatement.getUpdateStatement()).isEqualTo(expected),
@@ -69,7 +69,7 @@ class UpdateStatementTest {
                 .render(RenderingStrategies.MYBATIS3);
 
         String expected = "update foo set firstName = #{parameters.p1,jdbcType=VARCHAR}, lastName = #{parameters.p2,jdbcType=VARCHAR}, occupation = null "
-                + "where (id = #{parameters.p3,jdbcType=INTEGER} or (id = #{parameters.p4,jdbcType=INTEGER} or id = #{parameters.p5,jdbcType=INTEGER}))";
+                + "where id = #{parameters.p3,jdbcType=INTEGER} or (id = #{parameters.p4,jdbcType=INTEGER} or id = #{parameters.p5,jdbcType=INTEGER})";
 
         assertAll(
                 () -> assertThat(updateStatement.getUpdateStatement()).isEqualTo(expected),

@@ -41,6 +41,7 @@ public class QueryExpressionModel {
     private final Map<SqlTable, String> tableAliases;
     private final WhereModel whereModel;
     private final GroupByModel groupByModel;
+    private final HavingModel havingModel;
 
     private QueryExpressionModel(Builder builder) {
         connector = builder.connector;
@@ -51,6 +52,7 @@ public class QueryExpressionModel {
         tableAliases = builder.tableAliases;
         whereModel = builder.whereModel;
         groupByModel = builder.groupByModel;
+        havingModel = builder.havingModel;
 
         if (selectList.isEmpty()) {
             throw new InvalidSqlException(Messages.getString("ERROR.13")); //$NON-NLS-1$
@@ -89,6 +91,10 @@ public class QueryExpressionModel {
         return Optional.ofNullable(groupByModel);
     }
 
+    public Optional<HavingModel> havingModel() {
+        return Optional.ofNullable(havingModel);
+    }
+
     public static Builder withSelectList(List<BasicColumn> columnList) {
         return new Builder().withSelectList(columnList);
     }
@@ -102,6 +108,7 @@ public class QueryExpressionModel {
         private WhereModel whereModel;
         private JoinModel joinModel;
         private GroupByModel groupByModel;
+        private HavingModel havingModel;
 
         public Builder withConnector(String connector) {
             this.connector = connector;
@@ -145,6 +152,11 @@ public class QueryExpressionModel {
 
         public Builder withGroupByModel(GroupByModel groupByModel) {
             this.groupByModel = groupByModel;
+            return this;
+        }
+
+        public Builder withHavingModel(HavingModel havingModel) {
+            this.havingModel = havingModel;
             return this;
         }
 

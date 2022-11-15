@@ -695,7 +695,7 @@ class GeneralKotlinTest {
             assertThat(updateStatement.updateStatement).isEqualTo(
                 "update Person" +
                     " set first_name = #{parameters.p1,jdbcType=VARCHAR}" +
-                    " where (first_name = #{parameters.p2,jdbcType=VARCHAR} or id > #{parameters.p3,jdbcType=INTEGER})"
+                    " where first_name = #{parameters.p2,jdbcType=VARCHAR} or id > #{parameters.p3,jdbcType=INTEGER}"
             )
 
             val rows = mapper.update(updateStatement)

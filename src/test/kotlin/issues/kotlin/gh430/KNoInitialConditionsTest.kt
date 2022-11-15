@@ -75,7 +75,7 @@ class KNoInitialConditionsTest {
         }
 
         val expected = "select column1, column2 from foo where " +
-                "(column2 = :p1 or column2 = :p2 or column2 = :p3)"
+                "column2 = :p1 or column2 = :p2 or column2 = :p3"
         assertThat(selectStatement.selectStatement).isEqualTo(expected)
     }
 
@@ -95,9 +95,9 @@ class KNoInitialConditionsTest {
             }
         }
 
-        val expected = "select column1, column2 from foo where (not " +
+        val expected = "select column1, column2 from foo where not " +
                 "(column2 = :p1 or column2 = :p2 or column2 = :p3) " +
-                "and column1 < :p4)"
+                "and column1 < :p4"
         assertThat(selectStatement.selectStatement).isEqualTo(expected)
     }
 
@@ -118,8 +118,8 @@ class KNoInitialConditionsTest {
         }
 
         val expected = "select column1, column2 from foo where " +
-                "((column2 = :p1 or column2 = :p2 or column2 = :p3) " +
-                "and column1 < :p4)"
+                "(column2 = :p1 or column2 = :p2 or column2 = :p3) " +
+                "and column1 < :p4"
         assertThat(selectStatement.selectStatement).isEqualTo(expected)
     }
 
@@ -140,7 +140,7 @@ class KNoInitialConditionsTest {
         }
 
         val expected = "select column1, column2 from foo where " +
-                "(column1 < :p1 and (column2 = :p2 or column2 = :p3 or column2 = :p4))"
+                "column1 < :p1 and (column2 = :p2 or column2 = :p3 or column2 = :p4)"
         assertThat(selectStatement.selectStatement).isEqualTo(expected)
     }
 
@@ -161,7 +161,7 @@ class KNoInitialConditionsTest {
         }
 
         val expected = "select column1, column2 from foo where " +
-                "(column1 < :p1 or (column2 = :p2 or column2 = :p3 or column2 = :p4))"
+                "column1 < :p1 or (column2 = :p2 or column2 = :p3 or column2 = :p4)"
         assertThat(selectStatement.selectStatement).isEqualTo(expected)
     }
 

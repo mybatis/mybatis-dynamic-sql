@@ -20,10 +20,13 @@ import examples.kotlin.mybatis3.general.FooDynamicSqlSupport.B
 import examples.kotlin.mybatis3.general.FooDynamicSqlSupport.C
 import examples.kotlin.mybatis3.general.FooDynamicSqlSupport.foo
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.junit.jupiter.api.Test
 import org.mybatis.dynamic.sql.SqlTable
+import org.mybatis.dynamic.sql.exception.InvalidSqlException
 import org.mybatis.dynamic.sql.util.kotlin.elements.add
 import org.mybatis.dynamic.sql.util.kotlin.elements.column
+import org.mybatis.dynamic.sql.util.kotlin.elements.count
 import org.mybatis.dynamic.sql.util.kotlin.elements.isBetween
 import org.mybatis.dynamic.sql.util.kotlin.elements.isLessThanOrEqualTo
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.select
@@ -280,5 +283,130 @@ class KGroupingTest {
         assertThat(selectStatement.parameters).containsEntry("p4", 4)
         assertThat(selectStatement.parameters).containsEntry("p5", 6)
         assertThat(selectStatement.parameters).containsEntry("p6", 7)
+    }
+
+    @Test
+    fun testNotGroupAndOrCriteriaGroupsNested() {
+        val selectStatement = select(A, B, C) {
+            from(foo)
+            where {
+                not {
+                    group {
+                        B isEqualTo 4
+                        and { A isLessThan 5 }
+                    }
+                    and { A isGreaterThan 3 }
+                }
+                and { not { A isGreaterThan 4 } }
+                or {
+                    not {
+                        group {
+                            B isLessThan 6
+                            and { A isGreaterThanOrEqualTo 7 }
+                        }
+                    }
+                }
+            }
+        }
+
+        val expected = "select A, B, C" +
+                " from Foo" +
+                " where not ((B = #{parameters.p1} and A < #{parameters.p2}) and A > #{parameters.p3})" +
+                " and not A > #{parameters.p4}" +
+                " or not (B < #{parameters.p5} and A >= #{parameters.p6})"
+
+        assertThat(selectStatement.selectStatement).isEqualTo(expected)
+        assertThat(selectStatement.parameters).containsEntry("p1", 4)
+        assertThat(selectStatement.parameters).containsEntry("p2", 5)
+        assertThat(selectStatement.parameters).containsEntry("p3", 3)
+        assertThat(selectStatement.parameters).containsEntry("p4", 4)
+        assertThat(selectStatement.parameters).containsEntry("p5", 6)
+        assertThat(selectStatement.parameters).containsEntry("p6", 7)
+    }
+
+    @Test
+    fun testNotGroupAndOrCriteriaGroupsNested2() {
+        val selectStatement = select(A, B, C) {
+            from(foo)
+            where {
+                B isEqualTo 4
+                or { B isEqualTo 5 }
+            }
+        }
+
+        val expected = "select A, B, C" +
+                " from Foo" +
+                " where B = #{parameters.p1} or B = #{parameters.p2}"
+
+        assertThat(selectStatement.selectStatement).isEqualTo(expected)
+        assertThat(selectStatement.parameters).containsEntry("p1", 4)
+        assertThat(selectStatement.parameters).containsEntry("p2", 5)
+    }
+
+    @Test
+    fun testHaving() {
+        val selectStatement = select(A, count()) {
+            from(foo)
+            groupBy(A)
+            having { count() isGreaterThan 6 }
+        }
+
+        val expected = "select A, count(*)" +
+                " from Foo" +
+                " group by A" +
+                " having count(*) > #{parameters.p1}"
+
+        assertThat(selectStatement.selectStatement).isEqualTo(expected)
+        assertThat(selectStatement.parameters).containsEntry("p1", 6L)
+    }
+
+    @Test
+    fun testHavingMultipleConditions() {
+        val selectStatement = select(A, count()) {
+            from(foo)
+            groupBy(A)
+            having {
+                count() isGreaterThan 6
+                and { A isEqualTo 5 }
+            }
+        }
+
+        val expected = "select A, count(*)" +
+                " from Foo" +
+                " group by A" +
+                " having count(*) > #{parameters.p1}" +
+                " and A = #{parameters.p2}"
+
+        assertThat(selectStatement.selectStatement).isEqualTo(expected)
+        assertThat(selectStatement.parameters).containsEntry("p1", 6L)
+        assertThat(selectStatement.parameters).containsEntry("p2", 5)
+    }
+
+    @Test
+    fun testHavingWithOptionalCondition() {
+        val selectStatement = select(A, count()) {
+            from(foo)
+            groupBy(A)
+            having { count() isGreaterThanWhenPresent null }
+        }
+
+        val expected = "select A, count(*)" +
+                " from Foo" +
+                " group by A"
+
+        assertThat(selectStatement.selectStatement).isEqualTo(expected)
+        assertThat(selectStatement.parameters).isEmpty()
+    }
+
+    @Test
+    fun testThatMultipleHavingClausesThrowsException() {
+        assertThatExceptionOfType(InvalidSqlException::class.java).isThrownBy {
+            select(A, count()) {
+                from(foo)
+                groupBy(A)
+                having { count() isGreaterThanWhenPresent null }
+                having { count() isGreaterThanWhenPresent null }
+            }
+        }
     }
 }

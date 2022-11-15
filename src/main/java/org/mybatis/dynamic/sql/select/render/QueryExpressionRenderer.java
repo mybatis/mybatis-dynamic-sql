@@ -28,6 +28,7 @@ import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 import org.mybatis.dynamic.sql.render.TableAliasCalculatorWithParent;
 import org.mybatis.dynamic.sql.select.GroupByModel;
+import org.mybatis.dynamic.sql.select.HavingModel;
 import org.mybatis.dynamic.sql.select.QueryExpressionModel;
 import org.mybatis.dynamic.sql.select.join.JoinModel;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
@@ -122,6 +123,7 @@ public class QueryExpressionRenderer {
         calculateJoinClause().ifPresent(fragmentCollector::add);
         calculateWhereClause().ifPresent(fragmentCollector::add);
         calculateGroupByClause().ifPresent(fragmentCollector::add);
+        calculateHavingClause().ifPresent(fragmentCollector::add);
 
         return toFragmentAndParameters(fragmentCollector);
     }
@@ -194,6 +196,19 @@ public class QueryExpressionRenderer {
         String groupBy = groupByModel.mapColumns(this::applyTableAlias)
                 .collect(Collectors.joining(", ", "group by ", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         return FragmentAndParameters.withFragment(groupBy).build();
+    }
+
+    private Optional<FragmentAndParameters> calculateHavingClause() {
+        return queryExpression.havingModel().flatMap(this::renderHavingClause);
+    }
+
+    private Optional<FragmentAndParameters> renderHavingClause(HavingModel havingModel) {
+        return HavingRenderer.withHavingModel(havingModel)
+                .withRenderingStrategy(renderingStrategy)
+                .withTableAliasCalculator(tableAliasCalculator)
+                .withSequence(sequence)
+                .build()
+                .render();
     }
 
     private String applyTableAlias(BasicColumn column) {

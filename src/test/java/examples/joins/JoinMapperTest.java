@@ -307,7 +307,7 @@ class JoinMapperTest {
 
             String expectedStatement = "select om.order_id, om.order_date, ol.line_number, im.description, ol.quantity"
                     + " from OrderMaster om join OrderLine ol on om.order_id = ol.order_id join ItemMaster im on ol.item_id = im.item_id"
-                    + " where (om.order_id = #{parameters.p1,jdbcType=INTEGER} and ol.line_number = #{parameters.p2,jdbcType=INTEGER})";
+                    + " where om.order_id = #{parameters.p1,jdbcType=INTEGER} and ol.line_number = #{parameters.p2,jdbcType=INTEGER}";
             assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedStatement);
 
             List<OrderMaster> rows = mapper.selectMany(selectStatement);

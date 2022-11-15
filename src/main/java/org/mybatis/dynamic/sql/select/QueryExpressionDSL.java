@@ -23,16 +23,25 @@ import java.util.Objects;
 import java.util.function.Consumer;
 
 import org.jetbrains.annotations.NotNull;
+import org.mybatis.dynamic.sql.AndOrCriteriaGroup;
 import org.mybatis.dynamic.sql.BasicColumn;
+import org.mybatis.dynamic.sql.BindableColumn;
+import org.mybatis.dynamic.sql.ColumnAndConditionCriterion;
+import org.mybatis.dynamic.sql.CriteriaGroup;
 import org.mybatis.dynamic.sql.SortSpecification;
+import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.TableExpression;
+import org.mybatis.dynamic.sql.VisitableCondition;
+import org.mybatis.dynamic.sql.common.AbstractBooleanExpressionDSL;
 import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
+import org.mybatis.dynamic.sql.exception.InvalidSqlException;
 import org.mybatis.dynamic.sql.select.join.JoinCondition;
 import org.mybatis.dynamic.sql.select.join.JoinCriterion;
 import org.mybatis.dynamic.sql.select.join.JoinSpecification;
 import org.mybatis.dynamic.sql.select.join.JoinType;
 import org.mybatis.dynamic.sql.util.Buildable;
+import org.mybatis.dynamic.sql.util.Messages;
 import org.mybatis.dynamic.sql.where.AbstractWhereDSL;
 import org.mybatis.dynamic.sql.where.AbstractWhereSupport;
 import org.mybatis.dynamic.sql.where.WhereModel;
@@ -48,16 +57,18 @@ public class QueryExpressionDSL<R>
     private QueryExpressionWhereBuilder whereBuilder;
     private GroupByModel groupByModel;
     private final StatementConfiguration statementConfiguration = new StatementConfiguration();
+    private QueryExpressionHavingBuilder havingBuilder;
 
-    QueryExpressionDSL(FromGatherer<R> fromGatherer, TableExpression table) {
+    protected QueryExpressionDSL(FromGatherer<R> fromGatherer, TableExpression table) {
         super(table);
         connector = fromGatherer.connector;
         selectList = fromGatherer.selectList;
         isDistinct = fromGatherer.isDistinct;
         selectDSL = Objects.requireNonNull(fromGatherer.selectDSL);
+        selectDSL.registerQueryExpression(this);
     }
 
-    QueryExpressionDSL(FromGatherer<R> fromGatherer, SqlTable table, String tableAlias) {
+    protected QueryExpressionDSL(FromGatherer<R> fromGatherer, SqlTable table, String tableAlias) {
         this(fromGatherer, table);
         addTableAlias(table, tableAlias);
     }
@@ -74,6 +85,21 @@ public class QueryExpressionDSL<R>
     public QueryExpressionDSL<R> configureStatement(Consumer<StatementConfiguration> consumer) {
         consumer.accept(statementConfiguration);
         return this;
+    }
+
+    protected QueryExpressionHavingBuilder having(SqlCriterion initialCriterion, List<AndOrCriteriaGroup> subCriteria) {
+        return having(new CriteriaGroup.Builder().withInitialCriterion(initialCriterion)
+                .withSubCriteria(subCriteria)
+                .build());
+    }
+
+    private QueryExpressionHavingBuilder having(SqlCriterion initialCriterion) {
+        if (havingBuilder != null) {
+            throw new InvalidSqlException(Messages.getString("ERROR.31")); //$NON-NLS-1$
+        }
+
+        havingBuilder = new QueryExpressionHavingBuilder(initialCriterion);
+        return havingBuilder;
     }
 
     @NotNull
@@ -173,6 +199,10 @@ public class QueryExpressionDSL<R>
             builder.withWhereModel(whereBuilder.buildWhereModel());
         }
 
+        if (havingBuilder != null) {
+            builder.withHavingModel(havingBuilder.buildHavingModel());
+        }
+
         return builder.build();
     }
 
@@ -201,25 +231,25 @@ public class QueryExpressionDSL<R>
 
         public FromGatherer(Builder<R> builder) {
             this.connector = builder.connector;
-            this.selectList = Objects.requireNonNull(builder.selectList);
+            this.selectList = builder.selectList;
             this.selectDSL = Objects.requireNonNull(builder.selectDSL);
             this.isDistinct = builder.isDistinct;
         }
 
         public QueryExpressionDSL<R> from(Buildable<SelectModel> select) {
-            return selectDSL.newQueryExpression(this, buildSubQuery(select));
+            return new QueryExpressionDSL<>(this, buildSubQuery(select));
         }
 
         public QueryExpressionDSL<R> from(Buildable<SelectModel> select, String tableAlias) {
-            return selectDSL.newQueryExpression(this, buildSubQuery(select, tableAlias));
+            return new QueryExpressionDSL<>(this, buildSubQuery(select, tableAlias));
         }
 
         public QueryExpressionDSL<R> from(SqlTable table) {
-            return selectDSL.newQueryExpression(this, table);
+            return new QueryExpressionDSL<>(this, table);
         }
 
         public QueryExpressionDSL<R> from(SqlTable table, String tableAlias) {
-            return selectDSL.newQueryExpression(this, table, tableAlias);
+            return new QueryExpressionDSL<>(this, table, tableAlias);
         }
 
         public static class Builder<R> {
@@ -513,6 +543,27 @@ public class QueryExpressionDSL<R>
         public SelectDSL<R>.FetchFirstFinisher fetchFirst(long fetchFirstRows) {
             return QueryExpressionDSL.this.fetchFirst(fetchFirstRows);
         }
+
+        public <T> QueryExpressionHavingBuilder having(BindableColumn<T> column, VisitableCondition<T> condition,
+                                                       AndOrCriteriaGroup... subCriteria) {
+            return having(column, condition, Arrays.asList(subCriteria));
+        }
+
+        public <T> QueryExpressionHavingBuilder having(BindableColumn<T> column, VisitableCondition<T> condition,
+                                                       List<AndOrCriteriaGroup> subCriteria) {
+            return QueryExpressionDSL.this.having(ColumnAndConditionCriterion.withColumn(column)
+                    .withCondition(condition)
+                    .withSubCriteria(subCriteria)
+                    .build());
+        }
+
+        public QueryExpressionHavingBuilder having(SqlCriterion initialCriterion, AndOrCriteriaGroup... subCriteria) {
+            return having(initialCriterion, Arrays.asList(subCriteria));
+        }
+
+        public QueryExpressionHavingBuilder having(SqlCriterion initialCriterion, List<AndOrCriteriaGroup> subCriteria) {
+            return QueryExpressionDSL.this.having(initialCriterion, subCriteria);
+        }
     }
 
     public class UnionBuilder {
@@ -545,6 +596,56 @@ public class QueryExpressionDSL<R>
                     .withSelectDSL(selectDSL)
                     .isDistinct()
                     .build();
+        }
+    }
+
+    public class QueryExpressionHavingBuilder extends AbstractBooleanExpressionDSL<QueryExpressionHavingBuilder> implements Buildable<R> {
+
+        public QueryExpressionHavingBuilder(SqlCriterion initialCriterion) {
+            this.initialCriterion = initialCriterion;
+        }
+
+        public SelectDSL<R>.FetchFirstFinisher fetchFirst(long fetchFirstRows) {
+            return QueryExpressionDSL.this.fetchFirst(fetchFirstRows);
+        }
+
+        public SelectDSL<R>.OffsetFirstFinisher offset(long offset) {
+            return QueryExpressionDSL.this.offset(offset);
+        }
+
+        public SelectDSL<R>.LimitFinisher limit(long limit) {
+            return QueryExpressionDSL.this.limit(limit);
+        }
+
+        public SelectDSL<R> orderBy(SortSpecification... columns) {
+            return orderBy(Arrays.asList(columns));
+        }
+
+        public SelectDSL<R> orderBy(Collection<SortSpecification> columns) {
+            return QueryExpressionDSL.this.orderBy(columns);
+        }
+
+        public UnionBuilder union() {
+            return QueryExpressionDSL.this.union();
+        }
+
+        public UnionBuilder unionAll() {
+            return QueryExpressionDSL.this.unionAll();
+        }
+
+        @NotNull
+        @Override
+        public R build() {
+            return QueryExpressionDSL.this.build();
+        }
+
+        @Override
+        protected QueryExpressionHavingBuilder getThis() {
+            return this;
+        }
+
+        protected HavingModel buildHavingModel() {
+            return new HavingModel(initialCriterion, subCriteria);
         }
     }
 }

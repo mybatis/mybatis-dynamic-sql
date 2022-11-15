@@ -83,7 +83,7 @@ class NoInitialConditionTest {
                 .render(RenderingStrategies.SPRING_NAMED_PARAMETER);
 
         String expected = "select column1, column2 from foo where " +
-                "(column2 = :p1 or column2 = :p2 or column2 = :p3)";
+                "column2 = :p1 or column2 = :p2 or column2 = :p3";
 
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -101,9 +101,9 @@ class NoInitialConditionTest {
                 .build()
                 .render(RenderingStrategies.SPRING_NAMED_PARAMETER);
 
-        String expected = "select column1, column2 from foo where (not " +
+        String expected = "select column1, column2 from foo where not " +
                 "(column2 = :p1 or column2 = :p2 or column2 = :p3) " +
-                "and column1 < :p4)";
+                "and column1 < :p4";
 
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -122,8 +122,8 @@ class NoInitialConditionTest {
                 .render(RenderingStrategies.SPRING_NAMED_PARAMETER);
 
         String expected = "select column1, column2 from foo where " +
-                "((column2 = :p1 or column2 = :p2 or column2 = :p3) " +
-                "and column1 < :p4)";
+                "(column2 = :p1 or column2 = :p2 or column2 = :p3) " +
+                "and column1 < :p4";
 
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -142,7 +142,7 @@ class NoInitialConditionTest {
                 .render(RenderingStrategies.SPRING_NAMED_PARAMETER);
 
         String expected = "select column1, column2 from foo where " +
-                "(column1 < :p1 and (column2 = :p2 or column2 = :p3 or column2 = :p4))";
+                "column1 < :p1 and (column2 = :p2 or column2 = :p3 or column2 = :p4)";
 
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
@@ -161,7 +161,7 @@ class NoInitialConditionTest {
                 .render(RenderingStrategies.SPRING_NAMED_PARAMETER);
 
         String expected = "select column1, column2 from foo where " +
-                "(column1 < :p1 or (column2 = :p2 or column2 = :p3 or column2 = :p4))";
+                "column1 < :p1 or (column2 = :p2 or column2 = :p3 or column2 = :p4)";
 
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }

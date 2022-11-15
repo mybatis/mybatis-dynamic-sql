@@ -15,7 +15,6 @@
  */
 package org.mybatis.dynamic.sql.where;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -30,13 +29,12 @@ import org.mybatis.dynamic.sql.ExistsCriterion;
 import org.mybatis.dynamic.sql.ExistsPredicate;
 import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.VisitableCondition;
+import org.mybatis.dynamic.sql.common.AbstractBooleanExpressionDSL;
 import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
 import org.mybatis.dynamic.sql.util.ConfigurableStatement;
 
-public abstract class AbstractWhereDSL<T extends AbstractWhereDSL<T>> implements ConfigurableStatement<T> {
-    private SqlCriterion initialCriterion; // WARNING - may be null!
-    private final List<AndOrCriteriaGroup> subCriteria = new ArrayList<>();
-
+public abstract class AbstractWhereDSL<T extends AbstractWhereDSL<T>> extends AbstractBooleanExpressionDSL<T>
+        implements ConfigurableStatement<T> {
     private final StatementConfiguration statementConfiguration;
 
     protected AbstractWhereDSL(StatementConfiguration statementConfiguration) {
@@ -105,118 +103,8 @@ public abstract class AbstractWhereDSL<T extends AbstractWhereDSL<T>> implements
         return getThis();
     }
 
-    @NotNull
-    public <S> T and(BindableColumn<S> column, VisitableCondition<S> condition,
-                     AndOrCriteriaGroup... subCriteria) {
-        return and(column, condition, Arrays.asList(subCriteria));
-    }
-
-    @NotNull
-    public <S> T and(BindableColumn<S> column, VisitableCondition<S> condition,
-                     List<AndOrCriteriaGroup> subCriteria) {
-        addSubCriteria("and", buildCriterion(column, condition), subCriteria); //$NON-NLS-1$
-        return getThis();
-    }
-
-    @NotNull
-    public T and(ExistsPredicate existsPredicate, AndOrCriteriaGroup... subCriteria) {
-        return and(existsPredicate, Arrays.asList(subCriteria));
-    }
-
-    @NotNull
-    public T and(ExistsPredicate existsPredicate, List<AndOrCriteriaGroup> subCriteria) {
-        addSubCriteria("and", buildCriterion(existsPredicate), subCriteria); //$NON-NLS-1$
-        return getThis();
-    }
-
-    @NotNull
-    public T and(SqlCriterion initialCriterion, AndOrCriteriaGroup... subCriteria) {
-        return and(initialCriterion, Arrays.asList(subCriteria));
-    }
-
-    @NotNull
-    public T and(SqlCriterion initialCriterion, List<AndOrCriteriaGroup> subCriteria) {
-        addSubCriteria("and", buildCriterion(initialCriterion), subCriteria); //$NON-NLS-1$
-        return getThis();
-    }
-
-    @NotNull
-    public T and(List<AndOrCriteriaGroup> criteria) {
-        addSubCriteria("and", criteria); //$NON-NLS-1$
-        return getThis();
-    }
-
-    @NotNull
-    public <S> T or(BindableColumn<S> column, VisitableCondition<S> condition,
-                    AndOrCriteriaGroup... subCriteria) {
-        return or(column, condition, Arrays.asList(subCriteria));
-    }
-
-    @NotNull
-    public <S> T or(BindableColumn<S> column, VisitableCondition<S> condition,
-                    List<AndOrCriteriaGroup> subCriteria) {
-        addSubCriteria("or", buildCriterion(column, condition), subCriteria); //$NON-NLS-1$
-        return getThis();
-    }
-
-    @NotNull
-    public T or(ExistsPredicate existsPredicate, AndOrCriteriaGroup... subCriteria) {
-        return or(existsPredicate, Arrays.asList(subCriteria));
-    }
-
-    @NotNull
-    public T or(ExistsPredicate existsPredicate, List<AndOrCriteriaGroup> subCriteria) {
-        addSubCriteria("or", buildCriterion(existsPredicate), subCriteria); //$NON-NLS-1$
-        return getThis();
-    }
-
-    @NotNull
-    public T or(SqlCriterion initialCriterion, AndOrCriteriaGroup... subCriteria) {
-        return or(initialCriterion, Arrays.asList(subCriteria));
-    }
-
-    @NotNull
-    public T or(SqlCriterion initialCriterion, List<AndOrCriteriaGroup> subCriteria) {
-        addSubCriteria("or", buildCriterion(initialCriterion), subCriteria); //$NON-NLS-1$
-        return getThis();
-    }
-
-    @NotNull
-    public T or(List<AndOrCriteriaGroup> criteria) {
-        addSubCriteria("or", criteria); //$NON-NLS-1$
-        return getThis();
-    }
-
     protected WhereModel internalBuild() {
         return new WhereModel(initialCriterion, subCriteria, statementConfiguration);
-    }
-
-    private <R> SqlCriterion buildCriterion(BindableColumn<R> column, VisitableCondition<R> condition) {
-        return ColumnAndConditionCriterion.withColumn(column).withCondition(condition).build();
-    }
-
-    private SqlCriterion buildCriterion(ExistsPredicate existsPredicate) {
-        return new ExistsCriterion.Builder().withExistsPredicate(existsPredicate).build();
-    }
-
-    private SqlCriterion buildCriterion(SqlCriterion initialCriterion) {
-        return new CriteriaGroup.Builder().withInitialCriterion(initialCriterion).build();
-    }
-
-    private void addSubCriteria(String connector, SqlCriterion initialCriterion,
-                                List<AndOrCriteriaGroup> subCriteria) {
-        this.subCriteria.add(new AndOrCriteriaGroup.Builder()
-                .withInitialCriterion(initialCriterion)
-                .withConnector(connector)
-                .withSubCriteria(subCriteria)
-                .build());
-    }
-
-    private void addSubCriteria(String connector, List<AndOrCriteriaGroup> criteria) {
-        this.subCriteria.add(new AndOrCriteriaGroup.Builder()
-                .withConnector(connector)
-                .withSubCriteria(criteria)
-                .build());
     }
 
     protected abstract T getThis();

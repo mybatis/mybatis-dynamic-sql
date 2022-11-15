@@ -1092,7 +1092,7 @@ open class CanonicalSpringKotlinTest {
         assertThat(updateStatement.updateStatement).isEqualTo(
             "update Person" +
                 " set first_name = :p1" +
-                " where (first_name = :p2 or id > :p3)"
+                " where first_name = :p2 or id > :p3"
         )
 
         val rows = template.update(updateStatement)
