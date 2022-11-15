@@ -27,7 +27,9 @@ import org.mybatis.dynamic.sql.AndOrCriteriaGroup;
 import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.BindableColumn;
 import org.mybatis.dynamic.sql.ColumnAndConditionCriterion;
+import org.mybatis.dynamic.sql.CriteriaGroup;
 import org.mybatis.dynamic.sql.SortSpecification;
+import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.TableExpression;
 import org.mybatis.dynamic.sql.VisitableCondition;
@@ -55,17 +57,18 @@ public class QueryExpressionDSL<R>
     private QueryExpressionWhereBuilder whereBuilder;
     private GroupByModel groupByModel;
     private final StatementConfiguration statementConfiguration = new StatementConfiguration();
-    private HavingBuilder havingBuilder;
+    private QueryExpressionHavingBuilder havingBuilder;
 
-    QueryExpressionDSL(FromGatherer<R> fromGatherer, TableExpression table) {
+    protected QueryExpressionDSL(FromGatherer<R> fromGatherer, TableExpression table) {
         super(table);
         connector = fromGatherer.connector;
         selectList = fromGatherer.selectList;
         isDistinct = fromGatherer.isDistinct;
         selectDSL = Objects.requireNonNull(fromGatherer.selectDSL);
+        selectDSL.registerQueryExpression(this);
     }
 
-    QueryExpressionDSL(FromGatherer<R> fromGatherer, SqlTable table, String tableAlias) {
+    protected QueryExpressionDSL(FromGatherer<R> fromGatherer, SqlTable table, String tableAlias) {
         this(fromGatherer, table);
         addTableAlias(table, tableAlias);
     }
@@ -78,20 +81,25 @@ public class QueryExpressionDSL<R>
         return whereBuilder;
     }
 
-    public <T> HavingBuilder having(BindableColumn<T> column, VisitableCondition<T> condition,
-                                    List<AndOrCriteriaGroup> subCriteria) {
-        if (havingBuilder != null) {
-            throw new InvalidSqlException(Messages.getString("ERROR.31")); //$NON-NLS-1$
-        }
-
-        havingBuilder = new HavingBuilder(column, condition, subCriteria);
-        return havingBuilder;
-    }
-
     @Override
     public QueryExpressionDSL<R> configureStatement(Consumer<StatementConfiguration> consumer) {
         consumer.accept(statementConfiguration);
         return this;
+    }
+
+    protected QueryExpressionHavingBuilder having(SqlCriterion initialCriterion, List<AndOrCriteriaGroup> subCriteria) {
+        return having(new CriteriaGroup.Builder().withInitialCriterion(initialCriterion)
+                .withSubCriteria(subCriteria)
+                .build());
+    }
+
+    private QueryExpressionHavingBuilder having(SqlCriterion initialCriterion) {
+        if (havingBuilder != null) {
+            throw new InvalidSqlException(Messages.getString("ERROR.31")); //$NON-NLS-1$
+        }
+
+        havingBuilder = new QueryExpressionHavingBuilder(initialCriterion);
+        return havingBuilder;
     }
 
     @NotNull
@@ -223,25 +231,25 @@ public class QueryExpressionDSL<R>
 
         public FromGatherer(Builder<R> builder) {
             this.connector = builder.connector;
-            this.selectList = Objects.requireNonNull(builder.selectList);
+            this.selectList = builder.selectList;
             this.selectDSL = Objects.requireNonNull(builder.selectDSL);
             this.isDistinct = builder.isDistinct;
         }
 
         public QueryExpressionDSL<R> from(Buildable<SelectModel> select) {
-            return selectDSL.newQueryExpression(this, buildSubQuery(select));
+            return new QueryExpressionDSL<>(this, buildSubQuery(select));
         }
 
         public QueryExpressionDSL<R> from(Buildable<SelectModel> select, String tableAlias) {
-            return selectDSL.newQueryExpression(this, buildSubQuery(select, tableAlias));
+            return new QueryExpressionDSL<>(this, buildSubQuery(select, tableAlias));
         }
 
         public QueryExpressionDSL<R> from(SqlTable table) {
-            return selectDSL.newQueryExpression(this, table);
+            return new QueryExpressionDSL<>(this, table);
         }
 
         public QueryExpressionDSL<R> from(SqlTable table, String tableAlias) {
-            return selectDSL.newQueryExpression(this, table, tableAlias);
+            return new QueryExpressionDSL<>(this, table, tableAlias);
         }
 
         public static class Builder<R> {
@@ -536,14 +544,21 @@ public class QueryExpressionDSL<R>
             return QueryExpressionDSL.this.fetchFirst(fetchFirstRows);
         }
 
-        public <T> HavingBuilder having(BindableColumn<T> column, VisitableCondition<T> condition,
-                                        AndOrCriteriaGroup... subCriteria) {
+        public <T> QueryExpressionHavingBuilder having(BindableColumn<T> column, VisitableCondition<T> condition,
+                                                       AndOrCriteriaGroup... subCriteria) {
             return having(column, condition, Arrays.asList(subCriteria));
         }
 
-        public <T> HavingBuilder having(BindableColumn<T> column, VisitableCondition<T> condition,
-                                        List<AndOrCriteriaGroup> subCriteria) {
-            return QueryExpressionDSL.this.having(column, condition, subCriteria);
+        public <T> QueryExpressionHavingBuilder having(BindableColumn<T> column, VisitableCondition<T> condition,
+                                                       List<AndOrCriteriaGroup> subCriteria) {
+            return QueryExpressionDSL.this.having(ColumnAndConditionCriterion.withColumn(column)
+                    .withCondition(condition)
+                    .withSubCriteria(subCriteria)
+                    .build());
+        }
+
+        public QueryExpressionHavingBuilder having(SqlCriterion initialCriterion, List<AndOrCriteriaGroup> subCriteria) {
+            return QueryExpressionDSL.this.having(initialCriterion, subCriteria);
         }
     }
 
@@ -580,14 +595,10 @@ public class QueryExpressionDSL<R>
         }
     }
 
-    public class HavingBuilder extends AbstractBooleanExpressionDSL<HavingBuilder> implements Buildable<R> {
+    public class QueryExpressionHavingBuilder extends AbstractBooleanExpressionDSL<QueryExpressionHavingBuilder> implements Buildable<R> {
 
-        public <T> HavingBuilder(BindableColumn<T> column, VisitableCondition<T> condition,
-                             List<AndOrCriteriaGroup> subCriteria) {
-            initialCriterion = ColumnAndConditionCriterion.withColumn(column)
-                    .withCondition(condition)
-                    .withSubCriteria(subCriteria)
-                    .build();
+        public QueryExpressionHavingBuilder(SqlCriterion initialCriterion) {
+            this.initialCriterion = initialCriterion;
         }
 
         public SelectDSL<R> orderBy(SortSpecification... columns) {
@@ -625,7 +636,7 @@ public class QueryExpressionDSL<R>
         }
 
         @Override
-        protected HavingBuilder getThis() {
+        protected QueryExpressionHavingBuilder getThis() {
             return this;
         }
 

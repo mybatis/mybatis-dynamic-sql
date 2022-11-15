@@ -27,8 +27,6 @@ import java.util.stream.Collectors;
 import org.jetbrains.annotations.NotNull;
 import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.SortSpecification;
-import org.mybatis.dynamic.sql.SqlTable;
-import org.mybatis.dynamic.sql.TableExpression;
 import org.mybatis.dynamic.sql.common.OrderByModel;
 import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
 import org.mybatis.dynamic.sql.select.QueryExpressionDSL.FromGatherer;
@@ -99,16 +97,8 @@ public class SelectDSL<R> implements Buildable<R>, ConfigurableStatement<SelectD
                 .build();
     }
 
-    QueryExpressionDSL<R> newQueryExpression(FromGatherer<R> fromGatherer, TableExpression table) {
-        QueryExpressionDSL<R> queryExpression = new QueryExpressionDSL<>(fromGatherer, table);
+    void registerQueryExpression(QueryExpressionDSL<R> queryExpression) {
         queryExpressions.add(queryExpression);
-        return queryExpression;
-    }
-
-    QueryExpressionDSL<R> newQueryExpression(FromGatherer<R> fromGatherer, SqlTable table, String tableAlias) {
-        QueryExpressionDSL<R> queryExpression = new QueryExpressionDSL<>(fromGatherer, table, tableAlias);
-        queryExpressions.add(queryExpression);
-        return queryExpression;
     }
 
     void orderBy(Collection<SortSpecification> columns) {
