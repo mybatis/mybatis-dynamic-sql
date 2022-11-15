@@ -104,10 +104,11 @@ class KQueryExpressionDSL: QueryExpressionDSL<SelectModel> {
     }
 
     companion object {
-        fun buildSubQuery(subQuery: KotlinQualifiedSubQueryBuilder): SubQuery {
-            return SubQuery.Builder().withSelectModel(subQuery.build())
-                .withAlias(subQuery.correlationName)
-                .build()
-        }
+        fun buildSubQuery(subQuery: KotlinQualifiedSubQueryBuilder): SubQuery =
+            with(SubQuery.Builder()) {
+                withSelectModel(subQuery.build())
+                withAlias(subQuery.correlationName)
+                build()
+            }
     }
 }
