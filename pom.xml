@@ -218,7 +218,7 @@
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-jdbc</artifactId>
-      <version>5.3.24</version>
+      <version>6.0.0</version>
       <scope>provided</scope>
       <optional>true</optional>
     </dependency>
