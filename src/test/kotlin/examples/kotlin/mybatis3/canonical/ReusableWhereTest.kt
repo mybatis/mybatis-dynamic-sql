@@ -28,6 +28,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import org.mybatis.dynamic.sql.util.kotlin.WhereApplier
 import org.mybatis.dynamic.sql.util.kotlin.andThen
+import org.mybatis.dynamic.sql.util.kotlin.elements.independentWhere
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.select
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -98,8 +99,8 @@ class ReusableWhereTest {
     }
 
     @Test
-    fun testComposition() {
-        val whereApplier = commonWhere.andThen {
+    fun testDeprecatedComposition() {
+        val composedWhereClause = commonWhere.andThen {
             and { birthDate.isNotNull() }
         }.andThen {
             or { addressId isLessThan 3 }
@@ -107,7 +108,7 @@ class ReusableWhereTest {
 
         val selectStatement = select(person.allColumns()) {
             from(person)
-            applyWhere(whereApplier)
+            applyWhere(composedWhereClause)
         }
 
         assertThat(selectStatement.selectStatement).isEqualTo(
@@ -118,8 +119,34 @@ class ReusableWhereTest {
         )
     }
 
+    @Test
+    fun testComposition() {
+        val composedWhereClause = commonWhereClause.andThen {
+            and { birthDate.isNotNull() }
+        }.andThen {
+            or { addressId isLessThan 3 }
+        }
+
+        val selectStatement = select(person.allColumns()) {
+            from(person)
+            where(composedWhereClause)
+        }
+
+        assertThat(selectStatement.selectStatement).isEqualTo(
+            "select * from Person " +
+                    "where id = #{parameters.p1,jdbcType=INTEGER} or occupation is null " +
+                    "and birth_date is not null " +
+                    "or address_id < #{parameters.p2,jdbcType=INTEGER}"
+        )
+    }
+
     private val commonWhere: WhereApplier = {
         where { id isEqualTo 1 }
+        or { occupation.isNull() }
+    }
+
+    private val commonWhereClause = independentWhere {
+        id isEqualTo 1
         or { occupation.isNull() }
     }
 }
