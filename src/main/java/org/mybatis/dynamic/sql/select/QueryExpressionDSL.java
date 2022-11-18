@@ -602,7 +602,7 @@ public class QueryExpressionDSL<R>
     public class QueryExpressionHavingBuilder extends AbstractBooleanExpressionDSL<QueryExpressionHavingBuilder> implements Buildable<R> {
 
         public QueryExpressionHavingBuilder(SqlCriterion initialCriterion) {
-            this.initialCriterion = initialCriterion;
+            setInitialCriterion(initialCriterion);
         }
 
         public SelectDSL<R>.FetchFirstFinisher fetchFirst(long fetchFirstRows) {
@@ -645,7 +645,7 @@ public class QueryExpressionDSL<R>
         }
 
         protected HavingModel buildHavingModel() {
-            return new HavingModel(initialCriterion, subCriteria);
+            return new HavingModel(getInitialCriterion(), subCriteria);
         }
     }
 }

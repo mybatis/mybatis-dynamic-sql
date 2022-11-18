@@ -56,10 +56,10 @@ public abstract class AbstractWhereDSL<T extends AbstractWhereDSL<T>> extends Ab
     @NotNull
     public <S> T where(BindableColumn<S> column, VisitableCondition<S> condition,
                        List<AndOrCriteriaGroup> subCriteria) {
-        initialCriterion = ColumnAndConditionCriterion.withColumn(column)
+        setInitialCriterion(ColumnAndConditionCriterion.withColumn(column)
                 .withCondition(condition)
                 .withSubCriteria(subCriteria)
-                .build();
+                .build());
         return getThis();
     }
 
@@ -70,8 +70,8 @@ public abstract class AbstractWhereDSL<T extends AbstractWhereDSL<T>> extends Ab
 
     @NotNull
     public T where(ExistsPredicate existsPredicate, List<AndOrCriteriaGroup> subCriteria) {
-        initialCriterion = new ExistsCriterion.Builder()
-                .withExistsPredicate(existsPredicate).withSubCriteria(subCriteria).build();
+        setInitialCriterion(new ExistsCriterion.Builder()
+                .withExistsPredicate(existsPredicate).withSubCriteria(subCriteria).build());
         return getThis();
     }
 
@@ -82,18 +82,18 @@ public abstract class AbstractWhereDSL<T extends AbstractWhereDSL<T>> extends Ab
 
     @NotNull
     public T where(SqlCriterion initialCriterion, List<AndOrCriteriaGroup> subCriteria) {
-        this.initialCriterion = new CriteriaGroup.Builder()
+        setInitialCriterion(new CriteriaGroup.Builder()
                 .withInitialCriterion(initialCriterion)
                 .withSubCriteria(subCriteria)
-                .build();
+                .build());
         return getThis();
     }
 
     @NotNull
     public T where(List<AndOrCriteriaGroup> criteria) {
-        initialCriterion = new CriteriaGroup.Builder()
+        setInitialCriterion(new CriteriaGroup.Builder()
                 .withSubCriteria(criteria)
-                .build();
+                .build());
         return getThis();
     }
 
@@ -104,7 +104,7 @@ public abstract class AbstractWhereDSL<T extends AbstractWhereDSL<T>> extends Ab
     }
 
     protected WhereModel internalBuild() {
-        return new WhereModel(initialCriterion, subCriteria, statementConfiguration);
+        return new WhereModel(getInitialCriterion(), subCriteria, statementConfiguration);
     }
 
     protected abstract T getThis();
