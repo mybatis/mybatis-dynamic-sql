@@ -52,8 +52,8 @@ class KotlinSelectBuilder(private val fromGatherer: QueryExpressionDSL.FromGathe
     }
 
     fun having(criteria: GroupingCriteriaReceiver): Unit =
-        with(GroupingCriteriaCollector().apply(criteria)) {
-            this@KotlinSelectBuilder.getDsl().applyHaving(initialCriterion, subCriteria)
+        GroupingCriteriaCollector().apply(criteria).let {
+            getDsl().applyHaving(it.initialCriterion, it.subCriteria)
         }
 
     fun orderBy(vararg columns: SortSpecification) {

@@ -27,6 +27,7 @@ import org.mybatis.dynamic.sql.exception.InvalidSqlException
 import org.mybatis.dynamic.sql.util.kotlin.elements.add
 import org.mybatis.dynamic.sql.util.kotlin.elements.column
 import org.mybatis.dynamic.sql.util.kotlin.elements.count
+import org.mybatis.dynamic.sql.util.kotlin.elements.having
 import org.mybatis.dynamic.sql.util.kotlin.elements.isBetween
 import org.mybatis.dynamic.sql.util.kotlin.elements.isLessThanOrEqualTo
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.select
@@ -349,6 +350,25 @@ class KGroupingTest {
             from(foo)
             groupBy(A)
             having { count() isGreaterThan 6 }
+        }
+
+        val expected = "select A, count(*)" +
+                " from Foo" +
+                " group by A" +
+                " having count(*) > #{parameters.p1}"
+
+        assertThat(selectStatement.selectStatement).isEqualTo(expected)
+        assertThat(selectStatement.parameters).containsEntry("p1", 6L)
+    }
+
+    @Test
+    fun testIndependentHaving() {
+        val havingClause = having { count() isGreaterThan 6 }
+
+        val selectStatement = select(A, count()) {
+            from(foo)
+            groupBy(A)
+            having(havingClause)
         }
 
         val expected = "select A, count(*)" +

@@ -93,6 +93,24 @@ import org.mybatis.dynamic.sql.where.condition.IsNull
  */
 fun where(receiver: GroupingCriteriaReceiver): GroupingCriteriaReceiver = receiver
 
+/**
+ * Simple function for code beautification. This allows creation of an independent having clause
+ * that can be reused in different statements. For example:
+ *
+ * val havingClause = where { count() isGreaterThanTo 1 }
+ *
+ * val rows = select(id, count()) {
+ *   from(foo)
+ *   groupBy(id)
+ *   having(havingClause)
+ * }
+ *
+ * Use of this function is optional. You can also write code like this:
+ *
+ * val havingClause: GroupingCriteriaReceiver = { count() isGreaterThanTo 1 }
+ */
+fun having(receiver: GroupingCriteriaReceiver): GroupingCriteriaReceiver = receiver
+
 // support for criteria without initial conditions
 fun and(receiver: GroupingCriteriaReceiver): AndOrCriteriaGroup =
     with(GroupingCriteriaCollector().apply(receiver)) {
