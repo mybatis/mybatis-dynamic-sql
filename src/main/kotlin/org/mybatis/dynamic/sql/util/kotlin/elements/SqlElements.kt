@@ -77,21 +77,21 @@ import org.mybatis.dynamic.sql.where.condition.IsNotNull
 import org.mybatis.dynamic.sql.where.condition.IsNull
 
 /**
- * No-Op function for code beautification. This allows creation of an independent where clause
+ * Simple function for code beautification. This allows creation of an independent where clause
  * that can be reused in different statements. For example:
  *
- * val independentWhereClause = independentWhere { id isEqualTo 3 }
+ * val whereClause = where { id isEqualTo 3 }
  *
  * val rows = countFrom(foo) {
- *   where(independentWhereClause)
+ *   where(whereClause)
  * }
  *
  * Use of this function is optional. You can also write code like this:
  *
- * val independentWhereClause: GroupingCriteriaReceiver = { id isEqualTo 3 }
+ * val whereClause: GroupingCriteriaReceiver = { id isEqualTo 3 }
  *
  */
-fun independentWhere(receiver: GroupingCriteriaReceiver): GroupingCriteriaReceiver = receiver
+fun where(receiver: GroupingCriteriaReceiver): GroupingCriteriaReceiver = receiver
 
 // support for criteria without initial conditions
 fun and(receiver: GroupingCriteriaReceiver): AndOrCriteriaGroup =

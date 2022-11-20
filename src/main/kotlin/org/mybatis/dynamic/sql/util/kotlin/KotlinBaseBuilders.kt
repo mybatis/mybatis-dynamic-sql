@@ -69,7 +69,7 @@ abstract class KotlinBaseBuilder<D : AbstractWhereSupport<*,*>> {
         getDsl().where().or(criteria)
     }
 
-    @Deprecated("Please use independentWhere to create a standalone where clause, then pass it to the where method")
+    @Deprecated("Please create an independent where clause, then pass it to the \"where\" method")
     fun applyWhere(whereApplier: WhereApplier) = whereApplier.invoke(this)
 
     /**
