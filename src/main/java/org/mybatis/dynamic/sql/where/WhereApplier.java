@@ -15,10 +15,15 @@
  */
 package org.mybatis.dynamic.sql.where;
 
+import org.mybatis.dynamic.sql.common.AbstractBooleanExpressionDSL;
+
 import java.util.function.Consumer;
 
 @FunctionalInterface
-public interface WhereApplier extends Consumer<AbstractWhereDSL<?>> {
+public interface WhereApplier {
+
+    void accept(AbstractWhereDSL<?> abstractWhereDSL);
+
     /**
      * Return a composed where applier that performs this operation followed by the after operation.
      *
@@ -27,7 +32,7 @@ public interface WhereApplier extends Consumer<AbstractWhereDSL<?>> {
      *
      * @return a composed where applier that performs this operation followed by the after operation.
      */
-    default WhereApplier andThen(WhereApplier after) {
+    default WhereApplier andThen(Consumer<AbstractBooleanExpressionDSL<?>> after) {
         return t -> {
             accept(t);
             after.accept(t);
