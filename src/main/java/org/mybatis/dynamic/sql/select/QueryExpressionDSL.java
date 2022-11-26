@@ -564,6 +564,13 @@ public class QueryExpressionDSL<R>
         public QueryExpressionHavingBuilder having(SqlCriterion initialCriterion, List<AndOrCriteriaGroup> subCriteria) {
             return QueryExpressionDSL.this.having(initialCriterion, subCriteria);
         }
+
+        public QueryExpressionDSL<R> applyHaving(HavingApplier havingApplier) {
+            HavingDSL s = new HavingDSL();
+            havingApplier.accept(s);
+            QueryExpressionDSL.this.having(s.getInitialCriterion(), s.getSubCriteria());
+            return QueryExpressionDSL.this;
+        }
     }
 
     public class UnionBuilder {
