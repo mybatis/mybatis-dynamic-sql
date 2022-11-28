@@ -24,7 +24,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class SqlTable implements TableExpression {
 
-    private final Supplier<String> nameSupplier;
+    protected Supplier<String> nameSupplier;
 
     protected SqlTable(String tableName) {
         Objects.requireNonNull(tableName);
