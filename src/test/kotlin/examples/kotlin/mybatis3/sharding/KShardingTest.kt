@@ -29,6 +29,7 @@ import org.mybatis.dynamic.sql.util.kotlin.mybatis3.select
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class KShardingTest {
     private lateinit var sqlSessionFactory: SqlSessionFactory
+    private val shards = mutableMapOf<String, KTableCodesTableDynamicSQLSupport.TableCodes>()
 
     @BeforeAll
     fun setup() {
@@ -131,13 +132,12 @@ class KShardingTest {
         return selectOneString(selectStatement)
     }
 
-    private fun calculateTable(id: Int) = tableCodes.withName(calculateTableName(id))
-
-    private fun calculateTableName(id: Int): String {
-        return if (id.mod(2) == 0) {
-            "tableCodes_even"
+    private fun calculateTable(id: Int) =
+        if (id % 2 == 0) {
+            shards.computeIfAbsent("even", this::newTableInstance)
         } else {
-            "tableCodes_odd"
+            shards.computeIfAbsent("odd", this::newTableInstance)
         }
-    }
+
+    private fun newTableInstance(suffix: String)= tableCodes.withName("tableCodes_$suffix")
 }

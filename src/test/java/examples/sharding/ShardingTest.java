@@ -26,6 +26,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.util.HashMap;
+import java.util.Map;
 
 import examples.sharding.TableCodesDynamicSqlSupport.TableCodes;
 import org.apache.ibatis.datasource.unpooled.UnpooledDataSource;
@@ -45,8 +47,10 @@ import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 class ShardingTest {
     private static final String JDBC_URL = "jdbc:hsqldb:mem:aname";
     private static final String JDBC_DRIVER = "org.hsqldb.jdbcDriver";
+    private final Map<String, TableCodes> shards = new HashMap<>();
 
     private SqlSessionFactory sqlSessionFactory;
+
 
     @BeforeEach
     void setup() throws Exception {
@@ -151,16 +155,14 @@ class ShardingTest {
     }
 
     private TableCodes calculateTable(int id) {
-        // it might be better to lookup instances in a Map rather than creating a new instance
-        // every time
-        return tableCodes.withName(calculateTableName(id));
+        if (id % 2 == 0) {
+            return shards.computeIfAbsent("even", this::newTableInstance);
+        } else {
+            return shards.computeIfAbsent("odd", this::newTableInstance);
+        }
     }
 
-    private String calculateTableName(int id) {
-        if (id % 2 == 0) {
-            return "tableCodes_even";
-        } else {
-            return "tableCodes_odd";
-        }
+    private TableCodes newTableInstance(String suffix) {
+        return tableCodes.withName("tableCodes_" + suffix);
     }
 }
