@@ -134,10 +134,8 @@ class KShardingTest {
 
     private fun calculateTable(id: Int) =
         if (id % 2 == 0) {
-            shards.computeIfAbsent("even", this::newTableInstance)
+            shards.computeIfAbsent("even") { tableCodes }  // tableCodes_even is default
         } else {
-            shards.computeIfAbsent("odd", this::newTableInstance)
+            shards.computeIfAbsent("odd") { tableCodes.withName("tableCodes_odd") }
         }
-
-    private fun newTableInstance(suffix: String)= tableCodes.withName("tableCodes_$suffix")
 }

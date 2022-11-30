@@ -156,13 +156,9 @@ class ShardingTest {
 
     private TableCodes calculateTable(int id) {
         if (id % 2 == 0) {
-            return shards.computeIfAbsent("even", this::newTableInstance);
+            return shards.computeIfAbsent("even", k -> tableCodes); // tableCodes_even is the default
         } else {
-            return shards.computeIfAbsent("odd", this::newTableInstance);
+            return shards.computeIfAbsent("odd", k -> tableCodes.withName("tableCodes_odd"));
         }
-    }
-
-    private TableCodes newTableInstance(String suffix) {
-        return tableCodes.withName("tableCodes_" + suffix);
     }
 }
