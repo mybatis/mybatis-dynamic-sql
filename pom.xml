@@ -1,6 +1,6 @@
 <!--
 
-       Copyright 2016-2022 the original author or authors.
+       Copyright 2016-2023 the original author or authors.
 
        Licensed under the Apache License, Version 2.0 (the "License");
        you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@
   <parent>
     <groupId>org.mybatis</groupId>
     <artifactId>mybatis-parent</artifactId>
-    <version>36</version>
+    <version>37</version>
   </parent>
   <groupId>org.mybatis.dynamic-sql</groupId>
   <artifactId>mybatis-dynamic-sql</artifactId>
@@ -61,7 +61,7 @@
 
     <module.name>org.mybatis.dynamic.sql</module.name>
 
-    <kotlin.version>1.7.21</kotlin.version>
+    <kotlin.version>1.8.0</kotlin.version>
     <kotlin.compiler.jvmTarget>1.8</kotlin.compiler.jvmTarget>
 
     <sonar.sources>pom.xml,src/main/java,src/main/kotlin</sonar.sources>
@@ -251,13 +251,13 @@
     <dependency>
       <groupId>org.assertj</groupId>
       <artifactId>assertj-core</artifactId>
-      <version>3.23.1</version>
+      <version>3.24.0</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.mybatis</groupId>
       <artifactId>mybatis-spring</artifactId>
-      <version>2.0.7</version>
+      <version>2.1.0</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -287,7 +287,7 @@
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
-      <version>1.4.4</version>
+      <version>1.4.5</version>
       <scope>test</scope>
     </dependency>
     <!-- Hamcrest is only here to make Infinitest happy. Not really used in the project. -->
@@ -313,7 +313,7 @@
     <dependency>
       <groupId>org.postgresql</groupId>
       <artifactId>postgresql</artifactId>
-      <version>42.5.0</version>
+      <version>42.5.1</version>
       <scope>test</scope>
     </dependency>
     <dependency>
