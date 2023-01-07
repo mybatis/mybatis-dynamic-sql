@@ -1039,6 +1039,33 @@ class AnimalDataTest {
     }
 
     @Test
+    void testConcat() {
+        try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
+            CommonSelectMapper mapper = sqlSession.getMapper(CommonSelectMapper.class);
+
+            SelectStatementProvider selectStatement = select(id, concat(animalName, stringConstant(" - The Legend")).as("display_name"))
+                    .from(animalData, "a")
+                    .where(add(bodyWeight, brainWeight), isGreaterThan(10000.0))
+                    .build()
+                    .render(RenderingStrategies.MYBATIS3);
+
+            String expected = "select a.id, concat(a.animal_name, ' - The Legend') as display_name "
+                    + "from AnimalData a "
+                    + "where (a.body_weight + a.brain_weight) > #{parameters.p1,jdbcType=DOUBLE}";
+
+            List<Map<String, Object>> animals = mapper.selectManyMappedRows(selectStatement);
+
+            assertAll(
+                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo(expected),
+                    () -> assertThat(animals).hasSize(3),
+                    () -> assertThat(animals.get(0)).containsEntry("DISPLAY_NAME", "African elephant - The Legend"),
+                    () -> assertThat(animals.get(1)).containsEntry("DISPLAY_NAME", "Dipliodocus - The Legend"),
+                    () -> assertThat(animals.get(2)).containsEntry("DISPLAY_NAME", "Brachiosaurus - The Legend")
+            );
+        }
+    }
+
+    @Test
     void testConcatenate() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             CommonSelectMapper mapper = sqlSession.getMapper(CommonSelectMapper.class);
