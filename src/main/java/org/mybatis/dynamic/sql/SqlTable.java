@@ -24,7 +24,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class SqlTable implements TableExpression {
 
-    private final Supplier<String> nameSupplier;
+    protected Supplier<String> nameSupplier;
 
     protected SqlTable(String tableName) {
         Objects.requireNonNull(tableName);
@@ -32,16 +32,40 @@ public class SqlTable implements TableExpression {
         this.nameSupplier = () -> tableName;
     }
 
+    /**
+     * Creates an SqlTable whose name can be changed at runtime.
+     *
+     * @param tableNameSupplier table name supplier
+     * @deprecated please use {@link AliasableSqlTable} if you need to change the table name at runtime
+     */
+    @Deprecated
     protected SqlTable(Supplier<String> tableNameSupplier) {
         Objects.requireNonNull(tableNameSupplier);
 
         this.nameSupplier = tableNameSupplier;
     }
 
+    /**
+     * Creates an SqlTable whose name can be changed at runtime.
+     *
+     * @param schemaSupplier schema supplier
+     * @param tableName table name
+     * @deprecated please use {@link AliasableSqlTable} if you need to change the table name at runtime
+     */
+    @Deprecated
     protected SqlTable(Supplier<Optional<String>> schemaSupplier, String tableName) {
         this(Optional::empty, schemaSupplier, tableName);
     }
 
+    /**
+     * Creates an SqlTable whose name can be changed at runtime.
+     *
+     * @param catalogSupplier catalog supplier
+     * @param schemaSupplier schema supplier
+     * @param tableName table name
+     * @deprecated please use {@link AliasableSqlTable} if you need to change the table name at runtime
+     */
+    @Deprecated
     protected SqlTable(Supplier<Optional<String>> catalogSupplier, Supplier<Optional<String>> schemaSupplier,
             String tableName) {
         Objects.requireNonNull(catalogSupplier);

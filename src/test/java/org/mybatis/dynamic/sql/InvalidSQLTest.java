@@ -47,6 +47,7 @@ import org.mybatis.dynamic.sql.select.render.PagingModelRenderer;
 import org.mybatis.dynamic.sql.update.UpdateDSL;
 import org.mybatis.dynamic.sql.update.UpdateModel;
 import org.mybatis.dynamic.sql.util.Messages;
+import org.mybatis.dynamic.sql.where.condition.IsEqualTo;
 
 class InvalidSQLTest {
 
@@ -253,8 +254,9 @@ class InvalidSQLTest {
                 .set(id).equalTo(3)
                 .where(id, isEqualTo(2));
 
+        IsEqualTo<Integer> condition = isEqualTo(5);
         assertThatExceptionOfType(InvalidSqlException.class)
-                .isThrownBy(() -> builder.where(id, isEqualTo(5)))
+                .isThrownBy(() -> builder.where(id, condition))
                 .withMessage(Messages.getString("ERROR.32"));
 
     }

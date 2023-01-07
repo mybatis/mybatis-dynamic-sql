@@ -561,7 +561,8 @@ public class QueryExpressionDSL<R>
             return having(initialCriterion, Arrays.asList(subCriteria));
         }
 
-        public QueryExpressionHavingBuilder having(SqlCriterion initialCriterion, List<AndOrCriteriaGroup> subCriteria) {
+        public QueryExpressionHavingBuilder having(SqlCriterion initialCriterion,
+                                                   List<AndOrCriteriaGroup> subCriteria) {
             return QueryExpressionDSL.this.having(initialCriterion, subCriteria);
         }
     }
@@ -599,7 +600,8 @@ public class QueryExpressionDSL<R>
         }
     }
 
-    public class QueryExpressionHavingBuilder extends AbstractBooleanExpressionDSL<QueryExpressionHavingBuilder> implements Buildable<R> {
+    public class QueryExpressionHavingBuilder extends AbstractBooleanExpressionDSL<QueryExpressionHavingBuilder>
+            implements Buildable<R> {
 
         public QueryExpressionHavingBuilder(SqlCriterion initialCriterion) {
             setInitialCriterion(initialCriterion);

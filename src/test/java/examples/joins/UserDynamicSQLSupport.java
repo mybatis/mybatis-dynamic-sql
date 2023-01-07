@@ -32,7 +32,7 @@ public class UserDynamicSQLSupport {
         public final SqlColumn<Integer> parentId = column("parent_id", JDBCType.INTEGER);
 
         public User() {
-            super(() -> "User", User::new);
+            super("User", User::new);
         }
     }
 }

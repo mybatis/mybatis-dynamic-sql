@@ -46,6 +46,11 @@ The pull request for this change is ([#550](https://github.com/mybatis/mybatis-d
 3. Refactored the common insert mapper support for MyBatis3 by adding a CommonGeneralInsertMapper that can be used
    without a class that matches the table row. It includes methods for general insert and insert select.
    ([#570](https://github.com/mybatis/mybatis-dynamic-sql/pull/570))
+4. Added the ability to change a table name on AliasableSqlTable - this creates a new instance of the object with a new
+   name. This is useful in sharded databases where the name of the table is calculated based on some sharding
+   algorithm. Also deprecated the constructors on SqlTable that accept Suppliers for table name - this creates an
+   effectively mutable object and goes against the principles of immutability that we strive for in the library.
+   ([#572](https://github.com/mybatis/mybatis-dynamic-sql/pull/572))
       
 
 

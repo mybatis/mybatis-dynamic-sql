@@ -29,14 +29,26 @@ public abstract class AliasableSqlTable<T extends AliasableSqlTable<T>> extends 
         this.constructor = Objects.requireNonNull(constructor);
     }
 
-    protected AliasableSqlTable(Supplier<String> tableNameSupplier, Supplier<T> constructor) {
-        super(tableNameSupplier);
-        this.constructor = Objects.requireNonNull(constructor);
-    }
-
     public T withAlias(String alias) {
         T newTable = constructor.get();
         ((AliasableSqlTable<T>) newTable).tableAlias = alias;
+        newTable.nameSupplier = nameSupplier;
+        return newTable;
+    }
+
+    /**
+     * Returns a new instance of this table with the specified name. All column instances are recreated.
+     * This is useful for sharding where the table name may change at runtime based on some sharding algorithm,
+     * but all other table attributes are the same.
+     *
+     * @param name new name for the table
+     * @return a new AliasableSqlTable with the specified name, all other table attributes are copied
+     */
+    public T withName(String name) {
+        Objects.requireNonNull(name);
+        T newTable = constructor.get();
+        ((AliasableSqlTable<T>) newTable).tableAlias = tableAlias;
+        newTable.nameSupplier = () -> name;
         return newTable;
     }
 
