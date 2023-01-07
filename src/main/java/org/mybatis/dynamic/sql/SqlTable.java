@@ -33,7 +33,7 @@ public class SqlTable implements TableExpression {
     }
 
     /**
-     * Creates an SqlTable whose name can be changed at runtime
+     * Creates an SqlTable whose name can be changed at runtime.
      *
      * @param tableNameSupplier table name supplier
      * @deprecated please use {@link AliasableSqlTable} if you need to change the table name at runtime
@@ -46,7 +46,7 @@ public class SqlTable implements TableExpression {
     }
 
     /**
-     * Creates an SqlTable whose name can be changed at runtime
+     * Creates an SqlTable whose name can be changed at runtime.
      *
      * @param schemaSupplier schema supplier
      * @param tableName table name
@@ -58,7 +58,7 @@ public class SqlTable implements TableExpression {
     }
 
     /**
-     * Creates an SqlTable whose name can be changed at runtime
+     * Creates an SqlTable whose name can be changed at runtime.
      *
      * @param catalogSupplier catalog supplier
      * @param schemaSupplier schema supplier
