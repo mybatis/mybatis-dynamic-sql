@@ -42,6 +42,7 @@ import org.mybatis.dynamic.sql.select.aggregate.Max;
 import org.mybatis.dynamic.sql.select.aggregate.Min;
 import org.mybatis.dynamic.sql.select.aggregate.Sum;
 import org.mybatis.dynamic.sql.select.function.Add;
+import org.mybatis.dynamic.sql.select.function.Concat;
 import org.mybatis.dynamic.sql.select.function.Concatenate;
 import org.mybatis.dynamic.sql.select.function.Divide;
 import org.mybatis.dynamic.sql.select.function.Lower;
@@ -491,6 +492,10 @@ public interface SqlBuilder {
     static <T> Concatenate<T> concatenate(BindableColumn<T> firstColumn, BasicColumn secondColumn,
             BasicColumn... subsequentColumns) {
         return Concatenate.concatenate(firstColumn, secondColumn, subsequentColumns);
+    }
+
+    static <T> Concat<T> concat(BindableColumn<T> firstColumn, BasicColumn... subsequentColumns) {
+        return Concat.concat(firstColumn, subsequentColumns);
     }
 
     static <T> OperatorFunction<T> applyOperator(String operator, BindableColumn<T> firstColumn,

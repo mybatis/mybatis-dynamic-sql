@@ -32,6 +32,7 @@ import org.mybatis.dynamic.sql.select.aggregate.Max
 import org.mybatis.dynamic.sql.select.aggregate.Min
 import org.mybatis.dynamic.sql.select.aggregate.Sum
 import org.mybatis.dynamic.sql.select.function.Add
+import org.mybatis.dynamic.sql.select.function.Concat
 import org.mybatis.dynamic.sql.select.function.Concatenate
 import org.mybatis.dynamic.sql.select.function.Divide
 import org.mybatis.dynamic.sql.select.function.Lower
@@ -137,6 +138,11 @@ fun <T> subtract(
     secondColumn: BasicColumn,
     vararg subsequentColumns: BasicColumn
 ): Subtract<T> = Subtract.of(firstColumn, secondColumn, subsequentColumns.asList())
+
+fun <T> concat(
+    firstColumn: BindableColumn<T>,
+    vararg subsequentColumns: BasicColumn
+): Concat<T> = Concat.of(firstColumn, subsequentColumns.asList())
 
 fun <T> concatenate(
     firstColumn: BindableColumn<T>,

@@ -24,6 +24,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.mybatis.dynamic.sql.util.kotlin.elements.applyOperator
 import org.mybatis.dynamic.sql.util.kotlin.elements.avg
+import org.mybatis.dynamic.sql.util.kotlin.elements.concat
 import org.mybatis.dynamic.sql.util.kotlin.elements.concatenate
 import org.mybatis.dynamic.sql.util.kotlin.elements.constant
 import org.mybatis.dynamic.sql.util.kotlin.elements.count
@@ -187,6 +188,23 @@ open class KotlinElementsTest {
 
         assertThat(rows).hasSize(6)
         assertThat(rows[5]).isEqualTo(4)
+    }
+
+    @Test
+    fun testConcat() {
+        val selectStatement = select(concat(firstName, stringConstant(" "), lastName)) {
+            from(person)
+            orderBy(id)
+        }
+
+        assertThat(selectStatement.selectStatement).isEqualTo(
+            "select concat(first_name, ' ', last_name) from Person order by id"
+        )
+
+        val rows = template.selectList(selectStatement, String::class)
+
+        assertThat(rows).hasSize(6)
+        assertThat(rows[5]).isEqualTo("Bamm Bamm Rubble")
     }
 
     @Test
