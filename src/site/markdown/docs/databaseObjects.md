@@ -4,14 +4,16 @@ MyBatis Dynamic SQL works with Java objects that represent relational tables or 
 ## Table or View Representation
 
 The class `org.mybatis.dynamic.sql.SqlTable` is used to represent a table or view in a database. An `SqlTable` holds a
-name, and a collection of `SqlColumn` objects that represent the columns in a table or view.
+name, and a collection of `SqlColumn` objects that represent the columns in a table or view. A subclass of `SqlTable` -
+`AliasableSqlTable` should be used in cases where you want to specify a table alias that should be used in all cases,
+or if you need to change the table name at runtime.
 
 A table or view name in SQL has three parts:
 
 1. The catalog - which is optional and is rarely used outside of Microsoft SQL Server. If unspecified the default
    catalog will be used - and many databases only have one catalog
-1. The schema - which is optional but is very often specified. If unspecified, the default schema will be used
-1. The table name - which is required
+2. The schema - which is optional but is very often specified. If unspecified, the default schema will be used
+3. The table name - which is required
 
 Typical examples of names are as follows:
 
@@ -21,20 +23,21 @@ Typical examples of names are as follows:
 - `"bar"` - a name with just a table name (bar). This will access a table or view in the default catalog and schema for
   a connection
 
-In MyBatis Dynamic SQL, the table or view name can be specified in different ways:
+In MyBatis Dynamic SQL, the full name of the table should be supplied on the constructor of the table object.
+If a table name needs to change at runtime (say for sharding support), then use the `withName` method on
+`AliasableSqlTable` to create an instance with the new name.
 
-1. The name can be a constant String
-1. The name can be calculated at runtime based on a catalog and/or schema supplier functions and a constant table name
-1. The name can be calculated at runtime with a name supplier function
+We recommend using the base class `AliasableSqlTable` in all cases as it provides the most flexibility. The
+`SqlTable` class remains in the library for compatibility with older code only.
 
-### Constant Names
-
-Constant names are used when you use the `SqlTable` constructor with a single String argument. For example:
+For example:
 
 ```java
-public class MyTable extends SqlTable {
+import org.mybatis.dynamic.sql.AliasableSqlTable;
+
+public class MyTable extends AliasableSqlTable<MyTable> {
     public MyTable() {
-        super("MyTable");
+        super("MyTable", MyTable::new);
     }
 }
 ```
@@ -42,104 +45,25 @@ public class MyTable extends SqlTable {
 Or
 
 ```java
-public class MyTable extends SqlTable {
+public class MyTable extends AliasableSqlTable<MyTable> {
     public MyTable() {
-        super("MySchema.MyTable");
+        super("MySchema.MyTable", MyTable::new);
     }
 }
 ```
 
-### Dynamic Catalog and/or Schema Names
-MyBatis Dynamic SQL allows you to dynamically specify a catalog and/or schema. This is useful for applications where
-the schema may change for different users or environments, or if you are using different schemas to shard the database.
-Dynamic names are used when you use a `SqlTable` constructor that accepts one or more `java.util.function.Supplier`
-arguments.
-
-For example, suppose you wanted to change the schema based on the value of a system property. You could write a class
-like this:
+You can change a table name:
 
 ```java
-public class SchemaSupplier {
-    public static final String schema_property = "schemaToUse";
-
-    public static Optional<String> schemaPropertyReader() {
-        return Optional.ofNullable(System.getProperty(schema_property));
+public class MyTable extends AliasableSqlTable<MyTable> {
+    public MyTable() {
+        super("Schema1.MyTable", MyTable::new);
     }
 }
+
+MyTable schema1Table = new MyTable();
+MyTable schema2Table = schema1Table.withName("Schema2.MyTable");
 ```
-
-This class has a static method `schemaPropertyReader` that will return an `Optional<String>` containing the value of a
-system property. You could then reference this method in the constructor of the `SqlTable` like this:
-
-```java
-public static final class User extends SqlTable {
-    public User() {
-        super(SchemaSupplier::schemaPropertyReader, "User");
-    }
-}
-```
-
-Whenever the table is referenced for rendering SQL, the name will be calculated based on the current value of the
-system property.
-
-There are two constructors that can be used for dynamic names:
-
-1. A constructor that accepts `Supplier<Optional<String>>` for the schema, and `String` for the name. This constructor
-   assumes that the catalog is always empty or not used
-1. A constructor that accepts `Supplier<Optional<String>>` for the catalog, `Supplier<Optional<String>>` for the schema,
-   and `String` for the name
-
-If you are using Microsoft SQL Server and want to use a dynamic catalog name and ignore the schema, then you should use
-the second constructor like this:
-
-```java
-public static final class User extends SqlTable {
-    public User() {
-        super(CatalogSupplier::catalogPropertyReader, Optional::empty, "User");
-    }
-}
-```
-
-The following table shows how the name is calculated in all combinations of suppliers:
-
-Catalog Supplier Value | Schema Supplier Value | Name | Fully Qualified Name
----|---|---|---
-"MyCatalog" | "MySchema" | "MyTable" | "MyCatalog.MySchema.MyTable"
-&lt;empty&gt; | "MySchema" | "MyTable" | "MySchema.MyTable"
-"MyCatalog" | &lt;empty&gt; | "MyTable" | "MyCatalog..MyTable"
-&lt;empty&gt; | &lt;empty&gt; | "MyTable" | "MyTable"
-
-
-### Fully Dynamic Names
-MyBatis Dynamic SQL allows you to dynamically specify a full table name. This is useful for applications where the
-database is sharded with different tables representing different shards of the whole. Dynamic names are used when you
-use a `SqlTable` constructor that accepts a single `java.util.function.Supplier` argument.
-
-For example, suppose you wanted to change the name based on the value of a system property. You could write a class
-like this:
-
-```java
-public class NameSupplier {
-    public static final String name_property = "nameToUse";
-
-    public static String namePropertyReader() {
-        return System.getProperty(name_property);
-    }
-}
-```
-
-This class has a static method `namePropertyReader` that will return an `String` containing the value of a system
-property. You could then reference this method in the constructor of the `SqlTable` like this:
-
-```java
-public static final class User extends SqlTable {
-    public User() {
-        super(NameSupplier::namePropertyReader);
-    }
-}
-```
-
-Whenever the table is referenced for rendering SQL, the name will be calculated based on the current value of the system property.
 
 ## Aliased Tables
 
