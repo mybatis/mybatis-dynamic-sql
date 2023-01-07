@@ -29,32 +29,10 @@ public abstract class AliasableSqlTable<T extends AliasableSqlTable<T>> extends 
         this.constructor = Objects.requireNonNull(constructor);
     }
 
-    protected AliasableSqlTable(Supplier<String> tableNameSupplier, Supplier<T> constructor) {
-        super(tableNameSupplier);
-        this.constructor = Objects.requireNonNull(constructor);
-    }
-
     public T withAlias(String alias) {
         T newTable = constructor.get();
         ((AliasableSqlTable<T>) newTable).tableAlias = alias;
         newTable.nameSupplier = nameSupplier;
-        return newTable;
-    }
-
-    /**
-     * Returns a new instance of this table with the specified name supplier. All column instances are recreated.
-     * This is useful for sharding where the table name may change at runtime based on some sharding algorithm,
-     * but all other table attributes are the same. Use of a name supplier allows you to create one table
-     * instance with a dynamically changing table name. Be very careful with this usage - it is NOT
-     * thread safe unless the specified nameSupplier is thread safe.
-     *
-     * @param nameSupplier new name supplier for the table
-     * @return a new AliasableSqlTable with the specified nameSupplier, all other table attributes are copied
-     */
-    public T withNameSupplier(Supplier<String> nameSupplier) {
-        T newTable = constructor.get();
-        ((AliasableSqlTable<T>) newTable).tableAlias = tableAlias;
-        newTable.nameSupplier = Objects.requireNonNull(nameSupplier);
         return newTable;
     }
 
@@ -68,7 +46,10 @@ public abstract class AliasableSqlTable<T extends AliasableSqlTable<T>> extends 
      */
     public T withName(String name) {
         Objects.requireNonNull(name);
-        return withNameSupplier(() -> name);
+        T newTable = constructor.get();
+        ((AliasableSqlTable<T>) newTable).tableAlias = tableAlias;
+        newTable.nameSupplier = () -> name;
+        return newTable;
     }
 
     @Override
