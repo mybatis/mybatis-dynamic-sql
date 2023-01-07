@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2022 the original author or authors.
+ *    Copyright 2016-2023 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -15,14 +15,14 @@
  */
 package org.mybatis.dynamic.sql.select.function;
 
-import org.mybatis.dynamic.sql.BasicColumn;
-import org.mybatis.dynamic.sql.BindableColumn;
-import org.mybatis.dynamic.sql.render.TableAliasCalculator;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import org.mybatis.dynamic.sql.BasicColumn;
+import org.mybatis.dynamic.sql.BindableColumn;
+import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 
 public class Concat<T> extends AbstractUniTypeFunction<T, Concat<T>> {
     private final List<BasicColumn> allColumns = new ArrayList<>();
