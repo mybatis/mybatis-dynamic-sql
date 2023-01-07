@@ -23,14 +23,15 @@ JDBC template.
 These mappers provide utility functions that execute simple queries. They can be used as-as, or can be extended. They
 provide methods as follows:
 
-| Mapper | Methods(s) |
-|---|---|
-| `org.mybatis.dynamic.sql.util.mybatis3.CommonCountMapper` | `long count(SelectStatementProvider)` |
-| `org.mybatis.dynamic.sql.util.mybatis3.CommonDeleteMapper` | `int delete(DeleteStatementProvider)`
-| `org.mybatis.dynamic.sql.util.mybatis3.CommonInsertMapper<T>` | `int insert(InsertStatementProvider<T>)`<br/>`int generalInsert(GeneralInsertStatementProvider)`<br/>`int insertSelect(InsertSelectStatementProvider)`<br/>`int insertMultiple(MultiRowInsertStatementProvider<T>)` |
-| `org.mybatis.dynamic.sql.util.mybatis3.CommonUpdateMapper` | `int update(UpdateStatementProvider)` |
+| Mapper                                                                                                 | Methods(s) |
+|--------------------------------------------------------------------------------------------------------|---|
+| `org.mybatis.dynamic.sql.util.mybatis3.CommonCountMapper`                                              | `long count(SelectStatementProvider)` |
+| `org.mybatis.dynamic.sql.util.mybatis3.CommonDeleteMapper`                                             | `int delete(DeleteStatementProvider)`
+| `org.mybatis.dynamic.sql.util.mybatis3.CommonInsertMapper<T>`<br/>(extends `CommonGeneralInsertMapper`) | `int insert(InsertStatementProvider<T>)`<br/>`int insertMultiple(MultiRowInsertStatementProvider<T>)` |
+| `org.mybatis.dynamic.sql.util.mybatis3.CommonGeneralInsertMapper`                                      | `int generalInsert(GeneralInsertStatementProvider)`<br/>`int insertSelect(InsertSelectStatementProvider)` |
+| `org.mybatis.dynamic.sql.util.mybatis3.CommonUpdateMapper`                                             | `int update(UpdateStatementProvider)` |
 
-These mappers, as well as the common selectmapper, can be used to create a general purpose CRUD mapper as follows:
+These mappers, as well as the `CommonSelectMapper`, can be used to create a general purpose CRUD mapper as follows:
 
 ```java
 import org.apache.ibatis.annotations.Mapper;
