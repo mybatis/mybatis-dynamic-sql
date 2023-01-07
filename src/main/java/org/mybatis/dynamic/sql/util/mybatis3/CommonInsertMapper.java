@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2022 the original author or authors.
+ *    Copyright 2016-2023 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -20,8 +20,6 @@ import java.util.List;
 import org.apache.ibatis.annotations.Flush;
 import org.apache.ibatis.annotations.InsertProvider;
 import org.apache.ibatis.executor.BatchResult;
-import org.mybatis.dynamic.sql.insert.render.GeneralInsertStatementProvider;
-import org.mybatis.dynamic.sql.insert.render.InsertSelectStatementProvider;
 import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider;
 import org.mybatis.dynamic.sql.insert.render.MultiRowInsertStatementProvider;
 import org.mybatis.dynamic.sql.util.SqlProviderAdapter;
@@ -33,7 +31,7 @@ import org.mybatis.dynamic.sql.util.SqlProviderAdapter;
  * @param <T>
  *            the type of record associated with this mapper
  */
-public interface CommonInsertMapper<T> {
+public interface CommonInsertMapper<T> extends CommonGeneralInsertMapper {
     /**
      * Execute an insert statement with input fields mapped to values in a POJO.
      *
@@ -44,28 +42,6 @@ public interface CommonInsertMapper<T> {
      */
     @InsertProvider(type = SqlProviderAdapter.class, method = "insert")
     int insert(InsertStatementProvider<T> insertStatement);
-
-    /**
-     * Execute an insert statement with input fields supplied directly.
-     *
-     * @param insertStatement
-     *            the insert statement
-     *
-     * @return the number of rows affected
-     */
-    @InsertProvider(type = SqlProviderAdapter.class, method = "generalInsert")
-    int generalInsert(GeneralInsertStatementProvider insertStatement);
-
-    /**
-     * Execute an insert statement with input fields supplied by a select statement.
-     *
-     * @param insertSelectStatement
-     *            the insert statement
-     *
-     * @return the number of rows affected
-     */
-    @InsertProvider(type = SqlProviderAdapter.class, method = "insertSelect")
-    int insertSelect(InsertSelectStatementProvider insertSelectStatement);
 
     /**
      * Execute an insert statement that inserts multiple rows. The row values are supplied by mapping to values in a

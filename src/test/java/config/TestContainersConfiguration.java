@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2022 the original author or authors.
+ *    Copyright 2016-2023 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -21,6 +21,6 @@ import org.testcontainers.utility.DockerImageName;
  * Utility interface to hold Docker image tags for the test containers we use
  */
 public interface TestContainersConfiguration {
-    DockerImageName POSTGRES_LATEST = DockerImageName.parse("postgres:15.0");
-    DockerImageName MARIADB_LATEST = DockerImageName.parse("mariadb:10.9.3");
+    DockerImageName POSTGRES_LATEST = DockerImageName.parse("postgres:15.1");
+    DockerImageName MARIADB_LATEST = DockerImageName.parse("mariadb:10.10.2");
 }

@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2022 the original author or authors.
+ *    Copyright 2016-2023 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -47,6 +47,7 @@ import org.mybatis.dynamic.sql.select.render.PagingModelRenderer;
 import org.mybatis.dynamic.sql.update.UpdateDSL;
 import org.mybatis.dynamic.sql.update.UpdateModel;
 import org.mybatis.dynamic.sql.util.Messages;
+import org.mybatis.dynamic.sql.where.condition.IsEqualTo;
 
 class InvalidSQLTest {
 
@@ -253,8 +254,9 @@ class InvalidSQLTest {
                 .set(id).equalTo(3)
                 .where(id, isEqualTo(2));
 
+        IsEqualTo<Integer> condition = isEqualTo(5);
         assertThatExceptionOfType(InvalidSqlException.class)
-                .isThrownBy(() -> builder.where(id, isEqualTo(5)))
+                .isThrownBy(() -> builder.where(id, condition))
                 .withMessage(Messages.getString("ERROR.32"));
 
     }
