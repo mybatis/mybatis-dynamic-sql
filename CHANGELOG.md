@@ -50,6 +50,7 @@ The pull request for this change is ([#550](https://github.com/mybatis/mybatis-d
    name. This is useful in sharded databases where the name of the table is calculated based on some sharding
    algorithm. Also deprecated the constructors on SqlTable that accept Suppliers for table name - this creates an
    effectively mutable object and goes against the principles of immutability that we strive for in the library.
+   ([#572](https://github.com/mybatis/mybatis-dynamic-sql/pull/572))
       
 
 
