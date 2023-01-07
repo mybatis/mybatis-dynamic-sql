@@ -489,11 +489,30 @@ public interface SqlBuilder {
         return Subtract.of(firstColumn, secondColumn, subsequentColumns);
     }
 
+    /**
+     * Concatenate function that renders as "(x || y || z)". This will not work on some
+     * databases like MySql. In that case, use {@link SqlBuilder#concat(BindableColumn, BasicColumn...)}
+     *
+     * @param firstColumn first column
+     * @param secondColumn second column
+     * @param subsequentColumns subsequent columns
+     * @return a Concatenate instance
+     * @param <T> type of column
+     */
     static <T> Concatenate<T> concatenate(BindableColumn<T> firstColumn, BasicColumn secondColumn,
             BasicColumn... subsequentColumns) {
         return Concatenate.concatenate(firstColumn, secondColumn, subsequentColumns);
     }
 
+    /**
+     * Concatenate function that renders as "concat(x, y, z)". This version works on more databases
+     * than {@link SqlBuilder#concatenate(BindableColumn, BasicColumn, BasicColumn...)}
+     *
+     * @param firstColumn first column
+     * @param subsequentColumns subsequent columns
+     * @return a Concat instance
+     * @param <T> type of column
+     */
     static <T> Concat<T> concat(BindableColumn<T> firstColumn, BasicColumn... subsequentColumns) {
         return Concat.concat(firstColumn, subsequentColumns);
     }

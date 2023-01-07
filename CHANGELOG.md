@@ -51,8 +51,7 @@ The pull request for this change is ([#550](https://github.com/mybatis/mybatis-d
    algorithm. Also deprecated the constructors on SqlTable that accept Suppliers for table name - this creates an
    effectively mutable object and goes against the principles of immutability that we strive for in the library.
    ([#572](https://github.com/mybatis/mybatis-dynamic-sql/pull/572))
-      
-
+5. Add `SqlBuilder.concat` and the equivalent in Kotlin. This is a concatenate function that works on more databases. 
 
 ## Release 1.4.1 - October 7, 2022
 

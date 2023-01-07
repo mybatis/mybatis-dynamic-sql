@@ -50,7 +50,7 @@ public class OperatorFunction<T> extends AbstractUniTypeFunction<T, OperatorFunc
     public String renderWithTableAlias(TableAliasCalculator tableAliasCalculator) {
         String paddedOperator = " " + operator + " "; //$NON-NLS-1$ //$NON-NLS-2$
 
-        // note - the cast below is added for a type inference issues in some compilers
+        // note - the cast below is added for type inference issues in some compilers
         return Stream.of(Stream.of((BasicColumn) column), Stream.of(secondColumn), subsequentColumns.stream())
                 .flatMap(Function.identity())
                 .map(column -> column.renderWithTableAlias(tableAliasCalculator))
