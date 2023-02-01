@@ -52,7 +52,7 @@
   </distributionManagement>
 
   <properties>
-    <junit.jupiter.version>5.9.1</junit.jupiter.version>
+    <junit.jupiter.version>5.9.2</junit.jupiter.version>
     <spring.batch.version>4.3.7</spring.batch.version>
 
     <checkstyle.config>checkstyle-override.xml</checkstyle.config>
@@ -218,7 +218,7 @@
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-jdbc</artifactId>
-      <version>5.3.24</version>
+      <version>5.3.25</version>
       <scope>provided</scope>
       <optional>true</optional>
     </dependency>
@@ -251,7 +251,7 @@
     <dependency>
       <groupId>org.assertj</groupId>
       <artifactId>assertj-core</artifactId>
-      <version>3.24.1</version>
+      <version>3.24.2</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -313,7 +313,7 @@
     <dependency>
       <groupId>org.postgresql</groupId>
       <artifactId>postgresql</artifactId>
-      <version>42.5.1</version>
+      <version>42.5.2</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -325,7 +325,7 @@
     <dependency>
       <groupId>org.mariadb.jdbc</groupId>
       <artifactId>mariadb-java-client</artifactId>
-      <version>3.1.0</version>
+      <version>3.1.2</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
