@@ -85,7 +85,7 @@ public class GeneralInsertValuePhraseVisitor extends GeneralInsertMappingVisitor
     }
 
     private Optional<FieldAndValueAndParameters> buildFragment(AbstractColumnMapping mapping, Object value) {
-        String mapKey = RenderingStrategy.formatParameterMapKey(sequence);
+        String mapKey = renderingStrategy.formatParameterMapKey(sequence);
 
         String jdbcPlaceholder = mapping.mapColumn(c -> calculateJdbcPlaceholder(c, mapKey));
 
