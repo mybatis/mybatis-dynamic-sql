@@ -101,22 +101,4 @@ public class MultiSelectModel {
             return new MultiSelectModel(this);
         }
     }
-
-    public static class UnionQuery {
-        private final String connector;
-        private final SelectModel selectModel;
-
-        public UnionQuery(String connector, SelectModel selectModel) {
-            this.connector = Objects.requireNonNull(connector);
-            this.selectModel = Objects.requireNonNull(selectModel);
-        }
-
-        public String connector() {
-            return connector;
-        }
-
-        public SelectModel selectModel() {
-            return selectModel;
-        }
-    }
 }

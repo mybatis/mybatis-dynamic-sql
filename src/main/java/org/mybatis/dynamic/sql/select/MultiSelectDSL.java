@@ -26,7 +26,7 @@ import org.mybatis.dynamic.sql.common.OrderByModel;
 import org.mybatis.dynamic.sql.util.Buildable;
 
 public class MultiSelectDSL implements Buildable<MultiSelectModel> {
-    private final List<MultiSelectModel.UnionQuery> unionQueries = new ArrayList<>();
+    private final List<UnionQuery> unionQueries = new ArrayList<>();
     private final SelectModel initialSelect;
     private OrderByModel orderByModel;
     private Long limit;
@@ -38,12 +38,12 @@ public class MultiSelectDSL implements Buildable<MultiSelectModel> {
     }
 
     public MultiSelectDSL union(Buildable<SelectModel> builder) {
-        unionQueries.add(new MultiSelectModel.UnionQuery("union", builder.build())); //$NON-NLS-1$
+        unionQueries.add(new UnionQuery("union", builder.build())); //$NON-NLS-1$
         return this;
     }
 
     public MultiSelectDSL unionAll(Buildable<SelectModel> builder) {
-        unionQueries.add(new MultiSelectModel.UnionQuery("union all", builder.build())); //$NON-NLS-1$
+        unionQueries.add(new UnionQuery("union all", builder.build())); //$NON-NLS-1$
         return this;
     }
 

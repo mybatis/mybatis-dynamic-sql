@@ -26,6 +26,7 @@ import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.select.MultiSelectModel;
 import org.mybatis.dynamic.sql.select.PagingModel;
 import org.mybatis.dynamic.sql.select.SelectModel;
+import org.mybatis.dynamic.sql.select.UnionQuery;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 import org.mybatis.dynamic.sql.util.FragmentCollector;
 
@@ -72,7 +73,7 @@ public class MultiSelectRenderer {
                 .build();
     }
 
-    private FragmentAndParameters renderSelect(MultiSelectModel.UnionQuery unionQuery) {
+    private FragmentAndParameters renderSelect(UnionQuery unionQuery) {
         SelectStatementProvider selectStatement = SelectRenderer.withSelectModel(unionQuery.selectModel())
                 .withRenderingStrategy(renderingStrategy)
                 .withSequence(sequence)
