@@ -35,6 +35,13 @@ functions in the Kotlin DSL still only apply to the where clause.
 
 The pull request for this change is ([#550](https://github.com/mybatis/mybatis-dynamic-sql/pull/550))
 
+### Multi-Select Queries
+
+A multi-select query is a special case of a union select statement. The difference is that it allows "order by" and
+paging clauses to be applied to the nested queries.
+
+The pull request for this change is...TODO
+
 ### Other Changes
 
 1. Added support for specifying "limit" and "order by" on the DELETE and UPDATE statements. Not all databases support
