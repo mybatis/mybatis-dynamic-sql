@@ -25,6 +25,7 @@ import org.mybatis.dynamic.sql.insert.GeneralInsertModel
 import org.mybatis.dynamic.sql.insert.InsertModel
 import org.mybatis.dynamic.sql.insert.InsertSelectModel
 import org.mybatis.dynamic.sql.insert.MultiRowInsertModel
+import org.mybatis.dynamic.sql.select.MultiSelectModel
 import org.mybatis.dynamic.sql.select.SelectModel
 import org.mybatis.dynamic.sql.update.UpdateModel
 import org.mybatis.dynamic.sql.util.kotlin.CountCompleter
@@ -41,8 +42,10 @@ import org.mybatis.dynamic.sql.util.kotlin.KotlinInsertCompleter
 import org.mybatis.dynamic.sql.util.kotlin.KotlinInsertSelectSubQueryBuilder
 import org.mybatis.dynamic.sql.util.kotlin.KotlinMultiRowInsertBuilder
 import org.mybatis.dynamic.sql.util.kotlin.KotlinMultiRowInsertCompleter
+import org.mybatis.dynamic.sql.util.kotlin.KotlinMultiSelectBuilder
 import org.mybatis.dynamic.sql.util.kotlin.KotlinSelectBuilder
 import org.mybatis.dynamic.sql.util.kotlin.KotlinUpdateBuilder
+import org.mybatis.dynamic.sql.util.kotlin.MultiSelectCompleter
 import org.mybatis.dynamic.sql.util.kotlin.SelectCompleter
 import org.mybatis.dynamic.sql.util.kotlin.UpdateCompleter
 
@@ -88,6 +91,9 @@ fun selectDistinct(vararg columns: BasicColumn, completer: SelectCompleter): Sel
 
 fun selectDistinct(columns: List<BasicColumn>, completer: SelectCompleter): SelectModel =
     KotlinSelectBuilder(SqlBuilder.selectDistinct(columns)).apply(completer).build()
+
+fun multiSelect(completer: MultiSelectCompleter): MultiSelectModel =
+    KotlinMultiSelectBuilder().apply(completer).build()
 
 fun update(table: SqlTable, completer: UpdateCompleter): UpdateModel =
     KotlinUpdateBuilder(SqlBuilder.update(table)).apply(completer).build()

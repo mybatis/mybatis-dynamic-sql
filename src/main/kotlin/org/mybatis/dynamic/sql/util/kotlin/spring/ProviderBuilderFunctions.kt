@@ -34,6 +34,7 @@ import org.mybatis.dynamic.sql.util.kotlin.InsertSelectCompleter
 import org.mybatis.dynamic.sql.util.kotlin.KotlinBatchInsertCompleter
 import org.mybatis.dynamic.sql.util.kotlin.KotlinInsertCompleter
 import org.mybatis.dynamic.sql.util.kotlin.KotlinMultiRowInsertCompleter
+import org.mybatis.dynamic.sql.util.kotlin.MultiSelectCompleter
 import org.mybatis.dynamic.sql.util.kotlin.SelectCompleter
 import org.mybatis.dynamic.sql.util.kotlin.UpdateCompleter
 import org.mybatis.dynamic.sql.util.kotlin.model.count
@@ -93,6 +94,9 @@ fun selectDistinct(vararg columns: BasicColumn, completer: SelectCompleter): Sel
 
 fun selectDistinct(columns: List<BasicColumn>, completer: SelectCompleter): SelectStatementProvider =
     selectDistinct(columns, completer).render(RenderingStrategies.SPRING_NAMED_PARAMETER)
+
+fun multiSelect(completer: MultiSelectCompleter): SelectStatementProvider =
+    org.mybatis.dynamic.sql.util.kotlin.model.multiSelect(completer).render(RenderingStrategies.SPRING_NAMED_PARAMETER)
 
 fun update(table: SqlTable, completer: UpdateCompleter): UpdateStatementProvider =
     update(table, completer).render(RenderingStrategies.SPRING_NAMED_PARAMETER)
