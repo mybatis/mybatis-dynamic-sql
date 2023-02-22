@@ -24,6 +24,7 @@ import org.jetbrains.annotations.NotNull;
 import org.mybatis.dynamic.sql.SortSpecification;
 import org.mybatis.dynamic.sql.common.OrderByModel;
 import org.mybatis.dynamic.sql.util.Buildable;
+
 public class MultiSelectDSL implements Buildable<MultiSelectModel> {
     private final List<MultiSelectModel.UnionQuery> unionQueries = new ArrayList<>();
     private final SelectModel initialSelect;

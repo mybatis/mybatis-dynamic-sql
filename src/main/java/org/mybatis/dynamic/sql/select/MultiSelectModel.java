@@ -83,7 +83,7 @@ public class MultiSelectModel {
         }
 
         public Builder withUnionQueries(List<UnionQuery> unionQueries) {
-            this.unionQueries.addAll((unionQueries));
+            this.unionQueries.addAll(unionQueries);
             return this;
         }
 
