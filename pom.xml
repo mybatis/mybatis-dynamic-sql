@@ -53,7 +53,7 @@
 
   <properties>
     <junit.jupiter.version>5.9.2</junit.jupiter.version>
-    <spring.batch.version>4.3.7</spring.batch.version>
+    <spring.batch.version>4.3.8</spring.batch.version>
 
     <checkstyle.config>checkstyle-override.xml</checkstyle.config>
 
@@ -61,7 +61,7 @@
 
     <module.name>org.mybatis.dynamic.sql</module.name>
 
-    <kotlin.version>1.8.0</kotlin.version>
+    <kotlin.version>1.8.10</kotlin.version>
     <kotlin.compiler.jvmTarget>1.8</kotlin.compiler.jvmTarget>
 
     <sonar.sources>pom.xml,src/main/java,src/main/kotlin</sonar.sources>
@@ -313,7 +313,7 @@
     <dependency>
       <groupId>org.postgresql</groupId>
       <artifactId>postgresql</artifactId>
-      <version>42.5.2</version>
+      <version>42.5.4</version>
       <scope>test</scope>
     </dependency>
     <dependency>
