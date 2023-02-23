@@ -40,7 +40,7 @@ The pull request for this change is ([#550](https://github.com/mybatis/mybatis-d
 A multi-select query is a special case of a union select statement. The difference is that it allows "order by" and
 paging clauses to be applied to the nested queries.
 
-The pull request for this change is...TODO
+The pull request for this change is ([#591](https://github.com/mybatis/mybatis-dynamic-sql/pull/591))
 
 ### Other Changes
 
