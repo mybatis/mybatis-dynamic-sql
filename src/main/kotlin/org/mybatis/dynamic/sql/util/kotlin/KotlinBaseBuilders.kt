@@ -25,10 +25,10 @@ import org.mybatis.dynamic.sql.where.AbstractWhereSupport
 @DslMarker
 annotation class MyBatisDslMarker
 
-@Deprecated("Please use independentWhere")
+@Deprecated("Please use booleanExpression")
 typealias WhereApplier = KotlinBaseBuilder<*>.() -> Unit
 
-@Deprecated("Please use independentWhere")
+@Deprecated("Please use booleanExpression")
 fun WhereApplier.andThen(after: WhereApplier): WhereApplier = {
     invoke(this)
     after(this)
@@ -69,7 +69,7 @@ abstract class KotlinBaseBuilder<D : AbstractWhereSupport<*,*>> {
         getDsl().where().or(criteria)
     }
 
-    @Deprecated("Please create an independent where clause, then pass it to the \"where\" method")
+    @Deprecated("Please create a booleanExpression, then pass it to the \"where\" method")
     fun applyWhere(whereApplier: WhereApplier) = whereApplier.invoke(this)
 
     /**

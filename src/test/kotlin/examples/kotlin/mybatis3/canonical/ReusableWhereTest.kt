@@ -28,7 +28,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import org.mybatis.dynamic.sql.util.kotlin.WhereApplier
 import org.mybatis.dynamic.sql.util.kotlin.andThen
-import org.mybatis.dynamic.sql.util.kotlin.elements.where
+import org.mybatis.dynamic.sql.util.kotlin.elements.booleanExpression
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.select
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -45,7 +45,7 @@ class ReusableWhereTest {
     }
 
     @Test
-    fun testCount() {
+    fun testCountWithDeprecatedClause() {
         sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(PersonMapper::class.java)
 
@@ -63,7 +63,7 @@ class ReusableWhereTest {
             val mapper = session.getMapper(PersonMapper::class.java)
 
             val rows = mapper.delete {
-                applyWhere(commonWhere)
+                where(commonWhereClause)
             }
 
             assertThat(rows).isEqualTo(3)
@@ -76,7 +76,7 @@ class ReusableWhereTest {
             val mapper = session.getMapper(PersonMapper::class.java)
 
             val rows = mapper.select {
-                applyWhere(commonWhere)
+                where(commonWhereClause)
                 orderBy(id)
             }
 
@@ -91,7 +91,7 @@ class ReusableWhereTest {
 
             val rows = mapper.update {
                 set(occupation) equalToStringConstant "worker"
-                applyWhere(commonWhere)
+                where(commonWhereClause)
             }
 
             assertThat(rows).isEqualTo(3)
@@ -145,7 +145,7 @@ class ReusableWhereTest {
         or { occupation.isNull() }
     }
 
-    private val commonWhereClause = where {
+    private val commonWhereClause = booleanExpression {
         id isEqualTo 1
         or { occupation.isNull() }
     }
