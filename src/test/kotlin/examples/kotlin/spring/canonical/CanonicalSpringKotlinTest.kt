@@ -49,6 +49,7 @@ import org.mybatis.dynamic.sql.util.kotlin.spring.insertBatch
 import org.mybatis.dynamic.sql.util.kotlin.spring.insertInto
 import org.mybatis.dynamic.sql.util.kotlin.spring.insertMultiple
 import org.mybatis.dynamic.sql.util.kotlin.spring.insertSelect
+import org.mybatis.dynamic.sql.util.kotlin.spring.multiSelect
 import org.mybatis.dynamic.sql.util.kotlin.spring.select
 import org.mybatis.dynamic.sql.util.kotlin.spring.selectDistinct
 import org.mybatis.dynamic.sql.util.kotlin.spring.selectList
@@ -756,6 +757,169 @@ open class CanonicalSpringKotlinTest {
             assertThat(occupation).isNull()
             assertThat(addressId).isEqualTo(1)
         }
+    }
+
+    @Test
+    fun testRawMultiSelectWithUnion() {
+        val selectStatement = multiSelect {
+            select(id, firstName, lastName, birthDate, employed, occupation, addressId) {
+                from(person, "p1")
+                where { id isLessThanOrEqualTo 2 }
+                orderBy(id)
+                limit(1)
+            }
+            union {
+                select(id, firstName, lastName, birthDate, employed, occupation, addressId) {
+                    from(person, "p2")
+                    where { id isGreaterThanOrEqualTo 4 }
+                    orderBy(id.descending())
+                    limit(1)
+                }
+            }
+            orderBy(id)
+            limit(2)
+        }
+
+        val expected =
+            "(select p1.id, p1.first_name, p1.last_name, p1.birth_date, p1.employed, p1.occupation, p1.address_id " +
+                "from Person p1 " +
+                "where p1.id <= :p1 " +
+                "order by id limit :p2) " +
+                "union " +
+                "(select p2.id, p2.first_name, p2.last_name, p2.birth_date, p2.employed, p2.occupation, p2.address_id " +
+                "from Person p2 " +
+                "where p2.id >= :p3 " +
+                "order by id DESC limit :p4) " +
+                "order by id limit :p5"
+
+        assertThat(selectStatement.selectStatement).isEqualTo(expected)
+
+        val records = template.selectList(selectStatement, personRowMapper)
+
+        assertThat(records).hasSize(2)
+        with(records[0]) {
+            assertThat(id).isEqualTo(1)
+            assertThat(firstName).isEqualTo("Fred")
+            assertThat(lastName!!.name).isEqualTo("Flintstone")
+            assertThat(birthDate).isNotNull
+            assertThat(employed).isTrue
+            assertThat(occupation).isEqualTo("Brontosaurus Operator")
+            assertThat(addressId).isEqualTo(1)
+        }
+
+        with(records[1]) {
+            assertThat(id).isEqualTo(6)
+            assertThat(firstName).isEqualTo("Bamm Bamm")
+            assertThat(lastName!!.name).isEqualTo("Rubble")
+            assertThat(birthDate).isNotNull
+            assertThat(employed).isFalse
+            assertThat(occupation).isNull()
+            assertThat(addressId).isEqualTo(2)
+        }
+    }
+
+    @Test
+    fun testRawMultiSelectWithUnionAll() {
+        val selectStatement = multiSelect {
+            selectDistinct(id, firstName, lastName, birthDate, employed, occupation, addressId) {
+                from(person, "p1")
+                where { id isLessThanOrEqualTo 2 }
+                orderBy(id)
+                limit(1)
+            }
+            unionAll {
+                select(id, firstName, lastName, birthDate, employed, occupation, addressId) {
+                    from(person, "p2")
+                    where { id isGreaterThanOrEqualTo 4 }
+                    orderBy(id.descending())
+                    limit(1)
+                }
+            }
+            orderBy(id)
+            fetchFirst(1)
+            offset(1)
+        }
+
+        val expected =
+            "(select distinct p1.id, p1.first_name, p1.last_name, p1.birth_date, p1.employed, p1.occupation, p1.address_id " +
+                    "from Person p1 " +
+                    "where p1.id <= :p1 " +
+                    "order by id limit :p2) " +
+                    "union all " +
+                    "(select p2.id, p2.first_name, p2.last_name, p2.birth_date, p2.employed, p2.occupation, p2.address_id " +
+                    "from Person p2 " +
+                    "where p2.id >= :p3 " +
+                    "order by id DESC limit :p4) " +
+                    "order by id offset :p5 rows fetch first :p6 rows only"
+
+        assertThat(selectStatement.selectStatement).isEqualTo(expected)
+
+        val records = template.selectList(selectStatement, personRowMapper)
+
+        assertThat(records).hasSize(1)
+        with(records[0]) {
+            assertThat(id).isEqualTo(6)
+            assertThat(firstName).isEqualTo("Bamm Bamm")
+            assertThat(lastName!!.name).isEqualTo("Rubble")
+            assertThat(birthDate).isNotNull
+            assertThat(employed).isFalse
+            assertThat(occupation).isNull()
+            assertThat(addressId).isEqualTo(2)
+        }
+    }
+
+    @Test
+    fun testRawMultiSelectWithoutUnion() {
+        assertThatExceptionOfType(InvalidSqlException::class.java).isThrownBy {
+            multiSelect {
+                selectDistinct(id, firstName, lastName, birthDate, employed, occupation, addressId) {
+                    from(person, "p1")
+                    where { id isLessThanOrEqualTo 2 }
+                    orderBy(id)
+                    limit(1)
+                }
+                orderBy(id)
+                fetchFirst(1)
+                offset(1)
+            }
+        }.withMessage(Messages.getString("ERROR.35")) //$NON-NLS-1$
+    }
+
+    @Test
+    fun testInvalidDoubleSelect() {
+        assertThatExceptionOfType(KInvalidSQLException::class.java).isThrownBy {
+            multiSelect {
+                selectDistinct(id, firstName, lastName, birthDate, employed, occupation, addressId) {
+                    from(person, "p1")
+                    where { id isLessThanOrEqualTo 2 }
+                    orderBy(id)
+                    limit(1)
+                }
+                select(id, firstName, lastName, birthDate, employed, occupation, addressId) {
+                    from(person, "p2")
+                    where { id isGreaterThanOrEqualTo 4 }
+                    orderBy(id.descending())
+                    limit(1)
+                }
+            }
+        }.withMessage(Messages.getString("ERROR.33")) //$NON-NLS-1$
+    }
+
+    @Test
+    fun testInvalidMissingInitialSelect() {
+        assertThatExceptionOfType(KInvalidSQLException::class.java).isThrownBy {
+            multiSelect {
+                union {
+                    select(id, firstName, lastName, birthDate, employed, occupation, addressId) {
+                        from(person, "p2")
+                        where { id isGreaterThanOrEqualTo 4 }
+                        orderBy(id.descending())
+                        limit(1)
+                    }
+                }
+            }
+        }.withMessage(Messages.getString("ERROR.34")) //$NON-NLS-1$
+
     }
 
     @Test

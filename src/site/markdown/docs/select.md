@@ -6,21 +6,22 @@ select statements, but purposely does not cover every possibility.
 In general, the following are supported:
 
 1. The typical parts of a select statement including SELECT, DISTINCT, FROM, JOIN, WHERE, GROUP BY, UNION,
-   UNION ALL, ORDER BY
+   UNION ALL, ORDER BY, HAVING
 2. Tables can be aliased per select statement
 3. Columns can be aliased per select statement
 4. Some support for aggregates (avg, min, max, sum)
 5. Equijoins of type INNER, LEFT OUTER, RIGHT OUTER, FULL OUTER
-6. Subqueries in where clauses.  For example, `where foo in (select foo from foos where id < 36)` 
+6. Subqueries in where clauses. For example, `where foo in (select foo from foos where id < 36)` 
+7. Select from another select. For example `select count(*) from (select foo from foos where id < 36)`
+8. Multi-Selects. For example `(select * from foo order by id limit 3) union (select * from foo order by id desc limit 3)`
 
 At this time, the library does not support the following:
 
 1. WITH expressions
-2. HAVING expressions
-3. Select from another select.  For example `select count(*) from (select foo from foos where id < 36)`
-4. INTERSECT, EXCEPT, etc.
+2. INTERSECT, EXCEPT, etc.
 
-The user guide page for WHERE Clauses shows examples of many different types of SELECT statements with different complexities of the WHERE clause including support for sub-queries.  We will just show a single example here, including an ORDER BY clause:
+The user guide page for WHERE Clauses shows examples of many types of SELECT statements with different complexities of
+the WHERE clause including support for sub-queries.  We will just show a single example here, including an ORDER BY clause:
 
 ```java
     SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
@@ -84,6 +85,31 @@ The library supports the generation of UNION and UNION ALL queries. For example:
 ```
 
 Any number of SELECT statements can be added to a UNION query. Only one ORDER BY phrase is allowed.
+
+With this type of union query, the "order by" and paging clauses are applied to the query as a whole. If
+you need to apply "order by" or paging clauses to the nested queries, use a multi-select query as shown
+below.
+
+## Multi-Select Queries
+
+Multi-select queries are a special case of union select statements. The difference is that "order by" and
+paging clauses can be applied to the merged queries. For example:
+
+```java
+    SelectStatementProvider selectStatement = multiSelect(
+            select(id, animalName, bodyWeight, brainWeight)
+            .from(animalData)
+            .orderBy(id)
+            .limit(2)
+        ).union(
+            selectDistinct(id, animalName, bodyWeight, brainWeight)
+            .from(animalData)
+            .orderBy(id.descending())
+            .limit(3)
+        )
+        .build()
+        .render(RenderingStrategies.MYBATIS3);
+```
 
 ## MyBatis Mapper for Select Statements
 

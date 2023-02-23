@@ -25,7 +25,6 @@ import static examples.simple.PersonDynamicSqlSupport.lastName;
 import static examples.simple.PersonDynamicSqlSupport.occupation;
 import static examples.simple.PersonDynamicSqlSupport.person;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
 
 import java.io.InputStream;
@@ -69,6 +68,7 @@ class PersonMapperTest {
     void setup() throws Exception {
         Class.forName(JDBC_DRIVER);
         InputStream is = getClass().getResourceAsStream("/examples/simple/CreateSimpleDB.sql");
+        assert is != null;
         try (Connection connection = DriverManager.getConnection(JDBC_URL, "sa", "")) {
             ScriptRunner sr = new ScriptRunner(connection);
             sr.setLogWriter(null);
@@ -219,11 +219,9 @@ class PersonMapperTest {
                     c.where(employed, isEqualTo(false))
                     .orderBy(id));
 
-            assertAll(
-                    () -> assertThat(rows).hasSize(2),
-                    () -> assertThat(rows.get(0).getId()).isEqualTo(3),
-                    () -> assertThat(rows.get(1).getId()).isEqualTo(6)
-            );
+            assertThat(rows).hasSize(2);
+            assertThat(rows.get(0).getId()).isEqualTo(3);
+            assertThat(rows.get(1).getId()).isEqualTo(6);
         }
     }
 
@@ -245,11 +243,9 @@ class PersonMapperTest {
             List<PersonRecord> rows = mapper.select(c ->
                     c.where(firstName, isIn("Fred", "Barney")));
 
-            assertAll(
-                    () -> assertThat(rows).hasSize(2),
-                    () -> assertThat(rows.get(0).getLastName().getName()).isEqualTo("Flintstone"),
-                    () -> assertThat(rows.get(1).getLastName().getName()).isEqualTo("Rubble")
-            );
+            assertThat(rows).hasSize(2);
+            assertThat(rows.get(0).getLastName().getName()).isEqualTo("Flintstone");
+            assertThat(rows.get(1).getLastName().getName()).isEqualTo("Rubble");
         }
     }
 
@@ -767,5 +763,214 @@ class PersonMapperTest {
             Optional<Integer> type = mapper.selectOptionalInteger(selectStatement);
             assertThat(type).hasValueSatisfying(i -> assertThat(i).isZero());
         }
+    }
+
+    @Test
+    void testMultiSelectWithUnion() {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
+            PersonMapper mapper = session.getMapper(PersonMapper.class);
+
+            SelectStatementProvider selectStatement = multiSelect(
+                    select(id.as("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId)
+                            .from(person)
+                            .where(id, isLessThanOrEqualTo(2))
+                            .orderBy(id)
+                            .limit(1)
+            ).union(
+                    select(id.as("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId)
+                            .from(person)
+                            .where(id, isGreaterThanOrEqualTo(4))
+                            .orderBy(id.descending())
+                            .limit(1)
+            )
+            .orderBy(sortColumn("A_ID"))
+            .limit(3)
+            .build()
+            .render(RenderingStrategies.MYBATIS3);
+
+            String expected =
+                    "(select id as A_ID, first_name, last_name, birth_date, employed, occupation, address_id " +
+                    "from Person " +
+                    "where id <= #{parameters.p1,jdbcType=INTEGER} " +
+                    "order by id limit #{parameters.p2}) " +
+                    "union " +
+                    "(select id as A_ID, first_name, last_name, birth_date, employed, occupation, address_id " +
+                    "from Person " +
+                    "where id >= #{parameters.p3,jdbcType=INTEGER} " +
+                    "order by id DESC limit #{parameters.p4}) " +
+                    "order by A_ID " +
+                    "limit #{parameters.p5}";
+
+            assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
+
+            List<PersonRecord> records = mapper.selectMany(selectStatement);
+
+            assertThat(records).hasSize(2);
+            assertThat(records.get(0).getId()).isEqualTo(1);
+            assertThat(records.get(1).getId()).isEqualTo(6);
+        }
+    }
+
+    @Test
+    void testMultiSelectWithUnionAll() {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
+            PersonMapper mapper = session.getMapper(PersonMapper.class);
+
+            SelectStatementProvider selectStatement = multiSelect(
+                    select(id.as("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId)
+                            .from(person)
+                            .where(id, isLessThanOrEqualTo(2))
+                            .orderBy(id)
+                            .limit(1)
+            ).unionAll(
+                    select(id.as("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId)
+                            .from(person)
+                            .where(id, isGreaterThanOrEqualTo(4))
+                            .orderBy(id.descending())
+                            .limit(1)
+                    ).orderBy(sortColumn("A_ID"))
+                    .fetchFirst(2).rowsOnly()
+                    .build()
+                    .render(RenderingStrategies.MYBATIS3);
+
+            String expected =
+                    "(select id as A_ID, first_name, last_name, birth_date, employed, occupation, address_id " +
+                            "from Person " +
+                            "where id <= #{parameters.p1,jdbcType=INTEGER} " +
+                            "order by id limit #{parameters.p2}) " +
+                            "union all " +
+                            "(select id as A_ID, first_name, last_name, birth_date, employed, occupation, address_id " +
+                            "from Person " +
+                            "where id >= #{parameters.p3,jdbcType=INTEGER} " +
+                            "order by id DESC limit #{parameters.p4}) " +
+                            "order by A_ID " +
+                            "fetch first #{parameters.p5} rows only";
+
+            assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
+
+            List<PersonRecord> records = mapper.selectMany(selectStatement);
+
+            assertThat(records).hasSize(2);
+            assertThat(records.get(0).getId()).isEqualTo(1);
+            assertThat(records.get(1).getId()).isEqualTo(6);
+        }
+    }
+
+    @Test
+    void testMultiSelectPagingVariation1() {
+        SelectStatementProvider selectStatement = multiSelect(
+                select(id, firstName, lastName, birthDate, employed, occupation, addressId)
+                        .from(person)
+                        .where(id, isLessThanOrEqualTo(2))
+        ).unionAll(
+                select(id, firstName, lastName, birthDate, employed, occupation, addressId)
+                        .from(person)
+                        .where(id, isGreaterThanOrEqualTo(4))
+                )
+                .orderBy(id)
+                .limit(3).offset(2)
+                .build()
+                .render(RenderingStrategies.MYBATIS3);
+
+        String expected =
+                "(select id, first_name, last_name, birth_date, employed, occupation, address_id " +
+                        "from Person " +
+                        "where id <= #{parameters.p1,jdbcType=INTEGER}) " +
+                        "union all " +
+                        "(select id, first_name, last_name, birth_date, employed, occupation, address_id " +
+                        "from Person " +
+                        "where id >= #{parameters.p2,jdbcType=INTEGER}) " +
+                        "order by id " +
+                        "limit #{parameters.p3} offset #{parameters.p4}";
+
+        assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
+    }
+
+    @Test
+    void testMultiSelectPagingVariation2() {
+        SelectStatementProvider selectStatement = multiSelect(
+                select(id, firstName, lastName, birthDate, employed, occupation, addressId)
+                        .from(person)
+                        .where(id, isLessThanOrEqualTo(2))
+        ).unionAll(
+                select(id, firstName, lastName, birthDate, employed, occupation, addressId)
+                        .from(person)
+                        .where(id, isGreaterThanOrEqualTo(4))
+                )
+                .orderBy(id)
+                .offset(2)
+                .build()
+                .render(RenderingStrategies.MYBATIS3);
+
+        String expected =
+                "(select id, first_name, last_name, birth_date, employed, occupation, address_id " +
+                        "from Person " +
+                        "where id <= #{parameters.p1,jdbcType=INTEGER}) " +
+                        "union all " +
+                        "(select id, first_name, last_name, birth_date, employed, occupation, address_id " +
+                        "from Person " +
+                        "where id >= #{parameters.p2,jdbcType=INTEGER}) " +
+                        "order by id " +
+                        "offset #{parameters.p3} rows";
+
+        assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
+    }
+
+    @Test
+    void testMultiSelectPagingVariation3() {
+        SelectStatementProvider selectStatement = multiSelect(
+                select(id, firstName, lastName, birthDate, employed, occupation, addressId)
+                        .from(person)
+                        .where(id, isLessThanOrEqualTo(2))
+        ).unionAll(
+                select(id, firstName, lastName, birthDate, employed, occupation, addressId)
+                        .from(person)
+                        .where(id, isGreaterThanOrEqualTo(4))
+                )
+                .orderBy(id)
+                .offset(2).fetchFirst(3).rowsOnly()
+                .build()
+                .render(RenderingStrategies.MYBATIS3);
+
+        String expected =
+                "(select id, first_name, last_name, birth_date, employed, occupation, address_id " +
+                        "from Person " +
+                        "where id <= #{parameters.p1,jdbcType=INTEGER}) " +
+                        "union all " +
+                        "(select id, first_name, last_name, birth_date, employed, occupation, address_id " +
+                        "from Person " +
+                        "where id >= #{parameters.p2,jdbcType=INTEGER}) " +
+                        "order by id " +
+                        "offset #{parameters.p3} rows fetch first #{parameters.p4} rows only";
+
+        assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
+    }
+
+    @Test
+    void testMultiSelectPagingVariation() {
+        SelectStatementProvider selectStatement = multiSelect(
+                select(id, firstName, lastName, birthDate, employed, occupation, addressId)
+                        .from(person)
+                        .where(id, isLessThanOrEqualTo(2))
+        ).unionAll(
+                        select(id, firstName, lastName, birthDate, employed, occupation, addressId)
+                                .from(person)
+                                .where(id, isGreaterThanOrEqualTo(4))
+                )
+                .orderBy(id)
+                .build()
+                .render(RenderingStrategies.MYBATIS3);
+
+        String expected =
+                "(select id, first_name, last_name, birth_date, employed, occupation, address_id " +
+                        "from Person " +
+                        "where id <= #{parameters.p1,jdbcType=INTEGER}) " +
+                        "union all " +
+                        "(select id, first_name, last_name, birth_date, employed, occupation, address_id " +
+                        "from Person " +
+                        "where id >= #{parameters.p2,jdbcType=INTEGER}) " +
+                        "order by id";
+
+        assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
 }

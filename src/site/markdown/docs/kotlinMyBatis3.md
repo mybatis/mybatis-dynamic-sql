@@ -940,6 +940,14 @@ val records = mapper.select {
 }
 ```
 
+## Multi-Select Statement Support
+
+Multi-select statements are a special case of select statement. All the above information about MyBatis mappers applies
+equally to multi-select statements.
+
+The library does not provide a "one-step" shortcut for multi-select queries. You can execute a multi-select query
+with the two-step method using either a "selectMany" or "selectOne" mapper method as shown above.
+
 ## Update Method Support
 
 ### Two-Step Method

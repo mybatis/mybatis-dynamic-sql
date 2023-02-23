@@ -30,6 +30,7 @@ import org.mybatis.dynamic.sql.insert.InsertSelectDSL;
 import org.mybatis.dynamic.sql.insert.MultiRowInsertDSL;
 import org.mybatis.dynamic.sql.select.ColumnSortSpecification;
 import org.mybatis.dynamic.sql.select.CountDSL;
+import org.mybatis.dynamic.sql.select.MultiSelectDSL;
 import org.mybatis.dynamic.sql.select.QueryExpressionDSL.FromGatherer;
 import org.mybatis.dynamic.sql.select.SelectDSL;
 import org.mybatis.dynamic.sql.select.SelectModel;
@@ -225,6 +226,10 @@ public interface SqlBuilder {
 
     static FromGatherer<SelectModel> selectDistinct(Collection<BasicColumn> selectList) {
         return SelectDSL.selectDistinct(selectList);
+    }
+
+    static MultiSelectDSL multiSelect(Buildable<SelectModel> selectModelBuilder) {
+        return new MultiSelectDSL(selectModelBuilder);
     }
 
     static UpdateDSL<UpdateModel> update(SqlTable table) {
@@ -496,8 +501,8 @@ public interface SqlBuilder {
      * @param firstColumn first column
      * @param secondColumn second column
      * @param subsequentColumns subsequent columns
-     * @return a Concatenate instance
      * @param <T> type of column
+     * @return a Concatenate instance
      */
     static <T> Concatenate<T> concatenate(BindableColumn<T> firstColumn, BasicColumn secondColumn,
             BasicColumn... subsequentColumns) {
@@ -510,8 +515,8 @@ public interface SqlBuilder {
      *
      * @param firstColumn first column
      * @param subsequentColumns subsequent columns
-     * @return a Concat instance
      * @param <T> type of column
+     * @return a Concat instance
      */
     static <T> Concat<T> concat(BindableColumn<T> firstColumn, BasicColumn... subsequentColumns) {
         return Concat.concat(firstColumn, subsequentColumns);
