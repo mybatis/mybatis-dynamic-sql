@@ -145,9 +145,9 @@ public abstract class AbstractBooleanExpressionDSL<T extends AbstractBooleanExpr
                 .build());
     }
 
-    protected void setInitialCriterion(SqlCriterion initialCriterion) {
+    protected void setInitialCriterion(SqlCriterion initialCriterion, String errorMessage) {
         if (this.initialCriterion != null) {
-            throw new InvalidSqlException(Messages.getString("ERROR.32")); //$NON-NLS-1$
+            throw new InvalidSqlException(Messages.getString(errorMessage)); //$NON-NLS-1$
         }
 
         this.initialCriterion = initialCriterion;

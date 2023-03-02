@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2022 the original author or authors.
+ *    Copyright 2016-2023 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ import java.util.function.Consumer;
 @FunctionalInterface
 public interface HavingApplier {
 
-    void accept(HavingDSL havingDSL);
+    void accept(AbstractHavingDSL<?> havingDSL);
 
     /**
      * Return a composed having applier that performs this operation followed by the after operation.

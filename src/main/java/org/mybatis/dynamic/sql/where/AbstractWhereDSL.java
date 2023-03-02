@@ -59,7 +59,7 @@ public abstract class AbstractWhereDSL<T extends AbstractWhereDSL<T>> extends Ab
         setInitialCriterion(ColumnAndConditionCriterion.withColumn(column)
                 .withCondition(condition)
                 .withSubCriteria(subCriteria)
-                .build());
+                .build(), "ERROR.32"); //$NON-NLS-1$
         return getThis();
     }
 
@@ -71,7 +71,7 @@ public abstract class AbstractWhereDSL<T extends AbstractWhereDSL<T>> extends Ab
     @NotNull
     public T where(ExistsPredicate existsPredicate, List<AndOrCriteriaGroup> subCriteria) {
         setInitialCriterion(new ExistsCriterion.Builder()
-                .withExistsPredicate(existsPredicate).withSubCriteria(subCriteria).build());
+                .withExistsPredicate(existsPredicate).withSubCriteria(subCriteria).build(), "ERROR.32"); //$NON-NLS-1$
         return getThis();
     }
 
@@ -85,7 +85,7 @@ public abstract class AbstractWhereDSL<T extends AbstractWhereDSL<T>> extends Ab
         setInitialCriterion(new CriteriaGroup.Builder()
                 .withInitialCriterion(initialCriterion)
                 .withSubCriteria(subCriteria)
-                .build());
+                .build(), "ERROR.32"); //$NON-NLS-1$
         return getThis();
     }
 
@@ -93,7 +93,7 @@ public abstract class AbstractWhereDSL<T extends AbstractWhereDSL<T>> extends Ab
     public T where(List<AndOrCriteriaGroup> criteria) {
         setInitialCriterion(new CriteriaGroup.Builder()
                 .withSubCriteria(criteria)
-                .build());
+                .build(), "ERROR.32"); //$NON-NLS-1$
         return getThis();
     }
 
@@ -107,5 +107,6 @@ public abstract class AbstractWhereDSL<T extends AbstractWhereDSL<T>> extends Ab
         return new WhereModel(getInitialCriterion(), subCriteria, statementConfiguration);
     }
 
+    @Override
     protected abstract T getThis();
 }

@@ -53,7 +53,7 @@ class KotlinSelectBuilder(private val fromGatherer: QueryExpressionDSL.FromGathe
 
     fun having(criteria: GroupingCriteriaReceiver): Unit =
         GroupingCriteriaCollector().apply(criteria).let {
-            getDsl().applyHaving(it.initialCriterion, it.subCriteria)
+            getDsl().having(it.initialCriterion, it.subCriteria)
         }
 
     fun orderBy(vararg columns: SortSpecification) {
@@ -99,8 +99,8 @@ class KQueryExpressionDSL: QueryExpressionDSL<SelectModel> {
     constructor(fromGatherer: FromGatherer<SelectModel>, subQuery: KotlinQualifiedSubQueryBuilder) :
             super(fromGatherer, buildSubQuery(subQuery))
 
-    internal fun applyHaving(initialCriterion: SqlCriterion?, subCriteria: List<AndOrCriteriaGroup>) {
-        having(initialCriterion, subCriteria)
+    internal fun having(initialCriterion: SqlCriterion?, subCriteria: List<AndOrCriteriaGroup>) {
+        having().applyHaving{ it.having(initialCriterion, subCriteria) }
     }
 
     companion object {

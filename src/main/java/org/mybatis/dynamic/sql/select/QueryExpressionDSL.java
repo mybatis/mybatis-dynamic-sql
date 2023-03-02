@@ -23,25 +23,16 @@ import java.util.Objects;
 import java.util.function.Consumer;
 
 import org.jetbrains.annotations.NotNull;
-import org.mybatis.dynamic.sql.AndOrCriteriaGroup;
 import org.mybatis.dynamic.sql.BasicColumn;
-import org.mybatis.dynamic.sql.BindableColumn;
-import org.mybatis.dynamic.sql.ColumnAndConditionCriterion;
-import org.mybatis.dynamic.sql.CriteriaGroup;
 import org.mybatis.dynamic.sql.SortSpecification;
-import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.TableExpression;
-import org.mybatis.dynamic.sql.VisitableCondition;
-import org.mybatis.dynamic.sql.common.AbstractBooleanExpressionDSL;
 import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
-import org.mybatis.dynamic.sql.exception.InvalidSqlException;
 import org.mybatis.dynamic.sql.select.join.JoinCondition;
 import org.mybatis.dynamic.sql.select.join.JoinCriterion;
 import org.mybatis.dynamic.sql.select.join.JoinSpecification;
 import org.mybatis.dynamic.sql.select.join.JoinType;
 import org.mybatis.dynamic.sql.util.Buildable;
-import org.mybatis.dynamic.sql.util.Messages;
 import org.mybatis.dynamic.sql.where.AbstractWhereDSL;
 import org.mybatis.dynamic.sql.where.AbstractWhereSupport;
 import org.mybatis.dynamic.sql.where.WhereModel;
@@ -87,18 +78,10 @@ public class QueryExpressionDSL<R>
         return this;
     }
 
-    protected QueryExpressionHavingBuilder having(SqlCriterion initialCriterion, List<AndOrCriteriaGroup> subCriteria) {
-        return having(new CriteriaGroup.Builder().withInitialCriterion(initialCriterion)
-                .withSubCriteria(subCriteria)
-                .build());
-    }
-
-    private QueryExpressionHavingBuilder having(SqlCriterion initialCriterion) {
-        if (havingBuilder != null) {
-            throw new InvalidSqlException(Messages.getString("ERROR.31")); //$NON-NLS-1$
+    protected QueryExpressionHavingBuilder having() {
+        if (havingBuilder == null) {
+            havingBuilder = new QueryExpressionHavingBuilder();
         }
-
-        havingBuilder = new QueryExpressionHavingBuilder(initialCriterion);
         return havingBuilder;
     }
 
@@ -509,7 +492,7 @@ public class QueryExpressionDSL<R>
         }
     }
 
-    public class GroupByFinisher implements Buildable<R> {
+    public class GroupByFinisher extends AbstractHavingSupport<QueryExpressionHavingBuilder> implements Buildable<R> {
         public SelectDSL<R> orderBy(SortSpecification... columns) {
             return orderBy(Arrays.asList(columns));
         }
@@ -544,33 +527,9 @@ public class QueryExpressionDSL<R>
             return QueryExpressionDSL.this.fetchFirst(fetchFirstRows);
         }
 
-        public <T> QueryExpressionHavingBuilder having(BindableColumn<T> column, VisitableCondition<T> condition,
-                                                       AndOrCriteriaGroup... subCriteria) {
-            return having(column, condition, Arrays.asList(subCriteria));
-        }
-
-        public <T> QueryExpressionHavingBuilder having(BindableColumn<T> column, VisitableCondition<T> condition,
-                                                       List<AndOrCriteriaGroup> subCriteria) {
-            return QueryExpressionDSL.this.having(ColumnAndConditionCriterion.withColumn(column)
-                    .withCondition(condition)
-                    .withSubCriteria(subCriteria)
-                    .build());
-        }
-
-        public QueryExpressionHavingBuilder having(SqlCriterion initialCriterion, AndOrCriteriaGroup... subCriteria) {
-            return having(initialCriterion, Arrays.asList(subCriteria));
-        }
-
-        public QueryExpressionHavingBuilder having(SqlCriterion initialCriterion,
-                                                   List<AndOrCriteriaGroup> subCriteria) {
-            return QueryExpressionDSL.this.having(initialCriterion, subCriteria);
-        }
-
-        public QueryExpressionDSL<R> applyHaving(HavingApplier havingApplier) {
-            HavingDSL s = new HavingDSL();
-            havingApplier.accept(s);
-            QueryExpressionDSL.this.having(s.getInitialCriterion(), s.getSubCriteria());
-            return QueryExpressionDSL.this;
+        @Override
+        public QueryExpressionHavingBuilder having() {
+            return QueryExpressionDSL.this.having();
         }
     }
 
@@ -607,12 +566,8 @@ public class QueryExpressionDSL<R>
         }
     }
 
-    public class QueryExpressionHavingBuilder extends AbstractBooleanExpressionDSL<QueryExpressionHavingBuilder>
+    public class QueryExpressionHavingBuilder extends AbstractHavingDSL<QueryExpressionHavingBuilder>
             implements Buildable<R> {
-
-        public QueryExpressionHavingBuilder(SqlCriterion initialCriterion) {
-            setInitialCriterion(initialCriterion);
-        }
 
         public SelectDSL<R>.FetchFirstFinisher fetchFirst(long fetchFirstRows) {
             return QueryExpressionDSL.this.fetchFirst(fetchFirstRows);

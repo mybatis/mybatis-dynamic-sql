@@ -24,6 +24,7 @@ import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.junit.jupiter.api.Test
 import org.mybatis.dynamic.sql.SqlTable
 import org.mybatis.dynamic.sql.exception.InvalidSqlException
+import org.mybatis.dynamic.sql.util.Messages
 import org.mybatis.dynamic.sql.util.kotlin.elements.add
 import org.mybatis.dynamic.sql.util.kotlin.elements.booleanExpression
 import org.mybatis.dynamic.sql.util.kotlin.elements.column
@@ -427,6 +428,6 @@ class KGroupingTest {
                 having { count() isGreaterThanWhenPresent null }
                 having { count() isGreaterThanWhenPresent null }
             }
-        }
+        }.withMessage(Messages.getString("ERROR.31"))
     }
 }
