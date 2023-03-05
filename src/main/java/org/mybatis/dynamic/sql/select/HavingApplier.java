@@ -15,14 +15,22 @@
  */
 package org.mybatis.dynamic.sql.select;
 
-import org.mybatis.dynamic.sql.common.AbstractBooleanExpressionDSL;
-
+import java.util.Arrays;
+import java.util.List;
 import java.util.function.Consumer;
+
+import org.mybatis.dynamic.sql.AndOrCriteriaGroup;
+import org.mybatis.dynamic.sql.BindableColumn;
+import org.mybatis.dynamic.sql.ColumnAndConditionCriterion;
+import org.mybatis.dynamic.sql.CriteriaGroup;
+import org.mybatis.dynamic.sql.SqlCriterion;
+import org.mybatis.dynamic.sql.VisitableCondition;
+import org.mybatis.dynamic.sql.common.AbstractBooleanExpressionDSL;
 
 @FunctionalInterface
 public interface HavingApplier {
 
-    void accept(AbstractHavingDSL<?> havingDSL);
+    void accept(AbstractBooleanExpressionDSL<?> havingStarter);
 
     /**
      * Return a composed having applier that performs this operation followed by the after operation.
@@ -36,5 +44,33 @@ public interface HavingApplier {
             accept(t);
             after.accept(t);
         };
+    }
+
+    static <T> HavingApplier having(BindableColumn<T> column, VisitableCondition<T> condition,
+                        AndOrCriteriaGroup... subCriteria) {
+        return having(column, condition, Arrays.asList(subCriteria));
+    }
+
+    static <T> HavingApplier having(BindableColumn<T> column, VisitableCondition<T> condition,
+                        List<AndOrCriteriaGroup> subCriteria) {
+        ColumnAndConditionCriterion<T> initialCriterion = ColumnAndConditionCriterion.withColumn(column)
+                .withCondition(condition)
+                .withSubCriteria(subCriteria)
+                .build();
+
+        return d -> d.and(initialCriterion);
+    }
+
+    static HavingApplier having(SqlCriterion initialCriterion, AndOrCriteriaGroup... subCriteria) {
+        return having(initialCriterion, Arrays.asList(subCriteria));
+    }
+
+    static HavingApplier having(SqlCriterion initialCriterion, List<AndOrCriteriaGroup> subCriteria) {
+        CriteriaGroup ic = new CriteriaGroup.Builder()
+                .withInitialCriterion(initialCriterion)
+                .withSubCriteria(subCriteria)
+                .build();
+
+        return d -> d.and(ic);
     }
 }

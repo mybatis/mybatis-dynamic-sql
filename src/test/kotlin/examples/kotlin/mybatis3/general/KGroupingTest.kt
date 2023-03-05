@@ -425,8 +425,8 @@ class KGroupingTest {
             select(A, count()) {
                 from(foo)
                 groupBy(A)
-                having { count() isGreaterThanWhenPresent null }
-                having { count() isGreaterThanWhenPresent null }
+                having { count() isGreaterThan 6 }
+                having { count() isGreaterThan 5 }
             }
         }.withMessage(Messages.getString("ERROR.31"))
     }

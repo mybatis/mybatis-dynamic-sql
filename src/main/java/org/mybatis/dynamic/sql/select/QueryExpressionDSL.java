@@ -24,6 +24,7 @@ import java.util.function.Consumer;
 
 import org.jetbrains.annotations.NotNull;
 import org.mybatis.dynamic.sql.BasicColumn;
+import org.mybatis.dynamic.sql.CriteriaGroup;
 import org.mybatis.dynamic.sql.SortSpecification;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.TableExpression;
@@ -83,6 +84,15 @@ public class QueryExpressionDSL<R>
             havingBuilder = new QueryExpressionHavingBuilder();
         }
         return havingBuilder;
+    }
+
+    /**
+     * This method is meant for use by the Kotlin DSL. We expect a full set of criteria.
+     *
+     * @param criteriaGroup the full criteria for a Kotlin Having clause
+     */
+    protected void applyHaving(CriteriaGroup criteriaGroup) {
+        having().initialize(criteriaGroup);
     }
 
     @NotNull
@@ -492,7 +502,7 @@ public class QueryExpressionDSL<R>
         }
     }
 
-    public class GroupByFinisher extends AbstractHavingSupport<QueryExpressionHavingBuilder> implements Buildable<R> {
+    public class GroupByFinisher extends AbstractHavingStarter<QueryExpressionHavingBuilder> implements Buildable<R> {
         public SelectDSL<R> orderBy(SortSpecification... columns) {
             return orderBy(Arrays.asList(columns));
         }
@@ -528,7 +538,7 @@ public class QueryExpressionDSL<R>
         }
 
         @Override
-        public QueryExpressionHavingBuilder having() {
+        public QueryExpressionHavingBuilder getFinisher() {
             return QueryExpressionDSL.this.having();
         }
     }
@@ -566,7 +576,7 @@ public class QueryExpressionDSL<R>
         }
     }
 
-    public class QueryExpressionHavingBuilder extends AbstractHavingDSL<QueryExpressionHavingBuilder>
+    public class QueryExpressionHavingBuilder extends AbstractHavingFinisher<QueryExpressionHavingBuilder>
             implements Buildable<R> {
 
         public SelectDSL<R>.FetchFirstFinisher fetchFirst(long fetchFirstRows) {

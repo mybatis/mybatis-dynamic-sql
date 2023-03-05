@@ -24,40 +24,46 @@ import org.mybatis.dynamic.sql.ColumnAndConditionCriterion;
 import org.mybatis.dynamic.sql.CriteriaGroup;
 import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.VisitableCondition;
-import org.mybatis.dynamic.sql.common.AbstractBooleanExpressionDSL;
 
-public abstract class AbstractHavingDSL<T extends AbstractHavingDSL<T>> extends AbstractBooleanExpressionDSL<T> {
-    public <S> T having(BindableColumn<S> column, VisitableCondition<S> condition,
-                                        AndOrCriteriaGroup... subCriteria) {
+public abstract class AbstractHavingStarter<F extends AbstractHavingFinisher<?>> {
+
+    public <T> F having(BindableColumn<T> column, VisitableCondition<T> condition,
+                        AndOrCriteriaGroup... subCriteria) {
         return having(column, condition, Arrays.asList(subCriteria));
     }
 
-    public <S> T having(BindableColumn<S> column, VisitableCondition<S> condition,
-                                        List<AndOrCriteriaGroup> subCriteria) {
-        setInitialCriterion(ColumnAndConditionCriterion.withColumn(column)
+    public <T> F having(BindableColumn<T> column, VisitableCondition<T> condition,
+                        List<AndOrCriteriaGroup> subCriteria) {
+        SqlCriterion ic = ColumnAndConditionCriterion.withColumn(column)
                 .withCondition(condition)
                 .withSubCriteria(subCriteria)
-                .build(), "ERROR.31"); //$NON-NLS-1$
-        return getThis();
+                .build();
+
+        F finisher = getFinisher();
+        finisher.initialize(ic);
+        return finisher;
     }
 
-    public T having(SqlCriterion initialCriterion, AndOrCriteriaGroup... subCriteria) {
+    public F having(SqlCriterion initialCriterion, AndOrCriteriaGroup... subCriteria) {
         return having(initialCriterion, Arrays.asList(subCriteria));
     }
 
-    public T having(SqlCriterion initialCriterion, List<AndOrCriteriaGroup> subCriteria) {
-        setInitialCriterion(new CriteriaGroup.Builder()
+    public F having(SqlCriterion initialCriterion, List<AndOrCriteriaGroup> subCriteria) {
+        SqlCriterion ic = new CriteriaGroup.Builder()
                 .withInitialCriterion(initialCriterion)
                 .withSubCriteria(subCriteria)
-                .build(), "ERROR.31"); //$NON-NLS-1$
-        return getThis();
+                .build();
+
+        F finisher = getFinisher();
+        finisher.initialize(ic);
+        return finisher;
     }
 
-    public T applyHaving(HavingApplier havingApplier) {
-        havingApplier.accept(this);
-        return getThis();
+    public F applyHaving(HavingApplier havingApplier) {
+        F finisher = getFinisher();
+        havingApplier.accept(finisher);
+        return finisher;
     }
 
-    @Override
-    protected abstract T getThis();
+    protected abstract F getFinisher();
 }

@@ -712,5 +712,5 @@ class GroupByTest {
         }
     }
 
-    private final HavingApplier commonHaving = d -> d.having(count(), isEqualTo(3L));
+    private final HavingApplier commonHaving = HavingApplier.having(count(), isEqualTo(3L));
 }
