@@ -25,8 +25,8 @@ import org.junit.jupiter.api.Test
 import org.mybatis.dynamic.sql.SqlTable
 import org.mybatis.dynamic.sql.exception.InvalidSqlException
 import org.mybatis.dynamic.sql.util.Messages
+import org.mybatis.dynamic.sql.util.kotlin.GroupingCriteriaCollector.Companion.having
 import org.mybatis.dynamic.sql.util.kotlin.elements.add
-import org.mybatis.dynamic.sql.util.kotlin.elements.booleanExpression
 import org.mybatis.dynamic.sql.util.kotlin.elements.column
 import org.mybatis.dynamic.sql.util.kotlin.elements.count
 import org.mybatis.dynamic.sql.util.kotlin.elements.isBetween
@@ -364,7 +364,7 @@ class KGroupingTest {
 
     @Test
     fun testIndependentHaving() {
-        val havingClause = booleanExpression { count() isGreaterThan 6 }
+        val havingClause = having { count() isGreaterThan 6 }
 
         val selectStatement = select(A, count()) {
             from(foo)

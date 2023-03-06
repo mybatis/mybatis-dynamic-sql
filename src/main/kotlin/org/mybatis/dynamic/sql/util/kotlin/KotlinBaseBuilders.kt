@@ -25,10 +25,10 @@ import org.mybatis.dynamic.sql.where.AbstractWhereStarter
 @DslMarker
 annotation class MyBatisDslMarker
 
-@Deprecated("Please use booleanExpression")
+@Deprecated("Please use GroupingCriteriaCollector.where")
 typealias WhereApplier = KotlinBaseBuilder<*>.() -> Unit
 
-@Deprecated("Please use booleanExpression")
+@Deprecated("Please use GroupingCriteriaCollector.where")
 fun WhereApplier.andThen(after: WhereApplier): WhereApplier = {
     invoke(this)
     after(this)

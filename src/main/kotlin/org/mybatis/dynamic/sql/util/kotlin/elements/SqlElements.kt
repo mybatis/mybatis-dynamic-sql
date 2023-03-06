@@ -77,23 +77,6 @@ import org.mybatis.dynamic.sql.where.condition.IsNotLikeCaseInsensitive
 import org.mybatis.dynamic.sql.where.condition.IsNotNull
 import org.mybatis.dynamic.sql.where.condition.IsNull
 
-/**
- * Function for code simplification. This allows creation of an independent where or having clause
- * that can be reused in different statements. For example:
- *
- * val whereClause = booleanExpression { id isEqualTo 3 }
- *
- * val rows = countFrom(foo) {
- *   where(whereClause)
- * }
- *
- * Use of this function is optional. You can also write code like this:
- *
- * val whereClause: GroupingCriteriaReceiver = { id isEqualTo 3 }
- *
- */
-fun booleanExpression(receiver: GroupingCriteriaReceiver): GroupingCriteriaReceiver = receiver
-
 // support for criteria without initial conditions
 fun and(receiver: GroupingCriteriaReceiver): AndOrCriteriaGroup =
     with(GroupingCriteriaCollector().apply(receiver)) {

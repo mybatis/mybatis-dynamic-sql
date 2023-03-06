@@ -26,9 +26,9 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
+import org.mybatis.dynamic.sql.util.kotlin.GroupingCriteriaCollector.Companion.where
 import org.mybatis.dynamic.sql.util.kotlin.WhereApplier
 import org.mybatis.dynamic.sql.util.kotlin.andThen
-import org.mybatis.dynamic.sql.util.kotlin.elements.booleanExpression
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.select
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -145,7 +145,7 @@ class ReusableWhereTest {
         or { occupation.isNull() }
     }
 
-    private val commonWhereClause = booleanExpression {
+    private val commonWhereClause = where {
         id isEqualTo 1
         or { occupation.isNull() }
     }

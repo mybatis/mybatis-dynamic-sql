@@ -417,6 +417,27 @@ class GroupingCriteriaCollector : SubCriteriaCollector() {
 
     infix fun BindableColumn<String>.isNotInCaseInsensitiveWhenPresent(values: Collection<String?>?) =
         invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isNotInCaseInsensitiveWhenPresent(values))
+
+    companion object {
+        fun having(receiver: GroupingCriteriaReceiver): GroupingCriteriaReceiver = receiver
+
+        /**
+         * Function for code simplification. This allows creation of an independent where clause
+         * that can be reused in different statements. For example:
+         *
+         * val whereClause = where { id isEqualTo 3 }
+         *
+         * val rows = countFrom(foo) {
+         *   where(whereClause)
+         * }
+         *
+         * Use of this function is optional. You can also write code like this:
+         *
+         * val whereClause: GroupingCriteriaReceiver = { id isEqualTo 3 }
+         *
+         */
+        fun where(receiver: GroupingCriteriaReceiver): GroupingCriteriaReceiver = receiver
+    }
 }
 
 class SecondValueCollector<T> (private val consumer: (T) -> Unit) {
