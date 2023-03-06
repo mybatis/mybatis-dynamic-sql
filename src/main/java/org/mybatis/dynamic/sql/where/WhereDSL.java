@@ -23,14 +23,11 @@ import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
 import org.mybatis.dynamic.sql.util.Buildable;
 
 public class WhereDSL extends AbstractWhereStarter<WhereDSL.StandaloneWhereFinisher, WhereDSL> {
-    private StandaloneWhereFinisher whereBuilder;
     private final StatementConfiguration statementConfiguration = new StatementConfiguration();
+    private final StandaloneWhereFinisher whereBuilder = new StandaloneWhereFinisher();
 
     @Override
     public StandaloneWhereFinisher where() {
-        if (whereBuilder == null) {
-            whereBuilder = new StandaloneWhereFinisher();
-        }
         return whereBuilder;
     }
 
