@@ -18,19 +18,20 @@ package org.mybatis.dynamic.sql.where;
 import java.util.function.Consumer;
 
 import org.jetbrains.annotations.NotNull;
+import org.mybatis.dynamic.sql.CriteriaGroup;
 import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
 import org.mybatis.dynamic.sql.util.Buildable;
 
-public class WhereDSL extends AbstractWhereStarter<WhereDSL.WhereFinisher, WhereDSL> implements Buildable<WhereModel> {
-    private WhereFinisher whereBuilder;
+public class WhereDSL extends AbstractWhereStarter<WhereDSL.StandaloneWhereFinisher, WhereDSL> implements Buildable<WhereModel> {
+    private StandaloneWhereFinisher whereBuilder;
     private final StatementConfiguration statementConfiguration = new StatementConfiguration();
 
     public WhereDSL() { }
 
     @Override
-    public WhereFinisher where() {
+    public StandaloneWhereFinisher where() {
         if (whereBuilder == null) {
-            whereBuilder = new WhereFinisher();
+            whereBuilder = new StandaloneWhereFinisher();
         }
         return whereBuilder;
     }
@@ -47,13 +48,13 @@ public class WhereDSL extends AbstractWhereStarter<WhereDSL.WhereFinisher, Where
         return this;
     }
 
-    public class WhereFinisher extends AbstractWhereFinisher<WhereFinisher> implements Buildable<WhereModel> {
-        private WhereFinisher() {
+    public class StandaloneWhereFinisher extends AbstractWhereFinisher<StandaloneWhereFinisher> implements Buildable<WhereModel> {
+        private StandaloneWhereFinisher() {
             super(statementConfiguration);
         }
 
         @Override
-        protected WhereFinisher getThis() {
+        protected StandaloneWhereFinisher getThis() {
             return this;
         }
 
@@ -61,6 +62,15 @@ public class WhereDSL extends AbstractWhereStarter<WhereDSL.WhereFinisher, Where
         @Override
         public WhereModel build() {
             return WhereDSL.this.build();
+        }
+
+        public WhereApplier toWhereApplier() {
+            CriteriaGroup ic = new CriteriaGroup.Builder()
+                    .withInitialCriterion(getInitialCriterion())
+                    .withSubCriteria(subCriteria)
+                    .build();
+
+            return d -> d.initialize(ic);
         }
     }
 }

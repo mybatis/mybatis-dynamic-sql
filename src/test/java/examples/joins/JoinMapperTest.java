@@ -49,7 +49,6 @@ import org.mybatis.dynamic.sql.select.SelectModel;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.util.Messages;
 import org.mybatis.dynamic.sql.util.mybatis3.CommonSelectMapper;
-import org.mybatis.dynamic.sql.where.WhereApplier;
 
 class JoinMapperTest {
 
@@ -271,7 +270,7 @@ class JoinMapperTest {
                     .from(orderMaster, "om")
                     .join(orderLine, "ol").on(orderMaster.orderId, equalTo(orderLine.orderId))
                     .join(itemMaster, "im").on(orderLine.itemId, equalTo(itemMaster.itemId))
-                    .applyWhere(WhereApplier.where(orderMaster.orderId, isEqualTo(2)))
+                    .applyWhere(where(orderMaster.orderId, isEqualTo(2)).toWhereApplier())
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
 

@@ -240,20 +240,20 @@ public interface SqlBuilder {
         return UpdateDSL.update(table, tableAlias);
     }
 
-    static WhereDSL.WhereFinisher where() {
+    static WhereDSL.StandaloneWhereFinisher where() {
         return new WhereDSL().where();
     }
 
-    static <T> WhereDSL.WhereFinisher where(BindableColumn<T> column, VisitableCondition<T> condition,
-                              AndOrCriteriaGroup... subCriteria) {
+    static <T> WhereDSL.StandaloneWhereFinisher where(BindableColumn<T> column, VisitableCondition<T> condition,
+                                                      AndOrCriteriaGroup... subCriteria) {
         return new WhereDSL().where(column, condition, subCriteria);
     }
 
-    static WhereDSL.WhereFinisher where(SqlCriterion initialCriterion, AndOrCriteriaGroup... subCriteria) {
+    static WhereDSL.StandaloneWhereFinisher where(SqlCriterion initialCriterion, AndOrCriteriaGroup... subCriteria) {
         return new WhereDSL().where(initialCriterion, subCriteria);
     }
 
-    static WhereDSL.WhereFinisher where(ExistsPredicate existsPredicate, AndOrCriteriaGroup... subCriteria) {
+    static WhereDSL.StandaloneWhereFinisher where(ExistsPredicate existsPredicate, AndOrCriteriaGroup... subCriteria) {
         return new WhereDSL().where(existsPredicate, subCriteria);
     }
 

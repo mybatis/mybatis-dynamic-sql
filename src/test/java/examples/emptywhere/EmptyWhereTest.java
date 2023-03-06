@@ -262,7 +262,7 @@ class EmptyWhereTest {
         String fName = "Fred";
         String lName = "Flintstone";
 
-        WhereDSL.WhereFinisher builder = where(id, isEqualTo(3));
+        WhereDSL.StandaloneWhereFinisher builder = where(id, isEqualTo(3));
 
         builder.and(firstName, isEqualTo(fName).filter(Objects::nonNull));
         builder.and(PersonDynamicSqlSupport.lastName, isEqualTo(lName).filter(Objects::nonNull));
@@ -281,7 +281,7 @@ class EmptyWhereTest {
     @ParameterizedTest
     @MethodSource("whereVariations")
     void testWhereVariations(Variation variation) {
-        WhereDSL.WhereFinisher builder = where();
+        WhereDSL.StandaloneWhereFinisher builder = where();
 
         builder.and(firstName, isEqualTo(variation.firstName).filter(Objects::nonNull));
         builder.or(PersonDynamicSqlSupport.lastName, isEqualTo(variation.lastName).filter(Objects::nonNull));

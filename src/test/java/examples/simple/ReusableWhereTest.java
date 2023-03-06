@@ -20,6 +20,7 @@ import static examples.simple.PersonDynamicSqlSupport.occupation;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
 import static org.mybatis.dynamic.sql.SqlBuilder.isNull;
+import static org.mybatis.dynamic.sql.SqlBuilder.where;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -113,6 +114,5 @@ class ReusableWhereTest {
         }
     }
 
-    private final WhereApplier commonWhere = WhereApplier.where(id, isEqualTo(1))
-            .andThen(wa -> wa.or(occupation, isNull()));
+    private final WhereApplier commonWhere = where(id, isEqualTo(1)).or(occupation, isNull()).toWhereApplier();
 }
