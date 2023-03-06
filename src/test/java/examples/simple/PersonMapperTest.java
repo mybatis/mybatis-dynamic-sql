@@ -953,9 +953,9 @@ class PersonMapperTest {
                         .from(person)
                         .where(id, isLessThanOrEqualTo(2))
         ).unionAll(
-                        select(id, firstName, lastName, birthDate, employed, occupation, addressId)
-                                .from(person)
-                                .where(id, isGreaterThanOrEqualTo(4))
+                select(id, firstName, lastName, birthDate, employed, occupation, addressId)
+                        .from(person)
+                        .where(id, isGreaterThanOrEqualTo(4))
                 )
                 .orderBy(id)
                 .build()
