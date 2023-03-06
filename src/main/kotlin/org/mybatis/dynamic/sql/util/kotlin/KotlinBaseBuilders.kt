@@ -19,14 +19,16 @@ import org.mybatis.dynamic.sql.AndOrCriteriaGroup
 import org.mybatis.dynamic.sql.SqlTable
 import org.mybatis.dynamic.sql.configuration.StatementConfiguration
 import org.mybatis.dynamic.sql.select.AbstractQueryExpressionDSL
-import org.mybatis.dynamic.sql.where.AbstractWhereSupport
+import org.mybatis.dynamic.sql.where.AbstractWhereStarter
 
 @Target(AnnotationTarget.CLASS, AnnotationTarget.TYPE)
 @DslMarker
 annotation class MyBatisDslMarker
 
+@Deprecated("Please use GroupingCriteriaCollector.where")
 typealias WhereApplier = KotlinBaseBuilder<*>.() -> Unit
 
+@Deprecated("Please use GroupingCriteriaCollector.where")
 fun WhereApplier.andThen(after: WhereApplier): WhereApplier = {
     invoke(this)
     after(this)
@@ -34,15 +36,15 @@ fun WhereApplier.andThen(after: WhereApplier): WhereApplier = {
 
 @MyBatisDslMarker
 @Suppress("TooManyFunctions")
-abstract class KotlinBaseBuilder<D : AbstractWhereSupport<*,*>> {
+abstract class KotlinBaseBuilder<D : AbstractWhereStarter<*,*>> {
 
     fun configureStatement(c: StatementConfiguration.() -> Unit) {
         getDsl().configureStatement(c)
     }
 
     fun where(criteria: GroupingCriteriaReceiver): Unit =
-        with(GroupingCriteriaCollector().apply(criteria)) {
-            this@KotlinBaseBuilder.getDsl().where(initialCriterion, subCriteria)
+        GroupingCriteriaCollector().apply(criteria).let {
+            getDsl().where(it.initialCriterion, it.subCriteria)
         }
 
     fun where(criteria: List<AndOrCriteriaGroup>) {
@@ -50,8 +52,8 @@ abstract class KotlinBaseBuilder<D : AbstractWhereSupport<*,*>> {
     }
 
     fun and(criteria: GroupingCriteriaReceiver): Unit =
-        with(GroupingCriteriaCollector().apply(criteria)) {
-            this@KotlinBaseBuilder.getDsl().where().and(initialCriterion, subCriteria)
+        GroupingCriteriaCollector().apply(criteria).let {
+            getDsl().where().and(it.initialCriterion, it.subCriteria)
         }
 
     fun and(criteria: List<AndOrCriteriaGroup>) {
@@ -59,14 +61,15 @@ abstract class KotlinBaseBuilder<D : AbstractWhereSupport<*,*>> {
     }
 
     fun or(criteria: GroupingCriteriaReceiver): Unit =
-        with(GroupingCriteriaCollector().apply(criteria)) {
-            this@KotlinBaseBuilder.getDsl().where().or(initialCriterion, subCriteria)
+        GroupingCriteriaCollector().apply(criteria).let {
+            getDsl().where().or(it.initialCriterion, it.subCriteria)
         }
 
     fun or(criteria: List<AndOrCriteriaGroup>) {
         getDsl().where().or(criteria)
     }
 
+    @Deprecated("Please use GroupingCriteriaCollector.where, then pass it to the \"where\" method")
     fun applyWhere(whereApplier: WhereApplier) = whereApplier.invoke(this)
 
     /**

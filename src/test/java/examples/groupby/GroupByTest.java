@@ -39,6 +39,7 @@ import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
+import org.mybatis.dynamic.sql.select.HavingApplier;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.util.mybatis3.CommonSelectMapper;
 
@@ -662,4 +663,54 @@ class GroupByTest {
             assertThat(row).containsEntry("LAST_NAME", "Flintstone");
         }
     }
+
+    @Test
+    void testStandaloneHaving() {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
+            CommonSelectMapper mapper = session.getMapper(CommonSelectMapper.class);
+
+            SelectStatementProvider selectStatement = select(lastName, count())
+                    .from(person)
+                    .groupBy(lastName)
+                    .applyHaving(commonHaving)
+                    .build()
+                    .render(RenderingStrategies.MYBATIS3);
+
+            String expected = "select last_name, count(*) from Person group by last_name " +
+                    "having count(*) = #{parameters.p1}";
+            assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
+
+            List<Map<String, Object>> rows = mapper.selectManyMappedRows(selectStatement);
+            assertThat(rows).hasSize(1);
+            Map<String, Object> row = rows.get(0);
+            assertThat(row).containsEntry("LAST_NAME", "Rubble");
+        }
+    }
+
+    @Test
+    void testComposedHaving() {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
+            CommonSelectMapper mapper = session.getMapper(CommonSelectMapper.class);
+
+            HavingApplier composedHaving = commonHaving.andThen(d -> d.and(lastName, isEqualTo("Rubble")));
+
+            SelectStatementProvider selectStatement = select(lastName, count())
+                    .from(person)
+                    .groupBy(lastName)
+                    .applyHaving(composedHaving)
+                    .build()
+                    .render(RenderingStrategies.MYBATIS3);
+
+            String expected = "select last_name, count(*) from Person group by last_name " +
+                    "having count(*) = #{parameters.p1} and last_name = #{parameters.p2,jdbcType=VARCHAR}";
+            assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
+
+            List<Map<String, Object>> rows = mapper.selectManyMappedRows(selectStatement);
+            assertThat(rows).hasSize(1);
+            Map<String, Object> row = rows.get(0);
+            assertThat(row).containsEntry("LAST_NAME", "Rubble");
+        }
+    }
+
+    private final HavingApplier commonHaving = having(count(), isEqualTo(3L)).toHavingApplier();
 }

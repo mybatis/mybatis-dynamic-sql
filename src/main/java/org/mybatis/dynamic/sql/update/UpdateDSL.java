@@ -42,11 +42,11 @@ import org.mybatis.dynamic.sql.util.StringConstantMapping;
 import org.mybatis.dynamic.sql.util.ValueMapping;
 import org.mybatis.dynamic.sql.util.ValueOrNullMapping;
 import org.mybatis.dynamic.sql.util.ValueWhenPresentMapping;
-import org.mybatis.dynamic.sql.where.AbstractWhereDSL;
-import org.mybatis.dynamic.sql.where.AbstractWhereSupport;
+import org.mybatis.dynamic.sql.where.AbstractWhereFinisher;
+import org.mybatis.dynamic.sql.where.AbstractWhereStarter;
 import org.mybatis.dynamic.sql.where.WhereModel;
 
-public class UpdateDSL<R> extends AbstractWhereSupport<UpdateDSL<R>.UpdateWhereBuilder, UpdateDSL<R>>
+public class UpdateDSL<R> extends AbstractWhereStarter<UpdateDSL<R>.UpdateWhereBuilder, UpdateDSL<R>>
         implements Buildable<R> {
 
     private final Function<UpdateModel, R> adapterFunction;
@@ -192,7 +192,7 @@ public class UpdateDSL<R> extends AbstractWhereSupport<UpdateDSL<R>.UpdateWhereB
         }
     }
 
-    public class UpdateWhereBuilder extends AbstractWhereDSL<UpdateWhereBuilder> implements Buildable<R> {
+    public class UpdateWhereBuilder extends AbstractWhereFinisher<UpdateWhereBuilder> implements Buildable<R> {
 
         private UpdateWhereBuilder() {
             super(statementConfiguration);
@@ -223,7 +223,7 @@ public class UpdateDSL<R> extends AbstractWhereSupport<UpdateDSL<R>.UpdateWhereB
         }
 
         protected WhereModel buildWhereModel() {
-            return internalBuild();
+            return buildModel();
         }
     }
 }

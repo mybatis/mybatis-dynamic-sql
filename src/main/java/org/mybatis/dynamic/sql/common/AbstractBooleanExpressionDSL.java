@@ -145,9 +145,9 @@ public abstract class AbstractBooleanExpressionDSL<T extends AbstractBooleanExpr
                 .build());
     }
 
-    protected void setInitialCriterion(SqlCriterion initialCriterion) {
+    protected void setInitialCriterion(SqlCriterion initialCriterion, StatementType statementType) {
         if (this.initialCriterion != null) {
-            throw new InvalidSqlException(Messages.getString("ERROR.32")); //$NON-NLS-1$
+            throw new InvalidSqlException(Messages.getString(statementType.messageNumber())); //$NON-NLS-1$
         }
 
         this.initialCriterion = initialCriterion;
@@ -159,4 +159,19 @@ public abstract class AbstractBooleanExpressionDSL<T extends AbstractBooleanExpr
     }
 
     protected abstract T getThis();
+
+    public enum StatementType {
+        WHERE("ERROR.32"), //$NON-NLS-1$
+        HAVING("ERROR.31"); //$NON-NLS-1$
+
+        private final String messageNumber;
+
+        public String messageNumber() {
+            return messageNumber;
+        }
+
+        StatementType(String messageNumber) {
+            this.messageNumber = messageNumber;
+        }
+    }
 }

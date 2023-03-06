@@ -80,16 +80,16 @@ import org.mybatis.dynamic.sql.where.condition.IsNull
 // support for criteria without initial conditions
 fun and(receiver: GroupingCriteriaReceiver): AndOrCriteriaGroup =
     with(GroupingCriteriaCollector().apply(receiver)) {
-        AndOrCriteriaGroup.Builder().withInitialCriterion(this.initialCriterion)
-            .withSubCriteria(this.subCriteria)
+        AndOrCriteriaGroup.Builder().withInitialCriterion(initialCriterion)
+            .withSubCriteria(subCriteria)
             .withConnector("and")
             .build()
     }
 
 fun or(receiver: GroupingCriteriaReceiver): AndOrCriteriaGroup =
     with(GroupingCriteriaCollector().apply(receiver)) {
-        AndOrCriteriaGroup.Builder().withInitialCriterion(this.initialCriterion)
-            .withSubCriteria(this.subCriteria)
+        AndOrCriteriaGroup.Builder().withInitialCriterion(initialCriterion)
+            .withSubCriteria(subCriteria)
             .withConnector("or")
             .build()
     }

@@ -13,27 +13,18 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.mybatis.dynamic.sql.where;
+package org.mybatis.dynamic.sql.select;
 
-import java.util.function.Consumer;
-
+import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.common.AbstractBooleanExpressionDSL;
 
-@FunctionalInterface
-public interface WhereApplier {
+public abstract class AbstractHavingFinisher<T extends AbstractHavingFinisher<T>>
+        extends AbstractBooleanExpressionDSL<T> {
+    void initialize(SqlCriterion sqlCriterion) {
+        setInitialCriterion(sqlCriterion, StatementType.HAVING);
+    }
 
-    void accept(AbstractWhereFinisher<?> whereFinisher);
-
-    /**
-     * Return a composed where applier that performs this operation followed by the after operation.
-     *
-     * @param after the operation to perform after this operation
-     * @return a composed where applier that performs this operation followed by the after operation.
-     */
-    default WhereApplier andThen(Consumer<AbstractBooleanExpressionDSL<?>> after) {
-        return t -> {
-            accept(t);
-            after.accept(t);
-        };
+    protected HavingModel buildModel() {
+        return new HavingModel(getInitialCriterion(), subCriteria);
     }
 }

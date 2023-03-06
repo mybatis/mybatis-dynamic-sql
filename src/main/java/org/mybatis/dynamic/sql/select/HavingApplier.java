@@ -13,24 +13,25 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.mybatis.dynamic.sql.where;
+package org.mybatis.dynamic.sql.select;
 
 import java.util.function.Consumer;
 
 import org.mybatis.dynamic.sql.common.AbstractBooleanExpressionDSL;
 
 @FunctionalInterface
-public interface WhereApplier {
+public interface HavingApplier {
 
-    void accept(AbstractWhereFinisher<?> whereFinisher);
+    void accept(AbstractHavingFinisher<?> havingFinisher);
 
     /**
-     * Return a composed where applier that performs this operation followed by the after operation.
+     * Return a composed having applier that performs this operation followed by the after operation.
      *
      * @param after the operation to perform after this operation
-     * @return a composed where applier that performs this operation followed by the after operation.
+     *
+     * @return a composed having applier that performs this operation followed by the after operation.
      */
-    default WhereApplier andThen(Consumer<AbstractBooleanExpressionDSL<?>> after) {
+    default HavingApplier andThen(Consumer<AbstractBooleanExpressionDSL<?>> after) {
         return t -> {
             accept(t);
             after.accept(t);

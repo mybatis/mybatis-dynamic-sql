@@ -13,48 +13,37 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.mybatis.dynamic.sql.where;
-
-import java.util.function.Consumer;
+package org.mybatis.dynamic.sql.select;
 
 import org.jetbrains.annotations.NotNull;
 import org.mybatis.dynamic.sql.CriteriaGroup;
-import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
 import org.mybatis.dynamic.sql.util.Buildable;
 
-public class WhereDSL extends AbstractWhereStarter<WhereDSL.StandaloneWhereFinisher, WhereDSL> {
-    private final StatementConfiguration statementConfiguration = new StatementConfiguration();
-    private final StandaloneWhereFinisher whereBuilder = new StandaloneWhereFinisher();
+public class HavingDSL extends AbstractHavingStarter<HavingDSL.StandaloneHavingFinisher> {
+    private final StandaloneHavingFinisher havingFinisher = new StandaloneHavingFinisher();
 
     @Override
-    public StandaloneWhereFinisher where() {
-        return whereBuilder;
+    protected StandaloneHavingFinisher having() {
+        return havingFinisher;
     }
 
-    @Override
-    public WhereDSL configureStatement(Consumer<StatementConfiguration> consumer) {
-        consumer.accept(statementConfiguration);
-        return this;
-    }
+    public static class StandaloneHavingFinisher extends AbstractHavingFinisher<StandaloneHavingFinisher>
+            implements Buildable<HavingModel> {
 
-    public class StandaloneWhereFinisher extends AbstractWhereFinisher<StandaloneWhereFinisher>
-            implements Buildable<WhereModel> {
-        private StandaloneWhereFinisher() {
-            super(statementConfiguration);
-        }
+        private StandaloneHavingFinisher() {}
 
         @Override
-        protected StandaloneWhereFinisher getThis() {
+        protected StandaloneHavingFinisher getThis() {
             return this;
         }
 
         @NotNull
         @Override
-        public WhereModel build() {
+        public HavingModel build() {
             return buildModel();
         }
 
-        public WhereApplier toWhereApplier() {
+        public HavingApplier toHavingApplier() {
             CriteriaGroup ic = new CriteriaGroup.Builder()
                     .withInitialCriterion(getInitialCriterion())
                     .withSubCriteria(subCriteria)

@@ -15,10 +15,9 @@
  */
 package org.mybatis.dynamic.sql.util.kotlin
 
-import org.mybatis.dynamic.sql.AndOrCriteriaGroup
 import org.mybatis.dynamic.sql.BasicColumn
+import org.mybatis.dynamic.sql.CriteriaGroup
 import org.mybatis.dynamic.sql.SortSpecification
-import org.mybatis.dynamic.sql.SqlCriterion
 import org.mybatis.dynamic.sql.SqlTable
 import org.mybatis.dynamic.sql.select.QueryExpressionDSL
 import org.mybatis.dynamic.sql.select.SelectModel
@@ -52,8 +51,8 @@ class KotlinSelectBuilder(private val fromGatherer: QueryExpressionDSL.FromGathe
     }
 
     fun having(criteria: GroupingCriteriaReceiver): Unit =
-        with(GroupingCriteriaCollector().apply(criteria)) {
-            this@KotlinSelectBuilder.getDsl().applyHaving(initialCriterion, subCriteria)
+        GroupingCriteriaCollector().apply(criteria).let {
+            getDsl().applyHaving(it)
         }
 
     fun orderBy(vararg columns: SortSpecification) {
@@ -99,8 +98,12 @@ class KQueryExpressionDSL: QueryExpressionDSL<SelectModel> {
     constructor(fromGatherer: FromGatherer<SelectModel>, subQuery: KotlinQualifiedSubQueryBuilder) :
             super(fromGatherer, buildSubQuery(subQuery))
 
-    internal fun applyHaving(initialCriterion: SqlCriterion?, subCriteria: List<AndOrCriteriaGroup>) {
-        having(initialCriterion, subCriteria)
+    internal fun applyHaving(collector: GroupingCriteriaCollector) {
+        val cg = CriteriaGroup.Builder()
+            .withInitialCriterion(collector.initialCriterion)
+            .withSubCriteria(collector.subCriteria)
+            .build()
+        applyHaving(cg)
     }
 
     companion object {

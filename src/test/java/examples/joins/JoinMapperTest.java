@@ -270,7 +270,7 @@ class JoinMapperTest {
                     .from(orderMaster, "om")
                     .join(orderLine, "ol").on(orderMaster.orderId, equalTo(orderLine.orderId))
                     .join(itemMaster, "im").on(orderLine.itemId, equalTo(itemMaster.itemId))
-                    .applyWhere(d -> d.where(orderMaster.orderId, isEqualTo(2)))
+                    .applyWhere(where(orderMaster.orderId, isEqualTo(2)).toWhereApplier())
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
 

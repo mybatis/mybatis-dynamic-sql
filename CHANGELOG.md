@@ -6,6 +6,38 @@ This log will detail notable changes to MyBatis Dynamic SQL. Full details are av
 
 GitHub milestone: [https://github.com/mybatis/mybatis-dynamic-sql/milestone/12?closed=1](https://github.com/mybatis/mybatis-dynamic-sql/milestone/12?closed=1)
 
+### Potentially Breaking Changes
+
+This release includes a major refactoring of the "where" clause support. This is done to support common code for
+"having" clauses which is a new feature (see below). Most changes are source code compatible with previous
+releases and should be transparent with no impact. Following is a list of some more visible changes...
+
+First, the "where" methods in `SqlBuilder` now return an instance of `WhereDSL.StandaloneWhereFinisher` rather than
+`WhereDSL`. This will only impact you if you are using the WhereDSL directly which is a rare use case.
+
+Second, if you are using independent or reusable where clauses you will need to make changes. Previously you might have
+coded an independent where clause like this:
+
+```java
+private WhereApplier commonWhere = d -> d.where(id, isEqualTo(1)).or(occupation, isNull());
+```
+
+Code like this will no longer compile. There are two options for updates. The simplest change to make is to
+replace "where" with "and" or "or" in the above code. For example...
+
+```java
+private WhereApplier commonWhere = d -> d.and(id, isEqualTo(1)).or(occupation, isNull());
+```
+
+This will function as before, but you may think it looks a bit strange because the phrase starts with "and". If you
+want this to look more like true SQL, you can write code like this:
+
+```java
+private final WhereApplier commonWhere = where(id, isEqualTo(1)).or(occupation, isNull()).toWhereApplier();
+```
+
+This uses a `where` method from `SqlBuilder`. 
+
 ### "Having" Clause Support
 
 This release adds support for "having" clauses in select statements. This includes a refactoring of the "where"
@@ -22,10 +54,6 @@ where (a < 2 and b > 3)
 
 The renderer will now remove the open/close parentheses in a case like this.
 
-The "having" support is not as full-featured as the "where" support in that we don't support independent and
-reusable having clauses, and we don't support composable having functions. If you have a reasonable use case
-for that kind of support, please let us know.
-
 In the Java DSL, a "having" clause can only be coded after a "group by" clause - which is a reasonable restriction
 as "having" is only needed if there is a "group by".
 
@@ -38,7 +66,29 @@ The pull request for this change is ([#550](https://github.com/mybatis/mybatis-d
 ### Multi-Select Queries
 
 A multi-select query is a special case of a union select statement. The difference is that it allows "order by" and
-paging clauses to be applied to the nested queries.
+paging clauses to be applied to the nested queries. A multi-select query looks like this:
+
+```java
+SelectStatementProvider selectStatement = multiSelect(
+        select(id.as("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId)
+        .from(person)
+        .where(id, isLessThanOrEqualTo(2))
+        .orderBy(id)
+        .limit(1)
+).unionAll(
+        select(id.as("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId)
+        .from(person)
+        .where(id, isGreaterThanOrEqualTo(4))
+        .orderBy(id.descending())
+        .limit(1)
+).orderBy(sortColumn("A_ID"))
+.fetchFirst(2).rowsOnly()
+.build()
+.render(RenderingStrategies.MYBATIS3);
+```
+
+Notice how both inner queries have `order by` and `limit` phrases, then there is an `order by` phrase
+for the entire query.
 
 The pull request for this change is ([#591](https://github.com/mybatis/mybatis-dynamic-sql/pull/591))
 

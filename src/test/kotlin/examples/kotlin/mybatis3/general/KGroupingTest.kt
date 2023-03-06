@@ -24,6 +24,8 @@ import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.junit.jupiter.api.Test
 import org.mybatis.dynamic.sql.SqlTable
 import org.mybatis.dynamic.sql.exception.InvalidSqlException
+import org.mybatis.dynamic.sql.util.Messages
+import org.mybatis.dynamic.sql.util.kotlin.GroupingCriteriaCollector.Companion.having
 import org.mybatis.dynamic.sql.util.kotlin.elements.add
 import org.mybatis.dynamic.sql.util.kotlin.elements.column
 import org.mybatis.dynamic.sql.util.kotlin.elements.count
@@ -361,6 +363,25 @@ class KGroupingTest {
     }
 
     @Test
+    fun testIndependentHaving() {
+        val havingClause = having { count() isGreaterThan 6 }
+
+        val selectStatement = select(A, count()) {
+            from(foo)
+            groupBy(A)
+            having(havingClause)
+        }
+
+        val expected = "select A, count(*)" +
+                " from Foo" +
+                " group by A" +
+                " having count(*) > #{parameters.p1}"
+
+        assertThat(selectStatement.selectStatement).isEqualTo(expected)
+        assertThat(selectStatement.parameters).containsEntry("p1", 6L)
+    }
+
+    @Test
     fun testHavingMultipleConditions() {
         val selectStatement = select(A, count()) {
             from(foo)
@@ -404,9 +425,9 @@ class KGroupingTest {
             select(A, count()) {
                 from(foo)
                 groupBy(A)
-                having { count() isGreaterThanWhenPresent null }
-                having { count() isGreaterThanWhenPresent null }
+                having { count() isGreaterThan 6 }
+                having { count() isGreaterThan 5 }
             }
-        }
+        }.withMessage(Messages.getString("ERROR.31"))
     }
 }

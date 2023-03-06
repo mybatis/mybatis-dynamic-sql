@@ -30,6 +30,7 @@ import org.mybatis.dynamic.sql.insert.InsertSelectDSL;
 import org.mybatis.dynamic.sql.insert.MultiRowInsertDSL;
 import org.mybatis.dynamic.sql.select.ColumnSortSpecification;
 import org.mybatis.dynamic.sql.select.CountDSL;
+import org.mybatis.dynamic.sql.select.HavingDSL;
 import org.mybatis.dynamic.sql.select.MultiSelectDSL;
 import org.mybatis.dynamic.sql.select.QueryExpressionDSL.FromGatherer;
 import org.mybatis.dynamic.sql.select.SelectDSL;
@@ -240,21 +241,30 @@ public interface SqlBuilder {
         return UpdateDSL.update(table, tableAlias);
     }
 
-    static WhereDSL where() {
-        return WhereDSL.where();
+    static WhereDSL.StandaloneWhereFinisher where() {
+        return new WhereDSL().where();
     }
 
-    static <T> WhereDSL where(BindableColumn<T> column, VisitableCondition<T> condition,
-                              AndOrCriteriaGroup... subCriteria) {
-        return WhereDSL.where().where(column, condition, subCriteria);
+    static <T> WhereDSL.StandaloneWhereFinisher where(BindableColumn<T> column, VisitableCondition<T> condition,
+                                                      AndOrCriteriaGroup... subCriteria) {
+        return new WhereDSL().where(column, condition, subCriteria);
     }
 
-    static WhereDSL where(SqlCriterion initialCriterion, AndOrCriteriaGroup... subCriteria) {
-        return WhereDSL.where().where(initialCriterion, subCriteria);
+    static WhereDSL.StandaloneWhereFinisher where(SqlCriterion initialCriterion, AndOrCriteriaGroup... subCriteria) {
+        return new WhereDSL().where(initialCriterion, subCriteria);
     }
 
-    static WhereDSL where(ExistsPredicate existsPredicate, AndOrCriteriaGroup... subCriteria) {
-        return WhereDSL.where().where(existsPredicate, subCriteria);
+    static WhereDSL.StandaloneWhereFinisher where(ExistsPredicate existsPredicate, AndOrCriteriaGroup... subCriteria) {
+        return new WhereDSL().where(existsPredicate, subCriteria);
+    }
+
+    static <T> HavingDSL.StandaloneHavingFinisher having(BindableColumn<T> column, VisitableCondition<T> condition,
+                                              AndOrCriteriaGroup... subCriteria) {
+        return new HavingDSL().having(column, condition, subCriteria);
+    }
+
+    static HavingDSL.StandaloneHavingFinisher having(SqlCriterion initialCriterion, AndOrCriteriaGroup... subCriteria) {
+        return new HavingDSL().having(initialCriterion, subCriteria);
     }
 
     // where condition connectors
