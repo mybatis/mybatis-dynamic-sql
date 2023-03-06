@@ -32,7 +32,7 @@ import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 
 class HavingModelTest {
     @Test
-    void testNormalHaving() {
+    void testSimpleHaving() {
         SqlTable table = SqlTable.of("foo");
         SqlColumn<Integer> id = table.column("id", JDBCType.INTEGER);
 
@@ -44,6 +44,22 @@ class HavingModelTest {
 
         assertThat(havingClause).hasValueSatisfying(hc ->
                 assertThat(hc.fragment()).isEqualTo("having id < :p1 or id > :p2")
+        );
+    }
+
+    @Test
+    void testComplexHaving() {
+        SqlTable table = SqlTable.of("foo");
+        SqlColumn<Integer> id = table.column("id", JDBCType.INTEGER);
+
+        HavingModel model = having(group(id, isLessThan(10), and(id, isGreaterThan(4))))
+                .or(id, isGreaterThan(14))
+                .build();
+
+        Optional<FragmentAndParameters> havingClause = renderHavingModel(model);
+
+        assertThat(havingClause).hasValueSatisfying(hc ->
+                assertThat(hc.fragment()).isEqualTo("having (id < :p1 and id > :p2) or id > :p3")
         );
     }
 

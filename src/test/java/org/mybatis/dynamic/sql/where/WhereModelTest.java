@@ -55,8 +55,9 @@ class WhereModelTest {
 
     @Test
     void testNonRenderingWhereAllowed() {
-        Optional<WhereClauseProvider> whereClause = where()
+        Optional<WhereClauseProvider> whereClause = new WhereDSL()
                 .configureStatement(c -> c.setNonRenderingWhereClauseAllowed(true))
+                .where()
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
