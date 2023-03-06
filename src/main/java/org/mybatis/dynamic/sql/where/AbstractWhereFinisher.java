@@ -28,7 +28,7 @@ public abstract class AbstractWhereFinisher<T extends AbstractWhereFinisher<T>> 
     private final StatementConfiguration statementConfiguration;
 
     void initialize(SqlCriterion sqlCriterion) {
-        setInitialCriterion(sqlCriterion, "ERROR.32"); //$NON-NLS-1$
+        setInitialCriterion(sqlCriterion, StatementType.WHERE);
     }
 
     protected AbstractWhereFinisher(StatementConfiguration statementConfiguration) {

@@ -21,7 +21,7 @@ import org.mybatis.dynamic.sql.common.AbstractBooleanExpressionDSL;
 public abstract class AbstractHavingFinisher<T extends AbstractHavingFinisher<T>>
         extends AbstractBooleanExpressionDSL<T> {
     void initialize(SqlCriterion sqlCriterion) {
-        setInitialCriterion(sqlCriterion, "ERROR.31"); //$NON-NLS-1$
+        setInitialCriterion(sqlCriterion, StatementType.HAVING);
     }
 
     protected HavingModel buildModel() {
