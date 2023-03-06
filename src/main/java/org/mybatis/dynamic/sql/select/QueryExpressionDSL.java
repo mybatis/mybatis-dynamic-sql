@@ -336,7 +336,7 @@ public class QueryExpressionDSL<R>
         }
 
         protected WhereModel buildWhereModel() {
-            return buildModel();
+            return super.buildModel();
         }
     }
 
@@ -624,7 +624,7 @@ public class QueryExpressionDSL<R>
         }
 
         protected HavingModel buildHavingModel() {
-            return buildModel();
+            return super.buildModel();
         }
     }
 }

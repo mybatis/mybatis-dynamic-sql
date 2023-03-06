@@ -26,8 +26,6 @@ public class WhereDSL extends AbstractWhereStarter<WhereDSL.StandaloneWhereFinis
     private StandaloneWhereFinisher whereBuilder;
     private final StatementConfiguration statementConfiguration = new StatementConfiguration();
 
-    public WhereDSL() { }
-
     @Override
     public StandaloneWhereFinisher where() {
         if (whereBuilder == null) {
