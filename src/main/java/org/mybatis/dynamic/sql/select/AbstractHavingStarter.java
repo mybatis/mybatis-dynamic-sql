@@ -55,6 +55,8 @@ public abstract class AbstractHavingStarter<F extends AbstractHavingFinisher<?>>
         return initialize(sqlCriterion);
     }
 
+    protected abstract F having();
+
     public F applyHaving(HavingApplier havingApplier) {
         F finisher = having();
         havingApplier.accept(finisher);
@@ -66,6 +68,4 @@ public abstract class AbstractHavingStarter<F extends AbstractHavingFinisher<?>>
         finisher.initialize(sqlCriterion);
         return finisher;
     }
-
-    protected abstract F having();
 }

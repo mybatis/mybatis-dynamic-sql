@@ -86,6 +86,8 @@ public abstract class AbstractWhereStarter<F extends AbstractWhereFinisher<?>, D
         return initialize(sqlCriterion);
     }
 
+    public abstract F where();
+
     public F applyWhere(WhereApplier whereApplier) {
         F finisher = where();
         whereApplier.accept(finisher);
@@ -97,6 +99,4 @@ public abstract class AbstractWhereStarter<F extends AbstractWhereFinisher<?>, D
         finisher.initialize(sqlCriterion);
         return finisher;
     }
-
-    public abstract F where();
 }

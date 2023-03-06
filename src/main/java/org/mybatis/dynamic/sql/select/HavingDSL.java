@@ -19,7 +19,7 @@ import org.jetbrains.annotations.NotNull;
 import org.mybatis.dynamic.sql.CriteriaGroup;
 import org.mybatis.dynamic.sql.util.Buildable;
 
-public class HavingDSL extends AbstractHavingStarter <HavingDSL.StandaloneHavingFinisher> {
+public class HavingDSL extends AbstractHavingStarter<HavingDSL.StandaloneHavingFinisher> {
     private StandaloneHavingFinisher havingFinisher;
 
     @Override
