@@ -36,7 +36,7 @@ want this to look more like true SQL, you can write code like this:
 private final WhereApplier commonWhere = where(id, isEqualTo(1)).or(occupation, isNull()).toWhereApplier();
 ```
 
-This uses a `where` method from `SqlBuilder`. 
+This uses a `where` method from the `SqlBuilder` class. 
 
 ### "Having" Clause Support
 
@@ -59,7 +59,8 @@ as "having" is only needed if there is a "group by".
 
 In the Kotlin DSL, the "group by" restriction is not present because of the free form nature of that DSL - but you 
 should probably only use "having" if there is a "group by". Also note that the freestanding "and" and "or"
-functions in the Kotlin DSL still only apply to the where clause.
+functions in the Kotlin DSL still only apply to the where clause. For this reason, the freestanding "and" and "or"
+methods are deprecated. Please only use the "and" and "or" methods inside a "where" or "having" lambda.
 
 The pull request for this change is ([#550](https://github.com/mybatis/mybatis-dynamic-sql/pull/550))
 
@@ -110,6 +111,7 @@ The pull request for this change is ([#591](https://github.com/mybatis/mybatis-d
    ([#572](https://github.com/mybatis/mybatis-dynamic-sql/pull/572))
 5. Add `SqlBuilder.concat` and the equivalent in Kotlin. This is a concatenate function that works on more databases.
    ([#573](https://github.com/mybatis/mybatis-dynamic-sql/pull/573))
+6. Several classes and methods in the Kotlin DSL are deprecated in response to the new "having" support
 
 ## Release 1.4.1 - October 7, 2022
 
