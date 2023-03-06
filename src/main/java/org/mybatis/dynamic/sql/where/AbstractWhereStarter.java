@@ -44,14 +44,12 @@ public abstract class AbstractWhereStarter<F extends AbstractWhereFinisher<?>, D
 
     public <T> F where(BindableColumn<T> column, VisitableCondition<T> condition,
                        List<AndOrCriteriaGroup> subCriteria) {
-        SqlCriterion ic = ColumnAndConditionCriterion.withColumn(column)
+        SqlCriterion sqlCriterion = ColumnAndConditionCriterion.withColumn(column)
                 .withCondition(condition)
                 .withSubCriteria(subCriteria)
                 .build();
 
-        F finisher = where();
-        finisher.initialize(ic);
-        return finisher;
+        return initialize(sqlCriterion);
     }
 
     public F where(ExistsPredicate existsPredicate, AndOrCriteriaGroup... subCriteria) {
@@ -59,14 +57,12 @@ public abstract class AbstractWhereStarter<F extends AbstractWhereFinisher<?>, D
     }
 
     public F where(ExistsPredicate existsPredicate, List<AndOrCriteriaGroup> subCriteria) {
-        ExistsCriterion ic = new ExistsCriterion.Builder()
+        ExistsCriterion sqlCriterion = new ExistsCriterion.Builder()
                 .withExistsPredicate(existsPredicate)
                 .withSubCriteria(subCriteria)
                 .build();
 
-        F finisher = where();
-        finisher.initialize(ic);
-        return finisher;
+        return initialize(sqlCriterion);
     }
 
     public F where(SqlCriterion initialCriterion, AndOrCriteriaGroup... subCriteria) {
@@ -74,29 +70,31 @@ public abstract class AbstractWhereStarter<F extends AbstractWhereFinisher<?>, D
     }
 
     public F where(SqlCriterion initialCriterion, List<AndOrCriteriaGroup> subCriteria) {
-        SqlCriterion ic = new CriteriaGroup.Builder()
+        SqlCriterion sqlCriterion = new CriteriaGroup.Builder()
                 .withInitialCriterion(initialCriterion)
                 .withSubCriteria(subCriteria)
                 .build();
 
-        F finisher = where();
-        finisher.initialize(ic);
-        return finisher;
+        return initialize(sqlCriterion);
     }
 
     public F where(List<AndOrCriteriaGroup> subCriteria) {
-        SqlCriterion ic = new CriteriaGroup.Builder()
+        SqlCriterion sqlCriterion = new CriteriaGroup.Builder()
                 .withSubCriteria(subCriteria)
                 .build();
 
-        F finisher = where();
-        finisher.initialize(ic);
-        return finisher;
+        return initialize(sqlCriterion);
     }
 
     public F applyWhere(WhereApplier whereApplier) {
         F finisher = where();
         whereApplier.accept(finisher);
+        return finisher;
+    }
+
+    private F initialize(SqlCriterion sqlCriterion) {
+        F finisher = where();
+        finisher.initialize(sqlCriterion);
         return finisher;
     }
 

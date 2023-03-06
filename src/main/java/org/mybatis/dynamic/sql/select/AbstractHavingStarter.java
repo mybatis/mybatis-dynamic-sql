@@ -34,14 +34,12 @@ public abstract class AbstractHavingStarter<F extends AbstractHavingFinisher<?>>
 
     public <T> F having(BindableColumn<T> column, VisitableCondition<T> condition,
                         List<AndOrCriteriaGroup> subCriteria) {
-        SqlCriterion ic = ColumnAndConditionCriterion.withColumn(column)
+        SqlCriterion sqlCriterion = ColumnAndConditionCriterion.withColumn(column)
                 .withCondition(condition)
                 .withSubCriteria(subCriteria)
                 .build();
 
-        F finisher = having();
-        finisher.initialize(ic);
-        return finisher;
+        return initialize(sqlCriterion);
     }
 
     public F having(SqlCriterion initialCriterion, AndOrCriteriaGroup... subCriteria) {
@@ -49,19 +47,23 @@ public abstract class AbstractHavingStarter<F extends AbstractHavingFinisher<?>>
     }
 
     public F having(SqlCriterion initialCriterion, List<AndOrCriteriaGroup> subCriteria) {
-        SqlCriterion ic = new CriteriaGroup.Builder()
+        SqlCriterion sqlCriterion = new CriteriaGroup.Builder()
                 .withInitialCriterion(initialCriterion)
                 .withSubCriteria(subCriteria)
                 .build();
 
-        F finisher = having();
-        finisher.initialize(ic);
-        return finisher;
+        return initialize(sqlCriterion);
     }
 
     public F applyHaving(HavingApplier havingApplier) {
         F finisher = having();
         havingApplier.accept(finisher);
+        return finisher;
+    }
+
+    private F initialize(SqlCriterion sqlCriterion) {
+        F finisher = having();
+        finisher.initialize(sqlCriterion);
         return finisher;
     }
 
