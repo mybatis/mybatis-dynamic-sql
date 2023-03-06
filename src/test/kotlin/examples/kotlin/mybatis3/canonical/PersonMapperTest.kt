@@ -63,8 +63,10 @@ class PersonMapperTest {
             val mapper = session.getMapper(PersonMapper::class.java)
 
             val rows = mapper.select {
-                where { id isEqualTo 1 }
-                or { occupation.isNull() }
+                where {
+                    id isEqualTo 1
+                    or { occupation.isNull() }
+                }
             }
 
             assertThat(rows).hasSize(3)
@@ -106,8 +108,10 @@ class PersonMapperTest {
             val mapper = session.getMapper(PersonMapper::class.java)
 
             val rows = mapper.selectDistinct {
-                where { id isGreaterThan 1 }
-                or { occupation.isNull() }
+                where {
+                    id isGreaterThan 1
+                    or { occupation.isNull() }
+                }
             }
 
             assertThat(rows).hasSize(5)
@@ -375,8 +379,10 @@ class PersonMapperTest {
 
             rows = mapper.update {
                 set(occupation) equalTo "Programmer"
-                where { id isEqualTo 100 }
-                and { firstName isEqualTo "Joe" }
+                where {
+                    id isEqualTo 100
+                    and { firstName isEqualTo "Joe" }
+                }
             }
 
             assertThat(rows).isEqualTo(1)
@@ -494,8 +500,10 @@ class PersonMapperTest {
             val mapper = session.getMapper(PersonMapper::class.java)
 
             val rows = mapper.count {
-                where { employed.isTrue() }
-                and { occupation isEqualTo "Brontosaurus Operator" }
+                where {
+                    employed.isTrue()
+                    and { occupation isEqualTo "Brontosaurus Operator" }
+                }
             }
 
             assertThat(rows).isEqualTo(2L)
@@ -524,10 +532,12 @@ class PersonMapperTest {
             val mapper = session.getMapper(PersonMapper::class.java)
 
             val rows = mapper.count {
-                where { id isEqualTo 1 }
-                or {
-                    id isEqualTo 2
-                    or { id isEqualTo 3 }
+                where {
+                    id isEqualTo 1
+                    or {
+                        id isEqualTo 2
+                        or { id isEqualTo 3 }
+                    }
                 }
             }
 
@@ -541,10 +551,12 @@ class PersonMapperTest {
             val mapper = session.getMapper(PersonMapper::class.java)
 
             val rows = mapper.count {
-                where { id isLessThan 5 }
-                and {
-                    id isLessThan 3
-                    and { id isEqualTo 1 }
+                where {
+                    id isLessThan 5
+                    and {
+                        id isLessThan 3
+                        and { id isEqualTo 1 }
+                    }
                 }
             }
 
