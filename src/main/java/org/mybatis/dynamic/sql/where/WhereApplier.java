@@ -15,21 +15,30 @@
  */
 package org.mybatis.dynamic.sql.where;
 
-import org.mybatis.dynamic.sql.common.AbstractBooleanExpressionDSL;
-
+import java.util.Arrays;
+import java.util.List;
 import java.util.function.Consumer;
+
+import org.jetbrains.annotations.NotNull;
+import org.mybatis.dynamic.sql.AndOrCriteriaGroup;
+import org.mybatis.dynamic.sql.BindableColumn;
+import org.mybatis.dynamic.sql.ColumnAndConditionCriterion;
+import org.mybatis.dynamic.sql.CriteriaGroup;
+import org.mybatis.dynamic.sql.ExistsCriterion;
+import org.mybatis.dynamic.sql.ExistsPredicate;
+import org.mybatis.dynamic.sql.SqlCriterion;
+import org.mybatis.dynamic.sql.VisitableCondition;
+import org.mybatis.dynamic.sql.common.AbstractBooleanExpressionDSL;
 
 @FunctionalInterface
 public interface WhereApplier {
 
-    void accept(AbstractWhereDSL<?> abstractWhereDSL);
+    void accept(AbstractWhereFinisher<?> whereFinisher);
 
     /**
      * Return a composed where applier that performs this operation followed by the after operation.
      *
-     * @param after
-     *            the operation to perform after this operation
-     *
+     * @param after the operation to perform after this operation
      * @return a composed where applier that performs this operation followed by the after operation.
      */
     default WhereApplier andThen(Consumer<AbstractBooleanExpressionDSL<?>> after) {
@@ -37,5 +46,61 @@ public interface WhereApplier {
             accept(t);
             after.accept(t);
         };
+    }
+
+    @NotNull
+    static <T> WhereApplier where(BindableColumn<T> column, VisitableCondition<T> condition,
+                                  AndOrCriteriaGroup... subCriteria) {
+        return where(column, condition, Arrays.asList(subCriteria));
+    }
+
+    @NotNull
+    static <T> WhereApplier where(BindableColumn<T> column, VisitableCondition<T> condition,
+                                  List<AndOrCriteriaGroup> subCriteria) {
+        ColumnAndConditionCriterion<T> ic = ColumnAndConditionCriterion.withColumn(column)
+                .withCondition(condition)
+                .withSubCriteria(subCriteria)
+                .build();
+
+        return d -> d.initialize(ic);
+    }
+
+    @NotNull
+    static WhereApplier where(ExistsPredicate existsPredicate, AndOrCriteriaGroup... subCriteria) {
+        return where(existsPredicate, Arrays.asList(subCriteria));
+    }
+
+    @NotNull
+    static WhereApplier where(ExistsPredicate existsPredicate, List<AndOrCriteriaGroup> subCriteria) {
+        ExistsCriterion ic = new ExistsCriterion.Builder()
+                .withExistsPredicate(existsPredicate)
+                .withSubCriteria(subCriteria)
+                .build();
+
+        return d -> d.initialize(ic);
+    }
+
+    @NotNull
+    static WhereApplier where(SqlCriterion initialCriterion, AndOrCriteriaGroup... subCriteria) {
+        return where(initialCriterion, Arrays.asList(subCriteria));
+    }
+
+    @NotNull
+    static WhereApplier where(SqlCriterion initialCriterion, List<AndOrCriteriaGroup> subCriteria) {
+        CriteriaGroup ic = new CriteriaGroup.Builder()
+                .withInitialCriterion(initialCriterion)
+                .withSubCriteria(subCriteria)
+                .build();
+
+        return d -> d.initialize(ic);
+    }
+
+    @NotNull
+    static WhereApplier where(List<AndOrCriteriaGroup> criteria) {
+        CriteriaGroup ic = new CriteriaGroup.Builder()
+                .withSubCriteria(criteria)
+                .build();
+
+        return d -> d.initialize(ic);
     }
 }

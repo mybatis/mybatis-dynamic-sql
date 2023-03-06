@@ -240,21 +240,21 @@ public interface SqlBuilder {
         return UpdateDSL.update(table, tableAlias);
     }
 
-    static WhereDSL where() {
-        return WhereDSL.where();
+    static WhereDSL.WhereFinisher where() {
+        return new WhereDSL().where();
     }
 
-    static <T> WhereDSL where(BindableColumn<T> column, VisitableCondition<T> condition,
+    static <T> WhereDSL.WhereFinisher where(BindableColumn<T> column, VisitableCondition<T> condition,
                               AndOrCriteriaGroup... subCriteria) {
-        return WhereDSL.where().where(column, condition, subCriteria);
+        return new WhereDSL().where(column, condition, subCriteria);
     }
 
-    static WhereDSL where(SqlCriterion initialCriterion, AndOrCriteriaGroup... subCriteria) {
-        return WhereDSL.where().where(initialCriterion, subCriteria);
+    static WhereDSL.WhereFinisher where(SqlCriterion initialCriterion, AndOrCriteriaGroup... subCriteria) {
+        return new WhereDSL().where(initialCriterion, subCriteria);
     }
 
-    static WhereDSL where(ExistsPredicate existsPredicate, AndOrCriteriaGroup... subCriteria) {
-        return WhereDSL.where().where(existsPredicate, subCriteria);
+    static WhereDSL.WhereFinisher where(ExistsPredicate existsPredicate, AndOrCriteriaGroup... subCriteria) {
+        return new WhereDSL().where(existsPredicate, subCriteria);
     }
 
     // where condition connectors

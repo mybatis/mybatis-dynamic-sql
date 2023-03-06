@@ -25,7 +25,7 @@ import org.mybatis.dynamic.sql.SqlBuilder;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
 import org.mybatis.dynamic.sql.util.Buildable;
-import org.mybatis.dynamic.sql.where.AbstractWhereDSL;
+import org.mybatis.dynamic.sql.where.AbstractWhereFinisher;
 import org.mybatis.dynamic.sql.where.WhereModel;
 
 /**
@@ -131,7 +131,7 @@ public class CountDSL<R> extends AbstractQueryExpressionDSL<CountDSL<R>.CountWhe
         }
     }
 
-    public class CountWhereBuilder extends AbstractWhereDSL<CountWhereBuilder>
+    public class CountWhereBuilder extends AbstractWhereFinisher<CountWhereBuilder>
             implements Buildable<R> {
         private CountWhereBuilder() {
             super(statementConfiguration);
@@ -149,7 +149,7 @@ public class CountDSL<R> extends AbstractQueryExpressionDSL<CountDSL<R>.CountWhe
         }
 
         protected WhereModel buildWhereModel() {
-            return internalBuild();
+            return buildModel();
         }
     }
 }

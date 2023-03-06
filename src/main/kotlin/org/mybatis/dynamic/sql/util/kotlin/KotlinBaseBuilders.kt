@@ -19,7 +19,7 @@ import org.mybatis.dynamic.sql.AndOrCriteriaGroup
 import org.mybatis.dynamic.sql.SqlTable
 import org.mybatis.dynamic.sql.configuration.StatementConfiguration
 import org.mybatis.dynamic.sql.select.AbstractQueryExpressionDSL
-import org.mybatis.dynamic.sql.where.AbstractWhereSupport
+import org.mybatis.dynamic.sql.where.AbstractWhereStarter
 
 @Target(AnnotationTarget.CLASS, AnnotationTarget.TYPE)
 @DslMarker
@@ -36,7 +36,7 @@ fun WhereApplier.andThen(after: WhereApplier): WhereApplier = {
 
 @MyBatisDslMarker
 @Suppress("TooManyFunctions")
-abstract class KotlinBaseBuilder<D : AbstractWhereSupport<*,*>> {
+abstract class KotlinBaseBuilder<D : AbstractWhereStarter<*,*>> {
 
     fun configureStatement(c: StatementConfiguration.() -> Unit) {
         getDsl().configureStatement(c)

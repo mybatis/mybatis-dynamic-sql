@@ -34,8 +34,8 @@ import org.mybatis.dynamic.sql.select.join.JoinCriterion;
 import org.mybatis.dynamic.sql.select.join.JoinSpecification;
 import org.mybatis.dynamic.sql.select.join.JoinType;
 import org.mybatis.dynamic.sql.util.Buildable;
-import org.mybatis.dynamic.sql.where.AbstractWhereDSL;
-import org.mybatis.dynamic.sql.where.AbstractWhereSupport;
+import org.mybatis.dynamic.sql.where.AbstractWhereFinisher;
+import org.mybatis.dynamic.sql.where.AbstractWhereStarter;
 import org.mybatis.dynamic.sql.where.WhereModel;
 
 public class QueryExpressionDSL<R>
@@ -79,6 +79,11 @@ public class QueryExpressionDSL<R>
         return this;
     }
 
+    /**
+     * This method is protected here because it doesn't make sense at this point in the DSL.
+     *
+     * @return The having builder
+     */
     protected QueryExpressionHavingBuilder having() {
         if (havingBuilder == null) {
             havingBuilder = new QueryExpressionHavingBuilder();
@@ -277,7 +282,7 @@ public class QueryExpressionDSL<R>
         }
     }
 
-    public class QueryExpressionWhereBuilder extends AbstractWhereDSL<QueryExpressionWhereBuilder>
+    public class QueryExpressionWhereBuilder extends AbstractWhereFinisher<QueryExpressionWhereBuilder>
             implements Buildable<R> {
         private QueryExpressionWhereBuilder() {
             super(statementConfiguration);
@@ -331,7 +336,7 @@ public class QueryExpressionDSL<R>
         }
 
         protected WhereModel buildWhereModel() {
-            return internalBuild();
+            return buildModel();
         }
     }
 
@@ -355,7 +360,7 @@ public class QueryExpressionDSL<R>
     }
 
     public class JoinSpecificationFinisher
-            extends AbstractWhereSupport<QueryExpressionWhereBuilder, JoinSpecificationFinisher>
+            extends AbstractWhereStarter<QueryExpressionWhereBuilder, JoinSpecificationFinisher>
             implements Buildable<R> {
         private final JoinSpecification.Builder joinSpecificationBuilder;
 
@@ -538,7 +543,7 @@ public class QueryExpressionDSL<R>
         }
 
         @Override
-        public QueryExpressionHavingBuilder getFinisher() {
+        public QueryExpressionHavingBuilder having() {
             return QueryExpressionDSL.this.having();
         }
     }
@@ -619,7 +624,7 @@ public class QueryExpressionDSL<R>
         }
 
         protected HavingModel buildHavingModel() {
-            return new HavingModel(getInitialCriterion(), subCriteria);
+            return buildModel();
         }
     }
 }

@@ -22,4 +22,8 @@ public abstract class AbstractHavingFinisher<T extends AbstractHavingFinisher<T>
     void initialize(SqlCriterion sqlCriterion) {
         setInitialCriterion(sqlCriterion, "ERROR.31"); //$NON-NLS-1$
     }
+
+    protected HavingModel buildModel() {
+        return new HavingModel(getInitialCriterion(), subCriteria);
+    }
 }

@@ -39,7 +39,7 @@ public abstract class AbstractHavingStarter<F extends AbstractHavingFinisher<?>>
                 .withSubCriteria(subCriteria)
                 .build();
 
-        F finisher = getFinisher();
+        F finisher = having();
         finisher.initialize(ic);
         return finisher;
     }
@@ -54,16 +54,16 @@ public abstract class AbstractHavingStarter<F extends AbstractHavingFinisher<?>>
                 .withSubCriteria(subCriteria)
                 .build();
 
-        F finisher = getFinisher();
+        F finisher = having();
         finisher.initialize(ic);
         return finisher;
     }
 
     public F applyHaving(HavingApplier havingApplier) {
-        F finisher = getFinisher();
+        F finisher = having();
         havingApplier.accept(finisher);
         return finisher;
     }
 
-    protected abstract F getFinisher();
+    protected abstract F having();
 }

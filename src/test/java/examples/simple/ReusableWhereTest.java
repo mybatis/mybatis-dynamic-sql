@@ -50,6 +50,7 @@ class ReusableWhereTest {
     void setup() throws Exception {
         Class.forName(JDBC_DRIVER);
         InputStream is = getClass().getResourceAsStream("/examples/simple/CreateSimpleDB.sql");
+        assert is != null;
         try (Connection connection = DriverManager.getConnection(JDBC_URL, "sa", "")) {
             ScriptRunner sr = new ScriptRunner(connection);
             sr.setLogWriter(null);
@@ -112,5 +113,6 @@ class ReusableWhereTest {
         }
     }
 
-    private WhereApplier commonWhere = d -> d.where(id, isEqualTo(1)).or(occupation, isNull());
+    private final WhereApplier commonWhere = WhereApplier.where(id, isEqualTo(1))
+            .andThen(wa -> wa.or(occupation, isNull()));
 }

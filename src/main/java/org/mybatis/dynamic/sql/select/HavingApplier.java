@@ -30,7 +30,7 @@ import org.mybatis.dynamic.sql.common.AbstractBooleanExpressionDSL;
 @FunctionalInterface
 public interface HavingApplier {
 
-    void accept(AbstractBooleanExpressionDSL<?> havingStarter);
+    void accept(AbstractHavingFinisher<?> havingFinisher);
 
     /**
      * Return a composed having applier that performs this operation followed by the after operation.
@@ -53,12 +53,12 @@ public interface HavingApplier {
 
     static <T> HavingApplier having(BindableColumn<T> column, VisitableCondition<T> condition,
                         List<AndOrCriteriaGroup> subCriteria) {
-        ColumnAndConditionCriterion<T> initialCriterion = ColumnAndConditionCriterion.withColumn(column)
+        ColumnAndConditionCriterion<T> ic = ColumnAndConditionCriterion.withColumn(column)
                 .withCondition(condition)
                 .withSubCriteria(subCriteria)
                 .build();
 
-        return d -> d.and(initialCriterion);
+        return d -> d.initialize(ic);
     }
 
     static HavingApplier having(SqlCriterion initialCriterion, AndOrCriteriaGroup... subCriteria) {
@@ -71,6 +71,6 @@ public interface HavingApplier {
                 .withSubCriteria(subCriteria)
                 .build();
 
-        return d -> d.and(ic);
+        return d -> d.initialize(ic);
     }
 }
