@@ -30,6 +30,7 @@ import org.mybatis.dynamic.sql.insert.InsertSelectDSL;
 import org.mybatis.dynamic.sql.insert.MultiRowInsertDSL;
 import org.mybatis.dynamic.sql.select.ColumnSortSpecification;
 import org.mybatis.dynamic.sql.select.CountDSL;
+import org.mybatis.dynamic.sql.select.HavingDSL;
 import org.mybatis.dynamic.sql.select.MultiSelectDSL;
 import org.mybatis.dynamic.sql.select.QueryExpressionDSL.FromGatherer;
 import org.mybatis.dynamic.sql.select.SelectDSL;
@@ -255,6 +256,15 @@ public interface SqlBuilder {
 
     static WhereDSL.StandaloneWhereFinisher where(ExistsPredicate existsPredicate, AndOrCriteriaGroup... subCriteria) {
         return new WhereDSL().where(existsPredicate, subCriteria);
+    }
+
+    static <T> HavingDSL.StandaloneHavingFinisher having(BindableColumn<T> column, VisitableCondition<T> condition,
+                                              AndOrCriteriaGroup... subCriteria) {
+        return new HavingDSL().having(column, condition, subCriteria);
+    }
+
+    static HavingDSL.StandaloneHavingFinisher having(SqlCriterion initialCriterion, AndOrCriteriaGroup... subCriteria) {
+        return new HavingDSL().having(initialCriterion, subCriteria);
     }
 
     // where condition connectors
