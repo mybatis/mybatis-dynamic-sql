@@ -19,8 +19,7 @@ import org.jetbrains.annotations.NotNull;
 import org.mybatis.dynamic.sql.CriteriaGroup;
 import org.mybatis.dynamic.sql.util.Buildable;
 
-public class HavingDSL extends AbstractHavingStarter <HavingDSL.StandaloneHavingFinisher>
-        implements Buildable<HavingModel> {
+public class HavingDSL extends AbstractHavingStarter <HavingDSL.StandaloneHavingFinisher> {
     private StandaloneHavingFinisher havingFinisher;
 
     @Override
@@ -32,14 +31,10 @@ public class HavingDSL extends AbstractHavingStarter <HavingDSL.StandaloneHaving
         return havingFinisher;
     }
 
-    @NotNull
-    @Override
-    public HavingModel build() {
-        return havingFinisher.buildModel();
-    }
-
-    public class StandaloneHavingFinisher extends AbstractHavingFinisher<StandaloneHavingFinisher>
+    public static class StandaloneHavingFinisher extends AbstractHavingFinisher<StandaloneHavingFinisher>
             implements Buildable<HavingModel> {
+
+        private StandaloneHavingFinisher() {}
 
         @Override
         protected StandaloneHavingFinisher getThis() {
@@ -49,7 +44,7 @@ public class HavingDSL extends AbstractHavingStarter <HavingDSL.StandaloneHaving
         @NotNull
         @Override
         public HavingModel build() {
-            return HavingDSL.this.build();
+            return buildModel();
         }
 
         public HavingApplier toHavingApplier() {

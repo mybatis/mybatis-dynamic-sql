@@ -22,8 +22,7 @@ import org.mybatis.dynamic.sql.CriteriaGroup;
 import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
 import org.mybatis.dynamic.sql.util.Buildable;
 
-public class WhereDSL extends AbstractWhereStarter<WhereDSL.StandaloneWhereFinisher, WhereDSL>
-        implements Buildable<WhereModel> {
+public class WhereDSL extends AbstractWhereStarter<WhereDSL.StandaloneWhereFinisher, WhereDSL> {
     private StandaloneWhereFinisher whereBuilder;
     private final StatementConfiguration statementConfiguration = new StatementConfiguration();
 
@@ -35,12 +34,6 @@ public class WhereDSL extends AbstractWhereStarter<WhereDSL.StandaloneWhereFinis
             whereBuilder = new StandaloneWhereFinisher();
         }
         return whereBuilder;
-    }
-
-    @NotNull
-    @Override
-    public WhereModel build() {
-        return whereBuilder.buildModel();
     }
 
     @Override
@@ -63,7 +56,7 @@ public class WhereDSL extends AbstractWhereStarter<WhereDSL.StandaloneWhereFinis
         @NotNull
         @Override
         public WhereModel build() {
-            return WhereDSL.this.build();
+            return buildModel();
         }
 
         public WhereApplier toWhereApplier() {
