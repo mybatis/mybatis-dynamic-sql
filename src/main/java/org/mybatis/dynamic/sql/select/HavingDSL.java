@@ -20,14 +20,10 @@ import org.mybatis.dynamic.sql.CriteriaGroup;
 import org.mybatis.dynamic.sql.util.Buildable;
 
 public class HavingDSL extends AbstractHavingStarter<HavingDSL.StandaloneHavingFinisher> {
-    private StandaloneHavingFinisher havingFinisher;
+    private final StandaloneHavingFinisher havingFinisher = new StandaloneHavingFinisher();
 
     @Override
     protected StandaloneHavingFinisher having() {
-        if (havingFinisher == null) {
-            havingFinisher = new StandaloneHavingFinisher();
-        }
-
         return havingFinisher;
     }
 
