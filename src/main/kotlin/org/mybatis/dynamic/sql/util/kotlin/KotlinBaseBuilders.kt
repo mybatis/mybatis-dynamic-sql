@@ -51,20 +51,24 @@ abstract class KotlinBaseBuilder<D : AbstractWhereStarter<*,*>> {
         getDsl().where(criteria)
     }
 
+    @Deprecated("Please move the \"and\" function into the where lambda. If the where lambda has more than one condition, you may need to surround the existing conditions with \"group\" first.")
     fun and(criteria: GroupingCriteriaReceiver): Unit =
         GroupingCriteriaCollector().apply(criteria).let {
             getDsl().where().and(it.initialCriterion, it.subCriteria)
         }
 
+    @Deprecated("Please move the \"and\" function into the where lambda. If the where lambda has more than one condition, you may need to surround the existing conditions with \"group\" first.")
     fun and(criteria: List<AndOrCriteriaGroup>) {
         getDsl().where().and(criteria)
     }
 
+    @Deprecated("Please move the \"or\" function into the where lambda. If the where lambda has more than one condition, you may need to surround the existing conditions with \"group\" first.")
     fun or(criteria: GroupingCriteriaReceiver): Unit =
         GroupingCriteriaCollector().apply(criteria).let {
             getDsl().where().or(it.initialCriterion, it.subCriteria)
         }
 
+    @Deprecated("Please move the \"or\" function into the where lambda. If the where lambda has more than one condition, you may need to surround the existing conditions with \"group\" first.")
     fun or(criteria: List<AndOrCriteriaGroup>) {
         getDsl().where().or(criteria)
     }

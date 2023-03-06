@@ -243,12 +243,14 @@ class ExistsTest {
 
             val selectStatement = select(itemMaster.allColumns()) {
                 from(itemMaster, "im")
-                where { itemMaster.itemId isEqualTo 22 }
-                and {
-                    exists {
-                        select(orderLine.allColumns()) {
-                            from(orderLine, "ol")
-                            where { orderLine.itemId isEqualTo "im"(itemMaster.itemId) }
+                where {
+                    itemMaster.itemId isEqualTo 22
+                    and {
+                        exists {
+                            select(orderLine.allColumns()) {
+                                from(orderLine, "ol")
+                                where { orderLine.itemId isEqualTo "im"(itemMaster.itemId) }
+                            }
                         }
                     }
                 }
@@ -279,15 +281,17 @@ class ExistsTest {
 
             val selectStatement = select(itemMaster.allColumns()) {
                 from(itemMaster, "im")
-                where { itemMaster.itemId isEqualTo 22 }
-                and {
-                    exists {
-                        select(orderLine.allColumns()) {
-                            from(orderLine, "ol")
-                            where { orderLine.itemId isEqualTo "im"(itemMaster.itemId) }
+                where {
+                    itemMaster.itemId isEqualTo 22
+                    and {
+                        exists {
+                            select(orderLine.allColumns()) {
+                                from(orderLine, "ol")
+                                where { orderLine.itemId isEqualTo "im"(itemMaster.itemId) }
+                            }
                         }
+                        and { itemMaster.itemId isGreaterThan 2 }
                     }
-                    and { itemMaster.itemId isGreaterThan 2 }
                 }
                 orderBy(itemMaster.itemId)
             }
@@ -394,12 +398,14 @@ class ExistsTest {
 
             val selectStatement = select(itemMaster.allColumns()) {
                 from(itemMaster, "im")
-                where { itemMaster.itemId isEqualTo 22 }
-                or {
-                    exists {
-                        select(orderLine.allColumns()) {
-                            from(orderLine, "ol")
-                            where { orderLine.itemId isEqualTo "im"(itemMaster.itemId) }
+                where {
+                    itemMaster.itemId isEqualTo 22
+                    or {
+                        exists {
+                            select(orderLine.allColumns()) {
+                                from(orderLine, "ol")
+                                where { orderLine.itemId isEqualTo "im"(itemMaster.itemId) }
+                            }
                         }
                     }
                 }
@@ -439,15 +445,17 @@ class ExistsTest {
 
             val selectStatement = select(itemMaster.allColumns()) {
                 from(itemMaster, "im")
-                where { itemMaster.itemId isEqualTo 22 }
-                or {
-                    exists {
-                        select(orderLine.allColumns()) {
-                            from(orderLine, "ol")
-                            where { orderLine.itemId isEqualTo "im"(itemMaster.itemId) }
+                where {
+                    itemMaster.itemId isEqualTo 22
+                    or {
+                        exists {
+                            select(orderLine.allColumns()) {
+                                from(orderLine, "ol")
+                                where { orderLine.itemId isEqualTo "im"(itemMaster.itemId) }
+                            }
                         }
+                        and { itemMaster.itemId isGreaterThan 2 }
                     }
-                    and { itemMaster.itemId isGreaterThan 2 }
                 }
                 orderBy(itemMaster.itemId)
             }

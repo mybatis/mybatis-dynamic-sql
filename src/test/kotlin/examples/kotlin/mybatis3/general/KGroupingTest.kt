@@ -52,13 +52,15 @@ class KGroupingTest {
         val selectStatement = select(A, B, C) {
             from(foo)
             where {
-                A (isBetween(1).and(5).map { it + 3 }.filter{ _ -> true })
-                or { A (isLessThanOrEqualTo(3).map { it + 6 }.filter { true }) }
-                or { A isNotEqualTo 9 }
-                or { C isLike "Fred%" }
+                group {
+                    A(isBetween(1).and(5).map { it + 3 }.filter { _ -> true })
+                    or { A(isLessThanOrEqualTo(3).map { it + 6 }.filter { true }) }
+                    or { A isNotEqualTo 9 }
+                    or { C isLike "Fred%" }
+                }
+                and { B isEqualTo 3 }
+                or { add(A, B) isGreaterThan 4 }
             }
-            and { B isEqualTo 3 }
-            or { add(A, B) isGreaterThan 4 }
         }
 
         val expected = "select A, B, C" +
@@ -83,16 +85,18 @@ class KGroupingTest {
             from(foo)
             where {
                 group {
-                    A isEqualTo 1
-                    or { A isGreaterThan 5 }
+                    group {
+                        A isEqualTo 1
+                        or { A isGreaterThan 5 }
+                    }
+                    and { B isEqualTo 1 }
+                    or {
+                        A isLessThan 0
+                        and { B isEqualTo 2 }
+                    }
                 }
-                and { B isEqualTo 1 }
-                or {
-                    A isLessThan 0
-                    and { B isEqualTo 2 }
-                }
+                and { C isEqualTo "Fred" }
             }
-            and { C isEqualTo "Fred" }
         }
 
         val expected = "select A, B, C" +
@@ -115,22 +119,24 @@ class KGroupingTest {
             from(foo)
             where {
                 group {
-                    exists {
-                        select(foo.allColumns()) {
-                            from(foo)
-                            where { A isEqualTo 3 }
+                    group {
+                        exists {
+                            select(foo.allColumns()) {
+                                from(foo)
+                                where { A isEqualTo 3 }
+                            }
                         }
+                        and { A isEqualTo 1 }
+                        or { A isGreaterThan 5 }
                     }
-                    and { A isEqualTo 1 }
-                    or { A isGreaterThan 5 }
+                    and { B isEqualTo 1 }
+                    or {
+                        A isLessThan 0
+                        and { B isEqualTo 2 }
+                    }
                 }
-                and { B isEqualTo 1 }
-                or {
-                    A isLessThan 0
-                    and { B isEqualTo 2 }
-                }
+                and { C isEqualTo "Fred" }
             }
-            and { C isEqualTo "Fred" }
         }
 
         val expected = "select A, B, C" +
@@ -156,30 +162,32 @@ class KGroupingTest {
             where {
                 group {
                     group {
-                        A isEqualTo 1
-                        or { A isGreaterThan 5 }
-                    }
-                    and { A isGreaterThan 5 }
-                }
-                and {
-                    group {
-                        A isEqualTo 1
-                        or { A isGreaterThan 5 }
-                    }
-                    or { B isEqualTo 1 }
-                }
-                or {
-                    group {
-                        A isEqualTo 1
-                        or { A isGreaterThan 5 }
+                        group {
+                            A isEqualTo 1
+                            or { A isGreaterThan 5 }
+                        }
+                        and { A isGreaterThan 5 }
                     }
                     and {
-                        A isLessThan 0
-                        and { B isEqualTo 2 }
+                        group {
+                            A isEqualTo 1
+                            or { A isGreaterThan 5 }
+                        }
+                        or { B isEqualTo 1 }
+                    }
+                    or {
+                        group {
+                            A isEqualTo 1
+                            or { A isGreaterThan 5 }
+                        }
+                        and {
+                            A isLessThan 0
+                            and { B isEqualTo 2 }
+                        }
                     }
                 }
+                and { C isEqualTo "Fred" }
             }
-            and { C isEqualTo "Fred" }
         }
 
         val expected = "select A, B, C" +
@@ -207,23 +215,25 @@ class KGroupingTest {
     fun testAndOrCriteriaGroups() {
         val selectStatement = select(A, B, C) {
             from(foo)
-            where { A isEqualTo 6 }
-            and { C isEqualTo "Fred" }
-            and {
-                group {
-                    A isEqualTo 1
-                    or { A isGreaterThan 5 }
-                }
-                or { B isEqualTo 1 }
-            }
-            or {
-                group {
-                    A  isEqualTo 1
-                    or { A isGreaterThan 5 }
-                }
+            where {
+                A isEqualTo 6
+                and { C isEqualTo "Fred" }
                 and {
-                    A isLessThan 0
-                    and { B isEqualTo 2 }
+                    group {
+                        A isEqualTo 1
+                        or { A isGreaterThan 5 }
+                    }
+                    or { B isEqualTo 1 }
+                }
+                or {
+                    group {
+                        A  isEqualTo 1
+                        or { A isGreaterThan 5 }
+                    }
+                    and {
+                        A isLessThan 0
+                        and { B isEqualTo 2 }
+                    }
                 }
             }
         }
@@ -260,13 +270,13 @@ class KGroupingTest {
                     }
                     and { A isGreaterThan 3 }
                 }
-            }
-            and { not { A isGreaterThan 4 } }
-            or {
-                not {
-                    group {
-                        B isLessThan 6
-                        and { A isGreaterThanOrEqualTo 7 }
+                and { not { A isGreaterThan 4 } }
+                or {
+                    not {
+                        group {
+                            B isLessThan 6
+                            and { A isGreaterThanOrEqualTo 7 }
+                        }
                     }
                 }
             }

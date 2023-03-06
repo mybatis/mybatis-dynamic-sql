@@ -53,8 +53,10 @@ open class SpringKotlinSubQueryTest {
                         orderBy(firstName.descending())
                     }
                 }
-                where { rowNum isLessThan 5 }
-                and { firstName isLike "%a%" }
+                where {
+                    rowNum isLessThan 5
+                    and { firstName isLike "%a%" }
+                }
             }
 
         assertThat(selectStatement.selectStatement).isEqualTo(
@@ -93,8 +95,10 @@ open class SpringKotlinSubQueryTest {
                     orderBy(firstName.descending())
                 }
             }
-            where { rowNum isLessThan 5 }
-            and { firstName isLike "%a%" }
+            where {
+                rowNum isLessThan 5
+                and { firstName isLike "%a%" }
+            }
         }.withRowMapper { rs, _ ->
             mapOf(
                 Pair("FIRST_NAME", rs.getString(1)),
@@ -123,8 +127,10 @@ open class SpringKotlinSubQueryTest {
                     }
                     + "b"
                 }
-                where { rowNum isLessThan 5 }
-                and { outerFirstName isLike "%a%" }
+                where {
+                    rowNum isLessThan 5
+                    and { outerFirstName isLike "%a%" }
+                }
             }
 
         assertThat(selectStatement.selectStatement).isEqualTo(

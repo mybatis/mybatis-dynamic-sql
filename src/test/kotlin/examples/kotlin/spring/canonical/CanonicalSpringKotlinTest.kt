@@ -142,8 +142,10 @@ open class CanonicalSpringKotlinTest {
     @Test
     fun testRawDelete2() {
         val deleteStatement = deleteFrom(person) {
-            where { id isLessThan 4 }
-            and { occupation.isNotNull() }
+            where {
+                id isLessThan 4
+                and { occupation.isNotNull() }
+            }
         }
 
         assertThat(deleteStatement.deleteStatement).isEqualTo(
@@ -159,8 +161,10 @@ open class CanonicalSpringKotlinTest {
     fun testRawDelete3() {
 
         val deleteStatement = deleteFrom(person) {
-            where { id isLessThan 4 }
-            or { occupation.isNotNull() }
+            where {
+                id isLessThan 4
+                or { occupation.isNotNull() }
+            }
         }
 
         assertThat(deleteStatement.deleteStatement).isEqualTo(
@@ -177,10 +181,12 @@ open class CanonicalSpringKotlinTest {
 
         val deleteStatement = deleteFrom(person) {
             where {
-                id isLessThan 4
-                or { occupation.isNotNull() }
+                group {
+                    id isLessThan 4
+                    or { occupation.isNotNull() }
+                }
+                and { employed isEqualTo true }
             }
-            and { employed isEqualTo true }
         }
 
         val expected = "delete from Person" +
@@ -199,10 +205,12 @@ open class CanonicalSpringKotlinTest {
     @Test
     fun testRawDelete5() {
         val deleteStatement = deleteFrom(person) {
-            where { id isLessThan 4 }
-            or {
-                occupation.isNotNull()
-                and { employed isEqualTo true }
+            where {
+                id isLessThan 4
+                or {
+                    occupation.isNotNull()
+                    and { employed isEqualTo true }
+                }
             }
         }
 
@@ -221,10 +229,12 @@ open class CanonicalSpringKotlinTest {
     @Test
     fun testRawDelete6() {
         val deleteStatement = deleteFrom(person) {
-            where { id isLessThan 4 }
-            and {
-                occupation.isNotNull()
-                and { employed isEqualTo true }
+            where {
+                id isLessThan 4
+                and {
+                    occupation.isNotNull()
+                    and { employed isEqualTo true }
+                }
             }
         }
 
@@ -627,10 +637,12 @@ open class CanonicalSpringKotlinTest {
         ) {
             from(person)
             where {
-                id isLessThan 4
+                group {
+                    id isLessThan 4
+                    and { occupation.isNotNull() }
+                }
                 and { occupation.isNotNull() }
             }
-            and { occupation.isNotNull() }
             orderBy(id)
             limit(3)
         }
@@ -1147,12 +1159,14 @@ open class CanonicalSpringKotlinTest {
             id `as` "A_ID", firstName, lastName, birthDate, employed, occupation, addressId
         ) {
             from(person)
-            where { id isLessThan 5 }
-            and {
-                id isLessThan 4
+            where {
+                id isLessThan 5
                 and {
-                    id isLessThan 3
-                    and { id isLessThan 2 }
+                    id isLessThan 4
+                    and {
+                        id isLessThan 3
+                        and { id isLessThan 2 }
+                    }
                 }
             }
             orderBy(id)
@@ -1188,12 +1202,14 @@ open class CanonicalSpringKotlinTest {
             id `as` "A_ID", firstName, lastName, birthDate, employed, occupation, addressId
         ) {
             from(person)
-            where { id isEqualTo 5 }
-            or {
-                id isEqualTo 4
+            where {
+                id isEqualTo 5
                 or {
-                    id isEqualTo 3
-                    or { id isEqualTo 2 }
+                    id isEqualTo 4
+                    or {
+                        id isEqualTo 3
+                        or { id isEqualTo 2 }
+                    }
                 }
             }
             orderBy(id)
@@ -1268,10 +1284,12 @@ open class CanonicalSpringKotlinTest {
     fun testRawUpdate3() {
         val updateStatement = update(person) {
             set(firstName) equalTo "Sam"
-            where { firstName isEqualTo "Fred" }
-            or {
-                id isEqualTo 5
-                or { id isEqualTo 6 }
+            where {
+                firstName isEqualTo "Fred"
+                or {
+                    id isEqualTo 5
+                    or { id isEqualTo 6 }
+                }
             }
         }
 
@@ -1291,10 +1309,12 @@ open class CanonicalSpringKotlinTest {
     fun testRawUpdate4() {
         val updateStatement = update(person) {
             set(firstName) equalTo "Sam"
-            where { firstName isEqualTo "Fred" }
-            and {
-                id isEqualTo 1
-                or { id isEqualTo 6 }
+            where {
+                firstName isEqualTo "Fred"
+                and {
+                    id isEqualTo 1
+                    or { id isEqualTo 6 }
+                }
             }
         }
 
@@ -1314,8 +1334,10 @@ open class CanonicalSpringKotlinTest {
     fun testRawUpdate5() {
         val updateStatement = update(person) {
             set(firstName) equalTo "Sam"
-            where { firstName isEqualTo "Fred" }
-            or { id isEqualTo 3 }
+            where {
+                firstName isEqualTo "Fred"
+                or { id isEqualTo 3 }
+            }
         }
 
         assertThat(updateStatement.updateStatement).isEqualTo(
@@ -1334,8 +1356,10 @@ open class CanonicalSpringKotlinTest {
     fun testRawUpdate6() {
         val updateStatement = update(person) {
             set(occupation) equalToOrNull  null
-            where { firstName isEqualTo "Fred" }
-            or { id isEqualTo 3 }
+            where {
+                firstName isEqualTo "Fred"
+                or { id isEqualTo 3 }
+            }
         }
 
         assertThat(updateStatement.updateStatement).isEqualTo(
@@ -1580,21 +1604,23 @@ open class CanonicalSpringKotlinTest {
             id, firstName, lastName, birthDate, employed, occupation, addressId
         ) {
             from(person)
-            where { id isEqualToWhenPresent search1.id }
-            and {
-                upper(firstName) (isLikeWhenPresent(search1.firstName)
+            where {
+                id isEqualToWhenPresent search1.id
+                and {
+                    upper(firstName) (isLikeWhenPresent(search1.firstName)
                         .map(String::trim)
                         .filter(String::isNotEmpty)
                         .map(String::uppercase)
                         .map { "%$it%" }
-                )
-            }
-            and {
-                upper(lastName) (isLikeWhenPresent(search1.lastName)
+                    )
+                }
+                and {
+                    upper(lastName) (isLikeWhenPresent(search1.lastName)
                         .map(String::trim)
                         .filter(String::isNotEmpty)
                         .map(String::uppercase)
                         .map { LastName("%$it%") })
+                }
             }
             orderBy(id)
             limit(3)
