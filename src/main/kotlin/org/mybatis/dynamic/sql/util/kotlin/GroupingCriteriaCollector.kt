@@ -114,7 +114,7 @@ sealed class SubCriteriaCollector {
 }
 
 /**
- * This class is used to gather criteria for a where clause. The class gathers two types of criteria:
+ * This class is used to gather criteria for a having or where clause. The class gathers two types of criteria:
  * an initial criterion, and sub-criteria connected by either an "and" or an "or".
  *
  * An initial criterion can be one of four types:

@@ -69,7 +69,7 @@ abstract class KotlinBaseBuilder<D : AbstractWhereStarter<*,*>> {
         getDsl().where().or(criteria)
     }
 
-    @Deprecated("Please create a booleanExpression, then pass it to the \"where\" method")
+    @Deprecated("Please use GroupingCriteriaCollector.where, then pass it to the \"where\" method")
     fun applyWhere(whereApplier: WhereApplier) = whereApplier.invoke(this)
 
     /**
