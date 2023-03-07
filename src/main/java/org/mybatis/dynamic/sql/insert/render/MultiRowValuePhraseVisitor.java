@@ -17,6 +17,10 @@ package org.mybatis.dynamic.sql.insert.render;
 
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
+import org.mybatis.dynamic.sql.util.Messages;
+import org.mybatis.dynamic.sql.util.RowMapping;
+
+import java.util.Optional;
 
 public class MultiRowValuePhraseVisitor extends AbstractMultiRowValuePhraseVisitor {
 
@@ -28,5 +32,11 @@ public class MultiRowValuePhraseVisitor extends AbstractMultiRowValuePhraseVisit
     String calculateJdbcPlaceholder(SqlColumn<?> column, String parameterName) {
         return column.renderingStrategy().orElse(renderingStrategy)
                 .getMultiRowFormattedJdbcPlaceholder(column, prefix, parameterName);
+    }
+
+    @Override
+    public FieldAndValueAndParameters visit(RowMapping mapping) {
+        // TODO - fix error number, and move this somewhere up in the hierarchy
+        throw new UnsupportedOperationException(Messages.getInternalErrorString(99));
     }
 }

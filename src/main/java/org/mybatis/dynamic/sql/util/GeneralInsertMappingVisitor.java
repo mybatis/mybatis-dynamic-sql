@@ -35,4 +35,10 @@ public abstract class GeneralInsertMappingVisitor<R> implements ColumnMappingVis
     public final R visit(ColumnToColumnMapping columnMapping) {
         throw new UnsupportedOperationException(Messages.getInternalErrorString(4));
     }
+
+    @Override
+    public final R visit(RowMapping mapping) {
+        // TODO - fix error number
+        throw new UnsupportedOperationException(Messages.getInternalErrorString(99));
+    }
 }

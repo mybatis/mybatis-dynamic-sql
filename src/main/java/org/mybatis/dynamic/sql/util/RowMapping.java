@@ -15,20 +15,19 @@
  */
 package org.mybatis.dynamic.sql.util;
 
-public abstract class UpdateMappingVisitor<R> implements ColumnMappingVisitor<R> {
-    @Override
-    public final R visit(PropertyMapping mapping) {
-        throw new UnsupportedOperationException(Messages.getInternalErrorString(10));
+import org.mybatis.dynamic.sql.SqlColumn;
+
+public class RowMapping extends AbstractColumnMapping {
+    private RowMapping(SqlColumn<?> column) {
+        super(column);
+    }
+
+    public static RowMapping of(SqlColumn<?> column) {
+        return new RowMapping(column);
     }
 
     @Override
-    public final R visit(PropertyWhenPresentMapping mapping) {
-        throw new UnsupportedOperationException(Messages.getInternalErrorString(11));
-    }
-
-    @Override
-    public final R visit(RowMapping mapping) {
-        // TODO - fix error number
-        throw new UnsupportedOperationException(Messages.getInternalErrorString(99));
+    public <R> R accept(ColumnMappingVisitor<R> visitor) {
+        return visitor.visit(this);
     }
 }

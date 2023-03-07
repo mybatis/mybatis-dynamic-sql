@@ -15,6 +15,10 @@
  */
 package org.mybatis.dynamic.sql.util;
 
+import org.mybatis.dynamic.sql.insert.render.FieldAndValueAndParameters;
+
+import java.util.Optional;
+
 public abstract class InsertMappingVisitor<R> implements ColumnMappingVisitor<R> {
     @Override
     public final <T> R visit(ValueMapping<T> mapping) {
@@ -39,5 +43,11 @@ public abstract class InsertMappingVisitor<R> implements ColumnMappingVisitor<R>
     @Override
     public final R visit(ColumnToColumnMapping columnMapping) {
         throw new UnsupportedOperationException(Messages.getInternalErrorString(9));
+    }
+
+    @Override
+    public R visit(RowMapping mapping) {
+        // TODO - fix error number
+        throw new UnsupportedOperationException(Messages.getInternalErrorString(99));
     }
 }

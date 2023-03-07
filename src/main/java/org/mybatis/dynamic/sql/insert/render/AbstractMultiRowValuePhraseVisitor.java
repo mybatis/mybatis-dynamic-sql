@@ -18,9 +18,11 @@ package org.mybatis.dynamic.sql.insert.render;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.util.ConstantMapping;
+import org.mybatis.dynamic.sql.util.Messages;
 import org.mybatis.dynamic.sql.util.MultiRowInsertMappingVisitor;
 import org.mybatis.dynamic.sql.util.NullMapping;
 import org.mybatis.dynamic.sql.util.PropertyMapping;
+import org.mybatis.dynamic.sql.util.RowMapping;
 import org.mybatis.dynamic.sql.util.StringConstantMapping;
 
 public abstract class AbstractMultiRowValuePhraseVisitor
@@ -60,6 +62,12 @@ public abstract class AbstractMultiRowValuePhraseVisitor
         return FieldAndValueAndParameters.withFieldName(mapping.columnName())
                 .withValuePhrase(mapping.mapColumn(c -> calculateJdbcPlaceholder(c, mapping.property())))
                 .build();
+    }
+
+    @Override
+    public FieldAndValueAndParameters visit(RowMapping mapping) {
+        // TODO - fix error number
+        throw new UnsupportedOperationException(Messages.getInternalErrorString(99));
     }
 
     abstract String calculateJdbcPlaceholder(SqlColumn<?> column, String parameterName);
