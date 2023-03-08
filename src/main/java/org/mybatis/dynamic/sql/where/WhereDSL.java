@@ -18,7 +18,6 @@ package org.mybatis.dynamic.sql.where;
 import java.util.function.Consumer;
 
 import org.jetbrains.annotations.NotNull;
-import org.mybatis.dynamic.sql.CriteriaGroup;
 import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
 import org.mybatis.dynamic.sql.util.Buildable;
 
@@ -55,12 +54,7 @@ public class WhereDSL extends AbstractWhereStarter<WhereDSL.StandaloneWhereFinis
         }
 
         public WhereApplier toWhereApplier() {
-            CriteriaGroup ic = new CriteriaGroup.Builder()
-                    .withInitialCriterion(getInitialCriterion())
-                    .withSubCriteria(subCriteria)
-                    .build();
-
-            return d -> d.initialize(ic);
+            return d -> d.initialize(getInitialCriterion(), subCriteria);
         }
     }
 }

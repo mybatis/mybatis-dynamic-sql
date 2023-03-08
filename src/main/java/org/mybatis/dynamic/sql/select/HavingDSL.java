@@ -16,7 +16,6 @@
 package org.mybatis.dynamic.sql.select;
 
 import org.jetbrains.annotations.NotNull;
-import org.mybatis.dynamic.sql.CriteriaGroup;
 import org.mybatis.dynamic.sql.util.Buildable;
 
 public class HavingDSL extends AbstractHavingStarter<HavingDSL.StandaloneHavingFinisher> {
@@ -44,12 +43,7 @@ public class HavingDSL extends AbstractHavingStarter<HavingDSL.StandaloneHavingF
         }
 
         public HavingApplier toHavingApplier() {
-            CriteriaGroup ic = new CriteriaGroup.Builder()
-                    .withInitialCriterion(getInitialCriterion())
-                    .withSubCriteria(subCriteria)
-                    .build();
-
-            return d -> d.initialize(ic);
+            return d -> d.initialize(getInitialCriterion(), subCriteria);
         }
     }
 }
