@@ -99,6 +99,5 @@ class ReusableWhereTest {
 
     }
 
-    private final WhereApplier commonWhere = where(id, isEqualTo(1)).toWhereApplier()
-            .andThen(wa -> wa.or(occupation, isNull()));
+    private final WhereApplier commonWhere = where(id, isEqualTo(1)).or(occupation, isNull()).toWhereApplier();
 }

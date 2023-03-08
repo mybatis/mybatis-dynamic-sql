@@ -15,9 +15,11 @@
  */
 package org.mybatis.dynamic.sql.where;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
 
+import org.mybatis.dynamic.sql.AndOrCriteriaGroup;
 import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.common.AbstractBooleanExpressionDSL;
 import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
@@ -29,6 +31,11 @@ public abstract class AbstractWhereFinisher<T extends AbstractWhereFinisher<T>> 
 
     void initialize(SqlCriterion sqlCriterion) {
         setInitialCriterion(sqlCriterion, StatementType.WHERE);
+    }
+
+    void initialize(SqlCriterion sqlCriterion, List<AndOrCriteriaGroup> subCriteria) {
+        setInitialCriterion(sqlCriterion, StatementType.WHERE);
+        super.subCriteria.addAll(subCriteria);
     }
 
     protected AbstractWhereFinisher(StatementConfiguration statementConfiguration) {

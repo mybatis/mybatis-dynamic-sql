@@ -15,13 +15,21 @@
  */
 package org.mybatis.dynamic.sql.select;
 
+import org.mybatis.dynamic.sql.AndOrCriteriaGroup;
 import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.common.AbstractBooleanExpressionDSL;
+
+import java.util.List;
 
 public abstract class AbstractHavingFinisher<T extends AbstractHavingFinisher<T>>
         extends AbstractBooleanExpressionDSL<T> {
     void initialize(SqlCriterion sqlCriterion) {
         setInitialCriterion(sqlCriterion, StatementType.HAVING);
+    }
+
+    void initialize(SqlCriterion sqlCriterion, List<AndOrCriteriaGroup> subCriteria) {
+        setInitialCriterion(sqlCriterion, StatementType.HAVING);
+        super.subCriteria.addAll(subCriteria);
     }
 
     protected HavingModel buildModel() {
