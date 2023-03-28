@@ -66,9 +66,12 @@ public abstract class AbstractMultiRowValuePhraseVisitor
 
     @Override
     public FieldAndValueAndParameters visit(RowMapping mapping) {
-        // TODO - fix error number
-        throw new UnsupportedOperationException(Messages.getInternalErrorString(99));
+        return FieldAndValueAndParameters.withFieldName(mapping.columnName())
+                .withValuePhrase(mapping.mapColumn(this::calculateJdbcPlaceholder))
+                .build();
     }
 
     abstract String calculateJdbcPlaceholder(SqlColumn<?> column, String parameterName);
+
+    abstract String calculateJdbcPlaceholder(SqlColumn<?> column);
 }

@@ -28,9 +28,15 @@ public abstract class RenderingStrategy {
 
     public abstract String getFormattedJdbcPlaceholder(BindableColumn<?> column, String prefix, String parameterName);
 
+    public abstract String getFormattedJdbcPlaceholder(BindableColumn<?> column, String parameterName);
+
     public abstract String getFormattedJdbcPlaceholder(String prefix, String parameterName);
 
     public String getMultiRowFormattedJdbcPlaceholder(BindableColumn<?> column, String prefix, String parameterName) {
         return getFormattedJdbcPlaceholder(column, prefix, parameterName);
+    }
+
+    public String getMultiRowFormattedJdbcPlaceholder(BindableColumn<?> column, String parameterName) {
+        return getFormattedJdbcPlaceholder(column, parameterName);
     }
 }

@@ -29,6 +29,7 @@ import org.mybatis.dynamic.sql.util.Buildable;
 import org.mybatis.dynamic.sql.util.ConstantMapping;
 import org.mybatis.dynamic.sql.util.NullMapping;
 import org.mybatis.dynamic.sql.util.PropertyMapping;
+import org.mybatis.dynamic.sql.util.RowMapping;
 import org.mybatis.dynamic.sql.util.StringConstantMapping;
 
 public class BatchInsertDSL<T> implements Buildable<BatchInsertModel<T>> {
@@ -101,6 +102,11 @@ public class BatchInsertDSL<T> implements Buildable<BatchInsertModel<T>> {
 
         public BatchInsertDSL<T> toStringConstant(String constant) {
             columnMappings.add(StringConstantMapping.of(column, constant));
+            return BatchInsertDSL.this;
+        }
+
+        public BatchInsertDSL<T> toRow() {
+            columnMappings.add(RowMapping.of(column));
             return BatchInsertDSL.this;
         }
     }

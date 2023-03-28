@@ -16,6 +16,7 @@
 
 drop table Address if exists;
 drop table Person if exists;
+drop table CompoundKey if exists;
 
 create table Address (
    address_id int not null,
@@ -35,6 +36,12 @@ create table Person (
    occupation varchar(30) null,
    address_id int not null,
    primary key(id)
+);
+
+create table CompoundKey (
+    id1 int not null,
+    id2 int not null,
+    primary key (id1, id2)
 );
 
 insert into Address (address_id, street_address, city, state, address_type)

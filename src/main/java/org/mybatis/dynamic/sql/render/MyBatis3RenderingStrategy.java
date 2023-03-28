@@ -39,6 +39,16 @@ public class MyBatis3RenderingStrategy extends RenderingStrategy {
                 + "}"; //$NON-NLS-1$
     }
 
+    @Override
+    public String getFormattedJdbcPlaceholder(BindableColumn<?> column, String parameterName) {
+        return "#{" //$NON-NLS-1$
+                + parameterName
+                + renderJdbcType(column)
+                + renderJavaType(column)
+                + renderTypeHandler(column)
+                + "}"; //$NON-NLS-1$
+    }
+
     private String renderTypeHandler(BindableColumn<?> column) {
         return column.typeHandler()
                 .map(th -> ",typeHandler=" + th) //$NON-NLS-1$

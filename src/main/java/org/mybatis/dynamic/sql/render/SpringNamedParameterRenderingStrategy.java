@@ -25,6 +25,11 @@ public class SpringNamedParameterRenderingStrategy extends RenderingStrategy {
     }
 
     @Override
+    public String getFormattedJdbcPlaceholder(BindableColumn<?> column, String parameterName) {
+        return ":" + parameterName; //$NON-NLS-1$
+    }
+
+    @Override
     public String getFormattedJdbcPlaceholder(String prefix, String parameterName) {
         return ":" + parameterName; //$NON-NLS-1$
     }
@@ -32,5 +37,10 @@ public class SpringNamedParameterRenderingStrategy extends RenderingStrategy {
     @Override
     public String getMultiRowFormattedJdbcPlaceholder(BindableColumn<?> column, String prefix, String parameterName) {
         return ":" + prefix + "." + parameterName; //$NON-NLS-1$ //$NON-NLS-2$
+    }
+
+    @Override
+    public String getMultiRowFormattedJdbcPlaceholder(BindableColumn<?> column, String parameterName) {
+        return ":" + parameterName; //$NON-NLS-1$
     }
 }

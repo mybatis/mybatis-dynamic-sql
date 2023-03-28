@@ -29,4 +29,9 @@ public class BatchValuePhraseVisitor extends AbstractMultiRowValuePhraseVisitor 
         return column.renderingStrategy().orElse(renderingStrategy)
                 .getFormattedJdbcPlaceholder(column, prefix, parameterName);
     }
+
+    @Override
+    String calculateJdbcPlaceholder(SqlColumn<?> column) {
+        return column.renderingStrategy().orElse(renderingStrategy).getFormattedJdbcPlaceholder(column, prefix);
+    }
 }
