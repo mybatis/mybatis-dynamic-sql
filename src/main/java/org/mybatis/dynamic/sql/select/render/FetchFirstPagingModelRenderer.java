@@ -21,6 +21,7 @@ import org.mybatis.dynamic.sql.exception.InvalidSqlException;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.select.PagingModel;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
+import org.mybatis.dynamic.sql.util.InternalError;
 import org.mybatis.dynamic.sql.util.Messages;
 
 public class FetchFirstPagingModelRenderer {
@@ -49,7 +50,8 @@ public class FetchFirstPagingModelRenderer {
 
     private FragmentAndParameters renderFetchFirstRowsOnly() {
         return pagingModel.fetchFirstRows().map(this::renderFetchFirstRowsOnly)
-                .orElseThrow(() -> new InvalidSqlException(Messages.getInternalErrorString(13)));
+                .orElseThrow(() ->
+                        new InvalidSqlException(Messages.getInternalErrorString(InternalError.INTERNAL_ERROR_13)));
     }
 
     private FragmentAndParameters renderFetchFirstRowsOnly(Long fetchFirstRows) {
