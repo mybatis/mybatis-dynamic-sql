@@ -37,7 +37,7 @@ public class Messages {
         return MessageFormat.format(getString(key), p1, p2, p3);
     }
 
-    public static String getInternalErrorString(int internalErrorNumber) {
-        return MessageFormat.format(getString("INTERNAL.ERROR"), internalErrorNumber); //$NON-NLS-1$
+    public static String getInternalErrorString(InternalError internalError) {
+        return MessageFormat.format(getString("INTERNAL.ERROR"), internalError.getNumber()); //$NON-NLS-1$
     }
 }

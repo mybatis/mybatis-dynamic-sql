@@ -67,7 +67,7 @@ public class WhereConditionVisitor<T> implements ConditionVisitor<T, FragmentAnd
 
     @Override
     public FragmentAndParameters visit(AbstractSingleValueCondition<T> condition) {
-        String mapKey = RenderingStrategy.formatParameterMapKey(sequence);
+        String mapKey = renderingStrategy.formatParameterMapKey(sequence);
         String fragment = condition.renderCondition(columnName(),
                 getFormattedJdbcPlaceholder(mapKey));
 
@@ -78,8 +78,8 @@ public class WhereConditionVisitor<T> implements ConditionVisitor<T, FragmentAnd
 
     @Override
     public FragmentAndParameters visit(AbstractTwoValueCondition<T> condition) {
-        String mapKey1 = RenderingStrategy.formatParameterMapKey(sequence);
-        String mapKey2 = RenderingStrategy.formatParameterMapKey(sequence);
+        String mapKey1 = renderingStrategy.formatParameterMapKey(sequence);
+        String mapKey2 = renderingStrategy.formatParameterMapKey(sequence);
         String fragment = condition.renderCondition(columnName(),
                 getFormattedJdbcPlaceholder(mapKey1),
                 getFormattedJdbcPlaceholder(mapKey2));
@@ -118,7 +118,7 @@ public class WhereConditionVisitor<T> implements ConditionVisitor<T, FragmentAnd
     }
 
     private FragmentAndParameters toFragmentAndParameters(T value) {
-        String mapKey = RenderingStrategy.formatParameterMapKey(sequence);
+        String mapKey = renderingStrategy.formatParameterMapKey(sequence);
 
         return FragmentAndParameters.withFragment(getFormattedJdbcPlaceholder(mapKey))
                 .withParameter(mapKey, convertValue(value))
