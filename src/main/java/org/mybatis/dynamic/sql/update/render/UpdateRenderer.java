@@ -122,7 +122,7 @@ public class UpdateRenderer {
     }
 
     private FragmentAndParameters renderLimitClause(Long limit) {
-        String mapKey = RenderingStrategy.formatParameterMapKey(sequence);
+        String mapKey = renderingStrategy.formatParameterMapKey(sequence);
         String jdbcPlaceholder =
                 renderingStrategy.getFormattedJdbcPlaceholder(RenderingStrategy.DEFAULT_PARAMETER_PREFIX, mapKey);
 

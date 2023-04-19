@@ -42,15 +42,15 @@ public class LimitAndOffsetPagingModelRenderer {
     }
 
     private FragmentAndParameters renderLimitOnly() {
-        String mapKey = RenderingStrategy.formatParameterMapKey(sequence);
+        String mapKey = renderingStrategy.formatParameterMapKey(sequence);
         return FragmentAndParameters.withFragment("limit " + renderPlaceholder(mapKey)) //$NON-NLS-1$
                 .withParameter(mapKey, limit)
                 .build();
     }
 
     private FragmentAndParameters renderLimitAndOffset(Long offset) {
-        String mapKey1 = RenderingStrategy.formatParameterMapKey(sequence);
-        String mapKey2 = RenderingStrategy.formatParameterMapKey(sequence);
+        String mapKey1 = renderingStrategy.formatParameterMapKey(sequence);
+        String mapKey2 = renderingStrategy.formatParameterMapKey(sequence);
         return FragmentAndParameters.withFragment("limit " + renderPlaceholder(mapKey1) //$NON-NLS-1$
                     + " offset " + renderPlaceholder(mapKey2)) //$NON-NLS-1$
                 .withParameter(mapKey1, limit)

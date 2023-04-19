@@ -44,6 +44,7 @@ import org.mybatis.dynamic.sql.select.join.JoinSpecification;
 import org.mybatis.dynamic.sql.select.join.JoinType;
 import org.mybatis.dynamic.sql.select.render.PagingModelRenderer;
 import org.mybatis.dynamic.sql.update.UpdateModel;
+import org.mybatis.dynamic.sql.util.InternalError;
 import org.mybatis.dynamic.sql.util.Messages;
 
 class InvalidSQLTest {
@@ -241,7 +242,7 @@ class InvalidSQLTest {
 
         assertThatExceptionOfType(InvalidSqlException.class)
                 .isThrownBy(renderer::render)
-                .withMessage(Messages.getInternalErrorString(13));
+                .withMessage(Messages.getInternalErrorString(InternalError.INTERNAL_ERROR_13));
     }
 
 

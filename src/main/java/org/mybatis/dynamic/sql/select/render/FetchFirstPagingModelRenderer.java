@@ -21,6 +21,7 @@ import org.mybatis.dynamic.sql.exception.InvalidSqlException;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.select.PagingModel;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
+import org.mybatis.dynamic.sql.util.InternalError;
 import org.mybatis.dynamic.sql.util.Messages;
 
 public class FetchFirstPagingModelRenderer {
@@ -49,11 +50,12 @@ public class FetchFirstPagingModelRenderer {
 
     private FragmentAndParameters renderFetchFirstRowsOnly() {
         return pagingModel.fetchFirstRows().map(this::renderFetchFirstRowsOnly)
-                .orElseThrow(() -> new InvalidSqlException(Messages.getInternalErrorString(13)));
+                .orElseThrow(() ->
+                        new InvalidSqlException(Messages.getInternalErrorString(InternalError.INTERNAL_ERROR_13)));
     }
 
     private FragmentAndParameters renderFetchFirstRowsOnly(Long fetchFirstRows) {
-        String mapKey = RenderingStrategy.formatParameterMapKey(sequence);
+        String mapKey = renderingStrategy.formatParameterMapKey(sequence);
         return FragmentAndParameters
                 .withFragment("fetch first " + renderPlaceholder(mapKey) //$NON-NLS-1$
                     + " rows only") //$NON-NLS-1$
@@ -62,7 +64,7 @@ public class FetchFirstPagingModelRenderer {
     }
 
     private FragmentAndParameters renderOffsetOnly(Long offset) {
-        String mapKey = RenderingStrategy.formatParameterMapKey(sequence);
+        String mapKey = renderingStrategy.formatParameterMapKey(sequence);
         return FragmentAndParameters.withFragment("offset " + renderPlaceholder(mapKey) //$NON-NLS-1$
                 + " rows") //$NON-NLS-1$
                 .withParameter(mapKey, offset)
@@ -70,8 +72,8 @@ public class FetchFirstPagingModelRenderer {
     }
 
     private FragmentAndParameters renderOffsetAndFetchFirstRows(Long offset, Long fetchFirstRows) {
-        String mapKey1 = RenderingStrategy.formatParameterMapKey(sequence);
-        String mapKey2 = RenderingStrategy.formatParameterMapKey(sequence);
+        String mapKey1 = renderingStrategy.formatParameterMapKey(sequence);
+        String mapKey2 = renderingStrategy.formatParameterMapKey(sequence);
         return FragmentAndParameters.withFragment("offset " + renderPlaceholder(mapKey1) //$NON-NLS-1$
                 + " rows fetch first " + renderPlaceholder(mapKey2) //$NON-NLS-1$
                 + " rows only") //$NON-NLS-1$

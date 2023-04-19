@@ -15,9 +15,31 @@
  */
 package org.mybatis.dynamic.sql.util;
 
-public abstract class MultiRowInsertMappingVisitor<R> extends InsertMappingVisitor<R> {
-    @Override
-    public final R visit(PropertyWhenPresentMapping mapping) {
-        throw new UnsupportedOperationException(Messages.getInternalErrorString(InternalError.INTERNAL_ERROR_12));
+/**
+ * Enum for managing internal error numbers.
+ */
+public enum InternalError {
+    INTERNAL_ERROR_1(1),
+    INTERNAL_ERROR_2(2),
+    INTERNAL_ERROR_3(3),
+    INTERNAL_ERROR_4(4),
+    INTERNAL_ERROR_5(5),
+    INTERNAL_ERROR_6(6),
+    INTERNAL_ERROR_7(7),
+    INTERNAL_ERROR_8(8),
+    INTERNAL_ERROR_9(9),
+    INTERNAL_ERROR_10(10),
+    INTERNAL_ERROR_11(11),
+    INTERNAL_ERROR_12(12),
+    INTERNAL_ERROR_13(13);
+
+    private final int number;
+
+    InternalError(int number) {
+        this.number = number;
+    }
+
+    public int getNumber() {
+        return number;
     }
 }
