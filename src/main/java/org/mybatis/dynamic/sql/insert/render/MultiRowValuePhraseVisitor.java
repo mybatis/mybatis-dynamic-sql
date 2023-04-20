@@ -25,12 +25,6 @@ public class MultiRowValuePhraseVisitor extends AbstractMultiRowValuePhraseVisit
     }
 
     @Override
-    String calculateJdbcPlaceholder(SqlColumn<?> column, String parameterName) {
-        return column.renderingStrategy().orElse(renderingStrategy)
-                .getMultiRowFormattedJdbcPlaceholder(column, prefix, parameterName);
-    }
-
-    @Override
     String calculateJdbcPlaceholder(SqlColumn<?> column) {
         return column.renderingStrategy().orElse(renderingStrategy).getMultiRowFormattedJdbcPlaceholder(column, prefix);
     }

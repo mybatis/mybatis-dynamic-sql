@@ -64,14 +64,16 @@ public abstract class AbstractMultiRowValuePhraseVisitor
                 .build();
     }
 
+    private String calculateJdbcPlaceholder(SqlColumn<?> column, String parameterName) {
+        return column.renderingStrategy().orElse(renderingStrategy)
+                .getRecordBasedInsertBinding(column, prefix, parameterName);
+    }
     @Override
     public FieldAndValueAndParameters visit(RowMapping mapping) {
         return FieldAndValueAndParameters.withFieldName(mapping.columnName())
                 .withValuePhrase(mapping.mapColumn(this::calculateJdbcPlaceholder))
                 .build();
     }
-
-    abstract String calculateJdbcPlaceholder(SqlColumn<?> column, String parameterName);
 
     abstract String calculateJdbcPlaceholder(SqlColumn<?> column);
 }
