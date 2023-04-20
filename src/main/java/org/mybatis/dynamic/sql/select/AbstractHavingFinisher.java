@@ -15,11 +15,11 @@
  */
 package org.mybatis.dynamic.sql.select;
 
+import java.util.List;
+
 import org.mybatis.dynamic.sql.AndOrCriteriaGroup;
 import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.common.AbstractBooleanExpressionDSL;
-
-import java.util.List;
 
 public abstract class AbstractHavingFinisher<T extends AbstractHavingFinisher<T>>
         extends AbstractBooleanExpressionDSL<T> {
