@@ -13,35 +13,25 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.mybatis.dynamic.sql.util;
+package examples.simple;
 
-/**
- * Enum for managing internal error numbers.
- */
-public enum InternalError {
-    INTERNAL_ERROR_1(1),
-    INTERNAL_ERROR_2(2),
-    INTERNAL_ERROR_3(3),
-    INTERNAL_ERROR_4(4),
-    INTERNAL_ERROR_5(5),
-    INTERNAL_ERROR_6(6),
-    INTERNAL_ERROR_7(7),
-    INTERNAL_ERROR_8(8),
-    INTERNAL_ERROR_9(9),
-    INTERNAL_ERROR_10(10),
-    INTERNAL_ERROR_11(11),
-    INTERNAL_ERROR_12(12),
-    INTERNAL_ERROR_13(13),
-    INTERNAL_ERROR_14(14),
-    INTERNAL_ERROR_15(15);
+public class CompoundKeyRow {
+    private Integer id1;
+    private Integer id2;
 
-    private final int number;
-
-    InternalError(int number) {
-        this.number = number;
+    public Integer getId1() {
+        return id1;
     }
 
-    public int getNumber() {
-        return number;
+    public void setId1(Integer id1) {
+        this.id1 = id1;
+    }
+
+    public Integer getId2() {
+        return id2;
+    }
+
+    public void setId2(Integer id2) {
+        this.id2 = id2;
     }
 }

@@ -49,5 +49,7 @@ public interface ColumnMappingVisitor<R> {
 
     R visit(PropertyWhenPresentMapping mapping);
 
-    R visit(ColumnToColumnMapping columnMapping);
+    R visit(ColumnToColumnMapping mapping);
+
+    R visit(RowMapping mapping);
 }

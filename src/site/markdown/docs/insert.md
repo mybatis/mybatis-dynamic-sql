@@ -42,6 +42,7 @@ Notice the `map` method.  It is used to map a database column to an attribute of
 3. `map(column).toStringConstant(constant_value)` will insert a constant into a column.  The constant_value will be written into the generated insert statement surrounded by single quote marks (as an SQL String)
 4. `map(column).toProperty(property)` will insert a value from the record into a column.  The value of the property will be bound to the SQL statement as a prepared statement parameter
 5. `map(column).toPropertyWhenPresent(property, Supplier<?> valueSupplier)` will insert a value from the record into a column if the value is non-null.  The value of the property will be bound to the SQL statement as a prepared statement parameter.  This is used to generate a "selective" insert as defined in MyBatis Generator.
+6. `map(column).toRow()` will insert the record itself into a column. This is appropriate when the "record" is a simple class like Integer or String. 
 
 ### Annotated Mapper for Single Row Insert Statements
 The InsertStatementProvider object can be used as a parameter to a MyBatis mapper method directly.  If you

@@ -65,6 +65,16 @@ class ColumnMappingVisitorTest {
     }
 
     @Test
+    void testThatGeneralInsertVisitorErrorsForRowMapping() {
+        TestTable table = new TestTable();
+        GeneralInsertVisitor tv = new GeneralInsertVisitor();
+        RowMapping mapping = RowMapping.of(table.id);
+
+        assertThatExceptionOfType(UnsupportedOperationException.class).isThrownBy(() -> tv.visit(mapping))
+                .withMessage("Internal Error 14");
+    }
+
+    @Test
     void testThatInsertVisitorErrorsForColumnToColumnMapping() {
         TestTable table = new TestTable();
         InsertVisitor tv = new InsertVisitor();
@@ -184,6 +194,16 @@ class ColumnMappingVisitorTest {
                 .withMessage("Internal Error 11");
     }
 
+    @Test
+    void testThatUpdateVisitorErrorsForRowMapping() {
+        TestTable table = new TestTable();
+        UpdateVisitor tv = new UpdateVisitor();
+        RowMapping mapping = RowMapping.of(table.id);
+
+        assertThatExceptionOfType(UnsupportedOperationException.class).isThrownBy(() -> tv.visit(mapping))
+                .withMessage("Internal Error 15");
+    }
+
     private static class TestTable extends SqlTable {
         public SqlColumn<Integer> id;
         public SqlColumn<String> description;
@@ -253,6 +273,11 @@ class ColumnMappingVisitorTest {
         public String visit(PropertyWhenPresentMapping mapping) {
             return "Property When Present Mapping";
         }
+
+        @Override
+        public String visit(RowMapping mapping) {
+            return "Row Mapping";
+        }
     }
 
     private static class UpdateVisitor extends UpdateMappingVisitor<String> {
@@ -317,6 +342,11 @@ class ColumnMappingVisitorTest {
         @Override
         public String visit(PropertyMapping mapping) {
             return "Property Mapping";
+        }
+
+        @Override
+        public String visit(RowMapping mapping) {
+            return "Row Mapping";
         }
 
     }

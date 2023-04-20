@@ -28,6 +28,7 @@ import org.mybatis.dynamic.sql.util.Buildable;
 import org.mybatis.dynamic.sql.util.ConstantMapping;
 import org.mybatis.dynamic.sql.util.NullMapping;
 import org.mybatis.dynamic.sql.util.PropertyMapping;
+import org.mybatis.dynamic.sql.util.RowMapping;
 import org.mybatis.dynamic.sql.util.StringConstantMapping;
 
 public class MultiRowInsertDSL<T> implements Buildable<MultiRowInsertModel<T>> {
@@ -100,6 +101,11 @@ public class MultiRowInsertDSL<T> implements Buildable<MultiRowInsertModel<T>> {
 
         public MultiRowInsertDSL<T> toStringConstant(String constant) {
             columnMappings.add(StringConstantMapping.of(column, constant));
+            return MultiRowInsertDSL.this;
+        }
+
+        public MultiRowInsertDSL<T> toRow() {
+            columnMappings.add(RowMapping.of(column));
             return MultiRowInsertDSL.this;
         }
     }

@@ -67,3 +67,8 @@ data class GeneratedAlwaysRecord(
     var lastName: String?,
     var fullName: String?
 )
+
+data class CompoundKeyRow(
+    var id1: Int,
+    var id2: Int
+)

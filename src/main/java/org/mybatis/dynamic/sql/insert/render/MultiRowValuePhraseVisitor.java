@@ -15,11 +15,65 @@
  */
 package org.mybatis.dynamic.sql.insert.render;
 
+import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
+import org.mybatis.dynamic.sql.util.ConstantMapping;
+import org.mybatis.dynamic.sql.util.MultiRowInsertMappingVisitor;
+import org.mybatis.dynamic.sql.util.NullMapping;
+import org.mybatis.dynamic.sql.util.PropertyMapping;
+import org.mybatis.dynamic.sql.util.RowMapping;
+import org.mybatis.dynamic.sql.util.StringConstantMapping;
 
-public class MultiRowValuePhraseVisitor extends AbstractMultiRowValuePhraseVisitor {
+public class MultiRowValuePhraseVisitor extends MultiRowInsertMappingVisitor<FieldAndValueAndParameters> {
+    protected final RenderingStrategy renderingStrategy;
+    protected final String prefix;
 
-    public MultiRowValuePhraseVisitor(RenderingStrategy renderingStrategy, String prefix) {
-        super(renderingStrategy, prefix);
+    protected MultiRowValuePhraseVisitor(RenderingStrategy renderingStrategy, String prefix) {
+        this.renderingStrategy = renderingStrategy;
+        this.prefix = prefix;
+    }
+
+    @Override
+    public FieldAndValueAndParameters visit(NullMapping mapping) {
+        return FieldAndValueAndParameters.withFieldName(mapping.columnName())
+                .withValuePhrase("null") //$NON-NLS-1$
+                .build();
+    }
+
+    @Override
+    public FieldAndValueAndParameters visit(ConstantMapping mapping) {
+        return FieldAndValueAndParameters.withFieldName(mapping.columnName())
+                .withValuePhrase(mapping.constant())
+                .build();
+    }
+
+    @Override
+    public FieldAndValueAndParameters visit(StringConstantMapping mapping) {
+        return FieldAndValueAndParameters.withFieldName(mapping.columnName())
+                .withValuePhrase("'" + mapping.constant() + "'") //$NON-NLS-1$ //$NON-NLS-2$
+                .build();
+    }
+
+    @Override
+    public FieldAndValueAndParameters visit(PropertyMapping mapping) {
+        return FieldAndValueAndParameters.withFieldName(mapping.columnName())
+                .withValuePhrase(mapping.mapColumn(c -> calculateJdbcPlaceholder(c, mapping.property())))
+                .build();
+    }
+
+    @Override
+    public FieldAndValueAndParameters visit(RowMapping mapping) {
+        return FieldAndValueAndParameters.withFieldName(mapping.columnName())
+                .withValuePhrase(mapping.mapColumn(this::calculateJdbcPlaceholder))
+                .build();
+    }
+
+    private String calculateJdbcPlaceholder(SqlColumn<?> column) {
+        return column.renderingStrategy().orElse(renderingStrategy).getRecordBasedInsertBinding(column, prefix);
+    }
+
+    private String calculateJdbcPlaceholder(SqlColumn<?> column, String parameterName) {
+        return column.renderingStrategy().orElse(renderingStrategy)
+                .getRecordBasedInsertBinding(column, prefix, parameterName);
     }
 }

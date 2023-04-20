@@ -24,6 +24,7 @@ import org.mybatis.dynamic.sql.util.InsertMappingVisitor;
 import org.mybatis.dynamic.sql.util.NullMapping;
 import org.mybatis.dynamic.sql.util.PropertyMapping;
 import org.mybatis.dynamic.sql.util.PropertyWhenPresentMapping;
+import org.mybatis.dynamic.sql.util.RowMapping;
 import org.mybatis.dynamic.sql.util.StringConstantMapping;
 
 public class ValuePhraseVisitor extends InsertMappingVisitor<Optional<FieldAndValueAndParameters>> {
@@ -69,6 +70,18 @@ public class ValuePhraseVisitor extends InsertMappingVisitor<Optional<FieldAndVa
         } else {
             return Optional.empty();
         }
+    }
+
+    @Override
+    public Optional<FieldAndValueAndParameters> visit(RowMapping mapping) {
+        return FieldAndValueAndParameters.withFieldName(mapping.columnName())
+                .withValuePhrase(mapping.mapColumn(this::calculateJdbcPlaceholder))
+                .buildOptional();
+    }
+
+    private String calculateJdbcPlaceholder(SqlColumn<?> column) {
+        return column.renderingStrategy().orElse(renderingStrategy)
+                .getRecordBasedInsertBinding(column, "row"); //$NON-NLS-1$
     }
 
     private String calculateJdbcPlaceholder(SqlColumn<?> column, String parameterName) {

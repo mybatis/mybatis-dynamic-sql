@@ -25,4 +25,9 @@ public abstract class UpdateMappingVisitor<R> implements ColumnMappingVisitor<R>
     public final R visit(PropertyWhenPresentMapping mapping) {
         throw new UnsupportedOperationException(Messages.getInternalErrorString(InternalError.INTERNAL_ERROR_11));
     }
+
+    @Override
+    public final R visit(RowMapping mapping) {
+        throw new UnsupportedOperationException(Messages.getInternalErrorString(InternalError.INTERNAL_ERROR_15));
+    }
 }

@@ -33,4 +33,9 @@ public class SpringNamedParameterRenderingStrategy extends RenderingStrategy {
     public String getRecordBasedInsertBinding(BindableColumn<?> column, String prefix, String parameterName) {
         return ":" + prefix + "." + parameterName; //$NON-NLS-1$ //$NON-NLS-2$
     }
+
+    @Override
+    public String getRecordBasedInsertBinding(BindableColumn<?> column, String parameterName) {
+        return ":" + parameterName; //$NON-NLS-1$
+    }
 }
