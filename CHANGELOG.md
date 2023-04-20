@@ -112,6 +112,8 @@ The pull request for this change is ([#591](https://github.com/mybatis/mybatis-d
 5. Add `SqlBuilder.concat` and the equivalent in Kotlin. This is a concatenate function that works on more databases.
    ([#573](https://github.com/mybatis/mybatis-dynamic-sql/pull/573))
 6. Several classes and methods in the Kotlin DSL are deprecated in response to the new "having" support
+7. Added support for inserting a list of simple classes like Integers, Strings, etc. This is via a new "map to row"
+   function on the insert, batch insert, and multirow insert statements. 
 
 ## Release 1.4.1 - October 7, 2022
 
