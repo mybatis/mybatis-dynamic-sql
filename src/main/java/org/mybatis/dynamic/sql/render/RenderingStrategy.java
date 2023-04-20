@@ -101,5 +101,20 @@ public abstract class RenderingStrategy {
         return getFormattedJdbcPlaceholder(column, prefix, parameterName);
     }
 
+    /**
+     * This method generates a binding for a parameter to a placeholder in a record based insert statement.
+     *
+     * <p>This binding is specifically for use with insert, batch insert, and multirow insert statements and the
+     * MapToRow mapping. These statements bind parameters to the row class directly.
+     *
+     * <p>For MyBatis, a binding looks like this: "#{parameterName,jdbcType=xxx,typeHandler=xxx,javaType=xxx}"
+     *
+     * <p>For Spring, a binding looks like this: ":parameterName"
+     *
+     * @param column column definition used for generating type details in a MyBatis binding. Ignored for Spring.
+     * @param parameterName name of the parameter. Typically, will be
+     *     either "row" or "records[x]" to match the properties of the generated statement object class.
+     * @return the generated binding
+     */
     public abstract String getRecordBasedInsertBinding(BindableColumn<?> column, String parameterName);
 }
