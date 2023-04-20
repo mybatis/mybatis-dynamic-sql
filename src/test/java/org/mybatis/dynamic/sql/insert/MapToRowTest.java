@@ -124,7 +124,7 @@ class MapToRowTest {
                 .build()
                 .render(RenderingStrategies.SPRING_NAMED_PARAMETER);
 
-        String expected = "insert into foo (id1, id2) values (22, :id2)";
+        String expected = "insert into foo (id1, id2) values (22, :row.id2)";
         assertThat(batchInsert.getInsertStatementSQL()).isEqualTo(expected);
     }
 

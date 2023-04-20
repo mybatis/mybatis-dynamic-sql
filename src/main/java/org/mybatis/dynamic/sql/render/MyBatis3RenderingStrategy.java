@@ -40,7 +40,7 @@ public class MyBatis3RenderingStrategy extends RenderingStrategy {
     }
 
     @Override
-    public String getFormattedJdbcPlaceholder(BindableColumn<?> column, String parameterName) {
+    public String getRecordBasedInsertBinding(BindableColumn<?> column, String parameterName) {
         return "#{" //$NON-NLS-1$
                 + parameterName
                 + renderJdbcType(column)

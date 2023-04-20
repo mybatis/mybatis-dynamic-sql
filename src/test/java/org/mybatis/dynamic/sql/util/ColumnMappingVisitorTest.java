@@ -253,6 +253,11 @@ class ColumnMappingVisitorTest {
         public String visit(PropertyWhenPresentMapping mapping) {
             return "Property When Present Mapping";
         }
+
+        @Override
+        public String visit(RowMapping mapping) {
+            return "Row Mapping";
+        }
     }
 
     private static class UpdateVisitor extends UpdateMappingVisitor<String> {
@@ -317,6 +322,11 @@ class ColumnMappingVisitorTest {
         @Override
         public String visit(PropertyMapping mapping) {
             return "Property Mapping";
+        }
+
+        @Override
+        public String visit(RowMapping mapping) {
+            return "Row Mapping";
         }
 
     }

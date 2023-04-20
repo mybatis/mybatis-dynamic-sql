@@ -31,7 +31,9 @@ public enum InternalError {
     INTERNAL_ERROR_10(10),
     INTERNAL_ERROR_11(11),
     INTERNAL_ERROR_12(12),
-    INTERNAL_ERROR_13(13);
+    INTERNAL_ERROR_13(13),
+    INTERNAL_ERROR_14(14),
+    INTERNAL_ERROR_15(15);
 
     private final int number;
 

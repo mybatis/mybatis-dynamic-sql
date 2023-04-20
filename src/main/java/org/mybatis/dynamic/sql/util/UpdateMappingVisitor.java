@@ -28,7 +28,6 @@ public abstract class UpdateMappingVisitor<R> implements ColumnMappingVisitor<R>
 
     @Override
     public final R visit(RowMapping mapping) {
-        // TODO - fix error number
-        throw new UnsupportedOperationException(Messages.getInternalErrorString(99));
+        throw new UnsupportedOperationException(Messages.getInternalErrorString(InternalError.INTERNAL_ERROR_15));
     }
 }
