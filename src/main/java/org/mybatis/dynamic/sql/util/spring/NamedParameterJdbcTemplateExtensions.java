@@ -36,7 +36,6 @@ import org.mybatis.dynamic.sql.update.UpdateModel;
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
 import org.mybatis.dynamic.sql.util.Buildable;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -158,18 +157,5 @@ public class NamedParameterJdbcTemplateExtensions {
 
     public int update(UpdateStatementProvider updateStatement) {
         return template.update(updateStatement.getUpdateStatement(), updateStatement.getParameters());
-    }
-
-    /**
-     * Allow access to the underlying template for unusual circumstances.
-     *
-     * @return The underlying Spring JdbcOperations implementation
-     */
-    public JdbcOperations getJdbcOperations() {
-        return template.getJdbcOperations();
-    }
-
-    public NamedParameterJdbcTemplate getTemplate() {
-        return template;
     }
 }

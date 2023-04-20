@@ -1,3 +1,18 @@
+/*
+ *    Copyright 2016-2023 the original author or authors.
+ *
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *       https://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
 package examples.simple;
 
 import java.io.InputStream;
@@ -22,6 +37,7 @@ import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.insert.render.BatchInsert;
+import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider;
 import org.mybatis.dynamic.sql.insert.render.MultiRowInsertStatementProvider;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
@@ -30,11 +46,12 @@ import static examples.simple.CompoundKeyDynamicSqlSupport.compoundKey;
 import static examples.simple.CompoundKeyDynamicSqlSupport.id1;
 import static examples.simple.CompoundKeyDynamicSqlSupport.id2;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mybatis.dynamic.sql.SqlBuilder.insert;
 import static org.mybatis.dynamic.sql.SqlBuilder.insertBatch;
 import static org.mybatis.dynamic.sql.SqlBuilder.insertMultiple;
 import static org.mybatis.dynamic.sql.SqlBuilder.select;
 
-public class MyBatisMapToRowTest {
+class MyBatisMapToRowTest {
     private static final String JDBC_URL = "jdbc:hsqldb:mem:aname";
     private static final String JDBC_DRIVER = "org.hsqldb.jdbcDriver";
     private SqlSessionFactory sqlSessionFactory;
@@ -55,6 +72,36 @@ public class MyBatisMapToRowTest {
         Configuration config = new Configuration(environment);
         config.addMapper(CompoundKeyMapper.class);
         sqlSessionFactory = new SqlSessionFactoryBuilder().build(config);
+    }
+
+    @Test
+    void testInsertOne() {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
+            CompoundKeyMapper mapper = session.getMapper(CompoundKeyMapper.class);
+
+            Integer i = 1;
+
+            InsertStatementProvider<Integer> insertStatement = insert(i)
+                    .into(compoundKey)
+                    .map(id1).toConstant("22")
+                    .map(id2).toRow()
+                    .build()
+                    .render(RenderingStrategies.MYBATIS3);
+
+            String expected = "insert into CompoundKey (id1, id2) values (22, #{row,jdbcType=INTEGER})";
+            assertThat(insertStatement.getInsertStatement()).isEqualTo(expected);
+
+            int rows = mapper.insert(insertStatement);
+            assertThat(rows).isEqualTo(1);
+
+            SelectStatementProvider selectStatement = select(id1, id2)
+                    .from(compoundKey)
+                    .orderBy(id1, id2)
+                    .build().render(RenderingStrategies.MYBATIS3);
+
+            List<CompoundKeyRow> records = mapper.selectMany(selectStatement, this::mapRow);
+            assertThat(records).hasSize(1);
+        }
     }
 
     @Test

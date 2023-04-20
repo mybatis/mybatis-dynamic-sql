@@ -65,6 +65,16 @@ class ColumnMappingVisitorTest {
     }
 
     @Test
+    void testThatGeneralInsertVisitorErrorsForRowMapping() {
+        TestTable table = new TestTable();
+        GeneralInsertVisitor tv = new GeneralInsertVisitor();
+        RowMapping mapping = RowMapping.of(table.id);
+
+        assertThatExceptionOfType(UnsupportedOperationException.class).isThrownBy(() -> tv.visit(mapping))
+                .withMessage("Internal Error 14");
+    }
+
+    @Test
     void testThatInsertVisitorErrorsForColumnToColumnMapping() {
         TestTable table = new TestTable();
         InsertVisitor tv = new InsertVisitor();
@@ -182,6 +192,16 @@ class ColumnMappingVisitorTest {
 
         assertThatExceptionOfType(UnsupportedOperationException.class).isThrownBy(() -> tv.visit(mapping))
                 .withMessage("Internal Error 11");
+    }
+
+    @Test
+    void testThatUpdateVisitorErrorsForRowMapping() {
+        TestTable table = new TestTable();
+        UpdateVisitor tv = new UpdateVisitor();
+        RowMapping mapping = RowMapping.of(table.id);
+
+        assertThatExceptionOfType(UnsupportedOperationException.class).isThrownBy(() -> tv.visit(mapping))
+                .withMessage("Internal Error 15");
     }
 
     private static class TestTable extends SqlTable {
