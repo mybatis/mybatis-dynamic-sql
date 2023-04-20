@@ -268,10 +268,10 @@ open class CanonicalSpringKotlinTest {
         val expected =
             "insert into Person (id, first_name, last_name, birth_date, employed, occupation, address_id)" +
                 " values" +
-                " (:id, :firstName," +
-                " :lastNameAsString," +
-                " :birthDate, :employedAsString," +
-                " :occupation, :addressId)"
+                " (:row.id, :row.firstName," +
+                " :row.lastNameAsString," +
+                " :row.birthDate, :row.employedAsString," +
+                " :row.occupation, :row.addressId)"
 
         assertThat(insertStatement.insertStatement).isEqualTo(expected)
 

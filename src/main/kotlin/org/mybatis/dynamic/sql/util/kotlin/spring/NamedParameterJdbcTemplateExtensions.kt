@@ -36,12 +36,12 @@ import org.mybatis.dynamic.sql.util.kotlin.KotlinMultiRowInsertCompleter
 import org.mybatis.dynamic.sql.util.kotlin.MyBatisDslMarker
 import org.mybatis.dynamic.sql.util.kotlin.SelectCompleter
 import org.mybatis.dynamic.sql.util.kotlin.UpdateCompleter
+import org.mybatis.dynamic.sql.util.spring.BatchInsertUtility
 import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.jdbc.core.RowMapper
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
-import org.springframework.jdbc.core.namedparam.SqlParameterSourceUtils
 import org.springframework.jdbc.support.KeyHolder
 import java.sql.ResultSet
 import kotlin.reflect.KClass
@@ -66,7 +66,7 @@ fun NamedParameterJdbcTemplate.deleteFrom(table: SqlTable, completer: DeleteComp
 
 // batch insert
 fun <T> NamedParameterJdbcTemplate.insertBatch(insertStatement: BatchInsert<T>): IntArray =
-    batchUpdate(insertStatement.insertStatementSQL, SqlParameterSourceUtils.createBatch(insertStatement.records))
+    batchUpdate(insertStatement.insertStatementSQL, BatchInsertUtility.createBatch(insertStatement.records))
 
 fun <T : Any> NamedParameterJdbcTemplate.insertBatch(
     vararg records: T,
@@ -82,13 +82,13 @@ fun <T : Any> NamedParameterJdbcTemplate.insertBatch(
 
 // single row insert
 fun <T> NamedParameterJdbcTemplate.insert(insertStatement: InsertStatementProvider<T>): Int =
-    update(insertStatement.insertStatement, BeanPropertySqlParameterSource(insertStatement.row))
+    update(insertStatement.insertStatement, BeanPropertySqlParameterSource(insertStatement))
 
 fun <T> NamedParameterJdbcTemplate.insert(
     insertStatement: InsertStatementProvider<T>,
     keyHolder: KeyHolder
 ): Int =
-    update(insertStatement.insertStatement, BeanPropertySqlParameterSource(insertStatement.row), keyHolder)
+    update(insertStatement.insertStatement, BeanPropertySqlParameterSource(insertStatement), keyHolder)
 
 fun <T : Any> NamedParameterJdbcTemplate.insert(row: T, completer: KotlinInsertCompleter<T>): Int =
     insert(org.mybatis.dynamic.sql.util.kotlin.spring.insert(row, completer))
