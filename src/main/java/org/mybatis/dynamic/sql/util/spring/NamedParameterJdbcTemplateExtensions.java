@@ -40,8 +40,6 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.jdbc.core.namedparam.SqlParameterSource;
-import org.springframework.jdbc.core.namedparam.SqlParameterSourceUtils;
 import org.springframework.jdbc.support.KeyHolder;
 
 public class NamedParameterJdbcTemplateExtensions {
@@ -90,7 +88,7 @@ public class NamedParameterJdbcTemplateExtensions {
 
     public <T> int insert(InsertStatementProvider<T> insertStatement) {
         return template.update(insertStatement.getInsertStatement(),
-                new BeanPropertySqlParameterSource(insertStatement.getRow()));
+                new BeanPropertySqlParameterSource(insertStatement));
     }
 
     public <T> int insert(Buildable<InsertModel<T>> insertStatement, KeyHolder keyHolder) {
@@ -99,7 +97,7 @@ public class NamedParameterJdbcTemplateExtensions {
 
     public <T> int insert(InsertStatementProvider<T> insertStatement, KeyHolder keyHolder) {
         return template.update(insertStatement.getInsertStatement(),
-                new BeanPropertySqlParameterSource(insertStatement.getRow()), keyHolder);
+                new BeanPropertySqlParameterSource(insertStatement), keyHolder);
     }
 
     public <T> int[] insertBatch(Buildable<BatchInsertModel<T>> insertStatement) {
@@ -107,8 +105,8 @@ public class NamedParameterJdbcTemplateExtensions {
     }
 
     public <T> int[] insertBatch(BatchInsert<T> insertStatement) {
-        SqlParameterSource[] batch = SqlParameterSourceUtils.createBatch(insertStatement.getRecords());
-        return template.batchUpdate(insertStatement.getInsertStatementSQL(), batch);
+        return template.batchUpdate(insertStatement.getInsertStatementSQL(),
+                BatchInsertUtility.createBatch(insertStatement.getRecords()));
     }
 
     public <T> int insertMultiple(Buildable<MultiRowInsertModel<T>> insertStatement) {

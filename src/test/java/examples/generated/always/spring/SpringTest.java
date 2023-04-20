@@ -38,11 +38,11 @@ import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
 import org.mybatis.dynamic.sql.util.Buildable;
 import org.mybatis.dynamic.sql.util.spring.NamedParameterJdbcTemplateExtensions;
+import org.mybatis.dynamic.sql.util.spring.BatchInsertUtility;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
-import org.springframework.jdbc.core.namedparam.SqlParameterSourceUtils;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
@@ -142,7 +142,7 @@ class SpringTest {
                 .build()
                 .render(RenderingStrategies.SPRING_NAMED_PARAMETER);
 
-        SqlParameterSource parameterSource = new BeanPropertySqlParameterSource(insertStatement.getRow());
+        SqlParameterSource parameterSource = new BeanPropertySqlParameterSource(insertStatement);
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         int rows = template.update(insertStatement.getInsertStatement(), parameterSource, keyHolder);
@@ -241,7 +241,7 @@ class SpringTest {
         record.setLastName("Smith");
         records.add(record);
 
-        SqlParameterSource[] batch = SqlParameterSourceUtils.createBatch(records);
+        SqlParameterSource[] batch = BatchInsertUtility.createBatch(records);
 
         BatchInsert<GeneratedAlwaysRecord> batchInsert = insertBatch(records)
                 .into(generatedAlways)

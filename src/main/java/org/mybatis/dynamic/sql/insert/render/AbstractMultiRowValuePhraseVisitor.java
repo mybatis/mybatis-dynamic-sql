@@ -62,5 +62,8 @@ public abstract class AbstractMultiRowValuePhraseVisitor
                 .build();
     }
 
-    abstract String calculateJdbcPlaceholder(SqlColumn<?> column, String parameterName);
+    private String calculateJdbcPlaceholder(SqlColumn<?> column, String parameterName) {
+        return column.renderingStrategy().orElse(renderingStrategy)
+                .getRecordBasedInsertBinding(column, prefix, parameterName);
+    }
 }
