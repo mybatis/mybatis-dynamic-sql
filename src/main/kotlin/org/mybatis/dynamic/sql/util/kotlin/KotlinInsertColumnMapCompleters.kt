@@ -21,6 +21,7 @@ import org.mybatis.dynamic.sql.util.ConstantMapping
 import org.mybatis.dynamic.sql.util.NullMapping
 import org.mybatis.dynamic.sql.util.PropertyMapping
 import org.mybatis.dynamic.sql.util.PropertyWhenPresentMapping
+import org.mybatis.dynamic.sql.util.RowMapping
 import org.mybatis.dynamic.sql.util.StringConstantMapping
 import org.mybatis.dynamic.sql.util.ValueMapping
 import org.mybatis.dynamic.sql.util.ValueOrNullMapping
@@ -44,6 +45,8 @@ class MultiRowInsertColumnMapCompleter<T>(
     : AbstractInsertColumnMapCompleter<T>(column, mappingConsumer) {
 
     infix fun toProperty(property: String) = mappingConsumer.invoke(PropertyMapping.of(column, property))
+
+    fun toRow() = mappingConsumer.invoke(RowMapping.of(column))
 }
 
 class SingleRowInsertColumnMapCompleter<T>(
@@ -55,6 +58,8 @@ class SingleRowInsertColumnMapCompleter<T>(
 
     fun toPropertyWhenPresent(property: String, valueSupplier: () -> T?) =
         mappingConsumer.invoke(PropertyWhenPresentMapping.of(column, property, valueSupplier))
+
+    fun toRow() = mappingConsumer.invoke(RowMapping.of(column))
 }
 
 class GeneralInsertColumnSetCompleter<T>(

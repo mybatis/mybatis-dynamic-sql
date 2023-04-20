@@ -55,3 +55,10 @@ val personWithAddressRowMapper: (ResultSet, Int) -> PersonWithAddress = { rs, _ 
         )
     )
 }
+
+val compoundKeyRowMapper: (ResultSet, Int) -> CompoundKeyRow = { rs, _ ->
+    CompoundKeyRow(
+        id1 =  rs.getInt(1),
+        id2 =  rs.getInt(2)
+    )
+}
