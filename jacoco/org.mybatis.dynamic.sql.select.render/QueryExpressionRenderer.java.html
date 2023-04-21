@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>QueryExpressionRenderer.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.select.render</a> &gt; <span class="el_source">QueryExpressionRenderer.java</span></div><h1>QueryExpressionRenderer.java</h1><pre class="source lang-java linenums">/*
- *    Copyright 2016-2022 the original author or authors.
+ *    Copyright 2016-2023 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  *    you may not use this file except in compliance with the License.
@@ -15,9 +15,6 @@
  */
 package org.mybatis.dynamic.sql.select.render;
 
-import static org.mybatis.dynamic.sql.util.StringUtilities.spaceAfter;
-import static org.mybatis.dynamic.sql.util.StringUtilities.spaceBefore;
-
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -31,12 +28,13 @@ import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 import org.mybatis.dynamic.sql.render.TableAliasCalculatorWithParent;
 import org.mybatis.dynamic.sql.select.GroupByModel;
+import org.mybatis.dynamic.sql.select.HavingModel;
 import org.mybatis.dynamic.sql.select.QueryExpressionModel;
 import org.mybatis.dynamic.sql.select.join.JoinModel;
-import org.mybatis.dynamic.sql.util.CustomCollectors;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
+import org.mybatis.dynamic.sql.util.FragmentCollector;
+import org.mybatis.dynamic.sql.util.StringUtilities;
 import org.mybatis.dynamic.sql.where.WhereModel;
-import org.mybatis.dynamic.sql.where.render.WhereClauseProvider;
 import org.mybatis.dynamic.sql.where.render.WhereRenderer;
 
 public class QueryExpressionRenderer {
@@ -46,17 +44,17 @@ public class QueryExpressionRenderer {
     private final TableExpressionRenderer tableExpressionRenderer;
     private final TableAliasCalculator tableAliasCalculator;
 
-<span class="fc" id="L49">    private QueryExpressionRenderer(Builder builder) {</span>
-<span class="fc" id="L50">        queryExpression = Objects.requireNonNull(builder.queryExpression);</span>
-<span class="fc" id="L51">        renderingStrategy = Objects.requireNonNull(builder.renderingStrategy);</span>
-<span class="fc" id="L52">        sequence = Objects.requireNonNull(builder.sequence);</span>
-<span class="fc" id="L53">        tableAliasCalculator = calculateTableAliasCalculator(queryExpression, builder.parentTableAliasCalculator);</span>
-<span class="fc" id="L54">        tableExpressionRenderer = new TableExpressionRenderer.Builder()</span>
-<span class="fc" id="L55">                .withTableAliasCalculator(tableAliasCalculator)</span>
-<span class="fc" id="L56">                .withRenderingStrategy(renderingStrategy)</span>
-<span class="fc" id="L57">                .withSequence(sequence)</span>
-<span class="fc" id="L58">                .build();</span>
-<span class="fc" id="L59">    }</span>
+<span class="fc" id="L47">    private QueryExpressionRenderer(Builder builder) {</span>
+<span class="fc" id="L48">        queryExpression = Objects.requireNonNull(builder.queryExpression);</span>
+<span class="fc" id="L49">        renderingStrategy = Objects.requireNonNull(builder.renderingStrategy);</span>
+<span class="fc" id="L50">        sequence = Objects.requireNonNull(builder.sequence);</span>
+<span class="fc" id="L51">        tableAliasCalculator = calculateTableAliasCalculator(queryExpression, builder.parentTableAliasCalculator);</span>
+<span class="fc" id="L52">        tableExpressionRenderer = new TableExpressionRenderer.Builder()</span>
+<span class="fc" id="L53">                .withTableAliasCalculator(tableAliasCalculator)</span>
+<span class="fc" id="L54">                .withRenderingStrategy(renderingStrategy)</span>
+<span class="fc" id="L55">                .withSequence(sequence)</span>
+<span class="fc" id="L56">                .build();</span>
+<span class="fc" id="L57">    }</span>
 
     /**
      * This function calculates a table alias calculator to use in the current context. There are several
@@ -84,141 +82,157 @@ public class QueryExpressionRenderer {
      */
     private TableAliasCalculator calculateTableAliasCalculator(QueryExpressionModel queryExpression,
                                                                TableAliasCalculator parentTableAliasCalculator) {
-<span class="fc" id="L87">        TableAliasCalculator baseTableAliasCalculator = queryExpression.joinModel()</span>
-<span class="fc" id="L88">                .map(JoinModel::containsSubQueries)</span>
-<span class="fc" id="L89">                .map(this::calculateTableAliasCalculatorWithJoins)</span>
-<span class="fc" id="L90">                .orElseGet(this::explicitTableAliasCalculator);</span>
+<span class="fc" id="L85">        TableAliasCalculator baseTableAliasCalculator = queryExpression.joinModel()</span>
+<span class="fc" id="L86">                .map(JoinModel::containsSubQueries)</span>
+<span class="fc" id="L87">                .map(this::calculateTableAliasCalculatorWithJoins)</span>
+<span class="fc" id="L88">                .orElseGet(this::explicitTableAliasCalculator);</span>
 
-<span class="fc bfc" id="L92" title="All 2 branches covered.">        if (parentTableAliasCalculator == null) {</span>
-<span class="fc" id="L93">            return baseTableAliasCalculator;</span>
+<span class="fc bfc" id="L90" title="All 2 branches covered.">        if (parentTableAliasCalculator == null) {</span>
+<span class="fc" id="L91">            return baseTableAliasCalculator;</span>
         } else {
-<span class="fc" id="L95">            return new TableAliasCalculatorWithParent.Builder()</span>
-<span class="fc" id="L96">                    .withParent(parentTableAliasCalculator)</span>
-<span class="fc" id="L97">                    .withChild(baseTableAliasCalculator)</span>
-<span class="fc" id="L98">                    .build();</span>
+<span class="fc" id="L93">            return new TableAliasCalculatorWithParent.Builder()</span>
+<span class="fc" id="L94">                    .withParent(parentTableAliasCalculator)</span>
+<span class="fc" id="L95">                    .withChild(baseTableAliasCalculator)</span>
+<span class="fc" id="L96">                    .build();</span>
         }
     }
 
     private TableAliasCalculator calculateTableAliasCalculatorWithJoins(boolean hasSubQueries) {
-<span class="fc bfc" id="L103" title="All 2 branches covered.">        if (hasSubQueries) {</span>
+<span class="fc bfc" id="L101" title="All 2 branches covered.">        if (hasSubQueries) {</span>
             // if there are subqueries, we cannot use the table name automatically
             // so all aliases must be specified
-<span class="fc" id="L106">            return explicitTableAliasCalculator();</span>
+<span class="fc" id="L104">            return explicitTableAliasCalculator();</span>
         } else {
             // without subqueries, we can automatically use table names as aliases
-<span class="fc" id="L109">            return guaranteedTableAliasCalculator();</span>
+<span class="fc" id="L107">            return guaranteedTableAliasCalculator();</span>
         }
     }
 
     private TableAliasCalculator explicitTableAliasCalculator() {
-<span class="fc" id="L114">        return ExplicitTableAliasCalculator.of(queryExpression.tableAliases());</span>
+<span class="fc" id="L112">        return ExplicitTableAliasCalculator.of(queryExpression.tableAliases());</span>
     }
 
     private TableAliasCalculator guaranteedTableAliasCalculator() {
-<span class="fc" id="L118">        return GuaranteedTableAliasCalculator.of(queryExpression.tableAliases());</span>
+<span class="fc" id="L116">        return GuaranteedTableAliasCalculator.of(queryExpression.tableAliases());</span>
     }
 
     public FragmentAndParameters render() {
-<span class="fc" id="L122">        FragmentAndParameters answer = calculateQueryExpressionStart();</span>
-<span class="fc" id="L123">        answer = addJoinClause(answer);</span>
-<span class="fc" id="L124">        answer = addWhereClause(answer);</span>
-<span class="fc" id="L125">        answer = addGroupByClause(answer);</span>
-<span class="fc" id="L126">        return answer;</span>
+<span class="fc" id="L120">        FragmentCollector fragmentCollector = new FragmentCollector();</span>
+
+<span class="fc" id="L122">        fragmentCollector.add(calculateQueryExpressionStart());</span>
+<span class="fc" id="L123">        calculateJoinClause().ifPresent(fragmentCollector::add);</span>
+<span class="fc" id="L124">        calculateWhereClause().ifPresent(fragmentCollector::add);</span>
+<span class="fc" id="L125">        calculateGroupByClause().ifPresent(fragmentCollector::add);</span>
+<span class="fc" id="L126">        calculateHavingClause().ifPresent(fragmentCollector::add);</span>
+
+<span class="fc" id="L128">        return toFragmentAndParameters(fragmentCollector);</span>
+    }
+
+    private FragmentAndParameters toFragmentAndParameters(FragmentCollector fragmentCollector) {
+<span class="fc" id="L132">        return FragmentAndParameters.withFragment(fragmentCollector.fragments().collect(</span>
+<span class="fc" id="L133">                    Collectors.joining(&quot; &quot;))) //$NON-NLS-1$</span>
+<span class="fc" id="L134">                .withParameters(fragmentCollector.parameters())</span>
+<span class="fc" id="L135">                .build();</span>
     }
 
     private FragmentAndParameters calculateQueryExpressionStart() {
-<span class="fc" id="L130">        String start = spaceAfter(queryExpression.connector())</span>
-<span class="fc" id="L131">                + &quot;select &quot; //$NON-NLS-1$</span>
-<span class="fc bfc" id="L132" title="All 2 branches covered.">                + (queryExpression.isDistinct() ? &quot;distinct &quot; : &quot;&quot;) //$NON-NLS-1$ //$NON-NLS-2$</span>
-<span class="fc" id="L133">                + calculateColumnList()</span>
-<span class="fc" id="L134">                + &quot; from &quot;; //$NON-NLS-1$</span>
+<span class="fc" id="L139">        String start = queryExpression.connector().map(StringUtilities::spaceAfter).orElse(&quot;&quot;) //$NON-NLS-1$</span>
+                + &quot;select &quot; //$NON-NLS-1$
+<span class="fc bfc" id="L141" title="All 2 branches covered.">                + (queryExpression.isDistinct() ? &quot;distinct &quot; : &quot;&quot;) //$NON-NLS-1$ //$NON-NLS-2$</span>
+<span class="fc" id="L142">                + calculateColumnList()</span>
+                + &quot; from &quot;; //$NON-NLS-1$
 
-<span class="fc" id="L136">        FragmentAndParameters renderedTable = renderTableExpression(queryExpression.table());</span>
-<span class="fc" id="L137">        start += renderedTable.fragment();</span>
+<span class="fc" id="L145">        FragmentAndParameters renderedTable = renderTableExpression(queryExpression.table());</span>
+<span class="fc" id="L146">        start += renderedTable.fragment();</span>
 
-<span class="fc" id="L139">        return FragmentAndParameters.withFragment(start)</span>
-<span class="fc" id="L140">                .withParameters(renderedTable.parameters())</span>
-<span class="fc" id="L141">                .build();</span>
+<span class="fc" id="L148">        return FragmentAndParameters.withFragment(start)</span>
+<span class="fc" id="L149">                .withParameters(renderedTable.parameters())</span>
+<span class="fc" id="L150">                .build();</span>
     }
 
     private String calculateColumnList() {
-<span class="fc" id="L145">        return queryExpression.mapColumns(this::applyTableAndColumnAlias)</span>
-<span class="fc" id="L146">                .collect(Collectors.joining(&quot;, &quot;)); //$NON-NLS-1$</span>
+<span class="fc" id="L154">        return queryExpression.mapColumns(this::applyTableAndColumnAlias)</span>
+<span class="fc" id="L155">                .collect(Collectors.joining(&quot;, &quot;)); //$NON-NLS-1$</span>
     }
 
     private String applyTableAndColumnAlias(BasicColumn selectListItem) {
-<span class="fc" id="L150">        return selectListItem.renderWithTableAndColumnAlias(tableAliasCalculator);</span>
+<span class="fc" id="L159">        return selectListItem.renderWithTableAndColumnAlias(tableAliasCalculator);</span>
     }
 
     private FragmentAndParameters renderTableExpression(TableExpression table) {
-<span class="fc" id="L154">        return table.accept(tableExpressionRenderer);</span>
+<span class="fc" id="L163">        return table.accept(tableExpressionRenderer);</span>
     }
 
-    private FragmentAndParameters addJoinClause(FragmentAndParameters partial) {
-<span class="fc" id="L158">        return queryExpression.joinModel()</span>
-<span class="fc" id="L159">                .map(this::renderJoin)</span>
-<span class="fc" id="L160">                .map(fp -&gt; partial.add(spaceBefore(fp.fragment()), fp.parameters()))</span>
-<span class="fc" id="L161">                .orElse(partial);</span>
+    private Optional&lt;FragmentAndParameters&gt; calculateJoinClause() {
+<span class="fc" id="L167">        return queryExpression.joinModel().map(this::renderJoin);</span>
     }
 
     private FragmentAndParameters renderJoin(JoinModel joinModel) {
-<span class="fc" id="L165">        return JoinRenderer.withJoinModel(joinModel)</span>
-<span class="fc" id="L166">                .withTableExpressionRenderer(tableExpressionRenderer)</span>
-<span class="fc" id="L167">                .withTableAliasCalculator(tableAliasCalculator)</span>
-<span class="fc" id="L168">                .build()</span>
-<span class="fc" id="L169">                .render();</span>
+<span class="fc" id="L171">        return JoinRenderer.withJoinModel(joinModel)</span>
+<span class="fc" id="L172">                .withTableExpressionRenderer(tableExpressionRenderer)</span>
+<span class="fc" id="L173">                .withTableAliasCalculator(tableAliasCalculator)</span>
+<span class="fc" id="L174">                .build()</span>
+<span class="fc" id="L175">                .render();</span>
     }
 
-    private FragmentAndParameters addWhereClause(FragmentAndParameters partial) {
-<span class="fc" id="L173">        return queryExpression.whereModel()</span>
-<span class="fc" id="L174">                .flatMap(this::renderWhereClause)</span>
-<span class="fc" id="L175">                .map(wc -&gt; partial.add(spaceBefore(wc.getWhereClause()), wc.getParameters()))</span>
-<span class="fc" id="L176">                .orElse(partial);</span>
+    private Optional&lt;FragmentAndParameters&gt; calculateWhereClause() {
+<span class="fc" id="L179">        return queryExpression.whereModel().flatMap(this::renderWhereClause);</span>
     }
 
-    private Optional&lt;WhereClauseProvider&gt; renderWhereClause(WhereModel whereModel) {
-<span class="fc" id="L180">        return WhereRenderer.withWhereModel(whereModel)</span>
-<span class="fc" id="L181">                .withRenderingStrategy(renderingStrategy)</span>
-<span class="fc" id="L182">                .withTableAliasCalculator(tableAliasCalculator)</span>
-<span class="fc" id="L183">                .withSequence(sequence)</span>
-<span class="fc" id="L184">                .build()</span>
-<span class="fc" id="L185">                .render();</span>
+    private Optional&lt;FragmentAndParameters&gt; renderWhereClause(WhereModel whereModel) {
+<span class="fc" id="L183">        return WhereRenderer.withWhereModel(whereModel)</span>
+<span class="fc" id="L184">                .withRenderingStrategy(renderingStrategy)</span>
+<span class="fc" id="L185">                .withTableAliasCalculator(tableAliasCalculator)</span>
+<span class="fc" id="L186">                .withSequence(sequence)</span>
+<span class="fc" id="L187">                .build()</span>
+<span class="fc" id="L188">                .render();</span>
     }
 
-    private FragmentAndParameters addGroupByClause(FragmentAndParameters partial) {
-<span class="fc" id="L189">        return queryExpression.groupByModel()</span>
-<span class="fc" id="L190">                .map(this::renderGroupBy)</span>
-<span class="fc" id="L191">                .map(s -&gt; partial.add(spaceBefore(s)))</span>
-<span class="fc" id="L192">                .orElse(partial);</span>
+    private Optional&lt;FragmentAndParameters&gt; calculateGroupByClause() {
+<span class="fc" id="L192">        return queryExpression.groupByModel().map(this::renderGroupBy);</span>
     }
 
-    private String renderGroupBy(GroupByModel groupByModel) {
-<span class="fc" id="L196">        return groupByModel.mapColumns(this::applyTableAlias)</span>
-<span class="fc" id="L197">                .collect(CustomCollectors.joining(&quot;, &quot;, &quot;group by &quot;, &quot;&quot;)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$</span>
+    private FragmentAndParameters renderGroupBy(GroupByModel groupByModel) {
+<span class="fc" id="L196">        String groupBy = groupByModel.mapColumns(this::applyTableAlias)</span>
+<span class="fc" id="L197">                .collect(Collectors.joining(&quot;, &quot;, &quot;group by &quot;, &quot;&quot;)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$</span>
+<span class="fc" id="L198">        return FragmentAndParameters.withFragment(groupBy).build();</span>
+    }
+
+    private Optional&lt;FragmentAndParameters&gt; calculateHavingClause() {
+<span class="fc" id="L202">        return queryExpression.havingModel().flatMap(this::renderHavingClause);</span>
+    }
+
+    private Optional&lt;FragmentAndParameters&gt; renderHavingClause(HavingModel havingModel) {
+<span class="fc" id="L206">        return HavingRenderer.withHavingModel(havingModel)</span>
+<span class="fc" id="L207">                .withRenderingStrategy(renderingStrategy)</span>
+<span class="fc" id="L208">                .withTableAliasCalculator(tableAliasCalculator)</span>
+<span class="fc" id="L209">                .withSequence(sequence)</span>
+<span class="fc" id="L210">                .build()</span>
+<span class="fc" id="L211">                .render();</span>
     }
 
     private String applyTableAlias(BasicColumn column) {
-<span class="fc" id="L201">        return column.renderWithTableAlias(tableAliasCalculator);</span>
+<span class="fc" id="L215">        return column.renderWithTableAlias(tableAliasCalculator);</span>
     }
 
     public static Builder withQueryExpression(QueryExpressionModel model) {
-<span class="fc" id="L205">        return new Builder().withQueryExpression(model);</span>
+<span class="fc" id="L219">        return new Builder().withQueryExpression(model);</span>
     }
 
-<span class="fc" id="L208">    public static class Builder extends AbstractQueryRendererBuilder&lt;Builder&gt; {</span>
+<span class="fc" id="L222">    public static class Builder extends AbstractQueryRendererBuilder&lt;Builder&gt; {</span>
         private QueryExpressionModel queryExpression;
 
         public Builder withQueryExpression(QueryExpressionModel queryExpression) {
-<span class="fc" id="L212">            this.queryExpression = queryExpression;</span>
-<span class="fc" id="L213">            return this;</span>
+<span class="fc" id="L226">            this.queryExpression = queryExpression;</span>
+<span class="fc" id="L227">            return this;</span>
         }
 
         Builder getThis() {
-<span class="fc" id="L217">            return this;</span>
+<span class="fc" id="L231">            return this;</span>
         }
 
         public QueryExpressionRenderer build() {
-<span class="fc" id="L221">            return new QueryExpressionRenderer(this);</span>
+<span class="fc" id="L235">            return new QueryExpressionRenderer(this);</span>
         }
     }
 }

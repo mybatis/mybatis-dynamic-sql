@@ -7,7 +7,7 @@
 <body>
 <div id="overview"><a href="../../../../../../../apidocs/org/mybatis/dynamic/sql/where/render/WhereConditionVisitor.html">View Javadoc</a></div><pre>
 <a class="jxr_linenumber" name="L1" href="#L1">1</a>   <em class="jxr_comment">/*</em>
-<a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_comment"> *    Copyright 2016-2022 the original author or authors.</em>
+<a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_comment"> *    Copyright 2016-2023 the original author or authors.</em>
 <a class="jxr_linenumber" name="L3" href="#L3">3</a>   <em class="jxr_comment"> *</em>
 <a class="jxr_linenumber" name="L4" href="#L4">4</a>   <em class="jxr_comment"> *    Licensed under the Apache License, Version 2.0 (the "License");</em>
 <a class="jxr_linenumber" name="L5" href="#L5">5</a>   <em class="jxr_comment"> *    you may not use this file except in compliance with the License.</em>
@@ -75,7 +75,7 @@
 <a class="jxr_linenumber" name="L67" href="#L67">67</a>  
 <a class="jxr_linenumber" name="L68" href="#L68">68</a>      @Override
 <a class="jxr_linenumber" name="L69" href="#L69">69</a>      <strong class="jxr_keyword">public</strong> <a name="FragmentAndParameters" href="../../../../../../org/mybatis/dynamic/sql/util/FragmentAndParameters.html#FragmentAndParameters">FragmentAndParameters</a> visit(AbstractSingleValueCondition&lt;T&gt; condition) {
-<a class="jxr_linenumber" name="L70" href="#L70">70</a>          String mapKey = RenderingStrategy.formatParameterMapKey(sequence);
+<a class="jxr_linenumber" name="L70" href="#L70">70</a>          String mapKey = renderingStrategy.formatParameterMapKey(sequence);
 <a class="jxr_linenumber" name="L71" href="#L71">71</a>          String fragment = condition.renderCondition(columnName(),
 <a class="jxr_linenumber" name="L72" href="#L72">72</a>                  getFormattedJdbcPlaceholder(mapKey));
 <a class="jxr_linenumber" name="L73" href="#L73">73</a>  
@@ -86,8 +86,8 @@
 <a class="jxr_linenumber" name="L78" href="#L78">78</a>  
 <a class="jxr_linenumber" name="L79" href="#L79">79</a>      @Override
 <a class="jxr_linenumber" name="L80" href="#L80">80</a>      <strong class="jxr_keyword">public</strong> <a name="FragmentAndParameters" href="../../../../../../org/mybatis/dynamic/sql/util/FragmentAndParameters.html#FragmentAndParameters">FragmentAndParameters</a> visit(AbstractTwoValueCondition&lt;T&gt; condition) {
-<a class="jxr_linenumber" name="L81" href="#L81">81</a>          String mapKey1 = RenderingStrategy.formatParameterMapKey(sequence);
-<a class="jxr_linenumber" name="L82" href="#L82">82</a>          String mapKey2 = RenderingStrategy.formatParameterMapKey(sequence);
+<a class="jxr_linenumber" name="L81" href="#L81">81</a>          String mapKey1 = renderingStrategy.formatParameterMapKey(sequence);
+<a class="jxr_linenumber" name="L82" href="#L82">82</a>          String mapKey2 = renderingStrategy.formatParameterMapKey(sequence);
 <a class="jxr_linenumber" name="L83" href="#L83">83</a>          String fragment = condition.renderCondition(columnName(),
 <a class="jxr_linenumber" name="L84" href="#L84">84</a>                  getFormattedJdbcPlaceholder(mapKey1),
 <a class="jxr_linenumber" name="L85" href="#L85">85</a>                  getFormattedJdbcPlaceholder(mapKey2));
@@ -126,7 +126,7 @@
 <a class="jxr_linenumber" name="L118" href="#L118">118</a>     }
 <a class="jxr_linenumber" name="L119" href="#L119">119</a> 
 <a class="jxr_linenumber" name="L120" href="#L120">120</a>     <strong class="jxr_keyword">private</strong> <a name="FragmentAndParameters" href="../../../../../../org/mybatis/dynamic/sql/util/FragmentAndParameters.html#FragmentAndParameters">FragmentAndParameters</a> toFragmentAndParameters(T value) {
-<a class="jxr_linenumber" name="L121" href="#L121">121</a>         String mapKey = RenderingStrategy.formatParameterMapKey(sequence);
+<a class="jxr_linenumber" name="L121" href="#L121">121</a>         String mapKey = renderingStrategy.formatParameterMapKey(sequence);
 <a class="jxr_linenumber" name="L122" href="#L122">122</a> 
 <a class="jxr_linenumber" name="L123" href="#L123">123</a>         <strong class="jxr_keyword">return</strong> FragmentAndParameters.withFragment(getFormattedJdbcPlaceholder(mapKey))
 <a class="jxr_linenumber" name="L124" href="#L124">124</a>                 .withParameter(mapKey, convertValue(value))
@@ -187,6 +187,6 @@
 <a class="jxr_linenumber" name="L179" href="#L179">179</a> }
 </pre>
 <hr/>
-<div id="footer">Copyright &#169; 2016&#x2013;2022 <a href="https://www.mybatis.org/">MyBatis.org</a>. All rights reserved.</div>
+<div id="footer">Copyright &#169; 2016&#x2013;2023 <a href="https://www.mybatis.org/">MyBatis.org</a>. All rights reserved.</div>
 </body>
 </html>

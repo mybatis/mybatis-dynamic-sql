@@ -7,7 +7,7 @@
 <body>
 <div id="overview"><a href="../../../../../../../apidocs/org/mybatis/dynamic/sql/insert/render/GeneralInsertValuePhraseVisitor.html">View Javadoc</a></div><pre>
 <a class="jxr_linenumber" name="L1" href="#L1">1</a>   <em class="jxr_comment">/*</em>
-<a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_comment"> *    Copyright 2016-2022 the original author or authors.</em>
+<a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_comment"> *    Copyright 2016-2023 the original author or authors.</em>
 <a class="jxr_linenumber" name="L3" href="#L3">3</a>   <em class="jxr_comment"> *</em>
 <a class="jxr_linenumber" name="L4" href="#L4">4</a>   <em class="jxr_comment"> *    Licensed under the Apache License, Version 2.0 (the "License");</em>
 <a class="jxr_linenumber" name="L5" href="#L5">5</a>   <em class="jxr_comment"> *    you may not use this file except in compliance with the License.</em>
@@ -93,7 +93,7 @@
 <a class="jxr_linenumber" name="L85" href="#L85">85</a>      }
 <a class="jxr_linenumber" name="L86" href="#L86">86</a>  
 <a class="jxr_linenumber" name="L87" href="#L87">87</a>      <strong class="jxr_keyword">private</strong> Optional&lt;FieldAndValueAndParameters&gt; buildFragment(<a name="AbstractColumnMapping" href="../../../../../../org/mybatis/dynamic/sql/util/AbstractColumnMapping.html#AbstractColumnMapping">AbstractColumnMapping</a> mapping, Object value) {
-<a class="jxr_linenumber" name="L88" href="#L88">88</a>          String mapKey = RenderingStrategy.formatParameterMapKey(sequence);
+<a class="jxr_linenumber" name="L88" href="#L88">88</a>          String mapKey = renderingStrategy.formatParameterMapKey(sequence);
 <a class="jxr_linenumber" name="L89" href="#L89">89</a>  
 <a class="jxr_linenumber" name="L90" href="#L90">90</a>          String jdbcPlaceholder = mapping.mapColumn(c -&gt; calculateJdbcPlaceholder(c, mapKey));
 <a class="jxr_linenumber" name="L91" href="#L91">91</a>  
@@ -110,6 +110,6 @@
 <a class="jxr_linenumber" name="L102" href="#L102">102</a> }
 </pre>
 <hr/>
-<div id="footer">Copyright &#169; 2016&#x2013;2022 <a href="https://www.mybatis.org/">MyBatis.org</a>. All rights reserved.</div>
+<div id="footer">Copyright &#169; 2016&#x2013;2023 <a href="https://www.mybatis.org/">MyBatis.org</a>. All rights reserved.</div>
 </body>
 </html>

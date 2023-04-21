@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<licensePluginReport goal="FORMAT" timestamp="1665166972309">
-    <module artifactId="mybatis-dynamic-sql" groupId="org.mybatis.dynamic-sql" version="1.4.1"/>
+<licensePluginReport goal="FORMAT" timestamp="1682094836232">
+    <module artifactId="mybatis-dynamic-sql" groupId="org.mybatis.dynamic-sql" version="1.5.0"/>
     <files>
         <file path=".mvn/extensions.xml" result="NOOP"/>
         <file path=".mvn/settings.xml" result="NOOP"/>
@@ -16,7 +16,6 @@
         <file path="src/main/java/org/mybatis/dynamic/sql/AndOrCriteriaGroup.java" result="NOOP"/>
         <file path="src/main/java/org/mybatis/dynamic/sql/BasicColumn.java" result="NOOP"/>
         <file path="src/main/java/org/mybatis/dynamic/sql/BindableColumn.java" result="NOOP"/>
-        <file path="src/main/java/org/mybatis/dynamic/sql/Callback.java" result="NOOP"/>
         <file path="src/main/java/org/mybatis/dynamic/sql/ColumnAndConditionCriterion.java" result="NOOP"/>
         <file path="src/main/java/org/mybatis/dynamic/sql/ConditionVisitor.java" result="NOOP"/>
         <file path="src/main/java/org/mybatis/dynamic/sql/Constant.java" result="NOOP"/>
@@ -36,6 +35,12 @@
         <file path="src/main/java/org/mybatis/dynamic/sql/TableExpression.java" result="NOOP"/>
         <file path="src/main/java/org/mybatis/dynamic/sql/TableExpressionVisitor.java" result="NOOP"/>
         <file path="src/main/java/org/mybatis/dynamic/sql/VisitableCondition.java" result="NOOP"/>
+        <file path="src/main/java/org/mybatis/dynamic/sql/common/AbstractBooleanExpressionDSL.java" result="NOOP"/>
+        <file path="src/main/java/org/mybatis/dynamic/sql/common/AbstractBooleanExpressionModel.java" result="NOOP"/>
+        <file path="src/main/java/org/mybatis/dynamic/sql/common/AbstractBooleanExpressionRenderer.java" result="NOOP"/>
+        <file path="src/main/java/org/mybatis/dynamic/sql/common/CommonBuilder.java" result="NOOP"/>
+        <file path="src/main/java/org/mybatis/dynamic/sql/common/OrderByModel.java" result="NOOP"/>
+        <file path="src/main/java/org/mybatis/dynamic/sql/common/OrderByRenderer.java" result="NOOP"/>
         <file path="src/main/java/org/mybatis/dynamic/sql/configuration/GlobalConfiguration.java" result="NOOP"/>
         <file path="src/main/java/org/mybatis/dynamic/sql/configuration/GlobalContext.java" result="NOOP"/>
         <file path="src/main/java/org/mybatis/dynamic/sql/configuration/StatementConfiguration.java" result="NOOP"/>
@@ -61,19 +66,18 @@
         <file path="src/main/java/org/mybatis/dynamic/sql/insert/InsertSelectModel.java" result="NOOP"/>
         <file path="src/main/java/org/mybatis/dynamic/sql/insert/MultiRowInsertDSL.java" result="NOOP"/>
         <file path="src/main/java/org/mybatis/dynamic/sql/insert/MultiRowInsertModel.java" result="NOOP"/>
-        <file path="src/main/java/org/mybatis/dynamic/sql/insert/render/AbstractMultiRowValuePhraseVisitor.java" result="NOOP"/>
         <file path="src/main/java/org/mybatis/dynamic/sql/insert/render/BatchInsert.java" result="NOOP"/>
         <file path="src/main/java/org/mybatis/dynamic/sql/insert/render/BatchInsertRenderer.java" result="NOOP"/>
-        <file path="src/main/java/org/mybatis/dynamic/sql/insert/render/BatchValuePhraseVisitor.java" result="NOOP"/>
         <file path="src/main/java/org/mybatis/dynamic/sql/insert/render/DefaultGeneralInsertStatementProvider.java" result="NOOP"/>
         <file path="src/main/java/org/mybatis/dynamic/sql/insert/render/DefaultInsertStatementProvider.java" result="NOOP"/>
         <file path="src/main/java/org/mybatis/dynamic/sql/insert/render/DefaultMultiRowInsertStatementProvider.java" result="NOOP"/>
-        <file path="src/main/java/org/mybatis/dynamic/sql/insert/render/FieldAndValue.java" result="NOOP"/>
         <file path="src/main/java/org/mybatis/dynamic/sql/insert/render/FieldAndValueAndParameters.java" result="NOOP"/>
+        <file path="src/main/java/org/mybatis/dynamic/sql/insert/render/FieldAndValueCollector.java" result="NOOP"/>
         <file path="src/main/java/org/mybatis/dynamic/sql/insert/render/GeneralInsertRenderer.java" result="NOOP"/>
         <file path="src/main/java/org/mybatis/dynamic/sql/insert/render/GeneralInsertStatementProvider.java" result="NOOP"/>
         <file path="src/main/java/org/mybatis/dynamic/sql/insert/render/GeneralInsertValuePhraseVisitor.java" result="NOOP"/>
         <file path="src/main/java/org/mybatis/dynamic/sql/insert/render/InsertRenderer.java" result="NOOP"/>
+        <file path="src/main/java/org/mybatis/dynamic/sql/insert/render/InsertRenderingUtilities.java" result="NOOP"/>
         <file path="src/main/java/org/mybatis/dynamic/sql/insert/render/InsertSelectRenderer.java" result="NOOP"/>
         <file path="src/main/java/org/mybatis/dynamic/sql/insert/render/InsertSelectStatementProvider.java" result="NOOP"/>
         <file path="src/main/java/org/mybatis/dynamic/sql/insert/render/InsertStatementProvider.java" result="NOOP"/>
@@ -89,12 +93,18 @@
         <file path="src/main/java/org/mybatis/dynamic/sql/render/SpringNamedParameterRenderingStrategy.java" result="NOOP"/>
         <file path="src/main/java/org/mybatis/dynamic/sql/render/TableAliasCalculator.java" result="NOOP"/>
         <file path="src/main/java/org/mybatis/dynamic/sql/render/TableAliasCalculatorWithParent.java" result="NOOP"/>
+        <file path="src/main/java/org/mybatis/dynamic/sql/select/AbstractHavingFinisher.java" result="NOOP"/>
+        <file path="src/main/java/org/mybatis/dynamic/sql/select/AbstractHavingStarter.java" result="NOOP"/>
         <file path="src/main/java/org/mybatis/dynamic/sql/select/AbstractQueryExpressionDSL.java" result="NOOP"/>
         <file path="src/main/java/org/mybatis/dynamic/sql/select/ColumnSortSpecification.java" result="NOOP"/>
         <file path="src/main/java/org/mybatis/dynamic/sql/select/CountDSL.java" result="NOOP"/>
         <file path="src/main/java/org/mybatis/dynamic/sql/select/CountDSLCompleter.java" result="NOOP"/>
         <file path="src/main/java/org/mybatis/dynamic/sql/select/GroupByModel.java" result="NOOP"/>
-        <file path="src/main/java/org/mybatis/dynamic/sql/select/OrderByModel.java" result="NOOP"/>
+        <file path="src/main/java/org/mybatis/dynamic/sql/select/HavingApplier.java" result="NOOP"/>
+        <file path="src/main/java/org/mybatis/dynamic/sql/select/HavingDSL.java" result="NOOP"/>
+        <file path="src/main/java/org/mybatis/dynamic/sql/select/HavingModel.java" result="NOOP"/>
+        <file path="src/main/java/org/mybatis/dynamic/sql/select/MultiSelectDSL.java" result="NOOP"/>
+        <file path="src/main/java/org/mybatis/dynamic/sql/select/MultiSelectModel.java" result="NOOP"/>
         <file path="src/main/java/org/mybatis/dynamic/sql/select/PagingModel.java" result="NOOP"/>
         <file path="src/main/java/org/mybatis/dynamic/sql/select/QueryExpressionDSL.java" result="NOOP"/>
         <file path="src/main/java/org/mybatis/dynamic/sql/select/QueryExpressionModel.java" result="NOOP"/>
@@ -103,6 +113,7 @@
         <file path="src/main/java/org/mybatis/dynamic/sql/select/SelectModel.java" result="NOOP"/>
         <file path="src/main/java/org/mybatis/dynamic/sql/select/SimpleSortSpecification.java" result="NOOP"/>
         <file path="src/main/java/org/mybatis/dynamic/sql/select/SubQuery.java" result="NOOP"/>
+        <file path="src/main/java/org/mybatis/dynamic/sql/select/UnionQuery.java" result="NOOP"/>
         <file path="src/main/java/org/mybatis/dynamic/sql/select/aggregate/AbstractCount.java" result="NOOP"/>
         <file path="src/main/java/org/mybatis/dynamic/sql/select/aggregate/Avg.java" result="NOOP"/>
         <file path="src/main/java/org/mybatis/dynamic/sql/select/aggregate/Count.java" result="NOOP"/>
@@ -114,6 +125,7 @@
         <file path="src/main/java/org/mybatis/dynamic/sql/select/function/AbstractTypeConvertingFunction.java" result="NOOP"/>
         <file path="src/main/java/org/mybatis/dynamic/sql/select/function/AbstractUniTypeFunction.java" result="NOOP"/>
         <file path="src/main/java/org/mybatis/dynamic/sql/select/function/Add.java" result="NOOP"/>
+        <file path="src/main/java/org/mybatis/dynamic/sql/select/function/Concat.java" result="NOOP"/>
         <file path="src/main/java/org/mybatis/dynamic/sql/select/function/Concatenate.java" result="NOOP"/>
         <file path="src/main/java/org/mybatis/dynamic/sql/select/function/Divide.java" result="NOOP"/>
         <file path="src/main/java/org/mybatis/dynamic/sql/select/function/Lower.java" result="NOOP"/>
@@ -131,8 +143,10 @@
         <file path="src/main/java/org/mybatis/dynamic/sql/select/render/AbstractQueryRendererBuilder.java" result="NOOP"/>
         <file path="src/main/java/org/mybatis/dynamic/sql/select/render/DefaultSelectStatementProvider.java" result="NOOP"/>
         <file path="src/main/java/org/mybatis/dynamic/sql/select/render/FetchFirstPagingModelRenderer.java" result="NOOP"/>
+        <file path="src/main/java/org/mybatis/dynamic/sql/select/render/HavingRenderer.java" result="NOOP"/>
         <file path="src/main/java/org/mybatis/dynamic/sql/select/render/JoinRenderer.java" result="NOOP"/>
         <file path="src/main/java/org/mybatis/dynamic/sql/select/render/LimitAndOffsetPagingModelRenderer.java" result="NOOP"/>
+        <file path="src/main/java/org/mybatis/dynamic/sql/select/render/MultiSelectRenderer.java" result="NOOP"/>
         <file path="src/main/java/org/mybatis/dynamic/sql/select/render/PagingModelRenderer.java" result="NOOP"/>
         <file path="src/main/java/org/mybatis/dynamic/sql/select/render/QueryExpressionRenderer.java" result="NOOP"/>
         <file path="src/main/java/org/mybatis/dynamic/sql/select/render/SelectRenderer.java" result="NOOP"/>
@@ -151,17 +165,18 @@
         <file path="src/main/java/org/mybatis/dynamic/sql/util/ColumnToColumnMapping.java" result="NOOP"/>
         <file path="src/main/java/org/mybatis/dynamic/sql/util/ConfigurableStatement.java" result="NOOP"/>
         <file path="src/main/java/org/mybatis/dynamic/sql/util/ConstantMapping.java" result="NOOP"/>
-        <file path="src/main/java/org/mybatis/dynamic/sql/util/CustomCollectors.java" result="NOOP"/>
         <file path="src/main/java/org/mybatis/dynamic/sql/util/FragmentAndParameters.java" result="NOOP"/>
         <file path="src/main/java/org/mybatis/dynamic/sql/util/FragmentCollector.java" result="NOOP"/>
         <file path="src/main/java/org/mybatis/dynamic/sql/util/GeneralInsertMappingVisitor.java" result="NOOP"/>
         <file path="src/main/java/org/mybatis/dynamic/sql/util/InsertMappingVisitor.java" result="NOOP"/>
+        <file path="src/main/java/org/mybatis/dynamic/sql/util/InternalError.java" result="NOOP"/>
         <file path="src/main/java/org/mybatis/dynamic/sql/util/Messages.java" result="NOOP"/>
         <file path="src/main/java/org/mybatis/dynamic/sql/util/MultiRowInsertMappingVisitor.java" result="NOOP"/>
         <file path="src/main/java/org/mybatis/dynamic/sql/util/NullMapping.java" result="NOOP"/>
         <file path="src/main/java/org/mybatis/dynamic/sql/util/Predicates.java" result="NOOP"/>
         <file path="src/main/java/org/mybatis/dynamic/sql/util/PropertyMapping.java" result="NOOP"/>
         <file path="src/main/java/org/mybatis/dynamic/sql/util/PropertyWhenPresentMapping.java" result="NOOP"/>
+        <file path="src/main/java/org/mybatis/dynamic/sql/util/RowMapping.java" result="NOOP"/>
         <file path="src/main/java/org/mybatis/dynamic/sql/util/SelectMapping.java" result="NOOP"/>
         <file path="src/main/java/org/mybatis/dynamic/sql/util/SqlProviderAdapter.java" result="NOOP"/>
         <file path="src/main/java/org/mybatis/dynamic/sql/util/StringConstantMapping.java" result="NOOP"/>
@@ -172,18 +187,20 @@
         <file path="src/main/java/org/mybatis/dynamic/sql/util/ValueWhenPresentMapping.java" result="NOOP"/>
         <file path="src/main/java/org/mybatis/dynamic/sql/util/mybatis3/CommonCountMapper.java" result="NOOP"/>
         <file path="src/main/java/org/mybatis/dynamic/sql/util/mybatis3/CommonDeleteMapper.java" result="NOOP"/>
+        <file path="src/main/java/org/mybatis/dynamic/sql/util/mybatis3/CommonGeneralInsertMapper.java" result="NOOP"/>
         <file path="src/main/java/org/mybatis/dynamic/sql/util/mybatis3/CommonInsertMapper.java" result="NOOP"/>
         <file path="src/main/java/org/mybatis/dynamic/sql/util/mybatis3/CommonSelectMapper.java" result="NOOP"/>
         <file path="src/main/java/org/mybatis/dynamic/sql/util/mybatis3/CommonUpdateMapper.java" result="NOOP"/>
         <file path="src/main/java/org/mybatis/dynamic/sql/util/mybatis3/MyBatis3Utils.java" result="NOOP"/>
+        <file path="src/main/java/org/mybatis/dynamic/sql/util/spring/BatchInsertUtility.java" result="NOOP"/>
         <file path="src/main/java/org/mybatis/dynamic/sql/util/spring/NamedParameterJdbcTemplateExtensions.java" result="NOOP"/>
         <file path="src/main/java/org/mybatis/dynamic/sql/util/springbatch/SpringBatchCursorReaderSelectModel.java" result="NOOP"/>
         <file path="src/main/java/org/mybatis/dynamic/sql/util/springbatch/SpringBatchPagingReaderSelectModel.java" result="NOOP"/>
         <file path="src/main/java/org/mybatis/dynamic/sql/util/springbatch/SpringBatchProviderAdapter.java" result="NOOP"/>
         <file path="src/main/java/org/mybatis/dynamic/sql/util/springbatch/SpringBatchReaderRenderingStrategy.java" result="NOOP"/>
         <file path="src/main/java/org/mybatis/dynamic/sql/util/springbatch/SpringBatchUtility.java" result="NOOP"/>
-        <file path="src/main/java/org/mybatis/dynamic/sql/where/AbstractWhereDSL.java" result="NOOP"/>
-        <file path="src/main/java/org/mybatis/dynamic/sql/where/AbstractWhereSupport.java" result="NOOP"/>
+        <file path="src/main/java/org/mybatis/dynamic/sql/where/AbstractWhereFinisher.java" result="NOOP"/>
+        <file path="src/main/java/org/mybatis/dynamic/sql/where/AbstractWhereStarter.java" result="NOOP"/>
         <file path="src/main/java/org/mybatis/dynamic/sql/where/WhereApplier.java" result="NOOP"/>
         <file path="src/main/java/org/mybatis/dynamic/sql/where/WhereDSL.java" result="NOOP"/>
         <file path="src/main/java/org/mybatis/dynamic/sql/where/WhereModel.java" result="NOOP"/>
@@ -225,7 +242,6 @@
         <file path="src/main/java/org/mybatis/dynamic/sql/where/render/WhereClauseProvider.java" result="NOOP"/>
         <file path="src/main/java/org/mybatis/dynamic/sql/where/render/WhereConditionVisitor.java" result="NOOP"/>
         <file path="src/main/java/org/mybatis/dynamic/sql/where/render/WhereRenderer.java" result="NOOP"/>
-        <file path="src/main/kotlin/org/mybatis/dynamic/sql/util/kotlin/CriteriaCollector.kt" result="NOOP"/>
         <file path="src/main/kotlin/org/mybatis/dynamic/sql/util/kotlin/GroupingCriteriaCollector.kt" result="NOOP"/>
         <file path="src/main/kotlin/org/mybatis/dynamic/sql/util/kotlin/JoinCollector.kt" result="NOOP"/>
         <file path="src/main/kotlin/org/mybatis/dynamic/sql/util/kotlin/KInvalidSQLException.kt" result="NOOP"/>
@@ -237,12 +253,12 @@
         <file path="src/main/kotlin/org/mybatis/dynamic/sql/util/kotlin/KotlinInsertBuilder.kt" result="NOOP"/>
         <file path="src/main/kotlin/org/mybatis/dynamic/sql/util/kotlin/KotlinInsertColumnMapCompleters.kt" result="NOOP"/>
         <file path="src/main/kotlin/org/mybatis/dynamic/sql/util/kotlin/KotlinMultiRowInsertBuilder.kt" result="NOOP"/>
+        <file path="src/main/kotlin/org/mybatis/dynamic/sql/util/kotlin/KotlinMultiSelectBuilder.kt" result="NOOP"/>
         <file path="src/main/kotlin/org/mybatis/dynamic/sql/util/kotlin/KotlinSelectBuilder.kt" result="NOOP"/>
         <file path="src/main/kotlin/org/mybatis/dynamic/sql/util/kotlin/KotlinSubQueryBuilders.kt" result="NOOP"/>
         <file path="src/main/kotlin/org/mybatis/dynamic/sql/util/kotlin/KotlinUnionBuilder.kt" result="NOOP"/>
         <file path="src/main/kotlin/org/mybatis/dynamic/sql/util/kotlin/KotlinUpdateBuilder.kt" result="NOOP"/>
         <file path="src/main/kotlin/org/mybatis/dynamic/sql/util/kotlin/elements/ColumnExtensions.kt" result="NOOP"/>
-        <file path="src/main/kotlin/org/mybatis/dynamic/sql/util/kotlin/elements/InsertStatements.kt" result="NOOP"/>
         <file path="src/main/kotlin/org/mybatis/dynamic/sql/util/kotlin/elements/SqlElements.kt" result="NOOP"/>
         <file path="src/main/kotlin/org/mybatis/dynamic/sql/util/kotlin/elements/SqlTableExtensions.kt" result="NOOP"/>
         <file path="src/main/kotlin/org/mybatis/dynamic/sql/util/kotlin/model/ModelBuilderFunctions.kt" result="NOOP"/>
@@ -253,6 +269,7 @@
         <file path="src/main/resources/org/mybatis/dynamic/sql/util/messages.properties" result="NOOP"/>
         <file path="src/site/resources/css/site.css" result="NOOP"/>
         <file path="src/site/site.xml" result="NOOP"/>
+        <file path="src/test/java/config/TestContainersConfiguration.java" result="NOOP"/>
         <file path="src/test/java/examples/animal/data/AnimalData.java" result="NOOP"/>
         <file path="src/test/java/examples/animal/data/AnimalDataDynamicSqlSupport.java" result="NOOP"/>
         <file path="src/test/java/examples/animal/data/AnimalDataMapper.java" result="NOOP"/>
@@ -285,7 +302,6 @@
         <file path="src/test/java/examples/custom_render/JsonTestDynamicSqlSupport.java" result="NOOP"/>
         <file path="src/test/java/examples/custom_render/JsonTestMapper.java" result="NOOP"/>
         <file path="src/test/java/examples/custom_render/JsonTestRecord.java" result="NOOP"/>
-        <file path="src/test/java/examples/custom_render/PgContainer.java" result="NOOP"/>
         <file path="src/test/java/examples/emptywhere/EmptyWhereTest.java" result="NOOP"/>
         <file path="src/test/java/examples/emptywhere/OrderDynamicSqlSupport.java" result="NOOP"/>
         <file path="src/test/java/examples/emptywhere/PersonDynamicSqlSupport.java" result="NOOP"/>
@@ -317,6 +333,8 @@
         <file path="src/test/java/examples/joins/OrderMasterDynamicSQLSupport.java" result="NOOP"/>
         <file path="src/test/java/examples/joins/User.java" result="NOOP"/>
         <file path="src/test/java/examples/joins/UserDynamicSQLSupport.java" result="NOOP"/>
+        <file path="src/test/java/examples/mariadb/ItemsDynamicSQLSupport.java" result="NOOP"/>
+        <file path="src/test/java/examples/mariadb/MariaDBTest.java" result="NOOP"/>
         <file path="src/test/java/examples/paging/LimitAndOffsetAdapter.java" result="NOOP"/>
         <file path="src/test/java/examples/paging/LimitAndOffsetMapper.java" result="NOOP"/>
         <file path="src/test/java/examples/paging/LimitAndOffsetTest.java" result="NOOP"/>
@@ -325,11 +343,18 @@
         <file path="src/test/java/examples/schema_supplier/User.java" result="NOOP"/>
         <file path="src/test/java/examples/schema_supplier/UserDynamicSqlSupport.java" result="NOOP"/>
         <file path="src/test/java/examples/schema_supplier/UserMapper.java" result="NOOP"/>
+        <file path="src/test/java/examples/sharding/ShardedMapper.java" result="NOOP"/>
+        <file path="src/test/java/examples/sharding/ShardingTest.java" result="NOOP"/>
+        <file path="src/test/java/examples/sharding/TableCodesDynamicSqlSupport.java" result="NOOP"/>
         <file path="src/test/java/examples/simple/AddressDynamicSqlSupport.java" result="NOOP"/>
         <file path="src/test/java/examples/simple/AddressMapper.java" result="NOOP"/>
         <file path="src/test/java/examples/simple/AddressRecord.java" result="NOOP"/>
+        <file path="src/test/java/examples/simple/CompoundKeyDynamicSqlSupport.java" result="NOOP"/>
+        <file path="src/test/java/examples/simple/CompoundKeyMapper.java" result="NOOP"/>
+        <file path="src/test/java/examples/simple/CompoundKeyRow.java" result="NOOP"/>
         <file path="src/test/java/examples/simple/LastName.java" result="NOOP"/>
         <file path="src/test/java/examples/simple/LastNameTypeHandler.java" result="NOOP"/>
+        <file path="src/test/java/examples/simple/MyBatisMapToRowTest.java" result="NOOP"/>
         <file path="src/test/java/examples/simple/PersonDynamicSqlSupport.java" result="NOOP"/>
         <file path="src/test/java/examples/simple/PersonMapper.java" result="NOOP"/>
         <file path="src/test/java/examples/simple/PersonMapperTest.java" result="NOOP"/>
@@ -340,6 +365,8 @@
         <file path="src/test/java/examples/simple/YesNoTypeHandler.java" result="NOOP"/>
         <file path="src/test/java/examples/spring/AddressDynamicSqlSupport.java" result="NOOP"/>
         <file path="src/test/java/examples/spring/AddressRecord.java" result="NOOP"/>
+        <file path="src/test/java/examples/spring/CompoundKeyDynamicSqlSupport.java" result="NOOP"/>
+        <file path="src/test/java/examples/spring/CompoundKeyRow.java" result="NOOP"/>
         <file path="src/test/java/examples/spring/LastName.java" result="NOOP"/>
         <file path="src/test/java/examples/spring/LastNameParameterConverter.java" result="NOOP"/>
         <file path="src/test/java/examples/spring/PersonDynamicSqlSupport.java" result="NOOP"/>
@@ -348,6 +375,7 @@
         <file path="src/test/java/examples/spring/PersonWithAddress.java" result="NOOP"/>
         <file path="src/test/java/examples/spring/ReusableWhereTest.java" result="NOOP"/>
         <file path="src/test/java/examples/spring/SpringConfiguration.java" result="NOOP"/>
+        <file path="src/test/java/examples/spring/SpringMapToRowTest.java" result="NOOP"/>
         <file path="src/test/java/examples/spring/YesNoParameterConverter.java" result="NOOP"/>
         <file path="src/test/java/examples/springbatch/bulkinsert/BulkInsertConfiguration.java" result="NOOP"/>
         <file path="src/test/java/examples/springbatch/bulkinsert/SpringBatchBulkInsertTest.java" result="NOOP"/>
@@ -396,10 +424,13 @@
         <file path="src/test/java/org/mybatis/dynamic/sql/delete/DeleteStatementTest.java" result="NOOP"/>
         <file path="src/test/java/org/mybatis/dynamic/sql/insert/GeneralInsertStatementTest.java" result="NOOP"/>
         <file path="src/test/java/org/mybatis/dynamic/sql/insert/InsertStatementTest.java" result="NOOP"/>
+        <file path="src/test/java/org/mybatis/dynamic/sql/insert/MapToRowTest.java" result="NOOP"/>
+        <file path="src/test/java/org/mybatis/dynamic/sql/insert/render/FieldAndValueCollectorTest.java" result="NOOP"/>
         <file path="src/test/java/org/mybatis/dynamic/sql/mybatis3/CriterionRendererTest.java" result="NOOP"/>
         <file path="src/test/java/org/mybatis/dynamic/sql/mybatis3/InsertStatementTest.java" result="NOOP"/>
         <file path="src/test/java/org/mybatis/dynamic/sql/mybatis3/SelectStatementTest.java" result="NOOP"/>
         <file path="src/test/java/org/mybatis/dynamic/sql/mybatis3/UpdateStatementTest.java" result="NOOP"/>
+        <file path="src/test/java/org/mybatis/dynamic/sql/select/HavingModelTest.java" result="NOOP"/>
         <file path="src/test/java/org/mybatis/dynamic/sql/select/SelectStatementTest.java" result="NOOP"/>
         <file path="src/test/java/org/mybatis/dynamic/sql/subselect/FooDynamicSqlSupport.java" result="NOOP"/>
         <file path="src/test/java/org/mybatis/dynamic/sql/subselect/SubSelectTest.java" result="NOOP"/>
@@ -414,6 +445,7 @@
         <file path="src/test/java/org/mybatis/dynamic/sql/where/render/CriterionRendererTest.java" result="NOOP"/>
         <file path="src/test/java/org/mybatis/dynamic/sql/where/render/OptionalCriterionRenderTest.java" result="NOOP"/>
         <file path="src/test/java/org/mybatis/dynamic/sql/where/render/RenderedCriterionTest.java" result="NOOP"/>
+        <file path="src/test/kotlin/examples/kotlin/mybatis3/TestUtils.kt" result="NOOP"/>
         <file path="src/test/kotlin/examples/kotlin/mybatis3/canonical/AddressDynamicSqlSupport.kt" result="NOOP"/>
         <file path="src/test/kotlin/examples/kotlin/mybatis3/canonical/AddressMapper.kt" result="NOOP"/>
         <file path="src/test/kotlin/examples/kotlin/mybatis3/canonical/AddressRecord.kt" result="NOOP"/>
@@ -443,10 +475,8 @@
         <file path="src/test/kotlin/examples/kotlin/mybatis3/custom/render/KJsonTestDynamicSqlSupport.kt" result="NOOP"/>
         <file path="src/test/kotlin/examples/kotlin/mybatis3/custom/render/KJsonTestMapper.kt" result="NOOP"/>
         <file path="src/test/kotlin/examples/kotlin/mybatis3/custom/render/KJsonTestRecord.kt" result="NOOP"/>
-        <file path="src/test/kotlin/examples/kotlin/mybatis3/custom/render/KPgContainer.kt" result="NOOP"/>
         <file path="src/test/kotlin/examples/kotlin/mybatis3/general/GeneralKotlinTest.kt" result="NOOP"/>
         <file path="src/test/kotlin/examples/kotlin/mybatis3/general/KGroupingTest.kt" result="NOOP"/>
-        <file path="src/test/kotlin/examples/kotlin/mybatis3/joins/DeprecatedWhereDSLTest.kt" result="NOOP"/>
         <file path="src/test/kotlin/examples/kotlin/mybatis3/joins/Domain.kt" result="NOOP"/>
         <file path="src/test/kotlin/examples/kotlin/mybatis3/joins/ExistsTest.kt" result="NOOP"/>
         <file path="src/test/kotlin/examples/kotlin/mybatis3/joins/ItemMasterDynamicSQLSupport.kt" result="NOOP"/>
@@ -456,9 +486,15 @@
         <file path="src/test/kotlin/examples/kotlin/mybatis3/joins/OrderLineDynamicSQLSupport.kt" result="NOOP"/>
         <file path="src/test/kotlin/examples/kotlin/mybatis3/joins/OrderMasterDynamicSQLSupport.kt" result="NOOP"/>
         <file path="src/test/kotlin/examples/kotlin/mybatis3/joins/UserDynamicSQLSupport.kt" result="NOOP"/>
+        <file path="src/test/kotlin/examples/kotlin/mybatis3/mariadb/KItemsDynamicSQLSupport.kt" result="NOOP"/>
+        <file path="src/test/kotlin/examples/kotlin/mybatis3/mariadb/KMariaDBTest.kt" result="NOOP"/>
+        <file path="src/test/kotlin/examples/kotlin/mybatis3/sharding/KShardedMapper.kt" result="NOOP"/>
+        <file path="src/test/kotlin/examples/kotlin/mybatis3/sharding/KShardingTest.kt" result="NOOP"/>
+        <file path="src/test/kotlin/examples/kotlin/mybatis3/sharding/KTableCodesTableDynamicSQLSupport.kt" result="NOOP"/>
         <file path="src/test/kotlin/examples/kotlin/spring/canonical/AddressDynamicSqlSupport.kt" result="NOOP"/>
         <file path="src/test/kotlin/examples/kotlin/spring/canonical/CanonicalSpringKotlinTemplateDirectTest.kt" result="NOOP"/>
         <file path="src/test/kotlin/examples/kotlin/spring/canonical/CanonicalSpringKotlinTest.kt" result="NOOP"/>
+        <file path="src/test/kotlin/examples/kotlin/spring/canonical/CompoundKeyDynamicSqlSupport.kt" result="NOOP"/>
         <file path="src/test/kotlin/examples/kotlin/spring/canonical/DomainAndConverters.kt" result="NOOP"/>
         <file path="src/test/kotlin/examples/kotlin/spring/canonical/GeneratedAlwaysDynamicSqlSupport.kt" result="NOOP"/>
         <file path="src/test/kotlin/examples/kotlin/spring/canonical/InfixElementsTest.kt" result="NOOP"/>
@@ -467,6 +503,7 @@
         <file path="src/test/kotlin/examples/kotlin/spring/canonical/PersonDynamicSqlSupport.kt" result="NOOP"/>
         <file path="src/test/kotlin/examples/kotlin/spring/canonical/RowMappers.kt" result="NOOP"/>
         <file path="src/test/kotlin/examples/kotlin/spring/canonical/SpringConfiguration.kt" result="NOOP"/>
+        <file path="src/test/kotlin/examples/kotlin/spring/canonical/SpringKotlinMapToRowTest.kt" result="NOOP"/>
         <file path="src/test/kotlin/examples/kotlin/spring/canonical/SpringKotlinSubQueryTest.kt" result="NOOP"/>
         <file path="src/test/kotlin/issues/kotlin/gh430/KNoInitialConditionsTest.kt" result="NOOP"/>
         <file path="src/test/kotlin/nullability/test/BetweenTest.kt" result="NOOP"/>
@@ -497,7 +534,9 @@
         <file path="src/test/resources/examples/kotlin/mybatis3/joins/JoinMapper.xml" result="NOOP"/>
         <file path="src/test/resources/examples/kotlin/spring/CreateGeneratedAlwaysDB.sql" result="NOOP"/>
         <file path="src/test/resources/examples/kotlin/spring/CreateSimpleDB.sql" result="NOOP"/>
+        <file path="src/test/resources/examples/mariadb/CreateDB.sql" result="NOOP"/>
         <file path="src/test/resources/examples/schema_supplier/CreateDB.sql" result="NOOP"/>
+        <file path="src/test/resources/examples/sharding/ShardingDB.sql" result="NOOP"/>
         <file path="src/test/resources/examples/simple/CreateSimpleDB.sql" result="NOOP"/>
         <file path="src/test/resources/examples/springbatch/data.sql" result="NOOP"/>
         <file path="src/test/resources/examples/springbatch/schema.sql" result="NOOP"/>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>IsInCaseInsensitive.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.where.condition</a> &gt; <span class="el_source">IsInCaseInsensitive.java</span></div><h1>IsInCaseInsensitive.java</h1><pre class="source lang-java linenums">/*
- *    Copyright 2016-2022 the original author or authors.
+ *    Copyright 2016-2023 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  *    you may not use this file except in compliance with the License.
@@ -24,73 +24,29 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.mybatis.dynamic.sql.AbstractListValueCondition;
-import org.mybatis.dynamic.sql.Callback;
 import org.mybatis.dynamic.sql.util.StringUtilities;
 
 public class IsInCaseInsensitive extends AbstractListValueCondition&lt;String&gt; {
-<span class="fc" id="L31">    private static final IsInCaseInsensitive EMPTY = new IsInCaseInsensitive(Collections.emptyList());</span>
+<span class="fc" id="L30">    private static final IsInCaseInsensitive EMPTY = new IsInCaseInsensitive(Collections.emptyList());</span>
 
     public static IsInCaseInsensitive empty() {
-<span class="fc" id="L34">        return EMPTY;</span>
-    }
-
-    /**
-     * Build an empty condition.
-     *
-     * @return a new empty condition
-     *
-     * @deprecated in favor of the statement configuration functions
-     */
-    @Deprecated
-    private IsInCaseInsensitive emptyWithCallback() {
-<span class="fc" id="L46">        return new IsInCaseInsensitive(Collections.emptyList(), emptyCallback);</span>
+<span class="fc" id="L33">        return EMPTY;</span>
     }
 
     protected IsInCaseInsensitive(Collection&lt;String&gt; values) {
-<span class="fc" id="L50">        super(values);</span>
-<span class="fc" id="L51">    }</span>
-
-    /**
-     * Build a new instance with a callback.
-     *
-     * @param values
-     *            values
-     * @param emptyCallback
-     *            empty callback
-     *
-     * @deprecated in favor of the statement configuration functions
-     */
-    @Deprecated
-    protected IsInCaseInsensitive(Collection&lt;String&gt; values, Callback emptyCallback) {
-<span class="fc" id="L65">        super(values, emptyCallback);</span>
-<span class="fc" id="L66">    }</span>
+<span class="fc" id="L37">        super(values);</span>
+<span class="fc" id="L38">    }</span>
 
     @Override
     public String renderCondition(String columnName, Stream&lt;String&gt; placeholders) {
-<span class="fc" id="L70">        return &quot;upper(&quot; + columnName + &quot;) &quot; //$NON-NLS-1$ //$NON-NLS-2$</span>
-<span class="fc" id="L71">                + placeholders.collect(</span>
-<span class="fc" id="L72">                        Collectors.joining(&quot;,&quot;, &quot;in (&quot;, &quot;)&quot;)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$</span>
-    }
-
-    /**
-     * Build a new instance with a callback.
-     *
-     * @param callback
-     *            a callback function - typically throws an exception to block the statement from executing
-     *
-     * @return this condition
-     *
-     * @deprecated in favor of the statement configuration functions
-     */
-    @Deprecated
-    @Override
-    public IsInCaseInsensitive withListEmptyCallback(Callback callback) {
-<span class="fc" id="L88">        return new IsInCaseInsensitive(values, callback);</span>
+<span class="fc" id="L42">        return &quot;upper(&quot; + columnName + &quot;) &quot; //$NON-NLS-1$ //$NON-NLS-2$</span>
+<span class="fc" id="L43">                + placeholders.collect(</span>
+<span class="fc" id="L44">                        Collectors.joining(&quot;,&quot;, &quot;in (&quot;, &quot;)&quot;)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$</span>
     }
 
     @Override
     public IsInCaseInsensitive filter(Predicate&lt;? super String&gt; predicate) {
-<span class="fc" id="L93">        return filterSupport(predicate, IsInCaseInsensitive::new, this, this::emptyWithCallback);</span>
+<span class="fc" id="L49">        return filterSupport(predicate, IsInCaseInsensitive::new, this, IsInCaseInsensitive::empty);</span>
     }
 
     /**
@@ -102,15 +58,15 @@ public class IsInCaseInsensitive extends AbstractListValueCondition&lt;String&gt
      *     that will not render.
      */
     public IsInCaseInsensitive map(UnaryOperator&lt;String&gt; mapper) {
-<span class="fc" id="L105">        return mapSupport(mapper, IsInCaseInsensitive::new, this::emptyWithCallback);</span>
+<span class="fc" id="L61">        return mapSupport(mapper, IsInCaseInsensitive::new, IsInCaseInsensitive::empty);</span>
     }
 
     public static IsInCaseInsensitive of(String... values) {
-<span class="fc" id="L109">        return of(Arrays.asList(values));</span>
+<span class="fc" id="L65">        return of(Arrays.asList(values));</span>
     }
 
     public static IsInCaseInsensitive of(Collection&lt;String&gt; values) {
-<span class="fc" id="L113">        return new IsInCaseInsensitive(values).map(StringUtilities::safelyUpperCase);</span>
+<span class="fc" id="L69">        return new IsInCaseInsensitive(values).map(StringUtilities::safelyUpperCase);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

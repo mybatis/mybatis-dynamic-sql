@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SetPhraseVisitor.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.update.render</a> &gt; <span class="el_source">SetPhraseVisitor.java</span></div><h1>SetPhraseVisitor.java</h1><pre class="source lang-java linenums">/*
- *    Copyright 2016-2022 the original author or authors.
+ *    Copyright 2016-2023 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  *    you may not use this file except in compliance with the License.
@@ -43,8 +43,8 @@ public class SetPhraseVisitor extends UpdateMappingVisitor&lt;Optional&lt;Fragme
     private final RenderingStrategy renderingStrategy;
     private final Function&lt;SqlColumn&lt;?&gt;, String&gt; aliasedColumnNameFunction;
 
-<span class="fc" id="L46">    public SetPhraseVisitor(AtomicInteger sequence, RenderingStrategy renderingStrategy,</span>
-                            TableAliasCalculator tableAliasCalculator) {
+    public SetPhraseVisitor(AtomicInteger sequence, RenderingStrategy renderingStrategy,
+<span class="fc" id="L47">                            TableAliasCalculator tableAliasCalculator) {</span>
 <span class="fc" id="L48">        this.sequence = Objects.requireNonNull(sequence);</span>
 <span class="fc" id="L49">        this.renderingStrategy = Objects.requireNonNull(renderingStrategy);</span>
 <span class="fc" id="L50">        Objects.requireNonNull(tableAliasCalculator);</span>
@@ -70,9 +70,9 @@ public class SetPhraseVisitor extends UpdateMappingVisitor&lt;Optional&lt;Fragme
     @Override
     public Optional&lt;FragmentAndParameters&gt; visit(StringConstantMapping mapping) {
 <span class="fc" id="L72">        String fragment = mapping.mapColumn(aliasedColumnNameFunction)</span>
-<span class="fc" id="L73">                + &quot; = '&quot; //$NON-NLS-1$</span>
+                + &quot; = '&quot; //$NON-NLS-1$
 <span class="fc" id="L74">                + mapping.constant()</span>
-<span class="fc" id="L75">                + &quot;'&quot;; //$NON-NLS-1$</span>
+                + &quot;'&quot;; //$NON-NLS-1$
 
 <span class="fc" id="L77">        return FragmentAndParameters.withFragment(fragment)</span>
 <span class="fc" id="L78">                .buildOptional();</span>
@@ -107,9 +107,9 @@ public class SetPhraseVisitor extends UpdateMappingVisitor&lt;Optional&lt;Fragme
 <span class="fc" id="L107">                .render();</span>
 
 <span class="fc" id="L109">        String fragment = mapping.mapColumn(aliasedColumnNameFunction)</span>
-<span class="fc" id="L110">                + &quot; = (&quot; //$NON-NLS-1$</span>
+                + &quot; = (&quot; //$NON-NLS-1$
 <span class="fc" id="L111">                + selectStatement.getSelectStatement()</span>
-<span class="fc" id="L112">                + &quot;)&quot;; //$NON-NLS-1$</span>
+                + &quot;)&quot;; //$NON-NLS-1$
 
 <span class="fc" id="L114">        return FragmentAndParameters.withFragment(fragment)</span>
 <span class="fc" id="L115">                .withParameters(selectStatement.getParameters())</span>
@@ -119,7 +119,7 @@ public class SetPhraseVisitor extends UpdateMappingVisitor&lt;Optional&lt;Fragme
     @Override
     public Optional&lt;FragmentAndParameters&gt; visit(ColumnToColumnMapping mapping) {
 <span class="fc" id="L121">        String setPhrase = mapping.mapColumn(aliasedColumnNameFunction)</span>
-<span class="fc" id="L122">                + &quot; = &quot;  //$NON-NLS-1$</span>
+                + &quot; = &quot;  //$NON-NLS-1$
 <span class="fc" id="L123">                + mapping.rightColumn().renderWithTableAlias(TableAliasCalculator.empty());</span>
 
 <span class="fc" id="L125">        return FragmentAndParameters.withFragment(setPhrase)</span>
@@ -127,12 +127,12 @@ public class SetPhraseVisitor extends UpdateMappingVisitor&lt;Optional&lt;Fragme
     }
 
     private &lt;T&gt; Optional&lt;FragmentAndParameters&gt; buildFragment(AbstractColumnMapping mapping, T value) {
-<span class="fc" id="L130">        String mapKey = RenderingStrategy.formatParameterMapKey(sequence);</span>
+<span class="fc" id="L130">        String mapKey = renderingStrategy.formatParameterMapKey(sequence);</span>
 
 <span class="fc" id="L132">        String jdbcPlaceholder = mapping.mapColumn(c -&gt; calculateJdbcPlaceholder(c, mapKey));</span>
 <span class="fc" id="L133">        String setPhrase = mapping.mapColumn(aliasedColumnNameFunction)</span>
-<span class="fc" id="L134">                + &quot; = &quot;  //$NON-NLS-1$</span>
-<span class="fc" id="L135">                + jdbcPlaceholder;</span>
+                + &quot; = &quot;  //$NON-NLS-1$
+                + jdbcPlaceholder;
 
 <span class="fc" id="L137">        return FragmentAndParameters.withFragment(setPhrase)</span>
 <span class="fc" id="L138">                .withParameter(mapKey, value)</span>

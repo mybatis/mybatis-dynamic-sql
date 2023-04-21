@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SelectModel.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.select</a> &gt; <span class="el_source">SelectModel.java</span></div><h1>SelectModel.java</h1><pre class="source lang-java linenums">/*
- *    Copyright 2016-2022 the original author or authors.
+ *    Copyright 2016-2023 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  *    you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 import org.jetbrains.annotations.NotNull;
+import org.mybatis.dynamic.sql.common.OrderByModel;
 import org.mybatis.dynamic.sql.exception.InvalidSqlException;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.select.render.SelectRenderer;
@@ -34,67 +35,67 @@ public class SelectModel {
     private final OrderByModel orderByModel;
     private final PagingModel pagingModel;
 
-<span class="fc" id="L37">    private SelectModel(Builder builder) {</span>
-<span class="fc" id="L38">        queryExpressions = Objects.requireNonNull(builder.queryExpressions);</span>
-<span class="fc bfc" id="L39" title="All 2 branches covered.">        if (queryExpressions.isEmpty()) {</span>
-<span class="fc" id="L40">            throw new InvalidSqlException(Messages.getString(&quot;ERROR.14&quot;)); //$NON-NLS-1$</span>
+<span class="fc" id="L38">    private SelectModel(Builder builder) {</span>
+<span class="fc" id="L39">        queryExpressions = Objects.requireNonNull(builder.queryExpressions);</span>
+<span class="fc bfc" id="L40" title="All 2 branches covered.">        if (queryExpressions.isEmpty()) {</span>
+<span class="fc" id="L41">            throw new InvalidSqlException(Messages.getString(&quot;ERROR.14&quot;)); //$NON-NLS-1$</span>
         }
 
-<span class="fc" id="L43">        orderByModel = builder.orderByModel;</span>
-<span class="fc" id="L44">        pagingModel = builder.pagingModel;</span>
-<span class="fc" id="L45">    }</span>
+<span class="fc" id="L44">        orderByModel = builder.orderByModel;</span>
+<span class="fc" id="L45">        pagingModel = builder.pagingModel;</span>
+<span class="fc" id="L46">    }</span>
 
     public &lt;R&gt; Stream&lt;R&gt; mapQueryExpressions(Function&lt;QueryExpressionModel, R&gt; mapper) {
-<span class="fc" id="L48">        return queryExpressions.stream().map(mapper);</span>
+<span class="fc" id="L49">        return queryExpressions.stream().map(mapper);</span>
     }
 
     public Optional&lt;OrderByModel&gt; orderByModel() {
-<span class="fc" id="L52">        return Optional.ofNullable(orderByModel);</span>
+<span class="fc" id="L53">        return Optional.ofNullable(orderByModel);</span>
     }
 
     public Optional&lt;PagingModel&gt; pagingModel() {
-<span class="fc" id="L56">        return Optional.ofNullable(pagingModel);</span>
+<span class="fc" id="L57">        return Optional.ofNullable(pagingModel);</span>
     }
 
     @NotNull
     public SelectStatementProvider render(RenderingStrategy renderingStrategy) {
-<span class="fc" id="L61">        return SelectRenderer.withSelectModel(this)</span>
-<span class="fc" id="L62">                .withRenderingStrategy(renderingStrategy)</span>
-<span class="fc" id="L63">                .build()</span>
-<span class="fc" id="L64">                .render();</span>
+<span class="fc" id="L62">        return SelectRenderer.withSelectModel(this)</span>
+<span class="fc" id="L63">                .withRenderingStrategy(renderingStrategy)</span>
+<span class="fc" id="L64">                .build()</span>
+<span class="fc" id="L65">                .render();</span>
     }
 
     public static Builder withQueryExpressions(List&lt;QueryExpressionModel&gt; queryExpressions) {
-<span class="fc" id="L68">        return new Builder().withQueryExpressions(queryExpressions);</span>
+<span class="fc" id="L69">        return new Builder().withQueryExpressions(queryExpressions);</span>
     }
 
-<span class="fc" id="L71">    public static class Builder {</span>
-<span class="fc" id="L72">        private final List&lt;QueryExpressionModel&gt; queryExpressions = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L72">    public static class Builder {</span>
+<span class="fc" id="L73">        private final List&lt;QueryExpressionModel&gt; queryExpressions = new ArrayList&lt;&gt;();</span>
         private OrderByModel orderByModel;
         private PagingModel pagingModel;
 
         public Builder withQueryExpression(QueryExpressionModel queryExpression) {
-<span class="fc" id="L77">            this.queryExpressions.add(queryExpression);</span>
-<span class="fc" id="L78">            return this;</span>
+<span class="fc" id="L78">            this.queryExpressions.add(queryExpression);</span>
+<span class="fc" id="L79">            return this;</span>
         }
 
         public Builder withQueryExpressions(List&lt;QueryExpressionModel&gt; queryExpressions) {
-<span class="fc" id="L82">            this.queryExpressions.addAll(queryExpressions);</span>
-<span class="fc" id="L83">            return this;</span>
+<span class="fc" id="L83">            this.queryExpressions.addAll(queryExpressions);</span>
+<span class="fc" id="L84">            return this;</span>
         }
 
         public Builder withOrderByModel(OrderByModel orderByModel) {
-<span class="fc" id="L87">            this.orderByModel = orderByModel;</span>
-<span class="fc" id="L88">            return this;</span>
+<span class="fc" id="L88">            this.orderByModel = orderByModel;</span>
+<span class="fc" id="L89">            return this;</span>
         }
 
         public Builder withPagingModel(PagingModel pagingModel) {
-<span class="fc" id="L92">            this.pagingModel = pagingModel;</span>
-<span class="fc" id="L93">            return this;</span>
+<span class="fc" id="L93">            this.pagingModel = pagingModel;</span>
+<span class="fc" id="L94">            return this;</span>
         }
 
         public SelectModel build() {
-<span class="fc" id="L97">            return new SelectModel(this);</span>
+<span class="fc" id="L98">            return new SelectModel(this);</span>
         }
     }
 }

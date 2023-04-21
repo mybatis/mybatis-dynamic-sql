@@ -7,7 +7,7 @@
 <body>
 <div id="overview"><a href="../../../../../testapidocs/examples/generated/always/spring/SpringTest.html">View Javadoc</a></div><pre>
 <a class="jxr_linenumber" name="L1" href="#L1">1</a>   <em class="jxr_comment">/*</em>
-<a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_comment"> *    Copyright 2016-2022 the original author or authors.</em>
+<a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_comment"> *    Copyright 2016-2023 the original author or authors.</em>
 <a class="jxr_linenumber" name="L3" href="#L3">3</a>   <em class="jxr_comment"> *</em>
 <a class="jxr_linenumber" name="L4" href="#L4">4</a>   <em class="jxr_comment"> *    Licensed under the Apache License, Version 2.0 (the "License");</em>
 <a class="jxr_linenumber" name="L5" href="#L5">5</a>   <em class="jxr_comment"> *    you may not use this file except in compliance with the License.</em>
@@ -46,11 +46,11 @@
 <a class="jxr_linenumber" name="L38" href="#L38">38</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
 <a class="jxr_linenumber" name="L39" href="#L39">39</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.util.Buildable;
 <a class="jxr_linenumber" name="L40" href="#L40">40</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.util.spring.NamedParameterJdbcTemplateExtensions;
-<a class="jxr_linenumber" name="L41" href="#L41">41</a>  <strong class="jxr_keyword">import</strong> org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
-<a class="jxr_linenumber" name="L42" href="#L42">42</a>  <strong class="jxr_keyword">import</strong> org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-<a class="jxr_linenumber" name="L43" href="#L43">43</a>  <strong class="jxr_keyword">import</strong> org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-<a class="jxr_linenumber" name="L44" href="#L44">44</a>  <strong class="jxr_keyword">import</strong> org.springframework.jdbc.core.namedparam.SqlParameterSource;
-<a class="jxr_linenumber" name="L45" href="#L45">45</a>  <strong class="jxr_keyword">import</strong> org.springframework.jdbc.core.namedparam.SqlParameterSourceUtils;
+<a class="jxr_linenumber" name="L41" href="#L41">41</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.util.spring.BatchInsertUtility;
+<a class="jxr_linenumber" name="L42" href="#L42">42</a>  <strong class="jxr_keyword">import</strong> org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+<a class="jxr_linenumber" name="L43" href="#L43">43</a>  <strong class="jxr_keyword">import</strong> org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+<a class="jxr_linenumber" name="L44" href="#L44">44</a>  <strong class="jxr_keyword">import</strong> org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+<a class="jxr_linenumber" name="L45" href="#L45">45</a>  <strong class="jxr_keyword">import</strong> org.springframework.jdbc.core.namedparam.SqlParameterSource;
 <a class="jxr_linenumber" name="L46" href="#L46">46</a>  <strong class="jxr_keyword">import</strong> org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
 <a class="jxr_linenumber" name="L47" href="#L47">47</a>  <strong class="jxr_keyword">import</strong> org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 <a class="jxr_linenumber" name="L48" href="#L48">48</a>  <strong class="jxr_keyword">import</strong> org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
@@ -150,7 +150,7 @@
 <a class="jxr_linenumber" name="L142" href="#L142">142</a>                 .build()
 <a class="jxr_linenumber" name="L143" href="#L143">143</a>                 .render(RenderingStrategies.SPRING_NAMED_PARAMETER);
 <a class="jxr_linenumber" name="L144" href="#L144">144</a> 
-<a class="jxr_linenumber" name="L145" href="#L145">145</a>         SqlParameterSource parameterSource = <strong class="jxr_keyword">new</strong> BeanPropertySqlParameterSource(insertStatement.getRow());
+<a class="jxr_linenumber" name="L145" href="#L145">145</a>         SqlParameterSource parameterSource = <strong class="jxr_keyword">new</strong> BeanPropertySqlParameterSource(insertStatement);
 <a class="jxr_linenumber" name="L146" href="#L146">146</a>         KeyHolder keyHolder = <strong class="jxr_keyword">new</strong> GeneratedKeyHolder();
 <a class="jxr_linenumber" name="L147" href="#L147">147</a> 
 <a class="jxr_linenumber" name="L148" href="#L148">148</a>         <strong class="jxr_keyword">int</strong> rows = template.update(insertStatement.getInsertStatement(), parameterSource, keyHolder);
@@ -249,7 +249,7 @@
 <a class="jxr_linenumber" name="L241" href="#L241">241</a>         record.setLastName(<span class="jxr_string">"Smith"</span>);
 <a class="jxr_linenumber" name="L242" href="#L242">242</a>         records.add(record);
 <a class="jxr_linenumber" name="L243" href="#L243">243</a> 
-<a class="jxr_linenumber" name="L244" href="#L244">244</a>         SqlParameterSource[] batch = SqlParameterSourceUtils.createBatch(records);
+<a class="jxr_linenumber" name="L244" href="#L244">244</a>         SqlParameterSource[] batch = BatchInsertUtility.createBatch(records);
 <a class="jxr_linenumber" name="L245" href="#L245">245</a> 
 <a class="jxr_linenumber" name="L246" href="#L246">246</a>         BatchInsert&lt;GeneratedAlwaysRecord&gt; batchInsert = insertBatch(records)
 <a class="jxr_linenumber" name="L247" href="#L247">247</a>                 .into(generatedAlways)
@@ -343,6 +343,6 @@
 <a class="jxr_linenumber" name="L335" href="#L335">335</a> }
 </pre>
 <hr/>
-<div id="footer">Copyright &#169; 2016&#x2013;2022 <a href="https://www.mybatis.org/">MyBatis.org</a>. All rights reserved.</div>
+<div id="footer">Copyright &#169; 2016&#x2013;2023 <a href="https://www.mybatis.org/">MyBatis.org</a>. All rights reserved.</div>
 </body>
 </html>

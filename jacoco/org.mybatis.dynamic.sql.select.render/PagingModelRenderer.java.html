@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PagingModelRenderer.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.select.render</a> &gt; <span class="el_source">PagingModelRenderer.java</span></div><h1>PagingModelRenderer.java</h1><pre class="source lang-java linenums">/*
- *    Copyright 2016-2022 the original author or authors.
+ *    Copyright 2016-2023 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  *    you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 package org.mybatis.dynamic.sql.select.render;
 
 import java.util.Objects;
-import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
@@ -28,48 +27,48 @@ public class PagingModelRenderer {
     private final PagingModel pagingModel;
     private final AtomicInteger sequence;
 
-<span class="fc" id="L31">    private PagingModelRenderer(Builder builder) {</span>
-<span class="fc" id="L32">        renderingStrategy = Objects.requireNonNull(builder.renderingStrategy);</span>
-<span class="fc" id="L33">        pagingModel = Objects.requireNonNull(builder.pagingModel);</span>
-<span class="fc" id="L34">        sequence = Objects.requireNonNull(builder.sequence);</span>
-<span class="fc" id="L35">    }</span>
+<span class="fc" id="L30">    private PagingModelRenderer(Builder builder) {</span>
+<span class="fc" id="L31">        renderingStrategy = Objects.requireNonNull(builder.renderingStrategy);</span>
+<span class="fc" id="L32">        pagingModel = Objects.requireNonNull(builder.pagingModel);</span>
+<span class="fc" id="L33">        sequence = Objects.requireNonNull(builder.sequence);</span>
+<span class="fc" id="L34">    }</span>
 
-    public Optional&lt;FragmentAndParameters&gt; render() {
-<span class="fc" id="L38">        return pagingModel.limit().map(this::limitAndOffsetRender)</span>
-<span class="fc" id="L39">                .orElseGet(this::fetchFirstRender);</span>
+    public FragmentAndParameters render() {
+<span class="fc" id="L37">        return pagingModel.limit().map(this::limitAndOffsetRender)</span>
+<span class="fc" id="L38">                .orElseGet(this::fetchFirstRender);</span>
     }
 
-    private Optional&lt;FragmentAndParameters&gt; limitAndOffsetRender(Long limit) {
-<span class="fc" id="L43">        return new LimitAndOffsetPagingModelRenderer(renderingStrategy, limit,</span>
-<span class="fc" id="L44">                pagingModel, sequence).render();</span>
+    private FragmentAndParameters limitAndOffsetRender(Long limit) {
+<span class="fc" id="L42">        return new LimitAndOffsetPagingModelRenderer(renderingStrategy, limit,</span>
+<span class="fc" id="L43">                pagingModel, sequence).render();</span>
     }
 
-    private Optional&lt;FragmentAndParameters&gt; fetchFirstRender() {
-<span class="fc" id="L48">        return new FetchFirstPagingModelRenderer(renderingStrategy, pagingModel, sequence).render();</span>
+    private FragmentAndParameters fetchFirstRender() {
+<span class="fc" id="L47">        return new FetchFirstPagingModelRenderer(renderingStrategy, pagingModel, sequence).render();</span>
     }
 
-<span class="fc" id="L51">    public static class Builder {</span>
+<span class="fc" id="L50">    public static class Builder {</span>
         private RenderingStrategy renderingStrategy;
         private PagingModel pagingModel;
         private AtomicInteger sequence;
 
         public Builder withRenderingStrategy(RenderingStrategy renderingStrategy) {
-<span class="fc" id="L57">            this.renderingStrategy = renderingStrategy;</span>
-<span class="fc" id="L58">            return this;</span>
+<span class="fc" id="L56">            this.renderingStrategy = renderingStrategy;</span>
+<span class="fc" id="L57">            return this;</span>
         }
 
         public Builder withPagingModel(PagingModel pagingModel) {
-<span class="fc" id="L62">            this.pagingModel = pagingModel;</span>
-<span class="fc" id="L63">            return this;</span>
+<span class="fc" id="L61">            this.pagingModel = pagingModel;</span>
+<span class="fc" id="L62">            return this;</span>
         }
 
         public Builder withSequence(AtomicInteger sequence) {
-<span class="fc" id="L67">            this.sequence = sequence;</span>
-<span class="fc" id="L68">            return this;</span>
+<span class="fc" id="L66">            this.sequence = sequence;</span>
+<span class="fc" id="L67">            return this;</span>
         }
 
         public PagingModelRenderer build() {
-<span class="fc" id="L72">            return new PagingModelRenderer(this);</span>
+<span class="fc" id="L71">            return new PagingModelRenderer(this);</span>
         }
     }
 }

@@ -8,139 +8,158 @@ MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin.mybatis3,MapperSupportFu
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin.mybatis3,MapperSupportFunctionsKt.selectOne.new Function1() {...},0,15,0,0,0,3,0,1,0,1
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin.mybatis3,MapperSupportFunctionsKt.selectList.new Function1() {...},0,15,0,0,0,3,0,1,0,1
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin.mybatis3,MapperSupportFunctionsKt.selectDistinct.new Function1() {...},0,15,0,0,0,3,0,1,0,1
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin.mybatis3,ProviderBuilderFunctionsKt,0,318,0,0,0,20,0,20,0,20
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin.mybatis3,ProviderBuilderFunctionsKt,0,257,0,0,0,17,0,17,0,17
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin.mybatis3,MapperSupportFunctionsKt.insertSelect.new Function1() {...},0,15,0,0,0,3,0,1,0,1
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin.mybatis3,MapperSupportFunctionsKt.insertMultiple.new Function1() {...},0,15,0,0,0,3,0,1,0,1
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.delete.render,DeleteRenderer,0,132,0,0,0,30,0,10,0,10
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.delete.render,DeleteRenderer,0,202,0,0,0,41,0,13,0,13
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.delete.render,DefaultDeleteStatementProvider,0,27,0,0,0,7,0,4,0,4
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.delete.render,DeleteRenderer.Builder,0,19,0,0,0,6,0,4,0,4
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.delete.render,DefaultDeleteStatementProvider.Builder,0,25,0,0,0,7,0,4,0,4
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.common,AbstractBooleanExpressionRenderer.AbstractBuilder,0,30,0,0,0,11,0,5,0,5
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.common,CommonBuilder,0,48,0,0,0,16,0,11,0,11
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.common,OrderByModel,0,36,0,2,0,9,0,4,0,3
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.common,AbstractBooleanExpressionDSL,0,188,0,2,0,43,0,23,0,22
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.common,AbstractBooleanExpressionModel,0,24,0,0,0,7,0,3,0,3
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.common,AbstractBooleanExpressionDSL.StatementType,0,28,0,0,0,7,0,3,0,3
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.common,AbstractBooleanExpressionRenderer,0,130,0,6,0,29,0,11,0,8
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.common,OrderByRenderer,0,35,0,2,0,8,0,4,0,3
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select.join,EqualTo,0,6,0,0,0,3,0,2,0,2
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select.join,JoinSpecification,0,49,0,2,0,11,0,6,0,5
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select.join,JoinModel,0,44,0,2,0,12,0,5,0,4
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select.join,JoinSpecification.Builder,0,38,0,0,0,11,0,6,0,6
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select.join,JoinCondition,0,11,0,0,0,4,0,2,0,2
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select.join,JoinCriterion.Builder,0,24,0,0,0,8,0,5,0,5
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select.join,JoinType,0,67,0,0,0,12,0,4,0,4
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select.join,JoinType,0,42,0,0,0,9,0,3,0,3
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select.join,JoinCriterion,0,35,0,0,0,9,0,5,0,5
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select.render,PagingModelRenderer.Builder,0,24,0,0,0,8,0,5,0,5
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select.render,FetchFirstPagingModelRenderer,0,134,0,0,0,33,0,10,0,10
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select.render,FetchFirstPagingModelRenderer,0,154,0,0,0,31,0,11,0,11
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select.render,MultiSelectRenderer,0,167,0,0,0,43,0,9,0,9
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select.render,TableExpressionRenderer.Builder,0,24,0,0,0,8,0,5,0,5
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select.render,QueryExpressionRenderer.Builder,0,16,0,0,0,5,0,4,0,4
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select.render,SelectRenderer.Builder,0,16,0,0,0,5,0,4,0,4
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select.render,DefaultSelectStatementProvider,0,28,0,0,0,7,0,4,0,4
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select.render,JoinRenderer.Builder,0,24,0,0,0,8,0,5,0,5
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select.render,SelectRenderer,0,159,0,4,0,44,0,12,0,10
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select.render,TableExpressionRenderer,0,108,0,0,0,24,0,6,0,6
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select.render,HavingRenderer.Builder,0,12,0,0,0,4,0,3,0,3
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select.render,SelectRenderer,0,131,0,2,0,34,0,10,0,9
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select.render,TableExpressionRenderer,0,109,0,0,0,24,0,6,0,6
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select.render,AbstractQueryRendererBuilder,0,21,0,0,0,7,0,4,0,4
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select.render,JoinRenderer,0,121,0,0,0,26,0,7,0,7
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select.render,JoinRenderer,0,118,0,0,0,25,0,7,0,7
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select.render,HavingRenderer,0,10,0,0,0,3,0,2,0,2
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select.render,PagingModelRenderer,0,55,0,0,0,10,0,4,0,4
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select.render,QueryExpressionRenderer,0,280,0,6,0,72,0,24,0,21
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select.render,LimitAndOffsetPagingModelRenderer,0,85,0,0,0,21,0,5,0,5
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select.render,QueryExpressionRenderer,0,315,0,6,0,75,0,24,0,21
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select.render,MultiSelectRenderer.Builder,0,19,0,0,0,6,0,4,0,4
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select.render,LimitAndOffsetPagingModelRenderer,0,95,0,0,0,20,0,5,0,5
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select.render,DefaultSelectStatementProvider.Builder,0,25,0,0,0,7,0,4,0,4
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin.model,ModelBuilderFunctionsKt,0,414,0,0,0,25,0,20,0,20
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin.model,ModelBuilderFunctionsKt,0,334,0,0,0,18,0,17,0,17
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.where.render,WhereClauseProvider.Builder,0,25,0,0,0,7,0,4,0,4
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.where.render,RenderedCriterion.Builder,0,19,0,0,0,6,0,4,0,4
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.where.render,WhereConditionVisitor.Builder,0,48,0,2,0,14,0,8,0,7
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.where.render,WhereRenderer,0,97,0,4,0,22,0,9,0,7
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.where.render,CriterionRenderer,0,408,0,8,0,87,0,35,0,31
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.where.render,WhereConditionVisitor,0,206,0,0,0,50,0,12,0,12
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.where.render,WhereRenderer.Builder,0,34,0,0,0,12,0,7,0,7
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.where.render,WhereRenderer,0,27,0,4,0,7,0,5,0,3
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.where.render,CriterionRenderer,0,409,0,8,0,85,0,35,0,31
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.where.render,WhereConditionVisitor,0,214,0,0,0,50,0,12,0,12
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.where.render,WhereRenderer.Builder,0,12,0,0,0,4,0,3,0,3
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.where.render,CriterionRenderer.Builder,0,29,0,0,0,10,0,6,0,6
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.where.render,RenderedCriterion,0,56,0,2,0,15,0,6,0,5
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.where.render,WhereClauseProvider,0,28,0,0,0,7,0,4,0,4
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select.function,Add,0,30,0,0,0,5,0,4,0,4
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select.function,Upper,0,28,0,0,0,7,0,4,0,4
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select.function,Upper,0,29,0,0,0,6,0,4,0,4
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select.function,Subtract,0,30,0,0,0,5,0,4,0,4
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select.function,Substring,0,50,0,0,0,13,0,4,0,4
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select.function,Substring,0,51,0,0,0,8,0,4,0,4
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select.function,Multiply,0,30,0,0,0,5,0,4,0,4
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select.function,Concatenate,0,32,0,0,0,5,0,4,0,4
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select.function,OperatorFunction,0,99,0,0,0,14,0,6,0,6
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select.function,OperatorFunction,0,100,0,0,0,14,0,6,0,6
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select.function,AbstractUniTypeFunction,0,12,0,0,0,4,0,3,0,3
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select.function,Lower,0,28,0,0,0,7,0,4,0,4
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select.function,Lower,0,29,0,0,0,6,0,4,0,4
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select.function,Concat,0,62,0,0,0,10,0,6,0,6
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select.function,Divide,0,30,0,0,0,5,0,4,0,4
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select.function,AbstractTypeConvertingFunction,0,20,0,0,0,7,0,3,0,3
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select,SelectDSL,0,173,0,0,0,48,0,20,0,20
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select,SelectDSL,0,164,0,6,0,46,0,22,0,19
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select,SelectDSL.RowsOnlyFinisher,0,10,0,0,0,2,0,2,0,2
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select,MultiSelectDSL.OffsetFirstFinisher,0,21,0,0,0,4,0,3,0,3
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select,AbstractHavingStarter,0,60,0,0,0,19,0,7,0,7
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select,SelectDSL.OffsetFirstFinisher,0,21,0,0,0,4,0,3,0,3
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select,HavingDSL.StandaloneHavingFinisher,0,15,0,0,0,3,0,4,0,4
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select,CountDSLCompleter,0,4,0,0,0,1,0,2,0,2
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select,PagingModel,0,27,0,0,0,8,0,4,0,4
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select,CountDSL.CountWhereBuilder,0,17,0,0,0,6,0,4,0,4
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select,ColumnSortSpecification,0,48,0,0,0,10,0,5,0,5
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select,QueryExpressionDSL.JoinSpecificationFinisher,0,205,0,0,0,57,0,27,0,27
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select,QueryExpressionDSL.FromGatherer,0,51,0,0,0,10,0,5,0,5
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select,MultiSelectModel,0,58,0,2,0,17,0,7,0,6
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select,QueryExpressionDSL.JoinSpecificationFinisher,0,205,0,0,0,55,0,27,0,27
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select,MultiSelectDSL.FetchFirstFinisher,0,12,0,0,0,2,0,2,0,2
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select,MultiSelectDSL.LimitFinisher,0,21,0,0,0,4,0,3,0,3
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select,QueryExpressionDSL.FromGatherer,0,49,0,0,0,10,0,5,0,5
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select,SelectDSL.LimitFinisher,0,21,0,0,0,4,0,3,0,3
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select,SimpleSortSpecification,0,34,0,0,0,10,0,6,0,6
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select,CountDSL,0,117,0,4,0,28,0,14,0,12
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select,QueryExpressionDSL.GroupByFinisher,0,43,0,0,0,9,0,9,0,9
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select,UnionQuery,0,19,0,0,0,6,0,3,0,3
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select,QueryExpressionDSL.GroupByFinisher,0,47,0,0,0,10,0,10,0,10
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select,AbstractHavingFinisher,0,26,0,0,0,7,0,4,0,4
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select,QueryExpressionDSL.UnionBuilder,0,48,0,0,0,16,0,5,0,5
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select,SelectDSLCompleter,0,11,0,0,0,2,0,4,0,4
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select,QueryExpressionModel.Builder,0,69,0,0,0,22,0,11,0,11
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select,QueryExpressionModel.Builder,0,74,0,0,0,24,0,12,0,12
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select,SelectDSL.FetchFirstFinisher,0,12,0,0,0,2,0,2,0,2
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select,QueryExpressionDSL,0,247,0,4,0,54,0,30,0,28
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select,HavingModel,0,5,0,0,0,2,0,1,0,1
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select,QueryExpressionDSL,0,277,0,8,0,62,0,34,0,30
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select,HavingDSL,0,12,0,0,0,3,0,2,0,2
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select,MultiSelectDSL,0,119,0,6,0,30,0,13,0,10
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select,SubQuery,0,26,0,0,0,8,0,5,0,5
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select,SelectDSL.OffsetFinisher,0,10,0,0,0,2,0,2,0,2
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select,QueryExpressionDSL.QueryExpressionWhereBuilder,0,60,0,0,0,15,0,13,0,13
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select,OrderByModel,0,36,0,2,0,9,0,4,0,3
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select,GroupByModel,0,36,0,2,0,9,0,4,0,3
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select,SelectModel,0,55,0,2,0,15,0,7,0,6
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select,SelectModel.Builder,0,38,0,0,0,11,0,6,0,6
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select,QueryExpressionModel,0,86,0,2,0,21,0,11,0,10
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select,HavingApplier,0,11,0,0,0,4,0,2,0,2
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select,QueryExpressionModel,0,94,0,2,0,23,0,12,0,11
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select,MultiSelectModel.Builder,0,36,0,0,0,11,0,6,0,6
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select,SubQuery.Builder,0,19,0,0,0,6,0,4,0,4
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select,CountDSL.FromGatherer,0,19,0,0,0,5,0,2,0,2
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select,PagingModel.Builder,0,24,0,0,0,8,0,5,0,5
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select,QueryExpressionDSL.QueryExpressionHavingBuilder,0,48,0,0,0,11,0,11,0,11
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select,MultiSelectDSL.RowsOnlyFinisher,0,10,0,0,0,2,0,2,0,2
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select,QueryExpressionDSL.FromGatherer.Builder,0,35,0,0,0,11,0,6,0,6
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select,AbstractQueryExpressionDSL,0,307,0,4,0,75,0,31,0,29
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select,AbstractQueryExpressionDSL,0,307,0,4,0,71,0,31,0,29
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select,MultiSelectDSL.OffsetFinisher,0,10,0,0,0,2,0,2,0,2
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select,QueryExpressionDSL.JoinSpecificationStarter,0,37,0,0,0,6,0,3,0,3
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin.spring,BatchInsertHelper,0,35,0,0,0,5,0,2,0,2
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin.spring,ProviderBuilderFunctionsKt,0,318,0,0,0,20,0,20,0,20
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin.spring,MultiRowInsertHelper,0,40,0,0,0,8,0,2,0,2
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin.spring,SingleRowInsertWithKeyHolderHelper,0,47,0,0,0,9,0,2,0,2
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin.spring,SingleRowInsertHelper.into.new Function1() {...},0,15,0,0,0,3,0,1,0,1
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin.spring,MultiRowInsertWithKeyHolderHelper,0,48,0,0,0,9,0,2,0,2
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin.spring,MultiRowInsertHelper.into.new Function1() {...},0,15,0,0,0,3,0,1,0,1
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin.spring,NamedParameterJdbcTemplateExtensionsKt,0,713,0,0,0,57,0,45,0,45
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin.spring,MultiRowInsertWithKeyHolderHelper.into.new Function1() {...},0,15,0,0,0,3,0,1,0,1
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin.spring,ProviderBuilderFunctionsKt,0,257,0,0,0,17,0,17,0,17
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin.spring,NamedParameterJdbcTemplateExtensionsKt,0,637,0,0,0,51,0,39,0,39
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin.spring,SelectOneMapperGatherer,0,35,0,0,0,6,0,3,0,3
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin.spring,SelectListMapperGatherer,0,35,0,0,0,6,0,3,0,3
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin.spring,SingleRowInsertHelper,0,39,0,0,0,8,0,2,0,2
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin.spring,KeyHolderHelper,0,120,0,0,0,11,0,9,0,9
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin.spring,BatchInsertHelper.into.new Function1() {...},0,15,0,0,0,3,0,1,0,1
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin.spring,SingleRowInsertWithKeyHolderHelper.into.new Function1() {...},0,15,0,0,0,3,0,1,0,1
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin.spring,KeyHolderHelper,0,84,0,0,0,8,0,6,0,6
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util,NullMapping,0,13,0,0,0,4,0,3,0,3
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util,PropertyWhenPresentMapping,0,29,0,2,0,6,0,5,0,4
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util,SqlProviderAdapter,0,68,0,2,0,17,0,11,0,10
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util,InternalError,0,119,0,0,0,20,0,3,0,3
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util,InsertMappingVisitor,0,33,0,0,0,6,0,6,0,6
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util,FragmentAndParameters,0,59,0,0,0,14,0,6,0,6
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util,FragmentAndParameters,0,27,0,0,0,7,0,4,0,4
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util,ValueWhenPresentMapping,0,37,0,0,0,8,0,5,0,5
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util,AbstractColumnMapping,0,17,0,0,0,5,0,3,0,3
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util,StringUtilities,0,83,0,10,0,21,0,11,0,6
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util,FragmentCollector,0,79,0,2,0,22,0,11,0,10
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util,StringUtilities,0,70,0,10,0,15,0,9,0,4
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util,FragmentCollector,0,86,0,2,0,18,0,12,0,11
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util,MultiRowInsertMappingVisitor,0,9,0,0,0,2,0,2,0,2
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util,ValueOrNullMapping,0,32,0,0,0,7,0,4,0,4
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util,UpdateMappingVisitor,0,15,0,0,0,3,0,3,0,3
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util,UpdateMappingVisitor,0,21,0,0,0,4,0,4,0,4
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util,ColumnToColumnMapping,0,20,0,0,0,6,0,4,0,4
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util,PropertyMapping,0,22,0,0,0,6,0,4,0,4
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util,GeneralInsertMappingVisitor,0,27,0,0,0,5,0,5,0,5
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util,GeneralInsertMappingVisitor,0,33,0,0,0,6,0,6,0,6
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util,SelectMapping,0,22,0,0,0,6,0,4,0,4
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util,CustomCollectors,0,24,0,0,0,5,0,2,0,2
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util,ValueMapping,0,31,0,0,0,7,0,4,0,4
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util,StringConstantMapping,0,20,0,0,0,6,0,4,0,4
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util,Predicates,0,10,0,4,0,1,0,4,0,2
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util,Messages,0,47,0,0,0,5,0,5,0,5
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util,RowMapping,0,13,0,0,0,4,0,3,0,3
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util,Messages,0,48,0,0,0,5,0,5,0,5
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util,FragmentAndParameters.Builder,0,37,0,0,0,10,0,6,0,6
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util,ConstantMapping,0,20,0,0,0,6,0,4,0,4
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select.aggregate,CountAll,0,14,0,0,0,6,0,4,0,4
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select.aggregate,CountDistinct,0,42,0,0,0,9,0,5,0,5
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select.aggregate,Avg,0,28,0,0,0,5,0,4,0,4
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select.aggregate,CountDistinct,0,43,0,0,0,9,0,5,0,5
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select.aggregate,Avg,0,29,0,0,0,5,0,4,0,4
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select.aggregate,AbstractCount,0,14,0,0,0,6,0,3,0,3
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select.aggregate,Sum,0,28,0,0,0,5,0,4,0,4
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select.aggregate,Min,0,28,0,0,0,5,0,4,0,4
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select.aggregate,Count,0,42,0,0,0,9,0,5,0,5
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select.aggregate,Max,0,28,0,0,0,5,0,4,0,4
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select.aggregate,Sum,0,29,0,0,0,5,0,4,0,4
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select.aggregate,Min,0,29,0,0,0,5,0,4,0,4
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select.aggregate,Count,0,43,0,0,0,9,0,5,0,5
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.select.aggregate,Max,0,29,0,0,0,5,0,4,0,4
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.configuration,StatementConfiguration,0,14,0,0,0,6,0,3,0,3
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.configuration,GlobalContext,0,16,0,0,0,4,0,3,0,3
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.configuration,GlobalConfiguration,0,72,0,4,0,25,0,9,0,7
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.configuration,GlobalConfiguration,0,72,0,4,0,26,0,9,0,7
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.exception,DuplicateTableAliasException,0,20,0,0,0,5,0,2,0,2
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.exception,DynamicSqlException,0,9,0,0,0,4,0,2,0,2
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.exception,InvalidSqlException,0,4,0,0,0,2,0,1,0,1
@@ -157,7 +176,7 @@ MyBatis Dynamic SQL,org.mybatis.dynamic.sql.insert,InsertColumnListModel,0,36,0,
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.insert,BatchInsertDSL.Builder,0,11,0,0,0,3,0,3,0,3
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.insert,MultiRowInsertModel,0,38,0,4,0,11,0,5,0,3
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.insert,InsertSelectModel,0,42,0,0,0,13,0,6,0,6
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.insert,MultiRowInsertDSL.ColumnMappingFinisher,0,56,0,0,0,11,0,5,0,5
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.insert,MultiRowInsertDSL.ColumnMappingFinisher,0,67,0,0,0,13,0,6,0,6
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.insert,GeneralInsertModel,0,39,0,2,0,12,0,5,0,4
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.insert,InsertDSL.IntoGatherer,0,16,0,0,0,4,0,2,0,2
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.insert,InsertSelectDSL,0,49,0,0,0,15,0,4,0,4
@@ -168,7 +187,7 @@ MyBatis Dynamic SQL,org.mybatis.dynamic.sql.insert,BatchInsertDSL.AbstractBuilde
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.insert,InsertDSL,0,41,0,0,0,11,0,4,0,4
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.insert,InsertModel.Builder,0,31,0,0,0,9,0,5,0,5
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.insert,GeneralInsertDSL.SetClauseFinisher,0,101,0,0,0,18,0,13,0,13
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.insert,BatchInsertDSL.ColumnMappingFinisher,0,56,0,0,0,11,0,5,0,5
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.insert,BatchInsertDSL.ColumnMappingFinisher,0,67,0,0,0,13,0,6,0,6
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.insert,InsertModel,0,55,0,2,0,15,0,7,0,6
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.insert,MultiRowInsertModel.Builder,0,11,0,0,0,3,0,3,0,3
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.insert,GeneralInsertDSL.Builder,0,26,0,0,0,7,0,4,0,4
@@ -176,101 +195,93 @@ MyBatis Dynamic SQL,org.mybatis.dynamic.sql.insert,BatchInsertModel,0,38,0,4,0,1
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.insert,GeneralInsertModel.Builder,0,26,0,0,0,7,0,4,0,4
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.insert,InsertDSL.Builder,0,31,0,0,0,9,0,5,0,5
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.insert,AbstractMultiRowInsertModel,0,38,0,0,0,9,0,5,0,5
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.insert,InsertDSL.ColumnMappingFinisher,0,69,0,0,0,13,0,6,0,6
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.update,UpdateModel,0,63,0,2,0,17,0,8,0,7
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.update,UpdateModel.Builder,0,36,0,0,0,11,0,6,0,6
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.update,UpdateDSL.UpdateWhereBuilder,0,17,0,0,0,6,0,4,0,4
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.insert,InsertDSL.ColumnMappingFinisher,0,80,0,0,0,15,0,7,0,7
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.update,UpdateModel,0,80,0,2,0,21,0,10,0,9
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.update,UpdateModel.Builder,0,23,0,0,0,6,0,4,0,4
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.update,UpdateDSL.UpdateWhereBuilder,0,36,0,0,0,10,0,7,0,7
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.update,UpdateDSL.SetClauseFinisher,0,125,0,0,0,22,0,15,0,15
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.update,UpdateDSL,0,93,0,4,0,22,0,10,0,8
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.update,UpdateDSL,0,119,1,3,0,29,1,12,0,11
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.mybatis3,MyBatis3Utils,0,208,0,0,0,42,0,27,0,27
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.mybatis3,CommonSelectMapper,0,16,0,0,0,4,0,2,0,2
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql,DerivedColumn,0,91,0,2,0,25,0,9,0,8
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql,Constant,0,35,0,0,0,10,0,6,0,6
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql,SqlColumn.Builder,0,65,0,0,0,25,0,12,0,12
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql,SqlColumn.Builder,0,65,0,0,0,24,0,12,0,12
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql,SqlTable,0,195,0,0,0,34,0,25,0,25
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql,AndOrCriteriaGroup.Builder,0,31,0,0,0,9,0,5,0,5
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql,ColumnAndConditionCriterion.Builder,0,21,0,0,0,7,0,5,0,5
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql,Callback,0,13,0,0,0,3,0,3,0,3
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql,ColumnAndConditionCriterion,0,32,0,0,0,8,0,5,0,5
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql,ExistsCriterion,0,17,0,0,0,5,0,3,0,3
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql,AbstractNoValueCondition,0,21,0,4,0,5,0,5,0,3
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql,DerivedColumn.Builder,0,33,0,0,0,12,0,7,0,7
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql,AbstractSingleValueCondition,0,44,0,6,0,11,0,8,0,5
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql,SqlBuilder,0,763,0,8,0,221,0,154,0,150
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql,SqlBuilder,0,798,0,8,0,225,0,158,0,154
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql,CriteriaGroup,0,16,0,0,0,5,0,3,0,3
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql,AndOrCriteriaGroup,0,28,0,0,0,8,0,4,0,4
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql,CriteriaGroup.AbstractGroupBuilder,0,10,0,0,0,3,0,2,0,2
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql,AliasableSqlTable,0,32,0,0,0,10,0,4,0,4
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql,AliasableSqlTable,0,47,0,0,0,13,0,5,0,5
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql,ExistsPredicate,0,31,0,0,0,8,0,5,0,5
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql,TableExpression,0,2,0,0,0,1,0,1,0,1
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql,AbstractColumnComparisonCondition,0,18,0,0,0,5,0,3,0,3
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql,ExistsCriterion.Builder,0,16,0,0,0,5,0,4,0,4
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql,BasicColumn,0,26,0,0,0,4,0,3,0,3
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql,VisitableCondition,0,3,0,0,0,2,0,2,0,2
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql,StringConstant,0,43,0,0,0,10,0,6,0,6
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql,StringConstant,0,44,0,0,0,10,0,6,0,6
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql,SqlCriterion,0,18,0,0,0,5,0,2,0,2
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql,NotCriterion.Builder,0,11,0,0,0,3,0,3,0,3
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql,AbstractTwoValueCondition,0,75,0,10,0,14,0,13,0,8
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql,CriteriaGroup.Builder,0,10,0,0,0,3,0,3,0,3
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql,SqlColumn,0,256,0,2,0,61,0,26,0,25
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql,SqlColumn,0,257,0,2,0,61,0,26,0,25
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql,NotCriterion,0,8,0,0,0,3,0,2,0,2
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql,BindableColumn,0,10,0,0,0,5,0,5,0,5
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql,SqlCriterion.AbstractBuilder,0,16,0,0,0,4,0,2,0,2
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql,AbstractSubselectCondition,0,15,0,0,0,5,0,3,0,3
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql,SqlBuilder.InsertIntoNextStep,0,32,0,0,0,11,0,5,0,5
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql,AbstractListValueCondition,0,104,0,8,0,22,0,15,0,11
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.delete,DeleteModel,0,41,0,0,0,13,0,6,0,6
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.delete,DeleteDSL,0,79,0,4,0,19,0,9,0,7
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.delete,DeleteDSL.DeleteWhereBuilder,0,17,0,0,0,6,0,4,0,4
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql,AbstractListValueCondition,0,85,0,8,0,17,0,12,0,8
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.delete,DeleteModel,0,58,0,0,0,17,0,8,0,8
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.delete,DeleteDSL,0,105,1,3,0,26,1,11,0,10
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.delete,DeleteDSL.DeleteWhereBuilder,0,36,0,0,0,10,0,7,0,7
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.delete,DeleteDSLCompleter,0,4,0,0,0,1,0,2,0,2
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.delete,DeleteModel.Builder,0,24,0,0,0,8,0,5,0,5
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.update.render,SetPhraseVisitor,0,264,0,0,0,54,0,17,0,17
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.update.render,UpdateRenderer,0,227,0,2,0,52,0,16,0,15
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.delete,DeleteModel.Builder,0,11,0,0,0,3,0,3,0,3
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.update.render,SetPhraseVisitor,0,266,0,0,0,47,0,17,0,17
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.update.render,UpdateRenderer,0,269,0,2,0,57,0,17,0,16
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.update.render,DefaultUpdateStatementProvider.Builder,0,25,0,0,0,7,0,4,0,4
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.update.render,UpdateRenderer.Builder,0,19,0,0,0,6,0,4,0,4
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.update.render,DefaultUpdateStatementProvider,0,31,0,0,0,8,0,4,0,4
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin,AbstractInsertColumnMapCompleter,0,56,0,0,0,7,0,6,0,6
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin,CriteriaCollector.or.new Function1() {...},0,4,0,0,0,1,0,1,0,1
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin,KotlinUpdateBuilder,0,29,0,0,0,5,0,4,0,4
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin,KotlinUpdateBuilder,0,46,0,0,0,9,0,6,0,6
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin,JoinCollector.on.new Function1() {...},0,18,0,0,0,6,0,1,0,1
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin,CriteriaCollector.or.new Function1() {...},0,4,0,0,0,1,0,1,0,1
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin,KotlinBaseJoiningBuilder.join.new Function2() {...},0,16,0,0,0,2,0,1,0,1
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin,KotlinBaseJoiningBuilder.join.new Function3() {...},0,21,0,0,0,2,0,1,0,1
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin,KotlinBaseJoiningBuilder.join.new Function2() {...},0,18,0,0,0,2,0,1,0,1
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin,KQueryExpressionDSL.Companion,0,26,0,0,0,5,0,1,0,1
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin,KotlinBaseBuildersKt.andThen.new Function1() {...},0,14,0,0,0,3,0,1,0,1
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin,SubCriteriaCollector,0,124,0,0,0,27,0,6,0,6
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin,KotlinInsertBuilder.map.new Function1() {...},0,10,0,0,0,2,0,1,0,1
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin,KotlinBaseJoiningBuilder.leftJoin.new Function3() {...},0,21,0,0,0,2,0,1,0,1
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin,KotlinBaseJoiningBuilder.leftJoin.new Function2() {...},0,18,0,0,0,2,0,1,0,1
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin,KotlinBaseJoiningBuilder.leftJoin.new Function2() {...},0,16,0,0,0,2,0,1,0,1
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin,KotlinBatchInsertBuilder,0,77,0,2,0,17,0,5,0,4
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin,KotlinBaseBuilder.or.new Function1() {...},0,11,0,0,0,2,0,1,0,1
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin,KotlinBaseBuilder.or.new Function2() {...},0,15,0,0,0,2,0,1,0,1
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin,KotlinBaseBuilder.or.new Function1() {...},0,13,0,0,0,2,0,1,0,1
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin,KotlinSubQueryBuilder,0,7,0,0,0,2,0,2,0,2
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin,KotlinSelectBuilder,0,152,0,2,0,23,0,14,0,13
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin,KotlinBaseBuilder.or.new Function2() {...},0,13,0,0,0,2,0,1,0,1
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin,KotlinBaseBuilder.and.new Function1() {...},0,13,0,0,0,2,0,1,0,1
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin,KotlinBaseBuilder.and.new Function1() {...},0,11,0,0,0,2,0,1,0,1
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin,KotlinBaseBuilder.and.new Function2() {...},0,15,0,0,0,2,0,1,0,1
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin,KotlinBaseBuilder.and.new Function2() {...},0,13,0,0,0,2,0,1,0,1
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin,KotlinSelectBuilder,0,177,0,2,0,26,0,15,0,14
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin,GroupingCriteriaCollectorKt,0,13,0,0,0,2,0,1,0,1
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin,KotlinQualifiedSubQueryBuilder,4,17,0,0,0,5,1,4,1,4
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin,GeneralInsertColumnSetCompleter.toValueWhenPresent.new Function0() {...},0,3,0,0,0,1,0,1,0,1
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin,KotlinUpdateBuilder.KotlinSetClauseFinisher,0,140,0,0,0,23,0,13,0,13
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin,KotlinBaseBuildersKt,0,13,0,0,0,2,0,1,0,1
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin,JoinCollector,0,96,0,2,0,21,0,8,0,7
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin,JoinCollector,0,53,0,2,0,8,0,6,0,5
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin,KotlinGeneralInsertBuilder,0,53,0,0,0,10,0,3,0,3
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin,RightColumnCollector,0,22,0,0,0,2,0,2,0,2
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin,KotlinBaseSubQueryBuilder,0,88,0,2,0,7,0,6,0,5
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin,KotlinMultiRowInsertBuilder.map.new Function1() {...},0,10,0,0,0,2,0,1,0,1
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin,KotlinBaseBuilder,0,348,0,0,0,49,0,25,0,25
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin,KotlinBaseBuilder,0,139,0,0,0,21,0,11,0,11
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin,KotlinUpdateBuilder.KotlinSetClauseFinisher.equalToNull.new Function1() {...},0,11,0,0,0,2,0,1,0,1
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin,KotlinUpdateBuilder.KotlinSetClauseFinisher.equalTo.new Function1() {...},0,20,0,0,0,2,0,2,0,2
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin,KotlinUpdateBuilder.KotlinSetClauseFinisher.equalTo.new Function0() {...},0,3,0,0,0,1,0,1,0,1
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin,KotlinUpdateBuilder.KotlinSetClauseFinisher.equalTo.new Function1() {...},0,13,0,0,0,2,0,1,0,1
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin,KotlinUpdateBuilder.KotlinSetClauseFinisher.equalToConstant.new Function1() {...},0,13,0,0,0,2,0,1,0,1
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin,SingleRowInsertColumnMapCompleter,0,53,0,0,0,4,0,4,0,4
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin,SingleRowInsertColumnMapCompleter,0,64,0,0,0,5,0,5,0,5
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin,GroupingCriteriaCollector.isBetweenWhenPresent.new Function1() {...},0,12,0,0,0,2,0,1,0,1
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin,GroupingCriteriaCollector,0,987,0,2,0,122,0,73,0,72
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin,GroupingCriteriaCollector,0,867,0,2,0,91,0,68,0,67
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin,KotlinUpdateBuilder.KotlinSetClauseFinisher.equalToWhenPresent.new Function0() {...},0,3,0,0,0,1,0,1,0,1
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin,KotlinUpdateBuilder.KotlinSetClauseFinisher.equalToWhenPresent.new Function1() {...},0,20,0,0,0,2,0,2,0,2
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin,GroupingCriteriaCollector.isBetween.new Function1() {...},0,15,0,0,0,2,0,1,0,1
@@ -282,58 +293,55 @@ MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin,KotlinUpdateBuilder.Kotl
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin,NullableSecondValueCollector,0,15,0,0,0,2,0,2,0,2
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin,SecondValueCollector,0,15,0,0,0,2,0,2,0,2
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin,KotlinInsertBuilder,0,77,0,2,0,17,0,5,0,4
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin,CriteriaCollector.and.new Function1() {...},0,4,0,0,0,1,0,1,0,1
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin,CriteriaCollector.and.new Function1() {...},0,4,0,0,0,1,0,1,0,1
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin,MultiRowInsertColumnMapCompleter,0,27,0,0,0,3,0,2,0,2
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin,MultiRowInsertColumnMapCompleter,0,38,0,0,0,4,0,3,0,3
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin,KotlinBatchInsertBuilder.map.new Function1() {...},0,10,0,0,0,2,0,1,0,1
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin,GroupingCriteriaCollectorKt.andThen.new Function1() {...},0,14,0,0,0,3,0,1,0,1
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin,KotlinInsertSelectSubQueryBuilder,0,78,0,4,0,17,0,9,0,7
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin,KotlinBaseBuilder.where.new Function2() {...},0,15,0,0,0,2,0,1,0,1
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin,KotlinBaseBuilder.where.new Function1() {...},0,11,0,0,0,2,0,1,0,1
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin,GroupingCriteriaCollector.Companion,0,10,0,0,0,2,0,2,0,2
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin,KotlinCountBuilder,0,52,0,2,0,7,0,5,0,4
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin,KotlinBaseBuilder.where.new Function1() {...},0,13,0,0,0,2,0,1,0,1
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin,KotlinBaseBuilder.where.new Function2() {...},0,13,0,0,0,2,0,1,0,1
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin,JoinCollector.and.new Function1() {...},0,23,0,0,0,7,0,1,0,1
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin,GeneralInsertColumnSetCompleter,0,105,0,0,0,8,0,10,0,10
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin,GroupingCriteriaCollector.isNotBetween.new Function1() {...},0,15,0,0,0,2,0,1,0,1
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin,KInvalidSQLException,0,7,0,0,0,1,0,1,0,1
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin,CriteriaCollector,0,172,0,0,0,22,0,13,0,13
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin,KotlinMultiRowInsertBuilder,0,77,0,2,0,17,0,5,0,4
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin,KotlinGeneralInsertBuilder.set.new Function1() {...},0,10,0,0,0,2,0,1,0,1
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin,GeneralInsertColumnSetCompleter.toValue.new Function0() {...},0,3,0,0,0,1,0,1,0,1
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin,KotlinUnionBuilder,0,73,0,0,0,6,0,5,0,5
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin,KotlinMultiSelectBuilder,0,191,0,4,0,30,0,16,0,14
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin,GeneralInsertColumnSetCompleter.toValueOrNull.new Function0() {...},0,3,0,0,0,1,0,1,0,1
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin,KotlinBaseJoiningBuilder.fullJoin.new Function3() {...},0,21,0,0,0,2,0,1,0,1
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin,KotlinBaseJoiningBuilder.fullJoin.new Function2() {...},0,18,0,0,0,2,0,1,0,1
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin,KotlinBaseJoiningBuilder.fullJoin.new Function2() {...},0,16,0,0,0,2,0,1,0,1
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin,KotlinUpdateBuilder.KotlinSetClauseFinisher.equalToOrNull.new Function0() {...},0,3,0,0,0,1,0,1,0,1
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin,KotlinUpdateBuilder.KotlinSetClauseFinisher.equalToOrNull.new Function1() {...},0,20,0,0,0,2,0,2,0,2
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin,KQueryExpressionDSL,0,61,0,0,0,9,0,4,0,4
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin,GroupingCriteriaCollector.isNotBetweenWhenPresent.new Function1() {...},0,12,0,0,0,2,0,1,0,1
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin,KotlinDeleteBuilder,0,20,0,0,0,4,0,3,0,3
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin,KotlinDeleteBuilder,0,37,0,0,0,8,0,5,0,5
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin,KotlinUpdateBuilder.KotlinSetClauseFinisher.equalToQueryResult.new Function1() {...},0,22,0,0,0,2,0,1,0,1
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.where.condition,IsNotEqualToWithSubselect,0,22,0,0,0,4,0,3,0,3
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.where.condition,AndGatherer,0,17,0,0,0,6,0,3,0,3
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.where.condition,IsInCaseInsensitive,0,77,0,0,0,15,0,11,0,11
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.where.condition,IsInCaseInsensitive,0,57,0,0,0,11,0,8,0,8
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.where.condition,IsEqualToColumn,0,20,0,0,0,4,0,3,0,3
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.where.condition,IsLessThan.new IsLessThan() {...},0,6,0,0,0,2,0,2,0,2
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.where.condition,IsNotEqualToColumn,0,20,0,0,0,4,0,3,0,3
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.where.condition,IsGreaterThanWithSubselect,0,22,0,0,0,4,0,3,0,3
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.where.condition,IsGreaterThanOrEqualToColumn,0,20,0,0,0,4,0,3,0,3
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.where.condition,IsLessThanOrEqualTo,0,44,0,0,0,10,0,7,0,7
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.where.condition,IsLessThan,0,44,0,0,0,10,0,7,0,7
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.where.condition,IsLessThanOrEqualTo,0,44,0,0,0,9,0,7,0,7
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.where.condition,IsLessThan,0,44,0,0,0,9,0,7,0,7
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.where.condition,IsLessThanColumn,0,20,0,0,0,4,0,3,0,3
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.where.condition,IsNotInWithSubselect,0,22,0,0,0,4,0,3,0,3
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.where.condition,IsLikeCaseInsensitive,0,48,0,0,0,10,0,8,0,8
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.where.condition,IsEqualTo,0,44,0,0,0,10,0,7,0,7
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.where.condition,IsLikeCaseInsensitive,0,49,0,0,0,9,0,8,0,8
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.where.condition,IsEqualTo,0,44,0,0,0,9,0,7,0,7
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.where.condition,IsEqualToWithSubselect,0,22,0,0,0,4,0,3,0,3
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.where.condition,IsEqualTo.new IsEqualTo() {...},0,6,0,0,0,2,0,2,0,2
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.where.condition,IsGreaterThanOrEqualTo,0,44,0,0,0,10,0,7,0,7
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.where.condition,IsGreaterThanOrEqualTo,0,44,0,0,0,9,0,7,0,7
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.where.condition,IsLikeCaseInsensitive.new IsLikeCaseInsensitive() {...},0,6,0,0,0,2,0,2,0,2
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.where.condition,IsGreaterThan.new IsGreaterThan() {...},0,6,0,0,0,2,0,2,0,2
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.where.condition,IsBetween.new IsBetween() {...},0,7,0,0,0,2,0,2,0,2
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.where.condition,IsLessThanOrEqualToColumn,0,20,0,0,0,4,0,3,0,3
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.where.condition,IsNotEqualTo.new IsNotEqualTo() {...},0,6,0,0,0,2,0,2,0,2
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.where.condition,IsLike,0,44,0,0,0,10,0,7,0,7
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.where.condition,IsNotNull,0,30,0,0,0,9,0,5,0,5
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.where.condition,IsLike,0,44,0,0,0,9,0,7,0,7
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.where.condition,IsNotNull,0,30,0,0,0,8,0,5,0,5
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.where.condition,IsNotLike.new IsNotLike() {...},0,6,0,0,0,2,0,2,0,2
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.where.condition,IsBetween.Builder,0,12,0,0,0,3,0,2,0,2
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.where.condition,IsBetween.WhenPresentBuilder,0,14,0,0,0,3,0,2,0,2
@@ -341,80 +349,80 @@ MyBatis Dynamic SQL,org.mybatis.dynamic.sql.where.condition,IsNotBetween.WhenPre
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.where.condition,IsLessThanOrEqualTo.new IsLessThanOrEqualTo() {...},0,6,0,0,0,2,0,2,0,2
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.where.condition,IsNull.new IsNull() {...},0,5,0,0,0,2,0,2,0,2
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.where.condition,IsNotBetween.Builder,0,12,0,0,0,3,0,2,0,2
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.where.condition,IsGreaterThan,0,44,0,0,0,10,0,7,0,7
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.where.condition,IsGreaterThan,0,44,0,0,0,9,0,7,0,7
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.where.condition,IsInWithSubselect,0,22,0,0,0,4,0,3,0,3
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.where.condition,IsGreaterThanColumn,0,20,0,0,0,4,0,3,0,3
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.where.condition,IsNotIn,0,77,0,0,0,17,0,11,0,11
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.where.condition,IsNotIn,0,56,0,0,0,13,0,8,0,8
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.where.condition,IsLessThanOrEqualToWithSubselect,0,22,0,0,0,4,0,3,0,3
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.where.condition,IsBetween,0,70,0,0,0,13,0,10,0,10
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.where.condition,IsBetween,0,70,0,0,0,12,0,10,0,10
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.where.condition,IsNotBetween.new IsNotBetween() {...},0,7,0,0,0,2,0,2,0,2
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.where.condition,IsIn,0,77,0,0,0,16,0,11,0,11
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.where.condition,IsNotLike,0,44,0,0,0,10,0,7,0,7
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.where.condition,IsIn,0,56,0,0,0,12,0,8,0,8
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.where.condition,IsNotLike,0,44,0,0,0,9,0,7,0,7
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.where.condition,IsGreaterThanOrEqualTo.new IsGreaterThanOrEqualTo() {...},0,6,0,0,0,2,0,2,0,2
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.where.condition,IsLessThanWithSubselect,0,22,0,0,0,4,0,3,0,3
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.where.condition,IsNotLikeCaseInsensitive.new IsNotLikeCaseInsensitive() {...},0,6,0,0,0,2,0,2,0,2
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.where.condition,IsNotNull.new IsNotNull() {...},0,5,0,0,0,2,0,2,0,2
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.where.condition,IsNull,0,30,0,0,0,9,0,5,0,5
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.where.condition,IsNull,0,30,0,0,0,8,0,5,0,5
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.where.condition,IsGreaterThanOrEqualToWithSubselect,0,22,0,0,0,4,0,3,0,3
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.where.condition,IsNotInCaseInsensitive,0,77,0,0,0,15,0,11,0,11
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.where.condition,IsNotInCaseInsensitive,0,57,0,0,0,11,0,8,0,8
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.where.condition,IsLike.new IsLike() {...},0,6,0,0,0,2,0,2,0,2
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.where.condition,IsNotBetween,0,70,0,0,0,13,0,10,0,10
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.where.condition,IsNotEqualTo,0,44,0,0,0,10,0,7,0,7
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.where.condition,IsNotLikeCaseInsensitive,0,48,0,0,0,10,0,8,0,8
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.where,WhereDSL,0,15,0,0,0,5,0,4,0,4
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.where,WhereModel,0,93,0,0,0,35,0,8,0,8
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.where,AbstractWhereDSL,0,272,0,0,0,65,0,30,0,30
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.where,AbstractWhereSupport,0,83,0,0,0,12,0,15,0,15
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.where.condition,IsNotBetween,0,70,0,0,0,12,0,10,0,10
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.where.condition,IsNotEqualTo,0,44,0,0,0,9,0,7,0,7
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.where.condition,IsNotLikeCaseInsensitive,0,49,0,0,0,9,0,8,0,8
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.where,AbstractWhereStarter,0,92,0,0,0,29,0,10,0,10
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.where,WhereDSL,0,24,0,0,0,6,0,3,0,3
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.where,WhereModel,0,108,0,0,0,37,0,7,0,7
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.where,AbstractWhereFinisher,0,41,0,0,0,11,0,5,0,5
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.where,WhereDSL.StandaloneWhereFinisher,0,23,0,0,0,6,0,5,0,5
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.where,WhereApplier,0,11,0,0,0,4,0,2,0,2
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin.elements,NotBetweenWhenPresentBuilder,0,16,0,0,0,2,0,2,0,2
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin.elements,InsertStatementsKt,0,40,0,0,0,5,0,5,0,5
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin.elements,ColumnExtensionsKt,0,39,0,0,0,3,0,3,0,3
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin.elements,BetweenWhenPresentBuilder,0,16,0,0,0,2,0,2,0,2
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin.elements,BetweenBuilder,0,16,0,0,0,2,0,2,0,2
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin.elements,SqlElementsKt,0,865,0,0,0,93,0,83,0,83
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin.elements,SqlElementsKt,0,834,0,0,0,91,0,81,0,81
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin.elements,NotBetweenBuilder,0,16,0,0,0,2,0,2,0,2
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.kotlin.elements,SqlTableExtensionsKt,0,97,0,4,0,16,0,5,0,3
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.insert.render,BatchInsert,0,46,0,0,0,13,0,6,0,6
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.insert.render,GeneralInsertValuePhraseVisitor,0,128,0,0,0,27,0,15,0,15
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.insert.render,AbstractMultiRowValuePhraseVisitor,0,58,0,0,0,16,0,6,0,6
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.insert.render,BatchValuePhraseVisitor,0,17,0,0,0,4,0,2,0,2
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.insert.render,GeneralInsertValuePhraseVisitor,0,131,0,0,0,27,0,15,0,15
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.insert.render,DefaultInsertStatementProvider.Builder,0,19,0,0,0,6,0,4,0,4
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.insert.render,MultiRowInsertRenderer,0,134,0,0,0,27,0,10,0,10
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.insert.render,GeneralInsertRenderer,0,128,0,2,0,32,0,9,0,8
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.insert.render,MultiRowInsertRenderer,0,84,0,0,0,16,0,5,0,5
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.insert.render,GeneralInsertRenderer,0,67,0,2,0,16,0,5,0,4
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.insert.render,FieldAndValueAndParameters,0,34,0,0,0,9,0,5,0,5
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.insert.render,MultiRowInsertRenderer.Builder,0,19,0,0,0,6,0,4,0,4
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.insert.render,FieldAndValue,0,27,0,0,0,7,0,4,0,4
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.insert.render,FieldAndValueCollector,0,106,0,0,0,25,0,11,0,11
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.insert.render,BatchInsertRenderer.Builder,0,19,0,0,0,6,0,4,0,4
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.insert.render,InsertRenderer,0,114,0,2,0,27,0,8,0,7
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.insert.render,InsertRenderer,0,68,0,2,0,16,0,5,0,4
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.insert.render,DefaultMultiRowInsertStatementProvider,0,20,0,0,0,6,0,3,0,3
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.insert.render,BatchInsert.Builder,0,26,0,0,0,7,0,4,0,4
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.insert.render,InsertSelectRenderer.Builder,0,19,0,0,0,6,0,4,0,4
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.insert.render,FieldAndValue.Builder,0,23,0,0,0,7,0,5,0,5
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.insert.render,BatchInsertRenderer,0,96,0,0,0,22,0,7,0,7
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.insert.render,InsertSelectRenderer,0,74,0,0,0,17,0,6,0,6
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.insert.render,BatchInsertRenderer,0,56,0,0,0,12,0,4,0,4
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.insert.render,InsertSelectRenderer,0,80,0,0,0,18,0,5,0,5
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.insert.render,GeneralInsertRenderer.Builder,0,19,0,0,0,6,0,4,0,4
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.insert.render,DefaultGeneralInsertStatementProvider,0,31,0,0,0,8,0,4,0,4
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.insert.render,DefaultMultiRowInsertStatementProvider.Builder,0,26,0,0,0,7,0,4,0,4
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.insert.render,InsertRenderer.Builder,0,19,0,0,0,6,0,4,0,4
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.insert.render,InsertRenderingUtilities,0,32,0,0,0,5,0,2,0,2
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.insert.render,FieldAndValueAndParameters.Builder,0,36,0,0,0,10,0,6,0,6
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.insert.render,ValuePhraseVisitor,0,75,0,2,0,20,0,9,0,8
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.insert.render,ValuePhraseVisitor,0,97,0,2,0,25,0,11,0,10
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.insert.render,DefaultInsertStatementProvider,0,33,0,0,0,9,0,5,0,5
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.insert.render,MultiRowValuePhraseVisitor,0,17,0,0,0,4,0,2,0,2
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.insert.render,MultiRowValuePhraseVisitor,0,93,0,0,0,22,0,9,0,9
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.insert.render,DefaultGeneralInsertStatementProvider.Builder,0,25,0,0,0,7,0,4,0,4
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.springbatch,SpringBatchReaderRenderingStrategy,0,17,0,0,0,3,0,2,0,2
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.springbatch,SpringBatchReaderRenderingStrategy,0,18,0,0,0,3,0,2,0,2
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.springbatch,SpringBatchProviderAdapter,0,11,0,0,0,4,0,2,0,2
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.springbatch,SpringBatchPagingReaderSelectModel,0,16,0,0,0,6,0,2,0,2
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.springbatch,SpringBatchCursorReaderSelectModel,0,11,0,0,0,4,0,2,0,2
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.springbatch,SpringBatchPagingReaderSelectModel.LimitAndOffsetDecorator,0,30,0,0,0,8,0,3,0,3
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.springbatch,SpringBatchUtility,0,24,0,0,0,7,0,4,0,4
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.spring,NamedParameterJdbcTemplateExtensions,0,236,0,0,0,37,0,25,0,25
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.springbatch,SpringBatchPagingReaderSelectModel.LimitAndOffsetDecorator,0,30,0,0,0,7,0,3,0,3
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.springbatch,SpringBatchUtility,0,24,0,0,0,6,0,4,0,4
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.spring,NamedParameterJdbcTemplateExtensions,0,232,0,0,0,33,0,25,0,25
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.spring,BatchInsertUtility,0,11,0,0,0,4,0,1,0,1
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.util.spring,BatchInsertUtility.RowHolder,0,9,0,0,0,4,0,2,0,2
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.render,GuaranteedTableAliasCalculator,0,22,0,2,0,7,0,4,0,3
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.render,TableAliasCalculatorWithParent,0,45,0,4,0,12,0,5,0,3
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.render,RenderingStrategies,0,9,0,0,0,2,0,1,0,1
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.render,TableAliasCalculator.new TableAliasCalculator() {...},0,9,0,0,0,3,0,3,0,3
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.render,TableAliasCalculator,0,4,0,0,0,1,0,1,0,1
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.render,RenderingStrategy,0,18,0,0,0,3,0,3,0,3
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.render,MyBatis3RenderingStrategy,0,93,0,0,0,23,0,9,0,9
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.render,RenderingStrategy,0,19,0,0,0,3,0,3,0,3
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.render,MyBatis3RenderingStrategy,0,121,0,0,0,19,0,10,0,10
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.render,TableAliasCalculatorWithParent.Builder,0,19,0,0,0,6,0,4,0,4
 MyBatis Dynamic SQL,org.mybatis.dynamic.sql.render,ExplicitTableAliasCalculator,0,47,0,2,0,13,0,7,0,6
-MyBatis Dynamic SQL,org.mybatis.dynamic.sql.render,SpringNamedParameterRenderingStrategy,0,28,0,0,0,4,0,4,0,4
+MyBatis Dynamic SQL,org.mybatis.dynamic.sql.render,SpringNamedParameterRenderingStrategy,0,39,0,0,0,5,0,5,0,5

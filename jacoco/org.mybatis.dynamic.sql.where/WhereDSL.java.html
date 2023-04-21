@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>WhereDSL.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.where</a> &gt; <span class="el_source">WhereDSL.java</span></div><h1>WhereDSL.java</h1><pre class="source lang-java linenums">/*
- *    Copyright 2016-2022 the original author or authors.
+ *    Copyright 2016-2023 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  *    you may not use this file except in compliance with the License.
@@ -15,24 +15,47 @@
  */
 package org.mybatis.dynamic.sql.where;
 
-import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
+import java.util.function.Consumer;
 
-public class WhereDSL extends AbstractWhereDSL&lt;WhereDSL&gt; {
-    private WhereDSL() {
-<span class="fc" id="L22">        super(new StatementConfiguration());</span>
-<span class="fc" id="L23">    }</span>
+import org.jetbrains.annotations.NotNull;
+import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
+import org.mybatis.dynamic.sql.util.Buildable;
+
+<span class="fc" id="L24">public class WhereDSL extends AbstractWhereStarter&lt;WhereDSL.StandaloneWhereFinisher, WhereDSL&gt; {</span>
+<span class="fc" id="L25">    private final StatementConfiguration statementConfiguration = new StatementConfiguration();</span>
+<span class="fc" id="L26">    private final StandaloneWhereFinisher whereBuilder = new StandaloneWhereFinisher();</span>
 
     @Override
-    protected WhereDSL getThis() {
-<span class="fc" id="L27">        return this;</span>
+    public StandaloneWhereFinisher where() {
+<span class="fc" id="L30">        return whereBuilder;</span>
     }
 
-    public static WhereDSL where() {
-<span class="fc" id="L31">        return new WhereDSL();</span>
+    @Override
+    public WhereDSL configureStatement(Consumer&lt;StatementConfiguration&gt; consumer) {
+<span class="fc" id="L35">        consumer.accept(statementConfiguration);</span>
+<span class="fc" id="L36">        return this;</span>
     }
 
-    public WhereModel build() {
-<span class="fc" id="L35">        return internalBuild();</span>
+    public class StandaloneWhereFinisher extends AbstractWhereFinisher&lt;StandaloneWhereFinisher&gt;
+            implements Buildable&lt;WhereModel&gt; {
+<span class="fc" id="L41">        private StandaloneWhereFinisher() {</span>
+<span class="fc" id="L42">            super(statementConfiguration);</span>
+<span class="fc" id="L43">        }</span>
+
+        @Override
+        protected StandaloneWhereFinisher getThis() {
+<span class="fc" id="L47">            return this;</span>
+        }
+
+        @NotNull
+        @Override
+        public WhereModel build() {
+<span class="fc" id="L53">            return buildModel();</span>
+        }
+
+        public WhereApplier toWhereApplier() {
+<span class="fc" id="L57">            return d -&gt; d.initialize(getInitialCriterion(), subCriteria);</span>
+        }
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

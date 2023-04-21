@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MultiRowValuePhraseVisitor.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.insert.render</a> &gt; <span class="el_source">MultiRowValuePhraseVisitor.java</span></div><h1>MultiRowValuePhraseVisitor.java</h1><pre class="source lang-java linenums">/*
- *    Copyright 2016-2022 the original author or authors.
+ *    Copyright 2016-2023 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  *    you may not use this file except in compliance with the License.
@@ -17,17 +17,64 @@ package org.mybatis.dynamic.sql.insert.render;
 
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
+import org.mybatis.dynamic.sql.util.ConstantMapping;
+import org.mybatis.dynamic.sql.util.MultiRowInsertMappingVisitor;
+import org.mybatis.dynamic.sql.util.NullMapping;
+import org.mybatis.dynamic.sql.util.PropertyMapping;
+import org.mybatis.dynamic.sql.util.RowMapping;
+import org.mybatis.dynamic.sql.util.StringConstantMapping;
 
-public class MultiRowValuePhraseVisitor extends AbstractMultiRowValuePhraseVisitor {
+public class MultiRowValuePhraseVisitor extends MultiRowInsertMappingVisitor&lt;FieldAndValueAndParameters&gt; {
+    protected final RenderingStrategy renderingStrategy;
+    protected final String prefix;
 
-    public MultiRowValuePhraseVisitor(RenderingStrategy renderingStrategy, String prefix) {
-<span class="fc" id="L24">        super(renderingStrategy, prefix);</span>
-<span class="fc" id="L25">    }</span>
+<span class="fc" id="L31">    protected MultiRowValuePhraseVisitor(RenderingStrategy renderingStrategy, String prefix) {</span>
+<span class="fc" id="L32">        this.renderingStrategy = renderingStrategy;</span>
+<span class="fc" id="L33">        this.prefix = prefix;</span>
+<span class="fc" id="L34">    }</span>
 
     @Override
-    String calculateJdbcPlaceholder(SqlColumn&lt;?&gt; column, String parameterName) {
-<span class="fc" id="L29">        return column.renderingStrategy().orElse(renderingStrategy)</span>
-<span class="fc" id="L30">                .getMultiRowFormattedJdbcPlaceholder(column, prefix, parameterName);</span>
+    public FieldAndValueAndParameters visit(NullMapping mapping) {
+<span class="fc" id="L38">        return FieldAndValueAndParameters.withFieldName(mapping.columnName())</span>
+<span class="fc" id="L39">                .withValuePhrase(&quot;null&quot;) //$NON-NLS-1$</span>
+<span class="fc" id="L40">                .build();</span>
+    }
+
+    @Override
+    public FieldAndValueAndParameters visit(ConstantMapping mapping) {
+<span class="fc" id="L45">        return FieldAndValueAndParameters.withFieldName(mapping.columnName())</span>
+<span class="fc" id="L46">                .withValuePhrase(mapping.constant())</span>
+<span class="fc" id="L47">                .build();</span>
+    }
+
+    @Override
+    public FieldAndValueAndParameters visit(StringConstantMapping mapping) {
+<span class="fc" id="L52">        return FieldAndValueAndParameters.withFieldName(mapping.columnName())</span>
+<span class="fc" id="L53">                .withValuePhrase(&quot;'&quot; + mapping.constant() + &quot;'&quot;) //$NON-NLS-1$ //$NON-NLS-2$</span>
+<span class="fc" id="L54">                .build();</span>
+    }
+
+    @Override
+    public FieldAndValueAndParameters visit(PropertyMapping mapping) {
+<span class="fc" id="L59">        return FieldAndValueAndParameters.withFieldName(mapping.columnName())</span>
+<span class="fc" id="L60">                .withValuePhrase(mapping.mapColumn(c -&gt; calculateJdbcPlaceholder(c, mapping.property())))</span>
+<span class="fc" id="L61">                .build();</span>
+    }
+
+    @Override
+    public FieldAndValueAndParameters visit(RowMapping mapping) {
+<span class="fc" id="L66">        return FieldAndValueAndParameters.withFieldName(mapping.columnName())</span>
+<span class="fc" id="L67">                .withValuePhrase(mapping.mapColumn(this::calculateJdbcPlaceholder))</span>
+<span class="fc" id="L68">                .build();</span>
+    }
+
+    private String calculateJdbcPlaceholder(SqlColumn&lt;?&gt; column) {
+<span class="fc" id="L72">        return column.renderingStrategy().orElse(renderingStrategy).getRecordBasedInsertBinding(column, prefix);</span>
+    }
+
+    private String calculateJdbcPlaceholder(SqlColumn&lt;?&gt; column, String parameterName) {
+<span class="fc" id="L76">        return column.renderingStrategy().orElse(renderingStrategy)</span>
+<span class="fc" id="L77">                .getRecordBasedInsertBinding(column, prefix, parameterName);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

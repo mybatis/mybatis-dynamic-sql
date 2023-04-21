@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>JoinRenderer.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.select.render</a> &gt; <span class="el_source">JoinRenderer.java</span></div><h1>JoinRenderer.java</h1><pre class="source lang-java linenums">/*
- *    Copyright 2016-2022 the original author or authors.
+ *    Copyright 2016-2023 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  *    you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
  */
 package org.mybatis.dynamic.sql.select.render;
 
-import static org.mybatis.dynamic.sql.util.StringUtilities.spaceAfter;
 import static org.mybatis.dynamic.sql.util.StringUtilities.spaceBefore;
 
 import java.util.Objects;
@@ -34,76 +33,75 @@ public class JoinRenderer {
     private final TableExpressionRenderer tableExpressionRenderer;
     private final TableAliasCalculator tableAliasCalculator;
 
-<span class="fc" id="L37">    private JoinRenderer(Builder builder) {</span>
-<span class="fc" id="L38">        joinModel = Objects.requireNonNull(builder.joinModel);</span>
-<span class="fc" id="L39">        tableExpressionRenderer = Objects.requireNonNull(builder.tableExpressionRenderer);</span>
-<span class="fc" id="L40">        tableAliasCalculator = Objects.requireNonNull(builder.tableAliasCalculator);</span>
-<span class="fc" id="L41">    }</span>
+<span class="fc" id="L36">    private JoinRenderer(Builder builder) {</span>
+<span class="fc" id="L37">        joinModel = Objects.requireNonNull(builder.joinModel);</span>
+<span class="fc" id="L38">        tableExpressionRenderer = Objects.requireNonNull(builder.tableExpressionRenderer);</span>
+<span class="fc" id="L39">        tableAliasCalculator = Objects.requireNonNull(builder.tableAliasCalculator);</span>
+<span class="fc" id="L40">    }</span>
 
     public FragmentAndParameters render() {
-<span class="fc" id="L44">        FragmentCollector fc = joinModel.mapJoinSpecifications(this::renderJoinSpecification)</span>
-<span class="fc" id="L45">                .collect(FragmentCollector.collect());</span>
+<span class="fc" id="L43">        FragmentCollector fc = joinModel.mapJoinSpecifications(this::renderJoinSpecification)</span>
+<span class="fc" id="L44">                .collect(FragmentCollector.collect());</span>
 
-<span class="fc" id="L47">        return FragmentAndParameters.withFragment(fc.fragments().collect(Collectors.joining(&quot; &quot;))) //$NON-NLS-1$</span>
-<span class="fc" id="L48">                .withParameters(fc.parameters())</span>
-<span class="fc" id="L49">                .build();</span>
+<span class="fc" id="L46">        return FragmentAndParameters.withFragment(fc.fragments().collect(Collectors.joining(&quot; &quot;))) //$NON-NLS-1$</span>
+<span class="fc" id="L47">                .withParameters(fc.parameters())</span>
+<span class="fc" id="L48">                .build();</span>
     }
 
     private FragmentAndParameters renderJoinSpecification(JoinSpecification joinSpecification) {
-<span class="fc" id="L53">        FragmentAndParameters renderedTable = joinSpecification.table().accept(tableExpressionRenderer);</span>
+<span class="fc" id="L52">        FragmentAndParameters renderedTable = joinSpecification.table().accept(tableExpressionRenderer);</span>
 
-<span class="fc" id="L55">        String fragment = spaceAfter(joinSpecification.joinType().shortType())</span>
-<span class="fc" id="L56">                + &quot;join&quot; //$NON-NLS-1$</span>
-<span class="fc" id="L57">                + spaceBefore(renderedTable.fragment())</span>
-<span class="fc" id="L58">                + spaceBefore(renderConditions(joinSpecification));</span>
+<span class="fc" id="L54">        String fragment = joinSpecification.joinType().type()</span>
+<span class="fc" id="L55">                + spaceBefore(renderedTable.fragment())</span>
+<span class="fc" id="L56">                + spaceBefore(renderConditions(joinSpecification));</span>
 
-<span class="fc" id="L60">        return FragmentAndParameters.withFragment(fragment)</span>
-<span class="fc" id="L61">                .withParameters(renderedTable.parameters())</span>
-<span class="fc" id="L62">                .build();</span>
+<span class="fc" id="L58">        return FragmentAndParameters.withFragment(fragment)</span>
+<span class="fc" id="L59">                .withParameters(renderedTable.parameters())</span>
+<span class="fc" id="L60">                .build();</span>
     }
 
     private String renderConditions(JoinSpecification joinSpecification) {
-<span class="fc" id="L66">        return joinSpecification.mapJoinCriteria(this::renderCriterion)</span>
-<span class="fc" id="L67">                .collect(Collectors.joining(&quot; &quot;)); //$NON-NLS-1$</span>
+<span class="fc" id="L64">        return joinSpecification.mapJoinCriteria(this::renderCriterion)</span>
+<span class="fc" id="L65">                .collect(Collectors.joining(&quot; &quot;)); //$NON-NLS-1$</span>
     }
 
     private String renderCriterion(JoinCriterion joinCriterion) {
-<span class="fc" id="L71">        return joinCriterion.connector()</span>
-<span class="fc" id="L72">                + spaceBefore(applyTableAlias(joinCriterion.leftColumn()))</span>
-<span class="fc" id="L73">                + spaceBefore(joinCriterion.operator())</span>
-<span class="fc" id="L74">                + spaceBefore(applyTableAlias(joinCriterion.rightColumn()));</span>
+<span class="fc" id="L69">        return joinCriterion.connector()</span>
+<span class="fc" id="L70">                + spaceBefore(applyTableAlias(joinCriterion.leftColumn()))</span>
+<span class="fc" id="L71">                + spaceBefore(joinCriterion.operator())</span>
+<span class="fc" id="L72">                + spaceBefore(applyTableAlias(joinCriterion.rightColumn()));</span>
     }
 
     private String applyTableAlias(BasicColumn column) {
-<span class="fc" id="L78">        return column.renderWithTableAlias(tableAliasCalculator);</span>
+<span class="fc" id="L76">        return column.renderWithTableAlias(tableAliasCalculator);</span>
     }
 
     public static Builder withJoinModel(JoinModel joinModel) {
-<span class="fc" id="L82">        return new Builder().withJoinModel(joinModel);</span>
+<span class="fc" id="L80">        return new Builder().withJoinModel(joinModel);</span>
     }
 
-<span class="fc" id="L85">    public static class Builder {</span>
+<span class="fc" id="L83">    public static class Builder {</span>
         private JoinModel joinModel;
         private TableExpressionRenderer tableExpressionRenderer;
         private TableAliasCalculator tableAliasCalculator;
 
         public Builder withJoinModel(JoinModel joinModel) {
-<span class="fc" id="L91">            this.joinModel = joinModel;</span>
-<span class="fc" id="L92">            return this;</span>
+<span class="fc" id="L89">            this.joinModel = joinModel;</span>
+<span class="fc" id="L90">            return this;</span>
         }
 
         public Builder withTableExpressionRenderer(TableExpressionRenderer tableExpressionRenderer) {
-<span class="fc" id="L96">            this.tableExpressionRenderer = tableExpressionRenderer;</span>
-<span class="fc" id="L97">            return this;</span>
+<span class="fc" id="L94">            this.tableExpressionRenderer = tableExpressionRenderer;</span>
+<span class="fc" id="L95">            return this;</span>
         }
 
         public Builder withTableAliasCalculator(TableAliasCalculator tableAliasCalculator) {
-<span class="fc" id="L101">            this.tableAliasCalculator = tableAliasCalculator;</span>
-<span class="fc" id="L102">            return this;</span>
+<span class="fc" id="L99">            this.tableAliasCalculator = tableAliasCalculator;</span>
+<span class="fc" id="L100">            return this;</span>
         }
 
         public JoinRenderer build() {
-<span class="fc" id="L106">            return new JoinRenderer(this);</span>
+<span class="fc" id="L104">            return new JoinRenderer(this);</span>
         }
     }
 }

@@ -7,7 +7,7 @@
 <body>
 <div id="overview"><a href="../../../testapidocs/examples/emptywhere/EmptyWhereTest.html">View Javadoc</a></div><pre>
 <a class="jxr_linenumber" name="L1" href="#L1">1</a>   <em class="jxr_comment">/*</em>
-<a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_comment"> *    Copyright 2016-2022 the original author or authors.</em>
+<a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_comment"> *    Copyright 2016-2023 the original author or authors.</em>
 <a class="jxr_linenumber" name="L3" href="#L3">3</a>   <em class="jxr_comment"> *</em>
 <a class="jxr_linenumber" name="L4" href="#L4">4</a>   <em class="jxr_comment"> *    Licensed under the Apache License, Version 2.0 (the "License");</em>
 <a class="jxr_linenumber" name="L5" href="#L5">5</a>   <em class="jxr_comment"> *    you may not use this file except in compliance with the License.</em>
@@ -270,7 +270,7 @@
 <a class="jxr_linenumber" name="L262" href="#L262">262</a>         String fName = <span class="jxr_string">"Fred"</span>;
 <a class="jxr_linenumber" name="L263" href="#L263">263</a>         String lName = <span class="jxr_string">"Flintstone"</span>;
 <a class="jxr_linenumber" name="L264" href="#L264">264</a> 
-<a class="jxr_linenumber" name="L265" href="#L265">265</a>         WhereDSL builder = where(id, isEqualTo(3));
+<a class="jxr_linenumber" name="L265" href="#L265">265</a>         WhereDSL.StandaloneWhereFinisher builder = where(id, isEqualTo(3));
 <a class="jxr_linenumber" name="L266" href="#L266">266</a> 
 <a class="jxr_linenumber" name="L267" href="#L267">267</a>         builder.and(firstName, isEqualTo(fName).filter(Objects::nonNull));
 <a class="jxr_linenumber" name="L268" href="#L268">268</a>         builder.and(PersonDynamicSqlSupport.lastName, isEqualTo(lName).filter(Objects::nonNull));
@@ -289,7 +289,7 @@
 <a class="jxr_linenumber" name="L281" href="#L281">281</a>     @ParameterizedTest
 <a class="jxr_linenumber" name="L282" href="#L282">282</a>     @MethodSource(<span class="jxr_string">"whereVariations"</span>)
 <a class="jxr_linenumber" name="L283" href="#L283">283</a>     <strong class="jxr_keyword">void</strong> testWhereVariations(Variation variation) {
-<a class="jxr_linenumber" name="L284" href="#L284">284</a>         WhereDSL builder = where();
+<a class="jxr_linenumber" name="L284" href="#L284">284</a>         WhereDSL.StandaloneWhereFinisher builder = where();
 <a class="jxr_linenumber" name="L285" href="#L285">285</a> 
 <a class="jxr_linenumber" name="L286" href="#L286">286</a>         builder.and(firstName, isEqualTo(variation.firstName).filter(Objects::nonNull));
 <a class="jxr_linenumber" name="L287" href="#L287">287</a>         builder.or(PersonDynamicSqlSupport.lastName, isEqualTo(variation.lastName).filter(Objects::nonNull));
@@ -320,6 +320,6 @@
 <a class="jxr_linenumber" name="L312" href="#L312">312</a> }
 </pre>
 <hr/>
-<div id="footer">Copyright &#169; 2016&#x2013;2022 <a href="https://www.mybatis.org/">MyBatis.org</a>. All rights reserved.</div>
+<div id="footer">Copyright &#169; 2016&#x2013;2023 <a href="https://www.mybatis.org/">MyBatis.org</a>. All rights reserved.</div>
 </body>
 </html>

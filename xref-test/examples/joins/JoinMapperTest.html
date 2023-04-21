@@ -7,7 +7,7 @@
 <body>
 <div id="overview"><a href="../../../testapidocs/examples/joins/JoinMapperTest.html">View Javadoc</a></div><pre>
 <a class="jxr_linenumber" name="L1" href="#L1">1</a>   <em class="jxr_comment">/*</em>
-<a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_comment"> *    Copyright 2016-2022 the original author or authors.</em>
+<a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_comment"> *    Copyright 2016-2023 the original author or authors.</em>
 <a class="jxr_linenumber" name="L3" href="#L3">3</a>   <em class="jxr_comment"> *</em>
 <a class="jxr_linenumber" name="L4" href="#L4">4</a>   <em class="jxr_comment"> *    Licensed under the Apache License, Version 2.0 (the "License");</em>
 <a class="jxr_linenumber" name="L5" href="#L5">5</a>   <em class="jxr_comment"> *    you may not use this file except in compliance with the License.</em>
@@ -278,7 +278,7 @@
 <a class="jxr_linenumber" name="L270" href="#L270">270</a>                     .from(orderMaster, <span class="jxr_string">"om"</span>)
 <a class="jxr_linenumber" name="L271" href="#L271">271</a>                     .join(orderLine, <span class="jxr_string">"ol"</span>).on(orderMaster.orderId, equalTo(orderLine.orderId))
 <a class="jxr_linenumber" name="L272" href="#L272">272</a>                     .join(itemMaster, <span class="jxr_string">"im"</span>).on(orderLine.itemId, equalTo(itemMaster.itemId))
-<a class="jxr_linenumber" name="L273" href="#L273">273</a>                     .applyWhere(d -&gt; d.where(orderMaster.orderId, isEqualTo(2)))
+<a class="jxr_linenumber" name="L273" href="#L273">273</a>                     .applyWhere(where(orderMaster.orderId, isEqualTo(2)).toWhereApplier())
 <a class="jxr_linenumber" name="L274" href="#L274">274</a>                     .build()
 <a class="jxr_linenumber" name="L275" href="#L275">275</a>                     .render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L276" href="#L276">276</a> 
@@ -315,7 +315,7 @@
 <a class="jxr_linenumber" name="L307" href="#L307">307</a> 
 <a class="jxr_linenumber" name="L308" href="#L308">308</a>             String expectedStatement = <span class="jxr_string">"select om.order_id, om.order_date, ol.line_number, im.description, ol.quantity"</span>
 <a class="jxr_linenumber" name="L309" href="#L309">309</a>                     + <span class="jxr_string">" from OrderMaster om join OrderLine ol on om.order_id = ol.order_id join ItemMaster im on ol.item_id = im.item_id"</span>
-<a class="jxr_linenumber" name="L310" href="#L310">310</a>                     + <span class="jxr_string">" where (om.order_id = #{parameters.p1,jdbcType=INTEGER} and ol.line_number = #{parameters.p2,jdbcType=INTEGER})"</span>;
+<a class="jxr_linenumber" name="L310" href="#L310">310</a>                     + <span class="jxr_string">" where om.order_id = #{parameters.p1,jdbcType=INTEGER} and ol.line_number = #{parameters.p2,jdbcType=INTEGER}"</span>;
 <a class="jxr_linenumber" name="L311" href="#L311">311</a>             assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedStatement);
 <a class="jxr_linenumber" name="L312" href="#L312">312</a> 
 <a class="jxr_linenumber" name="L313" href="#L313">313</a>             List&lt;OrderMaster&gt; rows = mapper.selectMany(selectStatement);
@@ -1204,6 +1204,6 @@
 <a class="jxr_linenumber" name="L1196" href="#L1196">1196</a> }
 </pre>
 <hr/>
-<div id="footer">Copyright &#169; 2016&#x2013;2022 <a href="https://www.mybatis.org/">MyBatis.org</a>. All rights reserved.</div>
+<div id="footer">Copyright &#169; 2016&#x2013;2023 <a href="https://www.mybatis.org/">MyBatis.org</a>. All rights reserved.</div>
 </body>
 </html>

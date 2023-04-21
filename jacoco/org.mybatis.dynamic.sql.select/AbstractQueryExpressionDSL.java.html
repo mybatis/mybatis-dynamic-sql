@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AbstractQueryExpressionDSL.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.select</a> &gt; <span class="el_source">AbstractQueryExpressionDSL.java</span></div><h1>AbstractQueryExpressionDSL.java</h1><pre class="source lang-java linenums">/*
- *    Copyright 2016-2022 the original author or authors.
+ *    Copyright 2016-2023 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
  *    you may not use this file except in compliance with the License.
@@ -33,12 +33,12 @@ import org.mybatis.dynamic.sql.select.join.JoinModel;
 import org.mybatis.dynamic.sql.select.join.JoinSpecification;
 import org.mybatis.dynamic.sql.select.join.JoinType;
 import org.mybatis.dynamic.sql.util.Buildable;
-import org.mybatis.dynamic.sql.where.AbstractWhereDSL;
-import org.mybatis.dynamic.sql.where.AbstractWhereSupport;
+import org.mybatis.dynamic.sql.where.AbstractWhereFinisher;
+import org.mybatis.dynamic.sql.where.AbstractWhereStarter;
 
-public abstract class AbstractQueryExpressionDSL&lt;W extends AbstractWhereDSL&lt;?&gt;,
+public abstract class AbstractQueryExpressionDSL&lt;W extends AbstractWhereFinisher&lt;?&gt;,
             T extends AbstractQueryExpressionDSL&lt;W, T&gt;&gt;
-        extends AbstractWhereSupport&lt;W, T&gt; {
+        extends AbstractWhereStarter&lt;W, T&gt; {
 
 <span class="fc" id="L43">    private final List&lt;JoinSpecification.Builder&gt; joinSpecificationBuilders = new ArrayList&lt;&gt;();</span>
 <span class="fc" id="L44">    private final Map&lt;SqlTable, String&gt; tableAliases = new HashMap&lt;&gt;();</span>
@@ -79,7 +79,7 @@ public abstract class AbstractQueryExpressionDSL&lt;W extends AbstractWhereDSL&l
     public T join(Buildable&lt;SelectModel&gt; subQuery, String tableAlias, JoinCriterion onJoinCriterion,
                   List&lt;JoinCriterion&gt; andJoinCriteria) {
 <span class="fc" id="L81">        addJoinSpecificationBuilder(buildSubQuery(subQuery, tableAlias), onJoinCriterion, JoinType.INNER,</span>
-<span class="fc" id="L82">                andJoinCriteria);</span>
+                andJoinCriteria);
 <span class="fc" id="L83">        return getThis();</span>
     }
 
@@ -110,7 +110,7 @@ public abstract class AbstractQueryExpressionDSL&lt;W extends AbstractWhereDSL&l
     public T leftJoin(Buildable&lt;SelectModel&gt; subQuery, String tableAlias, JoinCriterion onJoinCriterion,
                       List&lt;JoinCriterion&gt; andJoinCriteria) {
 <span class="fc" id="L112">        addJoinSpecificationBuilder(buildSubQuery(subQuery, tableAlias), onJoinCriterion, JoinType.LEFT,</span>
-<span class="fc" id="L113">                andJoinCriteria);</span>
+                andJoinCriteria);
 <span class="fc" id="L114">        return getThis();</span>
     }
 
@@ -141,7 +141,7 @@ public abstract class AbstractQueryExpressionDSL&lt;W extends AbstractWhereDSL&l
     public T rightJoin(Buildable&lt;SelectModel&gt; subQuery, String tableAlias, JoinCriterion onJoinCriterion,
                       List&lt;JoinCriterion&gt; andJoinCriteria) {
 <span class="fc" id="L143">        addJoinSpecificationBuilder(buildSubQuery(subQuery, tableAlias), onJoinCriterion, JoinType.RIGHT,</span>
-<span class="fc" id="L144">                andJoinCriteria);</span>
+                andJoinCriteria);
 <span class="fc" id="L145">        return getThis();</span>
     }
 
@@ -172,7 +172,7 @@ public abstract class AbstractQueryExpressionDSL&lt;W extends AbstractWhereDSL&l
     public T fullJoin(Buildable&lt;SelectModel&gt; subQuery, String tableAlias, JoinCriterion onJoinCriterion,
                   List&lt;JoinCriterion&gt; andJoinCriteria) {
 <span class="fc" id="L174">        addJoinSpecificationBuilder(buildSubQuery(subQuery, tableAlias), onJoinCriterion, JoinType.FULL,</span>
-<span class="fc" id="L175">                andJoinCriteria);</span>
+                andJoinCriteria);
 <span class="fc" id="L176">        return getThis();</span>
     }
 
