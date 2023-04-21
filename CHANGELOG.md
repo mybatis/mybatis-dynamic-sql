@@ -2,7 +2,7 @@
 
 This log will detail notable changes to MyBatis Dynamic SQL. Full details are available on the GitHub milestone pages.
 
-## Release 1.5.0 - Unreleased
+## Release 1.5.0 - April 21, 2023
 
 GitHub milestone: [https://github.com/mybatis/mybatis-dynamic-sql/milestone/12?closed=1](https://github.com/mybatis/mybatis-dynamic-sql/milestone/12?closed=1)
 
