@@ -217,7 +217,7 @@ public interface SqlBuilder {
         return SelectDSL.select(selectList);
     }
 
-    static FromGatherer<SelectModel> select(Collection<BasicColumn> selectList) {
+    static FromGatherer<SelectModel> select(Collection<? extends BasicColumn> selectList) {
         return SelectDSL.select(selectList);
     }
 
@@ -225,7 +225,7 @@ public interface SqlBuilder {
         return SelectDSL.selectDistinct(selectList);
     }
 
-    static FromGatherer<SelectModel> selectDistinct(Collection<BasicColumn> selectList) {
+    static FromGatherer<SelectModel> selectDistinct(Collection<? extends BasicColumn> selectList) {
         return SelectDSL.selectDistinct(selectList);
     }
 

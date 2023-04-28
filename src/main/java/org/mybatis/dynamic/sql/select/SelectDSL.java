@@ -58,7 +58,7 @@ public class SelectDSL<R> implements Buildable<R>, ConfigurableStatement<SelectD
         return select(Arrays.asList(selectList));
     }
 
-    public static QueryExpressionDSL.FromGatherer<SelectModel> select(Collection<BasicColumn> selectList) {
+    public static QueryExpressionDSL.FromGatherer<SelectModel> select(Collection<? extends BasicColumn> selectList) {
         return select(Function.identity(), selectList);
     }
 
@@ -68,7 +68,7 @@ public class SelectDSL<R> implements Buildable<R>, ConfigurableStatement<SelectD
     }
 
     public static <R> QueryExpressionDSL.FromGatherer<R> select(Function<SelectModel, R> adapterFunction,
-            Collection<BasicColumn> selectList) {
+            Collection<? extends BasicColumn> selectList) {
         return new FromGatherer.Builder<R>()
                 .withSelectList(selectList)
                 .withSelectDSL(new SelectDSL<>(adapterFunction))
@@ -79,7 +79,7 @@ public class SelectDSL<R> implements Buildable<R>, ConfigurableStatement<SelectD
         return selectDistinct(Function.identity(), selectList);
     }
 
-    public static QueryExpressionDSL.FromGatherer<SelectModel> selectDistinct(Collection<BasicColumn> selectList) {
+    public static QueryExpressionDSL.FromGatherer<SelectModel> selectDistinct(Collection<? extends BasicColumn> selectList) {
         return selectDistinct(Function.identity(), selectList);
     }
 
@@ -89,7 +89,7 @@ public class SelectDSL<R> implements Buildable<R>, ConfigurableStatement<SelectD
     }
 
     public static <R> QueryExpressionDSL.FromGatherer<R> selectDistinct(Function<SelectModel, R> adapterFunction,
-            Collection<BasicColumn> selectList) {
+            Collection<? extends BasicColumn> selectList) {
         return new FromGatherer.Builder<R>()
                 .withSelectList(selectList)
                 .withSelectDSL(new SelectDSL<>(adapterFunction))
@@ -101,7 +101,7 @@ public class SelectDSL<R> implements Buildable<R>, ConfigurableStatement<SelectD
         queryExpressions.add(queryExpression);
     }
 
-    void orderBy(Collection<SortSpecification> columns) {
+    void orderBy(Collection<? extends SortSpecification> columns) {
         orderByModel = OrderByModel.of(columns);
     }
 

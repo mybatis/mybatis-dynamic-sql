@@ -127,7 +127,7 @@ public class InsertDSL<T> implements Buildable<InsertModel<T>> {
             return this;
         }
 
-        public Builder<T> withColumnMappings(Collection<AbstractColumnMapping> columnMappings) {
+        public Builder<T> withColumnMappings(Collection<? extends AbstractColumnMapping> columnMappings) {
             this.columnMappings.addAll(columnMappings);
             return this;
         }

@@ -94,7 +94,7 @@ public class UpdateModel {
     public static class Builder extends CommonBuilder<Builder> {
         private final List<AbstractColumnMapping> columnMappings = new ArrayList<>();
 
-        public Builder withColumnMappings(List<AbstractColumnMapping> columnMappings) {
+        public Builder withColumnMappings(List<? extends AbstractColumnMapping> columnMappings) {
             this.columnMappings.addAll(columnMappings);
             return this;
         }

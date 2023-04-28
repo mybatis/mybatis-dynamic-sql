@@ -95,7 +95,7 @@ public class QueryExpressionModel {
         return Optional.ofNullable(havingModel);
     }
 
-    public static Builder withSelectList(List<BasicColumn> columnList) {
+    public static Builder withSelectList(List<? extends BasicColumn> columnList) {
         return new Builder().withSelectList(columnList);
     }
 
@@ -130,7 +130,7 @@ public class QueryExpressionModel {
             return this;
         }
 
-        public Builder withSelectList(List<BasicColumn> selectList) {
+        public Builder withSelectList(List<? extends BasicColumn> selectList) {
             this.selectList.addAll(selectList);
             return this;
         }

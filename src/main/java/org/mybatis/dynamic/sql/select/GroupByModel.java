@@ -29,7 +29,7 @@ import org.mybatis.dynamic.sql.util.Messages;
 public class GroupByModel {
     private final List<BasicColumn> columns = new ArrayList<>();
 
-    private GroupByModel(Collection<BasicColumn> columns) {
+    private GroupByModel(Collection<? extends BasicColumn> columns) {
         Objects.requireNonNull(columns);
         if (columns.isEmpty()) {
             throw new InvalidSqlException(Messages.getString("ERROR.11")); //$NON-NLS-1$
@@ -41,7 +41,7 @@ public class GroupByModel {
         return columns.stream().map(mapper);
     }
 
-    public static GroupByModel of(Collection<BasicColumn> columns) {
+    public static GroupByModel of(Collection<? extends BasicColumn> columns) {
         return new GroupByModel(columns);
     }
 }

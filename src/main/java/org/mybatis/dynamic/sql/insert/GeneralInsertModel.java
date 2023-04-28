@@ -68,7 +68,7 @@ public class GeneralInsertModel {
             return this;
         }
 
-        public Builder withInsertMappings(List<AbstractColumnMapping> insertMappings) {
+        public Builder withInsertMappings(List<? extends AbstractColumnMapping> insertMappings) {
             this.insertMappings.addAll(insertMappings);
             return this;
         }
