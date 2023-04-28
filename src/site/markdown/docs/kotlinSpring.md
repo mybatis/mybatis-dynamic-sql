@@ -34,7 +34,7 @@ The pattern for the metamodel is the same as shown on the Kotlin overview page. 
 specifics for Spring.
 
 ```kotlin
-import org.mybatis.dynamic.sql.SqlTable
+import org.mybatis.dynamic.sql.AlisableSqlTable
 import org.mybatis.dynamic.sql.util.kotlin.elements.column
 import java.util.Date
 
@@ -48,7 +48,7 @@ object PersonDynamicSqlSupport {
     val occupation = person.occupation
     val addressId = person.addressId
 
-    class Person : SqlTable("Person") {
+    class Person : AlisableSqlTable<Person>("Person", ::Person) {
         val id = column<Int>(name = "id")
         val firstName = column<String>(name = "first_name")
         val lastName = column(

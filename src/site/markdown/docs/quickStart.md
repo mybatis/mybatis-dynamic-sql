@@ -43,12 +43,12 @@ public class PersonRecord {
 
 ## Defining Tables and Columns
 
-The class `org.mybatis.dynamic.sql.SqlTable` is used to define a table. A table definition includes
+The class `org.mybatis.dynamic.sql.AlisableSqlTable` is used to define a table. A table definition includes
 the actual name of the table (including schema or catalog if appropriate). A table alias can be applied in a
-select statement if desired.  Your table should be defined by extending the `SqlTable` class.
+select statement if desired.  Your table should be defined by extending the `AlisableSqlTable<T>` class.
 
 The class `org.mybatis.dynamic.sql.SqlColumn` is used to define columns for use in the library.
-SqlColumns should be created using the builder methods in SqlTable.
+SqlColumns should be created using the builder methods in `SqlTable`.
 A column definition includes:
 
 1. The Java type
@@ -67,7 +67,7 @@ import java.sql.JDBCType;
 import java.util.Date;
 
 import org.mybatis.dynamic.sql.SqlColumn;
-import org.mybatis.dynamic.sql.SqlTable;
+import org.mybatis.dynamic.sql.AliasableSqlTable;
 
 public final class PersonDynamicSqlSupport {
     public static final Person person = new Person();
@@ -79,7 +79,7 @@ public final class PersonDynamicSqlSupport {
     public static final SqlColumn<String> occupation = person.occupation;
     public static final SqlColumn<Integer> addressId = person.addressId;
 
-    public static final class Person extends SqlTable {
+    public static final class Person extends AliasableSqlTable<Person> {
         public final SqlColumn<Integer> id = column("id", JDBCType.INTEGER);
         public final SqlColumn<String> firstName = column("first_name", JDBCType.VARCHAR);
         public final SqlColumn<LastName> lastName = column("last_name", JDBCType.VARCHAR, "examples.simple.LastNameTypeHandler");
@@ -89,7 +89,7 @@ public final class PersonDynamicSqlSupport {
         public final SqlColumn<Integer> addressId = column("address_id", JDBCType.INTEGER);
 
         public Person() {
-            super("Person");
+            super("Person", Person::new);
         }
     }
 }

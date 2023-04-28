@@ -82,7 +82,7 @@ in a "qualified" or "un-qualified" manner that looks like natural SQL. For examp
 following a column could be referred to as `firstName` or `person.firstName`.
 
 ```kotlin
-import org.mybatis.dynamic.sql.SqlTable
+import org.mybatis.dynamic.sql.AlisableSqlTable
 import org.mybatis.dynamic.sql.util.kotlin.elements.column
 import java.util.Date
 
@@ -95,7 +95,7 @@ object PersonDynamicSqlSupport {
     val employed = person.employed
     val occupation = person.occupation
    
-    class Person : SqlTable("Person") {
+    class Person : AlisableSqlTable<Person>("Person", ::Person) {
         val id = column<Int>(name = "id", jdbcType = JDBCType.INTEGER)
         val firstName = column<String>(name = "first_name", jdbcType = JDBCType.VARCHAR)
         val lastName = column<String>(name = "last_name", jdbcType = JDBCType.VARCHAR)
@@ -113,8 +113,8 @@ object PersonDynamicSqlSupport {
 
 Notes:
 
-1. The outer object is a singleton containing the `SqlTable` and `SqlColumn` objects that map to the database table.
-2. The inner `SqlTable` is declared as a `class` rather than an `object` - this allows you to create additional
+1. The outer object is a singleton containing the `AlisableSqlTable` and `SqlColumn` objects that map to the database table.
+2. The inner `AlisableSqlTable` is declared as a `class` rather than an `object` - this allows you to create additional
    instances for use in self-joins.
 3. Note the use of the `column` extension function. This function accepts different
    parameters for the different attributes that can be assigned to a column (such as a MyBatis3 type handler, or a

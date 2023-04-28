@@ -100,7 +100,7 @@ In this query it is not clear which instance of the `user` table is used for eac
 HashMap for the `user` table - so only one of the aliases specified in the select statement will be in effect.
 There are two ways to deal with this problem.
 
-The first is to simply create another instance of the User SqlTable object. With this method it is very clear which column
+The first is to simply create another instance of the User `SqlTable` object. With this method it is very clear which column
 belongs to which instance of the table and the library can easily calculate aliases:
 
 ```java
