@@ -37,7 +37,7 @@ The pattern for the meta-model is the same as shown on the Kotlin overview page.
 specifics for MyBatis3.
 
 ```kotlin
-import org.mybatis.dynamic.sql.SqlTable
+import org.mybatis.dynamic.sql.AlisableSqlTable
 import org.mybatis.dynamic.sql.util.kotlin.elements.column
 import java.sql.JDBCType
 import java.util.Date
@@ -52,7 +52,7 @@ object PersonDynamicSqlSupport {
     val occupation = person.occupation
     val addressId = person.addressId
 
-    class Person : SqlTable("Person") {
+    class Person : AlisableSqlTable<Person>("Person", ::Person) {
         val id = column<Int>(name = "id", jdbcType = JDBCType.INTEGER)
         val firstName = column<String>(name = "first_name", jdbcType = JDBCType.VARCHAR)
         val lastName = column(
