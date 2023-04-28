@@ -86,7 +86,7 @@ public class UpdateDSL<R> extends AbstractWhereStarter<UpdateDSL<R>.UpdateWhereB
         return orderBy(Arrays.asList(columns));
     }
 
-    public UpdateDSL<R> orderBy(Collection<SortSpecification> columns) {
+    public UpdateDSL<R> orderBy(Collection<? extends SortSpecification> columns) {
         orderByModel = OrderByModel.of(columns);
         return this;
     }
@@ -206,7 +206,7 @@ public class UpdateDSL<R> extends AbstractWhereStarter<UpdateDSL<R>.UpdateWhereB
             return orderBy(Arrays.asList(columns));
         }
 
-        public UpdateDSL<R> orderBy(Collection<SortSpecification> columns) {
+        public UpdateDSL<R> orderBy(Collection<? extends SortSpecification> columns) {
             orderByModel = OrderByModel.of(columns);
             return UpdateDSL.this;
         }

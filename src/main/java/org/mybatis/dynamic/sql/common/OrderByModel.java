@@ -29,7 +29,7 @@ import org.mybatis.dynamic.sql.util.Messages;
 public class OrderByModel {
     private final List<SortSpecification> columns = new ArrayList<>();
 
-    private OrderByModel(Collection<SortSpecification> columns) {
+    private OrderByModel(Collection<? extends SortSpecification> columns) {
         Objects.requireNonNull(columns);
         if (columns.isEmpty()) {
             throw new InvalidSqlException(Messages.getString("ERROR.12")); //$NON-NLS-1$
@@ -41,7 +41,7 @@ public class OrderByModel {
         return columns.stream().map(mapper);
     }
 
-    public static OrderByModel of(Collection<SortSpecification> columns) {
+    public static OrderByModel of(Collection<? extends SortSpecification> columns) {
         return new OrderByModel(columns);
     }
 }

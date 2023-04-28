@@ -162,7 +162,7 @@ public class QueryExpressionDSL<R>
         return groupBy(Arrays.asList(columns));
     }
 
-    public GroupByFinisher groupBy(Collection<BasicColumn> columns) {
+    public GroupByFinisher groupBy(Collection<? extends BasicColumn> columns) {
         groupByModel = GroupByModel.of(columns);
         return new GroupByFinisher();
     }
@@ -171,7 +171,7 @@ public class QueryExpressionDSL<R>
         return orderBy(Arrays.asList(columns));
     }
 
-    public SelectDSL<R> orderBy(Collection<SortSpecification> columns) {
+    public SelectDSL<R> orderBy(Collection<? extends SortSpecification> columns) {
         selectDSL.orderBy(columns);
         return selectDSL;
     }
@@ -261,7 +261,7 @@ public class QueryExpressionDSL<R>
                 return this;
             }
 
-            public Builder<R> withSelectList(Collection<BasicColumn> selectList) {
+            public Builder<R> withSelectList(Collection<? extends BasicColumn> selectList) {
                 this.selectList.addAll(selectList);
                 return this;
             }
@@ -300,7 +300,7 @@ public class QueryExpressionDSL<R>
             return orderBy(Arrays.asList(columns));
         }
 
-        public SelectDSL<R> orderBy(Collection<SortSpecification> columns) {
+        public SelectDSL<R> orderBy(Collection<? extends SortSpecification> columns) {
             return QueryExpressionDSL.this.orderBy(columns);
         }
 
@@ -308,7 +308,7 @@ public class QueryExpressionDSL<R>
             return groupBy(Arrays.asList(columns));
         }
 
-        public GroupByFinisher groupBy(Collection<BasicColumn> columns) {
+        public GroupByFinisher groupBy(Collection<? extends BasicColumn> columns) {
             return QueryExpressionDSL.this.groupBy(columns);
         }
 
@@ -474,7 +474,7 @@ public class QueryExpressionDSL<R>
             return groupBy(Arrays.asList(columns));
         }
 
-        public GroupByFinisher groupBy(Collection<BasicColumn> columns) {
+        public GroupByFinisher groupBy(Collection<? extends BasicColumn> columns) {
             return QueryExpressionDSL.this.groupBy(columns);
         }
 
@@ -490,7 +490,7 @@ public class QueryExpressionDSL<R>
             return orderBy(Arrays.asList(columns));
         }
 
-        public SelectDSL<R> orderBy(Collection<SortSpecification> columns) {
+        public SelectDSL<R> orderBy(Collection<? extends SortSpecification> columns) {
             return QueryExpressionDSL.this.orderBy(columns);
         }
 
@@ -512,7 +512,7 @@ public class QueryExpressionDSL<R>
             return orderBy(Arrays.asList(columns));
         }
 
-        public SelectDSL<R> orderBy(Collection<SortSpecification> columns) {
+        public SelectDSL<R> orderBy(Collection<? extends SortSpecification> columns) {
             return QueryExpressionDSL.this.orderBy(columns);
         }
 
@@ -600,7 +600,7 @@ public class QueryExpressionDSL<R>
             return orderBy(Arrays.asList(columns));
         }
 
-        public SelectDSL<R> orderBy(Collection<SortSpecification> columns) {
+        public SelectDSL<R> orderBy(Collection<? extends SortSpecification> columns) {
             return QueryExpressionDSL.this.orderBy(columns);
         }
 

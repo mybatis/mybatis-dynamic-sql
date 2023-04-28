@@ -126,7 +126,7 @@ public class BatchInsertDSL<T> implements Buildable<BatchInsertModel<T>> {
             return getThis();
         }
 
-        public B withColumnMappings(Collection<AbstractColumnMapping> columnMappings) {
+        public B withColumnMappings(Collection<? extends AbstractColumnMapping> columnMappings) {
             this.columnMappings.addAll(columnMappings);
             return getThis();
         }

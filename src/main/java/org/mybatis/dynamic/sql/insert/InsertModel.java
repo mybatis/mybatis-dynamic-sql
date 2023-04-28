@@ -83,7 +83,7 @@ public class InsertModel<T> {
             return this;
         }
 
-        public Builder<T> withColumnMappings(List<AbstractColumnMapping> columnMappings) {
+        public Builder<T> withColumnMappings(List<? extends AbstractColumnMapping> columnMappings) {
             this.columnMappings.addAll(columnMappings);
             return this;
         }

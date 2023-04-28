@@ -65,7 +65,7 @@ public class DeleteDSL<R> extends AbstractWhereStarter<DeleteDSL<R>.DeleteWhereB
         return orderBy(Arrays.asList(columns));
     }
 
-    public DeleteDSL<R> orderBy(Collection<SortSpecification> columns) {
+    public DeleteDSL<R> orderBy(Collection<? extends SortSpecification> columns) {
         orderByModel = OrderByModel.of(columns);
         return this;
     }
@@ -123,7 +123,7 @@ public class DeleteDSL<R> extends AbstractWhereStarter<DeleteDSL<R>.DeleteWhereB
             return orderBy(Arrays.asList(columns));
         }
 
-        public DeleteDSL<R> orderBy(Collection<SortSpecification> columns) {
+        public DeleteDSL<R> orderBy(Collection<? extends SortSpecification> columns) {
             orderByModel = OrderByModel.of(columns);
             return DeleteDSL.this;
         }

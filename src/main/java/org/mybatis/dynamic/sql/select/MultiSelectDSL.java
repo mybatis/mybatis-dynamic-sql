@@ -51,7 +51,7 @@ public class MultiSelectDSL implements Buildable<MultiSelectModel> {
         return orderBy(Arrays.asList(columns));
     }
 
-    public MultiSelectDSL orderBy(Collection<SortSpecification> columns) {
+    public MultiSelectDSL orderBy(Collection<? extends SortSpecification> columns) {
         orderByModel = OrderByModel.of(columns);
         return this;
     }
