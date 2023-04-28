@@ -48,7 +48,7 @@ the actual name of the table (including schema or catalog if appropriate). A tab
 select statement if desired.  Your table should be defined by extending the `AlisableSqlTable<T>` class.
 
 The class `org.mybatis.dynamic.sql.SqlColumn` is used to define columns for use in the library.
-SqlColumns should be created using the builder methods in SqlTable.
+SqlColumns should be created using the builder methods in `SqlTable`.
 A column definition includes:
 
 1. The Java type
