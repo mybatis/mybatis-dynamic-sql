@@ -68,7 +68,7 @@
     <sonar.tests>src/test/java,src/test/kotlin</sonar.tests>
 
     <kotlin.code.style>official</kotlin.code.style>
-    <test.containers.version>1.18.0</test.containers.version>
+    <test.containers.version>1.18.1</test.containers.version>
     <osgi.export>org.mybatis.dynamic.sql.*;version=${project.version};-noimport:=true</osgi.export>
 
     <!-- Reproducible Builds -->
