@@ -2,6 +2,34 @@
 
 This log will detail notable changes to MyBatis Dynamic SQL. Full details are available on the GitHub milestone pages.
 
+## Release 1.5.1 - Unreleased
+
+This is a minor release with a few small enhancements.
+
+GitHub milestone: [https://github.com/mybatis/mybatis-dynamic-sql/milestone/13](https://github.com/mybatis/mybatis-dynamic-sql/milestone/13)
+
+### Parameter Values in Joins
+
+We've added the ability to specify typed values in equi-joins. This allows you to avoid the use of constants, and it is
+type safe. For example:
+
+```java
+SelectStatementProvider selectStatement = select(orderLine.orderId, orderLine.quantity, itemMaster.itemId, itemMaster.description)
+    .from(itemMaster, "im")
+    .join(orderLine, "ol").on(orderLine.itemId, equalTo(itemMaster.itemId))
+    .and(orderLine.orderId, equalTo(1))
+    .build()
+    .render(RenderingStrategies.MYBATIS3);
+```
+
+Note the phrase `and(orderLine.orderId, equalTo(1))` which will be rendered with a bound SQL parameter. Currently, this
+capability is limited to equality only. If you have a use for other functions (not equal, less then, greater than, etc.)
+please let us know.
+
+In order to add this capability, we've modified the join DSL to add type information to the join columns. This should
+be source code compatible with most uses. There could be an issue if you are joining tables with columns of different
+types - which is a rare usage. Please let us know if this causes an undo hardship.
+
 ## Release 1.5.0 - April 21, 2023
 
 GitHub milestone: [https://github.com/mybatis/mybatis-dynamic-sql/milestone/12?closed=1](https://github.com/mybatis/mybatis-dynamic-sql/milestone/12?closed=1)

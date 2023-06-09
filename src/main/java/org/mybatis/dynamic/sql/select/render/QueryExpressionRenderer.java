@@ -171,6 +171,8 @@ public class QueryExpressionRenderer {
         return JoinRenderer.withJoinModel(joinModel)
                 .withTableExpressionRenderer(tableExpressionRenderer)
                 .withTableAliasCalculator(tableAliasCalculator)
+                .withRenderingStrategy(renderingStrategy)
+                .withSequence(sequence)
                 .build()
                 .render();
     }

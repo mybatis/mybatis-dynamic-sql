@@ -54,6 +54,7 @@ import org.mybatis.dynamic.sql.select.function.Substring;
 import org.mybatis.dynamic.sql.select.function.Subtract;
 import org.mybatis.dynamic.sql.select.function.Upper;
 import org.mybatis.dynamic.sql.select.join.EqualTo;
+import org.mybatis.dynamic.sql.select.join.EqualToValue;
 import org.mybatis.dynamic.sql.select.join.JoinCondition;
 import org.mybatis.dynamic.sql.select.join.JoinCriterion;
 import org.mybatis.dynamic.sql.update.UpdateDSL;
@@ -425,24 +426,28 @@ public interface SqlBuilder {
     }
 
     // join support
-    static JoinCriterion and(BasicColumn joinColumn, JoinCondition joinCondition) {
-        return new JoinCriterion.Builder()
+    static <T> JoinCriterion<T> and(BindableColumn<T> joinColumn, JoinCondition<T> joinCondition) {
+        return new JoinCriterion.Builder<T>()
                 .withConnector("and") //$NON-NLS-1$
                 .withJoinColumn(joinColumn)
                 .withJoinCondition(joinCondition)
                 .build();
     }
 
-    static JoinCriterion on(BasicColumn joinColumn, JoinCondition joinCondition) {
-        return new JoinCriterion.Builder()
+    static <T> JoinCriterion<T> on(BindableColumn<T> joinColumn, JoinCondition<T> joinCondition) {
+        return new JoinCriterion.Builder<T>()
                 .withConnector("on") //$NON-NLS-1$
                 .withJoinColumn(joinColumn)
                 .withJoinCondition(joinCondition)
                 .build();
     }
 
-    static EqualTo equalTo(BasicColumn column) {
-        return new EqualTo(column);
+    static <T> EqualTo<T> equalTo(BindableColumn<T> column) {
+        return new EqualTo<>(column);
+    }
+
+    static <T> EqualToValue<T> equalTo(T value) {
+        return new EqualToValue<>(value);
     }
 
     // aggregate support

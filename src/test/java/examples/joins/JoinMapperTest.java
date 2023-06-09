@@ -1193,4 +1193,72 @@ class JoinMapperTest {
             assertThat(row).containsEntry("ITEM_ID", 22);
         }
     }
+
+    @Test
+    void testJoinWithParameterValue() {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
+            CommonSelectMapper mapper = session.getMapper(CommonSelectMapper.class);
+
+            SelectStatementProvider selectStatement = select(orderLine.orderId, orderLine.quantity, itemMaster.itemId, itemMaster.description)
+                    .from(itemMaster, "im")
+                    .join(orderLine, "ol").on(orderLine.itemId, equalTo(itemMaster.itemId))
+                    .and(orderLine.orderId, equalTo(1))
+                    .build()
+                    .render(RenderingStrategies.MYBATIS3);
+
+            String expectedStatement = "select ol.order_id, ol.quantity, im.item_id, im.description"
+                    + " from ItemMaster im join OrderLine ol on ol.item_id = im.item_id"
+                    + " and ol.order_id = #{parameters.p1,jdbcType=INTEGER}";
+            assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedStatement);
+
+            List<Map<String, Object>> rows = mapper.selectManyMappedRows(selectStatement);
+
+            assertThat(rows).hasSize(2);
+            Map<String, Object> row = rows.get(0);
+            assertThat(row).containsEntry("ORDER_ID", 1);
+            assertThat(row).containsEntry("QUANTITY", 1);
+            assertThat(row).containsEntry("DESCRIPTION", "Helmet");
+            assertThat(row).containsEntry("ITEM_ID", 22);
+
+            row = rows.get(1);
+            assertThat(row).containsEntry("ORDER_ID", 1);
+            assertThat(row).containsEntry("QUANTITY", 1);
+            assertThat(row).containsEntry("DESCRIPTION", "First Base Glove");
+            assertThat(row).containsEntry("ITEM_ID", 33);
+        }
+    }
+
+    @Test
+    void testJoinWithConstant() {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
+            CommonSelectMapper mapper = session.getMapper(CommonSelectMapper.class);
+
+            SelectStatementProvider selectStatement = select(orderLine.orderId, orderLine.quantity, itemMaster.itemId, itemMaster.description)
+                    .from(itemMaster, "im")
+                    .join(orderLine, "ol").on(orderLine.itemId, equalTo(itemMaster.itemId))
+                    .and(orderLine.orderId, equalTo(constant("1")))
+                    .build()
+                    .render(RenderingStrategies.MYBATIS3);
+
+            String expectedStatement = "select ol.order_id, ol.quantity, im.item_id, im.description"
+                    + " from ItemMaster im join OrderLine ol on ol.item_id = im.item_id"
+                    + " and ol.order_id = 1";
+            assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedStatement);
+
+            List<Map<String, Object>> rows = mapper.selectManyMappedRows(selectStatement);
+
+            assertThat(rows).hasSize(2);
+            Map<String, Object> row = rows.get(0);
+            assertThat(row).containsEntry("ORDER_ID", 1);
+            assertThat(row).containsEntry("QUANTITY", 1);
+            assertThat(row).containsEntry("DESCRIPTION", "Helmet");
+            assertThat(row).containsEntry("ITEM_ID", 22);
+
+            row = rows.get(1);
+            assertThat(row).containsEntry("ORDER_ID", 1);
+            assertThat(row).containsEntry("QUANTITY", 1);
+            assertThat(row).containsEntry("DESCRIPTION", "First Base Glove");
+            assertThat(row).containsEntry("ITEM_ID", 33);
+        }
+    }
 }

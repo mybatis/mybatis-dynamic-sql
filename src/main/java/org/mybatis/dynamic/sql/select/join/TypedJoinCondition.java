@@ -15,16 +15,21 @@
  */
 package org.mybatis.dynamic.sql.select.join;
 
-import org.mybatis.dynamic.sql.BasicColumn;
+import java.util.Objects;
 
-public class EqualTo<T> extends ColumnBasedJoinCondition<T> {
+public abstract class TypedJoinCondition<T> implements JoinCondition<T> {
+    private final T value;
 
-    public EqualTo(BasicColumn rightColumn) {
-        super(rightColumn);
+    protected TypedJoinCondition(T value) {
+        this.value = Objects.requireNonNull(value);
+    }
+
+    public T value() {
+        return value;
     }
 
     @Override
-    public String operator() {
-        return "="; //$NON-NLS-1$
+    public <R> R accept(JoinConditionVisitor<T, R> visitor) {
+        return visitor.visit(this);
     }
 }

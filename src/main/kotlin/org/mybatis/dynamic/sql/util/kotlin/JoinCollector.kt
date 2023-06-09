@@ -15,7 +15,7 @@
  */
 package org.mybatis.dynamic.sql.util.kotlin
 
-import org.mybatis.dynamic.sql.BasicColumn
+import org.mybatis.dynamic.sql.BindableColumn
 import org.mybatis.dynamic.sql.SqlBuilder
 import org.mybatis.dynamic.sql.select.join.JoinCondition
 import org.mybatis.dynamic.sql.select.join.JoinCriterion
@@ -25,23 +25,23 @@ typealias JoinReceiver = JoinCollector.() -> Unit
 
 @MyBatisDslMarker
 class JoinCollector {
-    private var onJoinCriterion: JoinCriterion? = null
-    internal val andJoinCriteria = mutableListOf<JoinCriterion>()
+    private var onJoinCriterion: JoinCriterion<*>? = null
+    internal val andJoinCriteria = mutableListOf<JoinCriterion<*>>()
 
-    internal fun onJoinCriterion() : JoinCriterion =
+    internal fun onJoinCriterion() : JoinCriterion<*> =
         onJoinCriterion?: throw KInvalidSQLException(Messages.getString("ERROR.22")) //$NON-NLS-1$
 
-    fun on(leftColumn: BasicColumn): RightColumnCollector = RightColumnCollector {
-        onJoinCriterion = JoinCriterion.Builder()
+    fun <T> on(leftColumn: BindableColumn<T>): RightColumnCollector<T> = RightColumnCollector {
+        onJoinCriterion = JoinCriterion.Builder<T>()
             .withConnector("on") //$NON-NLS-1$
             .withJoinColumn(leftColumn)
             .withJoinCondition(it)
             .build()
     }
 
-    fun and(leftColumn: BasicColumn): RightColumnCollector = RightColumnCollector {
+    fun <T> and(leftColumn: BindableColumn<T>): RightColumnCollector<T> = RightColumnCollector {
         andJoinCriteria.add(
-            JoinCriterion.Builder()
+            JoinCriterion.Builder<T>()
                 .withConnector("and") //$NON-NLS-1$
                 .withJoinColumn(leftColumn)
                 .withJoinCondition(it)
@@ -50,6 +50,8 @@ class JoinCollector {
     }
 }
 
-class RightColumnCollector(private val joinConditionConsumer: (JoinCondition) -> Unit) {
-    infix fun equalTo(rightColumn: BasicColumn) = joinConditionConsumer.invoke(SqlBuilder.equalTo(rightColumn))
+class RightColumnCollector<T>(private val joinConditionConsumer: (JoinCondition<T>) -> Unit) {
+    infix fun equalTo(rightColumn: BindableColumn<T>) = joinConditionConsumer.invoke(SqlBuilder.equalTo(rightColumn))
+
+    infix fun equalTo(value: T) = joinConditionConsumer.invoke(SqlBuilder.equalTo(value))
 }
