@@ -442,7 +442,7 @@ public interface SqlBuilder {
                 .build();
     }
 
-    static <T> EqualTo<T> equalTo(BasicColumn column) {
+    static <T> EqualTo<T> equalTo(BindableColumn<T> column) {
         return new EqualTo<>(column);
     }
 
