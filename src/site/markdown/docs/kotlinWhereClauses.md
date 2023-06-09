@@ -140,7 +140,7 @@ given context. Others must be enclosed in an `and` or an `or` block. The four ty
         }
     }
     ```
-   
+
     You can accomplish a "not exists" by nesting `exists` inside a `not` block:
 
     ```kotlin

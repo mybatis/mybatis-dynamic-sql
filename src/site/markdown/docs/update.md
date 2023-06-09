@@ -42,7 +42,7 @@ For example:
 
 The UpdateStatementProvider object can be used as a parameter to a MyBatis mapper method directly.  If you
 are using an annotated mapper, the update method should look like this:
-  
+
 ```java
 import org.apache.ibatis.annotations.UpdateProvider;
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
@@ -59,7 +59,7 @@ import org.mybatis.dynamic.sql.util.SqlProviderAdapter;
 We do not recommend using an XML mapper for update statements, but if you want to do so the UpdateStatementProvider object can be used as a parameter to a MyBatis mapper method directly.
 
 If you are using an XML mapper, the update method should look like this in the Java interface:
-  
+
 ```java
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
 

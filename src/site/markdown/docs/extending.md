@@ -20,7 +20,7 @@ A calculated column can be used anywhere in a SELECT statement.  If you don't ne
 
 ```java
 public class CountAll implements BasicColumn {
-    
+
     private String alias;
 
     public CountAll() {
@@ -100,7 +100,7 @@ public class ToBase64 extends AbstractTypeConvertingFunction<byte[], String, ToB
     protected ToBase64 copy() {
         return new ToBase64(column);
     }
-    
+
     public static ToBase64 toBase64(BindableColumn<byte[]> column) {
         return new ToBase64(column);
     }
@@ -113,7 +113,7 @@ The following function implements the common database `UPPER()` function.
 
 ```java
 public class Upper extends AbstractUniTypeFunction<String, Upper> {
-    
+
     private Upper(BindableColumn<String> column) {
         super(column);
     }

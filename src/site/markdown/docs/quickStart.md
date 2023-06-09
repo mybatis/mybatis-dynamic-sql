@@ -36,7 +36,7 @@ public class PersonRecord {
     private Boolean employed;
     private String occupation;
     private Integer addressId;
-    
+
     // getters and setters omitted
 }
 ```

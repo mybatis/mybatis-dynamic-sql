@@ -47,7 +47,7 @@ public interface FooMapper extends CommonCountMapper, CommonDeleteMapper, Common
 }
 ```
 
-This mapper can be extended with default methods as shown below. 
+This mapper can be extended with default methods as shown below.
 
 ### Common Select Mapper
 MyBatis is very good at mapping result sets to objects - this is one of its primary differentiators. MyBatis also requires
@@ -58,7 +58,7 @@ The general mapper is `org.mybatis.dynamic.sql.util.mybatis3.CommonSelectMapper`
 MyBatis configuration as is, or it can be extended by an existing mapper.
 
 The mapper contains three types of methods:
- 
+
 1. The `selectOneMappedRow` and `selectManyMappedRows` methods allow you to use select statements with
 any number of columns. MyBatis will process the rows and return a Map of values, or a List of Maps for multiple rows.
 1. The `selectOne` and `selectMany` methods also allow you to use select statements with any number of columns. These methods
@@ -222,7 +222,7 @@ int delete(DeleteStatementProvider deleteStatement);
 ```
 
 This is a standard method for MyBatis Dynamic SQL that executes a delete and returns an `int` - the number of rows deleted.
-In lieu of writing this method, you could extend `org.mybatis.dynamic.sql.util.mybatis3.CommonDeleteMapper` instead. 
+In lieu of writing this method, you could extend `org.mybatis.dynamic.sql.util.mybatis3.CommonDeleteMapper` instead.
 The second method will reuse this method and supply everything needed to build the delete statement except the where clause:
 
 ```java
@@ -265,7 +265,7 @@ int insertMultiple(MultiRowInsertStatementProvider<PersonRecord> insertStatement
 
 These methods are standard methods for MyBatis Dynamic SQL. They execute a single row insert, a general insert, and a
 multiple row insert. In lieu of writing these methods, you could extend
-`org.mybatis.dynamic.sql.util.mybatis3.CommonInsertMapper` instead. 
+`org.mybatis.dynamic.sql.util.mybatis3.CommonInsertMapper` instead.
 
 These methods can be used to implement simplified insert methods:
 
@@ -275,7 +275,7 @@ default int insert(UnaryOperator<GeneralInsertDSL> completer) {
 }
 
 default int insert(PersonRecord record) {
-    return MyBatis3Utils.insert(this::insert, record, person, c -> 
+    return MyBatis3Utils.insert(this::insert, record, person, c ->
         c.map(id).toProperty("id")
         .map(firstName).toProperty("firstName")
         .map(lastName).toProperty("lastName")
@@ -326,7 +326,7 @@ standard MyBatis Dynamic SQL method that will execute a select:
         @Result(column="occupation", property="occupation", jdbcType=JdbcType.VARCHAR)
 })
 List<PersonRecord> selectMany(SelectStatementProvider selectStatement);
-    
+
 @SelectProvider(type=SqlProviderAdapter.class, method="select")
 @ResultMap("PersonResult")
 Optional<PersonRecord> selectOne(SelectStatementProvider selectStatement);
@@ -364,13 +364,13 @@ default Optional<PersonRecord> selectByPrimaryKey(Integer id_) {
 ```
 
 The `selectMany` method can be used to implement generalized select methods where a user can specify a where clause
-and/or an order by clause. Typically, we recommend two of these methods - for select, and select distinct: 
+and/or an order by clause. Typically, we recommend two of these methods - for select, and select distinct:
 
 ```java
 default List<PersonRecord> select(SelectDSLCompleter completer) {
     return MyBatis3Utils.selectList(this::selectMany, selectList, person, completer);
 }
-    
+
 default List<PersonRecord> selectDistinct(SelectDSLCompleter completer) {
     return MyBatis3Utils.selectDistinct(this::selectMany, selectList, person, completer);
 }
@@ -415,7 +415,7 @@ int update(UpdateStatementProvider updateStatement);
 ```
 
 This is a standard method for MyBatis Dynamic SQL that executes a query and returns an `int` - the number of rows updated.
-In lieu of writing this method, you could extend `org.mybatis.dynamic.sql.util.mybatis3.CommonUpdateMapper` instead. 
+In lieu of writing this method, you could extend `org.mybatis.dynamic.sql.util.mybatis3.CommonUpdateMapper` instead.
 The second method will reuse this method and supply everything needed to build the update statement except the values
 and the where clause:
 

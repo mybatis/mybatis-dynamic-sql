@@ -146,7 +146,7 @@ parameter name to use the for rendered where clause.  That code looks like this:
     Optional<WhereClauseProvider> whereClause = where(id, isLessThan(60))
             .build()
             .render(RenderingStrategies.MYBATIS3, "whereClauseProvider");
-            
+
     List<AnimalData> animals = whereClause.map(wc -> mapper.selectWithWhereClauseLimitAndOffset(wc, 5, 15)).orElse(Collections.emptyList());
 ```
 Notice that the string `whereClauseProvider` is used both as the parameter name in the mapper `@Param` annotation,
