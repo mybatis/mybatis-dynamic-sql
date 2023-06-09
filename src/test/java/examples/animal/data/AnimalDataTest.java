@@ -38,6 +38,7 @@ import org.apache.ibatis.jdbc.ScriptRunner;
 import org.apache.ibatis.mapping.Environment;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.ExecutorType;
+import org.apache.ibatis.session.RowBounds;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
@@ -99,6 +100,25 @@ class AnimalDataTest {
             assertAll(
                     () -> assertThat(animals).hasSize(65),
                     () -> assertThat(animals.get(0).getId()).isEqualTo(1)
+            );
+        }
+    }
+
+    @Test
+    void testSelectAllRowsWithRowBounds() {
+        try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
+            AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
+            SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
+                    .from(animalData)
+                    .build()
+                    .render(RenderingStrategies.MYBATIS3);
+
+            RowBounds rowBounds = new RowBounds(4, 6);
+
+            List<AnimalData> animals = mapper.selectManyWithRowBounds(selectStatement, rowBounds);
+            assertAll(
+                    () -> assertThat(animals).hasSize(6),
+                    () -> assertThat(animals.get(0).getId()).isEqualTo(5)
             );
         }
     }
