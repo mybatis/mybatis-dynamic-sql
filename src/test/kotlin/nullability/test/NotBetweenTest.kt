@@ -23,7 +23,7 @@ class NotBetweenTest {
     fun `Test That First Null Causes Compile Error`() {
         val source = """
             package temp.kotlin.test
-            
+
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.id
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.person
             import org.mybatis.dynamic.sql.util.kotlin.mybatis3.countFrom
@@ -43,7 +43,7 @@ class NotBetweenTest {
     fun `Test That Second Null Causes Compile Error`() {
         val source = """
             package temp.kotlin.test
-            
+
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.id
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.person
             import org.mybatis.dynamic.sql.util.kotlin.mybatis3.countFrom
@@ -63,7 +63,7 @@ class NotBetweenTest {
     fun `Test That Both Null Causes Compile Errors`() {
         val source = """
             package temp.kotlin.test
-            
+
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.id
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.person
             import org.mybatis.dynamic.sql.util.kotlin.mybatis3.countFrom
@@ -86,7 +86,7 @@ class NotBetweenTest {
     fun `Test That First Null In Elements Method Causes Compile Error`() {
         val source = """
             package temp.kotlin.test
-            
+
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.id
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.person
             import org.mybatis.dynamic.sql.util.kotlin.mybatis3.countFrom
@@ -107,7 +107,7 @@ class NotBetweenTest {
     fun `Test That Second Null In Elements Method Causes Compile Error`() {
         val source = """
             package temp.kotlin.test
-            
+
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.id
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.person
             import org.mybatis.dynamic.sql.util.kotlin.mybatis3.countFrom
@@ -128,7 +128,7 @@ class NotBetweenTest {
     fun `Test That Both Null In Elements Method Causes Compile Error`() {
         val source = """
             package temp.kotlin.test
-            
+
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.id
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.person
             import org.mybatis.dynamic.sql.util.kotlin.mybatis3.countFrom

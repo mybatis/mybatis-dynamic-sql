@@ -23,7 +23,7 @@ class InWhenPresentTest {
     fun `Test That Null In VarAgs Is OK`() {
         val source = """
             package temp.kotlin.test
-            
+
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.id
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.person
             import org.mybatis.dynamic.sql.util.kotlin.mybatis3.countFrom
@@ -43,7 +43,7 @@ class InWhenPresentTest {
     fun `Test That Null in List Is OK`() {
         val source = """
             package temp.kotlin.test
-            
+
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.id
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.person
             import org.mybatis.dynamic.sql.util.kotlin.mybatis3.countFrom
@@ -64,7 +64,7 @@ class InWhenPresentTest {
     fun `Test That Empty VarAgs Is OK`() {
         val source = """
             package temp.kotlin.test
-            
+
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.id
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.person
             import org.mybatis.dynamic.sql.util.kotlin.mybatis3.countFrom
@@ -84,7 +84,7 @@ class InWhenPresentTest {
     fun `Test That Null List Is OK`() {
         val source = """
             package temp.kotlin.test
-            
+
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.id
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.person
             import org.mybatis.dynamic.sql.util.kotlin.mybatis3.countFrom
@@ -104,7 +104,7 @@ class InWhenPresentTest {
     fun `Test That Null In VarArgs Elements Method Is OK`() {
         val source = """
             package temp.kotlin.test
-            
+
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.id
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.person
             import org.mybatis.dynamic.sql.util.kotlin.mybatis3.countFrom
@@ -125,7 +125,7 @@ class InWhenPresentTest {
     fun `Test That Null In List Elements Method Is OK`() {
         val source = """
             package temp.kotlin.test
-            
+
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.id
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.person
             import org.mybatis.dynamic.sql.util.kotlin.mybatis3.countFrom
@@ -147,7 +147,7 @@ class InWhenPresentTest {
     fun `Test That Empty VarAgs In Elements Method Is OK`() {
         val source = """
             package temp.kotlin.test
-            
+
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.id
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.person
             import org.mybatis.dynamic.sql.util.kotlin.mybatis3.countFrom
@@ -168,7 +168,7 @@ class InWhenPresentTest {
     fun `Test That Null List In Elements Method Is OK`() {
         val source = """
             package temp.kotlin.test
-            
+
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.id
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.person
             import org.mybatis.dynamic.sql.util.kotlin.mybatis3.countFrom

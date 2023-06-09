@@ -23,7 +23,7 @@ class LikeNotLikeTest {
     fun `Test That Null Like Causes Compile Error`() {
         val source = """
             package temp.kotlin.test
-            
+
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.firstName
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.person
             import org.mybatis.dynamic.sql.util.kotlin.mybatis3.countFrom
@@ -43,7 +43,7 @@ class LikeNotLikeTest {
     fun `Test That Null Like When Present is OK`() {
         val source = """
             package temp.kotlin.test
-            
+
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.firstName
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.person
             import org.mybatis.dynamic.sql.util.kotlin.mybatis3.countFrom
@@ -63,7 +63,7 @@ class LikeNotLikeTest {
     fun `Test That Null Not Like Causes Compile Error`() {
         val source = """
             package temp.kotlin.test
-            
+
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.firstName
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.person
             import org.mybatis.dynamic.sql.util.kotlin.mybatis3.countFrom
@@ -84,7 +84,7 @@ class LikeNotLikeTest {
     fun `Test That Null Not Like When Present is OK`() {
         val source = """
             package temp.kotlin.test
-            
+
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.firstName
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.person
             import org.mybatis.dynamic.sql.util.kotlin.mybatis3.countFrom
@@ -104,7 +104,7 @@ class LikeNotLikeTest {
     fun `Test That Null Elements Like Causes Compile Error`() {
         val source = """
             package temp.kotlin.test
-            
+
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.firstName
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.person
             import org.mybatis.dynamic.sql.util.kotlin.mybatis3.countFrom
@@ -125,7 +125,7 @@ class LikeNotLikeTest {
     fun `Test That Null Elements Like When Present is OK`() {
         val source = """
             package temp.kotlin.test
-            
+
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.firstName
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.person
             import org.mybatis.dynamic.sql.util.kotlin.mybatis3.countFrom
@@ -146,7 +146,7 @@ class LikeNotLikeTest {
     fun `Test That Null Elements Not Like Causes Compile Error`() {
         val source = """
             package temp.kotlin.test
-            
+
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.firstName
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.person
             import org.mybatis.dynamic.sql.util.kotlin.mybatis3.countFrom
@@ -168,7 +168,7 @@ class LikeNotLikeTest {
     fun `Test That Null Elements Not Like When Present is OK`() {
         val source = """
             package temp.kotlin.test
-            
+
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.firstName
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.person
             import org.mybatis.dynamic.sql.util.kotlin.mybatis3.countFrom
