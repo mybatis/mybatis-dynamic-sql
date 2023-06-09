@@ -15,20 +15,8 @@
  */
 package org.mybatis.dynamic.sql.select.join;
 
-import java.util.Objects;
+public interface JoinCondition {
+    String operator();
 
-import org.mybatis.dynamic.sql.BasicColumn;
-
-public abstract class JoinCondition {
-    private final BasicColumn rightColumn;
-
-    protected JoinCondition(BasicColumn rightColumn) {
-        this.rightColumn = Objects.requireNonNull(rightColumn);
-    }
-
-    public BasicColumn rightColumn() {
-        return rightColumn;
-    }
-
-    public abstract String operator();
+    <R> R accept(JoinConditionVisitor<R> visitor);
 }

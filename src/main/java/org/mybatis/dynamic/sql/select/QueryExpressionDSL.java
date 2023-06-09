@@ -24,6 +24,7 @@ import java.util.function.Consumer;
 
 import org.jetbrains.annotations.NotNull;
 import org.mybatis.dynamic.sql.BasicColumn;
+import org.mybatis.dynamic.sql.BindableColumn;
 import org.mybatis.dynamic.sql.CriteriaGroup;
 import org.mybatis.dynamic.sql.SortSpecification;
 import org.mybatis.dynamic.sql.SqlTable;
@@ -349,11 +350,11 @@ public class QueryExpressionDSL<R>
             this.joinType = joinType;
         }
 
-        public JoinSpecificationFinisher on(BasicColumn joinColumn, JoinCondition joinCondition) {
+        public JoinSpecificationFinisher on(BindableColumn<?> joinColumn, JoinCondition joinCondition) {
             return new JoinSpecificationFinisher(joinTable, joinColumn, joinCondition, joinType);
         }
 
-        public JoinSpecificationFinisher on(BasicColumn joinColumn, JoinCondition onJoinCondition,
+        public JoinSpecificationFinisher on(BindableColumn<?> joinColumn, JoinCondition onJoinCondition,
                 JoinCriterion... andJoinCriteria) {
             return new JoinSpecificationFinisher(joinTable, joinColumn, onJoinCondition, joinType, andJoinCriteria);
         }
@@ -364,7 +365,7 @@ public class QueryExpressionDSL<R>
             implements Buildable<R> {
         private final JoinSpecification.Builder joinSpecificationBuilder;
 
-        public JoinSpecificationFinisher(TableExpression table, BasicColumn joinColumn,
+        public JoinSpecificationFinisher(TableExpression table, BindableColumn<?> joinColumn,
                 JoinCondition joinCondition, JoinType joinType) {
             JoinCriterion joinCriterion = new JoinCriterion.Builder()
                     .withConnector("on") //$NON-NLS-1$
@@ -379,7 +380,7 @@ public class QueryExpressionDSL<R>
             addJoinSpecificationBuilder(joinSpecificationBuilder);
         }
 
-        public JoinSpecificationFinisher(TableExpression table, BasicColumn joinColumn,
+        public JoinSpecificationFinisher(TableExpression table, BindableColumn<?> joinColumn,
                 JoinCondition joinCondition, JoinType joinType, JoinCriterion... andJoinCriteria) {
             JoinCriterion onJoinCriterion = new JoinCriterion.Builder()
                     .withConnector("on") //$NON-NLS-1$
@@ -412,7 +413,7 @@ public class QueryExpressionDSL<R>
             return QueryExpressionDSL.this.where();
         }
 
-        public JoinSpecificationFinisher and(BasicColumn joinColumn, JoinCondition joinCondition) {
+        public JoinSpecificationFinisher and(BindableColumn<?> joinColumn, JoinCondition joinCondition) {
             JoinCriterion joinCriterion = new JoinCriterion.Builder()
                     .withConnector("and") //$NON-NLS-1$
                     .withJoinColumn(joinColumn)

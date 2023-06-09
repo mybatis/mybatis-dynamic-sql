@@ -87,6 +87,41 @@ class JoinMapperTest {
     }
 
     @Test
+    fun testSingleTableJoinWithValue() {
+        sqlSessionFactory.openSession().use { session ->
+            val mapper = session.getMapper(JoinMapper::class.java)
+
+            val selectStatement = select(
+                orderMaster.orderId, orderMaster.orderDate,
+                orderDetail.lineNumber, orderDetail.description, orderDetail.quantity
+            ) {
+                from(orderMaster, "om")
+                join(orderDetail, "od") {
+                    on(orderMaster.orderId) equalTo orderDetail.orderId
+                    and(orderMaster.orderId) equalTo 1
+                }
+            }
+
+            val expectedStatement = "select om.order_id, om.order_date, od.line_number, od.description, od.quantity" +
+                    " from OrderMaster om join OrderDetail od on om.order_id = od.order_id" +
+                    " and om.order_id = #{parameters.p1,jdbcType=INTEGER}"
+
+            assertThat(selectStatement.selectStatement).isEqualTo(expectedStatement)
+
+            val rows = mapper.selectMany(selectStatement)
+
+            assertThat(rows).hasSize(1)
+
+            with(rows[0]) {
+                assertThat(id).isEqualTo(1)
+                assertThat(details).hasSize(2)
+                assertThat(details?.get(0)?.lineNumber).isEqualTo(1)
+                assertThat(details?.get(1)?.lineNumber).isEqualTo(2)
+            }
+        }
+    }
+
+    @Test
     fun testCompoundJoin1() {
         // this is a nonsensical join, but it does test the "and" capability
         val selectStatement = select(

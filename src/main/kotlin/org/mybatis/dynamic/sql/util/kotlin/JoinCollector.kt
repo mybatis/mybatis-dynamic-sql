@@ -16,6 +16,7 @@
 package org.mybatis.dynamic.sql.util.kotlin
 
 import org.mybatis.dynamic.sql.BasicColumn
+import org.mybatis.dynamic.sql.BindableColumn
 import org.mybatis.dynamic.sql.SqlBuilder
 import org.mybatis.dynamic.sql.select.join.JoinCondition
 import org.mybatis.dynamic.sql.select.join.JoinCriterion
@@ -31,7 +32,7 @@ class JoinCollector {
     internal fun onJoinCriterion() : JoinCriterion =
         onJoinCriterion?: throw KInvalidSQLException(Messages.getString("ERROR.22")) //$NON-NLS-1$
 
-    fun on(leftColumn: BasicColumn): RightColumnCollector = RightColumnCollector {
+    fun on(leftColumn: BindableColumn<*>): RightColumnCollector = RightColumnCollector {
         onJoinCriterion = JoinCriterion.Builder()
             .withConnector("on") //$NON-NLS-1$
             .withJoinColumn(leftColumn)
@@ -39,7 +40,7 @@ class JoinCollector {
             .build()
     }
 
-    fun and(leftColumn: BasicColumn): RightColumnCollector = RightColumnCollector {
+    fun and(leftColumn: BindableColumn<*>): RightColumnCollector = RightColumnCollector {
         andJoinCriteria.add(
             JoinCriterion.Builder()
                 .withConnector("and") //$NON-NLS-1$
@@ -52,4 +53,6 @@ class JoinCollector {
 
 class RightColumnCollector(private val joinConditionConsumer: (JoinCondition) -> Unit) {
     infix fun equalTo(rightColumn: BasicColumn) = joinConditionConsumer.invoke(SqlBuilder.equalTo(rightColumn))
+
+    infix fun <T> equalTo(value: T) = joinConditionConsumer.invoke(SqlBuilder.equalTo(value))
 }

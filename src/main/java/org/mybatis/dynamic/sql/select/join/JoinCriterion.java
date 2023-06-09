@@ -17,12 +17,12 @@ package org.mybatis.dynamic.sql.select.join;
 
 import java.util.Objects;
 
-import org.mybatis.dynamic.sql.BasicColumn;
+import org.mybatis.dynamic.sql.BindableColumn;
 
 public class JoinCriterion {
 
     private final String connector;
-    private final BasicColumn leftColumn;
+    private final BindableColumn<?> leftColumn;
     private final JoinCondition joinCondition;
 
     private JoinCriterion(Builder builder) {
@@ -35,21 +35,17 @@ public class JoinCriterion {
         return connector;
     }
 
-    public BasicColumn leftColumn() {
+    public BindableColumn<?> leftColumn() {
         return leftColumn;
     }
 
-    public BasicColumn rightColumn() {
-        return joinCondition.rightColumn();
-    }
-
-    public String operator() {
-        return joinCondition.operator();
+    public JoinCondition joinCondition() {
+        return joinCondition;
     }
 
     public static class Builder {
         private String connector;
-        private BasicColumn joinColumn;
+        private BindableColumn<?> joinColumn;
         private JoinCondition joinCondition;
 
         public Builder withConnector(String connector) {
@@ -57,7 +53,7 @@ public class JoinCriterion {
             return this;
         }
 
-        public Builder withJoinColumn(BasicColumn joinColumn) {
+        public Builder withJoinColumn(BindableColumn<?> joinColumn) {
             this.joinColumn = joinColumn;
             return this;
         }

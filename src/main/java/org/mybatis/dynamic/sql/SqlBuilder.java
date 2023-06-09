@@ -54,6 +54,7 @@ import org.mybatis.dynamic.sql.select.function.Substring;
 import org.mybatis.dynamic.sql.select.function.Subtract;
 import org.mybatis.dynamic.sql.select.function.Upper;
 import org.mybatis.dynamic.sql.select.join.EqualTo;
+import org.mybatis.dynamic.sql.select.join.EqualToValue;
 import org.mybatis.dynamic.sql.select.join.JoinCondition;
 import org.mybatis.dynamic.sql.select.join.JoinCriterion;
 import org.mybatis.dynamic.sql.update.UpdateDSL;
@@ -425,7 +426,7 @@ public interface SqlBuilder {
     }
 
     // join support
-    static JoinCriterion and(BasicColumn joinColumn, JoinCondition joinCondition) {
+    static JoinCriterion and(BindableColumn<?> joinColumn, JoinCondition joinCondition) {
         return new JoinCriterion.Builder()
                 .withConnector("and") //$NON-NLS-1$
                 .withJoinColumn(joinColumn)
@@ -433,7 +434,7 @@ public interface SqlBuilder {
                 .build();
     }
 
-    static JoinCriterion on(BasicColumn joinColumn, JoinCondition joinCondition) {
+    static JoinCriterion on(BindableColumn<?> joinColumn, JoinCondition joinCondition) {
         return new JoinCriterion.Builder()
                 .withConnector("on") //$NON-NLS-1$
                 .withJoinColumn(joinColumn)
@@ -443,6 +444,10 @@ public interface SqlBuilder {
 
     static EqualTo equalTo(BasicColumn column) {
         return new EqualTo(column);
+    }
+
+    static <T> EqualToValue<T> equalTo(T value) {
+        return new EqualToValue<>(value);
     }
 
     // aggregate support
