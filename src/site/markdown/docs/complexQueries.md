@@ -19,7 +19,7 @@ public SelectStatementProvider search(Integer targetId, String fName, String lNa
     var builder = select(id, firstName, lastName)    // (1)
             .from(person)
             .where();    // (2)
-        
+
     if (targetId != null) {    // (3)
         builder
             .and(id, isEqualTo(targetId));
@@ -32,10 +32,10 @@ public SelectStatementProvider search(Integer targetId, String fName, String lNa
     builder
         .orderBy(lastName, firstName)
         .fetchFirst(50).rowsOnly();    // (7)
-        
+
     return builder.build().render(RenderingStrategies.MYBATIS3);    // (8)
 }
-    
+
 public String addWildcards(String s) {
     return "%" + s + "%";
 }

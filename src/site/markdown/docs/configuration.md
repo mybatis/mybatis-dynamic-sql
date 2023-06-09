@@ -31,7 +31,7 @@ The configuration file is a standard Java properties file. The possible values a
 ## Statement Configuration
 
 If the global configuration is not acceptable for any individual statement, you can also configure the statement in the
-DSL. Consider the following statement: 
+DSL. Consider the following statement:
 
 ```java
 DeleteStatementProvider deleteStatement = deleteFrom(animalData)
@@ -52,7 +52,7 @@ The Kotlin DSL contains the same function:
 ```kotlin
 val deleteStatement = deleteFrom(person) {
     where { id isEqualToWhenPresent null }
-    configureStatement { isNonRenderingWhereClauseAllowed = true } 
+    configureStatement { isNonRenderingWhereClauseAllowed = true }
 }
 ```
 

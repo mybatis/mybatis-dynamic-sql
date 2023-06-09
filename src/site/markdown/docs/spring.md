@@ -60,7 +60,7 @@ The following code shows a complete example without the utility class:
             .orderBy(id.descending())
             .build()
             .render(RenderingStrategies.SPRING_NAMED_PARAMETER);
-        
+
     SqlParameterSource namedParameters = new MapSqlParameterSource(selectStatement.getParameters());
     List<GeneratedAlwaysRecord> records = template.query(selectStatement.getSelectStatement(), namedParameters,
         (rs, rowNum) -> {
@@ -83,7 +83,7 @@ The following code shows a complete example with the utility class:
             .from(generatedAlways)
             .where(id, isGreaterThan(3))
             .orderBy(id.descending());
-        
+
     List<GeneratedAlwaysRecord> records = extensions.selectList(selectStatement,
         (rs, rowNum) -> {
             GeneratedAlwaysRecord record = new GeneratedAlwaysRecord();
@@ -104,7 +104,7 @@ The utility class also includes a `selectOne` method that returns an `Optional`.
     Buildable<SelectModel> selectStatement = select(id, firstName, lastName, fullName)
             .from(generatedAlways)
             .where(id, isEqualTo(3));
-        
+
     Optional<GeneratedAlwaysRecord> record = extensions.selectOne(selectStatement,
         (rs, rowNum) -> {
             GeneratedAlwaysRecord record = new GeneratedAlwaysRecord();
@@ -167,7 +167,7 @@ This can be simplified by using the utility class as follows:
             .set(id).toValue(100)
             .set(firstName).toValue("Bob")
             .set(lastName).toValue("Jones");
-    
+
     // no generated key retrieval
     int rows = extensions.generalInsert(insertStatement);
 
@@ -186,7 +186,7 @@ Insert record statements are a bit different - MyBatis Dynamic SQL generates a p
     record.setId(100);
     record.setFirstName("Bob");
     record.setLastName("Jones");
-        
+
     InsertStatementProvider<GeneratedAlwaysRecord> insertStatement = insert(record)
             .into(generatedAlways)
             .map(id).toProperty("id")
@@ -194,10 +194,10 @@ Insert record statements are a bit different - MyBatis Dynamic SQL generates a p
             .map(lastName).toProperty("lastName")
             .build()
             .render(RenderingStrategies.SPRING_NAMED_PARAMETER);
-        
+
     SqlParameterSource parameterSource = new BeanPropertySqlParameterSource(insertStatement.getRecord());
     KeyHolder keyHolder = new GeneratedKeyHolder();
-        
+
     int rows = template.update(insertStatement.getInsertStatement(), parameterSource, keyHolder);
     String generatedKey = (String) keyHolder.getKeys().get("FULL_NAME");
 ```
@@ -212,13 +212,13 @@ This can be simplified by using the utility class as follows:
     record.setId(100);
     record.setFirstName("Bob");
     record.setLastName("Jones");
-        
+
     Buildable<InsertModel<GeneratedAlwaysRecord>> insertStatement = insert(record)
             .into(generatedAlways)
             .map(id).toProperty("id")
             .map(firstName).toProperty("firstName")
             .map(lastName).toProperty("lastName");
-    
+
     // no generated key retrieval
     int rows = extensions.insert(insertStatement);
 
@@ -241,7 +241,7 @@ With multi-row insert statements MyBatis Dynamic SQL generates a properly format
     record.setFirstName("Bob");
     record.setLastName("Jones");
     records.add(record);
-        
+
     record = new GeneratedAlwaysRecord();
     record.setId(101);
     record.setFirstName("Jim");
@@ -257,7 +257,7 @@ With multi-row insert statements MyBatis Dynamic SQL generates a properly format
 
     SqlParameterSource parameterSource = new BeanPropertySqlParameterSource(insertStatement);
     KeyHolder keyHolder = new GeneratedKeyHolder();
-        
+
     int rows = template.update(insertStatement.getInsertStatement(), parameterSource, keyHolder);
     String firstGeneratedKey = (String) keyHolder.getKeyList().get(0).get("FULL_NAME");
     String secondGeneratedKey = (String) keyHolder.getKeyList().get(1).get("FULL_NAME");
@@ -275,7 +275,7 @@ This can be simplified by using the utility class as follows:
     record.setFirstName("Bob");
     record.setLastName("Jones");
     records.add(record);
-        
+
     record = new GeneratedAlwaysRecord();
     record.setId(101);
     record.setFirstName("Jim");
@@ -307,7 +307,7 @@ A JDBC batch insert is an efficient way to perform a bulk insert. It does not ha
     record.setFirstName("Bob");
     record.setLastName("Jones");
     records.add(record);
-        
+
     record = new GeneratedAlwaysRecord();
     record.setId(101);
     record.setFirstName("Jim");
@@ -315,7 +315,7 @@ A JDBC batch insert is an efficient way to perform a bulk insert. It does not ha
     records.add(record);
 
     SqlParameterSource[] batch = SqlParameterSourceUtils.createBatch(records.toArray());
-        
+
     BatchInsert<GeneratedAlwaysRecord> batchInsert = insert(records)
             .into(generatedAlways)
             .map(id).toProperty("id")
@@ -323,7 +323,7 @@ A JDBC batch insert is an efficient way to perform a bulk insert. It does not ha
             .map(lastName).toProperty("lastName")
             .build()
             .render(RenderingStrategies.SPRING_NAMED_PARAMETER);
-        
+
     int[] updateCounts = template.batchUpdate(batchInsert.getInsertStatementSQL(), batch);
 ```
 
@@ -339,7 +339,7 @@ This can be simplified by using the utility class as follows:
     record.setFirstName("Bob");
     record.setLastName("Jones");
     records.add(record);
-        
+
     record = new GeneratedAlwaysRecord();
     record.setId(101);
     record.setFirstName("Jim");
@@ -351,7 +351,7 @@ This can be simplified by using the utility class as follows:
             .map(id).toProperty("id")
             .map(firstName).toProperty("firstName")
             .map(lastName).toProperty("lastName");
-        
+
     int[] updateCounts = extensions.insertBatch(insertStatement);
 ```
 
@@ -365,9 +365,9 @@ Delete statements use the `MapSqlParameterSource` as with select statements, but
             .where(id,  isLessThan(3))
             .build()
             .render(RenderingStrategies.SPRING_NAMED_PARAMETER);
-        
+
     SqlParameterSource parameterSource = new MapSqlParameterSource(deleteStatement.getParameters());
-        
+
     int rows = template.update(deleteStatement.getDeleteStatement(), parameterSource);
 ```
 
@@ -379,7 +379,7 @@ This can be simplified by using the utility class as follows:
 
     Buildable<DeleteModel> deleteStatement = deleteFrom(generatedAlways)
             .where(id,  isLessThan(3));
-        
+
     int rows = extensions.delete(deleteStatement);
 ```
 
@@ -394,9 +394,9 @@ Update statements use the `MapSqlParameterSource` as with select statements, but
             .where(id, isIn(1, 5, 22))
             .build()
             .render(RenderingStrategies.SPRING_NAMED_PARAMETER);
-        
+
     SqlParameterSource parameterSource = new MapSqlParameterSource(updateStatement.getParameters());
-        
+
     int rows = template.update(updateStatement.getUpdateStatement(), parameterSource);
 ```
 
@@ -409,6 +409,6 @@ This can be simplified by using the utility class as follows:
     Buildable<UpdateModel> updateStatement = update(generatedAlways)
             .set(firstName).equalToStringConstant("Rob")
             .where(id, isIn(1, 5, 22));
-        
+
     int rows = extensions.update(updateStatement);
 ```

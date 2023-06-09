@@ -115,7 +115,7 @@ The extension methods will reuse the abstract methods and add functionality to m
 execute the SQL statements in a one-step process. The extension methods shown below assume that you will create
 a set of CRUD methods for each table you are accessing (as is the case with code created by MyBatis Generator).
 
-If you create a Kotlin mapper interface that includes both abstract and non-abstract methods, MyBatis will 
+If you create a Kotlin mapper interface that includes both abstract and non-abstract methods, MyBatis will
 throw errors. By default, Kotlin does not create Java default methods in an interface. For this reason, Kotlin
 mapper interfaces should only contain the actual MyBatis mapper abstract interface methods. What would normally be coded
 as default or static methods in a Java mapper interface should be coded as extension methods in Kotlin. For example,
@@ -556,7 +556,7 @@ val rows = mapper.insertMultiple(record1, record2)
 
 ### Generated Key Support
 
-Multi-row insert statements support returning a generated key using normal MyBatis generated key support. However, 
+Multi-row insert statements support returning a generated key using normal MyBatis generated key support. However,
 generated keys require some care for multi-row insert statements. In this section we will show how to use the
 library's built-in support. When generated keys are expected you must code the mapper method manually and supply the
 `@Options` annotation that configures generated key support. You cannot use the built-in base interface when there are
@@ -606,7 +606,7 @@ import org.apache.ibatis.executor.BatchResult
 interface PersonMapper {
     @InsertProvider(type = SqlProviderAdapter::class, method = "insert")
     fun insert(insertStatement: InsertStatementProvider<PersonRecord>): Int
-    
+
     @Flush
     fun flush(): List<BatchResult>
 }
@@ -838,7 +838,7 @@ distinct can be executed with the `selectMany` method.
 ### One-Step Method
 You can use built-in utility functions to create mapper extension functions that simplify execution of select statements.
 The extension functions will reuse the abstract methods and supply the table and column list for the statement.
-We recommend three extension methods for select multiple records, select multiple records with the distinct keyword, 
+We recommend three extension methods for select multiple records, select multiple records with the distinct keyword,
 and selecting a single record:
 
 ```kotlin
@@ -1024,7 +1024,7 @@ It is also possible to write utility methods that will set values. For example:
 fun KotlinUpdateBuilder.updateSelectiveColumns(record: PersonRecord) =
     apply {
         set(id) equalToWhenPresent record::id
-        set(firstName) equalToWhenPresent record::firstName 
+        set(firstName) equalToWhenPresent record::firstName
         set(lastName) equalToWhenPresent record::lastName
         set(birthDate) equalToWhenPresent record::birthDate
         set(employed) equalToWhenPresent record::employed
