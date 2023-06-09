@@ -79,7 +79,8 @@ public class SelectDSL<R> implements Buildable<R>, ConfigurableStatement<SelectD
         return selectDistinct(Function.identity(), selectList);
     }
 
-    public static QueryExpressionDSL.FromGatherer<SelectModel> selectDistinct(Collection<? extends BasicColumn> selectList) {
+    public static QueryExpressionDSL.FromGatherer<SelectModel> selectDistinct(
+            Collection<? extends BasicColumn> selectList) {
         return selectDistinct(Function.identity(), selectList);
     }
 
