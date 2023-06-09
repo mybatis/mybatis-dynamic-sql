@@ -23,7 +23,7 @@ class EqualNotEqualTest {
     fun `Test That Null Equal Causes Compile Error`() {
         val source = """
             package temp.kotlin.test
-            
+
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.firstName
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.person
             import org.mybatis.dynamic.sql.util.kotlin.mybatis3.countFrom
@@ -43,7 +43,7 @@ class EqualNotEqualTest {
     fun `Test That Null Equal When Present is OK`() {
         val source = """
             package temp.kotlin.test
-            
+
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.firstName
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.person
             import org.mybatis.dynamic.sql.util.kotlin.mybatis3.countFrom
@@ -63,7 +63,7 @@ class EqualNotEqualTest {
     fun `Test That Null Not Equal Causes Compile Error`() {
         val source = """
             package temp.kotlin.test
-            
+
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.firstName
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.person
             import org.mybatis.dynamic.sql.util.kotlin.mybatis3.countFrom
@@ -84,7 +84,7 @@ class EqualNotEqualTest {
     fun `Test That Null Not Equal When Present is OK`() {
         val source = """
             package temp.kotlin.test
-            
+
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.firstName
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.person
             import org.mybatis.dynamic.sql.util.kotlin.mybatis3.countFrom
@@ -104,7 +104,7 @@ class EqualNotEqualTest {
     fun `Test That Null Elements Equal Causes Compile Error`() {
         val source = """
             package temp.kotlin.test
-            
+
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.firstName
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.person
             import org.mybatis.dynamic.sql.util.kotlin.mybatis3.countFrom
@@ -125,7 +125,7 @@ class EqualNotEqualTest {
     fun `Test That Null Elements Equal When Present is OK`() {
         val source = """
             package temp.kotlin.test
-            
+
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.firstName
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.person
             import org.mybatis.dynamic.sql.util.kotlin.mybatis3.countFrom
@@ -146,7 +146,7 @@ class EqualNotEqualTest {
     fun `Test That Null Elements Not Equal Causes Compile Error`() {
         val source = """
             package temp.kotlin.test
-            
+
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.firstName
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.person
             import org.mybatis.dynamic.sql.util.kotlin.mybatis3.countFrom
@@ -168,7 +168,7 @@ class EqualNotEqualTest {
     fun `Test That Null Elements Not Equal When Present is OK`() {
         val source = """
             package temp.kotlin.test
-            
+
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.firstName
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.person
             import org.mybatis.dynamic.sql.util.kotlin.mybatis3.countFrom
