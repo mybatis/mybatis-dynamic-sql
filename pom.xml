@@ -57,7 +57,7 @@
 
     <checkstyle.config>checkstyle-override.xml</checkstyle.config>
 
-    <clirr.comparisonVersion>1.2.0</clirr.comparisonVersion>
+    <clirr.comparisonVersion>1.5.0</clirr.comparisonVersion>
 
     <module.name>org.mybatis.dynamic.sql</module.name>
 
