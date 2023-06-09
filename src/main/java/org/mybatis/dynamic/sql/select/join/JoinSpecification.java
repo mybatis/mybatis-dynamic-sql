@@ -28,7 +28,7 @@ import org.mybatis.dynamic.sql.util.Messages;
 public class JoinSpecification {
 
     private final TableExpression table;
-    private final List<JoinCriterion> joinCriteria;
+    private final List<JoinCriterion<?>> joinCriteria;
     private final JoinType joinType;
 
     private JoinSpecification(Builder builder) {
@@ -45,7 +45,7 @@ public class JoinSpecification {
         return table;
     }
 
-    public <R> Stream<R> mapJoinCriteria(Function<JoinCriterion, R> mapper) {
+    public <R> Stream<R> mapJoinCriteria(Function<JoinCriterion<?>, R> mapper) {
         return joinCriteria.stream().map(mapper);
     }
 
@@ -59,7 +59,7 @@ public class JoinSpecification {
 
     public static class Builder {
         private TableExpression table;
-        private final List<JoinCriterion> joinCriteria = new ArrayList<>();
+        private final List<JoinCriterion<?>> joinCriteria = new ArrayList<>();
         private JoinType joinType;
 
         public Builder withJoinTable(TableExpression table) {
@@ -67,12 +67,12 @@ public class JoinSpecification {
             return this;
         }
 
-        public Builder withJoinCriterion(JoinCriterion joinCriterion) {
+        public Builder withJoinCriterion(JoinCriterion<?> joinCriterion) {
             this.joinCriteria.add(joinCriterion);
             return this;
         }
 
-        public Builder withJoinCriteria(List<JoinCriterion> joinCriteria) {
+        public Builder withJoinCriteria(List<JoinCriterion<?>> joinCriteria) {
             this.joinCriteria.addAll(joinCriteria);
             return this;
         }

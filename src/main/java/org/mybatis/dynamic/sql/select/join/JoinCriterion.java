@@ -19,13 +19,13 @@ import java.util.Objects;
 
 import org.mybatis.dynamic.sql.BindableColumn;
 
-public class JoinCriterion {
+public class JoinCriterion<T> {
 
     private final String connector;
-    private final BindableColumn<?> leftColumn;
-    private final JoinCondition joinCondition;
+    private final BindableColumn<T> leftColumn;
+    private final JoinCondition<T> joinCondition;
 
-    private JoinCriterion(Builder builder) {
+    private JoinCriterion(Builder<T> builder) {
         connector = Objects.requireNonNull(builder.connector);
         leftColumn = Objects.requireNonNull(builder.joinColumn);
         joinCondition = Objects.requireNonNull(builder.joinCondition);
@@ -35,36 +35,36 @@ public class JoinCriterion {
         return connector;
     }
 
-    public BindableColumn<?> leftColumn() {
+    public BindableColumn<T> leftColumn() {
         return leftColumn;
     }
 
-    public JoinCondition joinCondition() {
+    public JoinCondition<T> joinCondition() {
         return joinCondition;
     }
 
-    public static class Builder {
+    public static class Builder<T> {
         private String connector;
-        private BindableColumn<?> joinColumn;
-        private JoinCondition joinCondition;
+        private BindableColumn<T> joinColumn;
+        private JoinCondition<T> joinCondition;
 
-        public Builder withConnector(String connector) {
+        public Builder<T> withConnector(String connector) {
             this.connector = connector;
             return this;
         }
 
-        public Builder withJoinColumn(BindableColumn<?> joinColumn) {
+        public Builder<T> withJoinColumn(BindableColumn<T> joinColumn) {
             this.joinColumn = joinColumn;
             return this;
         }
 
-        public Builder withJoinCondition(JoinCondition joinCondition) {
+        public Builder<T> withJoinCondition(JoinCondition<T> joinCondition) {
             this.joinCondition = joinCondition;
             return this;
         }
 
-        public JoinCriterion build() {
-            return new JoinCriterion(this);
+        public JoinCriterion<T> build() {
+            return new JoinCriterion<>(this);
         }
     }
 }

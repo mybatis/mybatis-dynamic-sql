@@ -17,7 +17,7 @@ package org.mybatis.dynamic.sql.select.join;
 
 import java.util.Objects;
 
-public abstract class TypedJoinCondition<T> implements JoinCondition {
+public abstract class TypedJoinCondition<T> implements JoinCondition<T> {
     private final T value;
 
     protected TypedJoinCondition(T value) {
@@ -29,7 +29,7 @@ public abstract class TypedJoinCondition<T> implements JoinCondition {
     }
 
     @Override
-    public <R> R accept(JoinConditionVisitor<R> visitor) {
+    public <R> R accept(JoinConditionVisitor<T, R> visitor) {
         return visitor.visit(this);
     }
 }

@@ -78,11 +78,11 @@ public class JoinRenderer {
                 .build();
     }
 
-    private FragmentAndParameters renderCriterion(JoinCriterion joinCriterion) {
+    private <T> FragmentAndParameters renderCriterion(JoinCriterion<T> joinCriterion) {
         String prefix = joinCriterion.connector()
                 + spaceBefore(applyTableAlias(joinCriterion.leftColumn()));
 
-        JoinConditionRenderer joinConditionRenderer = new JoinConditionRenderer.Builder()
+        JoinConditionRenderer<T> joinConditionRenderer = new JoinConditionRenderer.Builder<T>()
                 .withRenderingStrategy(renderingStrategy)
                 .withSequence(sequence)
                 .withTableAliasCalculator(tableAliasCalculator)

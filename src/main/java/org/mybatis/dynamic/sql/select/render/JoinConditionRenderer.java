@@ -29,13 +29,13 @@ import org.mybatis.dynamic.sql.select.join.JoinConditionVisitor;
 import org.mybatis.dynamic.sql.select.join.TypedJoinCondition;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 
-public class JoinConditionRenderer implements JoinConditionVisitor<FragmentAndParameters> {
+public class JoinConditionRenderer<T> implements JoinConditionVisitor<T, FragmentAndParameters> {
     private final RenderingStrategy renderingStrategy;
     private final AtomicInteger sequence;
-    private final BindableColumn<?> leftColumn;
+    private final BindableColumn<T> leftColumn;
     private final TableAliasCalculator tableAliasCalculator;
 
-    private JoinConditionRenderer(Builder builder) {
+    private JoinConditionRenderer(Builder<T> builder) {
         renderingStrategy = Objects.requireNonNull(builder.renderingStrategy);
         sequence = Objects.requireNonNull(builder.sequence);
         leftColumn = Objects.requireNonNull(builder.leftColumn);
@@ -43,7 +43,7 @@ public class JoinConditionRenderer implements JoinConditionVisitor<FragmentAndPa
     }
 
     @Override
-    public <T> FragmentAndParameters visit(TypedJoinCondition<T> condition) {
+    public FragmentAndParameters visit(TypedJoinCondition<T> condition) {
         String mapKey = renderingStrategy.formatParameterMapKey(sequence);
 
         String placeHolder =  leftColumn.renderingStrategy().orElse(renderingStrategy)
@@ -55,7 +55,7 @@ public class JoinConditionRenderer implements JoinConditionVisitor<FragmentAndPa
     }
 
     @Override
-    public FragmentAndParameters visit(ColumnBasedJoinCondition condition) {
+    public FragmentAndParameters visit(ColumnBasedJoinCondition<T> condition) {
         return FragmentAndParameters
                 .withFragment(condition.operator() + spaceBefore(applyTableAlias(condition.rightColumn())))
                 .build();
@@ -65,34 +65,34 @@ public class JoinConditionRenderer implements JoinConditionVisitor<FragmentAndPa
         return column.renderWithTableAlias(tableAliasCalculator);
     }
 
-    public static class Builder {
+    public static class Builder<T> {
         private RenderingStrategy renderingStrategy;
         private AtomicInteger sequence;
-        private BindableColumn<?> leftColumn;
+        private BindableColumn<T> leftColumn;
         private TableAliasCalculator tableAliasCalculator;
 
-        public Builder withRenderingStrategy(RenderingStrategy renderingStrategy) {
+        public Builder<T> withRenderingStrategy(RenderingStrategy renderingStrategy) {
             this.renderingStrategy = renderingStrategy;
             return this;
         }
 
-        public Builder withSequence(AtomicInteger sequence) {
+        public Builder<T> withSequence(AtomicInteger sequence) {
             this.sequence = sequence;
             return this;
         }
 
-        public Builder withLeftColumn(BindableColumn<?> leftColumn) {
+        public Builder<T> withLeftColumn(BindableColumn<T> leftColumn) {
             this.leftColumn = leftColumn;
             return this;
         }
 
-        public Builder withTableAliasCalculator(TableAliasCalculator tableAliasCalculator) {
+        public Builder<T> withTableAliasCalculator(TableAliasCalculator tableAliasCalculator) {
             this.tableAliasCalculator = tableAliasCalculator;
             return this;
         }
 
-        public JoinConditionRenderer build() {
-            return new JoinConditionRenderer(this);
+        public JoinConditionRenderer<T> build() {
+            return new JoinConditionRenderer<>(this);
         }
     }
 }

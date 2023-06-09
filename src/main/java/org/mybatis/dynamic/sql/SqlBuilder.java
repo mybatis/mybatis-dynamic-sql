@@ -426,24 +426,24 @@ public interface SqlBuilder {
     }
 
     // join support
-    static JoinCriterion and(BindableColumn<?> joinColumn, JoinCondition joinCondition) {
-        return new JoinCriterion.Builder()
+    static <T> JoinCriterion<T> and(BindableColumn<T> joinColumn, JoinCondition<T> joinCondition) {
+        return new JoinCriterion.Builder<T>()
                 .withConnector("and") //$NON-NLS-1$
                 .withJoinColumn(joinColumn)
                 .withJoinCondition(joinCondition)
                 .build();
     }
 
-    static JoinCriterion on(BindableColumn<?> joinColumn, JoinCondition joinCondition) {
-        return new JoinCriterion.Builder()
+    static <T> JoinCriterion<T> on(BindableColumn<T> joinColumn, JoinCondition<T> joinCondition) {
+        return new JoinCriterion.Builder<T>()
                 .withConnector("on") //$NON-NLS-1$
                 .withJoinColumn(joinColumn)
                 .withJoinCondition(joinCondition)
                 .build();
     }
 
-    static EqualTo equalTo(BasicColumn column) {
-        return new EqualTo(column);
+    static <T> EqualTo<T> equalTo(BasicColumn column) {
+        return new EqualTo<>(column);
     }
 
     static <T> EqualToValue<T> equalTo(T value) {

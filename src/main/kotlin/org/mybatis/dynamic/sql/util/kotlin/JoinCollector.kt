@@ -26,23 +26,23 @@ typealias JoinReceiver = JoinCollector.() -> Unit
 
 @MyBatisDslMarker
 class JoinCollector {
-    private var onJoinCriterion: JoinCriterion? = null
-    internal val andJoinCriteria = mutableListOf<JoinCriterion>()
+    private var onJoinCriterion: JoinCriterion<*>? = null
+    internal val andJoinCriteria = mutableListOf<JoinCriterion<*>>()
 
-    internal fun onJoinCriterion() : JoinCriterion =
+    internal fun onJoinCriterion() : JoinCriterion<*> =
         onJoinCriterion?: throw KInvalidSQLException(Messages.getString("ERROR.22")) //$NON-NLS-1$
 
-    fun on(leftColumn: BindableColumn<*>): RightColumnCollector = RightColumnCollector {
-        onJoinCriterion = JoinCriterion.Builder()
+    fun <T> on(leftColumn: BindableColumn<T>): RightColumnCollector<T> = RightColumnCollector {
+        onJoinCriterion = JoinCriterion.Builder<T>()
             .withConnector("on") //$NON-NLS-1$
             .withJoinColumn(leftColumn)
             .withJoinCondition(it)
             .build()
     }
 
-    fun and(leftColumn: BindableColumn<*>): RightColumnCollector = RightColumnCollector {
+    fun <T> and(leftColumn: BindableColumn<T>): RightColumnCollector<T> = RightColumnCollector {
         andJoinCriteria.add(
-            JoinCriterion.Builder()
+            JoinCriterion.Builder<T>()
                 .withConnector("and") //$NON-NLS-1$
                 .withJoinColumn(leftColumn)
                 .withJoinCondition(it)
@@ -51,8 +51,8 @@ class JoinCollector {
     }
 }
 
-class RightColumnCollector(private val joinConditionConsumer: (JoinCondition) -> Unit) {
+class RightColumnCollector<T>(private val joinConditionConsumer: (JoinCondition<T>) -> Unit) {
     infix fun equalTo(rightColumn: BasicColumn) = joinConditionConsumer.invoke(SqlBuilder.equalTo(rightColumn))
 
-    infix fun <T> equalTo(value: T) = joinConditionConsumer.invoke(SqlBuilder.equalTo(value))
+    infix fun equalTo(value: T) = joinConditionConsumer.invoke(SqlBuilder.equalTo(value))
 }

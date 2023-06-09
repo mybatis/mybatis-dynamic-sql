@@ -350,12 +350,12 @@ public class QueryExpressionDSL<R>
             this.joinType = joinType;
         }
 
-        public JoinSpecificationFinisher on(BindableColumn<?> joinColumn, JoinCondition joinCondition) {
+        public <T> JoinSpecificationFinisher on(BindableColumn<T> joinColumn, JoinCondition<T> joinCondition) {
             return new JoinSpecificationFinisher(joinTable, joinColumn, joinCondition, joinType);
         }
 
-        public JoinSpecificationFinisher on(BindableColumn<?> joinColumn, JoinCondition onJoinCondition,
-                JoinCriterion... andJoinCriteria) {
+        public <T> JoinSpecificationFinisher on(BindableColumn<T> joinColumn, JoinCondition<T> onJoinCondition,
+                JoinCriterion<?>... andJoinCriteria) {
             return new JoinSpecificationFinisher(joinTable, joinColumn, onJoinCondition, joinType, andJoinCriteria);
         }
     }
@@ -365,9 +365,9 @@ public class QueryExpressionDSL<R>
             implements Buildable<R> {
         private final JoinSpecification.Builder joinSpecificationBuilder;
 
-        public JoinSpecificationFinisher(TableExpression table, BindableColumn<?> joinColumn,
-                JoinCondition joinCondition, JoinType joinType) {
-            JoinCriterion joinCriterion = new JoinCriterion.Builder()
+        public <T> JoinSpecificationFinisher(TableExpression table, BindableColumn<T> joinColumn,
+                JoinCondition<T> joinCondition, JoinType joinType) {
+            JoinCriterion<T> joinCriterion = new JoinCriterion.Builder<T>()
                     .withConnector("on") //$NON-NLS-1$
                     .withJoinColumn(joinColumn)
                     .withJoinCondition(joinCondition)
@@ -380,9 +380,9 @@ public class QueryExpressionDSL<R>
             addJoinSpecificationBuilder(joinSpecificationBuilder);
         }
 
-        public JoinSpecificationFinisher(TableExpression table, BindableColumn<?> joinColumn,
-                JoinCondition joinCondition, JoinType joinType, JoinCriterion... andJoinCriteria) {
-            JoinCriterion onJoinCriterion = new JoinCriterion.Builder()
+        public <T> JoinSpecificationFinisher(TableExpression table, BindableColumn<T> joinColumn,
+                JoinCondition<T> joinCondition, JoinType joinType, JoinCriterion<?>... andJoinCriteria) {
+            JoinCriterion<T> onJoinCriterion = new JoinCriterion.Builder<T>()
                     .withConnector("on") //$NON-NLS-1$
                     .withJoinColumn(joinColumn)
                     .withJoinCondition(joinCondition)
@@ -413,8 +413,8 @@ public class QueryExpressionDSL<R>
             return QueryExpressionDSL.this.where();
         }
 
-        public JoinSpecificationFinisher and(BindableColumn<?> joinColumn, JoinCondition joinCondition) {
-            JoinCriterion joinCriterion = new JoinCriterion.Builder()
+        public <T> JoinSpecificationFinisher and(BindableColumn<T> joinColumn, JoinCondition<T> joinCondition) {
+            JoinCriterion<T> joinCriterion = new JoinCriterion.Builder<T>()
                     .withConnector("and") //$NON-NLS-1$
                     .withJoinColumn(joinColumn)
                     .withJoinCondition(joinCondition)

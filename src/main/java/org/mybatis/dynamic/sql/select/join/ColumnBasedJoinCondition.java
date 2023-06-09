@@ -19,7 +19,7 @@ import java.util.Objects;
 
 import org.mybatis.dynamic.sql.BasicColumn;
 
-public abstract class ColumnBasedJoinCondition implements JoinCondition {
+public abstract class ColumnBasedJoinCondition<T> implements JoinCondition<T> {
     private final BasicColumn rightColumn;
 
     protected ColumnBasedJoinCondition(BasicColumn rightColumn) {
@@ -31,7 +31,7 @@ public abstract class ColumnBasedJoinCondition implements JoinCondition {
     }
 
     @Override
-    public <R> R accept(JoinConditionVisitor<R> visitor) {
+    public <R> R accept(JoinConditionVisitor<T, R> visitor) {
         return visitor.visit(this);
     }
 }

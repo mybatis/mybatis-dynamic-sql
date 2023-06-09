@@ -15,8 +15,8 @@
  */
 package org.mybatis.dynamic.sql.select.join;
 
-public interface JoinConditionVisitor<R> {
-    <T> R visit(TypedJoinCondition<T> condition);
+public interface JoinConditionVisitor<T, R> {
+    R visit(TypedJoinCondition<T> condition);
 
-    R visit(ColumnBasedJoinCondition condition);
+    R visit(ColumnBasedJoinCondition<T> condition);
 }
