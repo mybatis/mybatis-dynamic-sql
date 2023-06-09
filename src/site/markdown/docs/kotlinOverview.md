@@ -94,7 +94,7 @@ object PersonDynamicSqlSupport {
     val birthDate = person.birthDate
     val employed = person.employed
     val occupation = person.occupation
-   
+
     class Person : AlisableSqlTable<Person>("Person", ::Person) {
         val id = column<Int>(name = "id", jdbcType = JDBCType.INTEGER)
         val firstName = column<String>(name = "first_name", jdbcType = JDBCType.VARCHAR)
@@ -118,7 +118,7 @@ Notes:
    instances for use in self-joins.
 3. Note the use of the `column` extension function. This function accepts different
    parameters for the different attributes that can be assigned to a column (such as a MyBatis3 type handler, or a
-   custom rendering strategy). We recommend using this extension function rather than the corresponding `column` and 
+   custom rendering strategy). We recommend using this extension function rather than the corresponding `column` and
    `withXXX` methods in the Java native DSL because the extension method will retain the non-nullable type information
    associated with the column.
 
@@ -168,7 +168,7 @@ val countColumnStatement = count(lastName) {
    from(person)
 }
 
-// count(distinct column) 
+// count(distinct column)
 val countDistinctColumnStatement = countDistinct(lastName) {
    from(person)
 }
@@ -232,7 +232,7 @@ val row = PersonRecord(100, "Joe", "Jones", Date(), true, "Developer", 1)
 
 val insertRecordStatement = insert(row) {
    into(person)
-   map(id) toProperty "id" 
+   map(id) toProperty "id"
    map(firstName) toProperty "firstName"
    map(lastName) toProperty "lastName"
    map(birthDate) toProperty "birthDate"

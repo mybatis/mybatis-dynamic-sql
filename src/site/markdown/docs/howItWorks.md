@@ -13,7 +13,7 @@ templating engine for generating dynamic SQL.
 For example, MyBatis can execute an SQL string formatted like this:
 
 ```sql
-  select id, description from table_codes where id = #{id,jdbcType=INTEGER} 
+  select id, description from table_codes where id = #{id,jdbcType=INTEGER}
 ```
 
 This is standard SQL with a MyBatis twist - the parameter notation `#{id,jdbcType=INTEGER}`
@@ -36,11 +36,11 @@ public class Parameter {
   public Parameter(Integer id) {
     this.id = id;
   }
-  
+
   public Integer getId() {
     return id;
   }
-  
+
   public String getSql() {
     return sql;
   }

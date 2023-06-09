@@ -30,7 +30,7 @@ these general principles for functional style coding in Java:
 
 We are committed to clean code.  This means:
 
-- Small methods - less than 5 lines is good, 1 line is ideal 
+- Small methods - less than 5 lines is good, 1 line is ideal
 - Small classes - less than 100 lines is good, less than 50 lines is ideal
 - Use descriptive names
 - Comments are a last resort - don't comment bad code, refactor it
@@ -43,7 +43,7 @@ We are committed to clean code.  This means:
 Remember the three rules of TDD:
 
 1. You may not write production code until you have written a failing unit test.
-2. You may not write more of a unit test than is sufficient to fail, and not compiling is failing. 
+2. You may not write more of a unit test than is sufficient to fail, and not compiling is failing.
 3. You may not write more production code than is sufficient to passing the currently failing test.
 
 

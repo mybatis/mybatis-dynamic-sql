@@ -14,7 +14,7 @@ table qualifiers in select statements. We'll cover that first.
 
 The library attempts to automatically calculate table qualifiers. If a table qualifier is specified,
 the library will automatically render the table qualifier on all columns associated with the
-table. For example with the following query: 
+table. For example with the following query:
 
 ```java
 SelectStatementProvider selectStatement =
@@ -73,10 +73,10 @@ from (select a.id, a.animal_name
       where id < #{parameters.p1}
       order by animal_name desc) b
 where rownum() < #{parameters.p2}
-  and animal_name like  #{parameters.p3} 
+  and animal_name like  #{parameters.p3}
 ```
 
-Notice that the qualifier `a` is automatically applied to columns in the subquery and that the 
+Notice that the qualifier `a` is automatically applied to columns in the subquery and that the
 qualifier `b` is not applied anywhere.
 
 If your query requires the subquery qualifier to be applied to columns in the outer select list,
@@ -110,7 +110,7 @@ from (select a.id, a.animal_name
       where id < #{parameters.p1}
       order by animal_name desc) b
 where rownum() < #{parameters.p2}
-  and b.animal_name like  #{parameters.p3} 
+  and b.animal_name like  #{parameters.p3}
 ```
 
 ## Subqueries in Where Conditions
@@ -164,7 +164,7 @@ SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, bra
 ### Kotlin Support
 The library includes Kotlin versions of the where conditions that allow use of the Kotlin subquery builder. The Kotlin
 where conditions are in the `org.mybatis.dynamic.sql.util.kotlin` package.
- 
+
 An example of an exists subquery is as follows:
 ```kotlin
 val selectStatement = select(ItemMaster.allColumns()) {

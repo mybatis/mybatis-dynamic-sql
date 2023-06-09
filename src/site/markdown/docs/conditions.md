@@ -80,7 +80,7 @@ List<Animal> search(String searchName) {
         .orderBy(id)
         .build()
         .render(RenderingStrategies.MYBATIS3);
-        
+
         ...
 }
 ```
@@ -97,7 +97,7 @@ List<Animal> search(String searchName){
         .build()
         .render(RenderingStrategies.MYBATIS3);
 }
-        
+
 String appendWildCards(String in) {
     return "%" + in + "%";
 }
@@ -144,7 +144,7 @@ If all three values are null, then no where clause will be generated.
 Each of the conditions accepts a lambda expression that can be used to determine if the condition should render or not.
 The lambdas will all be of standard JDK types (either `java.util.function.BooleanSupplier`,
 `java.util.function.Predicate`, or `java.util.function.BiPredicate` depending on the type of condition). The following
-table lists the optional conditions and shows how to use them: 
+table lists the optional conditions and shows how to use them:
 
 | Condition | Example | Rendering Rules |
 |-----------|---------|-----------------|
@@ -197,7 +197,7 @@ Optionality with the "in" and "not in" conditions is a bit more complex than the
 thing to know is that no "in" or "not in" condition will render if the list of values is empty. For example, there
 will never be rendered SQL like `where name in ()`. So optionality of the "in" conditions is more about optionality
 of the *values* of the condition. The library comes with functions that will filter out null values, and will upper
-case String values to enable case insensitive queries. There are extension points to add additional filtering and 
+case String values to enable case insensitive queries. There are extension points to add additional filtering and
 mapping if you so desire.
 
 The following table shows the different supplied In conditions and how they will render for different sets of inputs.
@@ -218,7 +218,7 @@ The table assumes the following types of input:
 | IsNotInCaseInsensitive | No | Yes | upper(name) not in ('FOO', null, 'BAR') | upper(name) not in (null) |
 | IsNotInCaseInsensitiveWhenPresent | Yes | Yes | upper(name) not in ('FOO', 'BAR') | No Render |
 
-If none of these options meet your needs, the "In" conditions also support "map" and "filter" methods for the values. 
+If none of these options meet your needs, the "In" conditions also support "map" and "filter" methods for the values.
 This gives you great flexibility to alter or filter the value list before the condition
 is rendered.
 

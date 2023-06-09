@@ -16,13 +16,13 @@ For example:
     DeleteStatementProvider deleteStatement = deleteFrom(foo)
             .build()
             .render(RenderingStrategies.MYBATIS3);
-``` 
+```
 
 ## Annotated Mapper for Delete Statements
 
 The DeleteStatementProvider object can be used as a parameter to a MyBatis mapper method directly.  If you
 are using an annotated mapper, the delete method should look like this:
-  
+
 ```java
 import org.apache.ibatis.annotations.DeleteProvider;
 import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider;
@@ -41,7 +41,7 @@ We do not recommend using an XML mapper for delete statements, but if you want t
 object can be used as a parameter to a MyBatis mapper method directly.
 
 If you are using an XML mapper, the delete method should look like this in the Java interface:
-  
+
 ```java
 import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider;
 
