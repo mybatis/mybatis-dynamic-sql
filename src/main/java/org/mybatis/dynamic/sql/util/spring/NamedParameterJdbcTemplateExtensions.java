@@ -54,7 +54,10 @@ public class NamedParameterJdbcTemplateExtensions {
     }
 
     public long count(SelectStatementProvider countStatement) {
-        return template.queryForObject(countStatement.getSelectStatement(), countStatement.getParameters(), Long.class);
+        Long answer = template.queryForObject(countStatement.getSelectStatement(),
+                countStatement.getParameters(), Long.class);
+
+        return answer == null ? 0L : answer;
     }
 
     public int delete(Buildable<DeleteModel> deleteStatement) {
