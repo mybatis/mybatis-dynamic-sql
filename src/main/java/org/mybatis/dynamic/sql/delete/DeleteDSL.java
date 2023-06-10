@@ -27,6 +27,7 @@ import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.common.OrderByModel;
 import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
 import org.mybatis.dynamic.sql.util.Buildable;
+import org.mybatis.dynamic.sql.util.Utilities;
 import org.mybatis.dynamic.sql.where.AbstractWhereFinisher;
 import org.mybatis.dynamic.sql.where.AbstractWhereStarter;
 import org.mybatis.dynamic.sql.where.WhereModel;
@@ -50,9 +51,7 @@ public class DeleteDSL<R> extends AbstractWhereStarter<DeleteDSL<R>.DeleteWhereB
 
     @Override
     public DeleteWhereBuilder where() {
-        if (whereBuilder == null) {
-            whereBuilder = new DeleteWhereBuilder();
-        }
+        whereBuilder = Utilities.buildIfNecessary(whereBuilder, DeleteWhereBuilder::new);
         return whereBuilder;
     }
 

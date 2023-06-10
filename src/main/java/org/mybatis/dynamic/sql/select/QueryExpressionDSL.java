@@ -35,6 +35,7 @@ import org.mybatis.dynamic.sql.select.join.JoinCriterion;
 import org.mybatis.dynamic.sql.select.join.JoinSpecification;
 import org.mybatis.dynamic.sql.select.join.JoinType;
 import org.mybatis.dynamic.sql.util.Buildable;
+import org.mybatis.dynamic.sql.util.Utilities;
 import org.mybatis.dynamic.sql.where.AbstractWhereFinisher;
 import org.mybatis.dynamic.sql.where.AbstractWhereStarter;
 import org.mybatis.dynamic.sql.where.WhereModel;
@@ -68,9 +69,7 @@ public class QueryExpressionDSL<R>
 
     @Override
     public QueryExpressionWhereBuilder where() {
-        if (whereBuilder == null) {
-            whereBuilder = new QueryExpressionWhereBuilder();
-        }
+        whereBuilder = Utilities.buildIfNecessary(whereBuilder, QueryExpressionWhereBuilder::new);
         return whereBuilder;
     }
 
