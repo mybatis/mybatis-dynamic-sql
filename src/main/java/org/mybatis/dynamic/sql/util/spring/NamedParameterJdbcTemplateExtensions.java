@@ -35,6 +35,7 @@ import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.update.UpdateModel;
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
 import org.mybatis.dynamic.sql.util.Buildable;
+import org.mybatis.dynamic.sql.util.Utilities;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
@@ -57,7 +58,7 @@ public class NamedParameterJdbcTemplateExtensions {
         Long answer = template.queryForObject(countStatement.getSelectStatement(),
                 countStatement.getParameters(), Long.class);
 
-        return answer == null ? 0L : answer;
+        return Utilities.safelyUnbox(answer);
     }
 
     public int delete(Buildable<DeleteModel> deleteStatement) {
