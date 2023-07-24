@@ -52,7 +52,7 @@
   </distributionManagement>
 
   <properties>
-    <junit.jupiter.version>5.9.3</junit.jupiter.version>
+    <junit.jupiter.version>5.10.0</junit.jupiter.version>
     <spring.batch.version>4.3.8</spring.batch.version>
 
     <checkstyle.config>checkstyle-override.xml</checkstyle.config>
