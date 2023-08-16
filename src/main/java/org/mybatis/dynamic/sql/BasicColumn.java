@@ -55,20 +55,6 @@ public interface BasicColumn {
     String renderWithTableAlias(TableAliasCalculator tableAliasCalculator);
 
     /**
-     * Returns the name of the item aliased with a table name and column alias if appropriate.
-     * For example, "a.foo as bar".  This is appropriate for select list clauses.
-     *
-     * @param tableAliasCalculator the table alias calculator for the current renderer
-     * @return the item name with the table and column aliases applied
-     */
-    default String renderWithTableAndColumnAlias(TableAliasCalculator tableAliasCalculator) {
-        String nameAndTableAlias = renderWithTableAlias(tableAliasCalculator);
-
-        return alias().map(a -> nameAndTableAlias + " as " + a) //$NON-NLS-1$
-                .orElse(nameAndTableAlias);
-    }
-
-    /**
      * Utility method to make it easier to build column lists for methods that require an
      * array rather than the varargs method.
      *

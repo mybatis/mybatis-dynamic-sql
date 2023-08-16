@@ -156,7 +156,10 @@ public class QueryExpressionRenderer {
     }
 
     private String applyTableAndColumnAlias(BasicColumn selectListItem) {
-        return selectListItem.renderWithTableAndColumnAlias(tableAliasCalculator);
+        String nameAndTableAlias = selectListItem.renderWithTableAlias(tableAliasCalculator);
+
+        return selectListItem.alias().map(a -> nameAndTableAlias + " as " + a) //$NON-NLS-1$
+                .orElse(nameAndTableAlias);
     }
 
     private FragmentAndParameters renderTableExpression(TableExpression table) {
