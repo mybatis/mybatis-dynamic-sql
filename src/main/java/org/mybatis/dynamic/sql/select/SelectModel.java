@@ -19,13 +19,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
 import org.jetbrains.annotations.NotNull;
 import org.mybatis.dynamic.sql.common.OrderByModel;
 import org.mybatis.dynamic.sql.exception.InvalidSqlException;
+import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
+import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 import org.mybatis.dynamic.sql.select.render.SelectRenderer;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.util.Messages;
@@ -59,8 +62,13 @@ public class SelectModel {
 
     @NotNull
     public SelectStatementProvider render(RenderingStrategy renderingStrategy) {
-        return SelectRenderer.withSelectModel(this)
+        RenderingContext renderingContext = new RenderingContext.Builder()
                 .withRenderingStrategy(renderingStrategy)
+                .withSequence(new AtomicInteger(1))
+                .withTableAliasCalculator(TableAliasCalculator.empty())
+                .build();
+        return SelectRenderer.withSelectModel(this)
+                .withRenderingContext(renderingContext)
                 .build()
                 .render();
     }

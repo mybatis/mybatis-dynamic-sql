@@ -18,7 +18,6 @@ package org.mybatis.dynamic.sql.where.render;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -30,8 +29,7 @@ import org.mybatis.dynamic.sql.ExistsPredicate;
 import org.mybatis.dynamic.sql.NotCriterion;
 import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.SqlCriterionVisitor;
-import org.mybatis.dynamic.sql.render.RenderingStrategy;
-import org.mybatis.dynamic.sql.render.TableAliasCalculator;
+import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.select.render.SelectRenderer;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
@@ -56,16 +54,12 @@ import org.mybatis.dynamic.sql.util.FragmentCollector;
  * @author Jeff Butler
  */
 public class CriterionRenderer implements SqlCriterionVisitor<Optional<RenderedCriterion>> {
-    private final AtomicInteger sequence;
-    private final RenderingStrategy renderingStrategy;
-    private final TableAliasCalculator tableAliasCalculator;
     private final String parameterName;
+    private final RenderingContext renderingContext;
 
     private CriterionRenderer(Builder builder) {
-        sequence = Objects.requireNonNull(builder.sequence);
-        renderingStrategy = Objects.requireNonNull(builder.renderingStrategy);
-        tableAliasCalculator = Objects.requireNonNull(builder.tableAliasCalculator);
         parameterName = builder.parameterName;
+        renderingContext = Objects.requireNonNull(builder.renderingContext);
     }
 
     @Override
@@ -131,9 +125,7 @@ public class CriterionRenderer implements SqlCriterionVisitor<Optional<RenderedC
 
         SelectStatementProvider selectStatement = SelectRenderer
                 .withSelectModel(existsPredicate.selectModelBuilder().build())
-                .withRenderingStrategy(renderingStrategy)
-                .withSequence(sequence)
-                .withParentTableAliasCalculator(tableAliasCalculator)
+                .withRenderingContext(renderingContext)
                 .build()
                 .render();
 
@@ -186,9 +178,7 @@ public class CriterionRenderer implements SqlCriterionVisitor<Optional<RenderedC
 
     private <T> FragmentAndParameters renderCondition(ColumnAndConditionCriterion<T> criterion) {
         WhereConditionVisitor<T> visitor = WhereConditionVisitor.withColumn(criterion.column())
-                .withRenderingStrategy(renderingStrategy)
-                .withSequence(sequence)
-                .withTableAliasCalculator(tableAliasCalculator)
+                .withRenderingContext(renderingContext)
                 .withParameterName(parameterName)
                 .build();
         return criterion.condition().accept(visitor);
@@ -260,23 +250,11 @@ public class CriterionRenderer implements SqlCriterionVisitor<Optional<RenderedC
     }
 
     public static class Builder {
-        private AtomicInteger sequence;
-        private RenderingStrategy renderingStrategy;
-        private TableAliasCalculator tableAliasCalculator;
         private String parameterName;
+        private RenderingContext renderingContext;
 
-        public Builder withSequence(AtomicInteger sequence) {
-            this.sequence = sequence;
-            return this;
-        }
-
-        public Builder withRenderingStrategy(RenderingStrategy renderingStrategy) {
-            this.renderingStrategy = renderingStrategy;
-            return this;
-        }
-
-        public Builder withTableAliasCalculator(TableAliasCalculator tableAliasCalculator) {
-            this.tableAliasCalculator = tableAliasCalculator;
+        public Builder withRenderingContext(RenderingContext renderingContext) {
+            this.renderingContext = renderingContext;
             return this;
         }
 

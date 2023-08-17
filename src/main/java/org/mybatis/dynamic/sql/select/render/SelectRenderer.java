@@ -17,13 +17,11 @@ package org.mybatis.dynamic.sql.select.render;
 
 import java.util.Objects;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import org.mybatis.dynamic.sql.common.OrderByModel;
 import org.mybatis.dynamic.sql.common.OrderByRenderer;
-import org.mybatis.dynamic.sql.render.RenderingStrategy;
-import org.mybatis.dynamic.sql.render.TableAliasCalculator;
+import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.select.PagingModel;
 import org.mybatis.dynamic.sql.select.QueryExpressionModel;
 import org.mybatis.dynamic.sql.select.SelectModel;
@@ -32,19 +30,11 @@ import org.mybatis.dynamic.sql.util.FragmentCollector;
 
 public class SelectRenderer {
     private final SelectModel selectModel;
-    private final RenderingStrategy renderingStrategy;
-    private final AtomicInteger sequence;
-    private final TableAliasCalculator parentTableAliasCalculator; // may be null
+    private final RenderingContext renderingContext;
 
     private SelectRenderer(Builder builder) {
         selectModel = Objects.requireNonNull(builder.selectModel);
-        renderingStrategy = Objects.requireNonNull(builder.renderingStrategy);
-        if (builder.sequence == null) {
-            sequence = new AtomicInteger(1);
-        } else {
-            sequence = builder.sequence;
-        }
-        parentTableAliasCalculator = builder.parentTableAliasCalculator;
+        renderingContext = Objects.requireNonNull(builder.renderingContext);
     }
 
     public SelectStatementProvider render() {
@@ -67,9 +57,7 @@ public class SelectRenderer {
 
     private FragmentAndParameters renderQueryExpression(QueryExpressionModel queryExpressionModel) {
         return QueryExpressionRenderer.withQueryExpression(queryExpressionModel)
-                .withRenderingStrategy(renderingStrategy)
-                .withSequence(sequence)
-                .withParentTableAliasCalculator(parentTableAliasCalculator)
+                .withRenderingContext(renderingContext)
                 .build()
                 .render();
     }
@@ -89,8 +77,7 @@ public class SelectRenderer {
     private FragmentAndParameters renderPagingModel(PagingModel pagingModel) {
         return new PagingModelRenderer.Builder()
                 .withPagingModel(pagingModel)
-                .withRenderingStrategy(renderingStrategy)
-                .withSequence(sequence)
+                .withRenderingContext(renderingContext)
                 .build()
                 .render();
     }
@@ -99,8 +86,14 @@ public class SelectRenderer {
         return new Builder().withSelectModel(selectModel);
     }
 
-    public static class Builder extends AbstractQueryRendererBuilder<Builder> {
+    public static class Builder {
         private SelectModel selectModel;
+        private RenderingContext renderingContext;
+
+        public Builder withRenderingContext(RenderingContext renderingContext) {
+            this.renderingContext = renderingContext;
+            return this;
+        }
 
         public Builder withSelectModel(SelectModel selectModel) {
             this.selectModel = selectModel;
@@ -109,10 +102,6 @@ public class SelectRenderer {
 
         public SelectRenderer build() {
             return new SelectRenderer(this);
-        }
-
-        Builder getThis() {
-            return this;
         }
     }
 }

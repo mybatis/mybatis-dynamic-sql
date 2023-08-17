@@ -24,6 +24,7 @@ import org.mybatis.dynamic.sql.AndOrCriteriaGroup;
 import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.common.AbstractBooleanExpressionModel;
 import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
+import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
@@ -52,32 +53,43 @@ public class WhereModel extends AbstractBooleanExpressionModel {
      * @return rendered where clause
      */
     public Optional<WhereClauseProvider> render(RenderingStrategy renderingStrategy) {
-        return WhereRenderer.withWhereModel(this)
+        RenderingContext renderingContext = new RenderingContext.Builder()
                 .withRenderingStrategy(renderingStrategy)
                 .withSequence(new AtomicInteger(1))
                 .withTableAliasCalculator(TableAliasCalculator.empty())
+                .build();
+
+        return WhereRenderer.withWhereModel(this)
+                .withRenderingContext(renderingContext)
                 .build()
                 .render()
                 .map(this::toWhereClauseProvider);
     }
 
     public Optional<WhereClauseProvider> render(RenderingStrategy renderingStrategy,
-            TableAliasCalculator tableAliasCalculator) {
-        return WhereRenderer.withWhereModel(this)
+                                                TableAliasCalculator tableAliasCalculator) {
+        RenderingContext renderingContext = new RenderingContext.Builder()
                 .withRenderingStrategy(renderingStrategy)
                 .withSequence(new AtomicInteger(1))
                 .withTableAliasCalculator(tableAliasCalculator)
+                .build();
+
+        return WhereRenderer.withWhereModel(this)
+                .withRenderingContext(renderingContext)
                 .build()
                 .render()
                 .map(this::toWhereClauseProvider);
     }
 
-    public Optional<WhereClauseProvider> render(RenderingStrategy renderingStrategy,
-            String parameterName) {
-        return WhereRenderer.withWhereModel(this)
+    public Optional<WhereClauseProvider> render(RenderingStrategy renderingStrategy, String parameterName) {
+        RenderingContext renderingContext = new RenderingContext.Builder()
                 .withRenderingStrategy(renderingStrategy)
                 .withSequence(new AtomicInteger(1))
                 .withTableAliasCalculator(TableAliasCalculator.empty())
+                .build();
+
+        return WhereRenderer.withWhereModel(this)
+                .withRenderingContext(renderingContext)
                 .withParameterName(parameterName)
                 .build()
                 .render()
@@ -86,10 +98,14 @@ public class WhereModel extends AbstractBooleanExpressionModel {
 
     public Optional<WhereClauseProvider> render(RenderingStrategy renderingStrategy,
             TableAliasCalculator tableAliasCalculator, String parameterName) {
-        return WhereRenderer.withWhereModel(this)
+        RenderingContext renderingContext = new RenderingContext.Builder()
                 .withRenderingStrategy(renderingStrategy)
                 .withSequence(new AtomicInteger(1))
                 .withTableAliasCalculator(tableAliasCalculator)
+                .build();
+
+        return WhereRenderer.withWhereModel(this)
+                .withRenderingContext(renderingContext)
                 .withParameterName(parameterName)
                 .build()
                 .render()

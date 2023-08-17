@@ -33,7 +33,9 @@ import org.mybatis.dynamic.sql.insert.GeneralInsertModel;
 import org.mybatis.dynamic.sql.insert.InsertColumnListModel;
 import org.mybatis.dynamic.sql.insert.InsertModel;
 import org.mybatis.dynamic.sql.insert.MultiRowInsertModel;
+import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
+import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 import org.mybatis.dynamic.sql.select.GroupByModel;
 import org.mybatis.dynamic.sql.common.OrderByModel;
 import org.mybatis.dynamic.sql.select.PagingModel;
@@ -234,10 +236,15 @@ class InvalidSQLTest {
     void testInvalidPagingModel() {
         PagingModel pagingModel = new PagingModel.Builder().build();
 
-        PagingModelRenderer renderer = new PagingModelRenderer.Builder()
-                .withPagingModel(pagingModel)
+        RenderingContext renderingContext = new RenderingContext.Builder()
+                .withTableAliasCalculator(TableAliasCalculator.empty())
                 .withRenderingStrategy(RenderingStrategies.MYBATIS3)
                 .withSequence(new AtomicInteger(1))
+                .build();
+
+        PagingModelRenderer renderer = new PagingModelRenderer.Builder()
+                .withPagingModel(pagingModel)
+                .withRenderingContext(renderingContext)
                 .build();
 
         assertThatExceptionOfType(InvalidSqlException.class)

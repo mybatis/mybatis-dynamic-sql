@@ -16,7 +16,6 @@
 package org.mybatis.dynamic.sql.where.render;
 
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import org.mybatis.dynamic.sql.AbstractColumnComparisonCondition;
 import org.mybatis.dynamic.sql.AbstractListValueCondition;
@@ -26,8 +25,8 @@ import org.mybatis.dynamic.sql.AbstractSubselectCondition;
 import org.mybatis.dynamic.sql.AbstractTwoValueCondition;
 import org.mybatis.dynamic.sql.BindableColumn;
 import org.mybatis.dynamic.sql.ConditionVisitor;
+import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
-import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 import org.mybatis.dynamic.sql.select.render.SelectRenderer;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
@@ -35,58 +34,62 @@ import org.mybatis.dynamic.sql.util.FragmentCollector;
 
 public class WhereConditionVisitor<T> implements ConditionVisitor<T, FragmentAndParameters> {
 
-    private final RenderingStrategy renderingStrategy;
-    private final AtomicInteger sequence;
     private final BindableColumn<T> column;
-    private final TableAliasCalculator tableAliasCalculator;
     private final String parameterPrefix;
+    private final RenderingContext renderingContext;
 
     private WhereConditionVisitor(Builder<T> builder) {
-        renderingStrategy = Objects.requireNonNull(builder.renderingStrategy);
-        sequence = Objects.requireNonNull(builder.sequence);
         column = Objects.requireNonNull(builder.column);
-        tableAliasCalculator = Objects.requireNonNull(builder.tableAliasCalculator);
         parameterPrefix = Objects.requireNonNull(builder.parameterPrefix);
+        renderingContext = Objects.requireNonNull(builder.renderingContext);
     }
 
     @Override
     public FragmentAndParameters visit(AbstractListValueCondition<T> condition) {
         FragmentCollector fc = condition.mapValues(this::toFragmentAndParameters)
                 .collect(FragmentCollector.collect());
+        FragmentAndParameters renderedColumn = columnName();
 
-        return FragmentAndParameters.withFragment(condition.renderCondition(columnName(), fc.fragments()))
+        return FragmentAndParameters.withFragment(condition.renderCondition(renderedColumn.fragment(), fc.fragments()))
                 .withParameters(fc.parameters())
+                .withParameters(renderedColumn.parameters())
                 .build();
     }
 
     @Override
     public FragmentAndParameters visit(AbstractNoValueCondition<T> condition) {
-        return FragmentAndParameters.withFragment(condition.renderCondition(columnName()))
+        FragmentAndParameters renderedColumn = columnName();
+        return FragmentAndParameters.withFragment(condition.renderCondition(renderedColumn.fragment()))
+                .withParameters(renderedColumn.parameters())
                 .build();
     }
 
     @Override
     public FragmentAndParameters visit(AbstractSingleValueCondition<T> condition) {
-        String mapKey = renderingStrategy.formatParameterMapKey(sequence);
-        String fragment = condition.renderCondition(columnName(),
+        String mapKey = renderingContext.nextMapKey();
+        FragmentAndParameters renderedColumn = columnName();
+        String fragment = condition.renderCondition(renderedColumn.fragment(),
                 getFormattedJdbcPlaceholder(mapKey));
 
         return FragmentAndParameters.withFragment(fragment)
                 .withParameter(mapKey, convertValue(condition.value()))
+                .withParameters(renderedColumn.parameters())
                 .build();
     }
 
     @Override
     public FragmentAndParameters visit(AbstractTwoValueCondition<T> condition) {
-        String mapKey1 = renderingStrategy.formatParameterMapKey(sequence);
-        String mapKey2 = renderingStrategy.formatParameterMapKey(sequence);
-        String fragment = condition.renderCondition(columnName(),
+        String mapKey1 = renderingContext.nextMapKey();
+        String mapKey2 = renderingContext.nextMapKey();
+        FragmentAndParameters renderedColumn = columnName();
+        String fragment = condition.renderCondition(renderedColumn.fragment(),
                 getFormattedJdbcPlaceholder(mapKey1),
                 getFormattedJdbcPlaceholder(mapKey2));
 
         return FragmentAndParameters.withFragment(fragment)
                 .withParameter(mapKey1, convertValue(condition.value1()))
                 .withParameter(mapKey2, convertValue(condition.value2()))
+                .withParameters(renderedColumn.parameters())
                 .build();
     }
 
@@ -94,23 +97,26 @@ public class WhereConditionVisitor<T> implements ConditionVisitor<T, FragmentAnd
     @Override
     public FragmentAndParameters visit(AbstractSubselectCondition<T> condition) {
         SelectStatementProvider selectStatement = SelectRenderer.withSelectModel(condition.selectModel())
-                .withRenderingStrategy(renderingStrategy)
-                .withSequence(sequence)
-                .withParentTableAliasCalculator(tableAliasCalculator)
+                .withRenderingContext(renderingContext)
                 .build()
                 .render();
 
-        String fragment = condition.renderCondition(columnName(), selectStatement.getSelectStatement());
+        FragmentAndParameters renderedColumn = columnName();
+        String fragment = condition.renderCondition(renderedColumn.fragment(), selectStatement.getSelectStatement());
 
         return FragmentAndParameters.withFragment(fragment)
                 .withParameters(selectStatement.getParameters())
+                .withParameters(renderedColumn.parameters())
                 .build();
     }
 
     @Override
     public FragmentAndParameters visit(AbstractColumnComparisonCondition<T> condition) {
-        String fragment = condition.renderCondition(columnName(), tableAliasCalculator);
-        return FragmentAndParameters.withFragment(fragment).build();
+        FragmentAndParameters renderedColumn = columnName();
+        String fragment = condition.renderCondition(renderedColumn.fragment(), renderingContext.tableAliasCalculator());
+        return FragmentAndParameters.withFragment(fragment)
+                .withParameters(renderedColumn.parameters())
+                .build();
     }
 
     private Object convertValue(T value) {
@@ -118,7 +124,7 @@ public class WhereConditionVisitor<T> implements ConditionVisitor<T, FragmentAnd
     }
 
     private FragmentAndParameters toFragmentAndParameters(T value) {
-        String mapKey = renderingStrategy.formatParameterMapKey(sequence);
+        String mapKey = renderingContext.nextMapKey();
 
         return FragmentAndParameters.withFragment(getFormattedJdbcPlaceholder(mapKey))
                 .withParameter(mapKey, convertValue(value))
@@ -126,12 +132,12 @@ public class WhereConditionVisitor<T> implements ConditionVisitor<T, FragmentAnd
     }
 
     private String getFormattedJdbcPlaceholder(String mapKey) {
-        return column.renderingStrategy().orElse(renderingStrategy)
+        return column.renderingStrategy().orElse(renderingContext.renderingStrategy())
                 .getFormattedJdbcPlaceholder(column, parameterPrefix, mapKey);
     }
 
-    private String columnName() {
-        return column.renderWithTableAlias(tableAliasCalculator);
+    private FragmentAndParameters columnName() {
+        return column.render(renderingContext);
     }
 
     public static <T> Builder<T> withColumn(BindableColumn<T> column) {
@@ -139,29 +145,17 @@ public class WhereConditionVisitor<T> implements ConditionVisitor<T, FragmentAnd
     }
 
     public static class Builder<T> {
-        private RenderingStrategy renderingStrategy;
-        private AtomicInteger sequence;
         private BindableColumn<T> column;
-        private TableAliasCalculator tableAliasCalculator;
         private String parameterPrefix = RenderingStrategy.DEFAULT_PARAMETER_PREFIX;
-
-        public Builder<T> withSequence(AtomicInteger sequence) {
-            this.sequence = sequence;
-            return this;
-        }
-
-        public Builder<T> withRenderingStrategy(RenderingStrategy renderingStrategy) {
-            this.renderingStrategy = renderingStrategy;
-            return this;
-        }
+        private RenderingContext renderingContext;
 
         public Builder<T> withColumn(BindableColumn<T> column) {
             this.column = column;
             return this;
         }
 
-        public Builder<T> withTableAliasCalculator(TableAliasCalculator tableAliasCalculator) {
-            this.tableAliasCalculator = tableAliasCalculator;
+        public Builder<T> withRenderingContext(RenderingContext renderingContext) {
+            this.renderingContext = renderingContext;
             return this;
         }
 

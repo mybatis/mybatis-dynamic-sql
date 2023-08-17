@@ -17,7 +17,9 @@ package org.mybatis.dynamic.sql;
 
 import java.util.Optional;
 
+import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.render.TableAliasCalculator;
+import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 
 /**
  * Describes attributes of columns that are necessary for rendering if the column is not expected to
@@ -44,6 +46,11 @@ public interface BasicColumn {
      * @return new instance with alias set
      */
     BasicColumn as(String alias);
+
+    default FragmentAndParameters render(RenderingContext renderingContext) {
+        return FragmentAndParameters.withFragment(renderWithTableAlias(renderingContext.tableAliasCalculator()))
+                .build();
+    }
 
     /**
      * Returns the name of the item aliased with a table name if appropriate.
