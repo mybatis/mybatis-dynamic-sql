@@ -17,9 +17,11 @@ package org.mybatis.dynamic.sql;
 
 import java.util.Optional;
 
+import org.mybatis.dynamic.sql.exception.DynamicSqlException;
 import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
+import org.mybatis.dynamic.sql.util.Messages;
 
 /**
  * Describes attributes of columns that are necessary for rendering if the column is not expected to
@@ -58,8 +60,12 @@ public interface BasicColumn {
      *
      * @param tableAliasCalculator the table alias calculator for the current renderer
      * @return the item name with the table alias applied
+     * @deprecated Please replace this method by overriding the more general "render" method
      */
-    String renderWithTableAlias(TableAliasCalculator tableAliasCalculator);
+    @Deprecated
+    default String renderWithTableAlias(TableAliasCalculator tableAliasCalculator) {
+        throw new DynamicSqlException(Messages.getString("ERROR.36"));  //$NON-NLS-1$
+    }
 
     /**
      * Utility method to make it easier to build column lists for methods that require an

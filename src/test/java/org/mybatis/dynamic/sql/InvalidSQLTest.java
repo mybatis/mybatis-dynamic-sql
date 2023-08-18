@@ -15,18 +15,22 @@
  */
 package org.mybatis.dynamic.sql;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mybatis.dynamic.sql.SqlBuilder.insert;
 import static org.mybatis.dynamic.sql.SqlBuilder.insertInto;
+import static org.mybatis.dynamic.sql.SqlBuilder.select;
 import static org.mybatis.dynamic.sql.SqlBuilder.update;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.MissingResourceException;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.jupiter.api.Test;
+import org.mybatis.dynamic.sql.exception.DynamicSqlException;
 import org.mybatis.dynamic.sql.exception.InvalidSqlException;
 import org.mybatis.dynamic.sql.insert.BatchInsertModel;
 import org.mybatis.dynamic.sql.insert.GeneralInsertModel;
@@ -45,6 +49,7 @@ import org.mybatis.dynamic.sql.select.join.JoinModel;
 import org.mybatis.dynamic.sql.select.join.JoinSpecification;
 import org.mybatis.dynamic.sql.select.join.JoinType;
 import org.mybatis.dynamic.sql.select.render.PagingModelRenderer;
+import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.update.UpdateModel;
 import org.mybatis.dynamic.sql.util.InternalError;
 import org.mybatis.dynamic.sql.util.Messages;
@@ -252,6 +257,22 @@ class InvalidSQLTest {
                 .withMessage(Messages.getInternalErrorString(InternalError.INTERNAL_ERROR_13));
     }
 
+    @Test
+    void testBadColumn() {
+        SelectModel selectModel = select(new BadCount<>()).from(person).build();
+        assertThatExceptionOfType(DynamicSqlException.class)
+                .isThrownBy(() -> selectModel.render(RenderingStrategies.MYBATIS3))
+                .withMessage(Messages.getString("ERROR.36"));
+    }
+
+    @Test
+    void testDeprecatedColumn() {
+        SelectStatementProvider selectStatement = select(new DeprecatedCount<>())
+                .from(person)
+                .build()
+                .render(RenderingStrategies.MYBATIS3);
+        assertThat(selectStatement.getSelectStatement()).isEqualTo("select count(*) from person");
+    }
 
     static class TestRow {
         private Integer id;
@@ -262,6 +283,43 @@ class InvalidSQLTest {
 
         public void setId(Integer id) {
             this.id = id;
+        }
+    }
+
+    static class BadCount<T> implements BindableColumn<T> {
+        private String alias;
+
+        @Override
+        public Optional<String> alias() {
+            return Optional.ofNullable(alias);
+        }
+
+        @Override
+        public BindableColumn<T> as(String alias) {
+            BadCount<T> newCount = new BadCount<>();
+            newCount.alias = alias;
+            return newCount;
+        }
+    }
+
+    static class DeprecatedCount<T> implements BindableColumn<T> {
+        private String alias;
+
+        @Override
+        public String renderWithTableAlias(TableAliasCalculator tableAliasCalculator) {
+            return "count(*)";
+        }
+
+        @Override
+        public Optional<String> alias() {
+            return Optional.ofNullable(alias);
+        }
+
+        @Override
+        public BindableColumn<T> as(String alias) {
+            DeprecatedCount<T> newCount = new DeprecatedCount<>();
+            newCount.alias = alias;
+            return newCount;
         }
     }
 }

@@ -15,7 +15,8 @@
  */
 package org.mybatis.dynamic.sql;
 
-import org.mybatis.dynamic.sql.render.TableAliasCalculator;
+import org.mybatis.dynamic.sql.render.RenderingContext;
+import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 
 public abstract class AbstractColumnComparisonCondition<T> implements VisitableCondition<T> {
 
@@ -30,8 +31,12 @@ public abstract class AbstractColumnComparisonCondition<T> implements VisitableC
         return visitor.visit(this);
     }
 
-    public String renderCondition(String columnName, TableAliasCalculator tableAliasCalculator) {
-        return renderCondition(columnName, column.renderWithTableAlias(tableAliasCalculator));
+    public FragmentAndParameters renderCondition(String columnName, RenderingContext renderingContext) {
+        FragmentAndParameters renderedColumn = column.render(renderingContext);
+        String renderedCondition = renderCondition(columnName, renderedColumn.fragment());
+        return FragmentAndParameters.withFragment(renderedCondition)
+                .withParameters(renderedColumn.parameters())
+                .build();
     }
 
     protected abstract String renderCondition(String leftColumn, String rightColumn);

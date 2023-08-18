@@ -16,8 +16,9 @@
 package org.mybatis.dynamic.sql.select.aggregate;
 
 import org.mybatis.dynamic.sql.BindableColumn;
-import org.mybatis.dynamic.sql.render.TableAliasCalculator;
+import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.select.function.AbstractUniTypeFunction;
+import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 
 public class Avg<T> extends AbstractUniTypeFunction<T, Avg<T>> {
 
@@ -26,8 +27,12 @@ public class Avg<T> extends AbstractUniTypeFunction<T, Avg<T>> {
     }
 
     @Override
-    public String renderWithTableAlias(TableAliasCalculator tableAliasCalculator) {
-        return "avg(" + column.renderWithTableAlias(tableAliasCalculator) + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+    public FragmentAndParameters render(RenderingContext renderingContext) {
+        FragmentAndParameters renderedColumn = column.render(renderingContext);
+
+        return FragmentAndParameters.withFragment("avg(" + renderedColumn.fragment() + ")") //$NON-NLS-1$ //$NON-NLS-2$
+                .withParameters(renderedColumn.parameters())
+                .build();
     }
 
     @Override

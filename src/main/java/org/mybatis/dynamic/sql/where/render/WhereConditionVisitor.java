@@ -113,9 +113,11 @@ public class WhereConditionVisitor<T> implements ConditionVisitor<T, FragmentAnd
     @Override
     public FragmentAndParameters visit(AbstractColumnComparisonCondition<T> condition) {
         FragmentAndParameters renderedColumn = columnName();
-        String fragment = condition.renderCondition(renderedColumn.fragment(), renderingContext.tableAliasCalculator());
-        return FragmentAndParameters.withFragment(fragment)
+        FragmentAndParameters renderedCondition =
+                condition.renderCondition(renderedColumn.fragment(), renderingContext);
+        return FragmentAndParameters.withFragment(renderedCondition.fragment())
                 .withParameters(renderedColumn.parameters())
+                .withParameters(renderedCondition.parameters())
                 .build();
     }
 

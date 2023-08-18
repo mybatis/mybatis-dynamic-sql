@@ -19,8 +19,9 @@ import java.sql.JDBCType;
 import java.util.Optional;
 
 import org.mybatis.dynamic.sql.BindableColumn;
-import org.mybatis.dynamic.sql.render.TableAliasCalculator;
+import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.select.function.AbstractTypeConvertingFunction;
+import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 
 public class Length extends AbstractTypeConvertingFunction<Object, Integer, Length> {
     private Length(BindableColumn<Object> column) {
@@ -38,10 +39,12 @@ public class Length extends AbstractTypeConvertingFunction<Object, Integer, Leng
     }
 
     @Override
-    public String renderWithTableAlias(TableAliasCalculator tableAliasCalculator) {
-        return "length(" //$NON-NLS-1$
-                + column.renderWithTableAlias(tableAliasCalculator)
-                + ")"; //$NON-NLS-1$
+    public FragmentAndParameters render(RenderingContext renderingContext) {
+        FragmentAndParameters renderedColumn = column.render(renderingContext);
+
+        return FragmentAndParameters.withFragment("length(" + renderedColumn.fragment() + ")") //$NON-NLS-1$ //$NON-NLS-2$
+                .withParameters(renderedColumn.parameters())
+                .build();
     }
 
     @Override

@@ -18,7 +18,8 @@ package org.mybatis.dynamic.sql;
 import java.util.Objects;
 import java.util.Optional;
 
-import org.mybatis.dynamic.sql.render.TableAliasCalculator;
+import org.mybatis.dynamic.sql.render.RenderingContext;
+import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 
 public class StringConstant implements BindableColumn<String> {
 
@@ -40,8 +41,8 @@ public class StringConstant implements BindableColumn<String> {
     }
 
     @Override
-    public String renderWithTableAlias(TableAliasCalculator tableAliasCalculator) {
-        return "'" + value + "'"; //$NON-NLS-1$ //$NON-NLS-2$
+    public FragmentAndParameters render(RenderingContext renderingContext) {
+        return FragmentAndParameters.withFragment("'" + value + "'").build(); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     @Override
