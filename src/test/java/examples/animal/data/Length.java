@@ -34,11 +34,6 @@ public class Length extends AbstractTypeConvertingFunction<Object, Integer, Leng
     }
 
     @Override
-    public Optional<String> typeHandler() {
-        return Optional.empty();
-    }
-
-    @Override
     public FragmentAndParameters render(RenderingContext renderingContext) {
         FragmentAndParameters renderedColumn = column.render(renderingContext);
 

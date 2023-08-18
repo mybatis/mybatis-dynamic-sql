@@ -35,11 +35,6 @@ public class ToBase64 extends AbstractTypeConvertingFunction<byte[], String, ToB
     }
 
     @Override
-    public Optional<String> typeHandler() {
-        return Optional.empty();
-    }
-
-    @Override
     public FragmentAndParameters render(RenderingContext renderingContext) {
         FragmentAndParameters renderedColumn = column.render(renderingContext);
 
