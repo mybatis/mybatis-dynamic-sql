@@ -22,33 +22,7 @@ import examples.kotlin.spring.canonical.PersonDynamicSqlSupport.id
 import examples.kotlin.spring.canonical.PersonDynamicSqlSupport.lastName
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import org.mybatis.dynamic.sql.util.kotlin.elements.applyOperator
-import org.mybatis.dynamic.sql.util.kotlin.elements.avg
-import org.mybatis.dynamic.sql.util.kotlin.elements.concat
-import org.mybatis.dynamic.sql.util.kotlin.elements.concatenate
-import org.mybatis.dynamic.sql.util.kotlin.elements.constant
-import org.mybatis.dynamic.sql.util.kotlin.elements.count
-import org.mybatis.dynamic.sql.util.kotlin.elements.countDistinct
-import org.mybatis.dynamic.sql.util.kotlin.elements.divide
-import org.mybatis.dynamic.sql.util.kotlin.elements.isBetweenWhenPresent
-import org.mybatis.dynamic.sql.util.kotlin.elements.isEqualTo
-import org.mybatis.dynamic.sql.util.kotlin.elements.isFalse
-import org.mybatis.dynamic.sql.util.kotlin.elements.isInCaseInsensitive
-import org.mybatis.dynamic.sql.util.kotlin.elements.isInCaseInsensitiveWhenPresent
-import org.mybatis.dynamic.sql.util.kotlin.elements.isInWhenPresent
-import org.mybatis.dynamic.sql.util.kotlin.elements.isNotBetween
-import org.mybatis.dynamic.sql.util.kotlin.elements.isNotBetweenWhenPresent
-import org.mybatis.dynamic.sql.util.kotlin.elements.isNotIn
-import org.mybatis.dynamic.sql.util.kotlin.elements.isNotInCaseInsensitive
-import org.mybatis.dynamic.sql.util.kotlin.elements.isNotInCaseInsensitiveWhenPresent
-import org.mybatis.dynamic.sql.util.kotlin.elements.isNotInWhenPresent
-import org.mybatis.dynamic.sql.util.kotlin.elements.isTrue
-import org.mybatis.dynamic.sql.util.kotlin.elements.lower
-import org.mybatis.dynamic.sql.util.kotlin.elements.multiply
-import org.mybatis.dynamic.sql.util.kotlin.elements.stringConstant
-import org.mybatis.dynamic.sql.util.kotlin.elements.substring
-import org.mybatis.dynamic.sql.util.kotlin.elements.subtract
-import org.mybatis.dynamic.sql.util.kotlin.elements.sum
+import org.mybatis.dynamic.sql.util.kotlin.elements.*
 import org.mybatis.dynamic.sql.util.kotlin.spring.select
 import org.mybatis.dynamic.sql.util.kotlin.spring.selectList
 import org.mybatis.dynamic.sql.util.kotlin.spring.selectOne
@@ -137,6 +111,17 @@ open class KotlinElementsTest {
         val value = template.selectOne(selectStatement, Double::class)
 
         assertThat(value).isEqualTo(21.0)
+    }
+
+    @Test
+    fun testSumWithCondition() {
+        val selectStatement = select(sum(id, isLessThan(5))) {
+            from(person)
+        }
+
+        assertThat(selectStatement.selectStatement).isEqualTo(
+            "select sum(id < :p1) from Person"
+        )
     }
 
     @Test

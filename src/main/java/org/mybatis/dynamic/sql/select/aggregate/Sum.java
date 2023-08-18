@@ -16,18 +16,34 @@
 package org.mybatis.dynamic.sql.select.aggregate;
 
 import org.mybatis.dynamic.sql.BindableColumn;
+import org.mybatis.dynamic.sql.VisitableCondition;
 import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.select.function.AbstractUniTypeFunction;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
+import org.mybatis.dynamic.sql.where.render.WhereConditionVisitor;
 
 public class Sum<T> extends AbstractUniTypeFunction<T, Sum<T>> {
+    private final VisitableCondition<T> condition;
 
     private Sum(BindableColumn<T> column) {
+        this(column, null);
+    }
+
+    private Sum(BindableColumn<T> column, VisitableCondition<T> condition) {
         super(column);
+        this.condition = condition;
     }
 
     @Override
     public FragmentAndParameters render(RenderingContext renderingContext) {
+        if (condition == null) {
+            return renderWithoutCondition(renderingContext);
+        } else {
+            return renderWithCondition(renderingContext);
+        }
+    }
+
+    private FragmentAndParameters renderWithoutCondition(RenderingContext renderingContext) {
         FragmentAndParameters renderedColumn = column.render(renderingContext);
 
         return FragmentAndParameters.withFragment("sum(" + renderedColumn.fragment() + ")") //$NON-NLS-1$ //$NON-NLS-2$
@@ -35,12 +51,30 @@ public class Sum<T> extends AbstractUniTypeFunction<T, Sum<T>> {
                 .build();
     }
 
+    private FragmentAndParameters renderWithCondition(RenderingContext renderingContext) {
+        WhereConditionVisitor<T> visitor = new WhereConditionVisitor.Builder<T>()
+                .withColumn(column)
+                .withRenderingContext(renderingContext)
+                .build();
+
+        FragmentAndParameters renderedCondition = condition.accept(visitor);
+
+        return FragmentAndParameters
+                .withFragment("sum(" + renderedCondition.fragment() + ")") //$NON-NLS-1$ //$NON-NLS-2$
+                .withParameters(renderedCondition.parameters())
+                .build();
+    }
+
     @Override
     protected Sum<T> copy() {
-        return new Sum<>(column);
+        return new Sum<>(column, condition);
     }
 
     public static <T> Sum<T> of(BindableColumn<T> column) {
         return new Sum<>(column);
+    }
+
+    public static <T> Sum<T> of(BindableColumn<T> column, VisitableCondition<T> condition) {
+        return new Sum<>(column, condition);
     }
 }
