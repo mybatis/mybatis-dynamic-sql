@@ -42,7 +42,7 @@ public class StringConstant implements BindableColumn<String> {
 
     @Override
     public FragmentAndParameters render(RenderingContext renderingContext) {
-        return FragmentAndParameters.withFragment("'" + value + "'").build(); //$NON-NLS-1$ //$NON-NLS-2$
+        return FragmentAndParameters.fromFragment("'" + value + "'"); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     @Override

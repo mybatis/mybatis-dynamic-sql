@@ -143,7 +143,7 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
                 .map(this::applyTableAlias)
                 .orElseGet(this::name);
 
-        return FragmentAndParameters.withFragment(fragment).build();
+        return FragmentAndParameters.fromFragment(fragment);
     }
 
     @Override

@@ -73,8 +73,7 @@ public class DeleteRenderer {
         String aliasedTableName = renderingContext.tableAliasCalculator().aliasForTable(table)
                 .map(a -> tableName + " " + a).orElse(tableName); //$NON-NLS-1$
 
-        return FragmentAndParameters.withFragment("delete from " + aliasedTableName) //$NON-NLS-1$
-                .build();
+        return FragmentAndParameters.fromFragment("delete from " + aliasedTableName); //$NON-NLS-1$
     }
 
     private Optional<FragmentAndParameters> calculateWhereClause() {

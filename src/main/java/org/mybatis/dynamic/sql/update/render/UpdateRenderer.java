@@ -77,8 +77,7 @@ public class UpdateRenderer {
         String aliasedTableName = renderingContext.tableAliasCalculator().aliasForTable(table)
                 .map(a -> tableName + " " + a).orElse(tableName); //$NON-NLS-1$
 
-        return FragmentAndParameters.withFragment("update " + aliasedTableName) //$NON-NLS-1$
-                .build();
+        return FragmentAndParameters.fromFragment("update " + aliasedTableName); //$NON-NLS-1$
     }
 
     private FragmentAndParameters calculateSetPhrase() {

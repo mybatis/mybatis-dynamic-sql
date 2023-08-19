@@ -49,9 +49,20 @@ public interface BasicColumn {
      */
     BasicColumn as(String alias);
 
+    /**
+     * Returns a rendering of the column.
+     * The rendered fragment should include the table alias based on the TableAliasCalculator
+     * in the RenderingContext. The fragment could contain prepared statement parameter
+     * markers and associated parameter values if desired.
+     *
+     * @param renderingContext the rendering context (strategy, sequence, etc.)
+     * @return a rendered SQL fragment and, optionally, parameters associated with the fragment
+     * @since 1.5.1
+     */
     default FragmentAndParameters render(RenderingContext renderingContext) {
-        return FragmentAndParameters.withFragment(renderWithTableAlias(renderingContext.tableAliasCalculator()))
-                .build();
+        // the default implementation ensures compatibility with prior releases. When the
+        // deprecated renderWithTableAlias method is removed, this function can become purely abstract.
+        return FragmentAndParameters.fromFragment(renderWithTableAlias(renderingContext.tableAliasCalculator()));
     }
 
     /**

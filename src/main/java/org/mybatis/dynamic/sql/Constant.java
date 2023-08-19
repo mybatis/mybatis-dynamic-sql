@@ -42,7 +42,7 @@ public class Constant<T> implements BindableColumn<T> {
 
     @Override
     public FragmentAndParameters render(RenderingContext renderingContext) {
-        return FragmentAndParameters.withFragment(value).build();
+        return FragmentAndParameters.fromFragment(value);
     }
 
     @Override

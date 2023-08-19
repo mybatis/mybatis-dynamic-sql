@@ -30,8 +30,7 @@ public class CountAll extends AbstractCount {
 
     @Override
     public FragmentAndParameters render(RenderingContext renderingContext) {
-        return FragmentAndParameters.withFragment("count(*)") //$NON-NLS-1$
-                .build();
+        return FragmentAndParameters.fromFragment("count(*)"); //$NON-NLS-1$
     }
 
     @Override

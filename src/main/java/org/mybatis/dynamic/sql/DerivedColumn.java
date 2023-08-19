@@ -65,7 +65,7 @@ public class DerivedColumn<T> implements BindableColumn<T> {
     @Override
     public FragmentAndParameters render(RenderingContext renderingContext) {
         String fragment = tableQualifier == null ? name : tableQualifier + "." + name; //$NON-NLS-1$
-        return FragmentAndParameters.withFragment(fragment).build();
+        return FragmentAndParameters.fromFragment(fragment);
     }
 
     @Override

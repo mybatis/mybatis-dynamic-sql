@@ -42,6 +42,10 @@ public class FragmentAndParameters {
         return new Builder().withFragment(fragment);
     }
 
+    public static FragmentAndParameters fromFragment(String fragment) {
+        return new Builder().withFragment(fragment).build();
+    }
+
     public static class Builder {
         private String fragment;
         private final Map<String, Object> parameters = new HashMap<>();
