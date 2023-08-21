@@ -15,15 +15,16 @@
  */
 package org.mybatis.dynamic.sql;
 
-import org.mybatis.dynamic.sql.render.RenderingContext;
-import org.mybatis.dynamic.sql.util.FragmentAndParameters;
-
 public abstract class AbstractColumnComparisonCondition<T> implements VisitableCondition<T> {
 
-    protected final BasicColumn column;
+    protected final BasicColumn rightColumn;
 
-    protected AbstractColumnComparisonCondition(BasicColumn column) {
-        this.column = column;
+    protected AbstractColumnComparisonCondition(BasicColumn rightColumn) {
+        this.rightColumn = rightColumn;
+    }
+
+    public BasicColumn rightColumn() {
+        return rightColumn;
     }
 
     @Override
@@ -31,13 +32,5 @@ public abstract class AbstractColumnComparisonCondition<T> implements VisitableC
         return visitor.visit(this);
     }
 
-    public FragmentAndParameters renderCondition(String columnName, RenderingContext renderingContext) {
-        FragmentAndParameters renderedColumn = column.render(renderingContext);
-        String renderedCondition = renderCondition(columnName, renderedColumn.fragment());
-        return FragmentAndParameters.withFragment(renderedCondition)
-                .withParameters(renderedColumn.parameters())
-                .build();
-    }
-
-    protected abstract String renderCondition(String leftColumn, String rightColumn);
+    public abstract String operator();
 }

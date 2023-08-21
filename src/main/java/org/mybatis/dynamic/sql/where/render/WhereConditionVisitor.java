@@ -113,12 +113,16 @@ public class WhereConditionVisitor<T> implements ConditionVisitor<T, FragmentAnd
 
     @Override
     public FragmentAndParameters visit(AbstractColumnComparisonCondition<T> condition) {
-        FragmentAndParameters renderedColumn = columnName();
-        FragmentAndParameters renderedCondition =
-                condition.renderCondition(renderedColumn.fragment(), renderingContext);
-        return FragmentAndParameters.withFragment(renderedCondition.fragment())
-                .withParameters(renderedColumn.parameters())
-                .withParameters(renderedCondition.parameters())
+        FragmentAndParameters renderedLeftColumn = column.render(renderingContext);
+        FragmentAndParameters renderedRightColumn = condition.rightColumn().render(renderingContext);
+        String composedFragment = condition.overrideRenderedLeftColumn(renderedLeftColumn.fragment())
+                + " "//$NON-NLS-1$
+                + condition.operator()
+                + " "//$NON-NLS-1$
+                + renderedRightColumn.fragment();
+        return FragmentAndParameters.withFragment(composedFragment)
+                .withParameters(renderedLeftColumn.parameters())
+                .withParameters(renderedRightColumn.parameters())
                 .build();
     }
 

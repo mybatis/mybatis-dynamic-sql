@@ -25,8 +25,8 @@ public class IsGreaterThanOrEqualToColumn<T> extends AbstractColumnComparisonCon
     }
 
     @Override
-    protected String renderCondition(String leftColumn, String rightColumn) {
-        return leftColumn + " >= " + rightColumn; //$NON-NLS-1$
+    public String operator() {
+        return ">="; //$NON-NLS-1$
     }
 
     public static <T> IsGreaterThanOrEqualToColumn<T> of(BasicColumn column) {

@@ -25,8 +25,8 @@ public class IsGreaterThanColumn<T> extends AbstractColumnComparisonCondition<T>
     }
 
     @Override
-    protected String renderCondition(String leftColumn, String rightColumn) {
-        return leftColumn + " > " + rightColumn; //$NON-NLS-1$
+    public String operator() {
+        return ">"; //$NON-NLS-1$
     }
 
     public static <T> IsGreaterThanColumn<T> of(BasicColumn column) {
