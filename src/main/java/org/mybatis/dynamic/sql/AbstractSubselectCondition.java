@@ -34,5 +34,5 @@ public abstract class AbstractSubselectCondition<T> implements VisitableConditio
         return visitor.visit(this);
     }
 
-    public abstract String renderCondition(String columnName, String renderedSelectStatement);
+    public abstract String operator();
 }

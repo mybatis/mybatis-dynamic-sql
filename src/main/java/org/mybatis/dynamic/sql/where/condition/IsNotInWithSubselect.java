@@ -32,7 +32,7 @@ public class IsNotInWithSubselect<T> extends AbstractSubselectCondition<T> {
     }
 
     @Override
-    public String renderCondition(String columnName, String renderedSelectStatement) {
-        return columnName + " not in (" + renderedSelectStatement + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+    public String operator() {
+        return "not in"; //$NON-NLS-1$
     }
 }

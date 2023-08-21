@@ -108,17 +108,21 @@ public class WhereConditionVisitor<T> implements ConditionVisitor<T, FragmentAnd
 
     @Override
     public FragmentAndParameters visit(AbstractSubselectCondition<T> condition) {
+        FragmentAndParameters renderedLeftColumn = column.render(renderingContext);
         SelectStatementProvider selectStatement = SelectRenderer.withSelectModel(condition.selectModel())
                 .withRenderingContext(renderingContext)
                 .build()
                 .render();
 
-        FragmentAndParameters renderedColumn = columnName();
-        String fragment = condition.renderCondition(renderedColumn.fragment(), selectStatement.getSelectStatement());
+        String finalFragment = condition.overrideRenderedLeftColumn(renderedLeftColumn.fragment())
+                + spaceBefore(condition.operator())
+                + " (" //$NON-NLS-1$
+                + selectStatement.getSelectStatement()
+                + ")"; //$NON-NLS-1$
 
-        return FragmentAndParameters.withFragment(fragment)
+        return FragmentAndParameters.withFragment(finalFragment)
                 .withParameters(selectStatement.getParameters())
-                .withParameters(renderedColumn.parameters())
+                .withParameters(renderedLeftColumn.parameters())
                 .build();
     }
 
