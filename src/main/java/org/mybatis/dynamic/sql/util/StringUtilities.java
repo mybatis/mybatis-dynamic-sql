@@ -52,4 +52,8 @@ public interface StringUtilities {
 
         return sb.toString();
     }
+
+    static String applyUpper(String in) {
+        return "upper(" + in + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+    }
 }

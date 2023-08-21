@@ -15,7 +15,10 @@
  */
 package org.mybatis.dynamic.sql.where.render;
 
+import static org.mybatis.dynamic.sql.util.StringUtilities.spaceBefore;
+
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import org.mybatis.dynamic.sql.AbstractColumnComparisonCondition;
 import org.mybatis.dynamic.sql.AbstractListValueCondition;
@@ -48,12 +51,18 @@ public class WhereConditionVisitor<T> implements ConditionVisitor<T, FragmentAnd
     public FragmentAndParameters visit(AbstractListValueCondition<T> condition) {
         FragmentCollector fc = condition.mapValues(this::toFragmentAndParameters)
                 .collect(FragmentCollector.collect());
-        FragmentAndParameters renderedColumn = columnName();
+        FragmentAndParameters renderedLeftColumn = column.render(renderingContext);
+
+        String joinedFragments =
+                fc.collectFragments(Collectors.joining(",", "(", ")")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        String finalFragment = condition.overrideRenderedLeftColumn(renderedLeftColumn.fragment())
+                + spaceBefore(condition.operator())
+                + spaceBefore(joinedFragments);
 
         return FragmentAndParameters
-                .withFragment(condition.renderCondition(renderedColumn.fragment(), fc::collectFragments))
+                .withFragment(finalFragment)
                 .withParameters(fc.parameters())
-                .withParameters(renderedColumn.parameters())
+                .withParameters(renderedLeftColumn.parameters())
                 .build();
     }
 
@@ -115,12 +124,10 @@ public class WhereConditionVisitor<T> implements ConditionVisitor<T, FragmentAnd
     public FragmentAndParameters visit(AbstractColumnComparisonCondition<T> condition) {
         FragmentAndParameters renderedLeftColumn = column.render(renderingContext);
         FragmentAndParameters renderedRightColumn = condition.rightColumn().render(renderingContext);
-        String composedFragment = condition.overrideRenderedLeftColumn(renderedLeftColumn.fragment())
-                + " "//$NON-NLS-1$
-                + condition.operator()
-                + " "//$NON-NLS-1$
-                + renderedRightColumn.fragment();
-        return FragmentAndParameters.withFragment(composedFragment)
+        String finalFragment = condition.overrideRenderedLeftColumn(renderedLeftColumn.fragment())
+                + spaceBefore(condition.operator())
+                + spaceBefore(renderedRightColumn.fragment());
+        return FragmentAndParameters.withFragment(finalFragment)
                 .withParameters(renderedLeftColumn.parameters())
                 .withParameters(renderedRightColumn.parameters())
                 .build();
