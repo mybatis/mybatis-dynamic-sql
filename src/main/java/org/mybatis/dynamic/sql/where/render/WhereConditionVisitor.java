@@ -49,9 +49,8 @@ public class WhereConditionVisitor<T> implements ConditionVisitor<T, FragmentAnd
 
     @Override
     public FragmentAndParameters visit(AbstractListValueCondition<T> condition) {
-        FragmentCollector fc = condition.mapValues(this::toFragmentAndParameters)
-                .collect(FragmentCollector.collect());
         FragmentAndParameters renderedLeftColumn = column.render(renderingContext);
+        FragmentCollector fc = condition.mapValues(this::toFragmentAndParameters).collect(FragmentCollector.collect());
 
         String joinedFragments =
                 fc.collectFragments(Collectors.joining(",", "(", ")")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
@@ -68,9 +67,11 @@ public class WhereConditionVisitor<T> implements ConditionVisitor<T, FragmentAnd
 
     @Override
     public FragmentAndParameters visit(AbstractNoValueCondition<T> condition) {
-        FragmentAndParameters renderedColumn = columnName();
-        return FragmentAndParameters.withFragment(condition.renderCondition(renderedColumn.fragment()))
-                .withParameters(renderedColumn.parameters())
+        FragmentAndParameters renderedLeftColumn = column.render(renderingContext);
+        String finalFragment = condition.overrideRenderedLeftColumn(renderedLeftColumn.fragment())
+                + spaceBefore(condition.operator());
+        return FragmentAndParameters.withFragment(finalFragment)
+                .withParameters(renderedLeftColumn.parameters())
                 .build();
     }
 
