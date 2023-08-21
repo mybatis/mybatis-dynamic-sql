@@ -77,14 +77,15 @@ public class WhereConditionVisitor<T> implements ConditionVisitor<T, FragmentAnd
 
     @Override
     public FragmentAndParameters visit(AbstractSingleValueCondition<T> condition) {
+        FragmentAndParameters renderedLeftColumn = column.render(renderingContext);
         String mapKey = renderingContext.nextMapKey();
-        FragmentAndParameters renderedColumn = columnName();
-        String fragment = condition.renderCondition(renderedColumn.fragment(),
-                getFormattedJdbcPlaceholder(mapKey));
+        String finalFragment = condition.overrideRenderedLeftColumn(renderedLeftColumn.fragment())
+                + spaceBefore(condition.operator())
+                + spaceBefore(getFormattedJdbcPlaceholder(mapKey));
 
-        return FragmentAndParameters.withFragment(fragment)
+        return FragmentAndParameters.withFragment(finalFragment)
                 .withParameter(mapKey, convertValue(condition.value()))
-                .withParameters(renderedColumn.parameters())
+                .withParameters(renderedLeftColumn.parameters())
                 .build();
     }
 

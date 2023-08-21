@@ -63,5 +63,5 @@ public abstract class AbstractSingleValueCondition<T> implements VisitableCondit
      */
     public abstract AbstractSingleValueCondition<T> filter(Predicate<? super T> predicate);
 
-    public abstract String renderCondition(String columnName, String placeholder);
+    public abstract String operator();
 }
