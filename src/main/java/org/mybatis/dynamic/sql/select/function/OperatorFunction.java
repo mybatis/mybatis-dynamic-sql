@@ -58,8 +58,8 @@ public class OperatorFunction<T> extends AbstractUniTypeFunction<T, OperatorFunc
                 .collect(FragmentCollector.collect());
 
         String paddedOperator = " " + operator + " "; //$NON-NLS-1$ //$NON-NLS-2$
-        String fragment = fc.fragments()
-                .collect(Collectors.joining(paddedOperator, "(", ")")); //$NON-NLS-1$ //$NON-NLS-2$
+        String fragment = fc.collectFragments(
+                Collectors.joining(paddedOperator, "(", ")")); //$NON-NLS-1$ //$NON-NLS-2$
 
         return FragmentAndParameters.withFragment(fragment)
                 .withParameters(fc.parameters())

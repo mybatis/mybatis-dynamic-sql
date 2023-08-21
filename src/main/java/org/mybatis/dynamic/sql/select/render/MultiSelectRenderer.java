@@ -60,7 +60,7 @@ public class MultiSelectRenderer {
 
     private SelectStatementProvider toSelectStatementProvider(FragmentCollector fragmentCollector) {
         return DefaultSelectStatementProvider
-                .withSelectStatement(fragmentCollector.fragments().collect(Collectors.joining(" "))) //$NON-NLS-1$
+                .withSelectStatement(fragmentCollector.collectFragments(Collectors.joining(" "))) //$NON-NLS-1$
                 .withParameters(fragmentCollector.parameters())
                 .build();
     }

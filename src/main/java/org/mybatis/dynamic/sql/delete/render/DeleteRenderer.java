@@ -62,7 +62,7 @@ public class DeleteRenderer {
 
     private DeleteStatementProvider toDeleteStatementProvider(FragmentCollector fragmentCollector) {
         return DefaultDeleteStatementProvider
-                .withDeleteStatement(fragmentCollector.fragments().collect(Collectors.joining(" "))) //$NON-NLS-1$
+                .withDeleteStatement(fragmentCollector.collectFragments(Collectors.joining(" "))) //$NON-NLS-1$
                 .withParameters(fragmentCollector.parameters())
                 .build();
     }

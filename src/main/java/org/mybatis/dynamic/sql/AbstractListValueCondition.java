@@ -20,6 +20,7 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -85,5 +86,15 @@ public abstract class AbstractListValueCondition<T> implements VisitableConditio
      */
     public abstract AbstractListValueCondition<T> filter(Predicate<? super T> predicate);
 
-    public abstract String renderCondition(String columnName, Stream<String> placeholders);
+    /**
+     * Calculate a rendered condition string based on a collection of rendered JDBC placeholders.
+     * The placeholders are calculated by the renderer. It is expected that this function will
+     * call the function with an appropriate collector to calculate the final string.
+     *
+     * @param columnName the column attached to this condition
+     * @param placeholderFunction a function that accepts a collector and returns a String
+     * @return the calculated SQL fragment
+     */
+    public abstract String renderCondition(String columnName,
+                                           Function<Collector<CharSequence, ?, String>, String> placeholderFunction);
 }

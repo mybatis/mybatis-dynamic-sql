@@ -126,8 +126,8 @@ public class QueryExpressionRenderer {
     }
 
     private FragmentAndParameters toFragmentAndParameters(FragmentCollector fragmentCollector) {
-        return FragmentAndParameters.withFragment(fragmentCollector.fragments().collect(
-                    Collectors.joining(" "))) //$NON-NLS-1$
+        return FragmentAndParameters
+                .withFragment(fragmentCollector.collectFragments(Collectors.joining(" "))) //$NON-NLS-1$
                 .withParameters(fragmentCollector.parameters())
                 .build();
     }
@@ -154,7 +154,7 @@ public class QueryExpressionRenderer {
         FragmentCollector fc = queryExpression.mapColumns(this::applyTableAndColumnAlias)
                 .collect(FragmentCollector.collect());
 
-        String s = fc.fragments().collect(Collectors.joining(", ")); //$NON-NLS-1$
+        String s = fc.collectFragments(Collectors.joining(", ")); //$NON-NLS-1$
 
         return FragmentAndParameters.withFragment(s)
                 .withParameters(fc.parameters())
@@ -206,8 +206,8 @@ public class QueryExpressionRenderer {
     private FragmentAndParameters renderGroupBy(GroupByModel groupByModel) {
         FragmentCollector fc = groupByModel.mapColumns(this::applyTableAlias)
                 .collect(FragmentCollector.collect());
-        String groupBy = fc.fragments()
-                .collect(Collectors.joining(", ", "group by ", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$)
+        String groupBy = fc.collectFragments(
+                Collectors.joining(", ", "group by ", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$)
 
         return FragmentAndParameters.withFragment(groupBy)
                 .withParameters(fc.parameters())

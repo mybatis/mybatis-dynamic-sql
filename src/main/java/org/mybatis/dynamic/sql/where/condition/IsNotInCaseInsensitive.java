@@ -18,10 +18,11 @@ package org.mybatis.dynamic.sql.where.condition;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.mybatis.dynamic.sql.AbstractListValueCondition;
 import org.mybatis.dynamic.sql.util.StringUtilities;
@@ -38,10 +39,11 @@ public class IsNotInCaseInsensitive extends AbstractListValueCondition<String> {
     }
 
     @Override
-    public String renderCondition(String columnName, Stream<String> placeholders) {
+    public String renderCondition(String columnName,
+                                  Function<Collector<CharSequence, ?, String>, String> placeholderFunction) {
         return "upper(" + columnName + ") " //$NON-NLS-1$ //$NON-NLS-2$
-                + placeholders.collect(
-                        Collectors.joining(",", "not in (", ")")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                + placeholderFunction.apply(
+                Collectors.joining(",", "not in (", ")")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
 
     @Override

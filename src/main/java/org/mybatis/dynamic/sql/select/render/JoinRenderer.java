@@ -43,7 +43,7 @@ public class JoinRenderer {
         FragmentCollector fc = joinModel.mapJoinSpecifications(this::renderJoinSpecification)
                 .collect(FragmentCollector.collect());
 
-        return FragmentAndParameters.withFragment(fc.fragments().collect(Collectors.joining(" "))) //$NON-NLS-1$
+        return FragmentAndParameters.withFragment(fc.collectFragments(Collectors.joining(" "))) //$NON-NLS-1$
                 .withParameters(fc.parameters())
                 .build();
     }
@@ -67,7 +67,7 @@ public class JoinRenderer {
                 .collect(FragmentCollector.collect());
 
         return FragmentAndParameters
-                .withFragment(fragmentCollector.fragments().collect(Collectors.joining(" "))) //$NON-NLS-1$
+                .withFragment(fragmentCollector.collectFragments(Collectors.joining(" "))) //$NON-NLS-1$
                 .withParameters(fragmentCollector.parameters())
                 .build();
     }

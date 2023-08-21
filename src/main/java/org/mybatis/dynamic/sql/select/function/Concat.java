@@ -42,8 +42,8 @@ public class Concat<T> extends AbstractUniTypeFunction<T, Concat<T>> {
                 .map(column -> column.render(renderingContext))
                 .collect(FragmentCollector.collect());
 
-        String fragment = fc.fragments()
-                .collect(Collectors.joining(", ", "concat(", ")")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        String fragment = fc.collectFragments(
+                Collectors.joining(", ", "concat(", ")")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
         return FragmentAndParameters.withFragment(fragment)
                 .withParameters(fc.parameters())

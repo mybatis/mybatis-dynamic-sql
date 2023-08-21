@@ -66,7 +66,7 @@ public class UpdateRenderer {
 
     private UpdateStatementProvider toUpdateStatementProvider(FragmentCollector fragmentCollector) {
         return DefaultUpdateStatementProvider
-                .withUpdateStatement(fragmentCollector.fragments().collect(Collectors.joining(" "))) //$NON-NLS-1$
+                .withUpdateStatement(fragmentCollector.collectFragments(Collectors.joining(" "))) //$NON-NLS-1$
                 .withParameters(fragmentCollector.parameters())
                 .build();
     }
@@ -100,7 +100,7 @@ public class UpdateRenderer {
     }
 
     private FragmentAndParameters toSetPhrase(FragmentCollector fragmentCollector) {
-        return FragmentAndParameters.withFragment(fragmentCollector.fragments().collect(
+        return FragmentAndParameters.withFragment(fragmentCollector.collectFragments(
                     Collectors.joining(", ", "set ", ""))) //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 .withParameters(fragmentCollector.parameters())
                 .build();

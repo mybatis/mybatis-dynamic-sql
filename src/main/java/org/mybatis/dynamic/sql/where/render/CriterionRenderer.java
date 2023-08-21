@@ -233,19 +233,19 @@ public class CriterionRenderer implements SqlCriterionVisitor<Optional<RenderedC
 
     private String calculateFragment(FragmentCollector collector) {
         if (collector.hasMultipleFragments()) {
-            return collector.fragments()
-                    .collect(Collectors.joining(" ", "(", ")")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            return collector.collectFragments(
+                    Collectors.joining(" ", "(", ")")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         } else {
-            return collector.fragments().findFirst().orElse(""); //$NON-NLS-1$
+            return collector.firstFragment().orElse(""); //$NON-NLS-1$
         }
     }
 
     private String calculateNotFragment(FragmentCollector collector) {
         if (collector.hasMultipleFragments()) {
-            return collector.fragments()
-                    .collect(Collectors.joining(" ", "not (", ")")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            return collector.collectFragments(
+                    Collectors.joining(" ", "not (", ")")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         } else {
-            return collector.fragments().findFirst().map(s -> "not " + s).orElse(""); //$NON-NLS-1$ //$NON-NLS-2$
+            return collector.firstFragment().map(s -> "not " + s).orElse(""); //$NON-NLS-1$ //$NON-NLS-2$
         }
     }
 

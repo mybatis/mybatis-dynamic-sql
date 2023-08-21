@@ -22,8 +22,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.mybatis.dynamic.sql.AbstractListValueCondition;
 
@@ -41,9 +41,10 @@ public class IsIn<T> extends AbstractListValueCondition<T> {
     }
 
     @Override
-    public String renderCondition(String columnName, Stream<String> placeholders) {
-        return spaceAfter(columnName)
-                + placeholders.collect(Collectors.joining(",", "in (", ")")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    public String renderCondition(String columnName,
+                                  Function<Collector<CharSequence, ?, String>, String> placeholderFunction) {
+        return spaceAfter(columnName) + placeholderFunction.apply(
+                Collectors.joining(",", "in (", ")")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
 
     @Override

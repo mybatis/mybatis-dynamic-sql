@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collector;
-import java.util.stream.Stream;
 
 public class FragmentCollector {
     final List<FragmentAndParameters> fragments = new ArrayList<>();
@@ -47,9 +46,10 @@ public class FragmentCollector {
         return fragments.stream().findFirst().map(FragmentAndParameters::fragment);
     }
 
-    public Stream<String> fragments() {
-        return fragments.stream().map(FragmentAndParameters::fragment);
+    public String collectFragments(Collector<CharSequence, ?, String> collector) {
+        return fragments.stream().map(FragmentAndParameters::fragment).collect(collector);
     }
+
 
     public Map<String, Object> parameters() {
         return fragments.stream()

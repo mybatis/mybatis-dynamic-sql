@@ -63,8 +63,8 @@ public abstract class AbstractBooleanExpressionRenderer<M extends AbstractBoolea
 
     private String calculateClause(FragmentCollector collector) {
         if (collector.hasMultipleFragments()) {
-            return collector.fragments()
-                    .collect(Collectors.joining(" ", spaceAfter(prefix), "")); //$NON-NLS-1$ //$NON-NLS-2$
+            return collector.collectFragments(
+                    Collectors.joining(" ", spaceAfter(prefix), "")); //$NON-NLS-1$ //$NON-NLS-2$
         } else {
             return collector.firstFragment()
                     .map(this::stripEnclosingParenthesesIfPresent)

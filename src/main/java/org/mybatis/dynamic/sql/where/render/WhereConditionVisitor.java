@@ -50,7 +50,8 @@ public class WhereConditionVisitor<T> implements ConditionVisitor<T, FragmentAnd
                 .collect(FragmentCollector.collect());
         FragmentAndParameters renderedColumn = columnName();
 
-        return FragmentAndParameters.withFragment(condition.renderCondition(renderedColumn.fragment(), fc.fragments()))
+        return FragmentAndParameters
+                .withFragment(condition.renderCondition(renderedColumn.fragment(), fc::collectFragments))
                 .withParameters(fc.parameters())
                 .withParameters(renderedColumn.parameters())
                 .build();
