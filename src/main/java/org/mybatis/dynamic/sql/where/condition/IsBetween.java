@@ -46,6 +46,11 @@ public class IsBetween<T> extends AbstractTwoValueCondition<T> {
     }
 
     @Override
+    public String operator2() {
+        return "and"; //$NON-NLS-1$
+    }
+
+    @Override
     public IsBetween<T> filter(BiPredicate<? super T, ? super T> predicate) {
         return filterSupport(predicate, IsBetween::empty, this);
     }

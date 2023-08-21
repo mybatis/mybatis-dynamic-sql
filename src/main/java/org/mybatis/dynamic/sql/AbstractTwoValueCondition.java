@@ -90,7 +90,5 @@ public abstract class AbstractTwoValueCondition<T>
 
     public abstract String operator1();
 
-    public String operator2 () {
-        return "and"; //$NON-NLS-1$
-    }
+    public abstract String operator2();
 }
