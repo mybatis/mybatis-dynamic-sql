@@ -35,13 +35,13 @@ import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 import org.mybatis.dynamic.sql.util.FragmentCollector;
 
-public class WhereConditionVisitor<T> implements ConditionVisitor<T, FragmentAndParameters> {
+public class DefaultConditionVisitor<T> implements ConditionVisitor<T, FragmentAndParameters> {
 
     private final BindableColumn<T> column;
     private final String parameterPrefix;
     private final RenderingContext renderingContext;
 
-    private WhereConditionVisitor(Builder<T> builder) {
+    private DefaultConditionVisitor(Builder<T> builder) {
         column = Objects.requireNonNull(builder.column);
         parameterPrefix = Objects.requireNonNull(builder.parameterPrefix);
         renderingContext = Objects.requireNonNull(builder.renderingContext);
@@ -184,8 +184,8 @@ public class WhereConditionVisitor<T> implements ConditionVisitor<T, FragmentAnd
             return this;
         }
 
-        public WhereConditionVisitor<T> build() {
-            return new WhereConditionVisitor<>(this);
+        public DefaultConditionVisitor<T> build() {
+            return new DefaultConditionVisitor<>(this);
         }
     }
 }

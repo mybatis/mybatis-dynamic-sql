@@ -177,7 +177,7 @@ public class CriterionRenderer implements SqlCriterionVisitor<Optional<RenderedC
     }
 
     private <T> FragmentAndParameters renderCondition(ColumnAndConditionCriterion<T> criterion) {
-        WhereConditionVisitor<T> visitor = WhereConditionVisitor.withColumn(criterion.column())
+        DefaultConditionVisitor<T> visitor = DefaultConditionVisitor.withColumn(criterion.column())
                 .withRenderingContext(renderingContext)
                 .withParameterName(parameterName)
                 .build();

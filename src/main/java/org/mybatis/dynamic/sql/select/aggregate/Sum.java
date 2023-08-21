@@ -20,7 +20,7 @@ import org.mybatis.dynamic.sql.VisitableCondition;
 import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.select.function.AbstractUniTypeFunction;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
-import org.mybatis.dynamic.sql.where.render.WhereConditionVisitor;
+import org.mybatis.dynamic.sql.where.render.DefaultConditionVisitor;
 
 public class Sum<T> extends AbstractUniTypeFunction<T, Sum<T>> {
     private final VisitableCondition<T> condition;
@@ -52,7 +52,7 @@ public class Sum<T> extends AbstractUniTypeFunction<T, Sum<T>> {
     }
 
     private FragmentAndParameters renderWithCondition(RenderingContext renderingContext) {
-        WhereConditionVisitor<T> visitor = new WhereConditionVisitor.Builder<T>()
+        DefaultConditionVisitor<T> visitor = new DefaultConditionVisitor.Builder<T>()
                 .withColumn(column)
                 .withRenderingContext(renderingContext)
                 .build();
