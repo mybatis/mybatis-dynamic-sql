@@ -41,8 +41,8 @@ public class IsNotBetween<T> extends AbstractTwoValueCondition<T> {
     }
 
     @Override
-    public String renderCondition(String columnName, String placeholder1, String placeholder2) {
-        return columnName + " not between " + placeholder1 + " and " + placeholder2; //$NON-NLS-1$ //$NON-NLS-2$
+    public String operator1() {
+        return "not between"; //$NON-NLS-1$
     }
 
     @Override

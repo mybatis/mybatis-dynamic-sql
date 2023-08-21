@@ -91,20 +91,22 @@ public class WhereConditionVisitor<T> implements ConditionVisitor<T, FragmentAnd
 
     @Override
     public FragmentAndParameters visit(AbstractTwoValueCondition<T> condition) {
+        FragmentAndParameters renderedLeftColumn = column.render(renderingContext);
         String mapKey1 = renderingContext.nextMapKey();
         String mapKey2 = renderingContext.nextMapKey();
-        FragmentAndParameters renderedColumn = columnName();
-        String fragment = condition.renderCondition(renderedColumn.fragment(),
-                getFormattedJdbcPlaceholder(mapKey1),
-                getFormattedJdbcPlaceholder(mapKey2));
 
-        return FragmentAndParameters.withFragment(fragment)
+        String finalFragment = condition.overrideRenderedLeftColumn(renderedLeftColumn.fragment())
+                + spaceBefore(condition.operator1())
+                + spaceBefore(getFormattedJdbcPlaceholder(mapKey1))
+                + spaceBefore(condition.operator2())
+                + spaceBefore(getFormattedJdbcPlaceholder(mapKey2));
+
+        return FragmentAndParameters.withFragment(finalFragment)
                 .withParameter(mapKey1, convertValue(condition.value1()))
                 .withParameter(mapKey2, convertValue(condition.value2()))
-                .withParameters(renderedColumn.parameters())
+                .withParameters(renderedLeftColumn.parameters())
                 .build();
     }
-
 
     @Override
     public FragmentAndParameters visit(AbstractSubselectCondition<T> condition) {
@@ -154,10 +156,6 @@ public class WhereConditionVisitor<T> implements ConditionVisitor<T, FragmentAnd
     private String getFormattedJdbcPlaceholder(String mapKey) {
         return column.renderingStrategy().orElse(renderingContext.renderingStrategy())
                 .getFormattedJdbcPlaceholder(column, parameterPrefix, mapKey);
-    }
-
-    private FragmentAndParameters columnName() {
-        return column.render(renderingContext);
     }
 
     public static <T> Builder<T> withColumn(BindableColumn<T> column) {
