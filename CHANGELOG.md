@@ -30,6 +30,14 @@ In order to add this capability, we've modified the join DSL to add type informa
 be source code compatible with most uses. There could be an issue if you are joining tables with columns of different
 types - which is a rare usage. Please let us know if this causes an undo hardship.
 
+### Other Changes
+
+1. Rendering of conditions and columns was refactored. One benefit of this change is that
+   it is now easier to support more complex functions - such as the aggregate function `sum(id < 5)` which is the
+   initial enhancement request that inspired this change. As a result of the changes, one method is deprecated
+   in the `BasicColumn` object. If you have implemented any custom functions, please note this deprecation and update
+   your code accordingly.
+
 ## Release 1.5.0 - April 21, 2023
 
 GitHub milestone: [https://github.com/mybatis/mybatis-dynamic-sql/milestone/12?closed=1](https://github.com/mybatis/mybatis-dynamic-sql/milestone/12?closed=1)
