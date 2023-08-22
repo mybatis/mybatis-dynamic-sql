@@ -36,7 +36,7 @@ types - which is a rare usage. Please let us know if this causes an undo hardshi
    it is now easier to support more complex functions - such as the aggregate function `sum(id < 5)` which is the
    initial enhancement request that inspired this change. As a result of the changes, one method is deprecated
    in the `BasicColumn` object. If you have implemented any custom functions, please note this deprecation and update
-   your code accordingly.
+   your code accordingly. ([#662](https://github.com/mybatis/mybatis-dynamic-sql/pull/662))
 
 ## Release 1.5.0 - April 21, 2023
 
