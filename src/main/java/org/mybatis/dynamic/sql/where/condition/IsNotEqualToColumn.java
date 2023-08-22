@@ -25,8 +25,8 @@ public class IsNotEqualToColumn<T> extends AbstractColumnComparisonCondition<T> 
     }
 
     @Override
-    protected String renderCondition(String leftColumn, String rightColumn) {
-        return leftColumn + " <> " + rightColumn; //$NON-NLS-1$
+    public String operator() {
+        return "<>"; //$NON-NLS-1$
     }
 
     public static <T> IsNotEqualToColumn<T> of(BasicColumn column) {

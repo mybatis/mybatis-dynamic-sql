@@ -34,5 +34,5 @@ public abstract class AbstractNoValueCondition<T> implements VisitableCondition<
         }
     }
 
-    public abstract String renderCondition(String columnName);
+    public abstract String operator();
 }

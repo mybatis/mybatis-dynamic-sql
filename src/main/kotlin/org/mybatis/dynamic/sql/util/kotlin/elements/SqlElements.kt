@@ -24,6 +24,7 @@ import org.mybatis.dynamic.sql.SortSpecification
 import org.mybatis.dynamic.sql.SqlBuilder
 import org.mybatis.dynamic.sql.SqlColumn
 import org.mybatis.dynamic.sql.StringConstant
+import org.mybatis.dynamic.sql.VisitableCondition
 import org.mybatis.dynamic.sql.select.aggregate.Avg
 import org.mybatis.dynamic.sql.select.aggregate.Count
 import org.mybatis.dynamic.sql.select.aggregate.CountAll
@@ -108,6 +109,8 @@ fun <T> min(column: BindableColumn<T>): Min<T> = SqlBuilder.min(column)
 fun <T> avg(column: BindableColumn<T>): Avg<T> = SqlBuilder.avg(column)
 
 fun <T> sum(column: BindableColumn<T>): Sum<T> = SqlBuilder.sum(column)
+
+fun <T> sum(column: BindableColumn<T>, condition: VisitableCondition<T>): Sum<T> = SqlBuilder.sum(column, condition)
 
 // constants
 fun <T> constant(constant: String): Constant<T> = SqlBuilder.constant(constant)

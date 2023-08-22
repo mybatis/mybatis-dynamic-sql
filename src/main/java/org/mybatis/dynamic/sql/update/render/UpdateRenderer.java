@@ -26,6 +26,7 @@ import org.mybatis.dynamic.sql.common.OrderByModel;
 import org.mybatis.dynamic.sql.common.OrderByRenderer;
 import org.mybatis.dynamic.sql.exception.InvalidSqlException;
 import org.mybatis.dynamic.sql.render.ExplicitTableAliasCalculator;
+import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 import org.mybatis.dynamic.sql.update.UpdateModel;
@@ -37,16 +38,18 @@ import org.mybatis.dynamic.sql.where.render.WhereRenderer;
 
 public class UpdateRenderer {
     private final UpdateModel updateModel;
-    private final RenderingStrategy renderingStrategy;
-    private final AtomicInteger sequence = new AtomicInteger(1);
-    private final TableAliasCalculator tableAliasCalculator;
+    private final RenderingContext renderingContext;
 
     private UpdateRenderer(Builder builder) {
         updateModel = Objects.requireNonNull(builder.updateModel);
-        renderingStrategy = Objects.requireNonNull(builder.renderingStrategy);
-        tableAliasCalculator = builder.updateModel.tableAlias()
+        TableAliasCalculator tableAliasCalculator = builder.updateModel.tableAlias()
                 .map(a -> ExplicitTableAliasCalculator.of(updateModel.table(), a))
                 .orElseGet(TableAliasCalculator::empty);
+        renderingContext = new RenderingContext.Builder()
+                .withRenderingStrategy(Objects.requireNonNull(builder.renderingStrategy))
+                .withTableAliasCalculator(tableAliasCalculator)
+                .withSequence(new AtomicInteger(1))
+                .build();
     }
 
     public UpdateStatementProvider render() {
@@ -63,7 +66,7 @@ public class UpdateRenderer {
 
     private UpdateStatementProvider toUpdateStatementProvider(FragmentCollector fragmentCollector) {
         return DefaultUpdateStatementProvider
-                .withUpdateStatement(fragmentCollector.fragments().collect(Collectors.joining(" "))) //$NON-NLS-1$
+                .withUpdateStatement(fragmentCollector.collectFragments(Collectors.joining(" "))) //$NON-NLS-1$
                 .withParameters(fragmentCollector.parameters())
                 .build();
     }
@@ -71,15 +74,14 @@ public class UpdateRenderer {
     private FragmentAndParameters calculateUpdateStatementStart() {
         SqlTable table = updateModel.table();
         String tableName = table.tableNameAtRuntime();
-        String aliasedTableName = tableAliasCalculator.aliasForTable(table)
+        String aliasedTableName = renderingContext.tableAliasCalculator().aliasForTable(table)
                 .map(a -> tableName + " " + a).orElse(tableName); //$NON-NLS-1$
 
-        return FragmentAndParameters.withFragment("update " + aliasedTableName) //$NON-NLS-1$
-                .build();
+        return FragmentAndParameters.fromFragment("update " + aliasedTableName); //$NON-NLS-1$
     }
 
     private FragmentAndParameters calculateSetPhrase() {
-        SetPhraseVisitor visitor = new SetPhraseVisitor(sequence, renderingStrategy, tableAliasCalculator);
+        SetPhraseVisitor visitor = new SetPhraseVisitor(renderingContext);
 
         List<Optional<FragmentAndParameters>> fragmentsAndParameters =
                 updateModel.mapColumnMappings(m -> m.accept(visitor))
@@ -98,7 +100,7 @@ public class UpdateRenderer {
     }
 
     private FragmentAndParameters toSetPhrase(FragmentCollector fragmentCollector) {
-        return FragmentAndParameters.withFragment(fragmentCollector.fragments().collect(
+        return FragmentAndParameters.withFragment(fragmentCollector.collectFragments(
                     Collectors.joining(", ", "set ", ""))) //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 .withParameters(fragmentCollector.parameters())
                 .build();
@@ -110,9 +112,7 @@ public class UpdateRenderer {
 
     private Optional<FragmentAndParameters> renderWhereClause(WhereModel whereModel) {
         return WhereRenderer.withWhereModel(whereModel)
-                .withRenderingStrategy(renderingStrategy)
-                .withSequence(sequence)
-                .withTableAliasCalculator(tableAliasCalculator)
+                .withRenderingContext(renderingContext)
                 .build()
                 .render();
     }
@@ -122,9 +122,9 @@ public class UpdateRenderer {
     }
 
     private FragmentAndParameters renderLimitClause(Long limit) {
-        String mapKey = renderingStrategy.formatParameterMapKey(sequence);
-        String jdbcPlaceholder =
-                renderingStrategy.getFormattedJdbcPlaceholder(RenderingStrategy.DEFAULT_PARAMETER_PREFIX, mapKey);
+        String mapKey = renderingContext.nextMapKey();
+        String jdbcPlaceholder = renderingContext
+                .renderingStrategy().getFormattedJdbcPlaceholder(RenderingStrategy.DEFAULT_PARAMETER_PREFIX, mapKey);
 
         return FragmentAndParameters.withFragment("limit " + jdbcPlaceholder) //$NON-NLS-1$
                 .withParameter(mapKey, limit)

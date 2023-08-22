@@ -18,12 +18,10 @@ package org.mybatis.dynamic.sql.select.render;
 import static org.mybatis.dynamic.sql.util.StringUtilities.spaceBefore;
 
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import org.mybatis.dynamic.sql.BasicColumn;
-import org.mybatis.dynamic.sql.render.RenderingStrategy;
-import org.mybatis.dynamic.sql.render.TableAliasCalculator;
+import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.select.join.JoinCriterion;
 import org.mybatis.dynamic.sql.select.join.JoinModel;
 import org.mybatis.dynamic.sql.select.join.JoinSpecification;
@@ -33,23 +31,19 @@ import org.mybatis.dynamic.sql.util.FragmentCollector;
 public class JoinRenderer {
     private final JoinModel joinModel;
     private final TableExpressionRenderer tableExpressionRenderer;
-    private final TableAliasCalculator tableAliasCalculator;
-    private final RenderingStrategy renderingStrategy;
-    private final AtomicInteger sequence;
+    private final RenderingContext renderingContext;
 
     private JoinRenderer(Builder builder) {
         joinModel = Objects.requireNonNull(builder.joinModel);
         tableExpressionRenderer = Objects.requireNonNull(builder.tableExpressionRenderer);
-        tableAliasCalculator = Objects.requireNonNull(builder.tableAliasCalculator);
-        renderingStrategy = Objects.requireNonNull(builder.renderingStrategy);
-        sequence = Objects.requireNonNull(builder.sequence);
+        renderingContext = Objects.requireNonNull(builder.renderingContext);
     }
 
     public FragmentAndParameters render() {
         FragmentCollector fc = joinModel.mapJoinSpecifications(this::renderJoinSpecification)
                 .collect(FragmentCollector.collect());
 
-        return FragmentAndParameters.withFragment(fc.fragments().collect(Collectors.joining(" "))) //$NON-NLS-1$
+        return FragmentAndParameters.withFragment(fc.collectFragments(Collectors.joining(" "))) //$NON-NLS-1$
                 .withParameters(fc.parameters())
                 .build();
     }
@@ -73,19 +67,19 @@ public class JoinRenderer {
                 .collect(FragmentCollector.collect());
 
         return FragmentAndParameters
-                .withFragment(fragmentCollector.fragments().collect(Collectors.joining(" "))) //$NON-NLS-1$
+                .withFragment(fragmentCollector.collectFragments(Collectors.joining(" "))) //$NON-NLS-1$
                 .withParameters(fragmentCollector.parameters())
                 .build();
     }
 
     private <T> FragmentAndParameters renderCriterion(JoinCriterion<T> joinCriterion) {
+        FragmentAndParameters renderedColumn = applyTableAlias(joinCriterion.leftColumn());
+
         String prefix = joinCriterion.connector()
-                + spaceBefore(applyTableAlias(joinCriterion.leftColumn()));
+                + spaceBefore(renderedColumn.fragment());
 
         JoinConditionRenderer<T> joinConditionRenderer = new JoinConditionRenderer.Builder<T>()
-                .withRenderingStrategy(renderingStrategy)
-                .withSequence(sequence)
-                .withTableAliasCalculator(tableAliasCalculator)
+                .withRenderingContext(renderingContext)
                 .withLeftColumn(joinCriterion.leftColumn())
                 .build();
 
@@ -93,11 +87,12 @@ public class JoinRenderer {
 
         return FragmentAndParameters.withFragment(prefix + spaceBefore(suffix.fragment()))
                 .withParameters(suffix.parameters())
+                .withParameters(renderedColumn.parameters())
                 .build();
     }
 
-    private String applyTableAlias(BasicColumn column) {
-        return column.renderWithTableAlias(tableAliasCalculator);
+    private FragmentAndParameters applyTableAlias(BasicColumn column) {
+        return column.render(renderingContext);
     }
 
     public static Builder withJoinModel(JoinModel joinModel) {
@@ -107,9 +102,7 @@ public class JoinRenderer {
     public static class Builder {
         private JoinModel joinModel;
         private TableExpressionRenderer tableExpressionRenderer;
-        private TableAliasCalculator tableAliasCalculator;
-        private RenderingStrategy renderingStrategy;
-        private AtomicInteger sequence;
+        private RenderingContext renderingContext;
 
         public Builder withJoinModel(JoinModel joinModel) {
             this.joinModel = joinModel;
@@ -121,18 +114,8 @@ public class JoinRenderer {
             return this;
         }
 
-        public Builder withTableAliasCalculator(TableAliasCalculator tableAliasCalculator) {
-            this.tableAliasCalculator = tableAliasCalculator;
-            return this;
-        }
-
-        public Builder withRenderingStrategy(RenderingStrategy renderingStrategy) {
-            this.renderingStrategy = renderingStrategy;
-            return this;
-        }
-
-        public Builder withSequence(AtomicInteger sequence) {
-            this.sequence = sequence;
+        public Builder withRenderingContext(RenderingContext renderingContext) {
+            this.renderingContext = renderingContext;
             return this;
         }
 

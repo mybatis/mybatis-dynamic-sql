@@ -32,7 +32,7 @@ public class IsInWithSubselect<T> extends AbstractSubselectCondition<T> {
     }
 
     @Override
-    public String renderCondition(String columnName, String renderedSelectStatement) {
-        return columnName + " in (" + renderedSelectStatement + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+    public String operator() {
+        return "in"; //$NON-NLS-1$
     }
 }

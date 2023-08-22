@@ -19,7 +19,8 @@ import java.sql.JDBCType;
 import java.util.Objects;
 import java.util.Optional;
 
-import org.mybatis.dynamic.sql.render.TableAliasCalculator;
+import org.mybatis.dynamic.sql.render.RenderingContext;
+import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 
 /**
  * A derived column is a column that is not directly related to a table. This is primarily
@@ -62,8 +63,9 @@ public class DerivedColumn<T> implements BindableColumn<T> {
     }
 
     @Override
-    public String renderWithTableAlias(TableAliasCalculator tableAliasCalculator) {
-        return tableQualifier == null ? name : tableQualifier + "." + name; //$NON-NLS-1$
+    public FragmentAndParameters render(RenderingContext renderingContext) {
+        String fragment = tableQualifier == null ? name : tableQualifier + "." + name; //$NON-NLS-1$
+        return FragmentAndParameters.fromFragment(fragment);
     }
 
     @Override

@@ -17,12 +17,11 @@ package org.mybatis.dynamic.sql.update.render;
 
 import java.util.Objects;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 
 import org.mybatis.dynamic.sql.SqlColumn;
+import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
-import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 import org.mybatis.dynamic.sql.select.render.SelectRenderer;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.util.AbstractColumnMapping;
@@ -39,18 +38,15 @@ import org.mybatis.dynamic.sql.util.ValueWhenPresentMapping;
 
 public class SetPhraseVisitor extends UpdateMappingVisitor<Optional<FragmentAndParameters>> {
 
-    private final AtomicInteger sequence;
-    private final RenderingStrategy renderingStrategy;
     private final Function<SqlColumn<?>, String> aliasedColumnNameFunction;
+    private final RenderingContext renderingContext;
 
-    public SetPhraseVisitor(AtomicInteger sequence, RenderingStrategy renderingStrategy,
-                            TableAliasCalculator tableAliasCalculator) {
-        this.sequence = Objects.requireNonNull(sequence);
-        this.renderingStrategy = Objects.requireNonNull(renderingStrategy);
-        Objects.requireNonNull(tableAliasCalculator);
-        aliasedColumnNameFunction = c -> tableAliasCalculator.aliasForColumn(c.table())
+    public SetPhraseVisitor(RenderingContext renderingContext) {
+        aliasedColumnNameFunction = c -> renderingContext.tableAliasCalculator().aliasForColumn(c.table())
                 .map(alias -> alias + "." + c.name())  //$NON-NLS-1$
                 .orElseGet(c::name);
+
+        this.renderingContext = Objects.requireNonNull(renderingContext);
     }
 
     @Override
@@ -101,8 +97,7 @@ public class SetPhraseVisitor extends UpdateMappingVisitor<Optional<FragmentAndP
     @Override
     public Optional<FragmentAndParameters> visit(SelectMapping mapping) {
         SelectStatementProvider selectStatement = SelectRenderer.withSelectModel(mapping.selectModel())
-                .withRenderingStrategy(renderingStrategy)
-                .withSequence(sequence)
+                .withRenderingContext(renderingContext)
                 .build()
                 .render();
 
@@ -118,16 +113,19 @@ public class SetPhraseVisitor extends UpdateMappingVisitor<Optional<FragmentAndP
 
     @Override
     public Optional<FragmentAndParameters> visit(ColumnToColumnMapping mapping) {
+        FragmentAndParameters renderedColumn = mapping.rightColumn().render(renderingContext);
+
         String setPhrase = mapping.mapColumn(aliasedColumnNameFunction)
                 + " = "  //$NON-NLS-1$
-                + mapping.rightColumn().renderWithTableAlias(TableAliasCalculator.empty());
+                + renderedColumn.fragment();
 
         return FragmentAndParameters.withFragment(setPhrase)
+                .withParameters(renderedColumn.parameters())
                 .buildOptional();
     }
 
     private <T> Optional<FragmentAndParameters> buildFragment(AbstractColumnMapping mapping, T value) {
-        String mapKey = renderingStrategy.formatParameterMapKey(sequence);
+        String mapKey = renderingContext.nextMapKey();
 
         String jdbcPlaceholder = mapping.mapColumn(c -> calculateJdbcPlaceholder(c, mapKey));
         String setPhrase = mapping.mapColumn(aliasedColumnNameFunction)
@@ -140,7 +138,7 @@ public class SetPhraseVisitor extends UpdateMappingVisitor<Optional<FragmentAndP
     }
 
     private String calculateJdbcPlaceholder(SqlColumn<?> column, String parameterName) {
-        return column.renderingStrategy().orElse(renderingStrategy)
+        return column.renderingStrategy().orElse(renderingContext.renderingStrategy())
                 .getFormattedJdbcPlaceholder(column, RenderingStrategy.DEFAULT_PARAMETER_PREFIX, parameterName);
     }
 }

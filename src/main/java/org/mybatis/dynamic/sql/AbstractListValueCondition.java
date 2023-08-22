@@ -85,5 +85,5 @@ public abstract class AbstractListValueCondition<T> implements VisitableConditio
      */
     public abstract AbstractListValueCondition<T> filter(Predicate<? super T> predicate);
 
-    public abstract String renderCondition(String columnName, Stream<String> placeholders);
+    public abstract String operator();
 }

@@ -38,8 +38,8 @@ public class IsNull<T> extends AbstractNoValueCondition<T> {
     }
 
     @Override
-    public String renderCondition(String columnName) {
-        return columnName + " is null"; //$NON-NLS-1$
+    public String operator() {
+        return "is null"; //$NON-NLS-1$
     }
 
     /**

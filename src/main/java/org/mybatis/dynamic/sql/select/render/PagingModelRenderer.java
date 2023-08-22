@@ -16,21 +16,18 @@
 package org.mybatis.dynamic.sql.select.render;
 
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicInteger;
 
-import org.mybatis.dynamic.sql.render.RenderingStrategy;
+import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.select.PagingModel;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 
 public class PagingModelRenderer {
-    private final RenderingStrategy renderingStrategy;
     private final PagingModel pagingModel;
-    private final AtomicInteger sequence;
+    private final RenderingContext renderingContext;
 
     private PagingModelRenderer(Builder builder) {
-        renderingStrategy = Objects.requireNonNull(builder.renderingStrategy);
+        renderingContext = Objects.requireNonNull(builder.renderingContext);
         pagingModel = Objects.requireNonNull(builder.pagingModel);
-        sequence = Objects.requireNonNull(builder.sequence);
     }
 
     public FragmentAndParameters render() {
@@ -39,31 +36,24 @@ public class PagingModelRenderer {
     }
 
     private FragmentAndParameters limitAndOffsetRender(Long limit) {
-        return new LimitAndOffsetPagingModelRenderer(renderingStrategy, limit,
-                pagingModel, sequence).render();
+        return new LimitAndOffsetPagingModelRenderer(renderingContext, limit, pagingModel).render();
     }
 
     private FragmentAndParameters fetchFirstRender() {
-        return new FetchFirstPagingModelRenderer(renderingStrategy, pagingModel, sequence).render();
+        return new FetchFirstPagingModelRenderer(renderingContext, pagingModel).render();
     }
 
     public static class Builder {
-        private RenderingStrategy renderingStrategy;
         private PagingModel pagingModel;
-        private AtomicInteger sequence;
+        private RenderingContext renderingContext;
 
-        public Builder withRenderingStrategy(RenderingStrategy renderingStrategy) {
-            this.renderingStrategy = renderingStrategy;
+        public Builder withRenderingContext(RenderingContext renderingContext) {
+            this.renderingContext = renderingContext;
             return this;
         }
 
         public Builder withPagingModel(PagingModel pagingModel) {
             this.pagingModel = pagingModel;
-            return this;
-        }
-
-        public Builder withSequence(AtomicInteger sequence) {
-            this.sequence = sequence;
             return this;
         }
 

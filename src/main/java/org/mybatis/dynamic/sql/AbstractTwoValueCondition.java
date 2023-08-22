@@ -88,5 +88,7 @@ public abstract class AbstractTwoValueCondition<T>
      */
     public abstract AbstractTwoValueCondition<T> filter(Predicate<? super T> predicate);
 
-    public abstract String renderCondition(String columnName, String placeholder1, String placeholder2);
+    public abstract String operator1();
+
+    public abstract String operator2();
 }

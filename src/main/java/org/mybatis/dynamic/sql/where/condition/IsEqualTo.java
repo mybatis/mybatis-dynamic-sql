@@ -40,8 +40,8 @@ public class IsEqualTo<T> extends AbstractSingleValueCondition<T> {
     }
 
     @Override
-    public String renderCondition(String columnName, String placeholder) {
-        return columnName + " = " + placeholder; //$NON-NLS-1$
+    public String operator() {
+        return "="; //$NON-NLS-1$
     }
 
     public static <T> IsEqualTo<T> of(T value) {

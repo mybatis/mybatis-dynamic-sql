@@ -15,15 +15,11 @@
  */
 package org.mybatis.dynamic.sql.where.condition;
 
-import static org.mybatis.dynamic.sql.util.StringUtilities.spaceAfter;
-
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.mybatis.dynamic.sql.AbstractListValueCondition;
 
@@ -41,10 +37,8 @@ public class IsNotIn<T> extends AbstractListValueCondition<T> {
     }
 
     @Override
-    public String renderCondition(String columnName, Stream<String> placeholders) {
-        return spaceAfter(columnName)
-                + placeholders.collect(
-                        Collectors.joining(",", "not in (", ")")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    public String operator() {
+        return "not in"; //$NON-NLS-1$
     }
 
     @Override

@@ -17,7 +17,11 @@ package org.mybatis.dynamic.sql;
 
 import java.util.Optional;
 
+import org.mybatis.dynamic.sql.exception.DynamicSqlException;
+import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.render.TableAliasCalculator;
+import org.mybatis.dynamic.sql.util.FragmentAndParameters;
+import org.mybatis.dynamic.sql.util.Messages;
 
 /**
  * Describes attributes of columns that are necessary for rendering if the column is not expected to
@@ -46,26 +50,32 @@ public interface BasicColumn {
     BasicColumn as(String alias);
 
     /**
+     * Returns a rendering of the column.
+     * The rendered fragment should include the table alias based on the TableAliasCalculator
+     * in the RenderingContext. The fragment could contain prepared statement parameter
+     * markers and associated parameter values if desired.
+     *
+     * @param renderingContext the rendering context (strategy, sequence, etc.)
+     * @return a rendered SQL fragment and, optionally, parameters associated with the fragment
+     * @since 1.5.1
+     */
+    default FragmentAndParameters render(RenderingContext renderingContext) {
+        // the default implementation ensures compatibility with prior releases. When the
+        // deprecated renderWithTableAlias method is removed, this function can become purely abstract.
+        return FragmentAndParameters.fromFragment(renderWithTableAlias(renderingContext.tableAliasCalculator()));
+    }
+
+    /**
      * Returns the name of the item aliased with a table name if appropriate.
      * For example, "a.foo".  This is appropriate for where clauses and order by clauses.
      *
      * @param tableAliasCalculator the table alias calculator for the current renderer
      * @return the item name with the table alias applied
+     * @deprecated Please replace this method by overriding the more general "render" method
      */
-    String renderWithTableAlias(TableAliasCalculator tableAliasCalculator);
-
-    /**
-     * Returns the name of the item aliased with a table name and column alias if appropriate.
-     * For example, "a.foo as bar".  This is appropriate for select list clauses.
-     *
-     * @param tableAliasCalculator the table alias calculator for the current renderer
-     * @return the item name with the table and column aliases applied
-     */
-    default String renderWithTableAndColumnAlias(TableAliasCalculator tableAliasCalculator) {
-        String nameAndTableAlias = renderWithTableAlias(tableAliasCalculator);
-
-        return alias().map(a -> nameAndTableAlias + " as " + a) //$NON-NLS-1$
-                .orElse(nameAndTableAlias);
+    @Deprecated
+    default String renderWithTableAlias(TableAliasCalculator tableAliasCalculator) {
+        throw new DynamicSqlException(Messages.getString("ERROR.36"));  //$NON-NLS-1$
     }
 
     /**

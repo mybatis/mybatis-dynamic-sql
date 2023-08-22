@@ -15,14 +15,16 @@
  */
 package org.mybatis.dynamic.sql;
 
-import org.mybatis.dynamic.sql.render.TableAliasCalculator;
-
 public abstract class AbstractColumnComparisonCondition<T> implements VisitableCondition<T> {
 
-    protected final BasicColumn column;
+    protected final BasicColumn rightColumn;
 
-    protected AbstractColumnComparisonCondition(BasicColumn column) {
-        this.column = column;
+    protected AbstractColumnComparisonCondition(BasicColumn rightColumn) {
+        this.rightColumn = rightColumn;
+    }
+
+    public BasicColumn rightColumn() {
+        return rightColumn;
     }
 
     @Override
@@ -30,9 +32,5 @@ public abstract class AbstractColumnComparisonCondition<T> implements VisitableC
         return visitor.visit(this);
     }
 
-    public String renderCondition(String columnName, TableAliasCalculator tableAliasCalculator) {
-        return renderCondition(columnName, column.renderWithTableAlias(tableAliasCalculator));
-    }
-
-    protected abstract String renderCondition(String leftColumn, String rightColumn);
+    public abstract String operator();
 }

@@ -21,8 +21,10 @@ import java.util.Optional;
 import java.util.function.BiFunction;
 
 import org.jetbrains.annotations.NotNull;
+import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.render.TableAliasCalculator;
+import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 import org.mybatis.dynamic.sql.util.StringUtilities;
 
 public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
@@ -136,10 +138,12 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
     }
 
     @Override
-    public String renderWithTableAlias(TableAliasCalculator tableAliasCalculator) {
-        return tableQualifierFunction.apply(tableAliasCalculator, table)
+    public FragmentAndParameters render(RenderingContext renderingContext) {
+        String fragment = tableQualifierFunction.apply(renderingContext.tableAliasCalculator(), table)
                 .map(this::applyTableAlias)
                 .orElseGet(this::name);
+
+        return FragmentAndParameters.fromFragment(fragment);
     }
 
     @Override

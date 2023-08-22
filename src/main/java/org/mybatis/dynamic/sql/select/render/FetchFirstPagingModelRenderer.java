@@ -15,9 +15,8 @@
  */
 package org.mybatis.dynamic.sql.select.render;
 
-import java.util.concurrent.atomic.AtomicInteger;
-
 import org.mybatis.dynamic.sql.exception.InvalidSqlException;
+import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.select.PagingModel;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
@@ -25,15 +24,12 @@ import org.mybatis.dynamic.sql.util.InternalError;
 import org.mybatis.dynamic.sql.util.Messages;
 
 public class FetchFirstPagingModelRenderer {
-    private final RenderingStrategy renderingStrategy;
+    private final RenderingContext renderingContext;
     private final PagingModel pagingModel;
-    private final AtomicInteger sequence;
 
-    public FetchFirstPagingModelRenderer(RenderingStrategy renderingStrategy,
-            PagingModel pagingModel, AtomicInteger sequence) {
-        this.renderingStrategy = renderingStrategy;
+    public FetchFirstPagingModelRenderer(RenderingContext renderingContext, PagingModel pagingModel) {
+        this.renderingContext = renderingContext;
         this.pagingModel = pagingModel;
-        this.sequence = sequence;
     }
 
     public FragmentAndParameters render() {
@@ -55,7 +51,7 @@ public class FetchFirstPagingModelRenderer {
     }
 
     private FragmentAndParameters renderFetchFirstRowsOnly(Long fetchFirstRows) {
-        String mapKey = renderingStrategy.formatParameterMapKey(sequence);
+        String mapKey = renderingContext.nextMapKey();
         return FragmentAndParameters
                 .withFragment("fetch first " + renderPlaceholder(mapKey) //$NON-NLS-1$
                     + " rows only") //$NON-NLS-1$
@@ -64,7 +60,7 @@ public class FetchFirstPagingModelRenderer {
     }
 
     private FragmentAndParameters renderOffsetOnly(Long offset) {
-        String mapKey = renderingStrategy.formatParameterMapKey(sequence);
+        String mapKey = renderingContext.nextMapKey();
         return FragmentAndParameters.withFragment("offset " + renderPlaceholder(mapKey) //$NON-NLS-1$
                 + " rows") //$NON-NLS-1$
                 .withParameter(mapKey, offset)
@@ -72,8 +68,8 @@ public class FetchFirstPagingModelRenderer {
     }
 
     private FragmentAndParameters renderOffsetAndFetchFirstRows(Long offset, Long fetchFirstRows) {
-        String mapKey1 = renderingStrategy.formatParameterMapKey(sequence);
-        String mapKey2 = renderingStrategy.formatParameterMapKey(sequence);
+        String mapKey1 = renderingContext.nextMapKey();
+        String mapKey2 = renderingContext.nextMapKey();
         return FragmentAndParameters.withFragment("offset " + renderPlaceholder(mapKey1) //$NON-NLS-1$
                 + " rows fetch first " + renderPlaceholder(mapKey2) //$NON-NLS-1$
                 + " rows only") //$NON-NLS-1$
@@ -83,7 +79,7 @@ public class FetchFirstPagingModelRenderer {
     }
 
     private String renderPlaceholder(String parameterName) {
-        return renderingStrategy.getFormattedJdbcPlaceholder(RenderingStrategy.DEFAULT_PARAMETER_PREFIX,
-                parameterName);
+        return renderingContext.renderingStrategy()
+                .getFormattedJdbcPlaceholder(RenderingStrategy.DEFAULT_PARAMETER_PREFIX, parameterName);
     }
 }

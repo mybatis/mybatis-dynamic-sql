@@ -16,7 +16,8 @@
 package org.mybatis.dynamic.sql.select.function;
 
 import org.mybatis.dynamic.sql.BindableColumn;
-import org.mybatis.dynamic.sql.render.TableAliasCalculator;
+import org.mybatis.dynamic.sql.render.RenderingContext;
+import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 
 public class Substring<T> extends AbstractUniTypeFunction<T, Substring<T>> {
 
@@ -30,14 +31,20 @@ public class Substring<T> extends AbstractUniTypeFunction<T, Substring<T>> {
     }
 
     @Override
-    public String renderWithTableAlias(TableAliasCalculator tableAliasCalculator) {
-        return "substring(" //$NON-NLS-1$
-                + column.renderWithTableAlias(tableAliasCalculator)
+    public FragmentAndParameters render(RenderingContext renderingContext) {
+        FragmentAndParameters renderedColumn = column.render(renderingContext);
+
+        String fragment = "substring(" //$NON-NLS-1$
+                + renderedColumn.fragment()
                 + ", " //$NON-NLS-1$
                 + offset
                 + ", " //$NON-NLS-1$
                 + length
                 + ")"; //$NON-NLS-1$
+
+        return FragmentAndParameters.withFragment(fragment)
+                .withParameters(renderedColumn.parameters())
+                .build();
     }
 
     @Override

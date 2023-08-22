@@ -18,35 +18,30 @@ package org.mybatis.dynamic.sql.select.render;
 import static org.mybatis.dynamic.sql.util.StringUtilities.spaceBefore;
 
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.BindableColumn;
+import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
-import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 import org.mybatis.dynamic.sql.select.join.ColumnBasedJoinCondition;
 import org.mybatis.dynamic.sql.select.join.JoinConditionVisitor;
 import org.mybatis.dynamic.sql.select.join.TypedJoinCondition;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 
 public class JoinConditionRenderer<T> implements JoinConditionVisitor<T, FragmentAndParameters> {
-    private final RenderingStrategy renderingStrategy;
-    private final AtomicInteger sequence;
     private final BindableColumn<T> leftColumn;
-    private final TableAliasCalculator tableAliasCalculator;
+    private final RenderingContext renderingContext;
 
     private JoinConditionRenderer(Builder<T> builder) {
-        renderingStrategy = Objects.requireNonNull(builder.renderingStrategy);
-        sequence = Objects.requireNonNull(builder.sequence);
         leftColumn = Objects.requireNonNull(builder.leftColumn);
-        tableAliasCalculator = Objects.requireNonNull(builder.tableAliasCalculator);
+        renderingContext = Objects.requireNonNull(builder.renderingContext);
     }
 
     @Override
     public FragmentAndParameters visit(TypedJoinCondition<T> condition) {
-        String mapKey = renderingStrategy.formatParameterMapKey(sequence);
+        String mapKey = renderingContext.nextMapKey();
 
-        String placeHolder =  leftColumn.renderingStrategy().orElse(renderingStrategy)
+        String placeHolder =  leftColumn.renderingStrategy().orElse(renderingContext.renderingStrategy())
                 .getFormattedJdbcPlaceholder(leftColumn, RenderingStrategy.DEFAULT_PARAMETER_PREFIX, mapKey);
 
         return FragmentAndParameters.withFragment(condition.operator() + spaceBefore(placeHolder))
@@ -56,38 +51,28 @@ public class JoinConditionRenderer<T> implements JoinConditionVisitor<T, Fragmen
 
     @Override
     public FragmentAndParameters visit(ColumnBasedJoinCondition<T> condition) {
+        FragmentAndParameters renderedColumn = applyTableAlias(condition.rightColumn());
         return FragmentAndParameters
-                .withFragment(condition.operator() + spaceBefore(applyTableAlias(condition.rightColumn())))
+                .withFragment(condition.operator() + spaceBefore(renderedColumn.fragment()))
+                .withParameters(renderedColumn.parameters())
                 .build();
     }
 
-    private String applyTableAlias(BasicColumn column) {
-        return column.renderWithTableAlias(tableAliasCalculator);
+    private FragmentAndParameters applyTableAlias(BasicColumn column) {
+        return column.render(renderingContext);
     }
 
     public static class Builder<T> {
-        private RenderingStrategy renderingStrategy;
-        private AtomicInteger sequence;
         private BindableColumn<T> leftColumn;
-        private TableAliasCalculator tableAliasCalculator;
-
-        public Builder<T> withRenderingStrategy(RenderingStrategy renderingStrategy) {
-            this.renderingStrategy = renderingStrategy;
-            return this;
-        }
-
-        public Builder<T> withSequence(AtomicInteger sequence) {
-            this.sequence = sequence;
-            return this;
-        }
+        private RenderingContext renderingContext;
 
         public Builder<T> withLeftColumn(BindableColumn<T> leftColumn) {
             this.leftColumn = leftColumn;
             return this;
         }
 
-        public Builder<T> withTableAliasCalculator(TableAliasCalculator tableAliasCalculator) {
-            this.tableAliasCalculator = tableAliasCalculator;
+        public Builder<T> withRenderingContext(RenderingContext renderingContext) {
+            this.renderingContext = renderingContext;
             return this;
         }
 

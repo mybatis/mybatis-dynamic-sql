@@ -22,7 +22,9 @@ import java.util.stream.Collectors;
 
 import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.BindableColumn;
-import org.mybatis.dynamic.sql.render.TableAliasCalculator;
+import org.mybatis.dynamic.sql.render.RenderingContext;
+import org.mybatis.dynamic.sql.util.FragmentAndParameters;
+import org.mybatis.dynamic.sql.util.FragmentCollector;
 
 public class Concat<T> extends AbstractUniTypeFunction<T, Concat<T>> {
     private final List<BasicColumn> allColumns = new ArrayList<>();
@@ -34,9 +36,18 @@ public class Concat<T> extends AbstractUniTypeFunction<T, Concat<T>> {
     }
 
     @Override
-    public String renderWithTableAlias(TableAliasCalculator tableAliasCalculator) {
-        return allColumns.stream().map(c -> c.renderWithTableAlias(tableAliasCalculator))
-                .collect(Collectors.joining(", ", "concat(", ")")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    public FragmentAndParameters render(RenderingContext renderingContext) {
+        // note - the cast below is added for type inference issues in some compilers
+        FragmentCollector fc = allColumns.stream()
+                .map(column -> column.render(renderingContext))
+                .collect(FragmentCollector.collect());
+
+        String fragment = fc.collectFragments(
+                Collectors.joining(", ", "concat(", ")")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+
+        return FragmentAndParameters.withFragment(fragment)
+                .withParameters(fc.parameters())
+                .build();
     }
 
     @Override

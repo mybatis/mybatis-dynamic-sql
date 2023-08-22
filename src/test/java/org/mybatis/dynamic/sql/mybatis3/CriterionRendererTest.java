@@ -29,6 +29,7 @@ import org.mybatis.dynamic.sql.SqlBuilder;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.render.ExplicitTableAliasCalculator;
+import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
@@ -45,12 +46,15 @@ class CriterionRendererTest {
         ColumnAndConditionCriterion<Integer> criterion = ColumnAndConditionCriterion.withColumn(column)
                 .withCondition(condition)
                 .build();
-        AtomicInteger sequence = new AtomicInteger(1);
 
-        CriterionRenderer renderer = new CriterionRenderer.Builder()
-                .withSequence(sequence)
+        RenderingContext renderingContext = new RenderingContext.Builder()
+                .withSequence(new AtomicInteger(1))
                 .withRenderingStrategy(RenderingStrategies.MYBATIS3)
                 .withTableAliasCalculator(TableAliasCalculator.empty())
+                .build();
+
+        CriterionRenderer renderer = new CriterionRenderer.Builder()
+                .withRenderingContext(renderingContext)
                 .build();
 
         assertThat(criterion.accept(renderer)).hasValueSatisfying(rc -> {
@@ -68,14 +72,17 @@ class CriterionRendererTest {
         ColumnAndConditionCriterion<Integer> criterion = ColumnAndConditionCriterion.withColumn(column)
                 .withCondition(condition)
                 .build();
-        AtomicInteger sequence = new AtomicInteger(1);
         Map<SqlTable, String> tableAliases = new HashMap<>();
         tableAliases.put(table, "a");
 
-        CriterionRenderer renderer = new CriterionRenderer.Builder()
-                .withSequence(sequence)
+        RenderingContext renderingContext = new RenderingContext.Builder()
+                .withSequence(new AtomicInteger(1))
                 .withRenderingStrategy(RenderingStrategies.MYBATIS3)
                 .withTableAliasCalculator(ExplicitTableAliasCalculator.of(tableAliases))
+                .build();
+
+        CriterionRenderer renderer = new CriterionRenderer.Builder()
+                .withRenderingContext(renderingContext)
                 .build();
 
         assertThat(criterion.accept(renderer)).hasValueSatisfying(rc -> {
@@ -98,12 +105,15 @@ class CriterionRendererTest {
         ColumnAndConditionCriterion<Date> criterion = ColumnAndConditionCriterion.withColumn(column)
                 .withCondition(condition)
                 .build();
-        AtomicInteger sequence = new AtomicInteger(1);
 
-        CriterionRenderer renderer = new CriterionRenderer.Builder()
-                .withSequence(sequence)
+        RenderingContext renderingContext = new RenderingContext.Builder()
+                .withSequence(new AtomicInteger(1))
                 .withRenderingStrategy(RenderingStrategies.MYBATIS3)
                 .withTableAliasCalculator(TableAliasCalculator.empty())
+                .build();
+
+        CriterionRenderer renderer = new CriterionRenderer.Builder()
+                .withRenderingContext(renderingContext)
                 .build();
 
         assertThat(criterion.accept(renderer)).hasValueSatisfying(rc -> {
@@ -121,14 +131,17 @@ class CriterionRendererTest {
         ColumnAndConditionCriterion<Integer> criterion = ColumnAndConditionCriterion.withColumn(column)
                 .withCondition(condition)
                 .build();
-        AtomicInteger sequence = new AtomicInteger(1);
         Map<SqlTable, String> tableAliases = new HashMap<>();
         tableAliases.put(table, "a");
 
-        CriterionRenderer renderer = new CriterionRenderer.Builder()
-                .withSequence(sequence)
+        RenderingContext renderingContext = new RenderingContext.Builder()
+                .withSequence(new AtomicInteger(1))
                 .withRenderingStrategy(RenderingStrategies.MYBATIS3)
                 .withTableAliasCalculator(ExplicitTableAliasCalculator.of(tableAliases))
+                .build();
+
+        CriterionRenderer renderer = new CriterionRenderer.Builder()
+                .withRenderingContext(renderingContext)
                 .build();
 
         assertThat(criterion.accept(renderer)).hasValueSatisfying(rc -> {

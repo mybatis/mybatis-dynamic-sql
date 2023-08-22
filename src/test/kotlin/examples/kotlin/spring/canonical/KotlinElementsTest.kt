@@ -36,6 +36,7 @@ import org.mybatis.dynamic.sql.util.kotlin.elements.isFalse
 import org.mybatis.dynamic.sql.util.kotlin.elements.isInCaseInsensitive
 import org.mybatis.dynamic.sql.util.kotlin.elements.isInCaseInsensitiveWhenPresent
 import org.mybatis.dynamic.sql.util.kotlin.elements.isInWhenPresent
+import org.mybatis.dynamic.sql.util.kotlin.elements.isLessThan
 import org.mybatis.dynamic.sql.util.kotlin.elements.isNotBetween
 import org.mybatis.dynamic.sql.util.kotlin.elements.isNotBetweenWhenPresent
 import org.mybatis.dynamic.sql.util.kotlin.elements.isNotIn
@@ -137,6 +138,17 @@ open class KotlinElementsTest {
         val value = template.selectOne(selectStatement, Double::class)
 
         assertThat(value).isEqualTo(21.0)
+    }
+
+    @Test
+    fun testSumWithCondition() {
+        val selectStatement = select(sum(id, isLessThan(5))) {
+            from(person)
+        }
+
+        assertThat(selectStatement.selectStatement).isEqualTo(
+            "select sum(id < :p1) from Person"
+        )
     }
 
     @Test

@@ -19,8 +19,9 @@ import java.sql.JDBCType;
 import java.util.Optional;
 
 import org.mybatis.dynamic.sql.BindableColumn;
-import org.mybatis.dynamic.sql.render.TableAliasCalculator;
+import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.select.function.AbstractTypeConvertingFunction;
+import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 
 public class ToBase64 extends AbstractTypeConvertingFunction<byte[], String, ToBase64> {
 
@@ -34,15 +35,12 @@ public class ToBase64 extends AbstractTypeConvertingFunction<byte[], String, ToB
     }
 
     @Override
-    public Optional<String> typeHandler() {
-        return Optional.empty();
-    }
+    public FragmentAndParameters render(RenderingContext renderingContext) {
+        FragmentAndParameters renderedColumn = column.render(renderingContext);
 
-    @Override
-    public String renderWithTableAlias(TableAliasCalculator tableAliasCalculator) {
-        return "TO_BASE64(" //$NON-NLS-1$
-                + column.renderWithTableAlias(tableAliasCalculator)
-                + ")"; //$NON-NLS-1$
+        return FragmentAndParameters.withFragment("TO_BASE64(" + renderedColumn.fragment() + ")") //$NON-NLS-1$ //$NON-NLS-2$
+                .withParameters(renderedColumn.parameters())
+                .build();
     }
 
     @Override

@@ -17,14 +17,13 @@ package org.mybatis.dynamic.sql.select.render;
 
 import java.util.Objects;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.TableExpression;
 import org.mybatis.dynamic.sql.render.ExplicitTableAliasCalculator;
 import org.mybatis.dynamic.sql.render.GuaranteedTableAliasCalculator;
-import org.mybatis.dynamic.sql.render.RenderingStrategy;
+import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 import org.mybatis.dynamic.sql.render.TableAliasCalculatorWithParent;
 import org.mybatis.dynamic.sql.select.GroupByModel;
@@ -39,20 +38,22 @@ import org.mybatis.dynamic.sql.where.render.WhereRenderer;
 
 public class QueryExpressionRenderer {
     private final QueryExpressionModel queryExpression;
-    private final RenderingStrategy renderingStrategy;
-    private final AtomicInteger sequence;
     private final TableExpressionRenderer tableExpressionRenderer;
-    private final TableAliasCalculator tableAliasCalculator;
+    private final RenderingContext renderingContext;
 
     private QueryExpressionRenderer(Builder builder) {
         queryExpression = Objects.requireNonNull(builder.queryExpression);
-        renderingStrategy = Objects.requireNonNull(builder.renderingStrategy);
-        sequence = Objects.requireNonNull(builder.sequence);
-        tableAliasCalculator = calculateTableAliasCalculator(queryExpression, builder.parentTableAliasCalculator);
-        tableExpressionRenderer = new TableExpressionRenderer.Builder()
+        TableAliasCalculator tableAliasCalculator =
+                calculateTableAliasCalculator(queryExpression, builder.renderingContext.tableAliasCalculator());
+
+        renderingContext = new RenderingContext.Builder()
+                .withRenderingStrategy(Objects.requireNonNull(builder.renderingContext.renderingStrategy()))
+                .withSequence(builder.renderingContext.sequence())
                 .withTableAliasCalculator(tableAliasCalculator)
-                .withRenderingStrategy(renderingStrategy)
-                .withSequence(sequence)
+                .build();
+
+        tableExpressionRenderer = new TableExpressionRenderer.Builder()
+                .withRenderingContext(renderingContext)
                 .build();
     }
 
@@ -87,14 +88,10 @@ public class QueryExpressionRenderer {
                 .map(this::calculateTableAliasCalculatorWithJoins)
                 .orElseGet(this::explicitTableAliasCalculator);
 
-        if (parentTableAliasCalculator == null) {
-            return baseTableAliasCalculator;
-        } else {
-            return new TableAliasCalculatorWithParent.Builder()
-                    .withParent(parentTableAliasCalculator)
-                    .withChild(baseTableAliasCalculator)
-                    .build();
-        }
+        return new TableAliasCalculatorWithParent.Builder()
+                .withParent(parentTableAliasCalculator)
+                .withChild(baseTableAliasCalculator)
+                .build();
     }
 
     private TableAliasCalculator calculateTableAliasCalculatorWithJoins(boolean hasSubQueries) {
@@ -129,17 +126,19 @@ public class QueryExpressionRenderer {
     }
 
     private FragmentAndParameters toFragmentAndParameters(FragmentCollector fragmentCollector) {
-        return FragmentAndParameters.withFragment(fragmentCollector.fragments().collect(
-                    Collectors.joining(" "))) //$NON-NLS-1$
+        return FragmentAndParameters
+                .withFragment(fragmentCollector.collectFragments(Collectors.joining(" "))) //$NON-NLS-1$
                 .withParameters(fragmentCollector.parameters())
                 .build();
     }
 
     private FragmentAndParameters calculateQueryExpressionStart() {
+        FragmentAndParameters columnList = calculateColumnList();
+
         String start = queryExpression.connector().map(StringUtilities::spaceAfter).orElse("") //$NON-NLS-1$
                 + "select " //$NON-NLS-1$
                 + (queryExpression.isDistinct() ? "distinct " : "") //$NON-NLS-1$ //$NON-NLS-2$
-                + calculateColumnList()
+                + columnList.fragment()
                 + " from "; //$NON-NLS-1$
 
         FragmentAndParameters renderedTable = renderTableExpression(queryExpression.table());
@@ -147,16 +146,30 @@ public class QueryExpressionRenderer {
 
         return FragmentAndParameters.withFragment(start)
                 .withParameters(renderedTable.parameters())
+                .withParameters(columnList.parameters())
                 .build();
     }
 
-    private String calculateColumnList() {
-        return queryExpression.mapColumns(this::applyTableAndColumnAlias)
-                .collect(Collectors.joining(", ")); //$NON-NLS-1$
+    private FragmentAndParameters calculateColumnList() {
+        FragmentCollector fc = queryExpression.mapColumns(this::applyTableAndColumnAlias)
+                .collect(FragmentCollector.collect());
+
+        String s = fc.collectFragments(Collectors.joining(", ")); //$NON-NLS-1$
+
+        return FragmentAndParameters.withFragment(s)
+                .withParameters(fc.parameters())
+                .build();
     }
 
-    private String applyTableAndColumnAlias(BasicColumn selectListItem) {
-        return selectListItem.renderWithTableAndColumnAlias(tableAliasCalculator);
+    private FragmentAndParameters applyTableAndColumnAlias(BasicColumn selectListItem) {
+        FragmentAndParameters renderedColumn = selectListItem.render(renderingContext);
+
+        String nameAndTableAlias = selectListItem.alias().map(a -> renderedColumn.fragment() + " as " + a) //$NON-NLS-1$
+                .orElse(renderedColumn.fragment());
+
+        return FragmentAndParameters.withFragment(nameAndTableAlias)
+                .withParameters(renderedColumn.parameters())
+                .build();
     }
 
     private FragmentAndParameters renderTableExpression(TableExpression table) {
@@ -170,9 +183,7 @@ public class QueryExpressionRenderer {
     private FragmentAndParameters renderJoin(JoinModel joinModel) {
         return JoinRenderer.withJoinModel(joinModel)
                 .withTableExpressionRenderer(tableExpressionRenderer)
-                .withTableAliasCalculator(tableAliasCalculator)
-                .withRenderingStrategy(renderingStrategy)
-                .withSequence(sequence)
+                .withRenderingContext(renderingContext)
                 .build()
                 .render();
     }
@@ -183,9 +194,7 @@ public class QueryExpressionRenderer {
 
     private Optional<FragmentAndParameters> renderWhereClause(WhereModel whereModel) {
         return WhereRenderer.withWhereModel(whereModel)
-                .withRenderingStrategy(renderingStrategy)
-                .withTableAliasCalculator(tableAliasCalculator)
-                .withSequence(sequence)
+                .withRenderingContext(renderingContext)
                 .build()
                 .render();
     }
@@ -195,9 +204,14 @@ public class QueryExpressionRenderer {
     }
 
     private FragmentAndParameters renderGroupBy(GroupByModel groupByModel) {
-        String groupBy = groupByModel.mapColumns(this::applyTableAlias)
-                .collect(Collectors.joining(", ", "group by ", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        return FragmentAndParameters.withFragment(groupBy).build();
+        FragmentCollector fc = groupByModel.mapColumns(this::applyTableAlias)
+                .collect(FragmentCollector.collect());
+        String groupBy = fc.collectFragments(
+                Collectors.joining(", ", "group by ", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$)
+
+        return FragmentAndParameters.withFragment(groupBy)
+                .withParameters(fc.parameters())
+                .build();
     }
 
     private Optional<FragmentAndParameters> calculateHavingClause() {
@@ -206,30 +220,30 @@ public class QueryExpressionRenderer {
 
     private Optional<FragmentAndParameters> renderHavingClause(HavingModel havingModel) {
         return HavingRenderer.withHavingModel(havingModel)
-                .withRenderingStrategy(renderingStrategy)
-                .withTableAliasCalculator(tableAliasCalculator)
-                .withSequence(sequence)
+                .withRenderingContext(renderingContext)
                 .build()
                 .render();
     }
 
-    private String applyTableAlias(BasicColumn column) {
-        return column.renderWithTableAlias(tableAliasCalculator);
+    private FragmentAndParameters applyTableAlias(BasicColumn column) {
+        return column.render(renderingContext);
     }
 
     public static Builder withQueryExpression(QueryExpressionModel model) {
         return new Builder().withQueryExpression(model);
     }
 
-    public static class Builder extends AbstractQueryRendererBuilder<Builder> {
+    public static class Builder {
         private QueryExpressionModel queryExpression;
+        private RenderingContext renderingContext;
 
-        public Builder withQueryExpression(QueryExpressionModel queryExpression) {
-            this.queryExpression = queryExpression;
+        public Builder withRenderingContext(RenderingContext renderingContext) {
+            this.renderingContext = renderingContext;
             return this;
         }
 
-        Builder getThis() {
+        public Builder withQueryExpression(QueryExpressionModel queryExpression) {
+            this.queryExpression = queryExpression;
             return this;
         }
 

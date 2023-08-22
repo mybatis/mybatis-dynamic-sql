@@ -39,8 +39,8 @@ public class IsLike<T> extends AbstractSingleValueCondition<T> {
     }
 
     @Override
-    public String renderCondition(String columnName, String placeholder) {
-        return columnName + " like " + placeholder; //$NON-NLS-1$
+    public String operator() {
+        return "like"; //$NON-NLS-1$
     }
 
     public static <T> IsLike<T> of(T value) {

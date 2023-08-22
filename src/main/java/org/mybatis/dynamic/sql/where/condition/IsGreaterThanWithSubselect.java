@@ -32,7 +32,7 @@ public class IsGreaterThanWithSubselect<T> extends AbstractSubselectCondition<T>
     }
 
     @Override
-    public String renderCondition(String columnName, String renderedSelectStatement) {
-        return columnName + " > (" + renderedSelectStatement + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+    public String operator() {
+        return ">"; //$NON-NLS-1$
     }
 }
