@@ -21,7 +21,8 @@ import java.util.function.UnaryOperator;
 import org.mybatis.dynamic.sql.AbstractSingleValueCondition;
 import org.mybatis.dynamic.sql.util.StringUtilities;
 
-public class IsLikeCaseInsensitive extends AbstractSingleValueCondition<String> {
+public class IsLikeCaseInsensitive extends AbstractSingleValueCondition<String>
+        implements CaseInsensitiveVisitableCondition {
     private static final IsLikeCaseInsensitive EMPTY = new IsLikeCaseInsensitive(null) {
         @Override
         public boolean shouldRender() {
@@ -43,20 +44,6 @@ public class IsLikeCaseInsensitive extends AbstractSingleValueCondition<String> 
     }
 
     @Override
-    public String overrideRenderedLeftColumn(String renderedLeftColumn) {
-        return StringUtilities.applyUpper(renderedLeftColumn);
-    }
-
-    @Override
-    public String value() {
-        return StringUtilities.safelyUpperCase(super.value());
-    }
-
-    public static IsLikeCaseInsensitive of(String value) {
-        return new IsLikeCaseInsensitive(value);
-    }
-
-    @Override
     public IsLikeCaseInsensitive filter(Predicate<? super String> predicate) {
         return filterSupport(predicate, IsLikeCaseInsensitive::empty, this);
     }
@@ -71,5 +58,9 @@ public class IsLikeCaseInsensitive extends AbstractSingleValueCondition<String> 
      */
     public IsLikeCaseInsensitive map(UnaryOperator<String> mapper) {
         return mapSupport(mapper, IsLikeCaseInsensitive::new, IsLikeCaseInsensitive::empty);
+    }
+
+    public static IsLikeCaseInsensitive of(String value) {
+        return new IsLikeCaseInsensitive(value).map(StringUtilities::safelyUpperCase);
     }
 }

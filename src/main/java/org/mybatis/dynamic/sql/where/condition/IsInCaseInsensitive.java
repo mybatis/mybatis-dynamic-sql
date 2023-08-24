@@ -24,7 +24,8 @@ import java.util.function.UnaryOperator;
 import org.mybatis.dynamic.sql.AbstractListValueCondition;
 import org.mybatis.dynamic.sql.util.StringUtilities;
 
-public class IsInCaseInsensitive extends AbstractListValueCondition<String> {
+public class IsInCaseInsensitive extends AbstractListValueCondition<String>
+        implements CaseInsensitiveVisitableCondition {
     private static final IsInCaseInsensitive EMPTY = new IsInCaseInsensitive(Collections.emptyList());
 
     public static IsInCaseInsensitive empty() {
@@ -38,11 +39,6 @@ public class IsInCaseInsensitive extends AbstractListValueCondition<String> {
     @Override
     public String operator() {
         return "in"; //$NON-NLS-1$
-    }
-
-    @Override
-    public String overrideRenderedLeftColumn(String renderedLeftColumn) {
-        return StringUtilities.applyUpper(renderedLeftColumn);
     }
 
     @Override
