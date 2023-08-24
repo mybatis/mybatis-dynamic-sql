@@ -21,6 +21,6 @@ import org.testcontainers.utility.DockerImageName;
  * Utility interface to hold Docker image tags for the test containers we use
  */
 public interface TestContainersConfiguration {
-    DockerImageName POSTGRES_LATEST = DockerImageName.parse("postgres:15.1");
-    DockerImageName MARIADB_LATEST = DockerImageName.parse("mariadb:10.10.2");
+    DockerImageName POSTGRES_LATEST = DockerImageName.parse("postgres:15.4");
+    DockerImageName MARIADB_LATEST = DockerImageName.parse("mariadb:11.0.3");
 }
