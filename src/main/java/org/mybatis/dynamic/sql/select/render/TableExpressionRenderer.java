@@ -34,10 +34,7 @@ public class TableExpressionRenderer implements TableExpressionVisitor<FragmentA
 
     @Override
     public FragmentAndParameters visit(SqlTable table) {
-        return FragmentAndParameters.fromFragment(
-                        renderingContext.tableAliasCalculator().aliasForTable(table)
-                                .map(a -> table.tableNameAtRuntime() + spaceBefore(a))
-                                .orElseGet(table::tableNameAtRuntime));
+        return FragmentAndParameters.fromFragment(renderingContext.aliasedTableName(table));
     }
 
     @Override

@@ -15,11 +15,14 @@
  */
 package org.mybatis.dynamic.sql.render;
 
-import org.mybatis.dynamic.sql.BindableColumn;
-import org.mybatis.dynamic.sql.SqlColumn;
+import static org.mybatis.dynamic.sql.util.StringUtilities.spaceBefore;
 
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import org.mybatis.dynamic.sql.BindableColumn;
+import org.mybatis.dynamic.sql.SqlColumn;
+import org.mybatis.dynamic.sql.SqlTable;
 
 public class RenderingContext {
 
@@ -76,6 +79,12 @@ public class RenderingContext {
         return tableAliasCalculator.aliasForColumn(column.table())
                 .map(alias -> alias + "." + column.name())  //$NON-NLS-1$
                 .orElseGet(column::name);
+    }
+
+    public String aliasedTableName(SqlTable table) {
+        return tableAliasCalculator.aliasForTable(table)
+                .map(a -> table.tableNameAtRuntime() + spaceBefore(a))
+                .orElseGet(table::tableNameAtRuntime);
     }
 
     /**

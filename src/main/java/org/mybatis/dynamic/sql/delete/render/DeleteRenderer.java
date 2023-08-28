@@ -19,7 +19,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.common.OrderByModel;
 import org.mybatis.dynamic.sql.common.OrderByRenderer;
 import org.mybatis.dynamic.sql.delete.DeleteModel;
@@ -31,8 +30,6 @@ import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 import org.mybatis.dynamic.sql.util.FragmentCollector;
 import org.mybatis.dynamic.sql.where.WhereModel;
 import org.mybatis.dynamic.sql.where.render.WhereRenderer;
-
-import static org.mybatis.dynamic.sql.util.StringUtilities.spaceBefore;
 
 public class DeleteRenderer {
     private final DeleteModel deleteModel;
@@ -68,10 +65,7 @@ public class DeleteRenderer {
     }
 
     private FragmentAndParameters calculateDeleteStatementStart() {
-        SqlTable table = deleteModel.table();
-        String aliasedTableName = renderingContext.tableAliasCalculator().aliasForTable(table)
-                        .map(a -> table.tableNameAtRuntime() + spaceBefore(a))
-                        .orElseGet(table::tableNameAtRuntime);
+        String aliasedTableName = renderingContext.aliasedTableName(deleteModel.table());
         return FragmentAndParameters.fromFragment("delete from " + aliasedTableName); //$NON-NLS-1$
     }
 

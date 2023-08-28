@@ -20,7 +20,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.common.OrderByModel;
 import org.mybatis.dynamic.sql.common.OrderByRenderer;
 import org.mybatis.dynamic.sql.exception.InvalidSqlException;
@@ -34,8 +33,6 @@ import org.mybatis.dynamic.sql.util.FragmentCollector;
 import org.mybatis.dynamic.sql.util.Messages;
 import org.mybatis.dynamic.sql.where.WhereModel;
 import org.mybatis.dynamic.sql.where.render.WhereRenderer;
-
-import static org.mybatis.dynamic.sql.util.StringUtilities.spaceBefore;
 
 public class UpdateRenderer {
     private final UpdateModel updateModel;
@@ -72,10 +69,7 @@ public class UpdateRenderer {
     }
 
     private FragmentAndParameters calculateUpdateStatementStart() {
-        SqlTable table = updateModel.table();
-        String aliasedTableName = renderingContext.tableAliasCalculator().aliasForTable(table)
-                .map(a -> table.tableNameAtRuntime() + spaceBefore(a))
-                .orElseGet(table::tableNameAtRuntime);
+        String aliasedTableName = renderingContext.aliasedTableName(updateModel.table());
         return FragmentAndParameters.fromFragment("update " + aliasedTableName); //$NON-NLS-1$
     }
 
