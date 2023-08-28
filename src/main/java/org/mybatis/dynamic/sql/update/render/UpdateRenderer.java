@@ -35,6 +35,8 @@ import org.mybatis.dynamic.sql.util.Messages;
 import org.mybatis.dynamic.sql.where.WhereModel;
 import org.mybatis.dynamic.sql.where.render.WhereRenderer;
 
+import static org.mybatis.dynamic.sql.util.StringUtilities.spaceBefore;
+
 public class UpdateRenderer {
     private final UpdateModel updateModel;
     private final RenderingContext renderingContext;
@@ -71,10 +73,9 @@ public class UpdateRenderer {
 
     private FragmentAndParameters calculateUpdateStatementStart() {
         SqlTable table = updateModel.table();
-        String tableName = table.tableNameAtRuntime();
         String aliasedTableName = renderingContext.tableAliasCalculator().aliasForTable(table)
-                .map(a -> tableName + " " + a).orElse(tableName); //$NON-NLS-1$
-
+                .map(a -> table.tableNameAtRuntime() + spaceBefore(a))
+                .orElseGet(table::tableNameAtRuntime);
         return FragmentAndParameters.fromFragment("update " + aliasedTableName); //$NON-NLS-1$
     }
 

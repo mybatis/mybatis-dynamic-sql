@@ -32,6 +32,8 @@ import org.mybatis.dynamic.sql.util.FragmentCollector;
 import org.mybatis.dynamic.sql.where.WhereModel;
 import org.mybatis.dynamic.sql.where.render.WhereRenderer;
 
+import static org.mybatis.dynamic.sql.util.StringUtilities.spaceBefore;
+
 public class DeleteRenderer {
     private final DeleteModel deleteModel;
     private final RenderingContext renderingContext;
@@ -67,10 +69,9 @@ public class DeleteRenderer {
 
     private FragmentAndParameters calculateDeleteStatementStart() {
         SqlTable table = deleteModel.table();
-        String tableName = table.tableNameAtRuntime();
         String aliasedTableName = renderingContext.tableAliasCalculator().aliasForTable(table)
-                .map(a -> tableName + " " + a).orElse(tableName); //$NON-NLS-1$
-
+                        .map(a -> table.tableNameAtRuntime() + spaceBefore(a))
+                        .orElseGet(table::tableNameAtRuntime);
         return FragmentAndParameters.fromFragment("delete from " + aliasedTableName); //$NON-NLS-1$
     }
 
