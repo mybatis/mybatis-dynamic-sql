@@ -56,8 +56,8 @@ import org.mybatis.dynamic.sql.util.FragmentCollector;
 public class CriterionRenderer implements SqlCriterionVisitor<Optional<RenderedCriterion>> {
     private final RenderingContext renderingContext;
 
-    private CriterionRenderer(Builder builder) {
-        renderingContext = Objects.requireNonNull(builder.renderingContext);
+    public CriterionRenderer(RenderingContext renderingContext) {
+        this.renderingContext = Objects.requireNonNull(renderingContext);
     }
 
     @Override
@@ -243,20 +243,6 @@ public class CriterionRenderer implements SqlCriterionVisitor<Optional<RenderedC
                     Collectors.joining(" ", "not (", ")")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         } else {
             return collector.firstFragment().map(s -> "not " + s).orElse(""); //$NON-NLS-1$ //$NON-NLS-2$
-        }
-    }
-
-    // TODO - remove builder - only one parameter
-    public static class Builder {
-        private RenderingContext renderingContext;
-
-        public Builder withRenderingContext(RenderingContext renderingContext) {
-            this.renderingContext = renderingContext;
-            return this;
-        }
-
-        public CriterionRenderer build() {
-            return new CriterionRenderer(this);
         }
     }
 }

@@ -48,9 +48,7 @@ class CriterionRendererTest {
                 .withRenderingStrategy(RenderingStrategies.MYBATIS3)
                 .build();
 
-        CriterionRenderer renderer = new CriterionRenderer.Builder()
-                .withRenderingContext(renderingContext)
-                .build();
+        CriterionRenderer renderer = new CriterionRenderer(renderingContext);
 
         assertThat(criterion.accept(renderer)).hasValueSatisfying(rc -> {
             FragmentAndParameters fp = rc.fragmentAndParameters();
@@ -76,9 +74,7 @@ class CriterionRendererTest {
                 .withTableAliasCalculator(ExplicitTableAliasCalculator.of(tableAliases))
                 .build();
 
-        CriterionRenderer renderer = new CriterionRenderer.Builder()
-                .withRenderingContext(renderingContext)
-                .build();
+        CriterionRenderer renderer = new CriterionRenderer(renderingContext);
 
         assertThat(criterion.accept(renderer)).hasValueSatisfying(rc -> {
             FragmentAndParameters fp = rc.fragmentAndParameters();

@@ -36,10 +36,7 @@ public abstract class AbstractBooleanExpressionRenderer<M extends AbstractBoolea
     protected AbstractBooleanExpressionRenderer(String prefix, AbstractBuilder<M, ?> builder) {
         model = Objects.requireNonNull(builder.model);
         this.prefix = Objects.requireNonNull(prefix);
-
-        criterionRenderer = new CriterionRenderer.Builder()
-                .withRenderingContext(Objects.requireNonNull(builder.renderingContext))
-                .build();
+        criterionRenderer = new CriterionRenderer(builder.renderingContext);
     }
 
     public Optional<FragmentAndParameters> render() {
