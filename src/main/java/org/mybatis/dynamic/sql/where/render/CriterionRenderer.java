@@ -54,11 +54,9 @@ import org.mybatis.dynamic.sql.util.FragmentCollector;
  * @author Jeff Butler
  */
 public class CriterionRenderer implements SqlCriterionVisitor<Optional<RenderedCriterion>> {
-    private final String parameterName;
     private final RenderingContext renderingContext;
 
     private CriterionRenderer(Builder builder) {
-        parameterName = builder.parameterName;
         renderingContext = Objects.requireNonNull(builder.renderingContext);
     }
 
@@ -179,7 +177,6 @@ public class CriterionRenderer implements SqlCriterionVisitor<Optional<RenderedC
     private <T> FragmentAndParameters renderCondition(ColumnAndConditionCriterion<T> criterion) {
         DefaultConditionVisitor<T> visitor = DefaultConditionVisitor.withColumn(criterion.column())
                 .withRenderingContext(renderingContext)
-                .withParameterName(parameterName)
                 .build();
         return criterion.condition().accept(visitor);
     }
@@ -249,17 +246,12 @@ public class CriterionRenderer implements SqlCriterionVisitor<Optional<RenderedC
         }
     }
 
+    // TODO - remove builder - only one parameter
     public static class Builder {
-        private String parameterName;
         private RenderingContext renderingContext;
 
         public Builder withRenderingContext(RenderingContext renderingContext) {
             this.renderingContext = renderingContext;
-            return this;
-        }
-
-        public Builder withParameterName(String parameterName) {
-            this.parameterName = parameterName;
             return this;
         }
 

@@ -20,6 +20,7 @@ import java.util.Optional;
 
 import org.mybatis.dynamic.sql.exception.InvalidSqlException;
 import org.mybatis.dynamic.sql.insert.GeneralInsertModel;
+import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.util.Messages;
 
@@ -34,7 +35,9 @@ public class GeneralInsertRenderer {
     }
 
     public GeneralInsertStatementProvider render() {
-        GeneralInsertValuePhraseVisitor visitor = new GeneralInsertValuePhraseVisitor(renderingStrategy);
+        RenderingContext renderingContext = RenderingContext.withRenderingStrategy(renderingStrategy).build();
+
+        GeneralInsertValuePhraseVisitor visitor = new GeneralInsertValuePhraseVisitor(renderingContext);
         FieldAndValueCollector collector = model.mapColumnMappings(m -> m.accept(visitor))
                 .filter(Optional::isPresent)
                 .map(Optional::get)

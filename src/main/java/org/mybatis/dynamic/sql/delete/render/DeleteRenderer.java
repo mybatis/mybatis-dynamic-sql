@@ -39,13 +39,13 @@ public class DeleteRenderer {
 
     private DeleteRenderer(Builder builder) {
         deleteModel = Objects.requireNonNull(builder.deleteModel);
+        // TODO - calculate this in the caller?
         TableAliasCalculator tableAliasCalculator = builder.deleteModel.tableAlias()
                 .map(a -> ExplicitTableAliasCalculator.of(deleteModel.table(), a))
                 .orElseGet(TableAliasCalculator::empty);
-        renderingContext = new RenderingContext.Builder()
+        renderingContext = RenderingContext
                 .withRenderingStrategy(Objects.requireNonNull(builder.renderingStrategy))
                 .withTableAliasCalculator(tableAliasCalculator)
-                .withSequence(new AtomicInteger(1))
                 .build();
     }
 
@@ -94,7 +94,7 @@ public class DeleteRenderer {
     private FragmentAndParameters renderLimitClause(Long limit) {
         String mapKey = renderingContext.nextMapKey();
         String jdbcPlaceholder = renderingContext
-                .renderingStrategy().getFormattedJdbcPlaceholder(RenderingStrategy.DEFAULT_PARAMETER_PREFIX, mapKey);
+                .renderingStrategy().getFormattedJdbcPlaceholder(renderingContext.parameterName(), mapKey);
 
         return FragmentAndParameters.withFragment("limit " + jdbcPlaceholder) //$NON-NLS-1$
                 .withParameter(mapKey, limit)

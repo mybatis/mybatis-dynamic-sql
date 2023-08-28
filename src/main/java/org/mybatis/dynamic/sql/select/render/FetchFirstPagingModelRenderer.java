@@ -17,7 +17,6 @@ package org.mybatis.dynamic.sql.select.render;
 
 import org.mybatis.dynamic.sql.exception.InvalidSqlException;
 import org.mybatis.dynamic.sql.render.RenderingContext;
-import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.select.PagingModel;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 import org.mybatis.dynamic.sql.util.InternalError;
@@ -80,6 +79,6 @@ public class FetchFirstPagingModelRenderer {
 
     private String renderPlaceholder(String parameterName) {
         return renderingContext.renderingStrategy()
-                .getFormattedJdbcPlaceholder(RenderingStrategy.DEFAULT_PARAMETER_PREFIX, parameterName);
+                .getFormattedJdbcPlaceholder(renderingContext.parameterName(), parameterName);
     }
 }

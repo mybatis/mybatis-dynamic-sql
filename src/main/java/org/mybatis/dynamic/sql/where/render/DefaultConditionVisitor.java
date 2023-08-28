@@ -29,7 +29,6 @@ import org.mybatis.dynamic.sql.AbstractTwoValueCondition;
 import org.mybatis.dynamic.sql.BindableColumn;
 import org.mybatis.dynamic.sql.ConditionVisitor;
 import org.mybatis.dynamic.sql.render.RenderingContext;
-import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.select.render.SelectRenderer;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
@@ -38,12 +37,10 @@ import org.mybatis.dynamic.sql.util.FragmentCollector;
 public class DefaultConditionVisitor<T> implements ConditionVisitor<T, FragmentAndParameters> {
 
     private final BindableColumn<T> column;
-    private final String parameterPrefix;
     private final RenderingContext renderingContext;
 
     private DefaultConditionVisitor(Builder<T> builder) {
         column = Objects.requireNonNull(builder.column);
-        parameterPrefix = Objects.requireNonNull(builder.parameterPrefix);
         renderingContext = Objects.requireNonNull(builder.renderingContext);
     }
 
@@ -155,7 +152,7 @@ public class DefaultConditionVisitor<T> implements ConditionVisitor<T, FragmentA
 
     private String getFormattedJdbcPlaceholder(String mapKey) {
         return column.renderingStrategy().orElse(renderingContext.renderingStrategy())
-                .getFormattedJdbcPlaceholder(column, parameterPrefix, mapKey);
+                .getFormattedJdbcPlaceholder(column, renderingContext.parameterName(), mapKey);
     }
 
     public static <T> Builder<T> withColumn(BindableColumn<T> column) {
@@ -164,7 +161,6 @@ public class DefaultConditionVisitor<T> implements ConditionVisitor<T, FragmentA
 
     public static class Builder<T> {
         private BindableColumn<T> column;
-        private String parameterPrefix = RenderingStrategy.DEFAULT_PARAMETER_PREFIX;
         private RenderingContext renderingContext;
 
         public Builder<T> withColumn(BindableColumn<T> column) {
@@ -174,13 +170,6 @@ public class DefaultConditionVisitor<T> implements ConditionVisitor<T, FragmentA
 
         public Builder<T> withRenderingContext(RenderingContext renderingContext) {
             this.renderingContext = renderingContext;
-            return this;
-        }
-
-        public Builder<T> withParameterName(String parameterName) {
-            if (parameterName != null) {
-                parameterPrefix = parameterName + "." + RenderingStrategy.DEFAULT_PARAMETER_PREFIX; //$NON-NLS-1$
-            }
             return this;
         }
 

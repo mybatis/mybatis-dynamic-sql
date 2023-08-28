@@ -18,7 +18,6 @@ package org.mybatis.dynamic.sql.select.render;
 import java.util.Objects;
 
 import org.mybatis.dynamic.sql.render.RenderingContext;
-import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.select.PagingModel;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 
@@ -56,8 +55,8 @@ public class LimitAndOffsetPagingModelRenderer {
                 .build();
     }
 
-    private String renderPlaceholder(String parameterName) {
+    private String renderPlaceholder(String mapKey) {
         return renderingContext.renderingStrategy()
-                .getFormattedJdbcPlaceholder(RenderingStrategy.DEFAULT_PARAMETER_PREFIX, parameterName);
+                .getFormattedJdbcPlaceholder(renderingContext.parameterName(), mapKey);
     }
 }

@@ -62,11 +62,7 @@ public class SelectModel {
 
     @NotNull
     public SelectStatementProvider render(RenderingStrategy renderingStrategy) {
-        RenderingContext renderingContext = new RenderingContext.Builder()
-                .withRenderingStrategy(renderingStrategy)
-                .withSequence(new AtomicInteger(1))
-                .withTableAliasCalculator(TableAliasCalculator.empty())
-                .build();
+        RenderingContext renderingContext = RenderingContext.withRenderingStrategy(renderingStrategy).build();
         return SelectRenderer.withSelectModel(this)
                 .withRenderingContext(renderingContext)
                 .build()

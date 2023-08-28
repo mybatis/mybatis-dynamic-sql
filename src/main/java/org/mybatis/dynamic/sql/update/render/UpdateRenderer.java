@@ -18,7 +18,6 @@ package org.mybatis.dynamic.sql.update.render;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import org.mybatis.dynamic.sql.SqlTable;
@@ -42,13 +41,13 @@ public class UpdateRenderer {
 
     private UpdateRenderer(Builder builder) {
         updateModel = Objects.requireNonNull(builder.updateModel);
+        // TODO - calculate this in the caller?
         TableAliasCalculator tableAliasCalculator = builder.updateModel.tableAlias()
                 .map(a -> ExplicitTableAliasCalculator.of(updateModel.table(), a))
                 .orElseGet(TableAliasCalculator::empty);
-        renderingContext = new RenderingContext.Builder()
+        renderingContext = RenderingContext
                 .withRenderingStrategy(Objects.requireNonNull(builder.renderingStrategy))
                 .withTableAliasCalculator(tableAliasCalculator)
-                .withSequence(new AtomicInteger(1))
                 .build();
     }
 
@@ -124,7 +123,7 @@ public class UpdateRenderer {
     private FragmentAndParameters renderLimitClause(Long limit) {
         String mapKey = renderingContext.nextMapKey();
         String jdbcPlaceholder = renderingContext
-                .renderingStrategy().getFormattedJdbcPlaceholder(RenderingStrategy.DEFAULT_PARAMETER_PREFIX, mapKey);
+                .renderingStrategy().getFormattedJdbcPlaceholder(renderingContext.parameterName(), mapKey);
 
         return FragmentAndParameters.withFragment("limit " + jdbcPlaceholder) //$NON-NLS-1$
                 .withParameter(mapKey, limit)

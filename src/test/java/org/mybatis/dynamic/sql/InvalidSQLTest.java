@@ -241,10 +241,8 @@ class InvalidSQLTest {
     void testInvalidPagingModel() {
         PagingModel pagingModel = new PagingModel.Builder().build();
 
-        RenderingContext renderingContext = new RenderingContext.Builder()
-                .withTableAliasCalculator(TableAliasCalculator.empty())
+        RenderingContext renderingContext = RenderingContext
                 .withRenderingStrategy(RenderingStrategies.MYBATIS3)
-                .withSequence(new AtomicInteger(1))
                 .build();
 
         PagingModelRenderer renderer = new PagingModelRenderer.Builder()

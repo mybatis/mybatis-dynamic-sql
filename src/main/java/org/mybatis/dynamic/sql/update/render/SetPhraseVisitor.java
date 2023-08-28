@@ -21,7 +21,6 @@ import java.util.function.Function;
 
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.render.RenderingContext;
-import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.select.render.SelectRenderer;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.util.AbstractColumnMapping;
@@ -137,8 +136,8 @@ public class SetPhraseVisitor extends UpdateMappingVisitor<Optional<FragmentAndP
                 .buildOptional();
     }
 
-    private String calculateJdbcPlaceholder(SqlColumn<?> column, String parameterName) {
+    private String calculateJdbcPlaceholder(SqlColumn<?> column, String mapKey) {
         return column.renderingStrategy().orElse(renderingContext.renderingStrategy())
-                .getFormattedJdbcPlaceholder(column, RenderingStrategy.DEFAULT_PARAMETER_PREFIX, parameterName);
+                .getFormattedJdbcPlaceholder(column, renderingContext.parameterName(), mapKey);
     }
 }

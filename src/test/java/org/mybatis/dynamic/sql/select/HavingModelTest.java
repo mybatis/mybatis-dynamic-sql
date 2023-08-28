@@ -20,14 +20,12 @@ import static org.mybatis.dynamic.sql.SqlBuilder.*;
 
 import java.sql.JDBCType;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
-import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 import org.mybatis.dynamic.sql.select.render.HavingRenderer;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 
@@ -65,10 +63,8 @@ class HavingModelTest {
     }
 
     private Optional<FragmentAndParameters> renderHavingModel(HavingModel havingModel) {
-        RenderingContext renderingContext = new RenderingContext.Builder()
+        RenderingContext renderingContext = RenderingContext
                 .withRenderingStrategy(RenderingStrategies.SPRING_NAMED_PARAMETER)
-                .withSequence(new AtomicInteger(1))
-                .withTableAliasCalculator(TableAliasCalculator.empty())
                 .build();
 
         return HavingRenderer.withHavingModel(havingModel)

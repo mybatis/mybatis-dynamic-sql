@@ -23,11 +23,17 @@ public class RenderingContext {
     private final AtomicInteger sequence;
     private final RenderingStrategy renderingStrategy;
     private final TableAliasCalculator tableAliasCalculator;
+    private final String parameterName;
 
     private RenderingContext(Builder builder) {
         sequence = Objects.requireNonNull(builder.sequence);
         renderingStrategy = Objects.requireNonNull(builder.renderingStrategy);
         tableAliasCalculator = Objects.requireNonNull(builder.tableAliasCalculator);
+        if (builder.parameterName == null) {
+            parameterName = RenderingStrategy.DEFAULT_PARAMETER_PREFIX;
+        } else {
+            parameterName = builder.parameterName + "." + RenderingStrategy.DEFAULT_PARAMETER_PREFIX; //$NON-NLS-1$
+        }
     }
 
     public AtomicInteger sequence() {
@@ -42,14 +48,23 @@ public class RenderingContext {
         return tableAliasCalculator;
     }
 
+    public String parameterName() {
+        return parameterName;
+    }
+
     public String nextMapKey() {
         return renderingStrategy.formatParameterMapKey(sequence);
     }
 
+    public static Builder withRenderingStrategy(RenderingStrategy renderingStrategy) {
+        return new Builder().withRenderingStrategy(renderingStrategy);
+    }
+
     public static class Builder {
-        private AtomicInteger sequence;
+        private AtomicInteger sequence = new AtomicInteger(1);
         private RenderingStrategy renderingStrategy;
-        private TableAliasCalculator tableAliasCalculator;
+        private TableAliasCalculator tableAliasCalculator = TableAliasCalculator.empty();
+        private String parameterName;
 
         public Builder withSequence(AtomicInteger sequence) {
             this.sequence = sequence;
@@ -63,6 +78,11 @@ public class RenderingContext {
 
         public Builder withTableAliasCalculator(TableAliasCalculator tableAliasCalculator) {
             this.tableAliasCalculator = tableAliasCalculator;
+            return this;
+        }
+
+        public Builder withParameterName(String parameterName) {
+            this.parameterName = parameterName;
             return this;
         }
 

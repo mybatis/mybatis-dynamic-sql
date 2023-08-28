@@ -22,7 +22,6 @@ import java.util.Objects;
 import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.BindableColumn;
 import org.mybatis.dynamic.sql.render.RenderingContext;
-import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.select.join.ColumnBasedJoinCondition;
 import org.mybatis.dynamic.sql.select.join.JoinConditionVisitor;
 import org.mybatis.dynamic.sql.select.join.TypedJoinCondition;
@@ -42,7 +41,7 @@ public class JoinConditionRenderer<T> implements JoinConditionVisitor<T, Fragmen
         String mapKey = renderingContext.nextMapKey();
 
         String placeHolder =  leftColumn.renderingStrategy().orElse(renderingContext.renderingStrategy())
-                .getFormattedJdbcPlaceholder(leftColumn, RenderingStrategy.DEFAULT_PARAMETER_PREFIX, mapKey);
+                .getFormattedJdbcPlaceholder(leftColumn, renderingContext.parameterName(), mapKey);
 
         return FragmentAndParameters.withFragment(condition.operator() + spaceBefore(placeHolder))
                 .withParameter(mapKey, condition.value())
