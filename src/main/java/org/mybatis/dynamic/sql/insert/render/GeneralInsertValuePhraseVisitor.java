@@ -93,8 +93,8 @@ public class GeneralInsertValuePhraseVisitor extends GeneralInsertMappingVisitor
                 .buildOptional();
     }
 
-    private String calculateJdbcPlaceholder(SqlColumn<?> column, String parameterName) {
+    private String calculateJdbcPlaceholder(SqlColumn<?> column, String mapKey) {
         return column.renderingStrategy().orElse(renderingContext.renderingStrategy())
-                .getFormattedJdbcPlaceholder(column, renderingContext.parameterName(), parameterName);
+                .getFormattedJdbcPlaceholder(column, renderingContext.parameterName(), mapKey);
     }
 }
