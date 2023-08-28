@@ -88,17 +88,24 @@ public class RenderingContext {
     }
 
     /**
-     * Crete a new rendering context based on this, with the specified table alias calculator.
-     * This is used by the query expression renderer when the alias calculator may change during rendering.
+     * Crete a new rendering context based on this, with the table alias calculator modified to include the
+     * specified child table alias calculator. This is used by the query expression renderer when the alias calculator
+     * may change during rendering.
      *
-     * @param tableAliasCalculator the new table alias calculator
-     * @return a new table alias calculator based on this with an overridden tableAliasCalculator
+     * @param childTableAliasCalculator the child table alias calculator
+     * @return a new rendering context whose table alias calculator is composed of the former calculator as parent, and
+     *     the new child calculator
      */
-    public RenderingContext withTableAliasCalculator(TableAliasCalculator tableAliasCalculator) {
+    public RenderingContext withChildTableAliasCalculator(TableAliasCalculator childTableAliasCalculator) {
+        TableAliasCalculator tac = new TableAliasCalculatorWithParent.Builder()
+                .withParent(tableAliasCalculator)
+                .withChild(childTableAliasCalculator)
+                .build();
+
         return new Builder()
                 .withRenderingStrategy(this.renderingStrategy)
                 .withParameterName(this.builderParameterName)
-                .withTableAliasCalculator(tableAliasCalculator)
+                .withTableAliasCalculator(tac)
                 .withSequence(this.sequence)
                 .build();
     }

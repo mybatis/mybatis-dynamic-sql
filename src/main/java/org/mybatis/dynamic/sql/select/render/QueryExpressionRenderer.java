@@ -25,7 +25,6 @@ import org.mybatis.dynamic.sql.render.ExplicitTableAliasCalculator;
 import org.mybatis.dynamic.sql.render.GuaranteedTableAliasCalculator;
 import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.render.TableAliasCalculator;
-import org.mybatis.dynamic.sql.render.TableAliasCalculatorWithParent;
 import org.mybatis.dynamic.sql.select.GroupByModel;
 import org.mybatis.dynamic.sql.select.HavingModel;
 import org.mybatis.dynamic.sql.select.QueryExpressionModel;
@@ -43,10 +42,9 @@ public class QueryExpressionRenderer {
 
     private QueryExpressionRenderer(Builder builder) {
         queryExpression = Objects.requireNonNull(builder.queryExpression);
-        TableAliasCalculator tableAliasCalculator =
-                calculateTableAliasCalculator(queryExpression, builder.renderingContext.tableAliasCalculator());
+        TableAliasCalculator childTableAliasCalculator = calculateChildTableAliasCalculator(queryExpression);
 
-        renderingContext = builder.renderingContext.withTableAliasCalculator(tableAliasCalculator);
+        renderingContext = builder.renderingContext.withChildTableAliasCalculator(childTableAliasCalculator);
 
         tableExpressionRenderer = new TableExpressionRenderer.Builder()
                 .withRenderingContext(renderingContext)
@@ -74,20 +72,13 @@ public class QueryExpressionRenderer {
      * </ol>
      *
      * @param queryExpression the model to render
-     * @param parentTableAliasCalculator table alias calculator from the parent query
      * @return a table alias calculator appropriate for this context
      */
-    private TableAliasCalculator calculateTableAliasCalculator(QueryExpressionModel queryExpression,
-                                                               TableAliasCalculator parentTableAliasCalculator) {
-        TableAliasCalculator baseTableAliasCalculator = queryExpression.joinModel()
+    private TableAliasCalculator calculateChildTableAliasCalculator(QueryExpressionModel queryExpression) {
+        return queryExpression.joinModel()
                 .map(JoinModel::containsSubQueries)
                 .map(this::calculateTableAliasCalculatorWithJoins)
                 .orElseGet(this::explicitTableAliasCalculator);
-
-        return new TableAliasCalculatorWithParent.Builder()
-                .withParent(parentTableAliasCalculator)
-                .withChild(baseTableAliasCalculator)
-                .build();
     }
 
     private TableAliasCalculator calculateTableAliasCalculatorWithJoins(boolean hasSubQueries) {
