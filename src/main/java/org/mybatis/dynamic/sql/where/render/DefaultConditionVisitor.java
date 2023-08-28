@@ -75,13 +75,13 @@ public class DefaultConditionVisitor<T> implements ConditionVisitor<T, FragmentA
     @Override
     public FragmentAndParameters visit(AbstractSingleValueCondition<T> condition) {
         FragmentAndParameters renderedLeftColumn = column.render(renderingContext);
-        String mapKey = renderingContext.nextMapKey();
+        RenderingContext.ParameterInfo parameterInfo = renderingContext.calculateParameterInfo(column);
         String finalFragment = condition.overrideRenderedLeftColumn(renderedLeftColumn.fragment())
                 + spaceBefore(condition.operator())
-                + spaceBefore(getFormattedJdbcPlaceholder(mapKey));
+                + spaceBefore(parameterInfo.renderedPlaceHolder());
 
         return FragmentAndParameters.withFragment(finalFragment)
-                .withParameter(mapKey, convertValue(condition.value()))
+                .withParameter(parameterInfo.mapKey(), convertValue(condition.value()))
                 .withParameters(renderedLeftColumn.parameters())
                 .build();
     }
@@ -89,18 +89,18 @@ public class DefaultConditionVisitor<T> implements ConditionVisitor<T, FragmentA
     @Override
     public FragmentAndParameters visit(AbstractTwoValueCondition<T> condition) {
         FragmentAndParameters renderedLeftColumn = column.render(renderingContext);
-        String mapKey1 = renderingContext.nextMapKey();
-        String mapKey2 = renderingContext.nextMapKey();
+        RenderingContext.ParameterInfo parameterInfo1 = renderingContext.calculateParameterInfo(column);
+        RenderingContext.ParameterInfo parameterInfo2 = renderingContext.calculateParameterInfo(column);
 
         String finalFragment = condition.overrideRenderedLeftColumn(renderedLeftColumn.fragment())
                 + spaceBefore(condition.operator1())
-                + spaceBefore(getFormattedJdbcPlaceholder(mapKey1))
+                + spaceBefore(parameterInfo1.renderedPlaceHolder())
                 + spaceBefore(condition.operator2())
-                + spaceBefore(getFormattedJdbcPlaceholder(mapKey2));
+                + spaceBefore(parameterInfo2.renderedPlaceHolder());
 
         return FragmentAndParameters.withFragment(finalFragment)
-                .withParameter(mapKey1, convertValue(condition.value1()))
-                .withParameter(mapKey2, convertValue(condition.value2()))
+                .withParameter(parameterInfo1.mapKey(), convertValue(condition.value1()))
+                .withParameter(parameterInfo2.mapKey(), convertValue(condition.value2()))
                 .withParameters(renderedLeftColumn.parameters())
                 .build();
     }
@@ -143,16 +143,10 @@ public class DefaultConditionVisitor<T> implements ConditionVisitor<T, FragmentA
     }
 
     private FragmentAndParameters toFragmentAndParameters(T value) {
-        String mapKey = renderingContext.nextMapKey();
-
-        return FragmentAndParameters.withFragment(getFormattedJdbcPlaceholder(mapKey))
-                .withParameter(mapKey, convertValue(value))
+        RenderingContext.ParameterInfo parameterInfo = renderingContext.calculateParameterInfo(column);
+        return FragmentAndParameters.withFragment(parameterInfo.renderedPlaceHolder())
+                .withParameter(parameterInfo.mapKey(), convertValue(value))
                 .build();
-    }
-
-    private String getFormattedJdbcPlaceholder(String mapKey) {
-        return column.renderingStrategy().orElse(renderingContext.renderingStrategy())
-                .getFormattedJdbcPlaceholder(column, renderingContext.parameterName(), mapKey);
     }
 
     public static <T> Builder<T> withColumn(BindableColumn<T> column) {

@@ -18,7 +18,6 @@ package org.mybatis.dynamic.sql.insert.render;
 import java.util.Objects;
 import java.util.Optional;
 
-import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.util.AbstractColumnMapping;
 import org.mybatis.dynamic.sql.util.ConstantMapping;
@@ -83,18 +82,11 @@ public class GeneralInsertValuePhraseVisitor extends GeneralInsertMappingVisitor
     }
 
     private Optional<FieldAndValueAndParameters> buildFragment(AbstractColumnMapping mapping, Object value) {
-        String mapKey = renderingContext.nextMapKey();
-
-        String jdbcPlaceholder = mapping.mapColumn(c -> calculateJdbcPlaceholder(c, mapKey));
+        RenderingContext.ParameterInfo parameterInfo = mapping.mapColumn(renderingContext::calculateParameterInfo);
 
         return FieldAndValueAndParameters.withFieldName(mapping.columnName())
-                .withValuePhrase(jdbcPlaceholder)
-                .withParameter(mapKey, value)
+                .withValuePhrase(parameterInfo.renderedPlaceHolder())
+                .withParameter(parameterInfo.mapKey(), value)
                 .buildOptional();
-    }
-
-    private String calculateJdbcPlaceholder(SqlColumn<?> column, String mapKey) {
-        return column.renderingStrategy().orElse(renderingContext.renderingStrategy())
-                .getFormattedJdbcPlaceholder(column, renderingContext.parameterName(), mapKey);
     }
 }

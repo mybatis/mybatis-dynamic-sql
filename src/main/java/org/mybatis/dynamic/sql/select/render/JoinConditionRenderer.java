@@ -38,13 +38,11 @@ public class JoinConditionRenderer<T> implements JoinConditionVisitor<T, Fragmen
 
     @Override
     public FragmentAndParameters visit(TypedJoinCondition<T> condition) {
-        String mapKey = renderingContext.nextMapKey();
+        RenderingContext.ParameterInfo parameterInfo = renderingContext.calculateParameterInfo(leftColumn);
 
-        String placeHolder =  leftColumn.renderingStrategy().orElse(renderingContext.renderingStrategy())
-                .getFormattedJdbcPlaceholder(leftColumn, renderingContext.parameterName(), mapKey);
-
-        return FragmentAndParameters.withFragment(condition.operator() + spaceBefore(placeHolder))
-                .withParameter(mapKey, condition.value())
+        return FragmentAndParameters
+                .withFragment(condition.operator() + spaceBefore(parameterInfo.renderedPlaceHolder()))
+                .withParameter(parameterInfo.mapKey(), condition.value())
                 .build();
     }
 

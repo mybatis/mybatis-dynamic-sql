@@ -15,6 +15,8 @@
  */
 package org.mybatis.dynamic.sql.render;
 
+import org.mybatis.dynamic.sql.BindableColumn;
+
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -38,24 +40,21 @@ public class RenderingContext {
         }
     }
 
-    public RenderingStrategy renderingStrategy() {
-        return renderingStrategy;
-    }
-
     public TableAliasCalculator tableAliasCalculator() {
         return tableAliasCalculator;
     }
 
-    public String parameterName() {
-        return calculatedParameterName;
-    }
-
-    public String nextMapKey() {
+    private String nextMapKey() {
         return renderingStrategy.formatParameterMapKey(sequence);
     }
 
     private String renderedPlaceHolder(String mapKey) {
         return renderingStrategy.getFormattedJdbcPlaceholder(calculatedParameterName, mapKey);
+    }
+
+    private <T> String renderedPlaceHolder(String mapKey, BindableColumn<T> column) {
+        return  column.renderingStrategy().orElse(renderingStrategy)
+                .getFormattedJdbcPlaceholder(column, calculatedParameterName, mapKey);
     }
 
     public ParameterInfo calculateParameterInfo() {
@@ -65,9 +64,15 @@ public class RenderingContext {
         return p;
     }
 
+    public <T> ParameterInfo calculateParameterInfo(BindableColumn<T> column) {
+        ParameterInfo p = new ParameterInfo();
+        p.mapKey = nextMapKey();
+        p.renderedPlaceHolder = renderedPlaceHolder(p.mapKey, column);
+        return p;
+    }
+
     /**
      * Crete a new rendering context based on this, with the specified table alias calculator.
-     *
      * This is used by the query expression renderer when the alias calculator may change during rendering.
      *
      * @param tableAliasCalculator the new table alias calculator

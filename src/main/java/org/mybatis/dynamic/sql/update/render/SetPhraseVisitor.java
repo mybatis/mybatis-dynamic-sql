@@ -124,20 +124,13 @@ public class SetPhraseVisitor extends UpdateMappingVisitor<Optional<FragmentAndP
     }
 
     private <T> Optional<FragmentAndParameters> buildFragment(AbstractColumnMapping mapping, T value) {
-        String mapKey = renderingContext.nextMapKey();
-
-        String jdbcPlaceholder = mapping.mapColumn(c -> calculateJdbcPlaceholder(c, mapKey));
+        RenderingContext.ParameterInfo parameterInfo = mapping.mapColumn(renderingContext::calculateParameterInfo);
         String setPhrase = mapping.mapColumn(aliasedColumnNameFunction)
                 + " = "  //$NON-NLS-1$
-                + jdbcPlaceholder;
+                + parameterInfo.renderedPlaceHolder();
 
         return FragmentAndParameters.withFragment(setPhrase)
-                .withParameter(mapKey, value)
+                .withParameter(parameterInfo.mapKey(), value)
                 .buildOptional();
-    }
-
-    private String calculateJdbcPlaceholder(SqlColumn<?> column, String mapKey) {
-        return column.renderingStrategy().orElse(renderingContext.renderingStrategy())
-                .getFormattedJdbcPlaceholder(column, renderingContext.parameterName(), mapKey);
     }
 }
