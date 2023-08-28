@@ -17,7 +17,6 @@ package org.mybatis.dynamic.sql.delete.render;
 
 import java.util.Objects;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import org.mybatis.dynamic.sql.SqlTable;
@@ -39,7 +38,6 @@ public class DeleteRenderer {
 
     private DeleteRenderer(Builder builder) {
         deleteModel = Objects.requireNonNull(builder.deleteModel);
-        // TODO - calculate this in the caller?
         TableAliasCalculator tableAliasCalculator = builder.deleteModel.tableAlias()
                 .map(a -> ExplicitTableAliasCalculator.of(deleteModel.table(), a))
                 .orElseGet(TableAliasCalculator::empty);

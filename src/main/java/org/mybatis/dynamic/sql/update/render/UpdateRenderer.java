@@ -41,7 +41,6 @@ public class UpdateRenderer {
 
     private UpdateRenderer(Builder builder) {
         updateModel = Objects.requireNonNull(builder.updateModel);
-        // TODO - calculate this in the caller?
         TableAliasCalculator tableAliasCalculator = builder.updateModel.tableAlias()
                 .map(a -> ExplicitTableAliasCalculator.of(updateModel.table(), a))
                 .orElseGet(TableAliasCalculator::empty);
