@@ -27,7 +27,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.MissingResourceException;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.exception.DynamicSqlException;
