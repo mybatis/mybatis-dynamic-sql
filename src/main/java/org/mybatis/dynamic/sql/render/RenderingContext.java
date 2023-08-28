@@ -54,6 +54,17 @@ public class RenderingContext {
         return renderingStrategy.formatParameterMapKey(sequence);
     }
 
+    private String renderedPlaceHolder(String mapKey) {
+        return renderingStrategy.getFormattedJdbcPlaceholder(calculatedParameterName, mapKey);
+    }
+
+    public ParameterInfo calculateParameterInfo() {
+        ParameterInfo p = new ParameterInfo();
+        p.mapKey = nextMapKey();
+        p.renderedPlaceHolder = renderedPlaceHolder(p.mapKey);
+        return p;
+    }
+
     /**
      * Crete a new rendering context based on this, with the specified table alias calculator.
      *
@@ -103,6 +114,19 @@ public class RenderingContext {
 
         public RenderingContext build() {
             return new RenderingContext(this);
+        }
+    }
+
+    public static class ParameterInfo {
+        private String mapKey;
+        private String renderedPlaceHolder;
+
+        public String mapKey() {
+            return mapKey;
+        }
+
+        public String renderedPlaceHolder() {
+            return renderedPlaceHolder;
         }
     }
 }

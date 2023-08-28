@@ -50,35 +50,30 @@ public class FetchFirstPagingModelRenderer {
     }
 
     private FragmentAndParameters renderFetchFirstRowsOnly(Long fetchFirstRows) {
-        String mapKey = renderingContext.nextMapKey();
+        RenderingContext.ParameterInfo parameterInfo = renderingContext.calculateParameterInfo();
         return FragmentAndParameters
-                .withFragment("fetch first " + renderPlaceholder(mapKey) //$NON-NLS-1$
+                .withFragment("fetch first " + parameterInfo.renderedPlaceHolder() //$NON-NLS-1$
                     + " rows only") //$NON-NLS-1$
-                .withParameter(mapKey, fetchFirstRows)
+                .withParameter(parameterInfo.mapKey(), fetchFirstRows)
                 .build();
     }
 
     private FragmentAndParameters renderOffsetOnly(Long offset) {
-        String mapKey = renderingContext.nextMapKey();
-        return FragmentAndParameters.withFragment("offset " + renderPlaceholder(mapKey) //$NON-NLS-1$
+        RenderingContext.ParameterInfo parameterInfo = renderingContext.calculateParameterInfo();
+        return FragmentAndParameters.withFragment("offset " + parameterInfo.renderedPlaceHolder() //$NON-NLS-1$
                 + " rows") //$NON-NLS-1$
-                .withParameter(mapKey, offset)
+                .withParameter(parameterInfo.mapKey(), offset)
                 .build();
     }
 
     private FragmentAndParameters renderOffsetAndFetchFirstRows(Long offset, Long fetchFirstRows) {
-        String mapKey1 = renderingContext.nextMapKey();
-        String mapKey2 = renderingContext.nextMapKey();
-        return FragmentAndParameters.withFragment("offset " + renderPlaceholder(mapKey1) //$NON-NLS-1$
-                + " rows fetch first " + renderPlaceholder(mapKey2) //$NON-NLS-1$
+        RenderingContext.ParameterInfo parameterInfo1 = renderingContext.calculateParameterInfo();
+        RenderingContext.ParameterInfo parameterInfo2 = renderingContext.calculateParameterInfo();
+        return FragmentAndParameters.withFragment("offset " + parameterInfo1.renderedPlaceHolder() //$NON-NLS-1$
+                + " rows fetch first " + parameterInfo2.renderedPlaceHolder() //$NON-NLS-1$
                 + " rows only") //$NON-NLS-1$
-                .withParameter(mapKey1, offset)
-                .withParameter(mapKey2, fetchFirstRows)
+                .withParameter(parameterInfo1.mapKey(), offset)
+                .withParameter(parameterInfo2.mapKey(), fetchFirstRows)
                 .build();
-    }
-
-    private String renderPlaceholder(String parameterName) {
-        return renderingContext.renderingStrategy()
-                .getFormattedJdbcPlaceholder(renderingContext.parameterName(), parameterName);
     }
 }

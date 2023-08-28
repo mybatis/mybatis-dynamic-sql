@@ -91,12 +91,10 @@ public class DeleteRenderer {
     }
 
     private FragmentAndParameters renderLimitClause(Long limit) {
-        String mapKey = renderingContext.nextMapKey();
-        String jdbcPlaceholder = renderingContext
-                .renderingStrategy().getFormattedJdbcPlaceholder(renderingContext.parameterName(), mapKey);
+        RenderingContext.ParameterInfo parameterInfo = renderingContext.calculateParameterInfo();
 
-        return FragmentAndParameters.withFragment("limit " + jdbcPlaceholder) //$NON-NLS-1$
-                .withParameter(mapKey, limit)
+        return FragmentAndParameters.withFragment("limit " + parameterInfo.renderedPlaceHolder()) //$NON-NLS-1$
+                .withParameter(parameterInfo.mapKey(), limit)
                 .build();
     }
 
