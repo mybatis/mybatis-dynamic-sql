@@ -46,11 +46,7 @@ public class QueryExpressionRenderer {
         TableAliasCalculator tableAliasCalculator =
                 calculateTableAliasCalculator(queryExpression, builder.renderingContext.tableAliasCalculator());
 
-        renderingContext = RenderingContext
-                .withRenderingStrategy(Objects.requireNonNull(builder.renderingContext.renderingStrategy()))
-                .withSequence(builder.renderingContext.sequence())
-                .withTableAliasCalculator(tableAliasCalculator)
-                .build();
+        renderingContext = builder.renderingContext.withTableAliasCalculator(tableAliasCalculator);
 
         tableExpressionRenderer = new TableExpressionRenderer.Builder()
                 .withRenderingContext(renderingContext)

@@ -23,21 +23,19 @@ public class RenderingContext {
     private final AtomicInteger sequence;
     private final RenderingStrategy renderingStrategy;
     private final TableAliasCalculator tableAliasCalculator;
-    private final String parameterName;
+    private final String builderParameterName;
+    private final String calculatedParameterName;
 
     private RenderingContext(Builder builder) {
         sequence = Objects.requireNonNull(builder.sequence);
         renderingStrategy = Objects.requireNonNull(builder.renderingStrategy);
         tableAliasCalculator = Objects.requireNonNull(builder.tableAliasCalculator);
-        if (builder.parameterName == null) {
-            parameterName = RenderingStrategy.DEFAULT_PARAMETER_PREFIX;
+        builderParameterName = builder.parameterName;
+        if (builderParameterName == null) {
+            calculatedParameterName = RenderingStrategy.DEFAULT_PARAMETER_PREFIX;
         } else {
-            parameterName = builder.parameterName + "." + RenderingStrategy.DEFAULT_PARAMETER_PREFIX; //$NON-NLS-1$
+            calculatedParameterName = builderParameterName + "." + RenderingStrategy.DEFAULT_PARAMETER_PREFIX; //$NON-NLS-1$
         }
-    }
-
-    public AtomicInteger sequence() {
-        return sequence;
     }
 
     public RenderingStrategy renderingStrategy() {
@@ -49,11 +47,28 @@ public class RenderingContext {
     }
 
     public String parameterName() {
-        return parameterName;
+        return calculatedParameterName;
     }
 
     public String nextMapKey() {
         return renderingStrategy.formatParameterMapKey(sequence);
+    }
+
+    /**
+     * Crete a new rendering context based on this, with the specified table alias calculator.
+     *
+     * This is used by the query expression renderer when the alias calculator may change during rendering.
+     *
+     * @param tableAliasCalculator the new table alias calculator
+     * @return a new table alias calculator based on this with an overridden tableAliasCalculator
+     */
+    public RenderingContext withTableAliasCalculator(TableAliasCalculator tableAliasCalculator) {
+        return new Builder()
+                .withRenderingStrategy(this.renderingStrategy)
+                .withParameterName(this.builderParameterName)
+                .withTableAliasCalculator(tableAliasCalculator)
+                .withSequence(this.sequence)
+                .build();
     }
 
     public static Builder withRenderingStrategy(RenderingStrategy renderingStrategy) {
