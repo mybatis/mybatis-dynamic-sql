@@ -45,6 +45,7 @@ public class RenderingContext {
     }
 
     public TableAliasCalculator tableAliasCalculator() {
+        // this method can be removed when the renderWithTableAlias method is removed from BasicColumn
         return tableAliasCalculator;
     }
 
