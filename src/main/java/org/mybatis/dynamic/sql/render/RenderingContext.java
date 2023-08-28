@@ -16,6 +16,7 @@
 package org.mybatis.dynamic.sql.render;
 
 import org.mybatis.dynamic.sql.BindableColumn;
+import org.mybatis.dynamic.sql.SqlColumn;
 
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -69,6 +70,12 @@ public class RenderingContext {
         p.mapKey = nextMapKey();
         p.renderedPlaceHolder = renderedPlaceHolder(p.mapKey, column);
         return p;
+    }
+
+    public <T> String aliasedColumnName(SqlColumn<T> column) {
+        return tableAliasCalculator.aliasForColumn(column.table())
+                .map(alias -> alias + "." + column.name())  //$NON-NLS-1$
+                .orElseGet(column::name);
     }
 
     /**

@@ -17,9 +17,7 @@ package org.mybatis.dynamic.sql.update.render;
 
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Function;
 
-import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.select.render.SelectRenderer;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
@@ -37,34 +35,29 @@ import org.mybatis.dynamic.sql.util.ValueWhenPresentMapping;
 
 public class SetPhraseVisitor extends UpdateMappingVisitor<Optional<FragmentAndParameters>> {
 
-    private final Function<SqlColumn<?>, String> aliasedColumnNameFunction;
     private final RenderingContext renderingContext;
 
     public SetPhraseVisitor(RenderingContext renderingContext) {
-        aliasedColumnNameFunction = c -> renderingContext.tableAliasCalculator().aliasForColumn(c.table())
-                .map(alias -> alias + "." + c.name())  //$NON-NLS-1$
-                .orElseGet(c::name);
-
         this.renderingContext = Objects.requireNonNull(renderingContext);
     }
 
     @Override
     public Optional<FragmentAndParameters> visit(NullMapping mapping) {
         return FragmentAndParameters
-                .withFragment(mapping.mapColumn(aliasedColumnNameFunction) + " = null") //$NON-NLS-1$
+                .withFragment(mapping.mapColumn(renderingContext::aliasedColumnName) + " = null") //$NON-NLS-1$
                 .buildOptional();
     }
 
     @Override
     public Optional<FragmentAndParameters> visit(ConstantMapping mapping) {
-        String fragment = mapping.mapColumn(aliasedColumnNameFunction) + " = " + mapping.constant(); //$NON-NLS-1$
+        String fragment = mapping.mapColumn(renderingContext::aliasedColumnName) + " = " + mapping.constant(); //$NON-NLS-1$
         return FragmentAndParameters.withFragment(fragment)
                 .buildOptional();
     }
 
     @Override
     public Optional<FragmentAndParameters> visit(StringConstantMapping mapping) {
-        String fragment = mapping.mapColumn(aliasedColumnNameFunction)
+        String fragment = mapping.mapColumn(renderingContext::aliasedColumnName)
                 + " = '" //$NON-NLS-1$
                 + mapping.constant()
                 + "'"; //$NON-NLS-1$
@@ -83,7 +76,7 @@ public class SetPhraseVisitor extends UpdateMappingVisitor<Optional<FragmentAndP
         return mapping.value()
                 .map(v -> buildFragment(mapping, v))
                 .orElseGet(() -> FragmentAndParameters
-                        .withFragment(mapping.mapColumn(aliasedColumnNameFunction) + " = null") //$NON-NLS-1$
+                        .withFragment(mapping.mapColumn(renderingContext::aliasedColumnName) + " = null") //$NON-NLS-1$
                         .buildOptional()
                 );
     }
@@ -100,7 +93,7 @@ public class SetPhraseVisitor extends UpdateMappingVisitor<Optional<FragmentAndP
                 .build()
                 .render();
 
-        String fragment = mapping.mapColumn(aliasedColumnNameFunction)
+        String fragment = mapping.mapColumn(renderingContext::aliasedColumnName)
                 + " = (" //$NON-NLS-1$
                 + selectStatement.getSelectStatement()
                 + ")"; //$NON-NLS-1$
@@ -114,7 +107,7 @@ public class SetPhraseVisitor extends UpdateMappingVisitor<Optional<FragmentAndP
     public Optional<FragmentAndParameters> visit(ColumnToColumnMapping mapping) {
         FragmentAndParameters renderedColumn = mapping.rightColumn().render(renderingContext);
 
-        String setPhrase = mapping.mapColumn(aliasedColumnNameFunction)
+        String setPhrase = mapping.mapColumn(renderingContext::aliasedColumnName)
                 + " = "  //$NON-NLS-1$
                 + renderedColumn.fragment();
 
@@ -125,7 +118,7 @@ public class SetPhraseVisitor extends UpdateMappingVisitor<Optional<FragmentAndP
 
     private <T> Optional<FragmentAndParameters> buildFragment(AbstractColumnMapping mapping, T value) {
         RenderingContext.ParameterInfo parameterInfo = mapping.mapColumn(renderingContext::calculateParameterInfo);
-        String setPhrase = mapping.mapColumn(aliasedColumnNameFunction)
+        String setPhrase = mapping.mapColumn(renderingContext::aliasedColumnName)
                 + " = "  //$NON-NLS-1$
                 + parameterInfo.renderedPlaceHolder();
 
