@@ -138,7 +138,7 @@ public class QueryExpressionRenderer {
     }
 
     private FragmentAndParameters calculateColumnList() {
-        FragmentCollector fc = queryExpression.mapColumns(this::applyTableAndColumnAlias)
+        FragmentCollector fc = queryExpression.mapColumns(this::renderColumnAndAlias)
                 .collect(FragmentCollector.collect());
 
         String s = fc.collectFragments(Collectors.joining(", ")); //$NON-NLS-1$
@@ -148,7 +148,7 @@ public class QueryExpressionRenderer {
                 .build();
     }
 
-    private FragmentAndParameters applyTableAndColumnAlias(BasicColumn selectListItem) {
+    private FragmentAndParameters renderColumnAndAlias(BasicColumn selectListItem) {
         FragmentAndParameters renderedColumn = selectListItem.render(renderingContext);
 
         String nameAndTableAlias = selectListItem.alias().map(a -> renderedColumn.fragment() + " as " + a) //$NON-NLS-1$
@@ -191,7 +191,7 @@ public class QueryExpressionRenderer {
     }
 
     private FragmentAndParameters renderGroupBy(GroupByModel groupByModel) {
-        FragmentCollector fc = groupByModel.mapColumns(this::applyTableAlias)
+        FragmentCollector fc = groupByModel.mapColumns(this::renderColumn)
                 .collect(FragmentCollector.collect());
         String groupBy = fc.collectFragments(
                 Collectors.joining(", ", "group by ", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$)
@@ -199,6 +199,10 @@ public class QueryExpressionRenderer {
         return FragmentAndParameters.withFragment(groupBy)
                 .withParameters(fc.parameters())
                 .build();
+    }
+
+    private FragmentAndParameters renderColumn(BasicColumn column) {
+        return column.render(renderingContext);
     }
 
     private Optional<FragmentAndParameters> calculateHavingClause() {
@@ -210,10 +214,6 @@ public class QueryExpressionRenderer {
                 .withRenderingContext(renderingContext)
                 .build()
                 .render();
-    }
-
-    private FragmentAndParameters applyTableAlias(BasicColumn column) {
-        return column.render(renderingContext);
     }
 
     public static Builder withQueryExpression(QueryExpressionModel model) {

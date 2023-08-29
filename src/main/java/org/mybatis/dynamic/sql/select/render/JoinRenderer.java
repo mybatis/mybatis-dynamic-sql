@@ -73,7 +73,7 @@ public class JoinRenderer {
     }
 
     private <T> FragmentAndParameters renderCriterion(JoinCriterion<T> joinCriterion) {
-        FragmentAndParameters renderedColumn = applyTableAlias(joinCriterion.leftColumn());
+        FragmentAndParameters renderedColumn = joinCriterion.leftColumn().render(renderingContext);
 
         String prefix = joinCriterion.connector()
                 + spaceBefore(renderedColumn.fragment());
@@ -89,10 +89,6 @@ public class JoinRenderer {
                 .withParameters(suffix.parameters())
                 .withParameters(renderedColumn.parameters())
                 .build();
-    }
-
-    private FragmentAndParameters applyTableAlias(BasicColumn column) {
-        return column.render(renderingContext);
     }
 
     public static Builder withJoinModel(JoinModel joinModel) {
