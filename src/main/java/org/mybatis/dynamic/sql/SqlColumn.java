@@ -140,7 +140,7 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
         if (tableQualifier == null) {
             return FragmentAndParameters.fromFragment(renderingContext.aliasedColumnName(this));
         } else {
-            return FragmentAndParameters.fromFragment(applyTableAlias(tableQualifier));
+            return FragmentAndParameters.fromFragment(renderingContext.aliasedColumnName(this, tableQualifier));
         }
     }
 
@@ -195,10 +195,6 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
                 .withParameterTypeConverter((ParameterTypeConverter<S, ?>) this.parameterTypeConverter)
                 .withTableQualifier(this.tableQualifier)
                 .withJavaType((Class<S>) this.javaType);
-    }
-
-    private String applyTableAlias(String tableAlias) {
-        return tableAlias + "." + name(); //$NON-NLS-1$
     }
 
     public static <T> SqlColumn<T> of(String name, SqlTable table) {

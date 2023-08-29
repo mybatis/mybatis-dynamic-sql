@@ -24,26 +24,32 @@ import org.mybatis.dynamic.sql.BindableColumn;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
 
+/**
+ * This class encapsulates all the supporting items related to rendering, and contains many utility methods
+ * used during the rendering process.
+ *
+ * @since 1.5.1
+ * @author Jeff Butler
+ */
 public class RenderingContext {
 
     private final AtomicInteger sequence;
     private final RenderingStrategy renderingStrategy;
     private final TableAliasCalculator tableAliasCalculator;
-    private final String builderParameterName;
+    private final String configuredParameterName;
     private final String calculatedParameterName;
 
     private RenderingContext(Builder builder) {
-        sequence = Objects.requireNonNull(builder.sequence);
+        this.sequence = builder.sequence == null ? new AtomicInteger(1) : builder.sequence;
         renderingStrategy = Objects.requireNonNull(builder.renderingStrategy);
         tableAliasCalculator = Objects.requireNonNull(builder.tableAliasCalculator);
-        builderParameterName = builder.parameterName;
-        if (builderParameterName == null) {
+        configuredParameterName = builder.parameterName;
+        if (configuredParameterName == null) {
             calculatedParameterName = RenderingStrategy.DEFAULT_PARAMETER_PREFIX;
         } else {
-            calculatedParameterName = builderParameterName + "." + RenderingStrategy.DEFAULT_PARAMETER_PREFIX; //$NON-NLS-1$
+            calculatedParameterName = configuredParameterName + "." + RenderingStrategy.DEFAULT_PARAMETER_PREFIX; //$NON-NLS-1$
         }
     }
-
     public TableAliasCalculator tableAliasCalculator() {
         // this method can be removed when the renderWithTableAlias method is removed from BasicColumn
         return tableAliasCalculator;
@@ -78,8 +84,12 @@ public class RenderingContext {
 
     public <T> String aliasedColumnName(SqlColumn<T> column) {
         return tableAliasCalculator.aliasForColumn(column.table())
-                .map(alias -> alias + "." + column.name())  //$NON-NLS-1$
+                .map(alias -> aliasedColumnName(column, alias))
                 .orElseGet(column::name);
+    }
+
+    public <T> String aliasedColumnName(SqlColumn<T> column, String explicitAlias) {
+        return explicitAlias + "." + column.name();  //$NON-NLS-1$
     }
 
     public String aliasedTableName(SqlTable table) {
@@ -105,9 +115,9 @@ public class RenderingContext {
 
         return new Builder()
                 .withRenderingStrategy(this.renderingStrategy)
-                .withParameterName(this.builderParameterName)
-                .withTableAliasCalculator(tac)
                 .withSequence(this.sequence)
+                .withParameterName(this.configuredParameterName)
+                .withTableAliasCalculator(tac)
                 .build();
     }
 
@@ -116,7 +126,7 @@ public class RenderingContext {
     }
 
     public static class Builder {
-        private AtomicInteger sequence = new AtomicInteger(1);
+        private AtomicInteger sequence;
         private RenderingStrategy renderingStrategy;
         private TableAliasCalculator tableAliasCalculator = TableAliasCalculator.empty();
         private String parameterName;
