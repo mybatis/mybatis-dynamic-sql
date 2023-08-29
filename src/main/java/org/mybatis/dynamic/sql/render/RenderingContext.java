@@ -47,7 +47,8 @@ public class RenderingContext {
         if (configuredParameterName == null) {
             calculatedParameterName = RenderingStrategy.DEFAULT_PARAMETER_PREFIX;
         } else {
-            calculatedParameterName = configuredParameterName + "." + RenderingStrategy.DEFAULT_PARAMETER_PREFIX; //$NON-NLS-1$
+            calculatedParameterName =
+                    configuredParameterName + "." + RenderingStrategy.DEFAULT_PARAMETER_PREFIX; //$NON-NLS-1$
         }
     }
     public TableAliasCalculator tableAliasCalculator() {
