@@ -18,10 +18,8 @@ package org.mybatis.dynamic.sql.update.render;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
-import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.common.OrderByModel;
 import org.mybatis.dynamic.sql.common.OrderByRenderer;
 import org.mybatis.dynamic.sql.exception.InvalidSqlException;
@@ -45,10 +43,9 @@ public class UpdateRenderer {
         TableAliasCalculator tableAliasCalculator = builder.updateModel.tableAlias()
                 .map(a -> ExplicitTableAliasCalculator.of(updateModel.table(), a))
                 .orElseGet(TableAliasCalculator::empty);
-        renderingContext = new RenderingContext.Builder()
+        renderingContext = RenderingContext
                 .withRenderingStrategy(Objects.requireNonNull(builder.renderingStrategy))
                 .withTableAliasCalculator(tableAliasCalculator)
-                .withSequence(new AtomicInteger(1))
                 .build();
     }
 
@@ -72,11 +69,7 @@ public class UpdateRenderer {
     }
 
     private FragmentAndParameters calculateUpdateStatementStart() {
-        SqlTable table = updateModel.table();
-        String tableName = table.tableNameAtRuntime();
-        String aliasedTableName = renderingContext.tableAliasCalculator().aliasForTable(table)
-                .map(a -> tableName + " " + a).orElse(tableName); //$NON-NLS-1$
-
+        String aliasedTableName = renderingContext.aliasedTableName(updateModel.table());
         return FragmentAndParameters.fromFragment("update " + aliasedTableName); //$NON-NLS-1$
     }
 
@@ -122,12 +115,10 @@ public class UpdateRenderer {
     }
 
     private FragmentAndParameters renderLimitClause(Long limit) {
-        String mapKey = renderingContext.nextMapKey();
-        String jdbcPlaceholder = renderingContext
-                .renderingStrategy().getFormattedJdbcPlaceholder(RenderingStrategy.DEFAULT_PARAMETER_PREFIX, mapKey);
+        RenderingContext.ParameterInfo parameterInfo = renderingContext.calculateParameterInfo();
 
-        return FragmentAndParameters.withFragment("limit " + jdbcPlaceholder) //$NON-NLS-1$
-                .withParameter(mapKey, limit)
+        return FragmentAndParameters.withFragment("limit " + parameterInfo.renderedPlaceHolder()) //$NON-NLS-1$
+                .withParameter(parameterInfo.mapKey(), limit)
                 .build();
     }
 

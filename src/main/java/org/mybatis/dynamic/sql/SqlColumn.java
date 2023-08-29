@@ -18,12 +18,10 @@ package org.mybatis.dynamic.sql;
 import java.sql.JDBCType;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.BiFunction;
 
 import org.jetbrains.annotations.NotNull;
 import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
-import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 import org.mybatis.dynamic.sql.util.StringUtilities;
 
@@ -37,7 +35,7 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
     protected final String typeHandler;
     protected final RenderingStrategy renderingStrategy;
     protected final ParameterTypeConverter<T, ?> parameterTypeConverter;
-    protected final BiFunction<TableAliasCalculator, SqlTable, Optional<String>> tableQualifierFunction;
+    protected final String tableQualifier;
     protected final Class<T> javaType;
 
     private SqlColumn(Builder<T> builder) {
@@ -49,7 +47,7 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
         typeHandler = builder.typeHandler;
         renderingStrategy = builder.renderingStrategy;
         parameterTypeConverter = builder.parameterTypeConverter;
-        tableQualifierFunction = Objects.requireNonNull(builder.tableQualifierFunction);
+        tableQualifier = builder.tableQualifier;
         javaType = builder.javaType;
     }
 
@@ -107,7 +105,7 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
      */
     public SqlColumn<T> qualifiedWith(String tableQualifier) {
         Builder<T> b = copy();
-        b.withTableQualifierFunction((tac, t) -> Optional.of(tableQualifier));
+        b.withTableQualifier(tableQualifier);
         return b.build();
     }
 
@@ -117,7 +115,7 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
      * a map based on the column name returned from the database.
      *
      * <p>A camel case string is mixed case, and most databases do not support unquoted mixed case strings
-     * as identifiers. Therefore the generated alias will be surrounded by double quotes thereby making it a
+     * as identifiers. Therefore, the generated alias will be surrounded by double quotes thereby making it a
      * quoted identifier. Most databases will respect quoted mixed case identifiers.
      *
      * @return a new column aliased with a camel case version of the column name
@@ -139,11 +137,11 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
 
     @Override
     public FragmentAndParameters render(RenderingContext renderingContext) {
-        String fragment = tableQualifierFunction.apply(renderingContext.tableAliasCalculator(), table)
-                .map(this::applyTableAlias)
-                .orElseGet(this::name);
-
-        return FragmentAndParameters.fromFragment(fragment);
+        if (tableQualifier == null) {
+            return FragmentAndParameters.fromFragment(renderingContext.aliasedColumnName(this));
+        } else {
+            return FragmentAndParameters.fromFragment(renderingContext.aliasedColumnName(this, tableQualifier));
+        }
     }
 
     @Override
@@ -195,12 +193,8 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
                 .withTypeHandler(this.typeHandler)
                 .withRenderingStrategy(this.renderingStrategy)
                 .withParameterTypeConverter((ParameterTypeConverter<S, ?>) this.parameterTypeConverter)
-                .withTableQualifierFunction(this.tableQualifierFunction)
+                .withTableQualifier(this.tableQualifier)
                 .withJavaType((Class<S>) this.javaType);
-    }
-
-    private String applyTableAlias(String tableAlias) {
-        return tableAlias + "." + name(); //$NON-NLS-1$
     }
 
     public static <T> SqlColumn<T> of(String name, SqlTable table) {
@@ -225,8 +219,7 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
         protected String typeHandler;
         protected RenderingStrategy renderingStrategy;
         protected ParameterTypeConverter<T, ?> parameterTypeConverter;
-        protected BiFunction<TableAliasCalculator, SqlTable, Optional<String>> tableQualifierFunction =
-                TableAliasCalculator::aliasForColumn;
+        protected String tableQualifier;
         protected Class<T> javaType;
 
         public Builder<T> withName(String name) {
@@ -269,9 +262,8 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
             return this;
         }
 
-        private Builder<T> withTableQualifierFunction(
-                BiFunction<TableAliasCalculator, SqlTable, Optional<String>> tableQualifierFunction) {
-            this.tableQualifierFunction = tableQualifierFunction;
+        private Builder<T> withTableQualifier(String tableQualifier) {
+            this.tableQualifier = tableQualifier;
             return this;
         }
 

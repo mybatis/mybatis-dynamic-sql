@@ -54,12 +54,10 @@ import org.mybatis.dynamic.sql.util.FragmentCollector;
  * @author Jeff Butler
  */
 public class CriterionRenderer implements SqlCriterionVisitor<Optional<RenderedCriterion>> {
-    private final String parameterName;
     private final RenderingContext renderingContext;
 
-    private CriterionRenderer(Builder builder) {
-        parameterName = builder.parameterName;
-        renderingContext = Objects.requireNonNull(builder.renderingContext);
+    public CriterionRenderer(RenderingContext renderingContext) {
+        this.renderingContext = Objects.requireNonNull(renderingContext);
     }
 
     @Override
@@ -179,7 +177,6 @@ public class CriterionRenderer implements SqlCriterionVisitor<Optional<RenderedC
     private <T> FragmentAndParameters renderCondition(ColumnAndConditionCriterion<T> criterion) {
         DefaultConditionVisitor<T> visitor = DefaultConditionVisitor.withColumn(criterion.column())
                 .withRenderingContext(renderingContext)
-                .withParameterName(parameterName)
                 .build();
         return criterion.condition().accept(visitor);
     }
@@ -246,25 +243,6 @@ public class CriterionRenderer implements SqlCriterionVisitor<Optional<RenderedC
                     Collectors.joining(" ", "not (", ")")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         } else {
             return collector.firstFragment().map(s -> "not " + s).orElse(""); //$NON-NLS-1$ //$NON-NLS-2$
-        }
-    }
-
-    public static class Builder {
-        private String parameterName;
-        private RenderingContext renderingContext;
-
-        public Builder withRenderingContext(RenderingContext renderingContext) {
-            this.renderingContext = renderingContext;
-            return this;
-        }
-
-        public Builder withParameterName(String parameterName) {
-            this.parameterName = parameterName;
-            return this;
-        }
-
-        public CriterionRenderer build() {
-            return new CriterionRenderer(this);
         }
     }
 }

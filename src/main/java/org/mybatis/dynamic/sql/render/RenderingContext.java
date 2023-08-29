@@ -15,41 +15,123 @@
  */
 package org.mybatis.dynamic.sql.render;
 
+import static org.mybatis.dynamic.sql.util.StringUtilities.spaceBefore;
+
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.mybatis.dynamic.sql.BindableColumn;
+import org.mybatis.dynamic.sql.SqlColumn;
+import org.mybatis.dynamic.sql.SqlTable;
+
+/**
+ * This class encapsulates all the supporting items related to rendering, and contains many utility methods
+ * used during the rendering process.
+ *
+ * @since 1.5.1
+ * @author Jeff Butler
+ */
 public class RenderingContext {
 
     private final AtomicInteger sequence;
     private final RenderingStrategy renderingStrategy;
     private final TableAliasCalculator tableAliasCalculator;
+    private final String configuredParameterName;
+    private final String calculatedParameterName;
 
     private RenderingContext(Builder builder) {
-        sequence = Objects.requireNonNull(builder.sequence);
+        this.sequence = builder.sequence == null ? new AtomicInteger(1) : builder.sequence;
         renderingStrategy = Objects.requireNonNull(builder.renderingStrategy);
         tableAliasCalculator = Objects.requireNonNull(builder.tableAliasCalculator);
-    }
-
-    public AtomicInteger sequence() {
-        return sequence;
-    }
-
-    public RenderingStrategy renderingStrategy() {
-        return renderingStrategy;
+        configuredParameterName = builder.parameterName;
+        if (configuredParameterName == null) {
+            calculatedParameterName = RenderingStrategy.DEFAULT_PARAMETER_PREFIX;
+        } else {
+            calculatedParameterName =
+                    configuredParameterName + "." + RenderingStrategy.DEFAULT_PARAMETER_PREFIX; //$NON-NLS-1$
+        }
     }
 
     public TableAliasCalculator tableAliasCalculator() {
+        // this method can be removed when the renderWithTableAlias method is removed from BasicColumn
         return tableAliasCalculator;
     }
 
-    public String nextMapKey() {
+    private String nextMapKey() {
         return renderingStrategy.formatParameterMapKey(sequence);
+    }
+
+    private String renderedPlaceHolder(String mapKey) {
+        return renderingStrategy.getFormattedJdbcPlaceholder(calculatedParameterName, mapKey);
+    }
+
+    private <T> String renderedPlaceHolder(String mapKey, BindableColumn<T> column) {
+        return  column.renderingStrategy().orElse(renderingStrategy)
+                .getFormattedJdbcPlaceholder(column, calculatedParameterName, mapKey);
+    }
+
+    public ParameterInfo calculateParameterInfo() {
+        ParameterInfo p = new ParameterInfo();
+        p.mapKey = nextMapKey();
+        p.renderedPlaceHolder = renderedPlaceHolder(p.mapKey);
+        return p;
+    }
+
+    public <T> ParameterInfo calculateParameterInfo(BindableColumn<T> column) {
+        ParameterInfo p = new ParameterInfo();
+        p.mapKey = nextMapKey();
+        p.renderedPlaceHolder = renderedPlaceHolder(p.mapKey, column);
+        return p;
+    }
+
+    public <T> String aliasedColumnName(SqlColumn<T> column) {
+        return tableAliasCalculator.aliasForColumn(column.table())
+                .map(alias -> aliasedColumnName(column, alias))
+                .orElseGet(column::name);
+    }
+
+    public <T> String aliasedColumnName(SqlColumn<T> column, String explicitAlias) {
+        return explicitAlias + "." + column.name();  //$NON-NLS-1$
+    }
+
+    public String aliasedTableName(SqlTable table) {
+        return tableAliasCalculator.aliasForTable(table)
+                .map(a -> table.tableNameAtRuntime() + spaceBefore(a))
+                .orElseGet(table::tableNameAtRuntime);
+    }
+
+    /**
+     * Crete a new rendering context based on this, with the table alias calculator modified to include the
+     * specified child table alias calculator. This is used by the query expression renderer when the alias calculator
+     * may change during rendering.
+     *
+     * @param childTableAliasCalculator the child table alias calculator
+     * @return a new rendering context whose table alias calculator is composed of the former calculator as parent, and
+     *     the new child calculator
+     */
+    public RenderingContext withChildTableAliasCalculator(TableAliasCalculator childTableAliasCalculator) {
+        TableAliasCalculator tac = new TableAliasCalculatorWithParent.Builder()
+                .withParent(tableAliasCalculator)
+                .withChild(childTableAliasCalculator)
+                .build();
+
+        return new Builder()
+                .withRenderingStrategy(this.renderingStrategy)
+                .withSequence(this.sequence)
+                .withParameterName(this.configuredParameterName)
+                .withTableAliasCalculator(tac)
+                .build();
+    }
+
+    public static Builder withRenderingStrategy(RenderingStrategy renderingStrategy) {
+        return new Builder().withRenderingStrategy(renderingStrategy);
     }
 
     public static class Builder {
         private AtomicInteger sequence;
         private RenderingStrategy renderingStrategy;
-        private TableAliasCalculator tableAliasCalculator;
+        private TableAliasCalculator tableAliasCalculator = TableAliasCalculator.empty();
+        private String parameterName;
 
         public Builder withSequence(AtomicInteger sequence) {
             this.sequence = sequence;
@@ -66,8 +148,26 @@ public class RenderingContext {
             return this;
         }
 
+        public Builder withParameterName(String parameterName) {
+            this.parameterName = parameterName;
+            return this;
+        }
+
         public RenderingContext build() {
             return new RenderingContext(this);
+        }
+    }
+
+    public static class ParameterInfo {
+        private String mapKey;
+        private String renderedPlaceHolder;
+
+        public String mapKey() {
+            return mapKey;
+        }
+
+        public String renderedPlaceHolder() {
+            return renderedPlaceHolder;
         }
     }
 }

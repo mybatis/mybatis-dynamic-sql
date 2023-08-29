@@ -36,11 +36,7 @@ public abstract class AbstractBooleanExpressionRenderer<M extends AbstractBoolea
     protected AbstractBooleanExpressionRenderer(String prefix, AbstractBuilder<M, ?> builder) {
         model = Objects.requireNonNull(builder.model);
         this.prefix = Objects.requireNonNull(prefix);
-
-        criterionRenderer = new CriterionRenderer.Builder()
-                .withRenderingContext(Objects.requireNonNull(builder.renderingContext))
-                .withParameterName(builder.parameterName)
-                .build();
+        criterionRenderer = new CriterionRenderer(builder.renderingContext);
     }
 
     public Optional<FragmentAndParameters> render() {
@@ -89,7 +85,6 @@ public abstract class AbstractBooleanExpressionRenderer<M extends AbstractBoolea
 
     public abstract static class AbstractBuilder<M, B extends AbstractBuilder<M, B>> {
         private final M model;
-        private String parameterName;
         private RenderingContext renderingContext;
 
         protected AbstractBuilder(M model) {
@@ -98,11 +93,6 @@ public abstract class AbstractBooleanExpressionRenderer<M extends AbstractBoolea
 
         public B withRenderingContext(RenderingContext renderingContext) {
             this.renderingContext = renderingContext;
-            return getThis();
-        }
-
-        public B withParameterName(String parameterName) {
-            this.parameterName = parameterName;
             return getThis();
         }
 

@@ -27,7 +27,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.MissingResourceException;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.exception.DynamicSqlException;
@@ -241,10 +240,8 @@ class InvalidSQLTest {
     void testInvalidPagingModel() {
         PagingModel pagingModel = new PagingModel.Builder().build();
 
-        RenderingContext renderingContext = new RenderingContext.Builder()
-                .withTableAliasCalculator(TableAliasCalculator.empty())
+        RenderingContext renderingContext = RenderingContext
                 .withRenderingStrategy(RenderingStrategies.MYBATIS3)
-                .withSequence(new AtomicInteger(1))
                 .build();
 
         PagingModelRenderer renderer = new PagingModelRenderer.Builder()

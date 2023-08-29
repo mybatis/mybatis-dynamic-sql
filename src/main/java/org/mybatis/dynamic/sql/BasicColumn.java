@@ -62,6 +62,7 @@ public interface BasicColumn {
     default FragmentAndParameters render(RenderingContext renderingContext) {
         // the default implementation ensures compatibility with prior releases. When the
         // deprecated renderWithTableAlias method is removed, this function can become purely abstract.
+        // Also remove the method tableAliasCalculator() from RenderingContext.
         return FragmentAndParameters.fromFragment(renderWithTableAlias(renderingContext.tableAliasCalculator()));
     }
 

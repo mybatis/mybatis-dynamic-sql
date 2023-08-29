@@ -18,7 +18,6 @@ package org.mybatis.dynamic.sql.select.render;
 import java.util.Objects;
 
 import org.mybatis.dynamic.sql.render.RenderingContext;
-import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.select.PagingModel;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 
@@ -40,24 +39,19 @@ public class LimitAndOffsetPagingModelRenderer {
     }
 
     private FragmentAndParameters renderLimitOnly() {
-        String mapKey = renderingContext.nextMapKey();
-        return FragmentAndParameters.withFragment("limit " + renderPlaceholder(mapKey)) //$NON-NLS-1$
-                .withParameter(mapKey, limit)
+        RenderingContext.ParameterInfo parameterInfo = renderingContext.calculateParameterInfo();
+        return FragmentAndParameters.withFragment("limit " + parameterInfo.renderedPlaceHolder()) //$NON-NLS-1$
+                .withParameter(parameterInfo.mapKey(), limit)
                 .build();
     }
 
     private FragmentAndParameters renderLimitAndOffset(Long offset) {
-        String mapKey1 = renderingContext.nextMapKey();
-        String mapKey2 = renderingContext.nextMapKey();
-        return FragmentAndParameters.withFragment("limit " + renderPlaceholder(mapKey1) //$NON-NLS-1$
-                    + " offset " + renderPlaceholder(mapKey2)) //$NON-NLS-1$
-                .withParameter(mapKey1, limit)
-                .withParameter(mapKey2, offset)
+        RenderingContext.ParameterInfo parameterInfo1 = renderingContext.calculateParameterInfo();
+        RenderingContext.ParameterInfo parameterInfo2 = renderingContext.calculateParameterInfo();
+        return FragmentAndParameters.withFragment("limit " + parameterInfo1.renderedPlaceHolder() //$NON-NLS-1$
+                    + " offset " + parameterInfo2.renderedPlaceHolder()) //$NON-NLS-1$
+                .withParameter(parameterInfo1.mapKey(), limit)
+                .withParameter(parameterInfo2.mapKey(), offset)
                 .build();
-    }
-
-    private String renderPlaceholder(String parameterName) {
-        return renderingContext.renderingStrategy()
-                .getFormattedJdbcPlaceholder(RenderingStrategy.DEFAULT_PARAMETER_PREFIX, parameterName);
     }
 }

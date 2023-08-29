@@ -21,7 +21,6 @@ import java.sql.JDBCType;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.ColumnAndConditionCriterion;
@@ -31,7 +30,6 @@ import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.render.ExplicitTableAliasCalculator;
 import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
-import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 import org.mybatis.dynamic.sql.where.condition.IsEqualTo;
 import org.mybatis.dynamic.sql.where.render.CriterionRenderer;
@@ -47,15 +45,9 @@ class CriterionRendererTest {
                 .withCondition(condition)
                 .build();
 
-        RenderingContext renderingContext = new RenderingContext.Builder()
-                .withSequence(new AtomicInteger(1))
-                .withRenderingStrategy(RenderingStrategies.MYBATIS3)
-                .withTableAliasCalculator(TableAliasCalculator.empty())
-                .build();
+        RenderingContext renderingContext =RenderingContext.withRenderingStrategy(RenderingStrategies.MYBATIS3).build();
 
-        CriterionRenderer renderer = new CriterionRenderer.Builder()
-                .withRenderingContext(renderingContext)
-                .build();
+        CriterionRenderer renderer = new CriterionRenderer(renderingContext);
 
         assertThat(criterion.accept(renderer)).hasValueSatisfying(rc -> {
             FragmentAndParameters fp = rc.fragmentAndParametersWithConnector();
@@ -75,15 +67,12 @@ class CriterionRendererTest {
         Map<SqlTable, String> tableAliases = new HashMap<>();
         tableAliases.put(table, "a");
 
-        RenderingContext renderingContext = new RenderingContext.Builder()
-                .withSequence(new AtomicInteger(1))
+        RenderingContext renderingContext = RenderingContext
                 .withRenderingStrategy(RenderingStrategies.MYBATIS3)
                 .withTableAliasCalculator(ExplicitTableAliasCalculator.of(tableAliases))
                 .build();
 
-        CriterionRenderer renderer = new CriterionRenderer.Builder()
-                .withRenderingContext(renderingContext)
-                .build();
+        CriterionRenderer renderer = new CriterionRenderer(renderingContext);
 
         assertThat(criterion.accept(renderer)).hasValueSatisfying(rc -> {
             FragmentAndParameters fp = rc.fragmentAndParametersWithConnector();
@@ -106,15 +95,11 @@ class CriterionRendererTest {
                 .withCondition(condition)
                 .build();
 
-        RenderingContext renderingContext = new RenderingContext.Builder()
-                .withSequence(new AtomicInteger(1))
+        RenderingContext renderingContext = RenderingContext
                 .withRenderingStrategy(RenderingStrategies.MYBATIS3)
-                .withTableAliasCalculator(TableAliasCalculator.empty())
                 .build();
 
-        CriterionRenderer renderer = new CriterionRenderer.Builder()
-                .withRenderingContext(renderingContext)
-                .build();
+        CriterionRenderer renderer = new CriterionRenderer(renderingContext);
 
         assertThat(criterion.accept(renderer)).hasValueSatisfying(rc -> {
             FragmentAndParameters fp = rc.fragmentAndParametersWithConnector();
@@ -134,15 +119,12 @@ class CriterionRendererTest {
         Map<SqlTable, String> tableAliases = new HashMap<>();
         tableAliases.put(table, "a");
 
-        RenderingContext renderingContext = new RenderingContext.Builder()
-                .withSequence(new AtomicInteger(1))
+        RenderingContext renderingContext = RenderingContext
                 .withRenderingStrategy(RenderingStrategies.MYBATIS3)
                 .withTableAliasCalculator(ExplicitTableAliasCalculator.of(tableAliases))
                 .build();
 
-        CriterionRenderer renderer = new CriterionRenderer.Builder()
-                .withRenderingContext(renderingContext)
-                .build();
+        CriterionRenderer renderer = new CriterionRenderer(renderingContext);
 
         assertThat(criterion.accept(renderer)).hasValueSatisfying(rc -> {
             FragmentAndParameters fp = rc.fragmentAndParametersWithConnector();

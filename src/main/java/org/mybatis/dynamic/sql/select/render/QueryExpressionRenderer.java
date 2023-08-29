@@ -25,7 +25,6 @@ import org.mybatis.dynamic.sql.render.ExplicitTableAliasCalculator;
 import org.mybatis.dynamic.sql.render.GuaranteedTableAliasCalculator;
 import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.render.TableAliasCalculator;
-import org.mybatis.dynamic.sql.render.TableAliasCalculatorWithParent;
 import org.mybatis.dynamic.sql.select.GroupByModel;
 import org.mybatis.dynamic.sql.select.HavingModel;
 import org.mybatis.dynamic.sql.select.QueryExpressionModel;
@@ -43,14 +42,9 @@ public class QueryExpressionRenderer {
 
     private QueryExpressionRenderer(Builder builder) {
         queryExpression = Objects.requireNonNull(builder.queryExpression);
-        TableAliasCalculator tableAliasCalculator =
-                calculateTableAliasCalculator(queryExpression, builder.renderingContext.tableAliasCalculator());
+        TableAliasCalculator childTableAliasCalculator = calculateChildTableAliasCalculator(queryExpression);
 
-        renderingContext = new RenderingContext.Builder()
-                .withRenderingStrategy(Objects.requireNonNull(builder.renderingContext.renderingStrategy()))
-                .withSequence(builder.renderingContext.sequence())
-                .withTableAliasCalculator(tableAliasCalculator)
-                .build();
+        renderingContext = builder.renderingContext.withChildTableAliasCalculator(childTableAliasCalculator);
 
         tableExpressionRenderer = new TableExpressionRenderer.Builder()
                 .withRenderingContext(renderingContext)
@@ -78,20 +72,13 @@ public class QueryExpressionRenderer {
      * </ol>
      *
      * @param queryExpression the model to render
-     * @param parentTableAliasCalculator table alias calculator from the parent query
      * @return a table alias calculator appropriate for this context
      */
-    private TableAliasCalculator calculateTableAliasCalculator(QueryExpressionModel queryExpression,
-                                                               TableAliasCalculator parentTableAliasCalculator) {
-        TableAliasCalculator baseTableAliasCalculator = queryExpression.joinModel()
+    private TableAliasCalculator calculateChildTableAliasCalculator(QueryExpressionModel queryExpression) {
+        return queryExpression.joinModel()
                 .map(JoinModel::containsSubQueries)
                 .map(this::calculateTableAliasCalculatorWithJoins)
                 .orElseGet(this::explicitTableAliasCalculator);
-
-        return new TableAliasCalculatorWithParent.Builder()
-                .withParent(parentTableAliasCalculator)
-                .withChild(baseTableAliasCalculator)
-                .build();
     }
 
     private TableAliasCalculator calculateTableAliasCalculatorWithJoins(boolean hasSubQueries) {
@@ -151,7 +138,7 @@ public class QueryExpressionRenderer {
     }
 
     private FragmentAndParameters calculateColumnList() {
-        FragmentCollector fc = queryExpression.mapColumns(this::applyTableAndColumnAlias)
+        FragmentCollector fc = queryExpression.mapColumns(this::renderColumnAndAlias)
                 .collect(FragmentCollector.collect());
 
         String s = fc.collectFragments(Collectors.joining(", ")); //$NON-NLS-1$
@@ -161,7 +148,7 @@ public class QueryExpressionRenderer {
                 .build();
     }
 
-    private FragmentAndParameters applyTableAndColumnAlias(BasicColumn selectListItem) {
+    private FragmentAndParameters renderColumnAndAlias(BasicColumn selectListItem) {
         FragmentAndParameters renderedColumn = selectListItem.render(renderingContext);
 
         String nameAndTableAlias = selectListItem.alias().map(a -> renderedColumn.fragment() + " as " + a) //$NON-NLS-1$
@@ -204,7 +191,7 @@ public class QueryExpressionRenderer {
     }
 
     private FragmentAndParameters renderGroupBy(GroupByModel groupByModel) {
-        FragmentCollector fc = groupByModel.mapColumns(this::applyTableAlias)
+        FragmentCollector fc = groupByModel.mapColumns(this::renderColumn)
                 .collect(FragmentCollector.collect());
         String groupBy = fc.collectFragments(
                 Collectors.joining(", ", "group by ", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$)
@@ -212,6 +199,10 @@ public class QueryExpressionRenderer {
         return FragmentAndParameters.withFragment(groupBy)
                 .withParameters(fc.parameters())
                 .build();
+    }
+
+    private FragmentAndParameters renderColumn(BasicColumn column) {
+        return column.render(renderingContext);
     }
 
     private Optional<FragmentAndParameters> calculateHavingClause() {
@@ -223,10 +214,6 @@ public class QueryExpressionRenderer {
                 .withRenderingContext(renderingContext)
                 .build()
                 .render();
-    }
-
-    private FragmentAndParameters applyTableAlias(BasicColumn column) {
-        return column.render(renderingContext);
     }
 
     public static Builder withQueryExpression(QueryExpressionModel model) {

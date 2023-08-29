@@ -17,9 +17,11 @@ package org.mybatis.dynamic.sql.select.aggregate;
 
 import org.mybatis.dynamic.sql.BindableColumn;
 import org.mybatis.dynamic.sql.VisitableCondition;
+import org.mybatis.dynamic.sql.exception.DynamicSqlException;
 import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.select.function.AbstractUniTypeFunction;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
+import org.mybatis.dynamic.sql.util.Messages;
 import org.mybatis.dynamic.sql.where.render.DefaultConditionVisitor;
 
 public class Sum<T> extends AbstractUniTypeFunction<T, Sum<T>> {
@@ -52,6 +54,10 @@ public class Sum<T> extends AbstractUniTypeFunction<T, Sum<T>> {
     }
 
     private FragmentAndParameters renderWithCondition(RenderingContext renderingContext) {
+        if (!condition.shouldRender()) {
+            throw new DynamicSqlException(Messages.getString("ERROR.37", "sum")); //$NON-NLS-1$ //$NON-NLS-2$
+        }
+
         DefaultConditionVisitor<T> visitor = new DefaultConditionVisitor.Builder<T>()
                 .withColumn(column)
                 .withRenderingContext(renderingContext)

@@ -17,9 +17,11 @@ package issues.gh655;
 
 import static examples.mariadb.ItemsDynamicSQLSupport.id;
 import static examples.mariadb.ItemsDynamicSQLSupport.items;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mybatis.dynamic.sql.SqlBuilder.add;
 import static org.mybatis.dynamic.sql.SqlBuilder.constant;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mybatis.dynamic.sql.SqlBuilder.isEqualToWhenPresent;
 import static org.mybatis.dynamic.sql.SqlBuilder.isGreaterThan;
 import static org.mybatis.dynamic.sql.SqlBuilder.select;
 import static org.mybatis.dynamic.sql.SqlBuilder.sum;
@@ -34,7 +36,9 @@ import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.mybatis.dynamic.sql.exception.DynamicSqlException;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
+import org.mybatis.dynamic.sql.select.SelectModel;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.util.mybatis3.CommonSelectMapper;
 import org.testcontainers.containers.MariaDBContainer;
@@ -79,6 +83,17 @@ class Gh655Test {
             Long numrows = mapper.selectOneLong(selectStatement);
             assertThat(numrows).isEqualTo(15L);
         }
+    }
+
+    @Test
+    void sumWithOptionalTest() {
+        SelectModel selectModel = select(sum(id, isEqualToWhenPresent((Integer) null)).as("numrows"))
+                .from(items)
+                .build();
+
+        assertThatExceptionOfType(DynamicSqlException.class)
+                .isThrownBy(() -> selectModel.render(RenderingStrategies.MYBATIS3))
+                .withMessage("The \"sum\" function does not support conditions that fail to render");
     }
 
     @Test

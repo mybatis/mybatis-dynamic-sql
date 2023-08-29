@@ -17,10 +17,8 @@ package org.mybatis.dynamic.sql.delete.render;
 
 import java.util.Objects;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
-import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.common.OrderByModel;
 import org.mybatis.dynamic.sql.common.OrderByRenderer;
 import org.mybatis.dynamic.sql.delete.DeleteModel;
@@ -42,10 +40,9 @@ public class DeleteRenderer {
         TableAliasCalculator tableAliasCalculator = builder.deleteModel.tableAlias()
                 .map(a -> ExplicitTableAliasCalculator.of(deleteModel.table(), a))
                 .orElseGet(TableAliasCalculator::empty);
-        renderingContext = new RenderingContext.Builder()
+        renderingContext = RenderingContext
                 .withRenderingStrategy(Objects.requireNonNull(builder.renderingStrategy))
                 .withTableAliasCalculator(tableAliasCalculator)
-                .withSequence(new AtomicInteger(1))
                 .build();
     }
 
@@ -68,11 +65,7 @@ public class DeleteRenderer {
     }
 
     private FragmentAndParameters calculateDeleteStatementStart() {
-        SqlTable table = deleteModel.table();
-        String tableName = table.tableNameAtRuntime();
-        String aliasedTableName = renderingContext.tableAliasCalculator().aliasForTable(table)
-                .map(a -> tableName + " " + a).orElse(tableName); //$NON-NLS-1$
-
+        String aliasedTableName = renderingContext.aliasedTableName(deleteModel.table());
         return FragmentAndParameters.fromFragment("delete from " + aliasedTableName); //$NON-NLS-1$
     }
 
@@ -92,12 +85,10 @@ public class DeleteRenderer {
     }
 
     private FragmentAndParameters renderLimitClause(Long limit) {
-        String mapKey = renderingContext.nextMapKey();
-        String jdbcPlaceholder = renderingContext
-                .renderingStrategy().getFormattedJdbcPlaceholder(RenderingStrategy.DEFAULT_PARAMETER_PREFIX, mapKey);
+        RenderingContext.ParameterInfo parameterInfo = renderingContext.calculateParameterInfo();
 
-        return FragmentAndParameters.withFragment("limit " + jdbcPlaceholder) //$NON-NLS-1$
-                .withParameter(mapKey, limit)
+        return FragmentAndParameters.withFragment("limit " + parameterInfo.renderedPlaceHolder()) //$NON-NLS-1$
+                .withParameter(parameterInfo.mapKey(), limit)
                 .build();
     }
 

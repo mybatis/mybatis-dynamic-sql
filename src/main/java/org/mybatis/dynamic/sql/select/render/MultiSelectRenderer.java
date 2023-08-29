@@ -17,14 +17,12 @@ package org.mybatis.dynamic.sql.select.render;
 
 import java.util.Objects;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import org.mybatis.dynamic.sql.common.OrderByModel;
 import org.mybatis.dynamic.sql.common.OrderByRenderer;
 import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
-import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 import org.mybatis.dynamic.sql.select.MultiSelectModel;
 import org.mybatis.dynamic.sql.select.PagingModel;
 import org.mybatis.dynamic.sql.select.SelectModel;
@@ -37,9 +35,7 @@ public class MultiSelectRenderer {
     private final RenderingContext renderingContext;
 
     private MultiSelectRenderer(Builder builder) {
-        renderingContext = new RenderingContext.Builder()
-                .withTableAliasCalculator(TableAliasCalculator.empty())
-                .withSequence(new AtomicInteger(1))
+        renderingContext = RenderingContext
                 .withRenderingStrategy(Objects.requireNonNull(builder.renderingStrategy))
                 .build();
         multiSelectModel = Objects.requireNonNull(builder.multiSelectModel);

@@ -15,11 +15,10 @@
  */
 package org.mybatis.dynamic.sql.insert.render;
 
+import java.util.Objects;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicInteger;
 
-import org.mybatis.dynamic.sql.SqlColumn;
-import org.mybatis.dynamic.sql.render.RenderingStrategy;
+import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.util.AbstractColumnMapping;
 import org.mybatis.dynamic.sql.util.ConstantMapping;
 import org.mybatis.dynamic.sql.util.GeneralInsertMappingVisitor;
@@ -31,11 +30,10 @@ import org.mybatis.dynamic.sql.util.ValueWhenPresentMapping;
 
 public class GeneralInsertValuePhraseVisitor extends GeneralInsertMappingVisitor<Optional<FieldAndValueAndParameters>> {
 
-    private final RenderingStrategy renderingStrategy;
-    private final AtomicInteger sequence = new AtomicInteger(1);
+    private final RenderingContext renderingContext;
 
-    public GeneralInsertValuePhraseVisitor(RenderingStrategy renderingStrategy) {
-        this.renderingStrategy = renderingStrategy;
+    public GeneralInsertValuePhraseVisitor(RenderingContext renderingContext) {
+        this.renderingContext = Objects.requireNonNull(renderingContext);
     }
 
     @Override
@@ -85,18 +83,11 @@ public class GeneralInsertValuePhraseVisitor extends GeneralInsertMappingVisitor
     }
 
     private Optional<FieldAndValueAndParameters> buildFragment(AbstractColumnMapping mapping, Object value) {
-        String mapKey = renderingStrategy.formatParameterMapKey(sequence);
-
-        String jdbcPlaceholder = mapping.mapColumn(c -> calculateJdbcPlaceholder(c, mapKey));
+        RenderingContext.ParameterInfo parameterInfo = mapping.mapColumn(renderingContext::calculateParameterInfo);
 
         return FieldAndValueAndParameters.withFieldName(mapping.columnName())
-                .withValuePhrase(jdbcPlaceholder)
-                .withParameter(mapKey, value)
+                .withValuePhrase(parameterInfo.renderedPlaceHolder())
+                .withParameter(parameterInfo.mapKey(), value)
                 .buildOptional();
-    }
-
-    private String calculateJdbcPlaceholder(SqlColumn<?> column, String parameterName) {
-        return column.renderingStrategy().orElse(renderingStrategy)
-                .getFormattedJdbcPlaceholder(column, RenderingStrategy.DEFAULT_PARAMETER_PREFIX, parameterName);
     }
 }
