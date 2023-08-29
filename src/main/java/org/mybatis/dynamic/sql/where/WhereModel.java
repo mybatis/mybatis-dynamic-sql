@@ -54,11 +54,7 @@ public class WhereModel extends AbstractBooleanExpressionModel {
     public Optional<WhereClauseProvider> render(RenderingStrategy renderingStrategy) {
         RenderingContext renderingContext = RenderingContext.withRenderingStrategy(renderingStrategy).build();
 
-        return WhereRenderer.withWhereModel(this)
-                .withRenderingContext(renderingContext)
-                .build()
-                .render()
-                .map(this::toWhereClauseProvider);
+        return render(renderingContext);
     }
 
     public Optional<WhereClauseProvider> render(RenderingStrategy renderingStrategy,
@@ -68,11 +64,7 @@ public class WhereModel extends AbstractBooleanExpressionModel {
                 .withTableAliasCalculator(tableAliasCalculator)
                 .build();
 
-        return WhereRenderer.withWhereModel(this)
-                .withRenderingContext(renderingContext)
-                .build()
-                .render()
-                .map(this::toWhereClauseProvider);
+        return render(renderingContext);
     }
 
     public Optional<WhereClauseProvider> render(RenderingStrategy renderingStrategy, String parameterName) {
@@ -81,11 +73,7 @@ public class WhereModel extends AbstractBooleanExpressionModel {
                 .withParameterName(parameterName)
                 .build();
 
-        return WhereRenderer.withWhereModel(this)
-                .withRenderingContext(renderingContext)
-                .build()
-                .render()
-                .map(this::toWhereClauseProvider);
+        return render(renderingContext);
     }
 
     public Optional<WhereClauseProvider> render(RenderingStrategy renderingStrategy,
@@ -96,6 +84,10 @@ public class WhereModel extends AbstractBooleanExpressionModel {
                 .withParameterName(parameterName)
                 .build();
 
+        return render(renderingContext);
+    }
+
+    private Optional<WhereClauseProvider> render(RenderingContext renderingContext) {
         return WhereRenderer.withWhereModel(this)
                 .withRenderingContext(renderingContext)
                 .build()
