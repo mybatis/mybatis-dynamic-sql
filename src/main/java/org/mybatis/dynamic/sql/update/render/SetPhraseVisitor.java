@@ -50,7 +50,8 @@ public class SetPhraseVisitor extends UpdateMappingVisitor<Optional<FragmentAndP
 
     @Override
     public Optional<FragmentAndParameters> visit(ConstantMapping mapping) {
-        String fragment = mapping.mapColumn(renderingContext::aliasedColumnName) + " = " + mapping.constant(); //$NON-NLS-1$
+        String fragment = mapping.mapColumn(renderingContext::aliasedColumnName)
+                + " = " + mapping.constant(); //$NON-NLS-1$
         return FragmentAndParameters.withFragment(fragment)
                 .buildOptional();
     }

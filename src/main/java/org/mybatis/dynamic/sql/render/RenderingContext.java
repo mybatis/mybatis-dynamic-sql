@@ -51,6 +51,7 @@ public class RenderingContext {
                     configuredParameterName + "." + RenderingStrategy.DEFAULT_PARAMETER_PREFIX; //$NON-NLS-1$
         }
     }
+
     public TableAliasCalculator tableAliasCalculator() {
         // this method can be removed when the renderWithTableAlias method is removed from BasicColumn
         return tableAliasCalculator;

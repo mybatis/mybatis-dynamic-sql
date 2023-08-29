@@ -31,6 +31,7 @@ import org.mybatis.dynamic.sql.util.ValueWhenPresentMapping;
 public class GeneralInsertValuePhraseVisitor extends GeneralInsertMappingVisitor<Optional<FieldAndValueAndParameters>> {
 
     private final RenderingContext renderingContext;
+
     public GeneralInsertValuePhraseVisitor(RenderingContext renderingContext) {
         this.renderingContext = Objects.requireNonNull(renderingContext);
     }
