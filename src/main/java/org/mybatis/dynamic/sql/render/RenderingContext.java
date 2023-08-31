@@ -33,23 +33,22 @@ import org.mybatis.dynamic.sql.SqlTable;
  */
 public class RenderingContext {
 
-    private final AtomicInteger sequence;
     private final RenderingStrategy renderingStrategy;
+    private final AtomicInteger sequence;
     private final TableAliasCalculator tableAliasCalculator;
     private final String configuredParameterName;
     private final String calculatedParameterName;
 
     private RenderingContext(Builder builder) {
-        this.sequence = builder.sequence == null ? new AtomicInteger(1) : builder.sequence;
         renderingStrategy = Objects.requireNonNull(builder.renderingStrategy);
-        tableAliasCalculator = Objects.requireNonNull(builder.tableAliasCalculator);
         configuredParameterName = builder.parameterName;
-        if (configuredParameterName == null) {
-            calculatedParameterName = RenderingStrategy.DEFAULT_PARAMETER_PREFIX;
-        } else {
-            calculatedParameterName =
-                    configuredParameterName + "." + RenderingStrategy.DEFAULT_PARAMETER_PREFIX; //$NON-NLS-1$
-        }
+
+        // reasonable defaults
+        sequence = builder.sequence == null ? new AtomicInteger(1) : builder.sequence;
+        tableAliasCalculator = builder.tableAliasCalculator == null ? TableAliasCalculator.empty()
+                : builder.tableAliasCalculator;
+        calculatedParameterName = builder.parameterName == null ? RenderingStrategy.DEFAULT_PARAMETER_PREFIX
+                : builder.parameterName + "." + RenderingStrategy.DEFAULT_PARAMETER_PREFIX;  //$NON-NLS-1$
     }
 
     public TableAliasCalculator tableAliasCalculator() {
@@ -70,18 +69,14 @@ public class RenderingContext {
                 .getFormattedJdbcPlaceholder(column, calculatedParameterName, mapKey);
     }
 
-    public ParameterInfo calculateParameterInfo() {
-        ParameterInfo p = new ParameterInfo();
-        p.mapKey = nextMapKey();
-        p.renderedPlaceHolder = renderedPlaceHolder(p.mapKey);
-        return p;
+    public RenderedParameterInfo calculateParameterInfo() {
+        String mapKey = nextMapKey();
+        return new RenderedParameterInfo(mapKey, renderedPlaceHolder(mapKey));
     }
 
-    public <T> ParameterInfo calculateParameterInfo(BindableColumn<T> column) {
-        ParameterInfo p = new ParameterInfo();
-        p.mapKey = nextMapKey();
-        p.renderedPlaceHolder = renderedPlaceHolder(p.mapKey, column);
-        return p;
+    public <T> RenderedParameterInfo calculateParameterInfo(BindableColumn<T> column) {
+        String mapKey = nextMapKey();
+        return new RenderedParameterInfo(mapKey, renderedPlaceHolder(mapKey, column));
     }
 
     public <T> String aliasedColumnName(SqlColumn<T> column) {
@@ -128,18 +123,18 @@ public class RenderingContext {
     }
 
     public static class Builder {
-        private AtomicInteger sequence;
         private RenderingStrategy renderingStrategy;
-        private TableAliasCalculator tableAliasCalculator = TableAliasCalculator.empty();
+        private AtomicInteger sequence;
+        private TableAliasCalculator tableAliasCalculator;
         private String parameterName;
-
-        public Builder withSequence(AtomicInteger sequence) {
-            this.sequence = sequence;
-            return this;
-        }
 
         public Builder withRenderingStrategy(RenderingStrategy renderingStrategy) {
             this.renderingStrategy = renderingStrategy;
+            return this;
+        }
+
+        public Builder withSequence(AtomicInteger sequence) {
+            this.sequence = sequence;
             return this;
         }
 
@@ -155,19 +150,6 @@ public class RenderingContext {
 
         public RenderingContext build() {
             return new RenderingContext(this);
-        }
-    }
-
-    public static class ParameterInfo {
-        private String mapKey;
-        private String renderedPlaceHolder;
-
-        public String mapKey() {
-            return mapKey;
-        }
-
-        public String renderedPlaceHolder() {
-            return renderedPlaceHolder;
         }
     }
 }

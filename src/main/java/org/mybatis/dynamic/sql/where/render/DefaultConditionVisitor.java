@@ -28,6 +28,7 @@ import org.mybatis.dynamic.sql.AbstractSubselectCondition;
 import org.mybatis.dynamic.sql.AbstractTwoValueCondition;
 import org.mybatis.dynamic.sql.BindableColumn;
 import org.mybatis.dynamic.sql.ConditionVisitor;
+import org.mybatis.dynamic.sql.render.RenderedParameterInfo;
 import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.select.render.SelectRenderer;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
@@ -75,13 +76,13 @@ public class DefaultConditionVisitor<T> implements ConditionVisitor<T, FragmentA
     @Override
     public FragmentAndParameters visit(AbstractSingleValueCondition<T> condition) {
         FragmentAndParameters renderedLeftColumn = column.render(renderingContext);
-        RenderingContext.ParameterInfo parameterInfo = renderingContext.calculateParameterInfo(column);
+        RenderedParameterInfo parameterInfo = renderingContext.calculateParameterInfo(column);
         String finalFragment = condition.overrideRenderedLeftColumn(renderedLeftColumn.fragment())
                 + spaceBefore(condition.operator())
                 + spaceBefore(parameterInfo.renderedPlaceHolder());
 
         return FragmentAndParameters.withFragment(finalFragment)
-                .withParameter(parameterInfo.mapKey(), convertValue(condition.value()))
+                .withParameter(parameterInfo.parameterMapKey(), convertValue(condition.value()))
                 .withParameters(renderedLeftColumn.parameters())
                 .build();
     }
@@ -89,8 +90,8 @@ public class DefaultConditionVisitor<T> implements ConditionVisitor<T, FragmentA
     @Override
     public FragmentAndParameters visit(AbstractTwoValueCondition<T> condition) {
         FragmentAndParameters renderedLeftColumn = column.render(renderingContext);
-        RenderingContext.ParameterInfo parameterInfo1 = renderingContext.calculateParameterInfo(column);
-        RenderingContext.ParameterInfo parameterInfo2 = renderingContext.calculateParameterInfo(column);
+        RenderedParameterInfo parameterInfo1 = renderingContext.calculateParameterInfo(column);
+        RenderedParameterInfo parameterInfo2 = renderingContext.calculateParameterInfo(column);
 
         String finalFragment = condition.overrideRenderedLeftColumn(renderedLeftColumn.fragment())
                 + spaceBefore(condition.operator1())
@@ -99,8 +100,8 @@ public class DefaultConditionVisitor<T> implements ConditionVisitor<T, FragmentA
                 + spaceBefore(parameterInfo2.renderedPlaceHolder());
 
         return FragmentAndParameters.withFragment(finalFragment)
-                .withParameter(parameterInfo1.mapKey(), convertValue(condition.value1()))
-                .withParameter(parameterInfo2.mapKey(), convertValue(condition.value2()))
+                .withParameter(parameterInfo1.parameterMapKey(), convertValue(condition.value1()))
+                .withParameter(parameterInfo2.parameterMapKey(), convertValue(condition.value2()))
                 .withParameters(renderedLeftColumn.parameters())
                 .build();
     }
@@ -143,9 +144,9 @@ public class DefaultConditionVisitor<T> implements ConditionVisitor<T, FragmentA
     }
 
     private FragmentAndParameters toFragmentAndParameters(T value) {
-        RenderingContext.ParameterInfo parameterInfo = renderingContext.calculateParameterInfo(column);
+        RenderedParameterInfo parameterInfo = renderingContext.calculateParameterInfo(column);
         return FragmentAndParameters.withFragment(parameterInfo.renderedPlaceHolder())
-                .withParameter(parameterInfo.mapKey(), convertValue(value))
+                .withParameter(parameterInfo.parameterMapKey(), convertValue(value))
                 .build();
     }
 

@@ -17,6 +17,7 @@ package org.mybatis.dynamic.sql.select.render;
 
 import java.util.Objects;
 
+import org.mybatis.dynamic.sql.render.RenderedParameterInfo;
 import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.select.PagingModel;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
@@ -39,19 +40,19 @@ public class LimitAndOffsetPagingModelRenderer {
     }
 
     private FragmentAndParameters renderLimitOnly() {
-        RenderingContext.ParameterInfo parameterInfo = renderingContext.calculateParameterInfo();
+        RenderedParameterInfo parameterInfo = renderingContext.calculateParameterInfo();
         return FragmentAndParameters.withFragment("limit " + parameterInfo.renderedPlaceHolder()) //$NON-NLS-1$
-                .withParameter(parameterInfo.mapKey(), limit)
+                .withParameter(parameterInfo.parameterMapKey(), limit)
                 .build();
     }
 
     private FragmentAndParameters renderLimitAndOffset(Long offset) {
-        RenderingContext.ParameterInfo parameterInfo1 = renderingContext.calculateParameterInfo();
-        RenderingContext.ParameterInfo parameterInfo2 = renderingContext.calculateParameterInfo();
+        RenderedParameterInfo parameterInfo1 = renderingContext.calculateParameterInfo();
+        RenderedParameterInfo parameterInfo2 = renderingContext.calculateParameterInfo();
         return FragmentAndParameters.withFragment("limit " + parameterInfo1.renderedPlaceHolder() //$NON-NLS-1$
                     + " offset " + parameterInfo2.renderedPlaceHolder()) //$NON-NLS-1$
-                .withParameter(parameterInfo1.mapKey(), limit)
-                .withParameter(parameterInfo2.mapKey(), offset)
+                .withParameter(parameterInfo1.parameterMapKey(), limit)
+                .withParameter(parameterInfo2.parameterMapKey(), offset)
                 .build();
     }
 }

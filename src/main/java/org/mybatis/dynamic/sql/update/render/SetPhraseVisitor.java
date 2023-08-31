@@ -18,6 +18,7 @@ package org.mybatis.dynamic.sql.update.render;
 import java.util.Objects;
 import java.util.Optional;
 
+import org.mybatis.dynamic.sql.render.RenderedParameterInfo;
 import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.select.render.SelectRenderer;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
@@ -118,13 +119,13 @@ public class SetPhraseVisitor extends UpdateMappingVisitor<Optional<FragmentAndP
     }
 
     private <T> Optional<FragmentAndParameters> buildFragment(AbstractColumnMapping mapping, T value) {
-        RenderingContext.ParameterInfo parameterInfo = mapping.mapColumn(renderingContext::calculateParameterInfo);
+        RenderedParameterInfo parameterInfo = mapping.mapColumn(renderingContext::calculateParameterInfo);
         String setPhrase = mapping.mapColumn(renderingContext::aliasedColumnName)
                 + " = "  //$NON-NLS-1$
                 + parameterInfo.renderedPlaceHolder();
 
         return FragmentAndParameters.withFragment(setPhrase)
-                .withParameter(parameterInfo.mapKey(), value)
+                .withParameter(parameterInfo.parameterMapKey(), value)
                 .buildOptional();
     }
 }
