@@ -36,7 +36,8 @@ public class CountDistinct extends AbstractCount {
 
     @Override
     public FragmentAndParameters render(RenderingContext renderingContext) {
-        return column.render(renderingContext).mapFragment(s -> "count(distinct " + s + ")"); //$NON-NLS-1$ //$NON-NLS-2$)
+        return column.render(renderingContext)
+                .mapFragment(s -> "count(distinct " + s + ")"); //$NON-NLS-1$ //$NON-NLS-2$)
     }
 
     @Override
