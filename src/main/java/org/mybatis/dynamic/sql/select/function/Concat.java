@@ -38,16 +38,10 @@ public class Concat<T> extends AbstractUniTypeFunction<T, Concat<T>> {
     @Override
     public FragmentAndParameters render(RenderingContext renderingContext) {
         // note - the cast below is added for type inference issues in some compilers
-        FragmentCollector fc = allColumns.stream()
+        return allColumns.stream()
                 .map(column -> column.render(renderingContext))
-                .collect(FragmentCollector.collect());
-
-        String fragment = fc.collectFragments(
-                Collectors.joining(", ", "concat(", ")")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-
-        return FragmentAndParameters.withFragment(fragment)
-                .withParameters(fc.parameters())
-                .build();
+                .collect(FragmentCollector.collect()).toFragmentAndParameters(
+                        Collectors.joining(", ", "concat(", ")")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
 
     @Override

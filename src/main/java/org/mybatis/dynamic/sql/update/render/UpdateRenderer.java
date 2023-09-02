@@ -94,10 +94,8 @@ public class UpdateRenderer {
     }
 
     private FragmentAndParameters toSetPhrase(FragmentCollector fragmentCollector) {
-        return FragmentAndParameters.withFragment(fragmentCollector.collectFragments(
-                    Collectors.joining(", ", "set ", ""))) //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                .withParameters(fragmentCollector.parameters())
-                .build();
+        return fragmentCollector.toFragmentAndParameters(
+                Collectors.joining(", ", "set ", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
 
     private Optional<FragmentAndParameters> calculateWhereClause() {

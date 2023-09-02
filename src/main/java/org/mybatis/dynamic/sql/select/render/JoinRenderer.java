@@ -39,12 +39,9 @@ public class JoinRenderer {
     }
 
     public FragmentAndParameters render() {
-        FragmentCollector fc = joinModel.mapJoinSpecifications(this::renderJoinSpecification)
-                .collect(FragmentCollector.collect());
-
-        return FragmentAndParameters.withFragment(fc.collectFragments(Collectors.joining(" "))) //$NON-NLS-1$
-                .withParameters(fc.parameters())
-                .build();
+        return joinModel.mapJoinSpecifications(this::renderJoinSpecification)
+                .collect(FragmentCollector.collect())
+                .toFragmentAndParameters(Collectors.joining(" ")); //$NON-NLS-1$
     }
 
     private FragmentAndParameters renderJoinSpecification(JoinSpecification joinSpecification) {
@@ -62,13 +59,9 @@ public class JoinRenderer {
     }
 
     private FragmentAndParameters renderConditions(JoinSpecification joinSpecification) {
-        FragmentCollector fragmentCollector = joinSpecification.mapJoinCriteria(this::renderCriterion)
-                .collect(FragmentCollector.collect());
-
-        return FragmentAndParameters
-                .withFragment(fragmentCollector.collectFragments(Collectors.joining(" "))) //$NON-NLS-1$
-                .withParameters(fragmentCollector.parameters())
-                .build();
+        return joinSpecification.mapJoinCriteria(this::renderCriterion)
+                .collect(FragmentCollector.collect())
+                .toFragmentAndParameters(Collectors.joining(" ")); //$NON-NLS-1$
     }
 
     private <T> FragmentAndParameters renderCriterion(JoinCriterion<T> joinCriterion) {

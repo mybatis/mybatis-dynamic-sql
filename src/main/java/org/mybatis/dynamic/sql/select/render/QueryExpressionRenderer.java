@@ -109,14 +109,7 @@ public class QueryExpressionRenderer {
         calculateGroupByClause().ifPresent(fragmentCollector::add);
         calculateHavingClause().ifPresent(fragmentCollector::add);
 
-        return toFragmentAndParameters(fragmentCollector);
-    }
-
-    private FragmentAndParameters toFragmentAndParameters(FragmentCollector fragmentCollector) {
-        return FragmentAndParameters
-                .withFragment(fragmentCollector.collectFragments(Collectors.joining(" "))) //$NON-NLS-1$
-                .withParameters(fragmentCollector.parameters())
-                .build();
+        return fragmentCollector.toFragmentAndParameters(Collectors.joining(" ")); //$NON-NLS-1$
     }
 
     private FragmentAndParameters calculateQueryExpressionStart() {
@@ -138,14 +131,9 @@ public class QueryExpressionRenderer {
     }
 
     private FragmentAndParameters calculateColumnList() {
-        FragmentCollector fc = queryExpression.mapColumns(this::renderColumnAndAlias)
-                .collect(FragmentCollector.collect());
-
-        String s = fc.collectFragments(Collectors.joining(", ")); //$NON-NLS-1$
-
-        return FragmentAndParameters.withFragment(s)
-                .withParameters(fc.parameters())
-                .build();
+        return queryExpression.mapColumns(this::renderColumnAndAlias)
+                .collect(FragmentCollector.collect())
+                .toFragmentAndParameters(Collectors.joining(", ")); //$NON-NLS-1$
     }
 
     private FragmentAndParameters renderColumnAndAlias(BasicColumn selectListItem) {
@@ -191,14 +179,10 @@ public class QueryExpressionRenderer {
     }
 
     private FragmentAndParameters renderGroupBy(GroupByModel groupByModel) {
-        FragmentCollector fc = groupByModel.mapColumns(this::renderColumn)
-                .collect(FragmentCollector.collect());
-        String groupBy = fc.collectFragments(
-                Collectors.joining(", ", "group by ", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$)
-
-        return FragmentAndParameters.withFragment(groupBy)
-                .withParameters(fc.parameters())
-                .build();
+        return groupByModel.mapColumns(this::renderColumn)
+                .collect(FragmentCollector.collect())
+                .toFragmentAndParameters(
+                        Collectors.joining(", ", "group by ", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$)
     }
 
     private FragmentAndParameters renderColumn(BasicColumn column) {

@@ -46,10 +46,15 @@ public class FragmentCollector {
         return fragments.stream().findFirst().map(FragmentAndParameters::fragment);
     }
 
-    public String collectFragments(Collector<CharSequence, ?, String> collector) {
-        return fragments.stream().map(FragmentAndParameters::fragment).collect(collector);
+    public String collectFragments(Collector<CharSequence, ?, String> fragmentCollector) {
+        return fragments.stream().map(FragmentAndParameters::fragment).collect(fragmentCollector);
     }
 
+    public FragmentAndParameters toFragmentAndParameters(Collector<CharSequence, ?, String> fragmentCollector) {
+        return FragmentAndParameters.withFragment(collectFragments(fragmentCollector))
+                .withParameters(parameters())
+                .build();
+    }
 
     public Map<String, Object> parameters() {
         return fragments.stream()
