@@ -27,12 +27,7 @@ public class Upper<T> extends AbstractUniTypeFunction<T, Upper<T>> {
 
     @Override
     public FragmentAndParameters render(RenderingContext renderingContext) {
-        FragmentAndParameters renderedColumn = column.render(renderingContext);
-
-        return FragmentAndParameters
-                .withFragment("upper(" + renderedColumn.fragment() + ")") //$NON-NLS-1$ //$NON-NLS-2$
-                .withParameters(renderedColumn.parameters())
-                .build();
+        return column.render(renderingContext).mapFragment(s -> "upper(" + s + ")"); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     @Override

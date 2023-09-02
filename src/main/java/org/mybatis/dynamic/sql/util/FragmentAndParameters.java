@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.UnaryOperator;
 
 public class FragmentAndParameters {
 
@@ -36,6 +37,18 @@ public class FragmentAndParameters {
 
     public Map<String, Object> parameters() {
         return parameters;
+    }
+
+    /**
+     * Return a new instance with the same parameters and a transformed fragment.
+     *
+     * @param mapper a function that can change the value of the fragment
+     * @return a new instance with the same parameters and a transformed fragment
+     */
+    public FragmentAndParameters mapFragment(UnaryOperator<String> mapper) {
+        return FragmentAndParameters.withFragment(mapper.apply(fragment))
+                .withParameters(parameters)
+                .build();
     }
 
     public static Builder withFragment(String fragment) {

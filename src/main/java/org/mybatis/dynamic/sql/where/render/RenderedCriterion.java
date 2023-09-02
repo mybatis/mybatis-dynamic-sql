@@ -15,6 +15,8 @@
  */
 package org.mybatis.dynamic.sql.where.render;
 
+import static org.mybatis.dynamic.sql.util.StringUtilities.spaceBefore;
+
 import java.util.Objects;
 
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
@@ -48,9 +50,7 @@ public class RenderedCriterion {
     }
 
     private FragmentAndParameters prependFragment(FragmentAndParameters fragmentAndParameters, String connector) {
-        return FragmentAndParameters.withFragment(connector + " " + fragmentAndParameters.fragment()) //$NON-NLS-1$
-                .withParameters(fragmentAndParameters.parameters())
-                .build();
+        return fragmentAndParameters.mapFragment(s -> connector + spaceBefore(s));
     }
 
     public static class Builder {

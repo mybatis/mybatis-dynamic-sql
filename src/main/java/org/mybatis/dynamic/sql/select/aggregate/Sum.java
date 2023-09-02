@@ -46,11 +46,7 @@ public class Sum<T> extends AbstractUniTypeFunction<T, Sum<T>> {
     }
 
     private FragmentAndParameters renderWithoutCondition(RenderingContext renderingContext) {
-        FragmentAndParameters renderedColumn = column.render(renderingContext);
-
-        return FragmentAndParameters.withFragment("sum(" + renderedColumn.fragment() + ")") //$NON-NLS-1$ //$NON-NLS-2$
-                .withParameters(renderedColumn.parameters())
-                .build();
+        return column.render(renderingContext).mapFragment(this::applyAggregate);
     }
 
     private FragmentAndParameters renderWithCondition(RenderingContext renderingContext) {
@@ -63,12 +59,11 @@ public class Sum<T> extends AbstractUniTypeFunction<T, Sum<T>> {
                 .withRenderingContext(renderingContext)
                 .build();
 
-        FragmentAndParameters renderedCondition = condition.accept(visitor);
+        return condition.accept(visitor).mapFragment(this::applyAggregate);
+    }
 
-        return FragmentAndParameters
-                .withFragment("sum(" + renderedCondition.fragment() + ")") //$NON-NLS-1$ //$NON-NLS-2$
-                .withParameters(renderedCondition.parameters())
-                .build();
+    private String applyAggregate(String s) {
+        return "sum(" + s + ")"; //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     @Override

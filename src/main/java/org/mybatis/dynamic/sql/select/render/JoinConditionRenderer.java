@@ -48,11 +48,8 @@ public class JoinConditionRenderer<T> implements JoinConditionVisitor<T, Fragmen
 
     @Override
     public FragmentAndParameters visit(ColumnBasedJoinCondition<T> condition) {
-        FragmentAndParameters renderedColumn = condition.rightColumn().render(renderingContext);
-        return FragmentAndParameters
-                .withFragment(condition.operator() + spaceBefore(renderedColumn.fragment()))
-                .withParameters(renderedColumn.parameters())
-                .build();
+        return condition.rightColumn().render(renderingContext)
+                .mapFragment(s -> condition.operator() + spaceBefore(s));
     }
 
     public static class Builder<T> {
