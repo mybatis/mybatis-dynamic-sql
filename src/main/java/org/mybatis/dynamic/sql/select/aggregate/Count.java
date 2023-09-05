@@ -36,12 +36,7 @@ public class Count extends AbstractCount {
 
     @Override
     public FragmentAndParameters render(RenderingContext renderingContext) {
-        FragmentAndParameters renderedColumn = column.render(renderingContext);
-
-        return FragmentAndParameters
-                .withFragment("count(" + renderedColumn.fragment() + ")") //$NON-NLS-1$ //$NON-NLS-2$
-                .withParameters(renderedColumn.parameters())
-                .build();
+        return column.render(renderingContext).mapFragment(s -> "count(" + s + ")"); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     @Override

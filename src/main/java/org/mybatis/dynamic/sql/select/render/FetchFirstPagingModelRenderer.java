@@ -16,6 +16,7 @@
 package org.mybatis.dynamic.sql.select.render;
 
 import org.mybatis.dynamic.sql.exception.InvalidSqlException;
+import org.mybatis.dynamic.sql.render.RenderedParameterInfo;
 import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.select.PagingModel;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
@@ -50,30 +51,30 @@ public class FetchFirstPagingModelRenderer {
     }
 
     private FragmentAndParameters renderFetchFirstRowsOnly(Long fetchFirstRows) {
-        RenderingContext.ParameterInfo parameterInfo = renderingContext.calculateParameterInfo();
+        RenderedParameterInfo parameterInfo = renderingContext.calculateParameterInfo();
         return FragmentAndParameters
                 .withFragment("fetch first " + parameterInfo.renderedPlaceHolder() //$NON-NLS-1$
                     + " rows only") //$NON-NLS-1$
-                .withParameter(parameterInfo.mapKey(), fetchFirstRows)
+                .withParameter(parameterInfo.parameterMapKey(), fetchFirstRows)
                 .build();
     }
 
     private FragmentAndParameters renderOffsetOnly(Long offset) {
-        RenderingContext.ParameterInfo parameterInfo = renderingContext.calculateParameterInfo();
+        RenderedParameterInfo parameterInfo = renderingContext.calculateParameterInfo();
         return FragmentAndParameters.withFragment("offset " + parameterInfo.renderedPlaceHolder() //$NON-NLS-1$
                 + " rows") //$NON-NLS-1$
-                .withParameter(parameterInfo.mapKey(), offset)
+                .withParameter(parameterInfo.parameterMapKey(), offset)
                 .build();
     }
 
     private FragmentAndParameters renderOffsetAndFetchFirstRows(Long offset, Long fetchFirstRows) {
-        RenderingContext.ParameterInfo parameterInfo1 = renderingContext.calculateParameterInfo();
-        RenderingContext.ParameterInfo parameterInfo2 = renderingContext.calculateParameterInfo();
+        RenderedParameterInfo parameterInfo1 = renderingContext.calculateParameterInfo();
+        RenderedParameterInfo parameterInfo2 = renderingContext.calculateParameterInfo();
         return FragmentAndParameters.withFragment("offset " + parameterInfo1.renderedPlaceHolder() //$NON-NLS-1$
                 + " rows fetch first " + parameterInfo2.renderedPlaceHolder() //$NON-NLS-1$
                 + " rows only") //$NON-NLS-1$
-                .withParameter(parameterInfo1.mapKey(), offset)
-                .withParameter(parameterInfo2.mapKey(), fetchFirstRows)
+                .withParameter(parameterInfo1.parameterMapKey(), offset)
+                .withParameter(parameterInfo2.parameterMapKey(), fetchFirstRows)
                 .build();
     }
 }

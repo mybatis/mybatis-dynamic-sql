@@ -17,7 +17,7 @@ package org.mybatis.dynamic.sql.select.aggregate;
 
 import org.mybatis.dynamic.sql.BindableColumn;
 import org.mybatis.dynamic.sql.VisitableCondition;
-import org.mybatis.dynamic.sql.exception.DynamicSqlException;
+import org.mybatis.dynamic.sql.exception.InvalidSqlException;
 import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.select.function.AbstractUniTypeFunction;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
@@ -46,16 +46,12 @@ public class Sum<T> extends AbstractUniTypeFunction<T, Sum<T>> {
     }
 
     private FragmentAndParameters renderWithoutCondition(RenderingContext renderingContext) {
-        FragmentAndParameters renderedColumn = column.render(renderingContext);
-
-        return FragmentAndParameters.withFragment("sum(" + renderedColumn.fragment() + ")") //$NON-NLS-1$ //$NON-NLS-2$
-                .withParameters(renderedColumn.parameters())
-                .build();
+        return column.render(renderingContext).mapFragment(this::applyAggregate);
     }
 
     private FragmentAndParameters renderWithCondition(RenderingContext renderingContext) {
         if (!condition.shouldRender()) {
-            throw new DynamicSqlException(Messages.getString("ERROR.37", "sum")); //$NON-NLS-1$ //$NON-NLS-2$
+            throw new InvalidSqlException(Messages.getString("ERROR.37", "sum")); //$NON-NLS-1$ //$NON-NLS-2$
         }
 
         DefaultConditionVisitor<T> visitor = new DefaultConditionVisitor.Builder<T>()
@@ -63,12 +59,11 @@ public class Sum<T> extends AbstractUniTypeFunction<T, Sum<T>> {
                 .withRenderingContext(renderingContext)
                 .build();
 
-        FragmentAndParameters renderedCondition = condition.accept(visitor);
+        return condition.accept(visitor).mapFragment(this::applyAggregate);
+    }
 
-        return FragmentAndParameters
-                .withFragment("sum(" + renderedCondition.fragment() + ")") //$NON-NLS-1$ //$NON-NLS-2$
-                .withParameters(renderedCondition.parameters())
-                .build();
+    private String applyAggregate(String s) {
+        return "sum(" + s + ")"; //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     @Override

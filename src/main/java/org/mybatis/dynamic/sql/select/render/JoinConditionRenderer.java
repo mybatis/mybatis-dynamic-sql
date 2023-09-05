@@ -20,6 +20,7 @@ import static org.mybatis.dynamic.sql.util.StringUtilities.spaceBefore;
 import java.util.Objects;
 
 import org.mybatis.dynamic.sql.BindableColumn;
+import org.mybatis.dynamic.sql.render.RenderedParameterInfo;
 import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.select.join.ColumnBasedJoinCondition;
 import org.mybatis.dynamic.sql.select.join.JoinConditionVisitor;
@@ -37,21 +38,18 @@ public class JoinConditionRenderer<T> implements JoinConditionVisitor<T, Fragmen
 
     @Override
     public FragmentAndParameters visit(TypedJoinCondition<T> condition) {
-        RenderingContext.ParameterInfo parameterInfo = renderingContext.calculateParameterInfo(leftColumn);
+        RenderedParameterInfo parameterInfo = renderingContext.calculateParameterInfo(leftColumn);
 
         return FragmentAndParameters
                 .withFragment(condition.operator() + spaceBefore(parameterInfo.renderedPlaceHolder()))
-                .withParameter(parameterInfo.mapKey(), condition.value())
+                .withParameter(parameterInfo.parameterMapKey(), condition.value())
                 .build();
     }
 
     @Override
     public FragmentAndParameters visit(ColumnBasedJoinCondition<T> condition) {
-        FragmentAndParameters renderedColumn = condition.rightColumn().render(renderingContext);
-        return FragmentAndParameters
-                .withFragment(condition.operator() + spaceBefore(renderedColumn.fragment()))
-                .withParameters(renderedColumn.parameters())
-                .build();
+        return condition.rightColumn().render(renderingContext)
+                .mapFragment(s -> condition.operator() + spaceBefore(s));
     }
 
     public static class Builder<T> {

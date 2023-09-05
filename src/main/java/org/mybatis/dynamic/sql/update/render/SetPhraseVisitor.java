@@ -18,6 +18,7 @@ package org.mybatis.dynamic.sql.update.render;
 import java.util.Objects;
 import java.util.Optional;
 
+import org.mybatis.dynamic.sql.render.RenderedParameterInfo;
 import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.select.render.SelectRenderer;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
@@ -43,9 +44,7 @@ public class SetPhraseVisitor extends UpdateMappingVisitor<Optional<FragmentAndP
 
     @Override
     public Optional<FragmentAndParameters> visit(NullMapping mapping) {
-        return FragmentAndParameters
-                .withFragment(mapping.mapColumn(renderingContext::aliasedColumnName) + " = null") //$NON-NLS-1$
-                .buildOptional();
+        return buildNullFragment(mapping);
     }
 
     @Override
@@ -69,22 +68,19 @@ public class SetPhraseVisitor extends UpdateMappingVisitor<Optional<FragmentAndP
 
     @Override
     public <T> Optional<FragmentAndParameters> visit(ValueMapping<T> mapping) {
-        return buildFragment(mapping, mapping.value());
+        return buildValueFragment(mapping, mapping.value());
     }
 
     @Override
     public <T> Optional<FragmentAndParameters> visit(ValueOrNullMapping<T> mapping) {
         return mapping.value()
-                .map(v -> buildFragment(mapping, v))
-                .orElseGet(() -> FragmentAndParameters
-                        .withFragment(mapping.mapColumn(renderingContext::aliasedColumnName) + " = null") //$NON-NLS-1$
-                        .buildOptional()
-                );
+                .map(v -> buildValueFragment(mapping, v))
+                .orElseGet(() -> buildNullFragment(mapping));
     }
 
     @Override
     public <T> Optional<FragmentAndParameters> visit(ValueWhenPresentMapping<T> mapping) {
-        return mapping.value().flatMap(v -> buildFragment(mapping, v));
+        return mapping.value().flatMap(v -> buildValueFragment(mapping, v));
     }
 
     @Override
@@ -117,14 +113,20 @@ public class SetPhraseVisitor extends UpdateMappingVisitor<Optional<FragmentAndP
                 .buildOptional();
     }
 
-    private <T> Optional<FragmentAndParameters> buildFragment(AbstractColumnMapping mapping, T value) {
-        RenderingContext.ParameterInfo parameterInfo = mapping.mapColumn(renderingContext::calculateParameterInfo);
+    private <T> Optional<FragmentAndParameters> buildValueFragment(AbstractColumnMapping mapping, T value) {
+        RenderedParameterInfo parameterInfo = mapping.mapColumn(renderingContext::calculateParameterInfo);
         String setPhrase = mapping.mapColumn(renderingContext::aliasedColumnName)
                 + " = "  //$NON-NLS-1$
                 + parameterInfo.renderedPlaceHolder();
 
         return FragmentAndParameters.withFragment(setPhrase)
-                .withParameter(parameterInfo.mapKey(), value)
+                .withParameter(parameterInfo.parameterMapKey(), value)
+                .buildOptional();
+    }
+
+    private Optional<FragmentAndParameters> buildNullFragment(AbstractColumnMapping mapping) {
+        return FragmentAndParameters
+                .withFragment(mapping.mapColumn(renderingContext::aliasedColumnName) + " = null") //$NON-NLS-1$
                 .buildOptional();
     }
 }

@@ -24,6 +24,7 @@ import org.mybatis.dynamic.sql.common.OrderByModel;
 import org.mybatis.dynamic.sql.common.OrderByRenderer;
 import org.mybatis.dynamic.sql.exception.InvalidSqlException;
 import org.mybatis.dynamic.sql.render.ExplicitTableAliasCalculator;
+import org.mybatis.dynamic.sql.render.RenderedParameterInfo;
 import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.render.TableAliasCalculator;
@@ -93,10 +94,8 @@ public class UpdateRenderer {
     }
 
     private FragmentAndParameters toSetPhrase(FragmentCollector fragmentCollector) {
-        return FragmentAndParameters.withFragment(fragmentCollector.collectFragments(
-                    Collectors.joining(", ", "set ", ""))) //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                .withParameters(fragmentCollector.parameters())
-                .build();
+        return fragmentCollector.toFragmentAndParameters(
+                Collectors.joining(", ", "set ", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
 
     private Optional<FragmentAndParameters> calculateWhereClause() {
@@ -115,10 +114,10 @@ public class UpdateRenderer {
     }
 
     private FragmentAndParameters renderLimitClause(Long limit) {
-        RenderingContext.ParameterInfo parameterInfo = renderingContext.calculateParameterInfo();
+        RenderedParameterInfo parameterInfo = renderingContext.calculateParameterInfo();
 
         return FragmentAndParameters.withFragment("limit " + parameterInfo.renderedPlaceHolder()) //$NON-NLS-1$
-                .withParameter(parameterInfo.mapKey(), limit)
+                .withParameter(parameterInfo.parameterMapKey(), limit)
                 .build();
     }
 

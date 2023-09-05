@@ -18,6 +18,7 @@ package org.mybatis.dynamic.sql.insert.render;
 import java.util.Objects;
 import java.util.Optional;
 
+import org.mybatis.dynamic.sql.render.RenderedParameterInfo;
 import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.util.AbstractColumnMapping;
 import org.mybatis.dynamic.sql.util.ConstantMapping;
@@ -83,11 +84,11 @@ public class GeneralInsertValuePhraseVisitor extends GeneralInsertMappingVisitor
     }
 
     private Optional<FieldAndValueAndParameters> buildFragment(AbstractColumnMapping mapping, Object value) {
-        RenderingContext.ParameterInfo parameterInfo = mapping.mapColumn(renderingContext::calculateParameterInfo);
+        RenderedParameterInfo parameterInfo = mapping.mapColumn(renderingContext::calculateParameterInfo);
 
         return FieldAndValueAndParameters.withFieldName(mapping.columnName())
                 .withValuePhrase(parameterInfo.renderedPlaceHolder())
-                .withParameter(parameterInfo.mapKey(), value)
+                .withParameter(parameterInfo.parameterMapKey(), value)
                 .buildOptional();
     }
 }

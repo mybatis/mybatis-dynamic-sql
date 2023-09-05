@@ -28,11 +28,7 @@ public class Max<T> extends AbstractUniTypeFunction<T, Max<T>> {
 
     @Override
     public FragmentAndParameters render(RenderingContext renderingContext) {
-        FragmentAndParameters renderedColumn = column.render(renderingContext);
-
-        return FragmentAndParameters.withFragment("max(" + renderedColumn.fragment() + ")") //$NON-NLS-1$ //$NON-NLS-2$
-                .withParameters(renderedColumn.parameters())
-                .build();
+        return column.render(renderingContext).mapFragment(s -> "max(" + s + ")"); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     @Override

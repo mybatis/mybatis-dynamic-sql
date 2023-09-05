@@ -50,20 +50,15 @@ public class OperatorFunction<T> extends AbstractUniTypeFunction<T, OperatorFunc
 
     @Override
     public FragmentAndParameters render(RenderingContext renderingContext) {
+        String paddedOperator = " " + operator + " "; //$NON-NLS-1$ //$NON-NLS-2$
+
         // note - the cast below is added for type inference issues in some compilers
-        FragmentCollector fc = Stream.of(Stream.of((BasicColumn) column),
+        return Stream.of(Stream.of((BasicColumn) column),
                         Stream.of(secondColumn), subsequentColumns.stream())
                 .flatMap(Function.identity())
                 .map(column -> column.render(renderingContext))
-                .collect(FragmentCollector.collect());
-
-        String paddedOperator = " " + operator + " "; //$NON-NLS-1$ //$NON-NLS-2$
-        String fragment = fc.collectFragments(
-                Collectors.joining(paddedOperator, "(", ")")); //$NON-NLS-1$ //$NON-NLS-2$
-
-        return FragmentAndParameters.withFragment(fragment)
-                .withParameters(fc.parameters())
-                .build();
+                .collect(FragmentCollector.collect())
+                .toFragmentAndParameters(Collectors.joining(paddedOperator, "(", ")")); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     public static <T> OperatorFunction<T> of(String operator, BindableColumn<T> firstColumn, BasicColumn secondColumn,

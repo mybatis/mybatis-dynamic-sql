@@ -32,19 +32,13 @@ public class Substring<T> extends AbstractUniTypeFunction<T, Substring<T>> {
 
     @Override
     public FragmentAndParameters render(RenderingContext renderingContext) {
-        FragmentAndParameters renderedColumn = column.render(renderingContext);
-
-        String fragment = "substring(" //$NON-NLS-1$
-                + renderedColumn.fragment()
+        return column.render(renderingContext).mapFragment(s -> "substring(" //$NON-NLS-1$
+                + s
                 + ", " //$NON-NLS-1$
                 + offset
                 + ", " //$NON-NLS-1$
                 + length
-                + ")"; //$NON-NLS-1$
-
-        return FragmentAndParameters.withFragment(fragment)
-                .withParameters(renderedColumn.parameters())
-                .build();
+                + ")"); //$NON-NLS-1$
     }
 
     @Override

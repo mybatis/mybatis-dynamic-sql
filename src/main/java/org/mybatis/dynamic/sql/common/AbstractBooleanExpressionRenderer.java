@@ -43,10 +43,7 @@ public abstract class AbstractBooleanExpressionRenderer<M extends AbstractBoolea
         return model.initialCriterion()
                 .map(this::renderWithInitialCriterion)
                 .orElseGet(this::renderWithoutInitialCriterion)
-                .map(rc -> FragmentAndParameters.withFragment(rc.fragmentAndParameters().fragment())
-                        .withParameters(rc.fragmentAndParameters().parameters())
-                        .build()
-                );
+                .map(RenderedCriterion::fragmentAndParameters);
     }
 
     private Optional<RenderedCriterion> renderWithInitialCriterion(SqlCriterion initialCriterion) {

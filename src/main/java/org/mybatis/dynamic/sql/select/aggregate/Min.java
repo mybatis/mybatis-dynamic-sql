@@ -28,11 +28,7 @@ public class Min<T> extends AbstractUniTypeFunction<T, Min<T>> {
 
     @Override
     public FragmentAndParameters render(RenderingContext renderingContext) {
-        FragmentAndParameters renderedColumn = column.render(renderingContext);
-
-        return FragmentAndParameters.withFragment("min(" + renderedColumn.fragment() + ")") //$NON-NLS-1$ //$NON-NLS-2$
-                .withParameters(renderedColumn.parameters())
-                .build();
+        return column.render(renderingContext).mapFragment(s -> "min(" + s + ")"); //$NON-NLS-1$ //$NON-NLS-2$)
     }
 
     @Override

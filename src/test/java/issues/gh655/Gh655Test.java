@@ -36,7 +36,7 @@ import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.mybatis.dynamic.sql.exception.DynamicSqlException;
+import org.mybatis.dynamic.sql.exception.InvalidSqlException;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.SelectModel;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
@@ -91,7 +91,7 @@ class Gh655Test {
                 .from(items)
                 .build();
 
-        assertThatExceptionOfType(DynamicSqlException.class)
+        assertThatExceptionOfType(InvalidSqlException.class)
                 .isThrownBy(() -> selectModel.render(RenderingStrategies.MYBATIS3))
                 .withMessage("The \"sum\" function does not support conditions that fail to render");
     }
