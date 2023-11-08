@@ -21,8 +21,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-public abstract class AbstractTwoValueCondition<T>
-        implements VisitableCondition<T> {
+public abstract class AbstractTwoValueCondition<T> implements VisitableCondition<T> {
     protected final T value1;
     protected final T value2;
 

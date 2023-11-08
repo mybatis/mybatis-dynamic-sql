@@ -23,6 +23,7 @@ import java.util.Optional;
  * as in an expression like ((A &lt; 5 and B &gt; 6) or C = 3)
  *
  * @author Jeff Butler, inspired by @JoshuaJeme
+ *
  * @since 1.4.0
  */
 public class CriteriaGroup extends SqlCriterion {

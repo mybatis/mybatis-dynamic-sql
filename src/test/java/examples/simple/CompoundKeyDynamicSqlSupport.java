@@ -15,10 +15,10 @@
  */
 package examples.simple;
 
+import java.sql.JDBCType;
+
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
-
-import java.sql.JDBCType;
 
 public class CompoundKeyDynamicSqlSupport {
     public static final CompoundKey compoundKey = new CompoundKey();

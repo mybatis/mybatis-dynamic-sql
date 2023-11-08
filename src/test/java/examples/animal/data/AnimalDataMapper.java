@@ -42,11 +42,11 @@ public interface AnimalDataMapper extends CommonDeleteMapper, CommonInsertMapper
     })
     List<AnimalData> selectMany(SelectStatementProvider selectStatement);
 
-    @SelectProvider(type=SqlProviderAdapter.class, method="select")
+    @SelectProvider(type = SqlProviderAdapter.class, method = "select")
     @ResultMap("AnimalDataResult")
     List<AnimalData> selectManyWithRowBounds(SelectStatementProvider selectStatement, RowBounds rowBounds);
 
-    @SelectProvider(type=SqlProviderAdapter.class, method="select")
+    @SelectProvider(type = SqlProviderAdapter.class, method = "select")
     @ResultMap("AnimalDataResult")
     AnimalData selectOne(SelectStatementProvider selectStatement);
 
@@ -75,7 +75,7 @@ public interface AnimalDataMapper extends CommonDeleteMapper, CommonInsertMapper
     })
     @ResultMap("AnimalDataResult")
     List<AnimalData> selectWithWhereClauseLimitAndOffset(@Param("whereClauseProvider") WhereClauseProvider whereClause,
-                                                         @Param("limit") int limit, @Param("offset") int offset);
+            @Param("limit") int limit, @Param("offset") int offset);
 
     @Select({
         "select b.id, b.animal_name, b.brain_weight, b.body_weight",

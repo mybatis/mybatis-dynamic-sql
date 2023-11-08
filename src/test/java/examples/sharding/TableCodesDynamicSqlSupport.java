@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2022 the original author or authors.
+ *    Copyright 2016-2023 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -15,10 +15,10 @@
  */
 package examples.sharding;
 
+import java.sql.JDBCType;
+
 import org.mybatis.dynamic.sql.AliasableSqlTable;
 import org.mybatis.dynamic.sql.SqlColumn;
-
-import java.sql.JDBCType;
 
 public final class TableCodesDynamicSqlSupport {
     public static final TableCodes tableCodes = new TableCodes();
@@ -28,6 +28,7 @@ public final class TableCodesDynamicSqlSupport {
     public static final class TableCodes extends AliasableSqlTable<TableCodes> {
         public final SqlColumn<Integer> id = column("id", JDBCType.INTEGER);
         public final SqlColumn<String> description = column("description", JDBCType.VARCHAR);
+
         public TableCodes() {
             super("tableCodes_even", TableCodes::new);
         }

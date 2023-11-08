@@ -17,10 +17,10 @@ package issues.gh655;
 
 import static examples.mariadb.ItemsDynamicSQLSupport.id;
 import static examples.mariadb.ItemsDynamicSQLSupport.items;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mybatis.dynamic.sql.SqlBuilder.add;
 import static org.mybatis.dynamic.sql.SqlBuilder.constant;
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.mybatis.dynamic.sql.SqlBuilder.isEqualToWhenPresent;
 import static org.mybatis.dynamic.sql.SqlBuilder.isGreaterThan;
 import static org.mybatis.dynamic.sql.SqlBuilder.select;

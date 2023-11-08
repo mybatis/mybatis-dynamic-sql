@@ -16,7 +16,8 @@
 package issues.gh100;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mybatis.dynamic.sql.SqlBuilder.*;
+import static org.mybatis.dynamic.sql.SqlBuilder.count;
+import static org.mybatis.dynamic.sql.SqlBuilder.select;
 
 import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;

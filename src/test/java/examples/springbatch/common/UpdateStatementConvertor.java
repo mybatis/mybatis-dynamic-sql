@@ -16,7 +16,7 @@
 package examples.springbatch.common;
 
 import static examples.springbatch.mapper.PersonDynamicSqlSupport.*;
-import static org.mybatis.dynamic.sql.SqlBuilder.*;
+import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
 
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.update.UpdateDSL;
