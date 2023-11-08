@@ -24,12 +24,15 @@ import static examples.mariadb.ItemsDynamicSQLSupport.description;
 import static org.assertj.core.api.Assertions.entry;
 import static org.mybatis.dynamic.sql.SqlBuilder.add;
 import static org.mybatis.dynamic.sql.SqlBuilder.constant;
-import static org.mybatis.dynamic.sql.SqlBuilder.isLessThan;
 import static org.mybatis.dynamic.sql.SqlBuilder.deleteFrom;
+import static org.mybatis.dynamic.sql.SqlBuilder.isLessThan;
 import static org.mybatis.dynamic.sql.SqlBuilder.select;
 import static org.mybatis.dynamic.sql.SqlBuilder.update;
 
 import config.TestContainersConfiguration;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.ibatis.datasource.unpooled.UnpooledDataSource;
 import org.apache.ibatis.mapping.Environment;
 import org.apache.ibatis.session.Configuration;
@@ -50,8 +53,6 @@ import org.testcontainers.containers.MariaDBContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import java.util.List;
-import java.util.Map;
 
 @Testcontainers
 class MariaDBTest {

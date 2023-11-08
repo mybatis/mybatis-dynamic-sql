@@ -96,7 +96,7 @@ public class DeleteDSL<R> extends AbstractWhereStarter<DeleteDSL<R>.DeleteWhereB
     }
 
     public static <R> DeleteDSL<R> deleteFrom(Function<DeleteModel, R> adapterFunction, SqlTable table,
-                                              String tableAlias) {
+            String tableAlias) {
         return new DeleteDSL<>(table, tableAlias, adapterFunction);
     }
 

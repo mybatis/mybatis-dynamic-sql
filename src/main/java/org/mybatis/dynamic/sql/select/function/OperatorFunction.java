@@ -67,7 +67,7 @@ public class OperatorFunction<T> extends AbstractUniTypeFunction<T, OperatorFunc
     }
 
     public static <T> OperatorFunction<T> of(String operator, BindableColumn<T> firstColumn, BasicColumn secondColumn,
-                                             List<BasicColumn> subsequentColumns) {
+            List<BasicColumn> subsequentColumns) {
         return new OperatorFunction<>(operator, firstColumn, secondColumn, subsequentColumns);
     }
 }

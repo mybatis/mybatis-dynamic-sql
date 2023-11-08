@@ -29,6 +29,7 @@ import java.util.MissingResourceException;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
+import org.mybatis.dynamic.sql.common.OrderByModel;
 import org.mybatis.dynamic.sql.exception.DynamicSqlException;
 import org.mybatis.dynamic.sql.exception.InvalidSqlException;
 import org.mybatis.dynamic.sql.insert.BatchInsertModel;
@@ -40,7 +41,6 @@ import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 import org.mybatis.dynamic.sql.select.GroupByModel;
-import org.mybatis.dynamic.sql.common.OrderByModel;
 import org.mybatis.dynamic.sql.select.PagingModel;
 import org.mybatis.dynamic.sql.select.QueryExpressionModel;
 import org.mybatis.dynamic.sql.select.SelectModel;

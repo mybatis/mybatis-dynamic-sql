@@ -17,7 +17,8 @@ package examples.springbatch.paging;
 
 import static examples.springbatch.mapper.PersonDynamicSqlSupport.*;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mybatis.dynamic.sql.SqlBuilder.*;
+import static org.mybatis.dynamic.sql.SqlBuilder.count;
+import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
 
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;

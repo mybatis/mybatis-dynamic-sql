@@ -15,6 +15,15 @@
  */
 package examples.simple;
 
+import static examples.simple.CompoundKeyDynamicSqlSupport.compoundKey;
+import static examples.simple.CompoundKeyDynamicSqlSupport.id1;
+import static examples.simple.CompoundKeyDynamicSqlSupport.id2;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mybatis.dynamic.sql.SqlBuilder.insert;
+import static org.mybatis.dynamic.sql.SqlBuilder.insertBatch;
+import static org.mybatis.dynamic.sql.SqlBuilder.insertMultiple;
+import static org.mybatis.dynamic.sql.SqlBuilder.select;
+
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.sql.Connection;
@@ -41,15 +50,6 @@ import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider;
 import org.mybatis.dynamic.sql.insert.render.MultiRowInsertStatementProvider;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
-
-import static examples.simple.CompoundKeyDynamicSqlSupport.compoundKey;
-import static examples.simple.CompoundKeyDynamicSqlSupport.id1;
-import static examples.simple.CompoundKeyDynamicSqlSupport.id2;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mybatis.dynamic.sql.SqlBuilder.insert;
-import static org.mybatis.dynamic.sql.SqlBuilder.insertBatch;
-import static org.mybatis.dynamic.sql.SqlBuilder.insertMultiple;
-import static org.mybatis.dynamic.sql.SqlBuilder.select;
 
 class MyBatisMapToRowTest {
     private static final String JDBC_URL = "jdbc:hsqldb:mem:aname";

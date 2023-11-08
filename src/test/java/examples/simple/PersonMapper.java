@@ -16,7 +16,7 @@
 package examples.simple;
 
 import static examples.simple.PersonDynamicSqlSupport.*;
-import static org.mybatis.dynamic.sql.SqlBuilder.*;
+import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
 
 import java.util.Arrays;
 import java.util.Collection;

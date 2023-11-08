@@ -34,7 +34,7 @@ public class WhereModel extends AbstractBooleanExpressionModel {
     private final StatementConfiguration statementConfiguration;
 
     public WhereModel(SqlCriterion initialCriterion, List<AndOrCriteriaGroup> subCriteria,
-                      StatementConfiguration statementConfiguration) {
+            StatementConfiguration statementConfiguration) {
         super(initialCriterion, subCriteria);
         this.statementConfiguration = Objects.requireNonNull(statementConfiguration);
     }

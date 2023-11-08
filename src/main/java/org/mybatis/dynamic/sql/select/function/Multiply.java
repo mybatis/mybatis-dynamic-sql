@@ -34,7 +34,7 @@ public class Multiply<T> extends OperatorFunction<T> {
     }
 
     public static <T> Multiply<T> of(BindableColumn<T> firstColumn, BasicColumn secondColumn,
-                                     BasicColumn... subsequentColumns) {
+            BasicColumn... subsequentColumns) {
         return of(firstColumn, secondColumn, Arrays.asList(subsequentColumns));
     }
 

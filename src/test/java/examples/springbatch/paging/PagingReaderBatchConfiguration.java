@@ -16,7 +16,7 @@
 package examples.springbatch.paging;
 
 import static examples.springbatch.mapper.PersonDynamicSqlSupport.*;
-import static org.mybatis.dynamic.sql.SqlBuilder.*;
+import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
 
 import javax.sql.DataSource;
 

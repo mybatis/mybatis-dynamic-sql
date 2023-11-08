@@ -39,7 +39,7 @@ public class Concatenate<T> extends OperatorFunction<T> {
     }
 
     public static <T> Concatenate<T> of(BindableColumn<T> firstColumn, BasicColumn secondColumn,
-                                        List<BasicColumn> subsequentColumns) {
+            List<BasicColumn> subsequentColumns) {
         return new Concatenate<>(firstColumn, secondColumn, subsequentColumns);
     }
 }

@@ -16,7 +16,7 @@
 package examples.generated.always.mybatis;
 
 import static examples.generated.always.mybatis.GeneratedAlwaysDynamicSqlSupport.*;
-import static org.mybatis.dynamic.sql.SqlBuilder.*;
+import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
 
 import java.util.Arrays;
 import java.util.Collection;
