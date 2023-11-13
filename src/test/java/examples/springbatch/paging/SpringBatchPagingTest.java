@@ -83,7 +83,7 @@ class SpringBatchPagingTest {
         return executionContext.getInt("chunk_count", 0);
     }
 
-    private long upperCaseRowCount() throws Exception {
+    private long upperCaseRowCount() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             PersonMapper personMapper = sqlSession.getMapper(PersonMapper.class);
 

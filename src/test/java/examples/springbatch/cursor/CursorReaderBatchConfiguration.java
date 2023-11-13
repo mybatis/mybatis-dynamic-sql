@@ -32,9 +32,10 @@ import org.mybatis.spring.batch.MyBatisCursorItemReader;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
-import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
-import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
+import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
+import org.springframework.batch.core.repository.JobRepository;
+import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
@@ -58,10 +59,10 @@ import examples.springbatch.mapper.PersonMapper;
 public class CursorReaderBatchConfiguration {
 
     @Autowired
-    private JobBuilderFactory jobBuilderFactory;
+    private JobRepository jobRepository;
 
     @Autowired
-    private StepBuilderFactory stepBuilderFactory;
+    private PlatformTransactionManager transactionManager;
 
     @Bean
     public DataSource dataSource() {
@@ -113,7 +114,9 @@ public class CursorReaderBatchConfiguration {
 
     @Bean
     public Step step1(ItemReader<PersonRecord> reader, ItemProcessor<PersonRecord, PersonRecord> processor, ItemWriter<PersonRecord> writer) {
-        return stepBuilderFactory.get("step1")
+        return new StepBuilder("step1")
+                .repository(jobRepository) // In Spring Batch 5, move this to the step builder constructor
+                .transactionManager(transactionManager) // In Spring Batch 5, move this to the 'chunk' method
                 .<PersonRecord, PersonRecord>chunk(10)
                 .reader(reader)
                 .processor(processor)
@@ -123,7 +126,8 @@ public class CursorReaderBatchConfiguration {
 
     @Bean
     public Job upperCaseLastName(Step step1) {
-        return jobBuilderFactory.get("upperCaseLastName")
+        return new JobBuilder("upperCaseLastName") // In Spring Batch 5, move this to the job builder constructor
+                .repository(jobRepository)
                 .incrementer(new RunIdIncrementer())
                 .flow(step1)
                 .end()
