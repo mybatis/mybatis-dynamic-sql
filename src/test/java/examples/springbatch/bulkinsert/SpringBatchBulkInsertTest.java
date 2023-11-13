@@ -69,7 +69,7 @@ class SpringBatchBulkInsertTest {
         return executionContext.getInt("row_count", 0);
     }
 
-    private long rowCount() throws Exception {
+    private long rowCount() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             PersonMapper personMapper = sqlSession.getMapper(PersonMapper.class);
 

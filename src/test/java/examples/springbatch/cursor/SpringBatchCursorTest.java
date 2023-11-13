@@ -71,7 +71,7 @@ class SpringBatchCursorTest {
         return executionContext.getInt("row_count", 0);
     }
 
-    private long upperCaseRowCount() throws Exception {
+    private long upperCaseRowCount() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             PersonMapper personMapper = sqlSession.getMapper(PersonMapper.class);
 
