@@ -114,10 +114,8 @@ public class CursorReaderBatchConfiguration {
 
     @Bean
     public Step step1(ItemReader<PersonRecord> reader, ItemProcessor<PersonRecord, PersonRecord> processor, ItemWriter<PersonRecord> writer) {
-        return new StepBuilder("step1")
-                .repository(jobRepository) // In Spring Batch 5, move this to the step builder constructor
-                .transactionManager(transactionManager) // In Spring Batch 5, move this to the 'chunk' method
-                .<PersonRecord, PersonRecord>chunk(10)
+        return new StepBuilder("step1", jobRepository)
+                .<PersonRecord, PersonRecord>chunk(10, transactionManager)
                 .reader(reader)
                 .processor(processor)
                 .writer(writer)
@@ -126,8 +124,7 @@ public class CursorReaderBatchConfiguration {
 
     @Bean
     public Job upperCaseLastName(Step step1) {
-        return new JobBuilder("upperCaseLastName") // In Spring Batch 5, move this to the job builder constructor
-                .repository(jobRepository)
+        return new JobBuilder("upperCaseLastName", jobRepository) // In Spring Batch 5, move this to the job builder constructor
                 .incrementer(new RunIdIncrementer())
                 .flow(step1)
                 .end()

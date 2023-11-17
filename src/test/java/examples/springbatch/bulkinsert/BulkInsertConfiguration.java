@@ -103,10 +103,8 @@ public class BulkInsertConfiguration {
 
     @Bean
     public Step step1(ItemProcessor<PersonRecord, PersonRecord> processor, ItemWriter<PersonRecord> writer) {
-        return new StepBuilder("step1")
-                .repository(jobRepository) // In Spring Batch 5, move this to the step builder constructor
-                .transactionManager(transactionManager) // In Spring Batch 5, move this to the 'chunk' method
-                .<PersonRecord, PersonRecord>chunk(10)
+        return new StepBuilder("step1", jobRepository)
+                .<PersonRecord, PersonRecord>chunk(10, transactionManager)
                 .reader(new TestRecordGenerator())
                 .processor(processor)
                 .writer(writer)
@@ -115,8 +113,7 @@ public class BulkInsertConfiguration {
 
     @Bean
     public Job insertRecords(Step step1) {
-        return new JobBuilder("insertRecords")
-                .repository(jobRepository) // In Spring Batch 5, move this to the job builder constructor
+        return new JobBuilder("insertRecords", jobRepository)
                 .incrementer(new RunIdIncrementer())
                 .flow(step1)
                 .end()
