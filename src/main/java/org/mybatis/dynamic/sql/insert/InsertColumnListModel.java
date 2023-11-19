@@ -22,18 +22,14 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 import org.mybatis.dynamic.sql.SqlColumn;
-import org.mybatis.dynamic.sql.exception.InvalidSqlException;
-import org.mybatis.dynamic.sql.util.Messages;
+import org.mybatis.dynamic.sql.util.Validator;
 
 public class InsertColumnListModel {
     private final List<SqlColumn<?>> columns = new ArrayList<>();
 
     private InsertColumnListModel(List<SqlColumn<?>> columns) {
         Objects.requireNonNull(columns);
-        if (columns.isEmpty()) {
-            throw new InvalidSqlException(Messages.getString("ERROR.4")); //$NON-NLS-1$
-        }
-
+        Validator.assertNotEmpty(columns, "ERROR.4"); //$NON-NLS-1$
         this.columns.addAll(columns);
     }
 

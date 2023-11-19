@@ -27,9 +27,8 @@ import java.util.stream.Stream;
 import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.TableExpression;
-import org.mybatis.dynamic.sql.exception.InvalidSqlException;
 import org.mybatis.dynamic.sql.select.join.JoinModel;
-import org.mybatis.dynamic.sql.util.Messages;
+import org.mybatis.dynamic.sql.util.Validator;
 import org.mybatis.dynamic.sql.where.WhereModel;
 
 public class QueryExpressionModel {
@@ -53,10 +52,7 @@ public class QueryExpressionModel {
         whereModel = builder.whereModel;
         groupByModel = builder.groupByModel;
         havingModel = builder.havingModel;
-
-        if (selectList.isEmpty()) {
-            throw new InvalidSqlException(Messages.getString("ERROR.13")); //$NON-NLS-1$
-        }
+        Validator.assertNotEmpty(selectList, "ERROR.13"); //$NON-NLS-1$
     }
 
     public Optional<String> connector() {

@@ -22,18 +22,14 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 import org.mybatis.dynamic.sql.TableExpression;
-import org.mybatis.dynamic.sql.exception.InvalidSqlException;
-import org.mybatis.dynamic.sql.util.Messages;
+import org.mybatis.dynamic.sql.util.Validator;
 
 public class JoinModel {
     private final List<JoinSpecification> joinSpecifications = new ArrayList<>();
 
     private JoinModel(List<JoinSpecification> joinSpecifications) {
         Objects.requireNonNull(joinSpecifications);
-        if (joinSpecifications.isEmpty()) {
-            throw new InvalidSqlException(Messages.getString("ERROR.15")); //$NON-NLS-1$
-        }
-
+        Validator.assertNotEmpty(joinSpecifications, "ERROR.15"); //$NON-NLS-1$
         this.joinSpecifications.addAll(joinSpecifications);
     }
 

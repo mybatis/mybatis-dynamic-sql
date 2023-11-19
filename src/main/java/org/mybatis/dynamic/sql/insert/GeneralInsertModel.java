@@ -23,12 +23,11 @@ import java.util.stream.Stream;
 
 import org.jetbrains.annotations.NotNull;
 import org.mybatis.dynamic.sql.SqlTable;
-import org.mybatis.dynamic.sql.exception.InvalidSqlException;
 import org.mybatis.dynamic.sql.insert.render.GeneralInsertRenderer;
 import org.mybatis.dynamic.sql.insert.render.GeneralInsertStatementProvider;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.util.AbstractColumnMapping;
-import org.mybatis.dynamic.sql.util.Messages;
+import org.mybatis.dynamic.sql.util.Validator;
 
 public class GeneralInsertModel {
 
@@ -37,9 +36,7 @@ public class GeneralInsertModel {
 
     private GeneralInsertModel(Builder builder) {
         table = Objects.requireNonNull(builder.table);
-        if (builder.insertMappings.isEmpty()) {
-            throw new InvalidSqlException(Messages.getString("ERROR.6")); //$NON-NLS-1$
-        }
+        Validator.assertNotEmpty(builder.insertMappings, "ERROR.6"); //$NON-NLS-1$
         insertMappings = builder.insertMappings;
     }
 

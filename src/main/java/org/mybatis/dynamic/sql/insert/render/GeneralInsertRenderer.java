@@ -18,11 +18,10 @@ package org.mybatis.dynamic.sql.insert.render;
 import java.util.Objects;
 import java.util.Optional;
 
-import org.mybatis.dynamic.sql.exception.InvalidSqlException;
 import org.mybatis.dynamic.sql.insert.GeneralInsertModel;
 import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
-import org.mybatis.dynamic.sql.util.Messages;
+import org.mybatis.dynamic.sql.util.Validator;
 
 public class GeneralInsertRenderer {
 
@@ -43,9 +42,7 @@ public class GeneralInsertRenderer {
                 .map(Optional::get)
                 .collect(FieldAndValueCollector.collect());
 
-        if (collector.isEmpty()) {
-            throw new InvalidSqlException(Messages.getString("ERROR.9")); //$NON-NLS-1$
-        }
+        Validator.assertFalse(collector.isEmpty(), "ERROR.9"); //$NON-NLS-1$
 
         String insertStatement = InsertRenderingUtilities.calculateInsertStatement(model.table(), collector);
 

@@ -26,12 +26,11 @@ import org.jetbrains.annotations.NotNull;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.common.CommonBuilder;
 import org.mybatis.dynamic.sql.common.OrderByModel;
-import org.mybatis.dynamic.sql.exception.InvalidSqlException;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.update.render.UpdateRenderer;
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
 import org.mybatis.dynamic.sql.util.AbstractColumnMapping;
-import org.mybatis.dynamic.sql.util.Messages;
+import org.mybatis.dynamic.sql.util.Validator;
 import org.mybatis.dynamic.sql.where.WhereModel;
 
 public class UpdateModel {
@@ -49,10 +48,7 @@ public class UpdateModel {
         tableAlias = builder.tableAlias();
         limit = builder.limit();
         orderByModel = builder.orderByModel();
-
-        if (columnMappings.isEmpty()) {
-            throw new InvalidSqlException(Messages.getString("ERROR.17")); //$NON-NLS-1$
-        }
+        Validator.assertNotEmpty(columnMappings, "ERROR.17"); //$NON-NLS-1$
     }
 
     public SqlTable table() {

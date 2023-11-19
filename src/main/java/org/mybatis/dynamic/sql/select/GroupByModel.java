@@ -23,17 +23,14 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 import org.mybatis.dynamic.sql.BasicColumn;
-import org.mybatis.dynamic.sql.exception.InvalidSqlException;
-import org.mybatis.dynamic.sql.util.Messages;
+import org.mybatis.dynamic.sql.util.Validator;
 
 public class GroupByModel {
     private final List<BasicColumn> columns = new ArrayList<>();
 
     private GroupByModel(Collection<? extends BasicColumn> columns) {
         Objects.requireNonNull(columns);
-        if (columns.isEmpty()) {
-            throw new InvalidSqlException(Messages.getString("ERROR.11")); //$NON-NLS-1$
-        }
+        Validator.assertNotEmpty(columns, "ERROR.11"); //$NON-NLS-1$
         this.columns.addAll(columns);
     }
 

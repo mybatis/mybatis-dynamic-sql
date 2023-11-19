@@ -22,7 +22,6 @@ import java.util.stream.Collectors;
 
 import org.mybatis.dynamic.sql.common.OrderByModel;
 import org.mybatis.dynamic.sql.common.OrderByRenderer;
-import org.mybatis.dynamic.sql.exception.InvalidSqlException;
 import org.mybatis.dynamic.sql.render.ExplicitTableAliasCalculator;
 import org.mybatis.dynamic.sql.render.RenderedParameterInfo;
 import org.mybatis.dynamic.sql.render.RenderingContext;
@@ -31,7 +30,7 @@ import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 import org.mybatis.dynamic.sql.update.UpdateModel;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 import org.mybatis.dynamic.sql.util.FragmentCollector;
-import org.mybatis.dynamic.sql.util.Messages;
+import org.mybatis.dynamic.sql.util.Validator;
 import org.mybatis.dynamic.sql.where.WhereModel;
 import org.mybatis.dynamic.sql.where.render.WhereRenderer;
 
@@ -81,9 +80,8 @@ public class UpdateRenderer {
                 updateModel.mapColumnMappings(m -> m.accept(visitor))
                         .collect(Collectors.toList());
 
-        if (fragmentsAndParameters.stream().noneMatch(Optional::isPresent)) {
-            throw new InvalidSqlException(Messages.getString("ERROR.18")); //$NON-NLS-1$
-        }
+        Validator.assertFalse(fragmentsAndParameters.stream().noneMatch(Optional::isPresent),
+                "ERROR.18"); //$NON-NLS-1$
 
         FragmentCollector fragmentCollector = fragmentsAndParameters.stream()
                 .filter(Optional::isPresent)

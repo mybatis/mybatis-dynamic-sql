@@ -18,22 +18,17 @@ package org.mybatis.dynamic.sql.insert;
 import java.util.Collection;
 
 import org.jetbrains.annotations.NotNull;
-import org.mybatis.dynamic.sql.exception.InvalidSqlException;
 import org.mybatis.dynamic.sql.insert.render.MultiRowInsertRenderer;
 import org.mybatis.dynamic.sql.insert.render.MultiRowInsertStatementProvider;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
-import org.mybatis.dynamic.sql.util.Messages;
+import org.mybatis.dynamic.sql.util.Validator;
 
 public class MultiRowInsertModel<T> extends AbstractMultiRowInsertModel<T> {
 
     private MultiRowInsertModel(Builder<T> builder) {
         super(builder);
-        if (records().isEmpty()) {
-            throw new InvalidSqlException(Messages.getString("ERROR.20")); //$NON-NLS-1$
-        }
-        if (columnMappings.isEmpty()) {
-            throw new InvalidSqlException(Messages.getString("ERROR.8")); //$NON-NLS-1$
-        }
+        Validator.assertNotEmpty(records(), "ERROR.20"); //$NON-NLS-1$
+        Validator.assertNotEmpty(columnMappings, "ERROR.8"); //$NON-NLS-1$
     }
 
     @NotNull

@@ -22,8 +22,7 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 import org.mybatis.dynamic.sql.TableExpression;
-import org.mybatis.dynamic.sql.exception.InvalidSqlException;
-import org.mybatis.dynamic.sql.util.Messages;
+import org.mybatis.dynamic.sql.util.Validator;
 
 public class JoinSpecification {
 
@@ -35,10 +34,7 @@ public class JoinSpecification {
         table = Objects.requireNonNull(builder.table);
         joinCriteria = Objects.requireNonNull(builder.joinCriteria);
         joinType = Objects.requireNonNull(builder.joinType);
-
-        if (joinCriteria.isEmpty()) {
-            throw new InvalidSqlException(Messages.getString("ERROR.16")); //$NON-NLS-1$
-        }
+        Validator.assertNotEmpty(joinCriteria, "ERROR.16"); //$NON-NLS-1$
     }
 
     public TableExpression table() {
