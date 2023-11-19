@@ -74,24 +74,24 @@ public class MultiSelectDSL implements Buildable<MultiSelectModel> {
     @NotNull
     @Override
     public MultiSelectModel build() {
-        return new MultiSelectModel.Builder()
+        MultiSelectModel.Builder builder = new MultiSelectModel.Builder()
                 .withInitialSelect(initialSelect)
                 .withUnionQueries(unionQueries)
-                .withOrderByModel(orderByModel)
-                .withPagingModel(buildPagingModel())
-                .build();
+                .withOrderByModel(orderByModel);
+
+        addPagingModel(builder);
+        return builder.build();
     }
 
-    private PagingModel buildPagingModel() {
-        if (limit == null && offset == null && fetchFirstRows == null) {
-            return null;
+    private void addPagingModel(MultiSelectModel.Builder builder) {
+        if (limit != null || offset != null || fetchFirstRows != null) {
+            // add paging model if any values set
+            builder.withPagingModel(new PagingModel.Builder()
+                    .withLimit(limit)
+                    .withOffset(offset)
+                    .withFetchFirstRows(fetchFirstRows)
+                    .build());
         }
-
-        return new PagingModel.Builder()
-                .withLimit(limit)
-                .withOffset(offset)
-                .withFetchFirstRows(fetchFirstRows)
-                .build();
     }
 
     public class LimitFinisher implements Buildable<MultiSelectModel> {
