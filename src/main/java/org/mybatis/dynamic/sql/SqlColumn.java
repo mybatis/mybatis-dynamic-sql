@@ -46,7 +46,7 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
         alias = builder.alias;
         typeHandler = builder.typeHandler;
         renderingStrategy = builder.renderingStrategy;
-        parameterTypeConverter = builder.parameterTypeConverter;
+        parameterTypeConverter = Objects.requireNonNull(builder.parameterTypeConverter);
         tableQualifier = builder.tableQualifier;
         javaType = builder.javaType;
     }
@@ -81,7 +81,7 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
 
     @Override
     public Object convertParameterType(T value) {
-        return parameterTypeConverter == null ? value : parameterTypeConverter.convert(value);
+        return parameterTypeConverter.convert(value);
     }
 
     @Override
@@ -218,7 +218,7 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
         protected String alias;
         protected String typeHandler;
         protected RenderingStrategy renderingStrategy;
-        protected ParameterTypeConverter<T, ?> parameterTypeConverter;
+        protected ParameterTypeConverter<T, ?> parameterTypeConverter = v -> v;
         protected String tableQualifier;
         protected Class<T> javaType;
 
