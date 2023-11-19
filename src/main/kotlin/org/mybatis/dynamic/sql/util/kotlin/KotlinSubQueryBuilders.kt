@@ -22,7 +22,6 @@ import org.mybatis.dynamic.sql.SqlTable
 import org.mybatis.dynamic.sql.insert.InsertSelectModel
 import org.mybatis.dynamic.sql.select.SelectModel
 import org.mybatis.dynamic.sql.util.Buildable
-import org.mybatis.dynamic.sql.util.Messages
 
 @MyBatisDslMarker
 sealed class KotlinBaseSubQueryBuilder {
@@ -42,8 +41,7 @@ sealed class KotlinBaseSubQueryBuilder {
         selectBuilder = KotlinSelectBuilder(SqlBuilder.selectDistinct(selectList)).apply(completer)
     }
 
-    internal fun buildSelectModel(): SelectModel =
-        (selectBuilder?: throw KInvalidSQLException(Messages.getString("ERROR.28"))).build() //$NON-NLS-1$
+    internal fun buildSelectModel(): SelectModel = invalidIfNull(selectBuilder, "ERROR.28").build() //$NON-NLS-1$
 }
 
 class KotlinSubQueryBuilder : KotlinBaseSubQueryBuilder(), Buildable<SelectModel> {

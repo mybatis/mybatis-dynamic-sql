@@ -17,6 +17,13 @@ package org.mybatis.dynamic.sql.util.kotlin
 
 import org.mybatis.dynamic.sql.util.Messages
 
+fun <T: Any> invalidIfNull(o: T?, messageNumber: String): T {
+    if (o == null) {
+        throw KInvalidSQLException(Messages.getString(messageNumber))
+    }
+    return o
+}
+
 fun assertNotNull(o: Any?, messageNumber: String) {
     assertTrue(o != null, messageNumber)
 }
