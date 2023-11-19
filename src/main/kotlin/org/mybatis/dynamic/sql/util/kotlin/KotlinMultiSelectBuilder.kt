@@ -29,9 +29,7 @@ typealias MultiSelectCompleter = KotlinMultiSelectBuilder.() -> Unit
 class KotlinMultiSelectBuilder: Buildable<MultiSelectModel> {
     private var dsl: MultiSelectDSL? = null
         private set(value) {
-            if (field != null) {
-                throw KInvalidSQLException(Messages.getString("ERROR.33")) //$NON-NLS-1$
-            }
+            assertNull(field, "ERROR.33") //$NON-NLS-1$
             field = value
         }
 

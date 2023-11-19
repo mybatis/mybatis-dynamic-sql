@@ -77,9 +77,7 @@ class KotlinInsertSelectSubQueryBuilder : KotlinBaseSubQueryBuilder(), Buildable
     }
 
     override fun build(): InsertSelectModel {
-        if (table == null) {
-            throw KInvalidSQLException(Messages.getString("ERROR.29")) //$NON-NLS-1$
-        }
+        assertNotNull(table, "ERROR.29") //$NON-NLS-1$
 
         return if (columnList == null) {
             SqlBuilder.insertInto(table)
