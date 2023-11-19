@@ -130,11 +130,10 @@ public class SelectDSL<R> implements Buildable<R>, ConfigurableStatement<SelectD
     @NotNull
     @Override
     public R build() {
-        SelectModel selectModel = SelectModel.withQueryExpressions(buildModels())
-                .withOrderByModel(orderByModel)
-                .withPagingModel(buildPagingModel())
-                .build();
-        return adapterFunction.apply(selectModel);
+        SelectModel.Builder builder = SelectModel.withQueryExpressions(buildModels())
+                .withOrderByModel(orderByModel);
+        addPagingModel(builder);
+        return adapterFunction.apply(builder.build());
     }
 
     private List<QueryExpressionModel> buildModels() {
@@ -143,16 +142,15 @@ public class SelectDSL<R> implements Buildable<R>, ConfigurableStatement<SelectD
                 .collect(Collectors.toList());
     }
 
-    private PagingModel buildPagingModel() {
-        if (limit == null && offset == null && fetchFirstRows == null) {
-            return  null;
+    private void addPagingModel(SelectModel.Builder builder) {
+        if (limit != null || offset != null || fetchFirstRows != null) {
+            // add paging model if any values set
+            builder.withPagingModel(new PagingModel.Builder()
+                    .withLimit(limit)
+                    .withOffset(offset)
+                    .withFetchFirstRows(fetchFirstRows)
+                    .build());
         }
-
-        return new PagingModel.Builder()
-                .withLimit(limit)
-                .withOffset(offset)
-                .withFetchFirstRows(fetchFirstRows)
-                .build();
     }
 
     public class LimitFinisher implements Buildable<R> {
