@@ -30,7 +30,7 @@ public class Sum<T> extends AbstractUniTypeFunction<T, Sum<T>> {
 
     private Sum(BindableColumn<T> column) {
         super(column);
-        renderer = rc -> column.render(rc).mapFragment(Sum::applyAggregate);
+        renderer = rc -> column.render(rc).mapFragment(this::applyAggregate);
     }
 
     private Sum(BindableColumn<T> column, VisitableCondition<T> condition) {
@@ -43,7 +43,7 @@ public class Sum<T> extends AbstractUniTypeFunction<T, Sum<T>> {
                     .withRenderingContext(rc)
                     .build();
 
-            return condition.accept(visitor).mapFragment(Sum::applyAggregate);
+            return condition.accept(visitor).mapFragment(this::applyAggregate);
         };
     }
 
@@ -57,7 +57,7 @@ public class Sum<T> extends AbstractUniTypeFunction<T, Sum<T>> {
         return renderer.apply(renderingContext);
     }
 
-    private static String applyAggregate(String s) {
+    private String applyAggregate(String s) {
         return "sum(" + s + ")"; //$NON-NLS-1$ //$NON-NLS-2$
     }
 
