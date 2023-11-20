@@ -15,6 +15,8 @@
  */
 package org.mybatis.dynamic.sql.select.aggregate;
 
+import java.util.function.Function;
+
 import org.mybatis.dynamic.sql.BindableColumn;
 import org.mybatis.dynamic.sql.VisitableCondition;
 import org.mybatis.dynamic.sql.render.RenderingContext;
@@ -24,48 +26,44 @@ import org.mybatis.dynamic.sql.util.Validator;
 import org.mybatis.dynamic.sql.where.render.DefaultConditionVisitor;
 
 public class Sum<T> extends AbstractUniTypeFunction<T, Sum<T>> {
-    private final VisitableCondition<T> condition;
+    private final Function<RenderingContext, FragmentAndParameters> renderer;
 
     private Sum(BindableColumn<T> column) {
-        this(column, null);
+        super(column);
+        renderer = rc -> column.render(rc).mapFragment(Sum::applyAggregate);
     }
 
     private Sum(BindableColumn<T> column, VisitableCondition<T> condition) {
         super(column);
-        this.condition = condition;
+        renderer = rc -> {
+            Validator.assertTrue(condition.shouldRender(), "ERROR.37", "sum"); //$NON-NLS-1$ //$NON-NLS-2$
+
+            DefaultConditionVisitor<T> visitor = new DefaultConditionVisitor.Builder<T>()
+                    .withColumn(column)
+                    .withRenderingContext(rc)
+                    .build();
+
+            return condition.accept(visitor).mapFragment(Sum::applyAggregate);
+        };
+    }
+
+    private Sum(BindableColumn<T> column, Function<RenderingContext, FragmentAndParameters> renderer) {
+        super(column);
+        this.renderer = renderer;
     }
 
     @Override
     public FragmentAndParameters render(RenderingContext renderingContext) {
-        if (condition == null) {
-            return renderWithoutCondition(renderingContext);
-        } else {
-            return renderWithCondition(renderingContext);
-        }
+        return renderer.apply(renderingContext);
     }
 
-    private FragmentAndParameters renderWithoutCondition(RenderingContext renderingContext) {
-        return column.render(renderingContext).mapFragment(this::applyAggregate);
-    }
-
-    private FragmentAndParameters renderWithCondition(RenderingContext renderingContext) {
-        Validator.assertTrue(condition.shouldRender(), "ERROR.37", "sum"); //$NON-NLS-1$ //$NON-NLS-2$
-
-        DefaultConditionVisitor<T> visitor = new DefaultConditionVisitor.Builder<T>()
-                .withColumn(column)
-                .withRenderingContext(renderingContext)
-                .build();
-
-        return condition.accept(visitor).mapFragment(this::applyAggregate);
-    }
-
-    private String applyAggregate(String s) {
+    private static String applyAggregate(String s) {
         return "sum(" + s + ")"; //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     @Override
     protected Sum<T> copy() {
-        return new Sum<>(column, condition);
+        return new Sum<>(column, renderer);
     }
 
     public static <T> Sum<T> of(BindableColumn<T> column) {
