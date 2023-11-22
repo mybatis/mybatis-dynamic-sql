@@ -58,7 +58,7 @@
     <java.version>17</java.version>
     <java.release.version>8</java.release.version>
     <junit.jupiter.version>5.10.1</junit.jupiter.version>
-    <spring.batch.version>5.0.3</spring.batch.version>
+    <spring.batch.version>5.1.0</spring.batch.version>
 
     <checkstyle.config>checkstyle-override.xml</checkstyle.config>
 
