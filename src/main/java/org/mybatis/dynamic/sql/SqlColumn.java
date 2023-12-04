@@ -110,7 +110,7 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
     }
 
     /**
-     * Set an alias with a camel cased string based on the column name. The can be useful for queries using
+     * Set an alias with a camel cased string based on the column name. This can be useful for queries using
      * the {@link org.mybatis.dynamic.sql.util.mybatis3.CommonSelectMapper} where the columns are placed into
      * a map based on the column name returned from the database.
      *
