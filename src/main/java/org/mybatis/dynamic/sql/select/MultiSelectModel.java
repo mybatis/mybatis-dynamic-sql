@@ -40,7 +40,7 @@ public class MultiSelectModel {
         unionQueries = builder.unionQueries;
         orderByModel = builder.orderByModel;
         pagingModel = builder.pagingModel;
-        Validator.assertNotEmpty(unionQueries, "ERROR.35"); //$NON-NLS-1$);
+        Validator.assertNotEmpty(unionQueries, "ERROR.35"); //$NON-NLS-1$
     }
 
     public SelectModel initialSelect() {
