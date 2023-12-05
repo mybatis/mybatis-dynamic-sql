@@ -85,9 +85,7 @@ public class QueryExpressionDSL<R>
      * @return The having builder
      */
     protected QueryExpressionHavingBuilder having() {
-        if (havingBuilder == null) {
-            havingBuilder = new QueryExpressionHavingBuilder();
-        }
+        havingBuilder = Utilities.buildIfNecessary(havingBuilder, QueryExpressionHavingBuilder::new);
         return havingBuilder;
     }
 
@@ -185,23 +183,16 @@ public class QueryExpressionDSL<R>
     }
 
     protected QueryExpressionModel buildModel() {
-        QueryExpressionModel.Builder builder = QueryExpressionModel.withSelectList(selectList)
+        return QueryExpressionModel.withSelectList(selectList)
                 .withConnector(connector)
                 .withTable(table())
                 .isDistinct(isDistinct)
                 .withTableAliases(tableAliases())
                 .withJoinModel(buildJoinModel().orElse(null))
-                .withGroupByModel(groupByModel);
-
-        if (whereBuilder != null) {
-            builder.withWhereModel(whereBuilder.buildWhereModel());
-        }
-
-        if (havingBuilder != null) {
-            builder.withHavingModel(havingBuilder.buildHavingModel());
-        }
-
-        return builder.build();
+                .withGroupByModel(groupByModel)
+                .withWhereModel(whereBuilder == null ? null : whereBuilder.buildWhereModel())
+                .withHavingModel(havingBuilder == null ? null : havingBuilder.buildHavingModel())
+                .build();
     }
 
     public SelectDSL<R>.LimitFinisher limit(long limit) {

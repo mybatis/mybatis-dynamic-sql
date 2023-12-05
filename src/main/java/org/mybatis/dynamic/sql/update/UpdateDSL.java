@@ -98,17 +98,15 @@ public class UpdateDSL<R> extends AbstractWhereStarter<UpdateDSL<R>.UpdateWhereB
     @NotNull
     @Override
     public R build() {
-        UpdateModel.Builder updateModelBuilder = UpdateModel.withTable(table)
+        UpdateModel updateModel = UpdateModel.withTable(table)
                 .withTableAlias(tableAlias)
                 .withColumnMappings(columnMappings)
                 .withLimit(limit)
-                .withOrderByModel(orderByModel);
+                .withOrderByModel(orderByModel)
+                .withWhereModel(whereBuilder == null ? null : whereBuilder.buildWhereModel())
+                .build();
 
-        if (whereBuilder != null) {
-            updateModelBuilder.withWhereModel(whereBuilder.buildWhereModel());
-        }
-
-        return adapterFunction.apply(updateModelBuilder.build());
+        return adapterFunction.apply(updateModel);
     }
 
     @Override
