@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -130,10 +131,11 @@ public class SelectDSL<R> implements Buildable<R>, ConfigurableStatement<SelectD
     @NotNull
     @Override
     public R build() {
-        SelectModel.Builder builder = SelectModel.withQueryExpressions(buildModels())
-                .withOrderByModel(orderByModel);
-        addPagingModel(builder);
-        return adapterFunction.apply(builder.build());
+        SelectModel selectModel = SelectModel.withQueryExpressions(buildModels())
+                .withOrderByModel(orderByModel)
+                .withPagingModel(buildPagingModel().orElse(null))
+                .build();
+        return adapterFunction.apply(selectModel);
     }
 
     private List<QueryExpressionModel> buildModels() {
@@ -142,15 +144,12 @@ public class SelectDSL<R> implements Buildable<R>, ConfigurableStatement<SelectD
                 .collect(Collectors.toList());
     }
 
-    private void addPagingModel(SelectModel.Builder builder) {
-        if (limit != null || offset != null || fetchFirstRows != null) {
-            // add paging model if any values set
-            builder.withPagingModel(new PagingModel.Builder()
-                    .withLimit(limit)
-                    .withOffset(offset)
-                    .withFetchFirstRows(fetchFirstRows)
-                    .build());
-        }
+    private Optional<PagingModel> buildPagingModel() {
+        return new PagingModel.Builder()
+                .withLimit(limit)
+                .withOffset(offset)
+                .withFetchFirstRows(fetchFirstRows)
+                .build();
     }
 
     public class LimitFinisher implements Buildable<R> {

@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 import org.jetbrains.annotations.NotNull;
 import org.mybatis.dynamic.sql.SortSpecification;
@@ -74,24 +75,20 @@ public class MultiSelectDSL implements Buildable<MultiSelectModel> {
     @NotNull
     @Override
     public MultiSelectModel build() {
-        MultiSelectModel.Builder builder = new MultiSelectModel.Builder()
+        return new MultiSelectModel.Builder()
                 .withInitialSelect(initialSelect)
                 .withUnionQueries(unionQueries)
-                .withOrderByModel(orderByModel);
-
-        addPagingModel(builder);
-        return builder.build();
+                .withOrderByModel(orderByModel)
+                .withPagingModel(buildPagingModel().orElse(null))
+                .build();
     }
 
-    private void addPagingModel(MultiSelectModel.Builder builder) {
-        if (limit != null || offset != null || fetchFirstRows != null) {
-            // add paging model if any values set
-            builder.withPagingModel(new PagingModel.Builder()
-                    .withLimit(limit)
-                    .withOffset(offset)
-                    .withFetchFirstRows(fetchFirstRows)
-                    .build());
-        }
+    private Optional<PagingModel> buildPagingModel() {
+        return new PagingModel.Builder()
+                .withLimit(limit)
+                .withOffset(offset)
+                .withFetchFirstRows(fetchFirstRows)
+                .build();
     }
 
     public class LimitFinisher implements Buildable<MultiSelectModel> {

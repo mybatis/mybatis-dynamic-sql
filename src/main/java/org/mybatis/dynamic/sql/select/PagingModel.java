@@ -62,8 +62,12 @@ public class PagingModel {
             return this;
         }
 
-        public PagingModel build() {
-            return new PagingModel(this);
+        public Optional<PagingModel> build() {
+            if (limit == null && offset == null && fetchFirstRows == null) {
+                return Optional.empty();
+            }
+
+            return Optional.of(new PagingModel(this));
         }
     }
 }
