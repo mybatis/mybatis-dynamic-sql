@@ -25,6 +25,7 @@ import org.mybatis.dynamic.sql.SqlBuilder;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
 import org.mybatis.dynamic.sql.util.Buildable;
+import org.mybatis.dynamic.sql.util.Utilities;
 import org.mybatis.dynamic.sql.where.AbstractWhereFinisher;
 import org.mybatis.dynamic.sql.where.WhereModel;
 
@@ -33,7 +34,7 @@ import org.mybatis.dynamic.sql.where.WhereModel;
  * clauses, but not the other parts of a select (group by, order by, etc.) Count queries always return
  * a long. If these restrictions are not acceptable, then use the Select DSL for an unrestricted select statement.
  *
- * @param <R> the type of model built by this Builder. Typically SelectModel.
+ * @param <R> the type of model built by this Builder. Typically, SelectModel.
  *
  * @author Jeff Butler
  */
@@ -53,9 +54,7 @@ public class CountDSL<R> extends AbstractQueryExpressionDSL<CountDSL<R>.CountWhe
 
     @Override
     public CountWhereBuilder where() {
-        if (whereBuilder == null) {
-            whereBuilder = new CountWhereBuilder();
-        }
+        whereBuilder = Utilities.buildIfNecessary(whereBuilder, CountWhereBuilder::new);
         return whereBuilder;
     }
 
@@ -72,19 +71,16 @@ public class CountDSL<R> extends AbstractQueryExpressionDSL<CountDSL<R>.CountWhe
     }
 
     private SelectModel buildModel() {
-        QueryExpressionModel.Builder b = new QueryExpressionModel.Builder()
+        QueryExpressionModel queryExpressionModel = new QueryExpressionModel.Builder()
                 .withSelectColumn(countColumn)
                 .withTable(table())
-                .withTableAliases(tableAliases());
-
-        if (whereBuilder != null) {
-            b.withWhereModel(whereBuilder.buildWhereModel());
-        }
-
-        buildJoinModel().ifPresent(b::withJoinModel);
+                .withTableAliases(tableAliases())
+                .withJoinModel(buildJoinModel().orElse(null))
+                .withWhereModel(whereBuilder == null ? null : whereBuilder.buildWhereModel())
+                .build();
 
         return new SelectModel.Builder()
-                .withQueryExpression(b.build())
+                .withQueryExpression(queryExpressionModel)
                 .build();
     }
 

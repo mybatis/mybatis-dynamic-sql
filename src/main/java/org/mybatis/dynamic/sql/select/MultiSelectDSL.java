@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 import org.jetbrains.annotations.NotNull;
 import org.mybatis.dynamic.sql.SortSpecification;
@@ -78,15 +79,11 @@ public class MultiSelectDSL implements Buildable<MultiSelectModel> {
                 .withInitialSelect(initialSelect)
                 .withUnionQueries(unionQueries)
                 .withOrderByModel(orderByModel)
-                .withPagingModel(buildPagingModel())
+                .withPagingModel(buildPagingModel().orElse(null))
                 .build();
     }
 
-    private PagingModel buildPagingModel() {
-        if (limit == null && offset == null && fetchFirstRows == null) {
-            return null;
-        }
-
+    private Optional<PagingModel> buildPagingModel() {
         return new PagingModel.Builder()
                 .withLimit(limit)
                 .withOffset(offset)

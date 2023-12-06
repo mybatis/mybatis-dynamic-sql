@@ -78,15 +78,14 @@ public class DeleteDSL<R> extends AbstractWhereStarter<DeleteDSL<R>.DeleteWhereB
     @NotNull
     @Override
     public R build() {
-        DeleteModel.Builder deleteModelBuilder = DeleteModel.withTable(table)
+        DeleteModel deleteModel = DeleteModel.withTable(table)
                 .withTableAlias(tableAlias)
                 .withLimit(limit)
-                .withOrderByModel(orderByModel);
-        if (whereBuilder != null) {
-            deleteModelBuilder.withWhereModel(whereBuilder.buildWhereModel());
-        }
+                .withOrderByModel(orderByModel)
+                .withWhereModel(whereBuilder == null ? null : whereBuilder.buildWhereModel())
+                .build();
 
-        return adapterFunction.apply(deleteModelBuilder.build());
+        return adapterFunction.apply(deleteModel);
     }
 
     @Override

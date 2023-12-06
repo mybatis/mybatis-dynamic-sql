@@ -25,7 +25,6 @@ import org.mybatis.dynamic.sql.NotCriterion
 import org.mybatis.dynamic.sql.SqlBuilder
 import org.mybatis.dynamic.sql.SqlCriterion
 import org.mybatis.dynamic.sql.VisitableCondition
-import org.mybatis.dynamic.sql.util.Messages
 
 typealias GroupingCriteriaReceiver = GroupingCriteriaCollector.() -> Unit
 
@@ -131,9 +130,7 @@ sealed class SubCriteriaCollector {
 class GroupingCriteriaCollector : SubCriteriaCollector() {
     internal var initialCriterion: SqlCriterion? = null
         private set(value) {
-            if (field != null) {
-                throw KInvalidSQLException(Messages.getString("ERROR.21")) //$NON-NLS-1$
-            }
+            assertNull(field, "ERROR.21") //$NON-NLS-1$
             field = value
         }
 

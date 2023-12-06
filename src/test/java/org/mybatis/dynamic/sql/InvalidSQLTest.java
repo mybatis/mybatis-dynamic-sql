@@ -47,7 +47,7 @@ import org.mybatis.dynamic.sql.select.SelectModel;
 import org.mybatis.dynamic.sql.select.join.JoinModel;
 import org.mybatis.dynamic.sql.select.join.JoinSpecification;
 import org.mybatis.dynamic.sql.select.join.JoinType;
-import org.mybatis.dynamic.sql.select.render.PagingModelRenderer;
+import org.mybatis.dynamic.sql.select.render.FetchFirstPagingModelRenderer;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.update.UpdateModel;
 import org.mybatis.dynamic.sql.util.InternalError;
@@ -238,16 +238,15 @@ class InvalidSQLTest {
 
     @Test
     void testInvalidPagingModel() {
-        PagingModel pagingModel = new PagingModel.Builder().build();
+        Optional<PagingModel> pagingModel = new PagingModel.Builder().withLimit(22L).build();
 
         RenderingContext renderingContext = RenderingContext
                 .withRenderingStrategy(RenderingStrategies.MYBATIS3)
                 .build();
 
-        PagingModelRenderer renderer = new PagingModelRenderer.Builder()
-                .withPagingModel(pagingModel)
-                .withRenderingContext(renderingContext)
-                .build();
+        assertThat(pagingModel).isPresent();
+
+        FetchFirstPagingModelRenderer renderer = new FetchFirstPagingModelRenderer(renderingContext, pagingModel.get());
 
         assertThatExceptionOfType(InvalidSqlException.class)
                 .isThrownBy(renderer::render)

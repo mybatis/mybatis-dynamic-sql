@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -132,7 +133,7 @@ public class SelectDSL<R> implements Buildable<R>, ConfigurableStatement<SelectD
     public R build() {
         SelectModel selectModel = SelectModel.withQueryExpressions(buildModels())
                 .withOrderByModel(orderByModel)
-                .withPagingModel(buildPagingModel())
+                .withPagingModel(buildPagingModel().orElse(null))
                 .build();
         return adapterFunction.apply(selectModel);
     }
@@ -143,11 +144,7 @@ public class SelectDSL<R> implements Buildable<R>, ConfigurableStatement<SelectD
                 .collect(Collectors.toList());
     }
 
-    private PagingModel buildPagingModel() {
-        if (limit == null && offset == null && fetchFirstRows == null) {
-            return  null;
-        }
-
+    private Optional<PagingModel> buildPagingModel() {
         return new PagingModel.Builder()
                 .withLimit(limit)
                 .withOffset(offset)

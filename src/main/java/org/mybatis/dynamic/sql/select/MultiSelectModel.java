@@ -24,11 +24,10 @@ import java.util.stream.Stream;
 
 import org.jetbrains.annotations.NotNull;
 import org.mybatis.dynamic.sql.common.OrderByModel;
-import org.mybatis.dynamic.sql.exception.InvalidSqlException;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.select.render.MultiSelectRenderer;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
-import org.mybatis.dynamic.sql.util.Messages;
+import org.mybatis.dynamic.sql.util.Validator;
 
 public class MultiSelectModel {
     private final SelectModel initialSelect;
@@ -41,9 +40,7 @@ public class MultiSelectModel {
         unionQueries = builder.unionQueries;
         orderByModel = builder.orderByModel;
         pagingModel = builder.pagingModel;
-        if (unionQueries.isEmpty()) {
-            throw new InvalidSqlException(Messages.getString("ERROR.35")); //$NON-NLS-1$
-        }
+        Validator.assertNotEmpty(unionQueries, "ERROR.35"); //$NON-NLS-1$
     }
 
     public SelectModel initialSelect() {

@@ -42,11 +42,10 @@ public class RenderingContext {
     private RenderingContext(Builder builder) {
         renderingStrategy = Objects.requireNonNull(builder.renderingStrategy);
         configuredParameterName = builder.parameterName;
+        tableAliasCalculator = Objects.requireNonNull(builder.tableAliasCalculator);
 
         // reasonable defaults
         sequence = builder.sequence == null ? new AtomicInteger(1) : builder.sequence;
-        tableAliasCalculator = builder.tableAliasCalculator == null ? TableAliasCalculator.empty()
-                : builder.tableAliasCalculator;
         calculatedParameterName = builder.parameterName == null ? RenderingStrategy.DEFAULT_PARAMETER_PREFIX
                 : builder.parameterName + "." + RenderingStrategy.DEFAULT_PARAMETER_PREFIX;  //$NON-NLS-1$
     }
@@ -96,7 +95,7 @@ public class RenderingContext {
     }
 
     /**
-     * Crete a new rendering context based on this, with the table alias calculator modified to include the
+     * Create a new rendering context based on this, with the table alias calculator modified to include the
      * specified child table alias calculator. This is used by the query expression renderer when the alias calculator
      * may change during rendering.
      *
@@ -125,7 +124,7 @@ public class RenderingContext {
     public static class Builder {
         private RenderingStrategy renderingStrategy;
         private AtomicInteger sequence;
-        private TableAliasCalculator tableAliasCalculator;
+        private TableAliasCalculator tableAliasCalculator = TableAliasCalculator.empty();
         private String parameterName;
 
         public Builder withRenderingStrategy(RenderingStrategy renderingStrategy) {

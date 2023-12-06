@@ -28,8 +28,7 @@ import org.mybatis.dynamic.sql.ExistsCriterion;
 import org.mybatis.dynamic.sql.ExistsPredicate;
 import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.VisitableCondition;
-import org.mybatis.dynamic.sql.exception.InvalidSqlException;
-import org.mybatis.dynamic.sql.util.Messages;
+import org.mybatis.dynamic.sql.util.Validator;
 
 public abstract class AbstractBooleanExpressionDSL<T extends AbstractBooleanExpressionDSL<T>> {
     private SqlCriterion initialCriterion; // WARNING - may be null!
@@ -146,10 +145,7 @@ public abstract class AbstractBooleanExpressionDSL<T extends AbstractBooleanExpr
     }
 
     protected void setInitialCriterion(SqlCriterion initialCriterion, StatementType statementType) {
-        if (this.initialCriterion != null) {
-            throw new InvalidSqlException(Messages.getString(statementType.messageNumber())); //$NON-NLS-1$
-        }
-
+        Validator.assertTrue(this.initialCriterion == null, statementType.messageNumber());
         this.initialCriterion = initialCriterion;
     }
 
