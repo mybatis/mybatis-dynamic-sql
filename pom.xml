@@ -21,7 +21,7 @@
   <parent>
     <groupId>org.mybatis</groupId>
     <artifactId>mybatis-parent</artifactId>
-    <version>40</version>
+    <version>41</version>
   </parent>
 
   <groupId>org.mybatis.dynamic-sql</groupId>
@@ -309,7 +309,7 @@
         </executions>
       </plugin>
       <plugin>
-        <groupId>io.jsonwebtoken.coveralls</groupId>
+        <groupId>com.github.hazendaz.maven</groupId>
         <artifactId>coveralls-maven-plugin</artifactId>
         <configuration>
           <sourceDirectories>src/main/java,src/main/kotlin</sourceDirectories>
