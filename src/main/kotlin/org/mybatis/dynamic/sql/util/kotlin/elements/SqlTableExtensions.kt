@@ -33,7 +33,7 @@ fun <T : Any> SqlTable.column(
     jdbcType: JDBCType? = null,
     typeHandler: String? = null,
     renderingStrategy: RenderingStrategy? = null,
-    parameterTypeConverter: ((T?) -> Any?)? = { it },
+    parameterTypeConverter: ((T?) -> Any?) = { it },
     javaType: KClass<T>? = null
 ): SqlColumn<T> = SqlColumn.Builder<T>().run {
     withTable(this@column)
