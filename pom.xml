@@ -66,7 +66,7 @@
 
     <module.name>org.mybatis.dynamic.sql</module.name>
 
-    <kotlin.version>1.9.21</kotlin.version>
+    <kotlin.version>1.9.22</kotlin.version>
     <kotlin.compiler.jvmTarget>1.8</kotlin.compiler.jvmTarget>
 
     <sonar.sources>pom.xml,src/main/java,src/main/kotlin</sonar.sources>
