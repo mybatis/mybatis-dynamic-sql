@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2023 the original author or authors.
+ *    Copyright 2016-2024 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ package org.mybatis.dynamic.sql.util.kotlin.elements
 import org.mybatis.dynamic.sql.AndOrCriteriaGroup
 import org.mybatis.dynamic.sql.BasicColumn
 import org.mybatis.dynamic.sql.BindableColumn
+import org.mybatis.dynamic.sql.BoundValue
 import org.mybatis.dynamic.sql.Constant
 import org.mybatis.dynamic.sql.SortSpecification
 import org.mybatis.dynamic.sql.SqlBuilder
@@ -116,6 +117,8 @@ fun <T> sum(column: BindableColumn<T>, condition: VisitableCondition<T>): Sum<T>
 fun <T> constant(constant: String): Constant<T> = SqlBuilder.constant(constant)
 
 fun stringConstant(constant: String): StringConstant = SqlBuilder.stringConstant(constant)
+
+fun <T> value(value: T): BoundValue<T> = SqlBuilder.value(value)
 
 // functions
 fun <T> add(

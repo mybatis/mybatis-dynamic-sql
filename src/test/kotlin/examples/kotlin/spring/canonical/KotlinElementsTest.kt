@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2023 the original author or authors.
+ *    Copyright 2016-2024 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -15,13 +15,16 @@
  */
 package examples.kotlin.spring.canonical
 
+import examples.kotlin.spring.canonical.PersonDynamicSqlSupport.addressId
 import examples.kotlin.spring.canonical.PersonDynamicSqlSupport.employed
 import examples.kotlin.spring.canonical.PersonDynamicSqlSupport.person
 import examples.kotlin.spring.canonical.PersonDynamicSqlSupport.firstName
 import examples.kotlin.spring.canonical.PersonDynamicSqlSupport.id
 import examples.kotlin.spring.canonical.PersonDynamicSqlSupport.lastName
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.entry
 import org.junit.jupiter.api.Test
+import org.mybatis.dynamic.sql.util.kotlin.elements.add
 import org.mybatis.dynamic.sql.util.kotlin.elements.applyOperator
 import org.mybatis.dynamic.sql.util.kotlin.elements.avg
 import org.mybatis.dynamic.sql.util.kotlin.elements.concat
@@ -50,9 +53,11 @@ import org.mybatis.dynamic.sql.util.kotlin.elements.stringConstant
 import org.mybatis.dynamic.sql.util.kotlin.elements.substring
 import org.mybatis.dynamic.sql.util.kotlin.elements.subtract
 import org.mybatis.dynamic.sql.util.kotlin.elements.sum
+import org.mybatis.dynamic.sql.util.kotlin.elements.value
 import org.mybatis.dynamic.sql.util.kotlin.spring.select
 import org.mybatis.dynamic.sql.util.kotlin.spring.selectList
 import org.mybatis.dynamic.sql.util.kotlin.spring.selectOne
+import org.mybatis.dynamic.sql.util.kotlin.spring.update
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig
@@ -653,5 +658,20 @@ open class KotlinElementsTest {
 
         assertThat(rows).hasSize(6)
         assertThat(rows[0]).isEqualTo("Fred")
+    }
+
+    @Test
+    fun testValue() {
+        val updateStatement = update(person) {
+            set(addressId) equalTo add(addressId, value(4))
+            where {
+                id isEqualTo 5
+            }
+        }
+
+        assertThat(updateStatement.updateStatement).isEqualTo(
+            "update Person set address_id = (address_id + :p1) where id = :p2"
+        )
+        assertThat(updateStatement.parameters).containsExactly(entry("p1", 4), entry("p2", 5))
     }
 }
