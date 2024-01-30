@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2023 the original author or authors.
+ *    Copyright 2016-2024 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@ import static org.mybatis.dynamic.sql.SqlBuilder.insert;
 import static org.mybatis.dynamic.sql.SqlBuilder.insertInto;
 import static org.mybatis.dynamic.sql.SqlBuilder.select;
 import static org.mybatis.dynamic.sql.SqlBuilder.update;
+import static org.mybatis.dynamic.sql.SqlBuilder.value;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -251,6 +252,16 @@ class InvalidSQLTest {
         assertThatExceptionOfType(InvalidSqlException.class)
                 .isThrownBy(renderer::render)
                 .withMessage(Messages.getInternalErrorString(InternalError.INTERNAL_ERROR_13));
+    }
+
+    @Test
+    void testInvalidValueAlias() {
+        BoundValue<Integer> foo = value(1);
+
+        assertThat(foo.alias()).isEmpty();
+        assertThatExceptionOfType(InvalidSqlException.class)
+                .isThrownBy(() -> foo.as("foo"))
+                .withMessage(Messages.getString("ERROR.38"));
     }
 
     @Test

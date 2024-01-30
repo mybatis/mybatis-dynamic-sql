@@ -37,6 +37,8 @@ types - which is a rare usage. Please let us know if this causes an undo hardshi
    initial enhancement request that inspired this change. As a result of the changes, one method is deprecated
    in the `BasicColumn` object. If you have implemented any custom functions, please note this deprecation and update
    your code accordingly. ([#662](https://github.com/mybatis/mybatis-dynamic-sql/pull/662))
+2. Added the ability to code a bound value in rendered SQL. This is similar to a constant, but the value is added to
+   the parameter map and a bind parameter marker is rendered.
 
 ## Release 1.5.0 - April 21, 2023
 
