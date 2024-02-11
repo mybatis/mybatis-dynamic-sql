@@ -1,5 +1,5 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="" lang="">
 <head><meta http-equiv="content-type" content="text/html; charset=UTF-8" />
 <title>Length xref</title>
 <link type="text/css" rel="stylesheet" href="../../../stylesheet.css" />
@@ -7,7 +7,7 @@
 <body>
 <div id="overview"><a href="../../../../testapidocs/examples/animal/data/Length.html">View Javadoc</a></div><pre>
 <a class="jxr_linenumber" name="L1" href="#L1">1</a>   <em class="jxr_comment">/*</em>
-<a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_comment"> *    Copyright 2016-2023 the original author or authors.</em>
+<a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_comment"> *    Copyright 2016-2024 the original author or authors.</em>
 <a class="jxr_linenumber" name="L3" href="#L3">3</a>   <em class="jxr_comment"> *</em>
 <a class="jxr_linenumber" name="L4" href="#L4">4</a>   <em class="jxr_comment"> *    Licensed under the Apache License, Version 2.0 (the "License");</em>
 <a class="jxr_linenumber" name="L5" href="#L5">5</a>   <em class="jxr_comment"> *    you may not use this file except in compliance with the License.</em>
@@ -27,44 +27,42 @@
 <a class="jxr_linenumber" name="L19" href="#L19">19</a>  <strong class="jxr_keyword">import</strong> java.util.Optional;
 <a class="jxr_linenumber" name="L20" href="#L20">20</a>  
 <a class="jxr_linenumber" name="L21" href="#L21">21</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.BindableColumn;
-<a class="jxr_linenumber" name="L22" href="#L22">22</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.render.TableAliasCalculator;
+<a class="jxr_linenumber" name="L22" href="#L22">22</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.render.RenderingContext;
 <a class="jxr_linenumber" name="L23" href="#L23">23</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.select.function.AbstractTypeConvertingFunction;
-<a class="jxr_linenumber" name="L24" href="#L24">24</a>  
-<a class="jxr_linenumber" name="L25" href="#L25">25</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="Length" href="../../../examples/animal/data/Length.html#Length">Length</a> <strong class="jxr_keyword">extends</strong> AbstractTypeConvertingFunction&lt;Object, Integer, Length&gt; {
-<a class="jxr_linenumber" name="L26" href="#L26">26</a>      <strong class="jxr_keyword">private</strong> <a name="Length" href="../../../examples/animal/data/Length.html#Length">Length</a>(BindableColumn&lt;Object&gt; column) {
-<a class="jxr_linenumber" name="L27" href="#L27">27</a>          <strong class="jxr_keyword">super</strong>(column);
-<a class="jxr_linenumber" name="L28" href="#L28">28</a>      }
-<a class="jxr_linenumber" name="L29" href="#L29">29</a>  
-<a class="jxr_linenumber" name="L30" href="#L30">30</a>      @Override
-<a class="jxr_linenumber" name="L31" href="#L31">31</a>      <strong class="jxr_keyword">public</strong> Optional&lt;JDBCType&gt; jdbcType() {
-<a class="jxr_linenumber" name="L32" href="#L32">32</a>          <strong class="jxr_keyword">return</strong> Optional.of(JDBCType.INTEGER);
-<a class="jxr_linenumber" name="L33" href="#L33">33</a>      }
-<a class="jxr_linenumber" name="L34" href="#L34">34</a>  
-<a class="jxr_linenumber" name="L35" href="#L35">35</a>      @Override
-<a class="jxr_linenumber" name="L36" href="#L36">36</a>      <strong class="jxr_keyword">public</strong> Optional&lt;String&gt; typeHandler() {
-<a class="jxr_linenumber" name="L37" href="#L37">37</a>          <strong class="jxr_keyword">return</strong> Optional.empty();
-<a class="jxr_linenumber" name="L38" href="#L38">38</a>      }
+<a class="jxr_linenumber" name="L24" href="#L24">24</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.util.FragmentAndParameters;
+<a class="jxr_linenumber" name="L25" href="#L25">25</a>  
+<a class="jxr_linenumber" name="L26" href="#L26">26</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="Length" href="../../../examples/animal/data/Length.html#Length">Length</a> <strong class="jxr_keyword">extends</strong> AbstractTypeConvertingFunction&lt;Object, Integer, Length&gt; {
+<a class="jxr_linenumber" name="L27" href="#L27">27</a>      <strong class="jxr_keyword">private</strong> <a name="Length" href="../../../examples/animal/data/Length.html#Length">Length</a>(BindableColumn&lt;Object&gt; column) {
+<a class="jxr_linenumber" name="L28" href="#L28">28</a>          <strong class="jxr_keyword">super</strong>(column);
+<a class="jxr_linenumber" name="L29" href="#L29">29</a>      }
+<a class="jxr_linenumber" name="L30" href="#L30">30</a>  
+<a class="jxr_linenumber" name="L31" href="#L31">31</a>      @Override
+<a class="jxr_linenumber" name="L32" href="#L32">32</a>      <strong class="jxr_keyword">public</strong> Optional&lt;JDBCType&gt; jdbcType() {
+<a class="jxr_linenumber" name="L33" href="#L33">33</a>          <strong class="jxr_keyword">return</strong> Optional.of(JDBCType.INTEGER);
+<a class="jxr_linenumber" name="L34" href="#L34">34</a>      }
+<a class="jxr_linenumber" name="L35" href="#L35">35</a>  
+<a class="jxr_linenumber" name="L36" href="#L36">36</a>      @Override
+<a class="jxr_linenumber" name="L37" href="#L37">37</a>      <strong class="jxr_keyword">public</strong> FragmentAndParameters render(RenderingContext renderingContext) {
+<a class="jxr_linenumber" name="L38" href="#L38">38</a>          FragmentAndParameters renderedColumn = column.render(renderingContext);
 <a class="jxr_linenumber" name="L39" href="#L39">39</a>  
-<a class="jxr_linenumber" name="L40" href="#L40">40</a>      @Override
-<a class="jxr_linenumber" name="L41" href="#L41">41</a>      <strong class="jxr_keyword">public</strong> String renderWithTableAlias(TableAliasCalculator tableAliasCalculator) {
-<a class="jxr_linenumber" name="L42" href="#L42">42</a>          <strong class="jxr_keyword">return</strong> <span class="jxr_string">"length("</span> <em class="jxr_comment">//$NON-NLS-1$</em>
-<a class="jxr_linenumber" name="L43" href="#L43">43</a>                  + column.renderWithTableAlias(tableAliasCalculator)
-<a class="jxr_linenumber" name="L44" href="#L44">44</a>                  + <span class="jxr_string">")"</span>; <em class="jxr_comment">//$NON-NLS-1$</em>
-<a class="jxr_linenumber" name="L45" href="#L45">45</a>      }
-<a class="jxr_linenumber" name="L46" href="#L46">46</a>  
-<a class="jxr_linenumber" name="L47" href="#L47">47</a>      @Override
-<a class="jxr_linenumber" name="L48" href="#L48">48</a>      <strong class="jxr_keyword">protected</strong> <a name="Length" href="../../../examples/animal/data/Length.html#Length">Length</a> copy() {
-<a class="jxr_linenumber" name="L49" href="#L49">49</a>          <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> <a name="Length" href="../../../examples/animal/data/Length.html#Length">Length</a>(column);
-<a class="jxr_linenumber" name="L50" href="#L50">50</a>      }
-<a class="jxr_linenumber" name="L51" href="#L51">51</a>  
-<a class="jxr_linenumber" name="L52" href="#L52">52</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <a name="Length" href="../../../examples/animal/data/Length.html#Length">Length</a> length(BindableColumn&lt;?&gt; column) {
-<a class="jxr_linenumber" name="L53" href="#L53">53</a>          @SuppressWarnings(<span class="jxr_string">"unchecked"</span>)
-<a class="jxr_linenumber" name="L54" href="#L54">54</a>          BindableColumn&lt;Object&gt; c = (BindableColumn&lt;Object&gt;) column;
-<a class="jxr_linenumber" name="L55" href="#L55">55</a>          <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> <a name="Length" href="../../../examples/animal/data/Length.html#Length">Length</a>(c);
-<a class="jxr_linenumber" name="L56" href="#L56">56</a>      }
-<a class="jxr_linenumber" name="L57" href="#L57">57</a>  }
+<a class="jxr_linenumber" name="L40" href="#L40">40</a>          <strong class="jxr_keyword">return</strong> FragmentAndParameters.withFragment(<span class="jxr_string">"length("</span> + renderedColumn.fragment() + <span class="jxr_string">")"</span>) <em class="jxr_comment">//$NON-NLS-1$ //$NON-NLS-2$</em>
+<a class="jxr_linenumber" name="L41" href="#L41">41</a>                  .withParameters(renderedColumn.parameters())
+<a class="jxr_linenumber" name="L42" href="#L42">42</a>                  .build();
+<a class="jxr_linenumber" name="L43" href="#L43">43</a>      }
+<a class="jxr_linenumber" name="L44" href="#L44">44</a>  
+<a class="jxr_linenumber" name="L45" href="#L45">45</a>      @Override
+<a class="jxr_linenumber" name="L46" href="#L46">46</a>      <strong class="jxr_keyword">protected</strong> <a name="Length" href="../../../examples/animal/data/Length.html#Length">Length</a> copy() {
+<a class="jxr_linenumber" name="L47" href="#L47">47</a>          <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> <a name="Length" href="../../../examples/animal/data/Length.html#Length">Length</a>(column);
+<a class="jxr_linenumber" name="L48" href="#L48">48</a>      }
+<a class="jxr_linenumber" name="L49" href="#L49">49</a>  
+<a class="jxr_linenumber" name="L50" href="#L50">50</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <a name="Length" href="../../../examples/animal/data/Length.html#Length">Length</a> length(BindableColumn&lt;?&gt; column) {
+<a class="jxr_linenumber" name="L51" href="#L51">51</a>          @SuppressWarnings(<span class="jxr_string">"unchecked"</span>)
+<a class="jxr_linenumber" name="L52" href="#L52">52</a>          BindableColumn&lt;Object&gt; c = (BindableColumn&lt;Object&gt;) column;
+<a class="jxr_linenumber" name="L53" href="#L53">53</a>          <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> <a name="Length" href="../../../examples/animal/data/Length.html#Length">Length</a>(c);
+<a class="jxr_linenumber" name="L54" href="#L54">54</a>      }
+<a class="jxr_linenumber" name="L55" href="#L55">55</a>  }
 </pre>
 <hr/>
-<div id="footer">Copyright &#169; 2016&#x2013;2023 <a href="https://www.mybatis.org/">MyBatis.org</a>. All rights reserved.</div>
+<div id="footer">Copyright &#169; 2016&#x2013;2024 <a href="https://www.mybatis.org/">MyBatis.org</a>. All rights reserved.</div>
 </body>
 </html>
