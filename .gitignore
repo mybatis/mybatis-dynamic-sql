@@ -16,3 +16,4 @@ buildNumber.properties
 .DS_Store
 .idea
 *.iml
+.github/keys/
