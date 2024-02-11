@@ -31,12 +31,13 @@
   <name>MyBatis Dynamic SQL</name>
   <description>MyBatis framework for generating dynamic SQL</description>
   <inceptionYear>2016</inceptionYear>
+  <url>https://www.mybatis.org/mybatis-dynamic-sql/</url>
 
   <scm>
     <connection>scm:git:ssh://git@github.com/mybatis/mybatis-dynamic-sql.git</connection>
     <developerConnection>scm:git:ssh://git@github.com/mybatis/mybatis-dynamic-sql.git</developerConnection>
     <tag>HEAD</tag>
-    <url>https://github.com/mybatis/mybatis-dynamic-sql</url>
+    <url>https://github.com/mybatis/mybatis-dynamic-sql/</url>
   </scm>
   <issueManagement>
     <system>GitHub Issue Management</system>
