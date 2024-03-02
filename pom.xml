@@ -161,7 +161,7 @@
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
-      <version>1.5.1</version>
+      <version>1.5.2</version>
       <scope>test</scope>
     </dependency>
     <!-- Hamcrest is only here to make Infinitest happy. Not really used in the project. -->
