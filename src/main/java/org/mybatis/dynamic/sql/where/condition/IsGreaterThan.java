@@ -23,8 +23,8 @@ import org.mybatis.dynamic.sql.AbstractSingleValueCondition;
 public class IsGreaterThan<T> extends AbstractSingleValueCondition<T> {
     private static final IsGreaterThan<?> EMPTY = new IsGreaterThan<Object>(null) {
         @Override
-        public boolean shouldRender() {
-            return false;
+        public boolean isEmpty() {
+            return true;
         }
     };
 

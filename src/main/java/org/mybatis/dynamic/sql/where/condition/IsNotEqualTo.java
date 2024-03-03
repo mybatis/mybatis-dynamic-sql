@@ -23,8 +23,8 @@ import org.mybatis.dynamic.sql.AbstractSingleValueCondition;
 public class IsNotEqualTo<T> extends AbstractSingleValueCondition<T> {
     private static final IsNotEqualTo<?> EMPTY = new IsNotEqualTo<Object>(null) {
         @Override
-        public boolean shouldRender() {
-            return false;
+        public boolean isEmpty() {
+            return true;
         }
     };
 

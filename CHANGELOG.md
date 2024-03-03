@@ -39,6 +39,9 @@ types - which is a rare usage. Please let us know if this causes an undo hardshi
    your code accordingly. ([#662](https://github.com/mybatis/mybatis-dynamic-sql/pull/662))
 2. Added the ability to code a bound value in rendered SQL. This is similar to a constant, but the value is added to
    the parameter map and a bind parameter marker is rendered. ([#738](https://github.com/mybatis/mybatis-dynamic-sql/pull/738))
+3. Refactored the conditions to separate the concept of an empty condition from that of a renderable condition. This
+   will enable a future change where conditions could decide to allow rendering even if they are considered empty (such
+   as rendering empty lists). This change should be transparent to users unless they have implemented custom conditions.
 
 ## Release 1.5.0 - April 21, 2023
 

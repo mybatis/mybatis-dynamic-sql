@@ -110,7 +110,7 @@ public class CriterionRenderer implements SqlCriterionVisitor<Optional<RenderedC
     }
 
     private <T> Optional<FragmentAndParameters> renderColumnAndCondition(ColumnAndConditionCriterion<T> criterion) {
-        if (criterion.condition().shouldRender()) {
+        if (criterion.condition().shouldRender(renderingContext)) {
             return Optional.of(renderCondition(criterion));
         } else {
             criterion.condition().renderingSkipped();

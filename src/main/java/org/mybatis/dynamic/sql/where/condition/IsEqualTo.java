@@ -24,8 +24,8 @@ public class IsEqualTo<T> extends AbstractSingleValueCondition<T> {
 
     private static final IsEqualTo<?> EMPTY = new IsEqualTo<Object>(null) {
         @Override
-        public boolean shouldRender() {
-            return false;
+        public boolean isEmpty() {
+            return true;
         }
     };
 
