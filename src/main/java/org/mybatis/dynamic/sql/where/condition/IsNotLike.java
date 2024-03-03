@@ -23,8 +23,8 @@ import org.mybatis.dynamic.sql.AbstractSingleValueCondition;
 public class IsNotLike<T> extends AbstractSingleValueCondition<T> {
     private static final IsNotLike<?> EMPTY = new IsNotLike<Object>(null) {
         @Override
-        public boolean shouldRender() {
-            return false;
+        public boolean isEmpty() {
+            return true;
         }
     };
 

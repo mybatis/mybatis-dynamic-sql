@@ -22,8 +22,8 @@ import org.mybatis.dynamic.sql.AbstractNoValueCondition;
 public class IsNull<T> extends AbstractNoValueCondition<T> {
     private static final IsNull<?> EMPTY = new IsNull<Object>() {
         @Override
-        public boolean shouldRender() {
-            return false;
+        public boolean isEmpty() {
+            return true;
         }
     };
 

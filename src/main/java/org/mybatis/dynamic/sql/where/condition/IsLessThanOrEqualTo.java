@@ -23,8 +23,8 @@ import org.mybatis.dynamic.sql.AbstractSingleValueCondition;
 public class IsLessThanOrEqualTo<T> extends AbstractSingleValueCondition<T> {
     private static final IsLessThanOrEqualTo<?> EMPTY = new IsLessThanOrEqualTo<Object>(null) {
         @Override
-        public boolean shouldRender() {
-            return false;
+        public boolean isEmpty() {
+            return true;
         }
     };
 

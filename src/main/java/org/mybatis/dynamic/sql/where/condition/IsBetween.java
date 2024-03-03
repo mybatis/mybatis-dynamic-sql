@@ -25,8 +25,8 @@ import org.mybatis.dynamic.sql.AbstractTwoValueCondition;
 public class IsBetween<T> extends AbstractTwoValueCondition<T> {
     private static final IsBetween<?> EMPTY = new IsBetween<Object>(null, null) {
         @Override
-        public boolean shouldRender() {
-            return false;
+        public boolean isEmpty() {
+            return true;
         }
     };
 

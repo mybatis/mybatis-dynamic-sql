@@ -25,8 +25,8 @@ public class IsLikeCaseInsensitive extends AbstractSingleValueCondition<String>
         implements CaseInsensitiveVisitableCondition {
     private static final IsLikeCaseInsensitive EMPTY = new IsLikeCaseInsensitive(null) {
         @Override
-        public boolean shouldRender() {
-            return false;
+        public boolean isEmpty() {
+            return true;
         }
     };
 

@@ -15,22 +15,34 @@
  */
 package org.mybatis.dynamic.sql;
 
+import org.mybatis.dynamic.sql.render.RenderingContext;
+
 @FunctionalInterface
 public interface VisitableCondition<T> {
     <R> R accept(ConditionVisitor<T, R> visitor);
 
     /**
      * Subclasses can override this to inform the renderer if the condition should not be included
-     * in the rendered SQL.  For example, IsEqualWhenPresent will not render if the value is null.
+     * in the rendered SQL.  Typically, conditions will not render if they are empty.
      *
      * @return true if the condition should render.
      */
-    default boolean shouldRender() {
-        return true;
+    default boolean shouldRender(RenderingContext renderingContext) {
+        return !isEmpty();
     }
 
     /**
-     * This method will be called during rendering when {@link VisitableCondition#shouldRender()}
+     * Subclasses can override this to indicate whether the condition is considered empty. This is primarily used in
+     * map and filter operations - the map and filter functions will not be applied if the condition is empty.
+     *
+     * @return true if the condition is empty.
+     */
+    default boolean isEmpty() {
+        return false;
+    }
+
+    /**
+     * This method will be called during rendering when {@link VisitableCondition#shouldRender(RenderingContext)}
      * returns false.
      */
     default void renderingSkipped() {}

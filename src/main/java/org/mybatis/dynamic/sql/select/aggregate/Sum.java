@@ -36,7 +36,7 @@ public class Sum<T> extends AbstractUniTypeFunction<T, Sum<T>> {
     private Sum(BindableColumn<T> column, VisitableCondition<T> condition) {
         super(column);
         renderer = rc -> {
-            Validator.assertTrue(condition.shouldRender(), "ERROR.37", "sum"); //$NON-NLS-1$ //$NON-NLS-2$
+            Validator.assertTrue(condition.shouldRender(rc), "ERROR.37", "sum"); //$NON-NLS-1$ //$NON-NLS-2$
 
             DefaultConditionVisitor<T> visitor = new DefaultConditionVisitor.Builder<T>()
                     .withColumn(column)
