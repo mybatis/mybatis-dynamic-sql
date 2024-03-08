@@ -175,10 +175,12 @@ public class CriterionRenderer implements SqlCriterionVisitor<Optional<RenderedC
     }
 
     private <T> FragmentAndParameters renderCondition(ColumnAndConditionCriterion<T> criterion) {
-        DefaultConditionVisitor<T> visitor = DefaultConditionVisitor.withColumn(criterion.column())
+        return new ColumnAndConditionRenderer.Builder<T>()
+                .withColumn(criterion.column())
+                .withCondition(criterion.condition())
                 .withRenderingContext(renderingContext)
-                .build();
-        return criterion.condition().accept(visitor);
+                .build()
+                .render();
     }
 
     /**

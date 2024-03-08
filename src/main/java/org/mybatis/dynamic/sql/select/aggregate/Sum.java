@@ -23,7 +23,7 @@ import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.select.function.AbstractUniTypeFunction;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 import org.mybatis.dynamic.sql.util.Validator;
-import org.mybatis.dynamic.sql.where.render.DefaultConditionVisitor;
+import org.mybatis.dynamic.sql.where.render.ColumnAndConditionRenderer;
 
 public class Sum<T> extends AbstractUniTypeFunction<T, Sum<T>> {
     private final Function<RenderingContext, FragmentAndParameters> renderer;
@@ -38,12 +38,13 @@ public class Sum<T> extends AbstractUniTypeFunction<T, Sum<T>> {
         renderer = rc -> {
             Validator.assertTrue(condition.shouldRender(rc), "ERROR.37", "sum"); //$NON-NLS-1$ //$NON-NLS-2$
 
-            DefaultConditionVisitor<T> visitor = new DefaultConditionVisitor.Builder<T>()
+            return new ColumnAndConditionRenderer.Builder<T>()
                     .withColumn(column)
+                    .withCondition(condition)
                     .withRenderingContext(rc)
-                    .build();
-
-            return condition.accept(visitor).mapFragment(this::applyAggregate);
+                    .build()
+                    .render()
+                    .mapFragment(this::applyAggregate);
         };
     }
 
