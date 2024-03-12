@@ -144,9 +144,13 @@ public abstract class AbstractBooleanExpressionDSL<T extends AbstractBooleanExpr
                 .build());
     }
 
+    protected void setInitialCriterion(SqlCriterion initialCriterion) {
+        this.initialCriterion = initialCriterion;
+    }
+
     protected void setInitialCriterion(SqlCriterion initialCriterion, StatementType statementType) {
         Validator.assertTrue(this.initialCriterion == null, statementType.messageNumber());
-        this.initialCriterion = initialCriterion;
+        setInitialCriterion(initialCriterion);
     }
 
     // may be null!

@@ -33,8 +33,10 @@ import org.mybatis.dynamic.sql.select.CountDSL;
 import org.mybatis.dynamic.sql.select.HavingDSL;
 import org.mybatis.dynamic.sql.select.MultiSelectDSL;
 import org.mybatis.dynamic.sql.select.QueryExpressionDSL.FromGatherer;
+import org.mybatis.dynamic.sql.select.SearchedCaseDSL;
 import org.mybatis.dynamic.sql.select.SelectDSL;
 import org.mybatis.dynamic.sql.select.SelectModel;
+import org.mybatis.dynamic.sql.select.SimpleCaseDSL;
 import org.mybatis.dynamic.sql.select.SimpleSortSpecification;
 import org.mybatis.dynamic.sql.select.aggregate.Avg;
 import org.mybatis.dynamic.sql.select.aggregate.Count;
@@ -423,6 +425,15 @@ public interface SqlBuilder {
                 .withConnector("and") //$NON-NLS-1$
                 .withSubCriteria(subCriteria)
                 .build();
+    }
+
+    // case expressions
+    static <T> SimpleCaseDSL<T> simpleCase(BindableColumn<T> column) {
+        return SimpleCaseDSL.simpleCase(column);
+    }
+
+    static SearchedCaseDSL searchedCase() {
+        return SearchedCaseDSL.searchedCase();
     }
 
     // join support
