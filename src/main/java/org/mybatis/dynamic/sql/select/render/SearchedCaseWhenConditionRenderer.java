@@ -16,7 +16,7 @@
 package org.mybatis.dynamic.sql.select.render;
 
 import org.mybatis.dynamic.sql.common.AbstractBooleanExpressionRenderer;
-import org.mybatis.dynamic.sql.select.SearchedCaseModel.SearchedWhenCondition;
+import org.mybatis.dynamic.sql.select.caseexpression.SearchedCaseModel.SearchedWhenCondition;
 
 public class SearchedCaseWhenConditionRenderer extends AbstractBooleanExpressionRenderer<SearchedWhenCondition> {
     protected SearchedCaseWhenConditionRenderer(Builder builder) {

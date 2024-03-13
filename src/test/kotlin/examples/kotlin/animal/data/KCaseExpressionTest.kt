@@ -420,6 +420,60 @@ class KCaseExpressionTest {
     }
 
     @Test
+    fun testSimpleCaseBasicWithStrings() {
+        newSession().use { session ->
+            val mapper = session.getMapper(CommonSelectMapper::class.java)
+
+            val selectStatement = select(
+                animalName,
+                case(animalName) {
+                    `when` ("Artic fox", "Red fox").then("yes")
+                    `else`("no")
+                }.`as`("IsAFox")
+            ) {
+                from(animalData)
+                where { id.isIn(31, 32, 38, 39) }
+                orderBy(id)
+            }
+
+            val expected = "select animal_name, " +
+                    "case animal_name when #{parameters.p1,jdbcType=VARCHAR}, #{parameters.p2,jdbcType=VARCHAR} then 'yes' else 'no' end " +
+                    "as IsAFox from AnimalData where id in " +
+                    "(#{parameters.p3,jdbcType=INTEGER},#{parameters.p4,jdbcType=INTEGER},#{parameters.p5,jdbcType=INTEGER},#{parameters.p6,jdbcType=INTEGER}) " +
+                    "order by id"
+            assertThat(selectStatement.selectStatement).isEqualTo(expected)
+            assertThat(selectStatement.parameters)
+                .containsOnly(
+                    entry("p1", "Artic fox"),
+                    entry("p2", "Red fox"),
+                    entry("p3", 31),
+                    entry("p4", 32),
+                    entry("p5", 38),
+                    entry("p6", 39)
+                )
+
+            val records = mapper.selectManyMappedRows(selectStatement)
+            assertThat(records).hasSize(4)
+            assertThat(records[0]).containsOnly(
+                entry("ANIMAL_NAME", "Cat"),
+                entry("ISAFOX", "no ")
+            )
+            assertThat(records[1]).containsOnly(
+                entry("ANIMAL_NAME", "Artic fox"),
+                entry("ISAFOX", "yes")
+            )
+            assertThat(records[2]).containsOnly(
+                entry("ANIMAL_NAME", "Red fox"),
+                entry("ISAFOX", "yes")
+            )
+            assertThat(records[3]).containsOnly(
+                entry("ANIMAL_NAME", "Raccoon"),
+                entry("ISAFOX", "no ")
+            )
+        }
+    }
+
+    @Test
     fun testSimpleCaseWithBooleans() {
         newSession().use { session ->
             val mapper = session.getMapper(CommonSelectMapper::class.java)
@@ -438,6 +492,60 @@ class KCaseExpressionTest {
 
             val expected = "select animal_name, " +
                     "case animal_name when = #{parameters.p1,jdbcType=VARCHAR}, = #{parameters.p2,jdbcType=VARCHAR} then true else false end " +
+                    "as IsAFox from AnimalData where id in " +
+                    "(#{parameters.p3,jdbcType=INTEGER},#{parameters.p4,jdbcType=INTEGER},#{parameters.p5,jdbcType=INTEGER},#{parameters.p6,jdbcType=INTEGER}) " +
+                    "order by id"
+            assertThat(selectStatement.selectStatement).isEqualTo(expected)
+            assertThat(selectStatement.parameters)
+                .containsOnly(
+                    entry("p1", "Artic fox"),
+                    entry("p2", "Red fox"),
+                    entry("p3", 31),
+                    entry("p4", 32),
+                    entry("p5", 38),
+                    entry("p6", 39)
+                )
+
+            val records = mapper.selectManyMappedRows(selectStatement)
+            assertThat(records).hasSize(4)
+            assertThat(records[0]).containsOnly(
+                entry("ANIMAL_NAME", "Cat"),
+                entry("ISAFOX", false)
+            )
+            assertThat(records[1]).containsOnly(
+                entry("ANIMAL_NAME", "Artic fox"),
+                entry("ISAFOX", true)
+            )
+            assertThat(records[2]).containsOnly(
+                entry("ANIMAL_NAME", "Red fox"),
+                entry("ISAFOX", true)
+            )
+            assertThat(records[3]).containsOnly(
+                entry("ANIMAL_NAME", "Raccoon"),
+                entry("ISAFOX", false)
+            )
+        }
+    }
+
+    @Test
+    fun testSimpleCaseBasicWithBooleans() {
+        newSession().use { session ->
+            val mapper = session.getMapper(CommonSelectMapper::class.java)
+
+            val selectStatement = select(
+                animalName,
+                case(animalName) {
+                    `when` ("Artic fox", "Red fox").then(true)
+                    `else`(false)
+                }.`as`("IsAFox")
+            ) {
+                from(animalData)
+                where { id.isIn(31, 32, 38, 39) }
+                orderBy(id)
+            }
+
+            val expected = "select animal_name, " +
+                    "case animal_name when #{parameters.p1,jdbcType=VARCHAR}, #{parameters.p2,jdbcType=VARCHAR} then true else false end " +
                     "as IsAFox from AnimalData where id in " +
                     "(#{parameters.p3,jdbcType=INTEGER},#{parameters.p4,jdbcType=INTEGER},#{parameters.p5,jdbcType=INTEGER},#{parameters.p6,jdbcType=INTEGER}) " +
                     "order by id"

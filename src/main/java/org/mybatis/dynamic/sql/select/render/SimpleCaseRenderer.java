@@ -20,26 +20,21 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.mybatis.dynamic.sql.VisitableCondition;
 import org.mybatis.dynamic.sql.render.RenderingContext;
-import org.mybatis.dynamic.sql.select.SimpleCaseModel;
+import org.mybatis.dynamic.sql.select.caseexpression.SimpleCaseModel;
+import org.mybatis.dynamic.sql.select.caseexpression.SimpleCaseWhenCondition;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 import org.mybatis.dynamic.sql.util.FragmentCollector;
-import org.mybatis.dynamic.sql.util.Validator;
-import org.mybatis.dynamic.sql.where.render.DefaultConditionVisitor;
 
 public class SimpleCaseRenderer<T> {
     private final SimpleCaseModel<T> simpleCaseModel;
     private final RenderingContext renderingContext;
-    private final DefaultConditionVisitor<T> conditionVisitor;
+    private final SimpleCaseWhenConditionRenderer<T> whenConditionRenderer;
 
     public SimpleCaseRenderer(SimpleCaseModel<T> simpleCaseModel, RenderingContext renderingContext) {
         this.simpleCaseModel = Objects.requireNonNull(simpleCaseModel);
         this.renderingContext = Objects.requireNonNull(renderingContext);
-        conditionVisitor = new DefaultConditionVisitor.Builder<T>()
-                .withColumn(simpleCaseModel.column())
-                .withRenderingContext(renderingContext)
-                .build();
+        whenConditionRenderer = new SimpleCaseWhenConditionRenderer<>(renderingContext, simpleCaseModel.column());
     }
 
     public FragmentAndParameters render() {
@@ -65,7 +60,7 @@ public class SimpleCaseRenderer<T> {
         return simpleCaseModel.whenConditions().flatMap(this::renderWhenCondition);
     }
 
-    private Stream<FragmentAndParameters> renderWhenCondition(SimpleCaseModel.SimpleWhenCondition<T> whenCondition) {
+    private Stream<FragmentAndParameters> renderWhenCondition(SimpleCaseWhenCondition<T> whenCondition) {
         return Stream.of(
                 renderWhen(),
                 renderConditions(whenCondition),
@@ -77,18 +72,10 @@ public class SimpleCaseRenderer<T> {
         return FragmentAndParameters.fromFragment("when"); //$NON-NLS-1$
     }
 
-    private FragmentAndParameters renderConditions(SimpleCaseModel.SimpleWhenCondition<T> whenCondition) {
-        return whenCondition.conditions().map(this::renderCondition)
-                .collect(FragmentCollector.collect())
-                .toFragmentAndParameters(Collectors.joining(", ")); //$NON-NLS-1$
+    private FragmentAndParameters renderConditions(SimpleCaseWhenCondition<T> whenCondition) {
+        return whenCondition.accept(whenConditionRenderer);
     }
-
-    private FragmentAndParameters renderCondition(VisitableCondition<T> condition) {
-        Validator.assertTrue(condition.shouldRender(renderingContext), "ERROR.39"); //$NON-NLS-1$
-        return condition.accept(conditionVisitor);
-    }
-
-    private FragmentAndParameters renderThen(SimpleCaseModel.SimpleWhenCondition<T> whenCondition) {
+    private FragmentAndParameters renderThen(SimpleCaseWhenCondition<T> whenCondition) {
         return FragmentAndParameters.fromFragment("then " + whenCondition.thenValue()); //$NON-NLS-1$
     }
 

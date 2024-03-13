@@ -22,7 +22,7 @@ import java.util.stream.Stream;
 
 import org.mybatis.dynamic.sql.exception.InvalidSqlException;
 import org.mybatis.dynamic.sql.render.RenderingContext;
-import org.mybatis.dynamic.sql.select.SearchedCaseModel;
+import org.mybatis.dynamic.sql.select.caseexpression.SearchedCaseModel;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 import org.mybatis.dynamic.sql.util.FragmentCollector;
 import org.mybatis.dynamic.sql.util.Messages;

@@ -13,7 +13,7 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.mybatis.dynamic.sql.select;
+package org.mybatis.dynamic.sql.select.caseexpression;
 
 import static org.mybatis.dynamic.sql.util.StringUtilities.quoteStringForSQL;
 
@@ -28,7 +28,7 @@ import org.mybatis.dynamic.sql.VisitableCondition;
 
 public class SimpleCaseDSL<T> {
     private final BindableColumn<T> column;
-    private final List<SimpleCaseModel.SimpleWhenCondition<T>> whenConditions = new ArrayList<>();
+    private final List<SimpleCaseWhenCondition<T>> whenConditions = new ArrayList<>();
     private Object elseValue;
 
     private SimpleCaseDSL(BindableColumn<T> column) {
@@ -36,14 +36,23 @@ public class SimpleCaseDSL<T> {
     }
 
     @SafeVarargs
-    public final WhenFinisher when(VisitableCondition<T> condition,
-                                   VisitableCondition<T>... subsequentConditions) {
+    public final ConditionBasedWhenFinisher when(VisitableCondition<T> condition,
+                                                 VisitableCondition<T>... subsequentConditions) {
         return when(condition, Arrays.asList(subsequentConditions));
     }
 
-    public WhenFinisher when(VisitableCondition<T> condition,
-                             List<VisitableCondition<T>> subsequentConditions) {
-        return new WhenFinisher(condition, subsequentConditions);
+    public ConditionBasedWhenFinisher when(VisitableCondition<T> condition,
+                                           List<VisitableCondition<T>> subsequentConditions) {
+        return new ConditionBasedWhenFinisher(condition, subsequentConditions);
+    }
+
+    @SafeVarargs
+    public final BasicWhenFinisher when(T condition, T... subsequentConditions) {
+        return when(condition, Arrays.asList(subsequentConditions));
+    }
+
+    public BasicWhenFinisher when(T condition, List<T> subsequentConditions) {
+        return new BasicWhenFinisher(condition, subsequentConditions);
     }
 
     @SuppressWarnings("java:S100")
@@ -66,21 +75,40 @@ public class SimpleCaseDSL<T> {
                 .build();
     }
 
-    public class WhenFinisher {
+    public class ConditionBasedWhenFinisher {
         private final List<VisitableCondition<T>> conditions = new ArrayList<>();
 
-        private WhenFinisher(VisitableCondition<T> condition, List<VisitableCondition<T>> subsequentConditions) {
+        private ConditionBasedWhenFinisher(VisitableCondition<T> condition, List<VisitableCondition<T>> subsequentConditions) {
             conditions.add(condition);
             conditions.addAll(subsequentConditions);
         }
 
         public SimpleCaseDSL<T> then(String value) {
-            whenConditions.add(new SimpleCaseModel.SimpleWhenCondition<>(conditions, quoteStringForSQL(value)));
+            whenConditions.add(new ConditionBasedWhenCondition<>(conditions, quoteStringForSQL(value)));
             return SimpleCaseDSL.this;
         }
 
         public SimpleCaseDSL<T> then(Object value) {
-            whenConditions.add(new SimpleCaseModel.SimpleWhenCondition<>(conditions, value));
+            whenConditions.add(new ConditionBasedWhenCondition<>(conditions, value));
+            return SimpleCaseDSL.this;
+        }
+    }
+
+    public class BasicWhenFinisher {
+        private final List<T> values = new ArrayList<>();
+
+        private BasicWhenFinisher(T value, List<T> subsequentValues) {
+            values.add(value);
+            values.addAll(subsequentValues);
+        }
+
+        public SimpleCaseDSL<T> then(String value) {
+            whenConditions.add(new BasicWhenCondition<>(values, quoteStringForSQL(value)));
+            return SimpleCaseDSL.this;
+        }
+
+        public SimpleCaseDSL<T> then(Object value) {
+            whenConditions.add(new BasicWhenCondition<>(values, value));
             return SimpleCaseDSL.this;
         }
     }

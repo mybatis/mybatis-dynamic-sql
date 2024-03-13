@@ -26,8 +26,8 @@ import org.mybatis.dynamic.sql.SqlBuilder
 import org.mybatis.dynamic.sql.SqlColumn
 import org.mybatis.dynamic.sql.StringConstant
 import org.mybatis.dynamic.sql.VisitableCondition
-import org.mybatis.dynamic.sql.select.SearchedCaseModel
-import org.mybatis.dynamic.sql.select.SimpleCaseModel
+import org.mybatis.dynamic.sql.select.caseexpression.SearchedCaseModel
+import org.mybatis.dynamic.sql.select.caseexpression.SimpleCaseModel
 import org.mybatis.dynamic.sql.select.aggregate.Avg
 import org.mybatis.dynamic.sql.select.aggregate.Count
 import org.mybatis.dynamic.sql.select.aggregate.CountAll

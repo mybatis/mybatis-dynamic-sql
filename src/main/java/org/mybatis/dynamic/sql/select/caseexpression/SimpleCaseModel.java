@@ -13,7 +13,7 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.mybatis.dynamic.sql.select;
+package org.mybatis.dynamic.sql.select.caseexpression;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,28 +21,32 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import org.mybatis.dynamic.sql.AndOrCriteriaGroup;
 import org.mybatis.dynamic.sql.BasicColumn;
-import org.mybatis.dynamic.sql.SqlCriterion;
-import org.mybatis.dynamic.sql.common.AbstractBooleanExpressionModel;
+import org.mybatis.dynamic.sql.BindableColumn;
 import org.mybatis.dynamic.sql.render.RenderingContext;
-import org.mybatis.dynamic.sql.select.render.SearchedCaseRenderer;
+import org.mybatis.dynamic.sql.select.render.SimpleCaseRenderer;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 import org.mybatis.dynamic.sql.util.Validator;
 
-public class SearchedCaseModel implements BasicColumn {
-    private final List<SearchedWhenCondition> whenConditions;
+public class SimpleCaseModel<T> implements BasicColumn {
+    private final BindableColumn<T> column;
+    private final List<SimpleCaseWhenCondition<T>> whenConditions;
     private final Object elseValue;
     private final String alias;
 
-    private SearchedCaseModel(Builder builder) {
+    private SimpleCaseModel(Builder<T> builder) {
+        column = Objects.requireNonNull(builder.column);
         whenConditions = builder.whenConditions;
-        alias = builder.alias;
         elseValue = builder.elseValue;
+        alias = builder.alias;
         Validator.assertNotEmpty(whenConditions, "ERROR.40"); //$NON-NLS-1$
     }
 
-    public Stream<SearchedWhenCondition> whenConditions() {
+    public BindableColumn<T> column() {
+        return column;
+    }
+
+    public Stream<SimpleCaseWhenCondition<T>> whenConditions() {
         return whenConditions.stream();
     }
 
@@ -56,8 +60,10 @@ public class SearchedCaseModel implements BasicColumn {
     }
 
     @Override
-    public SearchedCaseModel as(String alias) {
-        return new Builder().withWhenConditions(whenConditions)
+    public SimpleCaseModel<T> as(String alias) {
+        return new Builder<T>()
+                .withColumn(column)
+                .withWhenConditions(whenConditions)
                 .withElseValue(elseValue)
                 .withAlias(alias)
                 .build();
@@ -65,46 +71,37 @@ public class SearchedCaseModel implements BasicColumn {
 
     @Override
     public FragmentAndParameters render(RenderingContext renderingContext) {
-        return new SearchedCaseRenderer(this, renderingContext).render();
+        return new SimpleCaseRenderer<>(this, renderingContext).render();
     }
 
-    public static class SearchedWhenCondition extends AbstractBooleanExpressionModel {
-
-        private final Object thenValue;
-
-        public Object thenValue() {
-            return thenValue;
-        }
-
-        public SearchedWhenCondition(SqlCriterion initialCriterion, List<AndOrCriteriaGroup> subCriteria,
-                                     Object thenValue) {
-            super(initialCriterion, subCriteria);
-            this.thenValue = Objects.requireNonNull(thenValue);
-        }
-    }
-
-    public static class Builder {
-        private final List<SearchedWhenCondition> whenConditions = new ArrayList<>();
+    public static class Builder<T> {
+        private BindableColumn<T> column;
+        private final List<SimpleCaseWhenCondition<T>> whenConditions = new ArrayList<>();
         private Object elseValue;
         private String alias;
 
-        public Builder withWhenConditions(List<SearchedWhenCondition> whenConditions) {
+        public Builder<T> withColumn(BindableColumn<T> column) {
+            this.column = column;
+            return this;
+        }
+
+        public Builder<T> withWhenConditions(List<SimpleCaseWhenCondition<T>> whenConditions) {
             this.whenConditions.addAll(whenConditions);
             return this;
         }
 
-        public Builder withElseValue(Object elseValue) {
+        public Builder<T> withElseValue(Object elseValue) {
             this.elseValue = elseValue;
             return this;
         }
 
-        public Builder withAlias(String alias) {
+        public Builder<T> withAlias(String alias) {
             this.alias = alias;
             return this;
         }
 
-        public SearchedCaseModel build() {
-            return new SearchedCaseModel(this);
+        public SimpleCaseModel<T> build() {
+            return new SimpleCaseModel<>(this);
         }
     }
 }

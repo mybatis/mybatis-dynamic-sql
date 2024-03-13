@@ -16,8 +16,10 @@
 package org.mybatis.dynamic.sql.util.kotlin.elements
 
 import org.mybatis.dynamic.sql.VisitableCondition
-import org.mybatis.dynamic.sql.select.SearchedCaseModel.SearchedWhenCondition
-import org.mybatis.dynamic.sql.select.SimpleCaseModel.SimpleWhenCondition
+import org.mybatis.dynamic.sql.select.caseexpression.BasicWhenCondition
+import org.mybatis.dynamic.sql.select.caseexpression.ConditionBasedWhenCondition
+import org.mybatis.dynamic.sql.select.caseexpression.SearchedCaseModel.SearchedWhenCondition
+import org.mybatis.dynamic.sql.select.caseexpression.SimpleCaseWhenCondition
 import org.mybatis.dynamic.sql.util.kotlin.GroupingCriteriaCollector
 import org.mybatis.dynamic.sql.util.kotlin.assertNull
 
@@ -65,10 +67,13 @@ class KSimpleCaseDSL<T : Any> {
             assertNull(field, "ERROR.42") //$NON-NLS-1$
             field = value
         }
-    internal val whenConditions = mutableListOf<SimpleWhenCondition<T>>()
+    internal val whenConditions = mutableListOf<SimpleCaseWhenCondition<T>>()
 
-    fun `when`(condition: VisitableCondition<T>, vararg conditions: VisitableCondition<T>) =
-        SimpleCaseThenGatherer(condition, conditions.asList())
+    fun `when`(firstCondition: VisitableCondition<T>, vararg subsequentConditions: VisitableCondition<T>) =
+        ConditionBasedThenGatherer(firstCondition, subsequentConditions.asList())
+
+    fun `when`(firstValue: T, vararg subsequentValues: T) =
+        BasicThenGatherer(firstValue, subsequentValues.asList())
 
     fun `else`(value: String) {
         this.elseValue = "'$value'"
@@ -78,24 +83,44 @@ class KSimpleCaseDSL<T : Any> {
         this.elseValue = value
     }
 
-    inner class SimpleCaseThenGatherer(val condition: VisitableCondition<T>,
-                                       val conditions: List<VisitableCondition<T>>) {
+    inner class ConditionBasedThenGatherer(private val firstCondition: VisitableCondition<T>,
+                                           private val subsequentConditions: List<VisitableCondition<T>>) {
         fun then(value: String) {
             val allConditions = buildList {
-                add(condition)
-                addAll(conditions)
+                add(firstCondition)
+                addAll(subsequentConditions)
             }
 
-            whenConditions.add(SimpleWhenCondition(allConditions, "'$value'"))
+            whenConditions.add(ConditionBasedWhenCondition(allConditions, "'$value'"))
         }
 
         fun then(value: Any) {
             val allConditions = buildList {
-                add(condition)
-                addAll(conditions)
+                add(firstCondition)
+                addAll(subsequentConditions)
             }
 
-            whenConditions.add(SimpleWhenCondition(allConditions, value))
+            whenConditions.add(ConditionBasedWhenCondition(allConditions, value))
+        }
+    }
+
+    inner class BasicThenGatherer(private val firstValue: T, private val subsequentValues: List<T>) {
+        fun then(value: String) {
+            val allValues = buildList {
+                add(firstValue)
+                addAll(subsequentValues)
+            }
+
+            whenConditions.add(BasicWhenCondition(allValues, "'$value'"))
+        }
+
+        fun then(value: Any) {
+            val allValues = buildList {
+                add(firstValue)
+                addAll(subsequentValues)
+            }
+
+            whenConditions.add(BasicWhenCondition(allValues, value))
         }
     }
 }

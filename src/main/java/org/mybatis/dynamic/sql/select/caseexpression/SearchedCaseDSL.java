@@ -13,7 +13,7 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.mybatis.dynamic.sql.select;
+package org.mybatis.dynamic.sql.select.caseexpression;
 
 import static org.mybatis.dynamic.sql.util.StringUtilities.quoteStringForSQL;
 
