@@ -25,6 +25,7 @@ import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.select.SimpleCaseModel;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 import org.mybatis.dynamic.sql.util.FragmentCollector;
+import org.mybatis.dynamic.sql.util.Validator;
 import org.mybatis.dynamic.sql.where.render.DefaultConditionVisitor;
 
 public class SimpleCaseRenderer<T> {
@@ -83,6 +84,7 @@ public class SimpleCaseRenderer<T> {
     }
 
     private FragmentAndParameters renderCondition(VisitableCondition<T> condition) {
+        Validator.assertTrue(condition.shouldRender(renderingContext), "ERROR.39"); //$NON-NLS-1$
         return condition.accept(conditionVisitor);
     }
 

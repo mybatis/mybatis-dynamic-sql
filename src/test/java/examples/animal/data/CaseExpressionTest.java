@@ -310,14 +310,40 @@ class CaseExpressionTest {
     }
 
     @Test
-    void testInvalidCase() {
+    void testInvalidSearchedCaseNoConditionsRender() {
         SelectModel model = select(animalName, searchedCase()
-                .when(animalName,isEqualToWhenPresent((String) null)).thenConstant("Fred").end())
+                .when(animalName, isEqualToWhenPresent((String) null)).thenConstant("Fred").end())
                 .from(animalData)
                 .build();
 
         assertThatExceptionOfType(InvalidSqlException.class)
                 .isThrownBy(() -> model.render(RenderingStrategies.MYBATIS3))
                 .withMessage(Messages.getString("ERROR.39"));
+    }
+
+    @Test
+    void testInvalidSimpleCaseNoConditionsRender() {
+        SelectModel model = select(simpleCase(animalName)
+                .when(isEqualToWhenPresent((String) null)).thenConstant("Fred").end())
+                .from(animalData)
+                .build();
+
+        assertThatExceptionOfType(InvalidSqlException.class)
+                .isThrownBy(() -> model.render(RenderingStrategies.MYBATIS3))
+                .withMessage(Messages.getString("ERROR.39"));
+    }
+
+    @Test
+    void testInvalidSearchedCaseNoWhenConditions() {
+        assertThatExceptionOfType(InvalidSqlException.class).isThrownBy(
+                () -> searchedCase().end()
+        ).withMessage(Messages.getString("ERROR.40"));
+    }
+
+    @Test
+    void testInvalidSimpleCaseNoWhenConditions() {
+        assertThatExceptionOfType(InvalidSqlException.class).isThrownBy(
+                () -> simpleCase(id).end()
+        ).withMessage(Messages.getString("ERROR.40"));
     }
 }

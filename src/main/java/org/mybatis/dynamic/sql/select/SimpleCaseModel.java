@@ -27,6 +27,7 @@ import org.mybatis.dynamic.sql.VisitableCondition;
 import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.select.render.SimpleCaseRenderer;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
+import org.mybatis.dynamic.sql.util.Validator;
 
 public class SimpleCaseModel<T> implements BasicColumn {
     private final BindableColumn<T> column;
@@ -39,6 +40,7 @@ public class SimpleCaseModel<T> implements BasicColumn {
         whenConditions = builder.whenConditions;
         elseValue = builder.elseValue;
         alias = builder.alias;
+        Validator.assertNotEmpty(whenConditions, "ERROR.40"); //$NON-NLS-1$
     }
 
     public BindableColumn<T> column() {
@@ -85,7 +87,7 @@ public class SimpleCaseModel<T> implements BasicColumn {
             return thenValue;
         }
 
-        protected SimpleWhenCondition(List<VisitableCondition<T>> conditions, String thenValue) {
+        public SimpleWhenCondition(List<VisitableCondition<T>> conditions, String thenValue) {
             this.conditions.addAll(conditions);
             this.thenValue = Objects.requireNonNull(thenValue);
         }

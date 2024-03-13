@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.mybatis.dynamic.sql.AndOrCriteriaGroup;
+import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.BindableColumn;
 import org.mybatis.dynamic.sql.ColumnAndConditionCriterion;
 import org.mybatis.dynamic.sql.CriteriaGroup;
@@ -63,12 +64,12 @@ public class SearchedCaseDSL {
         return new WhenDSL(sqlCriterion);
     }
 
-    public SearchedCaseDSL elseConstant(String elseValue) {
+    public SearchedCaseEnder elseConstant(String elseValue) {
         this.elseValue = elseValue;
-        return this;
+        return new SearchedCaseEnder();
     }
 
-    public SearchedCaseModel end() {
+    public BasicColumn end() {
         return new SearchedCaseModel.Builder()
                 .withElseValue(elseValue)
                 .withWhenConditions(whenConditions)
@@ -88,6 +89,12 @@ public class SearchedCaseDSL {
         @Override
         protected WhenDSL getThis() {
             return this;
+        }
+    }
+
+    public class SearchedCaseEnder {
+        public BasicColumn end() {
+            return SearchedCaseDSL.this.end();
         }
     }
 

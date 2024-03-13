@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
+import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.BindableColumn;
 import org.mybatis.dynamic.sql.VisitableCondition;
 
@@ -43,12 +44,12 @@ public class SimpleCaseDSL<T> {
         return new WhenFinisher(condition, subsequentConditions);
     }
 
-    public SimpleCaseDSL<T> elseConstant(String value) {
+    public SimpleCaseEnder elseConstant(String value) {
         elseValue = value;
-        return this;
+        return new SimpleCaseEnder();
     }
 
-    public SimpleCaseModel<T> end() {
+    public BasicColumn end() {
         return new SimpleCaseModel.Builder<T>()
                 .withColumn(column)
                 .withWhenConditions(whenConditions)
@@ -67,6 +68,12 @@ public class SimpleCaseDSL<T> {
         public SimpleCaseDSL<T> thenConstant(String value) {
             whenConditions.add(new SimpleCaseModel.SimpleWhenCondition<>(conditions, value));
             return SimpleCaseDSL.this;
+        }
+    }
+
+    public class SimpleCaseEnder {
+        public BasicColumn end() {
+            return SimpleCaseDSL.this.end();
         }
     }
 

@@ -28,6 +28,7 @@ import org.mybatis.dynamic.sql.common.AbstractBooleanExpressionModel;
 import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.select.render.SearchedCaseRenderer;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
+import org.mybatis.dynamic.sql.util.Validator;
 
 public class SearchedCaseModel implements BasicColumn {
     private final List<SearchedWhenCondition> whenConditions;
@@ -38,6 +39,7 @@ public class SearchedCaseModel implements BasicColumn {
         whenConditions = builder.whenConditions;
         alias = builder.alias;
         elseValue = builder.elseValue;
+        Validator.assertNotEmpty(whenConditions, "ERROR.40"); //$NON-NLS-1$
     }
 
     public Stream<SearchedWhenCondition> whenConditions() {
@@ -74,8 +76,8 @@ public class SearchedCaseModel implements BasicColumn {
             return thenValue;
         }
 
-        protected SearchedWhenCondition(SqlCriterion initialCriterion, List<AndOrCriteriaGroup> subCriteria,
-                                        String thenValue) {
+        public SearchedWhenCondition(SqlCriterion initialCriterion, List<AndOrCriteriaGroup> subCriteria,
+                                     String thenValue) {
             super(initialCriterion, subCriteria);
             this.thenValue = Objects.requireNonNull(thenValue);
         }
