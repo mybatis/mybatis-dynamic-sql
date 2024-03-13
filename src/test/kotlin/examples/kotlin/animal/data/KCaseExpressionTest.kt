@@ -43,7 +43,7 @@ class KCaseExpressionTest {
     }
 
     @Test
-    fun testSearchedCase() {
+    fun testSearchedCaseWithStrings() {
         newSession().use { session ->
             val mapper = session.getMapper(CommonSelectMapper::class.java)
 
@@ -52,14 +52,14 @@ class KCaseExpressionTest {
                     `when` {
                         animalName isEqualTo "Artic fox"
                         or { animalName isEqualTo "Red fox" }
-                        then("'Fox'")
+                        then("Fox")
                     }
                     `when` {
                         animalName isEqualTo "Little brown bat"
                         or { animalName isEqualTo "Big brown bat" }
-                        then("'Bat'")
+                        then("Bat")
                     }
-                    `else`("cast('Not a Fox or a bat' as varchar(25))")
+                    `else`("Not a Fox or a bat")
                 }.`as`("AnimalType")
             ) {
                 from(animalData, "a")
@@ -70,7 +70,7 @@ class KCaseExpressionTest {
             val expected = "select a.animal_name, case " +
                     "when a.animal_name = #{parameters.p1,jdbcType=VARCHAR} or a.animal_name = #{parameters.p2,jdbcType=VARCHAR} then 'Fox' " +
                     "when a.animal_name = #{parameters.p3,jdbcType=VARCHAR} or a.animal_name = #{parameters.p4,jdbcType=VARCHAR} then 'Bat' " +
-                    "else cast('Not a Fox or a bat' as varchar(25)) end as AnimalType " +
+                    "else 'Not a Fox or a bat' end as AnimalType " +
                     "from AnimalData a where a.id in (" +
                     "#{parameters.p5,jdbcType=INTEGER},#{parameters.p6,jdbcType=INTEGER}," +
                     "#{parameters.p7,jdbcType=INTEGER},#{parameters.p8,jdbcType=INTEGER},#{parameters.p9,jdbcType=INTEGER}," +
@@ -94,11 +94,11 @@ class KCaseExpressionTest {
             assertThat(records).hasSize(6)
             assertThat(records[0]).containsOnly(
                 entry("ANIMAL_NAME", "Little brown bat"),
-                entry("ANIMALTYPE", "Bat")
+                entry("ANIMALTYPE", "Bat               ")
             )
             assertThat(records[1]).containsOnly(
                 entry("ANIMAL_NAME", "Big brown bat"),
-                entry("ANIMALTYPE", "Bat")
+                entry("ANIMALTYPE", "Bat               ")
             )
             assertThat(records[2]).containsOnly(
                 entry("ANIMAL_NAME", "Cat"),
@@ -106,15 +106,92 @@ class KCaseExpressionTest {
             )
             assertThat(records[3]).containsOnly(
                 entry("ANIMAL_NAME", "Artic fox"),
-                entry("ANIMALTYPE", "Fox")
+                entry("ANIMALTYPE", "Fox               ")
             )
             assertThat(records[4]).containsOnly(
                 entry("ANIMAL_NAME", "Red fox"),
-                entry("ANIMALTYPE", "Fox")
+                entry("ANIMALTYPE", "Fox               ")
             )
             assertThat(records[5]).containsOnly(
                 entry("ANIMAL_NAME", "Raccoon"),
                 entry("ANIMALTYPE", "Not a Fox or a bat")
+            )
+        }
+    }
+
+    @Test
+    fun testSearchedCaseWithIntegers() {
+        newSession().use { session ->
+            val mapper = session.getMapper(CommonSelectMapper::class.java)
+
+            val selectStatement = select(animalName,
+                case {
+                    `when` {
+                        animalName isEqualTo "Artic fox"
+                        or { animalName isEqualTo "Red fox" }
+                        then(1)
+                    }
+                    `when` {
+                        animalName isEqualTo "Little brown bat"
+                        or { animalName isEqualTo "Big brown bat" }
+                        then(2)
+                    }
+                    `else`(3)
+                }.`as`("AnimalType")
+            ) {
+                from(animalData, "a")
+                where { id.isIn(2, 3, 31, 32, 38, 39) }
+                orderBy(id)
+            }
+
+            val expected = "select a.animal_name, case " +
+                    "when a.animal_name = #{parameters.p1,jdbcType=VARCHAR} or a.animal_name = #{parameters.p2,jdbcType=VARCHAR} then 1 " +
+                    "when a.animal_name = #{parameters.p3,jdbcType=VARCHAR} or a.animal_name = #{parameters.p4,jdbcType=VARCHAR} then 2 " +
+                    "else 3 end as AnimalType " +
+                    "from AnimalData a where a.id in (" +
+                    "#{parameters.p5,jdbcType=INTEGER},#{parameters.p6,jdbcType=INTEGER}," +
+                    "#{parameters.p7,jdbcType=INTEGER},#{parameters.p8,jdbcType=INTEGER},#{parameters.p9,jdbcType=INTEGER}," +
+                    "#{parameters.p10,jdbcType=INTEGER}) " +
+                    "order by id"
+            assertThat(selectStatement.selectStatement).isEqualTo(expected)
+            assertThat(selectStatement.parameters).containsOnly(
+                entry("p1", "Artic fox"),
+                entry("p2", "Red fox"),
+                entry("p3", "Little brown bat"),
+                entry("p4", "Big brown bat"),
+                entry("p5", 2),
+                entry("p6", 3),
+                entry("p7", 31),
+                entry("p8", 32),
+                entry("p9", 38),
+                entry("p10", 39)
+            )
+
+            val records = mapper.selectManyMappedRows(selectStatement)
+            assertThat(records).hasSize(6)
+            assertThat(records[0]).containsOnly(
+                entry("ANIMAL_NAME", "Little brown bat"),
+                entry("ANIMALTYPE", 2)
+            )
+            assertThat(records[1]).containsOnly(
+                entry("ANIMAL_NAME", "Big brown bat"),
+                entry("ANIMALTYPE", 2)
+            )
+            assertThat(records[2]).containsOnly(
+                entry("ANIMAL_NAME", "Cat"),
+                entry("ANIMALTYPE", 3)
+            )
+            assertThat(records[3]).containsOnly(
+                entry("ANIMAL_NAME", "Artic fox"),
+                entry("ANIMALTYPE", 1)
+            )
+            assertThat(records[4]).containsOnly(
+                entry("ANIMAL_NAME", "Red fox"),
+                entry("ANIMALTYPE",  1)
+            )
+            assertThat(records[5]).containsOnly(
+                entry("ANIMAL_NAME", "Raccoon"),
+                entry("ANIMALTYPE", 3)
             )
         }
     }
@@ -130,12 +207,12 @@ class KCaseExpressionTest {
                     `when` {
                         animalName isEqualTo "Artic fox"
                         or { animalName isEqualTo "Red fox" }
-                        then("'Fox'")
+                        then("Fox")
                     }
                     `when` {
                         animalName isEqualTo "Little brown bat"
                         or { animalName isEqualTo "Big brown bat" }
-                        then("'Bat'")
+                        then("Bat")
                     }
                 }.`as`("AnimalType")
             ) {
@@ -203,12 +280,12 @@ class KCaseExpressionTest {
                     `when` {
                         animalName isEqualTo "Artic fox"
                         or { animalName isEqualTo "Red fox" }
-                        then("'Fox'")
+                        then("Fox")
                     }
                     `when` {
                         animalName isEqualTo "Little brown bat"
                         or { animalName isEqualTo "Big brown bat" }
-                        then("'Bat'")
+                        then("Bat")
                     }
                     `when` {
                         group {
@@ -216,9 +293,9 @@ class KCaseExpressionTest {
                             and { id isEqualTo 31 }
                         }
                         or { id isEqualTo 39 }
-                        then("'Fred'")
+                        then("Fred")
                     }
-                    `else`("cast('Not a Fox or a bat' as varchar(25))")
+                    `else`("Not a Fox or a bat")
                 }.`as`("AnimalType")
             ) {
                 from(animalData, "a")
@@ -230,7 +307,7 @@ class KCaseExpressionTest {
                     "when a.animal_name = #{parameters.p1,jdbcType=VARCHAR} or a.animal_name = #{parameters.p2,jdbcType=VARCHAR} then 'Fox' " +
                     "when a.animal_name = #{parameters.p3,jdbcType=VARCHAR} or a.animal_name = #{parameters.p4,jdbcType=VARCHAR} then 'Bat' " +
                     "when (a.animal_name = #{parameters.p5,jdbcType=VARCHAR} and a.id = #{parameters.p6,jdbcType=INTEGER}) or a.id = #{parameters.p7,jdbcType=INTEGER} then 'Fred' " +
-                    "else cast('Not a Fox or a bat' as varchar(25)) end as AnimalType " +
+                    "else 'Not a Fox or a bat' end as AnimalType " +
                     "from AnimalData a where a.id in (" +
                     "#{parameters.p8,jdbcType=INTEGER},#{parameters.p9,jdbcType=INTEGER}," +
                     "#{parameters.p10,jdbcType=INTEGER},#{parameters.p11,jdbcType=INTEGER},#{parameters.p12,jdbcType=INTEGER}," +
@@ -259,11 +336,11 @@ class KCaseExpressionTest {
             assertThat(records).hasSize(7)
             assertThat(records[0]).containsOnly(
                 entry("ANIMAL_NAME", "Little brown bat"),
-                entry("ANIMALTYPE", "Bat")
+                entry("ANIMALTYPE", "Bat               ")
             )
             assertThat(records[1]).containsOnly(
                 entry("ANIMAL_NAME", "Big brown bat"),
-                entry("ANIMALTYPE", "Bat")
+                entry("ANIMALTYPE", "Bat               ")
             )
             assertThat(records[2]).containsOnly(
                 entry("ANIMAL_NAME", "Mouse"),
@@ -271,33 +348,33 @@ class KCaseExpressionTest {
             )
             assertThat(records[3]).containsOnly(
                 entry("ANIMAL_NAME", "Cat"),
-                entry("ANIMALTYPE", "Fred")
+                entry("ANIMALTYPE", "Fred              ")
             )
             assertThat(records[4]).containsOnly(
                 entry("ANIMAL_NAME", "Artic fox"),
-                entry("ANIMALTYPE", "Fox")
+                entry("ANIMALTYPE", "Fox               ")
             )
             assertThat(records[5]).containsOnly(
                 entry("ANIMAL_NAME", "Red fox"),
-                entry("ANIMALTYPE", "Fox")
+                entry("ANIMALTYPE", "Fox               ")
             )
             assertThat(records[6]).containsOnly(
                 entry("ANIMAL_NAME", "Raccoon"),
-                entry("ANIMALTYPE", "Fred")
+                entry("ANIMALTYPE", "Fred              ")
             )
         }
     }
 
     @Test
-    fun testSimpleCase() {
+    fun testSimpleCaseWithStrings() {
         newSession().use { session ->
             val mapper = session.getMapper(CommonSelectMapper::class.java)
 
             val selectStatement = select(
                 animalName,
                 case(animalName) {
-                    `when` (isEqualTo("Artic fox"), isEqualTo("Red fox")).then("'yes'")
-                    `else`("cast('no' as VARCHAR(3))")
+                    `when` (isEqualTo("Artic fox"), isEqualTo("Red fox")).then("yes")
+                    `else`("no")
                 }.`as`("IsAFox")
             ) {
                 from(animalData)
@@ -306,7 +383,7 @@ class KCaseExpressionTest {
             }
 
             val expected = "select animal_name, " +
-                    "case animal_name when = #{parameters.p1,jdbcType=VARCHAR}, = #{parameters.p2,jdbcType=VARCHAR} then 'yes' else cast('no' as VARCHAR(3)) end " +
+                    "case animal_name when = #{parameters.p1,jdbcType=VARCHAR}, = #{parameters.p2,jdbcType=VARCHAR} then 'yes' else 'no' end " +
                     "as IsAFox from AnimalData where id in " +
                     "(#{parameters.p3,jdbcType=INTEGER},#{parameters.p4,jdbcType=INTEGER},#{parameters.p5,jdbcType=INTEGER},#{parameters.p6,jdbcType=INTEGER}) " +
                     "order by id"
@@ -325,7 +402,7 @@ class KCaseExpressionTest {
             assertThat(records).hasSize(4)
             assertThat(records[0]).containsOnly(
                 entry("ANIMAL_NAME", "Cat"),
-                entry("ISAFOX", "no")
+                entry("ISAFOX", "no ")
             )
             assertThat(records[1]).containsOnly(
                 entry("ANIMAL_NAME", "Artic fox"),
@@ -337,7 +414,61 @@ class KCaseExpressionTest {
             )
             assertThat(records[3]).containsOnly(
                 entry("ANIMAL_NAME", "Raccoon"),
-                entry("ISAFOX", "no")
+                entry("ISAFOX", "no ")
+            )
+        }
+    }
+
+    @Test
+    fun testSimpleCaseWithBooleans() {
+        newSession().use { session ->
+            val mapper = session.getMapper(CommonSelectMapper::class.java)
+
+            val selectStatement = select(
+                animalName,
+                case(animalName) {
+                    `when` (isEqualTo("Artic fox"), isEqualTo("Red fox")).then(true)
+                    `else`(false)
+                }.`as`("IsAFox")
+            ) {
+                from(animalData)
+                where { id.isIn(31, 32, 38, 39) }
+                orderBy(id)
+            }
+
+            val expected = "select animal_name, " +
+                    "case animal_name when = #{parameters.p1,jdbcType=VARCHAR}, = #{parameters.p2,jdbcType=VARCHAR} then true else false end " +
+                    "as IsAFox from AnimalData where id in " +
+                    "(#{parameters.p3,jdbcType=INTEGER},#{parameters.p4,jdbcType=INTEGER},#{parameters.p5,jdbcType=INTEGER},#{parameters.p6,jdbcType=INTEGER}) " +
+                    "order by id"
+            assertThat(selectStatement.selectStatement).isEqualTo(expected)
+            assertThat(selectStatement.parameters)
+                .containsOnly(
+                    entry("p1", "Artic fox"),
+                    entry("p2", "Red fox"),
+                    entry("p3", 31),
+                    entry("p4", 32),
+                    entry("p5", 38),
+                    entry("p6", 39)
+                )
+
+            val records = mapper.selectManyMappedRows(selectStatement)
+            assertThat(records).hasSize(4)
+            assertThat(records[0]).containsOnly(
+                entry("ANIMAL_NAME", "Cat"),
+                entry("ISAFOX", false)
+            )
+            assertThat(records[1]).containsOnly(
+                entry("ANIMAL_NAME", "Artic fox"),
+                entry("ISAFOX", true)
+            )
+            assertThat(records[2]).containsOnly(
+                entry("ANIMAL_NAME", "Red fox"),
+                entry("ISAFOX", true)
+            )
+            assertThat(records[3]).containsOnly(
+                entry("ANIMAL_NAME", "Raccoon"),
+                entry("ISAFOX", false)
             )
         }
     }
@@ -350,7 +481,7 @@ class KCaseExpressionTest {
             val selectStatement = select(
                 animalName,
                 case(animalName) {
-                    `when`(isEqualTo("Artic fox"), isEqualTo("Red fox")).then("'yes'")
+                    `when`(isEqualTo("Artic fox"), isEqualTo("Red fox")).then("yes")
                 }.`as`("IsAFox")
             ) {
                 from(animalData)
@@ -430,14 +561,14 @@ class KCaseExpressionTest {
     @Test
     fun testInvalidSearchedMissingWhen() {
         assertThatExceptionOfType(InvalidSqlException::class.java).isThrownBy {
-            select(case { }){ from(animalData) }
+            select(case { `else`("Fred") }){ from(animalData) }
         }.withMessage(Messages.getString("ERROR.40"))
     }
 
     @Test
     fun testInvalidSimpleMissingWhen() {
         assertThatExceptionOfType(InvalidSqlException::class.java).isThrownBy {
-            select(case (id) { }){ from (animalData) }
+            select(case (id) { `else`("Fred") }){ from (animalData) }
         }.withMessage(Messages.getString("ERROR.40"))
     }
 }

@@ -15,6 +15,8 @@
  */
 package org.mybatis.dynamic.sql.select;
 
+import static org.mybatis.dynamic.sql.util.StringUtilities.quoteStringForSQL;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -27,7 +29,7 @@ import org.mybatis.dynamic.sql.VisitableCondition;
 public class SimpleCaseDSL<T> {
     private final BindableColumn<T> column;
     private final List<SimpleCaseModel.SimpleWhenCondition<T>> whenConditions = new ArrayList<>();
-    private String elseValue;
+    private Object elseValue;
 
     private SimpleCaseDSL(BindableColumn<T> column) {
         this.column = Objects.requireNonNull(column);
@@ -44,7 +46,14 @@ public class SimpleCaseDSL<T> {
         return new WhenFinisher(condition, subsequentConditions);
     }
 
+    @SuppressWarnings("java:S100")
     public SimpleCaseEnder else_(String value) {
+        elseValue = quoteStringForSQL(value);
+        return new SimpleCaseEnder();
+    }
+
+    @SuppressWarnings("java:S100")
+    public SimpleCaseEnder else_(Object value) {
         elseValue = value;
         return new SimpleCaseEnder();
     }
@@ -66,6 +75,11 @@ public class SimpleCaseDSL<T> {
         }
 
         public SimpleCaseDSL<T> then(String value) {
+            whenConditions.add(new SimpleCaseModel.SimpleWhenCondition<>(conditions, quoteStringForSQL(value)));
+            return SimpleCaseDSL.this;
+        }
+
+        public SimpleCaseDSL<T> then(Object value) {
             whenConditions.add(new SimpleCaseModel.SimpleWhenCondition<>(conditions, value));
             return SimpleCaseDSL.this;
         }

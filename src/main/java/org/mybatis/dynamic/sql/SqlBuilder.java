@@ -428,11 +428,13 @@ public interface SqlBuilder {
     }
 
     // case expressions
-    static <T> SimpleCaseDSL<T> simpleCase(BindableColumn<T> column) {
+    @SuppressWarnings("java:S100")
+    static <T> SimpleCaseDSL<T> case_(BindableColumn<T> column) {
         return SimpleCaseDSL.simpleCase(column);
     }
 
-    static SearchedCaseDSL searchedCase() {
+    @SuppressWarnings("java:S100")
+    static SearchedCaseDSL case_() {
         return SearchedCaseDSL.searchedCase();
     }
 

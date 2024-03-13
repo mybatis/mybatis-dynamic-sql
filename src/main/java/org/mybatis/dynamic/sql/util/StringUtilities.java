@@ -52,4 +52,8 @@ public interface StringUtilities {
 
         return sb.toString();
     }
+
+    static String quoteStringForSQL(String value) {
+        return "'" + value + "'"; //$NON-NLS-1$ //$NON-NLS-2$
+    }
 }

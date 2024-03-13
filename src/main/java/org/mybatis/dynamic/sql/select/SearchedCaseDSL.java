@@ -15,6 +15,8 @@
  */
 package org.mybatis.dynamic.sql.select;
 
+import static org.mybatis.dynamic.sql.util.StringUtilities.quoteStringForSQL;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -30,7 +32,7 @@ import org.mybatis.dynamic.sql.common.AbstractBooleanExpressionDSL;
 
 public class SearchedCaseDSL {
     private final List<SearchedCaseModel.SearchedWhenCondition> whenConditions = new ArrayList<>();
-    private String elseValue;
+    private Object elseValue;
 
     public <T> WhenDSL when(BindableColumn<T> column, VisitableCondition<T> condition,
                             AndOrCriteriaGroup... subCriteria) {
@@ -64,8 +66,15 @@ public class SearchedCaseDSL {
         return new WhenDSL(sqlCriterion);
     }
 
-    public SearchedCaseEnder else_(String elseValue) {
-        this.elseValue = elseValue;
+    @SuppressWarnings("java:S100")
+    public SearchedCaseEnder else_(String value) {
+        this.elseValue = quoteStringForSQL(value);
+        return new SearchedCaseEnder();
+    }
+
+    @SuppressWarnings("java:S100")
+    public SearchedCaseEnder else_(Object value) {
+        this.elseValue = value;
         return new SearchedCaseEnder();
     }
 
@@ -82,6 +91,12 @@ public class SearchedCaseDSL {
         }
 
         public SearchedCaseDSL then(String value) {
+            whenConditions.add(new SearchedCaseModel.SearchedWhenCondition(getInitialCriterion(), subCriteria,
+                    quoteStringForSQL(value)));
+            return SearchedCaseDSL.this;
+        }
+
+        public SearchedCaseDSL then(Object value) {
             whenConditions.add(new SearchedCaseModel.SearchedWhenCondition(getInitialCriterion(), subCriteria, value));
             return SearchedCaseDSL.this;
         }

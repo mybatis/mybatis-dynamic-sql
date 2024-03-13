@@ -32,7 +32,7 @@ import org.mybatis.dynamic.sql.util.Validator;
 public class SimpleCaseModel<T> implements BasicColumn {
     private final BindableColumn<T> column;
     private final List<SimpleWhenCondition<T>> whenConditions;
-    private final String elseValue;
+    private final Object elseValue;
     private final String alias;
 
     private SimpleCaseModel(Builder<T> builder) {
@@ -77,7 +77,7 @@ public class SimpleCaseModel<T> implements BasicColumn {
 
     public static class SimpleWhenCondition<T> {
         private final List<VisitableCondition<T>> conditions = new ArrayList<>();
-        private final String thenValue;
+        private final Object thenValue;
 
         public Stream<VisitableCondition<T>> conditions() {
             return conditions.stream();
@@ -87,7 +87,7 @@ public class SimpleCaseModel<T> implements BasicColumn {
             return thenValue;
         }
 
-        public SimpleWhenCondition(List<VisitableCondition<T>> conditions, String thenValue) {
+        public SimpleWhenCondition(List<VisitableCondition<T>> conditions, Object thenValue) {
             this.conditions.addAll(conditions);
             this.thenValue = Objects.requireNonNull(thenValue);
         }
@@ -96,7 +96,7 @@ public class SimpleCaseModel<T> implements BasicColumn {
     public static class Builder<T> {
         private BindableColumn<T> column;
         private final List<SimpleWhenCondition<T>> whenConditions = new ArrayList<>();
-        private String elseValue;
+        private Object elseValue;
         private String alias;
 
         public Builder<T> withColumn(BindableColumn<T> column) {
@@ -109,7 +109,7 @@ public class SimpleCaseModel<T> implements BasicColumn {
             return this;
         }
 
-        public Builder<T> withElseValue(String elseValue) {
+        public Builder<T> withElseValue(Object elseValue) {
             this.elseValue = elseValue;
             return this;
         }

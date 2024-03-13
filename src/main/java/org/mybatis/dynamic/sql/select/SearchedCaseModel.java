@@ -32,7 +32,7 @@ import org.mybatis.dynamic.sql.util.Validator;
 
 public class SearchedCaseModel implements BasicColumn {
     private final List<SearchedWhenCondition> whenConditions;
-    private final String elseValue;
+    private final Object elseValue;
     private final String alias;
 
     private SearchedCaseModel(Builder builder) {
@@ -46,7 +46,7 @@ public class SearchedCaseModel implements BasicColumn {
         return whenConditions.stream();
     }
 
-    public Optional<String> elseValue() {
+    public Optional<Object> elseValue() {
         return Optional.ofNullable(elseValue);
     }
 
@@ -70,14 +70,14 @@ public class SearchedCaseModel implements BasicColumn {
 
     public static class SearchedWhenCondition extends AbstractBooleanExpressionModel {
 
-        private final String thenValue;
+        private final Object thenValue;
 
-        public String thenValue() {
+        public Object thenValue() {
             return thenValue;
         }
 
         public SearchedWhenCondition(SqlCriterion initialCriterion, List<AndOrCriteriaGroup> subCriteria,
-                                     String thenValue) {
+                                     Object thenValue) {
             super(initialCriterion, subCriteria);
             this.thenValue = Objects.requireNonNull(thenValue);
         }
@@ -85,7 +85,7 @@ public class SearchedCaseModel implements BasicColumn {
 
     public static class Builder {
         private final List<SearchedWhenCondition> whenConditions = new ArrayList<>();
-        private String elseValue;
+        private Object elseValue;
         private String alias;
 
         public Builder withWhenConditions(List<SearchedWhenCondition> whenConditions) {
@@ -93,7 +93,7 @@ public class SearchedCaseModel implements BasicColumn {
             return this;
         }
 
-        public Builder withElseValue(String elseValue) {
+        public Builder withElseValue(Object elseValue) {
             this.elseValue = elseValue;
             return this;
         }

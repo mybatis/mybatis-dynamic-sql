@@ -22,7 +22,7 @@ import org.mybatis.dynamic.sql.util.kotlin.GroupingCriteriaCollector
 import org.mybatis.dynamic.sql.util.kotlin.assertNull
 
 class KSearchedCaseDSL {
-    internal var elseValue: String? = null
+    internal var elseValue: Any? = null
         private set(value) {
             assertNull(field, "ERROR.42") //$NON-NLS-1$
             field = value
@@ -35,24 +35,32 @@ class KSearchedCaseDSL {
     }
 
     fun `else`(value: String) {
+        this.elseValue = "'$value'"
+    }
+
+    fun `else`(value: Any) {
         this.elseValue = value
     }
 }
 
 class SearchedCaseCriteriaCollector : GroupingCriteriaCollector() {
-    internal var thenValue: String? = null
+    internal var thenValue: Any? = null
         private set(value) {
             assertNull(field, "ERROR.41") //$NON-NLS-1$
             field = value
         }
 
     fun then(value: String) {
+        this.thenValue = "'$value'"
+    }
+
+    fun then(value: Any) {
         this.thenValue = value
     }
 }
 
 class KSimpleCaseDSL<T : Any> {
-    internal var elseValue: String? = null
+    internal var elseValue: Any? = null
         private set(value) {
             assertNull(field, "ERROR.42") //$NON-NLS-1$
             field = value
@@ -63,12 +71,25 @@ class KSimpleCaseDSL<T : Any> {
         SimpleCaseThenGatherer(condition, conditions.asList())
 
     fun `else`(value: String) {
+        this.elseValue = "'$value'"
+    }
+
+    fun `else`(value: Any) {
         this.elseValue = value
     }
 
     inner class SimpleCaseThenGatherer(val condition: VisitableCondition<T>,
                                        val conditions: List<VisitableCondition<T>>) {
         fun then(value: String) {
+            val allConditions = buildList {
+                add(condition)
+                addAll(conditions)
+            }
+
+            whenConditions.add(SimpleWhenCondition(allConditions, "'$value'"))
+        }
+
+        fun then(value: Any) {
             val allConditions = buildList {
                 add(condition)
                 addAll(conditions)

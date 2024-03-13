@@ -29,9 +29,8 @@ import static org.mybatis.dynamic.sql.SqlBuilder.isEqualToWhenPresent;
 import static org.mybatis.dynamic.sql.SqlBuilder.isIn;
 import static org.mybatis.dynamic.sql.SqlBuilder.isLessThan;
 import static org.mybatis.dynamic.sql.SqlBuilder.or;
-import static org.mybatis.dynamic.sql.SqlBuilder.searchedCase;
+import static org.mybatis.dynamic.sql.SqlBuilder.case_;
 import static org.mybatis.dynamic.sql.SqlBuilder.select;
-import static org.mybatis.dynamic.sql.SqlBuilder.simpleCase;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -50,9 +49,12 @@ import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mybatis.dynamic.sql.SqlBuilder;
 import org.mybatis.dynamic.sql.exception.InvalidSqlException;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
+import org.mybatis.dynamic.sql.select.SearchedCaseDSL;
 import org.mybatis.dynamic.sql.select.SelectModel;
+import org.mybatis.dynamic.sql.select.SimpleCaseDSL;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.util.Messages;
 import org.mybatis.dynamic.sql.util.mybatis3.CommonSelectMapper;
@@ -82,14 +84,14 @@ class CaseExpressionTest {
     }
 
     @Test
-    void testSearchedCase() {
+    void testSearchedCaseWithStrings() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             CommonSelectMapper mapper = sqlSession.getMapper(CommonSelectMapper.class);
 
-            SelectStatementProvider selectStatement = select(animalName, searchedCase()
-                    .when(animalName, isEqualTo("Artic fox")).or(animalName, isEqualTo("Red fox")).then("'Fox'")
-                    .when(animalName, isEqualTo("Little brown bat")).or(animalName, isEqualTo("Big brown bat")).then("'Bat'")
-                    .else_("cast('Not a Fox or a bat' as varchar(25))").end().as("AnimalType"))
+            SelectStatementProvider selectStatement = select(animalName, case_()
+                    .when(animalName, isEqualTo("Artic fox")).or(animalName, isEqualTo("Red fox")).then("Fox")
+                    .when(animalName, isEqualTo("Little brown bat")).or(animalName, isEqualTo("Big brown bat")).then("Bat")
+                    .else_("Not a Fox or a bat").end().as("AnimalType"))
                     .from(animalData, "a")
                     .where(id, isIn(2, 3, 31, 32, 38, 39))
                     .orderBy(id)
@@ -99,7 +101,7 @@ class CaseExpressionTest {
             String expected = "select a.animal_name, case " +
                     "when a.animal_name = #{parameters.p1,jdbcType=VARCHAR} or a.animal_name = #{parameters.p2,jdbcType=VARCHAR} then 'Fox' " +
                     "when a.animal_name = #{parameters.p3,jdbcType=VARCHAR} or a.animal_name = #{parameters.p4,jdbcType=VARCHAR} then 'Bat' " +
-                    "else cast('Not a Fox or a bat' as varchar(25)) end as AnimalType " +
+                    "else 'Not a Fox or a bat' end as AnimalType " +
                     "from AnimalData a where a.id in (" +
                     "#{parameters.p5,jdbcType=INTEGER},#{parameters.p6,jdbcType=INTEGER}," +
                     "#{parameters.p7,jdbcType=INTEGER},#{parameters.p8,jdbcType=INTEGER},#{parameters.p9,jdbcType=INTEGER}," +
@@ -121,12 +123,61 @@ class CaseExpressionTest {
 
             List<Map<String, Object>> records = mapper.selectManyMappedRows(selectStatement);
             assertThat(records).hasSize(6);
-            assertThat(records.get(0)).containsOnly(entry("ANIMAL_NAME", "Little brown bat"), entry("ANIMALTYPE", "Bat"));
-            assertThat(records.get(1)).containsOnly(entry("ANIMAL_NAME", "Big brown bat"), entry("ANIMALTYPE", "Bat"));
+            assertThat(records.get(0)).containsOnly(entry("ANIMAL_NAME", "Little brown bat"), entry("ANIMALTYPE", "Bat               "));
+            assertThat(records.get(1)).containsOnly(entry("ANIMAL_NAME", "Big brown bat"), entry("ANIMALTYPE", "Bat               "));
             assertThat(records.get(2)).containsOnly(entry("ANIMAL_NAME", "Cat"), entry("ANIMALTYPE", "Not a Fox or a bat"));
-            assertThat(records.get(3)).containsOnly(entry("ANIMAL_NAME", "Artic fox"), entry("ANIMALTYPE", "Fox"));
-            assertThat(records.get(4)).containsOnly(entry("ANIMAL_NAME", "Red fox"), entry("ANIMALTYPE", "Fox"));
+            assertThat(records.get(3)).containsOnly(entry("ANIMAL_NAME", "Artic fox"), entry("ANIMALTYPE", "Fox               "));
+            assertThat(records.get(4)).containsOnly(entry("ANIMAL_NAME", "Red fox"), entry("ANIMALTYPE", "Fox               "));
             assertThat(records.get(5)).containsOnly(entry("ANIMAL_NAME", "Raccoon"), entry("ANIMALTYPE", "Not a Fox or a bat"));
+        }
+    }
+
+    @Test
+    void testSearchedCaseWithIntegers() {
+        try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
+            CommonSelectMapper mapper = sqlSession.getMapper(CommonSelectMapper.class);
+
+            SelectStatementProvider selectStatement = select(animalName, case_()
+                    .when(animalName, isEqualTo("Artic fox")).or(animalName, isEqualTo("Red fox")).then(1)
+                    .when(animalName, isEqualTo("Little brown bat")).or(animalName, isEqualTo("Big brown bat")).then(2)
+                    .else_(3).end().as("AnimalType"))
+                    .from(animalData, "a")
+                    .where(id, isIn(2, 3, 31, 32, 38, 39))
+                    .orderBy(id)
+                    .build()
+                    .render(RenderingStrategies.MYBATIS3);
+
+            String expected = "select a.animal_name, case " +
+                    "when a.animal_name = #{parameters.p1,jdbcType=VARCHAR} or a.animal_name = #{parameters.p2,jdbcType=VARCHAR} then 1 " +
+                    "when a.animal_name = #{parameters.p3,jdbcType=VARCHAR} or a.animal_name = #{parameters.p4,jdbcType=VARCHAR} then 2 " +
+                    "else 3 end as AnimalType " +
+                    "from AnimalData a where a.id in (" +
+                    "#{parameters.p5,jdbcType=INTEGER},#{parameters.p6,jdbcType=INTEGER}," +
+                    "#{parameters.p7,jdbcType=INTEGER},#{parameters.p8,jdbcType=INTEGER},#{parameters.p9,jdbcType=INTEGER}," +
+                    "#{parameters.p10,jdbcType=INTEGER}) " +
+                    "order by id";
+            assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
+            assertThat(selectStatement.getParameters()).containsOnly(
+                    entry("p1", "Artic fox"),
+                    entry("p2", "Red fox"),
+                    entry("p3", "Little brown bat"),
+                    entry("p4", "Big brown bat"),
+                    entry("p5", 2),
+                    entry("p6", 3),
+                    entry("p7", 31),
+                    entry("p8", 32),
+                    entry("p9", 38),
+                    entry("p10", 39)
+            );
+
+            List<Map<String, Object>> records = mapper.selectManyMappedRows(selectStatement);
+            assertThat(records).hasSize(6);
+            assertThat(records.get(0)).containsOnly(entry("ANIMAL_NAME", "Little brown bat"), entry("ANIMALTYPE", 2));
+            assertThat(records.get(1)).containsOnly(entry("ANIMAL_NAME", "Big brown bat"), entry("ANIMALTYPE", 2));
+            assertThat(records.get(2)).containsOnly(entry("ANIMAL_NAME", "Cat"), entry("ANIMALTYPE", 3));
+            assertThat(records.get(3)).containsOnly(entry("ANIMAL_NAME", "Artic fox"), entry("ANIMALTYPE", 1));
+            assertThat(records.get(4)).containsOnly(entry("ANIMAL_NAME", "Red fox"), entry("ANIMALTYPE", 1));
+            assertThat(records.get(5)).containsOnly(entry("ANIMAL_NAME", "Raccoon"), entry("ANIMALTYPE", 3));
         }
     }
 
@@ -135,9 +186,9 @@ class CaseExpressionTest {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             CommonSelectMapper mapper = sqlSession.getMapper(CommonSelectMapper.class);
 
-            SelectStatementProvider selectStatement = select(animalName, searchedCase()
-                    .when(animalName, isEqualTo("Artic fox")).or(animalName, isEqualTo("Red fox")).then("'Fox'")
-                    .when(animalName, isEqualTo("Little brown bat")).or(animalName, isEqualTo("Big brown bat")).then("'Bat'")
+            SelectStatementProvider selectStatement = select(animalName, case_()
+                    .when(animalName, isEqualTo("Artic fox")).or(animalName, isEqualTo("Red fox")).then("Fox")
+                    .when(animalName, isEqualTo("Little brown bat")).or(animalName, isEqualTo("Big brown bat")).then("Bat")
                     .end().as("AnimalType"))
                     .from(animalData, "a")
                     .where(id, isIn(2, 3, 31, 32, 38, 39))
@@ -184,11 +235,11 @@ class CaseExpressionTest {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             CommonSelectMapper mapper = sqlSession.getMapper(CommonSelectMapper.class);
 
-            SelectStatementProvider selectStatement = select(animalName, searchedCase()
-                    .when(animalName, isEqualTo("Artic fox")).or(animalName, isEqualTo("Red fox")).then("'Fox'")
-                    .when(animalName, isEqualTo("Little brown bat")).or(animalName, isEqualTo("Big brown bat")).then("'Bat'")
-                    .when(group(animalName, isEqualTo("Cat"), and(id, isEqualTo(31))), or(id, isEqualTo(39))).then("'Fred'")
-                    .else_("cast('Not a Fox or a bat' as varchar(25))").end().as("AnimalType"))
+            SelectStatementProvider selectStatement = select(animalName, case_()
+                    .when(animalName, isEqualTo("Artic fox")).or(animalName, isEqualTo("Red fox")).then("Fox")
+                    .when(animalName, isEqualTo("Little brown bat")).or(animalName, isEqualTo("Big brown bat")).then("Bat")
+                    .when(group(animalName, isEqualTo("Cat"), and(id, isEqualTo(31))), or(id, isEqualTo(39))).then("Fred")
+                    .else_("Not a Fox or a bat").end().as("AnimalType"))
                     .from(animalData, "a")
                     .where(id, isIn(2, 3, 4, 31, 32, 38, 39))
                     .orderBy(id)
@@ -199,7 +250,7 @@ class CaseExpressionTest {
                     "when a.animal_name = #{parameters.p1,jdbcType=VARCHAR} or a.animal_name = #{parameters.p2,jdbcType=VARCHAR} then 'Fox' " +
                     "when a.animal_name = #{parameters.p3,jdbcType=VARCHAR} or a.animal_name = #{parameters.p4,jdbcType=VARCHAR} then 'Bat' " +
                     "when (a.animal_name = #{parameters.p5,jdbcType=VARCHAR} and a.id = #{parameters.p6,jdbcType=INTEGER}) or a.id = #{parameters.p7,jdbcType=INTEGER} then 'Fred' " +
-                    "else cast('Not a Fox or a bat' as varchar(25)) end as AnimalType " +
+                    "else 'Not a Fox or a bat' end as AnimalType " +
                     "from AnimalData a where a.id in (" +
                     "#{parameters.p8,jdbcType=INTEGER},#{parameters.p9,jdbcType=INTEGER}," +
                     "#{parameters.p10,jdbcType=INTEGER},#{parameters.p11,jdbcType=INTEGER},#{parameters.p12,jdbcType=INTEGER}," +
@@ -225,13 +276,13 @@ class CaseExpressionTest {
 
             List<Map<String, Object>> records = mapper.selectManyMappedRows(selectStatement);
             assertThat(records).hasSize(7);
-            assertThat(records.get(0)).containsOnly(entry("ANIMAL_NAME", "Little brown bat"), entry("ANIMALTYPE", "Bat"));
-            assertThat(records.get(1)).containsOnly(entry("ANIMAL_NAME", "Big brown bat"), entry("ANIMALTYPE", "Bat"));
+            assertThat(records.get(0)).containsOnly(entry("ANIMAL_NAME", "Little brown bat"), entry("ANIMALTYPE", "Bat               "));
+            assertThat(records.get(1)).containsOnly(entry("ANIMAL_NAME", "Big brown bat"), entry("ANIMALTYPE", "Bat               "));
             assertThat(records.get(2)).containsOnly(entry("ANIMAL_NAME", "Mouse"), entry("ANIMALTYPE", "Not a Fox or a bat"));
-            assertThat(records.get(3)).containsOnly(entry("ANIMAL_NAME", "Cat"), entry("ANIMALTYPE", "Fred"));
-            assertThat(records.get(4)).containsOnly(entry("ANIMAL_NAME", "Artic fox"), entry("ANIMALTYPE", "Fox"));
-            assertThat(records.get(5)).containsOnly(entry("ANIMAL_NAME", "Red fox"), entry("ANIMALTYPE", "Fox"));
-            assertThat(records.get(6)).containsOnly(entry("ANIMAL_NAME", "Raccoon"), entry("ANIMALTYPE", "Fred"));
+            assertThat(records.get(3)).containsOnly(entry("ANIMAL_NAME", "Cat"), entry("ANIMALTYPE", "Fred              "));
+            assertThat(records.get(4)).containsOnly(entry("ANIMAL_NAME", "Artic fox"), entry("ANIMALTYPE", "Fox               "));
+            assertThat(records.get(5)).containsOnly(entry("ANIMAL_NAME", "Red fox"), entry("ANIMALTYPE", "Fox               "));
+            assertThat(records.get(6)).containsOnly(entry("ANIMAL_NAME", "Raccoon"), entry("ANIMALTYPE", "Fred              "));
         }
     }
 
@@ -240,9 +291,9 @@ class CaseExpressionTest {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             CommonSelectMapper mapper = sqlSession.getMapper(CommonSelectMapper.class);
 
-            SelectStatementProvider selectStatement = select(animalName, simpleCase(brainWeight)
-                    .when(isLessThan(4.0)).then("'small brain'")
-                    .else_("'large brain'").end().as("brain_size"))
+            SelectStatementProvider selectStatement = select(animalName, SqlBuilder.case_(brainWeight)
+                    .when(isLessThan(4.0)).then("small brain")
+                    .else_("large brain").end().as("brain_size"))
                     .from(animalData)
                     .where(id, isIn(31, 32, 38, 39))
                     .orderBy(id)
@@ -258,18 +309,18 @@ class CaseExpressionTest {
                     "order by id";
             assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
             List<Map<String, Object>> records = mapper.selectManyMappedRows(selectStatement);
-            assertThat(records).hasSize(7);
+            assertThat(records).hasSize(4);
         }
     }
 
     @Test
-    void testSimpleCase() {
+    void testSimpleCaseWithStrings() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             CommonSelectMapper mapper = sqlSession.getMapper(CommonSelectMapper.class);
 
-            SelectStatementProvider selectStatement = select(animalName, simpleCase(animalName)
-                    .when(isEqualTo("Artic fox"), isEqualTo("Red fox")).then("'yes'")
-                    .else_("cast('no' as VARCHAR(3))").end().as("IsAFox"))
+            SelectStatementProvider selectStatement = select(animalName, SqlBuilder.case_(animalName)
+                    .when(isEqualTo("Artic fox"), isEqualTo("Red fox")).then("yes")
+                    .else_("no").end().as("IsAFox"))
                     .from(animalData)
                     .where(id, isIn(31, 32, 38, 39))
                     .orderBy(id)
@@ -277,7 +328,7 @@ class CaseExpressionTest {
                     .render(RenderingStrategies.MYBATIS3);
 
             String expected = "select animal_name, " +
-                    "case animal_name when = #{parameters.p1,jdbcType=VARCHAR}, = #{parameters.p2,jdbcType=VARCHAR} then 'yes' else cast('no' as VARCHAR(3)) end " +
+                    "case animal_name when = #{parameters.p1,jdbcType=VARCHAR}, = #{parameters.p2,jdbcType=VARCHAR} then 'yes' else 'no' end " +
                     "as IsAFox from AnimalData where id in " +
                     "(#{parameters.p3,jdbcType=INTEGER},#{parameters.p4,jdbcType=INTEGER},#{parameters.p5,jdbcType=INTEGER},#{parameters.p6,jdbcType=INTEGER}) " +
                     "order by id";
@@ -293,10 +344,48 @@ class CaseExpressionTest {
 
             List<Map<String, Object>> records = mapper.selectManyMappedRows(selectStatement);
             assertThat(records).hasSize(4);
-            assertThat(records.get(0)).containsOnly(entry("ANIMAL_NAME", "Cat"), entry("ISAFOX", "no"));
+            assertThat(records.get(0)).containsOnly(entry("ANIMAL_NAME", "Cat"), entry("ISAFOX", "no "));
             assertThat(records.get(1)).containsOnly(entry("ANIMAL_NAME", "Artic fox"), entry("ISAFOX", "yes"));
             assertThat(records.get(2)).containsOnly(entry("ANIMAL_NAME", "Red fox"), entry("ISAFOX", "yes"));
-            assertThat(records.get(3)).containsOnly(entry("ANIMAL_NAME", "Raccoon"), entry("ISAFOX", "no"));
+            assertThat(records.get(3)).containsOnly(entry("ANIMAL_NAME", "Raccoon"), entry("ISAFOX", "no "));
+        }
+    }
+
+    @Test
+    void testSimpleCaseWithBooleans() {
+        try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
+            CommonSelectMapper mapper = sqlSession.getMapper(CommonSelectMapper.class);
+
+            SelectStatementProvider selectStatement = select(animalName, SqlBuilder.case_(animalName)
+                    .when(isEqualTo("Artic fox"), isEqualTo("Red fox")).then(true)
+                    .else_(false).end().as("IsAFox"))
+                    .from(animalData)
+                    .where(id, isIn(31, 32, 38, 39))
+                    .orderBy(id)
+                    .build()
+                    .render(RenderingStrategies.MYBATIS3);
+
+            String expected = "select animal_name, " +
+                    "case animal_name when = #{parameters.p1,jdbcType=VARCHAR}, = #{parameters.p2,jdbcType=VARCHAR} then true else false end " +
+                    "as IsAFox from AnimalData where id in " +
+                    "(#{parameters.p3,jdbcType=INTEGER},#{parameters.p4,jdbcType=INTEGER},#{parameters.p5,jdbcType=INTEGER},#{parameters.p6,jdbcType=INTEGER}) " +
+                    "order by id";
+            assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
+            assertThat(selectStatement.getParameters()).containsOnly(
+                    entry("p1", "Artic fox"),
+                    entry("p2", "Red fox"),
+                    entry("p3", 31),
+                    entry("p4", 32),
+                    entry("p5", 38),
+                    entry("p6", 39)
+            );
+
+            List<Map<String, Object>> records = mapper.selectManyMappedRows(selectStatement);
+            assertThat(records).hasSize(4);
+            assertThat(records.get(0)).containsOnly(entry("ANIMAL_NAME", "Cat"), entry("ISAFOX", false));
+            assertThat(records.get(1)).containsOnly(entry("ANIMAL_NAME", "Artic fox"), entry("ISAFOX", true));
+            assertThat(records.get(2)).containsOnly(entry("ANIMAL_NAME", "Red fox"), entry("ISAFOX", true));
+            assertThat(records.get(3)).containsOnly(entry("ANIMAL_NAME", "Raccoon"), entry("ISAFOX", false));
         }
     }
 
@@ -305,8 +394,8 @@ class CaseExpressionTest {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             CommonSelectMapper mapper = sqlSession.getMapper(CommonSelectMapper.class);
 
-            SelectStatementProvider selectStatement = select(animalName, simpleCase(animalName)
-                    .when(isEqualTo("Artic fox"), isEqualTo("Red fox")).then("'yes'")
+            SelectStatementProvider selectStatement = select(animalName, SqlBuilder.case_(animalName)
+                    .when(isEqualTo("Artic fox"), isEqualTo("Red fox")).then("yes")
                     .end().as("IsAFox"))
                     .from(animalData)
                     .where(id, isIn(31, 32, 38, 39))
@@ -340,7 +429,7 @@ class CaseExpressionTest {
 
     @Test
     void testInvalidSearchedCaseNoConditionsRender() {
-        SelectModel model = select(animalName, searchedCase()
+        SelectModel model = select(animalName, case_()
                 .when(animalName, isEqualToWhenPresent((String) null)).then("Fred").end())
                 .from(animalData)
                 .build();
@@ -352,7 +441,7 @@ class CaseExpressionTest {
 
     @Test
     void testInvalidSimpleCaseNoConditionsRender() {
-        SelectModel model = select(simpleCase(animalName)
+        SelectModel model = select(SqlBuilder.case_(animalName)
                 .when(isEqualToWhenPresent((String) null)).then("Fred").end())
                 .from(animalData)
                 .build();
@@ -364,15 +453,16 @@ class CaseExpressionTest {
 
     @Test
     void testInvalidSearchedCaseNoWhenConditions() {
-        assertThatExceptionOfType(InvalidSqlException.class).isThrownBy(
-                () -> searchedCase().end()
-        ).withMessage(Messages.getString("ERROR.40"));
+        SearchedCaseDSL dsl = case_();
+
+        assertThatExceptionOfType(InvalidSqlException.class).isThrownBy(dsl::end)
+                .withMessage(Messages.getString("ERROR.40"));
     }
 
     @Test
     void testInvalidSimpleCaseNoWhenConditions() {
-        assertThatExceptionOfType(InvalidSqlException.class).isThrownBy(
-                () -> simpleCase(id).end()
-        ).withMessage(Messages.getString("ERROR.40"));
+        SimpleCaseDSL<Integer> dsl = case_(id);
+        assertThatExceptionOfType(InvalidSqlException.class).isThrownBy(dsl::end)
+                .withMessage(Messages.getString("ERROR.40"));
     }
 }
