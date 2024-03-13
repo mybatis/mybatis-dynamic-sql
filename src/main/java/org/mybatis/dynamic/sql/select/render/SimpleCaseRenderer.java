@@ -75,6 +75,7 @@ public class SimpleCaseRenderer<T> {
     private FragmentAndParameters renderConditions(SimpleCaseWhenCondition<T> whenCondition) {
         return whenCondition.accept(whenConditionRenderer);
     }
+
     private FragmentAndParameters renderThen(SimpleCaseWhenCondition<T> whenCondition) {
         return FragmentAndParameters.fromFragment("then " + whenCondition.thenValue()); //$NON-NLS-1$
     }

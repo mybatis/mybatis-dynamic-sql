@@ -28,8 +28,6 @@ import org.mybatis.dynamic.sql.insert.GeneralInsertDSL;
 import org.mybatis.dynamic.sql.insert.InsertDSL;
 import org.mybatis.dynamic.sql.insert.InsertSelectDSL;
 import org.mybatis.dynamic.sql.insert.MultiRowInsertDSL;
-import org.mybatis.dynamic.sql.select.caseexpression.SearchedCaseDSL;
-import org.mybatis.dynamic.sql.select.caseexpression.SimpleCaseDSL;
 import org.mybatis.dynamic.sql.select.ColumnSortSpecification;
 import org.mybatis.dynamic.sql.select.CountDSL;
 import org.mybatis.dynamic.sql.select.HavingDSL;
@@ -45,6 +43,8 @@ import org.mybatis.dynamic.sql.select.aggregate.CountDistinct;
 import org.mybatis.dynamic.sql.select.aggregate.Max;
 import org.mybatis.dynamic.sql.select.aggregate.Min;
 import org.mybatis.dynamic.sql.select.aggregate.Sum;
+import org.mybatis.dynamic.sql.select.caseexpression.SearchedCaseDSL;
+import org.mybatis.dynamic.sql.select.caseexpression.SimpleCaseDSL;
 import org.mybatis.dynamic.sql.select.function.Add;
 import org.mybatis.dynamic.sql.select.function.Concat;
 import org.mybatis.dynamic.sql.select.function.Concatenate;
@@ -427,17 +427,6 @@ public interface SqlBuilder {
                 .build();
     }
 
-    // case expressions
-    @SuppressWarnings("java:S100")
-    static <T> SimpleCaseDSL<T> case_(BindableColumn<T> column) {
-        return SimpleCaseDSL.simpleCase(column);
-    }
-
-    @SuppressWarnings("java:S100")
-    static SearchedCaseDSL case_() {
-        return SearchedCaseDSL.searchedCase();
-    }
-
     // join support
     static <T> JoinCriterion<T> and(BindableColumn<T> joinColumn, JoinCondition<T> joinCondition) {
         return new JoinCriterion.Builder<T>()
@@ -453,6 +442,17 @@ public interface SqlBuilder {
                 .withJoinColumn(joinColumn)
                 .withJoinCondition(joinCondition)
                 .build();
+    }
+
+    // case expressions
+    @SuppressWarnings("java:S100")
+    static <T> SimpleCaseDSL<T> case_(BindableColumn<T> column) {
+        return SimpleCaseDSL.simpleCase(column);
+    }
+
+    @SuppressWarnings("java:S100")
+    static SearchedCaseDSL case_() {
+        return SearchedCaseDSL.searchedCase();
     }
 
     static <T> EqualTo<T> equalTo(BindableColumn<T> column) {

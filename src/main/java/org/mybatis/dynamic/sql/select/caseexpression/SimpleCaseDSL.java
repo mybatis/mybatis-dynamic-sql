@@ -78,7 +78,8 @@ public class SimpleCaseDSL<T> {
     public class ConditionBasedWhenFinisher {
         private final List<VisitableCondition<T>> conditions = new ArrayList<>();
 
-        private ConditionBasedWhenFinisher(VisitableCondition<T> condition, List<VisitableCondition<T>> subsequentConditions) {
+        private ConditionBasedWhenFinisher(VisitableCondition<T> condition,
+                                           List<VisitableCondition<T>> subsequentConditions) {
             conditions.add(condition);
             conditions.addAll(subsequentConditions);
         }

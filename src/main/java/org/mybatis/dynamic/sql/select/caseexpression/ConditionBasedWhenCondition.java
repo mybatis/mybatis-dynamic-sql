@@ -15,11 +15,11 @@
  */
 package org.mybatis.dynamic.sql.select.caseexpression;
 
-import org.mybatis.dynamic.sql.VisitableCondition;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
+
+import org.mybatis.dynamic.sql.VisitableCondition;
 
 public class ConditionBasedWhenCondition<T> extends SimpleCaseWhenCondition<T> {
     private final List<VisitableCondition<T>> conditions = new ArrayList<>();

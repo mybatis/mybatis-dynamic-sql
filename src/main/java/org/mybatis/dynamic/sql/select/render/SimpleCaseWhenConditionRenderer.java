@@ -22,8 +22,8 @@ import org.mybatis.dynamic.sql.BindableColumn;
 import org.mybatis.dynamic.sql.VisitableCondition;
 import org.mybatis.dynamic.sql.render.RenderedParameterInfo;
 import org.mybatis.dynamic.sql.render.RenderingContext;
-import org.mybatis.dynamic.sql.select.caseexpression.ConditionBasedWhenCondition;
 import org.mybatis.dynamic.sql.select.caseexpression.BasicWhenCondition;
+import org.mybatis.dynamic.sql.select.caseexpression.ConditionBasedWhenCondition;
 import org.mybatis.dynamic.sql.select.caseexpression.SimpleCaseWhenConditionVisitor;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 import org.mybatis.dynamic.sql.util.FragmentCollector;
@@ -51,16 +51,16 @@ public class SimpleCaseWhenConditionRenderer<T> implements SimpleCaseWhenConditi
                 .toFragmentAndParameters(Collectors.joining(", ")); //$NON-NLS-1$
     }
 
-    private FragmentAndParameters renderCondition(VisitableCondition<T> condition) {
-        Validator.assertTrue(condition.shouldRender(renderingContext), "ERROR.39"); //$NON-NLS-1$
-        return condition.accept(conditionVisitor);
-    }
-
     @Override
     public FragmentAndParameters visit(BasicWhenCondition<T> whenCondition) {
         return whenCondition.conditions().map(this::renderBasicValue)
                 .collect(FragmentCollector.collect())
                 .toFragmentAndParameters(Collectors.joining(", ")); //$NON-NLS-1$
+    }
+
+    private FragmentAndParameters renderCondition(VisitableCondition<T> condition) {
+        Validator.assertTrue(condition.shouldRender(renderingContext), "ERROR.39"); //$NON-NLS-1$
+        return condition.accept(conditionVisitor);
     }
 
     private FragmentAndParameters renderBasicValue(T value) {
