@@ -17,6 +17,7 @@ package examples.animal.data;
 
 import static examples.animal.data.AnimalDataDynamicSqlSupport.animalData;
 import static examples.animal.data.AnimalDataDynamicSqlSupport.animalName;
+import static examples.animal.data.AnimalDataDynamicSqlSupport.brainWeight;
 import static examples.animal.data.AnimalDataDynamicSqlSupport.id;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -26,6 +27,7 @@ import static org.mybatis.dynamic.sql.SqlBuilder.group;
 import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
 import static org.mybatis.dynamic.sql.SqlBuilder.isEqualToWhenPresent;
 import static org.mybatis.dynamic.sql.SqlBuilder.isIn;
+import static org.mybatis.dynamic.sql.SqlBuilder.isLessThan;
 import static org.mybatis.dynamic.sql.SqlBuilder.or;
 import static org.mybatis.dynamic.sql.SqlBuilder.searchedCase;
 import static org.mybatis.dynamic.sql.SqlBuilder.select;
@@ -85,9 +87,9 @@ class CaseExpressionTest {
             CommonSelectMapper mapper = sqlSession.getMapper(CommonSelectMapper.class);
 
             SelectStatementProvider selectStatement = select(animalName, searchedCase()
-                    .when(animalName, isEqualTo("Artic fox")).or(animalName, isEqualTo("Red fox")).thenConstant("'Fox'")
-                    .when(animalName, isEqualTo("Little brown bat")).or(animalName, isEqualTo("Big brown bat")).thenConstant("'Bat'")
-                    .elseConstant("cast('Not a Fox or a bat' as varchar(25))").end().as("AnimalType"))
+                    .when(animalName, isEqualTo("Artic fox")).or(animalName, isEqualTo("Red fox")).then("'Fox'")
+                    .when(animalName, isEqualTo("Little brown bat")).or(animalName, isEqualTo("Big brown bat")).then("'Bat'")
+                    .else_("cast('Not a Fox or a bat' as varchar(25))").end().as("AnimalType"))
                     .from(animalData, "a")
                     .where(id, isIn(2, 3, 31, 32, 38, 39))
                     .orderBy(id)
@@ -134,8 +136,8 @@ class CaseExpressionTest {
             CommonSelectMapper mapper = sqlSession.getMapper(CommonSelectMapper.class);
 
             SelectStatementProvider selectStatement = select(animalName, searchedCase()
-                    .when(animalName, isEqualTo("Artic fox")).or(animalName, isEqualTo("Red fox")).thenConstant("'Fox'")
-                    .when(animalName, isEqualTo("Little brown bat")).or(animalName, isEqualTo("Big brown bat")).thenConstant("'Bat'")
+                    .when(animalName, isEqualTo("Artic fox")).or(animalName, isEqualTo("Red fox")).then("'Fox'")
+                    .when(animalName, isEqualTo("Little brown bat")).or(animalName, isEqualTo("Big brown bat")).then("'Bat'")
                     .end().as("AnimalType"))
                     .from(animalData, "a")
                     .where(id, isIn(2, 3, 31, 32, 38, 39))
@@ -183,10 +185,10 @@ class CaseExpressionTest {
             CommonSelectMapper mapper = sqlSession.getMapper(CommonSelectMapper.class);
 
             SelectStatementProvider selectStatement = select(animalName, searchedCase()
-                    .when(animalName, isEqualTo("Artic fox")).or(animalName, isEqualTo("Red fox")).thenConstant("'Fox'")
-                    .when(animalName, isEqualTo("Little brown bat")).or(animalName, isEqualTo("Big brown bat")).thenConstant("'Bat'")
-                    .when(group(animalName, isEqualTo("Cat"), and(id, isEqualTo(31))), or(id, isEqualTo(39))).thenConstant("'Fred'")
-                    .elseConstant("cast('Not a Fox or a bat' as varchar(25))").end().as("AnimalType"))
+                    .when(animalName, isEqualTo("Artic fox")).or(animalName, isEqualTo("Red fox")).then("'Fox'")
+                    .when(animalName, isEqualTo("Little brown bat")).or(animalName, isEqualTo("Big brown bat")).then("'Bat'")
+                    .when(group(animalName, isEqualTo("Cat"), and(id, isEqualTo(31))), or(id, isEqualTo(39))).then("'Fred'")
+                    .else_("cast('Not a Fox or a bat' as varchar(25))").end().as("AnimalType"))
                     .from(animalData, "a")
                     .where(id, isIn(2, 3, 4, 31, 32, 38, 39))
                     .orderBy(id)
@@ -234,13 +236,40 @@ class CaseExpressionTest {
     }
 
     @Test
+    void testSimpleCassLessThan() {
+        try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
+            CommonSelectMapper mapper = sqlSession.getMapper(CommonSelectMapper.class);
+
+            SelectStatementProvider selectStatement = select(animalName, simpleCase(brainWeight)
+                    .when(isLessThan(4.0)).then("'small brain'")
+                    .else_("'large brain'").end().as("brain_size"))
+                    .from(animalData)
+                    .where(id, isIn(31, 32, 38, 39))
+                    .orderBy(id)
+                    .build()
+                    .render(RenderingStrategies.MYBATIS3);
+
+            String expected = "select animal_name, case brain_weight " +
+                    "when < #{parameters.p1,jdbcType=DOUBLE} then 'small brain' " +
+                    "else 'large brain' end as brain_size " +
+                    "from AnimalData where id in (" +
+                    "#{parameters.p2,jdbcType=INTEGER},#{parameters.p3,jdbcType=INTEGER}," +
+                    "#{parameters.p4,jdbcType=INTEGER},#{parameters.p5,jdbcType=INTEGER}) " +
+                    "order by id";
+            assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
+            List<Map<String, Object>> records = mapper.selectManyMappedRows(selectStatement);
+            assertThat(records).hasSize(7);
+        }
+    }
+
+    @Test
     void testSimpleCase() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             CommonSelectMapper mapper = sqlSession.getMapper(CommonSelectMapper.class);
 
             SelectStatementProvider selectStatement = select(animalName, simpleCase(animalName)
-                    .when(isEqualTo("Artic fox"), isEqualTo("Red fox")).thenConstant("'yes'")
-                    .elseConstant("cast('no' as VARCHAR(3))").end().as("IsAFox"))
+                    .when(isEqualTo("Artic fox"), isEqualTo("Red fox")).then("'yes'")
+                    .else_("cast('no' as VARCHAR(3))").end().as("IsAFox"))
                     .from(animalData)
                     .where(id, isIn(31, 32, 38, 39))
                     .orderBy(id)
@@ -277,7 +306,7 @@ class CaseExpressionTest {
             CommonSelectMapper mapper = sqlSession.getMapper(CommonSelectMapper.class);
 
             SelectStatementProvider selectStatement = select(animalName, simpleCase(animalName)
-                    .when(isEqualTo("Artic fox"), isEqualTo("Red fox")).thenConstant("'yes'")
+                    .when(isEqualTo("Artic fox"), isEqualTo("Red fox")).then("'yes'")
                     .end().as("IsAFox"))
                     .from(animalData)
                     .where(id, isIn(31, 32, 38, 39))
@@ -312,7 +341,7 @@ class CaseExpressionTest {
     @Test
     void testInvalidSearchedCaseNoConditionsRender() {
         SelectModel model = select(animalName, searchedCase()
-                .when(animalName, isEqualToWhenPresent((String) null)).thenConstant("Fred").end())
+                .when(animalName, isEqualToWhenPresent((String) null)).then("Fred").end())
                 .from(animalData)
                 .build();
 
@@ -324,7 +353,7 @@ class CaseExpressionTest {
     @Test
     void testInvalidSimpleCaseNoConditionsRender() {
         SelectModel model = select(simpleCase(animalName)
-                .when(isEqualToWhenPresent((String) null)).thenConstant("Fred").end())
+                .when(isEqualToWhenPresent((String) null)).then("Fred").end())
                 .from(animalData)
                 .build();
 

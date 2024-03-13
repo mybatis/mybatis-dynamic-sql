@@ -64,7 +64,7 @@ public class SearchedCaseDSL {
         return new WhenDSL(sqlCriterion);
     }
 
-    public SearchedCaseEnder elseConstant(String elseValue) {
+    public SearchedCaseEnder else_(String elseValue) {
         this.elseValue = elseValue;
         return new SearchedCaseEnder();
     }
@@ -81,7 +81,7 @@ public class SearchedCaseDSL {
             setInitialCriterion(sqlCriterion);
         }
 
-        public SearchedCaseDSL thenConstant(String value) {
+        public SearchedCaseDSL then(String value) {
             whenConditions.add(new SearchedCaseModel.SearchedWhenCondition(getInitialCriterion(), subCriteria, value));
             return SearchedCaseDSL.this;
         }

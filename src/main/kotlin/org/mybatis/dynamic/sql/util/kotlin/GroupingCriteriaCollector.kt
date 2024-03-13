@@ -127,7 +127,7 @@ sealed class SubCriteriaCollector {
  */
 @Suppress("TooManyFunctions")
 @MyBatisDslMarker
-class GroupingCriteriaCollector : SubCriteriaCollector() {
+open class GroupingCriteriaCollector : SubCriteriaCollector() {
     internal var initialCriterion: SqlCriterion? = null
         private set(value) {
             assertNull(field, "ERROR.21") //$NON-NLS-1$

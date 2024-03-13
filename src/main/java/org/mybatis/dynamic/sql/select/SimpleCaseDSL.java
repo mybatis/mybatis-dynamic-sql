@@ -44,7 +44,7 @@ public class SimpleCaseDSL<T> {
         return new WhenFinisher(condition, subsequentConditions);
     }
 
-    public SimpleCaseEnder elseConstant(String value) {
+    public SimpleCaseEnder else_(String value) {
         elseValue = value;
         return new SimpleCaseEnder();
     }
@@ -65,7 +65,7 @@ public class SimpleCaseDSL<T> {
             conditions.addAll(subsequentConditions);
         }
 
-        public SimpleCaseDSL<T> thenConstant(String value) {
+        public SimpleCaseDSL<T> then(String value) {
             whenConditions.add(new SimpleCaseModel.SimpleWhenCondition<>(conditions, value));
             return SimpleCaseDSL.this;
         }

@@ -26,6 +26,8 @@ import org.mybatis.dynamic.sql.SqlBuilder
 import org.mybatis.dynamic.sql.SqlColumn
 import org.mybatis.dynamic.sql.StringConstant
 import org.mybatis.dynamic.sql.VisitableCondition
+import org.mybatis.dynamic.sql.select.SearchedCaseModel
+import org.mybatis.dynamic.sql.select.SimpleCaseModel
 import org.mybatis.dynamic.sql.select.aggregate.Avg
 import org.mybatis.dynamic.sql.select.aggregate.Count
 import org.mybatis.dynamic.sql.select.aggregate.CountAll
@@ -93,6 +95,24 @@ fun or(receiver: GroupingCriteriaReceiver): AndOrCriteriaGroup =
         AndOrCriteriaGroup.Builder().withInitialCriterion(initialCriterion)
             .withSubCriteria(subCriteria)
             .withConnector("or")
+            .build()
+    }
+
+// case expressions
+fun case(dslCompleter: KSearchedCaseDSL.() -> Unit): BasicColumn =
+    KSearchedCaseDSL().apply(dslCompleter).run {
+        SearchedCaseModel.Builder()
+            .withWhenConditions(whenConditions)
+            .withElseValue(elseValue)
+            .build()
+    }
+
+fun <T : Any> case(column: BindableColumn<T>, dslCompleter: KSimpleCaseDSL<T>.() -> Unit) : BasicColumn =
+    KSimpleCaseDSL<T>().apply(dslCompleter).run {
+        SimpleCaseModel.Builder<T>()
+            .withColumn(column)
+            .withWhenConditions(whenConditions)
+            .withElseValue(elseValue)
             .build()
     }
 
