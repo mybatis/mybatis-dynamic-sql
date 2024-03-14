@@ -53,11 +53,11 @@ class SearchedCaseCriteriaCollector : GroupingCriteriaCollector() {
         }
 
     fun then(value: String) {
-        this.thenValue = "'$value'"
+        thenValue = "'$value'"
     }
 
     fun then(value: Any) {
-        this.thenValue = value
+        thenValue = value
     }
 }
 
@@ -69,11 +69,26 @@ class KSimpleCaseDSL<T : Any> {
         }
     internal val whenConditions = mutableListOf<SimpleCaseWhenCondition<T>>()
 
-    fun `when`(firstCondition: VisitableCondition<T>, vararg subsequentConditions: VisitableCondition<T>) =
-        ConditionBasedThenGatherer(firstCondition, subsequentConditions.asList())
+    fun `when`(firstCondition: VisitableCondition<T>, vararg subsequentConditions: VisitableCondition<T>,
+               completer: SimpleCaseThenGatherer.() -> Unit) =
+        SimpleCaseThenGatherer().apply(completer).run {
+            val allConditions = buildList {
+                add(firstCondition)
+                addAll(subsequentConditions)
+            }
 
-    fun `when`(firstValue: T, vararg subsequentValues: T) =
-        BasicThenGatherer(firstValue, subsequentValues.asList())
+            whenConditions.add(ConditionBasedWhenCondition(allConditions, thenValue))
+        }
+
+    fun `when`(firstValue: T, vararg subsequentValues: T, completer: SimpleCaseThenGatherer.() -> Unit) =
+        SimpleCaseThenGatherer().apply(completer).run {
+            val allConditions = buildList {
+                add(firstValue)
+                addAll(subsequentValues)
+            }
+
+            whenConditions.add(BasicWhenCondition(allConditions, thenValue))
+        }
 
     fun `else`(value: String) {
         this.elseValue = "'$value'"
@@ -82,45 +97,20 @@ class KSimpleCaseDSL<T : Any> {
     fun `else`(value: Any) {
         this.elseValue = value
     }
+}
 
-    inner class ConditionBasedThenGatherer(private val firstCondition: VisitableCondition<T>,
-                                           private val subsequentConditions: List<VisitableCondition<T>>) {
-        fun then(value: String) {
-            val allConditions = buildList {
-                add(firstCondition)
-                addAll(subsequentConditions)
-            }
-
-            whenConditions.add(ConditionBasedWhenCondition(allConditions, "'$value'"))
+class SimpleCaseThenGatherer {
+    internal var thenValue: Any? = null
+        private set(value) {
+            assertNull(field, "ERROR.41") //$NON-NLS-1$
+            field = value
         }
 
-        fun then(value: Any) {
-            val allConditions = buildList {
-                add(firstCondition)
-                addAll(subsequentConditions)
-            }
-
-            whenConditions.add(ConditionBasedWhenCondition(allConditions, value))
-        }
+    fun then(value: String) {
+        thenValue = "'$value'"
     }
 
-    inner class BasicThenGatherer(private val firstValue: T, private val subsequentValues: List<T>) {
-        fun then(value: String) {
-            val allValues = buildList {
-                add(firstValue)
-                addAll(subsequentValues)
-            }
-
-            whenConditions.add(BasicWhenCondition(allValues, "'$value'"))
-        }
-
-        fun then(value: Any) {
-            val allValues = buildList {
-                add(firstValue)
-                addAll(subsequentValues)
-            }
-
-            whenConditions.add(BasicWhenCondition(allValues, value))
-        }
+    fun then(value: Any) {
+        thenValue = value
     }
 }

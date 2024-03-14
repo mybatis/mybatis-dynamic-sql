@@ -373,7 +373,7 @@ class KCaseExpressionTest {
             val selectStatement = select(
                 animalName,
                 case(animalName) {
-                    `when` (isEqualTo("Artic fox"), isEqualTo("Red fox")).then("yes")
+                    `when` (isEqualTo("Artic fox"), isEqualTo("Red fox")) { then("yes") }
                     `else`("no")
                 }.`as`("IsAFox")
             ) {
@@ -427,7 +427,7 @@ class KCaseExpressionTest {
             val selectStatement = select(
                 animalName,
                 case(animalName) {
-                    `when` ("Artic fox", "Red fox").then("yes")
+                    `when` ("Artic fox", "Red fox") { then("yes") }
                     `else`("no")
                 }.`as`("IsAFox")
             ) {
@@ -481,7 +481,7 @@ class KCaseExpressionTest {
             val selectStatement = select(
                 animalName,
                 case(animalName) {
-                    `when` (isEqualTo("Artic fox"), isEqualTo("Red fox")).then(true)
+                    `when` (isEqualTo("Artic fox"), isEqualTo("Red fox")) { then(true) }
                     `else`(false)
                 }.`as`("IsAFox")
             ) {
@@ -535,7 +535,7 @@ class KCaseExpressionTest {
             val selectStatement = select(
                 animalName,
                 case(animalName) {
-                    `when` ("Artic fox", "Red fox").then(true)
+                    `when` ("Artic fox", "Red fox") { then(true) }
                     `else`(false)
                 }.`as`("IsAFox")
             ) {
@@ -589,7 +589,7 @@ class KCaseExpressionTest {
             val selectStatement = select(
                 animalName,
                 case(animalName) {
-                    `when`(isEqualTo("Artic fox"), isEqualTo("Red fox")).then("yes")
+                    `when`(isEqualTo("Artic fox"), isEqualTo("Red fox")) { then("yes") }
                 }.`as`("IsAFox")
             ) {
                 from(animalData)
@@ -632,11 +632,24 @@ class KCaseExpressionTest {
     fun testInvalidDoubleElseSimple() {
         assertThatExceptionOfType(KInvalidSQLException::class.java).isThrownBy {
             case(animalName) {
-                `when`(isEqualTo("Artic fox"), isEqualTo("Red fox")).then("'yes'")
+                `when`(isEqualTo("Artic fox"), isEqualTo("Red fox")) { then("'yes'") }
                 `else`("Fred")
                 `else`("Wilma")
             }
         }.withMessage(Messages.getString("ERROR.42"))
+    }
+
+    @Test
+    fun testInvalidDoubleThenSimple() {
+        assertThatExceptionOfType(KInvalidSQLException::class.java).isThrownBy {
+            case(animalName) {
+                `when`(isEqualTo("Artic fox"), isEqualTo("Red fox")) {
+                    then("'yes'")
+                    then("no")
+                }
+                `else`("Fred")
+            }
+        }.withMessage(Messages.getString("ERROR.41"))
     }
 
     @Test
@@ -669,14 +682,14 @@ class KCaseExpressionTest {
     @Test
     fun testInvalidSearchedMissingWhen() {
         assertThatExceptionOfType(InvalidSqlException::class.java).isThrownBy {
-            select(case { `else`("Fred") }){ from(animalData) }
+            select(case { `else`("Fred") }) { from(animalData) }
         }.withMessage(Messages.getString("ERROR.40"))
     }
 
     @Test
     fun testInvalidSimpleMissingWhen() {
         assertThatExceptionOfType(InvalidSqlException::class.java).isThrownBy {
-            select(case (id) { `else`("Fred") }){ from (animalData) }
+            select(case (id) { `else`("Fred") }) { from (animalData) }
         }.withMessage(Messages.getString("ERROR.40"))
     }
 }
