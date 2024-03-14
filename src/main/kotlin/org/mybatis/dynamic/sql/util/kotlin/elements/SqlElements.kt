@@ -23,6 +23,7 @@ import org.mybatis.dynamic.sql.BoundValue
 import org.mybatis.dynamic.sql.Constant
 import org.mybatis.dynamic.sql.SortSpecification
 import org.mybatis.dynamic.sql.SqlBuilder
+import org.mybatis.dynamic.sql.SqlBuilder.CastFinisher
 import org.mybatis.dynamic.sql.SqlColumn
 import org.mybatis.dynamic.sql.StringConstant
 import org.mybatis.dynamic.sql.VisitableCondition
@@ -36,6 +37,7 @@ import org.mybatis.dynamic.sql.select.aggregate.Max
 import org.mybatis.dynamic.sql.select.aggregate.Min
 import org.mybatis.dynamic.sql.select.aggregate.Sum
 import org.mybatis.dynamic.sql.select.function.Add
+import org.mybatis.dynamic.sql.select.function.Cast
 import org.mybatis.dynamic.sql.select.function.Concat
 import org.mybatis.dynamic.sql.select.function.Concatenate
 import org.mybatis.dynamic.sql.select.function.Divide
@@ -164,6 +166,10 @@ fun <T> subtract(
     secondColumn: BasicColumn,
     vararg subsequentColumns: BasicColumn
 ): Subtract<T> = Subtract.of(firstColumn, secondColumn, subsequentColumns.asList())
+
+fun cast(column: BasicColumn) = SqlBuilder.cast(column)
+
+infix fun CastFinisher.`as`(targetType: String): Cast = this.`as`(targetType)
 
 fun <T> concat(
     firstColumn: BindableColumn<T>,

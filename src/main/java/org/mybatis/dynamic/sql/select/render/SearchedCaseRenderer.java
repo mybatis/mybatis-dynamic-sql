@@ -16,10 +16,11 @@
 package org.mybatis.dynamic.sql.select.render;
 
 import java.util.Objects;
-import java.util.function.Function;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.exception.InvalidSqlException;
 import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.select.caseexpression.SearchedCaseModel;
@@ -37,27 +38,30 @@ public class SearchedCaseRenderer {
     }
 
     public FragmentAndParameters render() {
-        return Stream.of(
-                renderCase(),
-                renderWhenConditions(),
-                renderElse(),
-                renderEnd()
-        )
-                .flatMap(Function.identity())
+        FragmentAndParameters caseFragment = renderCase();
+        FragmentAndParameters whenFragment = renderWhenConditions();
+        Optional<FragmentAndParameters> elseFragment = renderElse();
+        FragmentAndParameters endFragment = renderEnd();
+
+        return elseFragment.map(ef -> Stream.of(caseFragment, whenFragment, ef, endFragment))
+                .orElseGet(() -> Stream.of(caseFragment, whenFragment, endFragment))
                 .collect(FragmentCollector.collect())
                 .toFragmentAndParameters(Collectors.joining(" ")); //$NON-NLS-1$
     }
 
-    private Stream<FragmentAndParameters> renderCase() {
-        return Stream.of(FragmentAndParameters.fromFragment("case")); //$NON-NLS-1$
+    private FragmentAndParameters renderCase() {
+        return FragmentAndParameters.fromFragment("case"); //$NON-NLS-1$
     }
 
-    private Stream<FragmentAndParameters> renderWhenConditions() {
-        return searchedCaseModel.whenConditions().flatMap(this::renderWhenCondition);
+    private FragmentAndParameters renderWhenConditions() {
+        return searchedCaseModel.whenConditions().map(this::renderWhenCondition)
+                .collect(FragmentCollector.collect())
+                .toFragmentAndParameters(Collectors.joining(" ")); //$NON-NLS-1$
     }
 
-    private Stream<FragmentAndParameters> renderWhenCondition(SearchedCaseModel.SearchedWhenCondition whenCondition) {
-        return Stream.of(renderWhen(whenCondition), renderThen(whenCondition));
+    private FragmentAndParameters renderWhenCondition(SearchedCaseModel.SearchedWhenCondition whenCondition) {
+        return Stream.of(renderWhen(whenCondition), renderThen(whenCondition)).collect(FragmentCollector.collect())
+                .toFragmentAndParameters(Collectors.joining(" ")); //$NON-NLS-1$
     }
 
     private FragmentAndParameters renderWhen(SearchedCaseModel.SearchedWhenCondition whenCondition) {
@@ -70,18 +74,18 @@ public class SearchedCaseRenderer {
     }
 
     private FragmentAndParameters renderThen(SearchedCaseModel.SearchedWhenCondition whenCondition) {
-        return FragmentAndParameters.fromFragment("then " + whenCondition.thenValue()); //$NON-NLS-1$
+        return whenCondition.thenValue().render(renderingContext).mapFragment(f -> "then " + f);
     }
 
-    private Stream<FragmentAndParameters> renderElse() {
-        return searchedCaseModel.elseValue().map(this::renderElse).map(Stream::of).orElseGet(Stream::empty);
+    private Optional<FragmentAndParameters> renderElse() {
+        return searchedCaseModel.elseValue().map(this::renderElse);
     }
 
-    private FragmentAndParameters renderElse(Object elseValue) {
-        return FragmentAndParameters.fromFragment("else " + elseValue); //$NON-NLS-1$
+    private FragmentAndParameters renderElse(BasicColumn elseValue) {
+        return elseValue.render(renderingContext).mapFragment(f -> "else " + f); //$NON-NLS-1$
     }
 
-    private Stream<FragmentAndParameters> renderEnd() {
-        return Stream.of(FragmentAndParameters.fromFragment("end")); //$NON-NLS-1$
+    private FragmentAndParameters renderEnd() {
+        return FragmentAndParameters.fromFragment("end"); //$NON-NLS-1$
     }
 }

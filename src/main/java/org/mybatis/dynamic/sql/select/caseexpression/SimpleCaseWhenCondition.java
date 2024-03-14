@@ -17,14 +17,16 @@ package org.mybatis.dynamic.sql.select.caseexpression;
 
 import java.util.Objects;
 
-public abstract class SimpleCaseWhenCondition<T> {
-    private final Object thenValue;
+import org.mybatis.dynamic.sql.BasicColumn;
 
-    protected SimpleCaseWhenCondition(Object thenValue) {
+public abstract class SimpleCaseWhenCondition<T> {
+    private final BasicColumn thenValue;
+
+    protected SimpleCaseWhenCondition(BasicColumn thenValue) {
         this.thenValue = Objects.requireNonNull(thenValue);
     }
 
-    public Object thenValue() {
+    public BasicColumn thenValue() {
         return thenValue;
     }
 

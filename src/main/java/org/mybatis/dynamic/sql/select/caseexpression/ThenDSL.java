@@ -15,27 +15,31 @@
  */
 package org.mybatis.dynamic.sql.select.caseexpression;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Stream;
-
 import org.mybatis.dynamic.sql.BasicColumn;
-import org.mybatis.dynamic.sql.VisitableCondition;
+import org.mybatis.dynamic.sql.Constant;
+import org.mybatis.dynamic.sql.StringConstant;
 
-public class ConditionBasedWhenCondition<T> extends SimpleCaseWhenCondition<T> {
-    private final List<VisitableCondition<T>> conditions = new ArrayList<>();
+public interface ThenDSL<T> {
 
-    public ConditionBasedWhenCondition(List<VisitableCondition<T>> conditions, BasicColumn thenValue) {
-        super(thenValue);
-        this.conditions.addAll(conditions);
+    default T then(String value) {
+        return then(StringConstant.of(value));
     }
 
-    public Stream<VisitableCondition<T>> conditions() {
-        return conditions.stream();
+    default T then(Boolean value) {
+        return then(Constant.of(value.toString()));
     }
 
-    @Override
-    public <R> R accept(SimpleCaseWhenConditionVisitor<T, R> visitor) {
-        return visitor.visit(this);
+    default T then(Integer value) {
+        return then(Constant.of(value.toString()));
     }
+
+    default T then(Long value) {
+        return then(Constant.of(value.toString()));
+    }
+
+    default T then(Double value) {
+        return then(Constant.of(value.toString()));
+    }
+
+    T then(BasicColumn column);
 }

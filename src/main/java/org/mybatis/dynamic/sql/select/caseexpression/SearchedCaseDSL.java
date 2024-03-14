@@ -15,8 +15,6 @@
  */
 package org.mybatis.dynamic.sql.select.caseexpression;
 
-import static org.mybatis.dynamic.sql.util.StringUtilities.quoteStringForSQL;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -30,9 +28,9 @@ import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.VisitableCondition;
 import org.mybatis.dynamic.sql.common.AbstractBooleanExpressionDSL;
 
-public class SearchedCaseDSL {
+public class SearchedCaseDSL implements ElseDSL<SearchedCaseDSL.SearchedCaseEnder> {
     private final List<SearchedCaseModel.SearchedWhenCondition> whenConditions = new ArrayList<>();
-    private Object elseValue;
+    private BasicColumn elseValue;
 
     public <T> WhenDSL when(BindableColumn<T> column, VisitableCondition<T> condition,
                             AndOrCriteriaGroup... subCriteria) {
@@ -67,14 +65,9 @@ public class SearchedCaseDSL {
     }
 
     @SuppressWarnings("java:S100")
-    public SearchedCaseEnder else_(String value) {
-        this.elseValue = quoteStringForSQL(value);
-        return new SearchedCaseEnder();
-    }
-
-    @SuppressWarnings("java:S100")
-    public SearchedCaseEnder else_(Object value) {
-        this.elseValue = value;
+    @Override
+    public SearchedCaseEnder else_(BasicColumn column) {
+        elseValue = column;
         return new SearchedCaseEnder();
     }
 
@@ -85,19 +78,15 @@ public class SearchedCaseDSL {
                 .build();
     }
 
-    public class WhenDSL extends AbstractBooleanExpressionDSL<WhenDSL> {
+    public class WhenDSL extends AbstractBooleanExpressionDSL<WhenDSL> implements ThenDSL<SearchedCaseDSL> {
         private WhenDSL(SqlCriterion sqlCriterion) {
             setInitialCriterion(sqlCriterion);
         }
 
-        public SearchedCaseDSL then(String value) {
+        @Override
+        public SearchedCaseDSL then(BasicColumn column) {
             whenConditions.add(new SearchedCaseModel.SearchedWhenCondition(getInitialCriterion(), subCriteria,
-                    quoteStringForSQL(value)));
-            return SearchedCaseDSL.this;
-        }
-
-        public SearchedCaseDSL then(Object value) {
-            whenConditions.add(new SearchedCaseModel.SearchedWhenCondition(getInitialCriterion(), subCriteria, value));
+                    column));
             return SearchedCaseDSL.this;
         }
 

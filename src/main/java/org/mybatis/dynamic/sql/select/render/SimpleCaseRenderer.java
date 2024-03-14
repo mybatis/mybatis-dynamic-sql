@@ -16,10 +16,11 @@
 package org.mybatis.dynamic.sql.select.render;
 
 import java.util.Objects;
-import java.util.function.Function;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.select.caseexpression.SimpleCaseModel;
 import org.mybatis.dynamic.sql.select.caseexpression.SimpleCaseWhenCondition;
@@ -38,34 +39,35 @@ public class SimpleCaseRenderer<T> {
     }
 
     public FragmentAndParameters render() {
-        return Stream.of(
-                        renderCase(),
-                        renderWhenConditions(),
-                        renderElse(),
-                        renderEnd()
-                )
-                .flatMap(Function.identity())
+        FragmentAndParameters caseFragment = renderCase();
+        FragmentAndParameters whenFragment = renderWhenConditions();
+        Optional<FragmentAndParameters> elseFragment = renderElse();
+        FragmentAndParameters endFragment = renderEnd();
+
+        return elseFragment.map(ef -> Stream.of(caseFragment, whenFragment, ef, endFragment))
+                .orElseGet(() -> Stream.of(caseFragment, whenFragment, endFragment))
                 .collect(FragmentCollector.collect())
                 .toFragmentAndParameters(Collectors.joining(" ")); //$NON-NLS-1$
     }
 
-    private Stream<FragmentAndParameters> renderCase() {
-        return Stream.of(
-                FragmentAndParameters.fromFragment("case"), //$NON-NLS-1$
-                simpleCaseModel.column().render(renderingContext)
-        );
+    private FragmentAndParameters renderCase() {
+        return simpleCaseModel.column().render(renderingContext)
+                .mapFragment(f -> "case " + f); //$NON-NLS-1$
     }
 
-    private Stream<FragmentAndParameters> renderWhenConditions() {
-        return simpleCaseModel.whenConditions().flatMap(this::renderWhenCondition);
+    private FragmentAndParameters renderWhenConditions() {
+        return simpleCaseModel.whenConditions().map(this::renderWhenCondition)
+                .collect(FragmentCollector.collect())
+                .toFragmentAndParameters(Collectors.joining(" ")); //$NON-NLS-1$
     }
 
-    private Stream<FragmentAndParameters> renderWhenCondition(SimpleCaseWhenCondition<T> whenCondition) {
+    private FragmentAndParameters renderWhenCondition(SimpleCaseWhenCondition<T> whenCondition) {
         return Stream.of(
                 renderWhen(),
                 renderConditions(whenCondition),
                 renderThen(whenCondition)
-        );
+        ).collect(FragmentCollector.collect())
+                .toFragmentAndParameters(Collectors.joining(" ")); //$NON-NLS-1$
     }
 
     private FragmentAndParameters renderWhen() {
@@ -77,18 +79,19 @@ public class SimpleCaseRenderer<T> {
     }
 
     private FragmentAndParameters renderThen(SimpleCaseWhenCondition<T> whenCondition) {
-        return FragmentAndParameters.fromFragment("then " + whenCondition.thenValue()); //$NON-NLS-1$
+        return whenCondition.thenValue().render(renderingContext)
+                .mapFragment(f -> "then " + f); //$NON-NLS-1$
     }
 
-    private Stream<FragmentAndParameters> renderElse() {
-        return simpleCaseModel.elseValue().map(this::renderElse).map(Stream::of).orElseGet(Stream::empty);
+    private Optional<FragmentAndParameters> renderElse() {
+        return simpleCaseModel.elseValue().map(this::renderElse);
     }
 
-    private FragmentAndParameters renderElse(Object elseValue) {
-        return FragmentAndParameters.fromFragment("else " + elseValue); //$NON-NLS-1$
+    private FragmentAndParameters renderElse(BasicColumn elseValue) {
+        return elseValue.render(renderingContext).mapFragment(f -> "else " + f); //$NON-NLS-1$
     }
 
-    private Stream<FragmentAndParameters> renderEnd() {
-        return Stream.of(FragmentAndParameters.fromFragment("end")); //$NON-NLS-1$
+    private FragmentAndParameters renderEnd() {
+        return FragmentAndParameters.fromFragment("end"); //$NON-NLS-1$
     }
 }

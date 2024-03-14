@@ -31,7 +31,7 @@ import org.mybatis.dynamic.sql.util.Validator;
 public class SimpleCaseModel<T> implements BasicColumn {
     private final BindableColumn<T> column;
     private final List<SimpleCaseWhenCondition<T>> whenConditions;
-    private final Object elseValue;
+    private final BasicColumn elseValue;
     private final String alias;
 
     private SimpleCaseModel(Builder<T> builder) {
@@ -50,7 +50,7 @@ public class SimpleCaseModel<T> implements BasicColumn {
         return whenConditions.stream();
     }
 
-    public Optional<Object> elseValue() {
+    public Optional<BasicColumn> elseValue() {
         return Optional.ofNullable(elseValue);
     }
 
@@ -77,7 +77,7 @@ public class SimpleCaseModel<T> implements BasicColumn {
     public static class Builder<T> {
         private BindableColumn<T> column;
         private final List<SimpleCaseWhenCondition<T>> whenConditions = new ArrayList<>();
-        private Object elseValue;
+        private BasicColumn elseValue;
         private String alias;
 
         public Builder<T> withColumn(BindableColumn<T> column) {
@@ -90,7 +90,7 @@ public class SimpleCaseModel<T> implements BasicColumn {
             return this;
         }
 
-        public Builder<T> withElseValue(Object elseValue) {
+        public Builder<T> withElseValue(BasicColumn elseValue) {
             this.elseValue = elseValue;
             return this;
         }

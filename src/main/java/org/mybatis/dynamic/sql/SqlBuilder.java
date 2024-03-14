@@ -46,6 +46,7 @@ import org.mybatis.dynamic.sql.select.aggregate.Sum;
 import org.mybatis.dynamic.sql.select.caseexpression.SearchedCaseDSL;
 import org.mybatis.dynamic.sql.select.caseexpression.SimpleCaseDSL;
 import org.mybatis.dynamic.sql.select.function.Add;
+import org.mybatis.dynamic.sql.select.function.Cast;
 import org.mybatis.dynamic.sql.select.function.Concat;
 import org.mybatis.dynamic.sql.select.function.Concatenate;
 import org.mybatis.dynamic.sql.select.function.Divide;
@@ -530,6 +531,10 @@ public interface SqlBuilder {
         return Subtract.of(firstColumn, secondColumn, subsequentColumns);
     }
 
+    static CastFinisher cast(BasicColumn column) {
+        return new CastFinisher(column);
+    }
+
     /**
      * Concatenate function that renders as "(x || y || z)". This will not work on some
      * databases like MySql. In that case, use {@link SqlBuilder#concat(BindableColumn, BasicColumn...)}
@@ -979,6 +984,21 @@ public interface SqlBuilder {
         public <T> GeneralInsertDSL.SetClauseFinisher<T> set(SqlColumn<T> column) {
             return GeneralInsertDSL.insertInto(table)
                     .set(column);
+        }
+    }
+
+    class CastFinisher {
+        private final BasicColumn column;
+
+        public CastFinisher(BasicColumn column) {
+            this.column = column;
+        }
+
+        public Cast as(String targetType) {
+            return new Cast.Builder()
+                    .withColumn(column)
+                    .withTargetType(targetType)
+                    .build();
         }
     }
 }

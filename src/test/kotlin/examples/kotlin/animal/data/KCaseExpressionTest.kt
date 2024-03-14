@@ -28,8 +28,11 @@ import org.junit.jupiter.api.Test
 import org.mybatis.dynamic.sql.exception.InvalidSqlException
 import org.mybatis.dynamic.sql.util.Messages
 import org.mybatis.dynamic.sql.util.kotlin.KInvalidSQLException
+import org.mybatis.dynamic.sql.util.kotlin.elements.`as`
 import org.mybatis.dynamic.sql.util.kotlin.elements.case
+import org.mybatis.dynamic.sql.util.kotlin.elements.cast
 import org.mybatis.dynamic.sql.util.kotlin.elements.isEqualTo
+import org.mybatis.dynamic.sql.util.kotlin.elements.value
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.select
 import org.mybatis.dynamic.sql.util.mybatis3.CommonSelectMapper
 
@@ -192,6 +195,86 @@ class KCaseExpressionTest {
             assertThat(records[5]).containsOnly(
                 entry("ANIMAL_NAME", "Raccoon"),
                 entry("ANIMALTYPE", 3)
+            )
+        }
+    }
+
+    @Test
+    fun testSearchedCaseWithBoundValues() {
+        newSession().use { session ->
+            val mapper = session.getMapper(CommonSelectMapper::class.java)
+
+            val selectStatement = select(animalName,
+                case {
+                    `when` {
+                        animalName isEqualTo "Artic fox"
+                        or { animalName isEqualTo "Red fox" }
+                        then(value("Fox"))
+                    }
+                    `when` {
+                        animalName isEqualTo "Little brown bat"
+                        or { animalName isEqualTo "Big brown bat" }
+                        then(value("Bat"))
+                    }
+                    `else`(cast(value("Not a Fox or a bat")) `as` "VARCHAR(30)")
+                }.`as`("AnimalType")
+            ) {
+                from(animalData, "a")
+                where { id.isIn(2, 3, 31, 32, 38, 39) }
+                orderBy(id)
+            }
+
+            val expected = "select a.animal_name, case " +
+                    "when a.animal_name = #{parameters.p1,jdbcType=VARCHAR} or a.animal_name = #{parameters.p2,jdbcType=VARCHAR} then #{parameters.p3} " +
+                    "when a.animal_name = #{parameters.p4,jdbcType=VARCHAR} or a.animal_name = #{parameters.p5,jdbcType=VARCHAR} then #{parameters.p6} " +
+                    "else cast(#{parameters.p7} as VARCHAR(30)) end as AnimalType " +
+                    "from AnimalData a where a.id in (" +
+                    "#{parameters.p8,jdbcType=INTEGER},#{parameters.p9,jdbcType=INTEGER}," +
+                    "#{parameters.p10,jdbcType=INTEGER},#{parameters.p11,jdbcType=INTEGER},#{parameters.p12,jdbcType=INTEGER}," +
+                    "#{parameters.p13,jdbcType=INTEGER}) " +
+                    "order by id"
+            assertThat(selectStatement.selectStatement).isEqualTo(expected)
+            assertThat(selectStatement.parameters).containsOnly(
+                entry("p1", "Artic fox"),
+                entry("p2", "Red fox"),
+                entry("p3", "Fox"),
+                entry("p4", "Little brown bat"),
+                entry("p5", "Big brown bat"),
+                entry("p6", "Bat"),
+                entry("p7", "Not a Fox or a bat"),
+                entry("p8", 2),
+                entry("p9", 3),
+                entry("p10", 31),
+                entry("p11", 32),
+                entry("p12", 38),
+                entry("p13", 39)
+            )
+
+            val records = mapper.selectManyMappedRows(selectStatement)
+            assertThat(records).hasSize(6)
+            assertThat(records[0]).containsOnly(
+                entry("ANIMAL_NAME", "Little brown bat"),
+                entry("ANIMALTYPE", "Bat")
+            )
+            assertThat(records[1]).containsOnly(
+                entry("ANIMAL_NAME", "Big brown bat"),
+                entry("ANIMALTYPE", "Bat")
+            )
+            assertThat(records[2]).containsOnly(
+                entry("ANIMAL_NAME", "Cat"),
+                entry("ANIMALTYPE", "Not a Fox or a bat")
+            )
+            assertThat(records[3]).containsOnly(
+                entry("ANIMAL_NAME", "Artic fox"),
+                entry("ANIMALTYPE", "Fox")
+            )
+            assertThat(records[4]).containsOnly(
+                entry("ANIMAL_NAME", "Red fox"),
+                entry("ANIMALTYPE", "Fox")
+            )
+            assertThat(records[5]).containsOnly(
+                entry("ANIMAL_NAME", "Raccoon"),
+                entry("ANIMALTYPE", "Not a Fox or a bat")
             )
         }
     }

@@ -15,8 +15,6 @@
  */
 package org.mybatis.dynamic.sql.select.caseexpression;
 
-import static org.mybatis.dynamic.sql.util.StringUtilities.quoteStringForSQL;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -26,10 +24,10 @@ import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.BindableColumn;
 import org.mybatis.dynamic.sql.VisitableCondition;
 
-public class SimpleCaseDSL<T> {
+public class SimpleCaseDSL<T> implements ElseDSL<SimpleCaseDSL<T>.SimpleCaseEnder> {
     private final BindableColumn<T> column;
     private final List<SimpleCaseWhenCondition<T>> whenConditions = new ArrayList<>();
-    private Object elseValue;
+    private BasicColumn elseValue;
 
     private SimpleCaseDSL(BindableColumn<T> column) {
         this.column = Objects.requireNonNull(column);
@@ -56,14 +54,9 @@ public class SimpleCaseDSL<T> {
     }
 
     @SuppressWarnings("java:S100")
-    public SimpleCaseEnder else_(String value) {
-        elseValue = quoteStringForSQL(value);
-        return new SimpleCaseEnder();
-    }
-
-    @SuppressWarnings("java:S100")
-    public SimpleCaseEnder else_(Object value) {
-        elseValue = value;
+    @Override
+    public SimpleCaseEnder else_(BasicColumn column) {
+        elseValue = column;
         return new SimpleCaseEnder();
     }
 
@@ -75,7 +68,7 @@ public class SimpleCaseDSL<T> {
                 .build();
     }
 
-    public class ConditionBasedWhenFinisher {
+    public class ConditionBasedWhenFinisher implements ThenDSL<SimpleCaseDSL<T>> {
         private final List<VisitableCondition<T>> conditions = new ArrayList<>();
 
         private ConditionBasedWhenFinisher(VisitableCondition<T> condition,
@@ -84,18 +77,14 @@ public class SimpleCaseDSL<T> {
             conditions.addAll(subsequentConditions);
         }
 
-        public SimpleCaseDSL<T> then(String value) {
-            whenConditions.add(new ConditionBasedWhenCondition<>(conditions, quoteStringForSQL(value)));
-            return SimpleCaseDSL.this;
-        }
-
-        public SimpleCaseDSL<T> then(Object value) {
-            whenConditions.add(new ConditionBasedWhenCondition<>(conditions, value));
+        @Override
+        public SimpleCaseDSL<T> then(BasicColumn column) {
+            whenConditions.add(new ConditionBasedWhenCondition<>(conditions, column));
             return SimpleCaseDSL.this;
         }
     }
 
-    public class BasicWhenFinisher {
+    public class BasicWhenFinisher implements ThenDSL<SimpleCaseDSL<T>> {
         private final List<T> values = new ArrayList<>();
 
         private BasicWhenFinisher(T value, List<T> subsequentValues) {
@@ -103,13 +92,9 @@ public class SimpleCaseDSL<T> {
             values.addAll(subsequentValues);
         }
 
-        public SimpleCaseDSL<T> then(String value) {
-            whenConditions.add(new BasicWhenCondition<>(values, quoteStringForSQL(value)));
-            return SimpleCaseDSL.this;
-        }
-
-        public SimpleCaseDSL<T> then(Object value) {
-            whenConditions.add(new BasicWhenCondition<>(values, value));
+        @Override
+        public SimpleCaseDSL<T> then(BasicColumn column) {
+            whenConditions.add(new BasicWhenCondition<>(values, column));
             return SimpleCaseDSL.this;
         }
     }

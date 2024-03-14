@@ -32,7 +32,7 @@ import org.mybatis.dynamic.sql.util.Validator;
 
 public class SearchedCaseModel implements BasicColumn {
     private final List<SearchedWhenCondition> whenConditions;
-    private final Object elseValue;
+    private final BasicColumn elseValue;
     private final String alias;
 
     private SearchedCaseModel(Builder builder) {
@@ -46,7 +46,7 @@ public class SearchedCaseModel implements BasicColumn {
         return whenConditions.stream();
     }
 
-    public Optional<Object> elseValue() {
+    public Optional<BasicColumn> elseValue() {
         return Optional.ofNullable(elseValue);
     }
 
@@ -70,14 +70,14 @@ public class SearchedCaseModel implements BasicColumn {
 
     public static class SearchedWhenCondition extends AbstractBooleanExpressionModel {
 
-        private final Object thenValue;
+        private final BasicColumn thenValue;
 
-        public Object thenValue() {
+        public BasicColumn thenValue() {
             return thenValue;
         }
 
         public SearchedWhenCondition(SqlCriterion initialCriterion, List<AndOrCriteriaGroup> subCriteria,
-                                     Object thenValue) {
+                                     BasicColumn thenValue) {
             super(initialCriterion, subCriteria);
             this.thenValue = Objects.requireNonNull(thenValue);
         }
@@ -85,7 +85,7 @@ public class SearchedCaseModel implements BasicColumn {
 
     public static class Builder {
         private final List<SearchedWhenCondition> whenConditions = new ArrayList<>();
-        private Object elseValue;
+        private BasicColumn elseValue;
         private String alias;
 
         public Builder withWhenConditions(List<SearchedWhenCondition> whenConditions) {
@@ -93,7 +93,7 @@ public class SearchedCaseModel implements BasicColumn {
             return this;
         }
 
-        public Builder withElseValue(Object elseValue) {
+        public Builder withElseValue(BasicColumn elseValue) {
             this.elseValue = elseValue;
             return this;
         }

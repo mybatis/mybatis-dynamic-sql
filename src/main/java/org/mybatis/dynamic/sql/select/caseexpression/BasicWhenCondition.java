@@ -19,10 +19,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
+import org.mybatis.dynamic.sql.BasicColumn;
+
 public class BasicWhenCondition<T> extends SimpleCaseWhenCondition<T> {
     private final List<T> conditions = new ArrayList<>();
 
-    public BasicWhenCondition(List<T> conditions, Object thenValue) {
+    public BasicWhenCondition(List<T> conditions, BasicColumn thenValue) {
         super(thenValue);
         this.conditions.addAll(conditions);
     }

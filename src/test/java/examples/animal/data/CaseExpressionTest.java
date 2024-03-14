@@ -23,6 +23,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.entry;
 import static org.mybatis.dynamic.sql.SqlBuilder.and;
+import static org.mybatis.dynamic.sql.SqlBuilder.cast;
 import static org.mybatis.dynamic.sql.SqlBuilder.group;
 import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
 import static org.mybatis.dynamic.sql.SqlBuilder.isEqualToWhenPresent;
@@ -31,6 +32,7 @@ import static org.mybatis.dynamic.sql.SqlBuilder.isLessThan;
 import static org.mybatis.dynamic.sql.SqlBuilder.or;
 import static org.mybatis.dynamic.sql.SqlBuilder.case_;
 import static org.mybatis.dynamic.sql.SqlBuilder.select;
+import static org.mybatis.dynamic.sql.SqlBuilder.value;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -178,6 +180,58 @@ class CaseExpressionTest {
             assertThat(records.get(3)).containsOnly(entry("ANIMAL_NAME", "Artic fox"), entry("ANIMALTYPE", 1));
             assertThat(records.get(4)).containsOnly(entry("ANIMAL_NAME", "Red fox"), entry("ANIMALTYPE", 1));
             assertThat(records.get(5)).containsOnly(entry("ANIMAL_NAME", "Raccoon"), entry("ANIMALTYPE", 3));
+        }
+    }
+
+    @Test
+    void testSearchedCaseWithBoundValues() {
+        try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
+            CommonSelectMapper mapper = sqlSession.getMapper(CommonSelectMapper.class);
+
+            SelectStatementProvider selectStatement = select(animalName, case_()
+                    .when(animalName, isEqualTo("Artic fox")).or(animalName, isEqualTo("Red fox")).then(value("Fox"))
+                    .when(animalName, isEqualTo("Little brown bat")).or(animalName, isEqualTo("Big brown bat")).then(value("Bat"))
+                    .else_(cast(value("Not a Fox or a bat")).as("VARCHAR(30)")).end().as("AnimalType"))
+                    .from(animalData, "a")
+                    .where(id, isIn(2, 3, 31, 32, 38, 39))
+                    .orderBy(id)
+                    .build()
+                    .render(RenderingStrategies.MYBATIS3);
+
+            String expected = "select a.animal_name, case " +
+                    "when a.animal_name = #{parameters.p1,jdbcType=VARCHAR} or a.animal_name = #{parameters.p2,jdbcType=VARCHAR} then #{parameters.p3} " +
+                    "when a.animal_name = #{parameters.p4,jdbcType=VARCHAR} or a.animal_name = #{parameters.p5,jdbcType=VARCHAR} then #{parameters.p6} " +
+                    "else cast(#{parameters.p7} as VARCHAR(30)) end as AnimalType " +
+                    "from AnimalData a where a.id in (" +
+                    "#{parameters.p8,jdbcType=INTEGER},#{parameters.p9,jdbcType=INTEGER}," +
+                    "#{parameters.p10,jdbcType=INTEGER},#{parameters.p11,jdbcType=INTEGER},#{parameters.p12,jdbcType=INTEGER}," +
+                    "#{parameters.p13,jdbcType=INTEGER}) " +
+                    "order by id";
+            assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
+            assertThat(selectStatement.getParameters()).containsOnly(
+                    entry("p1", "Artic fox"),
+                    entry("p2", "Red fox"),
+                    entry("p3", "Fox"),
+                    entry("p4", "Little brown bat"),
+                    entry("p5", "Big brown bat"),
+                    entry("p6", "Bat"),
+                    entry("p7", "Not a Fox or a bat"),
+                    entry("p8", 2),
+                    entry("p9", 3),
+                    entry("p10", 31),
+                    entry("p11", 32),
+                    entry("p12", 38),
+                    entry("p13", 39)
+            );
+
+            List<Map<String, Object>> records = mapper.selectManyMappedRows(selectStatement);
+            assertThat(records).hasSize(6);
+            assertThat(records.get(0)).containsOnly(entry("ANIMAL_NAME", "Little brown bat"), entry("ANIMALTYPE", "Bat"));
+            assertThat(records.get(1)).containsOnly(entry("ANIMAL_NAME", "Big brown bat"), entry("ANIMALTYPE", "Bat"));
+            assertThat(records.get(2)).containsOnly(entry("ANIMAL_NAME", "Cat"), entry("ANIMALTYPE", "Not a Fox or a bat"));
+            assertThat(records.get(3)).containsOnly(entry("ANIMAL_NAME", "Artic fox"), entry("ANIMALTYPE", "Fox"));
+            assertThat(records.get(4)).containsOnly(entry("ANIMAL_NAME", "Red fox"), entry("ANIMALTYPE", "Fox"));
+            assertThat(records.get(5)).containsOnly(entry("ANIMAL_NAME", "Raccoon"), entry("ANIMALTYPE", "Not a Fox or a bat"));
         }
     }
 
@@ -424,6 +478,47 @@ class CaseExpressionTest {
             assertThat(records.get(1)).containsOnly(entry("ANIMAL_NAME", "Artic fox"), entry("ISAFOX", true));
             assertThat(records.get(2)).containsOnly(entry("ANIMAL_NAME", "Red fox"), entry("ISAFOX", true));
             assertThat(records.get(3)).containsOnly(entry("ANIMAL_NAME", "Raccoon"), entry("ISAFOX", false));
+        }
+    }
+
+    @Test
+    void testSimpleCaseWithBoundValues() {
+        try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
+            CommonSelectMapper mapper = sqlSession.getMapper(CommonSelectMapper.class);
+
+            SelectStatementProvider selectStatement = select(animalName, SqlBuilder.case_(animalName)
+                    .when(isEqualTo("Artic fox"), isEqualTo("Red fox")).then(value("yes"))
+                    .else_(cast(value("no")).as("VARCHAR(30)")).end().as("IsAFox"))
+                    .from(animalData)
+                    .where(id, isIn(31, 32, 38, 39))
+                    .orderBy(id)
+                    .build()
+                    .render(RenderingStrategies.MYBATIS3);
+
+            String expected = "select animal_name, " +
+                    "case animal_name when = #{parameters.p1,jdbcType=VARCHAR}, = #{parameters.p2,jdbcType=VARCHAR} then #{parameters.p3} " +
+                    "else cast(#{parameters.p4} as VARCHAR(30)) end " +
+                    "as IsAFox from AnimalData where id in " +
+                    "(#{parameters.p5,jdbcType=INTEGER},#{parameters.p6,jdbcType=INTEGER},#{parameters.p7,jdbcType=INTEGER},#{parameters.p8,jdbcType=INTEGER}) " +
+                    "order by id";
+            assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
+            assertThat(selectStatement.getParameters()).containsOnly(
+                    entry("p1", "Artic fox"),
+                    entry("p2", "Red fox"),
+                    entry("p3", "yes"),
+                    entry("p4", "no"),
+                    entry("p5", 31),
+                    entry("p6", 32),
+                    entry("p7", 38),
+                    entry("p8", 39)
+            );
+
+            List<Map<String, Object>> records = mapper.selectManyMappedRows(selectStatement);
+            assertThat(records).hasSize(4);
+            assertThat(records.get(0)).containsOnly(entry("ANIMAL_NAME", "Cat"), entry("ISAFOX", "no"));
+            assertThat(records.get(1)).containsOnly(entry("ANIMAL_NAME", "Artic fox"), entry("ISAFOX", "yes"));
+            assertThat(records.get(2)).containsOnly(entry("ANIMAL_NAME", "Red fox"), entry("ISAFOX", "yes"));
+            assertThat(records.get(3)).containsOnly(entry("ANIMAL_NAME", "Raccoon"), entry("ISAFOX", "no"));
         }
     }
 
