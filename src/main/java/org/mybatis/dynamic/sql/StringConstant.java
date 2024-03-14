@@ -20,7 +20,6 @@ import java.util.Optional;
 
 import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
-import org.mybatis.dynamic.sql.util.StringUtilities;
 
 public class StringConstant implements BindableColumn<String> {
 
@@ -43,7 +42,8 @@ public class StringConstant implements BindableColumn<String> {
 
     @Override
     public FragmentAndParameters render(RenderingContext renderingContext) {
-        return FragmentAndParameters.fromFragment(StringUtilities.quoteStringForSQL(value));
+        String escaped = value.replace("'", "''"); //$NON-NLS-1$ //$NON-NLS-2$
+        return FragmentAndParameters.fromFragment("'" + escaped + "'"); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     @Override

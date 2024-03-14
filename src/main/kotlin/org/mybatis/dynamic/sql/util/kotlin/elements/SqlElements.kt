@@ -167,7 +167,9 @@ fun <T> subtract(
     vararg subsequentColumns: BasicColumn
 ): Subtract<T> = Subtract.of(firstColumn, secondColumn, subsequentColumns.asList())
 
-fun cast(column: BasicColumn) = SqlBuilder.cast(column)
+fun cast(value: String): CastFinisher = SqlBuilder.cast(value)
+
+fun cast(column: BasicColumn): CastFinisher = SqlBuilder.cast(column)
 
 infix fun CastFinisher.`as`(targetType: String): Cast = this.`as`(targetType)
 

@@ -531,6 +531,10 @@ public interface SqlBuilder {
         return Subtract.of(firstColumn, secondColumn, subsequentColumns);
     }
 
+    static CastFinisher cast(String value) {
+        return cast(stringConstant(value));
+    }
+
     static CastFinisher cast(BasicColumn column) {
         return new CastFinisher(column);
     }

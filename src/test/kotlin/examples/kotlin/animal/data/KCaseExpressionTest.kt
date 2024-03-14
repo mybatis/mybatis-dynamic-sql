@@ -35,6 +35,7 @@ import org.mybatis.dynamic.sql.util.kotlin.elements.isEqualTo
 import org.mybatis.dynamic.sql.util.kotlin.elements.value
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.select
 import org.mybatis.dynamic.sql.util.mybatis3.CommonSelectMapper
+import java.math.BigDecimal
 
 class KCaseExpressionTest {
     private fun newSession(executorType: ExecutorType = ExecutorType.REUSE): SqlSession {
@@ -708,6 +709,135 @@ class KCaseExpressionTest {
                 entry("ISAFOX", "yes")
             )
             assertThat(records[3]).containsOnly(entry("ANIMAL_NAME", "Raccoon"))
+        }
+    }
+
+    @Test
+    fun testCastString() {
+        newSession().use { session ->
+            val mapper = session.getMapper(CommonSelectMapper::class.java)
+
+            val selectStatement = select(
+                animalName,
+                case(animalName) {
+                    `when`(isEqualTo("Artic fox"), isEqualTo("Red fox")) { then(cast("It's a fox") `as` "VARCHAR(30)") }
+                    `else`("It's not a fox")
+                }.`as`("IsAFox")
+            ) {
+                from(animalData)
+                where { id.isIn(31, 32, 38, 39) }
+                orderBy(id)
+            }
+
+            val expected = "select animal_name, " +
+                    "case animal_name when = #{parameters.p1,jdbcType=VARCHAR}, = #{parameters.p2,jdbcType=VARCHAR} then cast('It''s a fox' as VARCHAR(30)) " +
+                    "else 'It''s not a fox' end " +
+                    "as IsAFox from AnimalData where id in " +
+                    "(#{parameters.p3,jdbcType=INTEGER},#{parameters.p4,jdbcType=INTEGER},#{parameters.p5,jdbcType=INTEGER},#{parameters.p6,jdbcType=INTEGER}) " +
+                    "order by id"
+            assertThat(selectStatement.selectStatement).isEqualTo(expected)
+            assertThat(selectStatement.parameters)
+                .containsOnly(
+                    entry("p1", "Artic fox"),
+                    entry("p2", "Red fox"),
+                    entry("p3", 31),
+                    entry("p4", 32),
+                    entry("p5", 38),
+                    entry("p6", 39)
+                )
+
+            val records = mapper.selectManyMappedRows(selectStatement)
+            assertThat(records).hasSize(4)
+            assertThat(records[0]).containsOnly(entry("ANIMAL_NAME", "Cat"), entry("ISAFOX", "It's not a fox"))
+            assertThat(records[1]).containsOnly(entry("ANIMAL_NAME", "Artic fox"), entry("ISAFOX", "It's a fox"))
+            assertThat(records[2]).containsOnly(entry("ANIMAL_NAME", "Red fox"), entry("ISAFOX", "It's a fox"))
+            assertThat(records[3]).containsOnly(entry("ANIMAL_NAME", "Raccoon"), entry("ISAFOX", "It's not a fox"))
+        }
+    }
+
+    @Test
+    fun testCaseLongs() {
+        newSession().use { session ->
+            val mapper = session.getMapper(CommonSelectMapper::class.java)
+
+            val selectStatement = select(
+                animalName,
+                case(animalName) {
+                    `when`(isEqualTo("Artic fox"), isEqualTo("Red fox")) { then( 1L) }
+                    `else`(2L)
+                }.`as`("IsAFox")
+            ) {
+                from(animalData)
+                where { id.isIn(31, 32, 38, 39) }
+                orderBy(id)
+            }
+
+            val expected = "select animal_name, " +
+                    "case animal_name when = #{parameters.p1,jdbcType=VARCHAR}, = #{parameters.p2,jdbcType=VARCHAR} then 1 " +
+                    "else 2 end " +
+                    "as IsAFox from AnimalData where id in " +
+                    "(#{parameters.p3,jdbcType=INTEGER},#{parameters.p4,jdbcType=INTEGER},#{parameters.p5,jdbcType=INTEGER},#{parameters.p6,jdbcType=INTEGER}) " +
+                    "order by id"
+            assertThat(selectStatement.selectStatement).isEqualTo(expected)
+            assertThat(selectStatement.parameters)
+                .containsOnly(
+                    entry("p1", "Artic fox"),
+                    entry("p2", "Red fox"),
+                    entry("p3", 31),
+                    entry("p4", 32),
+                    entry("p5", 38),
+                    entry("p6", 39)
+                )
+
+            val records = mapper.selectManyMappedRows(selectStatement)
+            assertThat(records).hasSize(4)
+            assertThat(records[0]).containsOnly(entry("ANIMAL_NAME", "Cat"), entry("ISAFOX", 2))
+            assertThat(records[1]).containsOnly(entry("ANIMAL_NAME", "Artic fox"), entry("ISAFOX", 1))
+            assertThat(records[2]).containsOnly(entry("ANIMAL_NAME", "Red fox"), entry("ISAFOX", 1))
+            assertThat(records[3]).containsOnly(entry("ANIMAL_NAME", "Raccoon"), entry("ISAFOX", 2))
+        }
+    }
+
+    @Test
+    fun testCaseDoubles() {
+        newSession().use { session ->
+            val mapper = session.getMapper(CommonSelectMapper::class.java)
+
+            val selectStatement = select(
+                animalName,
+                case(animalName) {
+                    `when`(isEqualTo("Artic fox"), isEqualTo("Red fox")) { then( 1.1) }
+                    `else`(2.2)
+                }.`as`("IsAFox")
+            ) {
+                from(animalData)
+                where { id.isIn(31, 32, 38, 39) }
+                orderBy(id)
+            }
+
+            val expected = "select animal_name, " +
+                    "case animal_name when = #{parameters.p1,jdbcType=VARCHAR}, = #{parameters.p2,jdbcType=VARCHAR} then 1.1 " +
+                    "else 2.2 end " +
+                    "as IsAFox from AnimalData where id in " +
+                    "(#{parameters.p3,jdbcType=INTEGER},#{parameters.p4,jdbcType=INTEGER},#{parameters.p5,jdbcType=INTEGER},#{parameters.p6,jdbcType=INTEGER}) " +
+                    "order by id"
+            assertThat(selectStatement.selectStatement).isEqualTo(expected)
+            assertThat(selectStatement.parameters)
+                .containsOnly(
+                    entry("p1", "Artic fox"),
+                    entry("p2", "Red fox"),
+                    entry("p3", 31),
+                    entry("p4", 32),
+                    entry("p5", 38),
+                    entry("p6", 39)
+                )
+
+            val records = mapper.selectManyMappedRows(selectStatement)
+            assertThat(records).hasSize(4)
+            assertThat(records[0]).containsOnly(entry("ANIMAL_NAME", "Cat"), entry("ISAFOX", BigDecimal("2.2")))
+            assertThat(records[1]).containsOnly(entry("ANIMAL_NAME", "Artic fox"), entry("ISAFOX", BigDecimal("1.1")))
+            assertThat(records[2]).containsOnly(entry("ANIMAL_NAME", "Red fox"), entry("ISAFOX", BigDecimal("1.1")))
+            assertThat(records[3]).containsOnly(entry("ANIMAL_NAME", "Raccoon"), entry("ISAFOX", BigDecimal("2.2")))
         }
     }
 
