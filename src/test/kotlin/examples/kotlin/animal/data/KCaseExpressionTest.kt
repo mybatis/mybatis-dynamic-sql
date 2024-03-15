@@ -28,6 +28,7 @@ import org.junit.jupiter.api.Test
 import org.mybatis.dynamic.sql.exception.InvalidSqlException
 import org.mybatis.dynamic.sql.util.Messages
 import org.mybatis.dynamic.sql.util.kotlin.KInvalidSQLException
+import org.mybatis.dynamic.sql.util.kotlin.elements.`as`
 import org.mybatis.dynamic.sql.util.kotlin.elements.case
 import org.mybatis.dynamic.sql.util.kotlin.elements.cast
 import org.mybatis.dynamic.sql.util.kotlin.elements.isEqualTo
@@ -63,7 +64,7 @@ class KCaseExpressionTest {
                         then("Bat")
                     }
                     `else`("Not a Fox or a bat")
-                }.`as`("AnimalType")
+                } `as` "AnimalType"
             ) {
                 from(animalData, "a")
                 where { id.isIn(2, 3, 31, 32, 38, 39) }
@@ -140,7 +141,7 @@ class KCaseExpressionTest {
                         then(2)
                     }
                     `else`(3)
-                }.`as`("AnimalType")
+                } `as` "AnimalType"
             ) {
                 from(animalData, "a")
                 where { id.isIn(2, 3, 31, 32, 38, 39) }
@@ -217,7 +218,7 @@ class KCaseExpressionTest {
                         then(value("Bat"))
                     }
                     `else`(cast { value("Not a Fox or a bat") `as` "VARCHAR(30)" })
-                }.`as`("AnimalType")
+                } `as` "AnimalType"
             ) {
                 from(animalData, "a")
                 where { id.isIn(2, 3, 31, 32, 38, 39) }
@@ -297,7 +298,7 @@ class KCaseExpressionTest {
                         or { animalName isEqualTo "Big brown bat" }
                         then("Bat")
                     }
-                }.`as`("AnimalType")
+                } `as` "AnimalType"
             ) {
                 from(animalData, "a")
                 where { id.isIn(2, 3, 31, 32, 38, 39) }
@@ -379,7 +380,7 @@ class KCaseExpressionTest {
                         then("Fred")
                     }
                     `else`("Not a Fox or a bat")
-                }.`as`("AnimalType")
+                } `as` "AnimalType"
             ) {
                 from(animalData, "a")
                 where { id.isIn(2, 3, 4, 31, 32, 38, 39) }
@@ -458,7 +459,7 @@ class KCaseExpressionTest {
                 case(animalName) {
                     `when` (isEqualTo("Artic fox"), isEqualTo("Red fox")) { then("yes") }
                     `else`("no")
-                }.`as`("IsAFox")
+                } `as` "IsAFox"
             ) {
                 from(animalData)
                 where { id.isIn(31, 32, 38, 39) }
@@ -512,7 +513,7 @@ class KCaseExpressionTest {
                 case(animalName) {
                     `when` ("Artic fox", "Red fox") { then("yes") }
                     `else`("no")
-                }.`as`("IsAFox")
+                } `as` "IsAFox"
             ) {
                 from(animalData)
                 where { id.isIn(31, 32, 38, 39) }
@@ -566,7 +567,7 @@ class KCaseExpressionTest {
                 case(animalName) {
                     `when` (isEqualTo("Artic fox"), isEqualTo("Red fox")) { then(true) }
                     `else`(false)
-                }.`as`("IsAFox")
+                } `as` "IsAFox"
             ) {
                 from(animalData)
                 where { id.isIn(31, 32, 38, 39) }
@@ -620,7 +621,7 @@ class KCaseExpressionTest {
                 case(animalName) {
                     `when` ("Artic fox", "Red fox") { then(true) }
                     `else`(false)
-                }.`as`("IsAFox")
+                } `as` "IsAFox"
             ) {
                 from(animalData)
                 where { id.isIn(31, 32, 38, 39) }
@@ -673,7 +674,7 @@ class KCaseExpressionTest {
                 animalName,
                 case(animalName) {
                     `when`(isEqualTo("Artic fox"), isEqualTo("Red fox")) { then("yes") }
-                }.`as`("IsAFox")
+                } `as` "IsAFox"
             ) {
                 from(animalData)
                 where { id.isIn(31, 32, 38, 39) }
@@ -721,7 +722,7 @@ class KCaseExpressionTest {
                 case(animalName) {
                     `when`(isEqualTo("Artic fox"), isEqualTo("Red fox")) { then(cast { "It's a fox" `as` "VARCHAR(30)" })}
                     `else`("It's not a fox")
-                }.`as`("IsAFox")
+                } `as` "IsAFox"
             ) {
                 from(animalData)
                 where { id.isIn(31, 32, 38, 39) }
@@ -764,7 +765,7 @@ class KCaseExpressionTest {
                 case(animalName) {
                     `when`(isEqualTo("Artic fox"), isEqualTo("Red fox")) { then( 1L) }
                     `else`(2L)
-                }.`as`("IsAFox")
+                } `as` "IsAFox"
             ) {
                 from(animalData)
                 where { id.isIn(31, 32, 38, 39) }
@@ -807,7 +808,7 @@ class KCaseExpressionTest {
                 case(animalName) {
                     `when`(isEqualTo("Artic fox"), isEqualTo("Red fox")) { then( 1.1) }
                     `else`(2.2)
-                }.`as`("IsAFox")
+                } `as` "IsAFox"
             ) {
                 from(animalData)
                 where { id.isIn(31, 32, 38, 39) }
@@ -850,7 +851,7 @@ class KCaseExpressionTest {
                 case(animalName) {
                     `when`(isEqualTo("Artic fox"), isEqualTo("Red fox")) { then( 1.1) }
                     `else`(cast { 2.2 `as` "DOUBLE" })
-                }.`as`("IsAFox")
+                } `as` "IsAFox"
             ) {
                 from(animalData)
                 where { id.isIn(31, 32, 38, 39) }
