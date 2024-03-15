@@ -101,7 +101,7 @@ fun or(receiver: GroupingCriteriaReceiver): AndOrCriteriaGroup =
     }
 
 // case expressions
-fun case(dslCompleter: KSearchedCaseDSL.() -> Unit): BasicColumn =
+fun case(dslCompleter: KSearchedCaseDSL.() -> Unit): SearchedCaseModel =
     KSearchedCaseDSL().apply(dslCompleter).run {
         SearchedCaseModel.Builder()
             .withWhenConditions(whenConditions)
@@ -109,7 +109,7 @@ fun case(dslCompleter: KSearchedCaseDSL.() -> Unit): BasicColumn =
             .build()
     }
 
-fun <T : Any> case(column: BindableColumn<T>, dslCompleter: KSimpleCaseDSL<T>.() -> Unit) : BasicColumn =
+fun <T : Any> case(column: BindableColumn<T>, dslCompleter: KSimpleCaseDSL<T>.() -> Unit) : SimpleCaseModel<T> =
     KSimpleCaseDSL<T>().apply(dslCompleter).run {
         SimpleCaseModel.Builder<T>()
             .withColumn(column)
