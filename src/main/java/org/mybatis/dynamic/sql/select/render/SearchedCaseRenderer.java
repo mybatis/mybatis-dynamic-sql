@@ -38,15 +38,12 @@ public class SearchedCaseRenderer {
     }
 
     public FragmentAndParameters render() {
-        FragmentAndParameters caseFragment = renderCase();
-        FragmentAndParameters whenFragment = renderWhenConditions();
-        Optional<FragmentAndParameters> elseFragment = renderElse();
-        FragmentAndParameters endFragment = renderEnd();
-
-        return elseFragment.map(ef -> Stream.of(caseFragment, whenFragment, ef, endFragment))
-                .orElseGet(() -> Stream.of(caseFragment, whenFragment, endFragment))
-                .collect(FragmentCollector.collect())
-                .toFragmentAndParameters(Collectors.joining(" ")); //$NON-NLS-1$
+        FragmentCollector fc = new FragmentCollector();
+        fc.add(renderCase());
+        fc.add(renderWhenConditions());
+        renderElse().ifPresent(fc::add);
+        fc.add(renderEnd());
+        return fc.toFragmentAndParameters(Collectors.joining(" ")); //$NON-NLS-1$
     }
 
     private FragmentAndParameters renderCase() {
