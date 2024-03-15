@@ -35,7 +35,7 @@ rows in a table. For example, all rows could be deleted. As of version 1.4.1, th
 through either global configuration, or by configuring individual statements to allow for where clauses to be dropped.
 
 The important idea is that there are legitimate cases when it is reasonable to allow a where clause to not render, but
-the decision to allow that should be very intentional. See the "Configuration of the Library" page for further details.
+the decision to allow that should be very intentional. See the [Configuration of the Library](configuration.md) page for further details.
 
 The exception will only be thrown if a where clause is coded but fails to render. If you do not code a where clause in
 a statement, then we assume that you intend for all rows to be affected.

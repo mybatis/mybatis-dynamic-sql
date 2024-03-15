@@ -26,6 +26,8 @@ import org.mybatis.dynamic.sql.SqlBuilder
 import org.mybatis.dynamic.sql.SqlColumn
 import org.mybatis.dynamic.sql.StringConstant
 import org.mybatis.dynamic.sql.VisitableCondition
+import org.mybatis.dynamic.sql.select.caseexpression.SearchedCaseModel
+import org.mybatis.dynamic.sql.select.caseexpression.SimpleCaseModel
 import org.mybatis.dynamic.sql.select.aggregate.Avg
 import org.mybatis.dynamic.sql.select.aggregate.Count
 import org.mybatis.dynamic.sql.select.aggregate.CountAll
@@ -34,6 +36,7 @@ import org.mybatis.dynamic.sql.select.aggregate.Max
 import org.mybatis.dynamic.sql.select.aggregate.Min
 import org.mybatis.dynamic.sql.select.aggregate.Sum
 import org.mybatis.dynamic.sql.select.function.Add
+import org.mybatis.dynamic.sql.select.function.Cast
 import org.mybatis.dynamic.sql.select.function.Concat
 import org.mybatis.dynamic.sql.select.function.Concatenate
 import org.mybatis.dynamic.sql.select.function.Divide
@@ -46,6 +49,7 @@ import org.mybatis.dynamic.sql.select.function.Upper
 import org.mybatis.dynamic.sql.util.kotlin.GroupingCriteriaCollector
 import org.mybatis.dynamic.sql.util.kotlin.GroupingCriteriaReceiver
 import org.mybatis.dynamic.sql.util.kotlin.KotlinSubQueryBuilder
+import org.mybatis.dynamic.sql.util.kotlin.invalidIfNull
 import org.mybatis.dynamic.sql.where.condition.IsBetween
 import org.mybatis.dynamic.sql.where.condition.IsEqualTo
 import org.mybatis.dynamic.sql.where.condition.IsEqualToColumn
@@ -93,6 +97,24 @@ fun or(receiver: GroupingCriteriaReceiver): AndOrCriteriaGroup =
         AndOrCriteriaGroup.Builder().withInitialCriterion(initialCriterion)
             .withSubCriteria(subCriteria)
             .withConnector("or")
+            .build()
+    }
+
+// case expressions
+fun case(dslCompleter: KSearchedCaseDSL.() -> Unit): SearchedCaseModel =
+    KSearchedCaseDSL().apply(dslCompleter).run {
+        SearchedCaseModel.Builder()
+            .withWhenConditions(whenConditions)
+            .withElseValue(elseValue)
+            .build()
+    }
+
+fun <T : Any> case(column: BindableColumn<T>, dslCompleter: KSimpleCaseDSL<T>.() -> Unit) : SimpleCaseModel<T> =
+    KSimpleCaseDSL<T>().apply(dslCompleter).run {
+        SimpleCaseModel.Builder<T>()
+            .withColumn(column)
+            .withWhenConditions(whenConditions)
+            .withElseValue(elseValue)
             .build()
     }
 
@@ -144,6 +166,9 @@ fun <T> subtract(
     secondColumn: BasicColumn,
     vararg subsequentColumns: BasicColumn
 ): Subtract<T> = Subtract.of(firstColumn, secondColumn, subsequentColumns.asList())
+
+fun cast(receiver: CastDSL.() -> Unit): Cast =
+    invalidIfNull(CastDSL().apply(receiver).cast, "ERROR.43")
 
 fun <T> concat(
     firstColumn: BindableColumn<T>,
