@@ -44,6 +44,7 @@
         <item href="docs/conditions.html" name="WHERE Conditions"/>
       </item>
       <item href="docs/select.html" name="SELECT Statements" >
+        <item href="docs/caseExpressions.html" name="Case Expressions"/>
         <item href="docs/complexQueries.html" name="Complex Queries"/>
       </item>
       <item href="docs/delete.html" name="DELETE Statements" />
@@ -55,6 +56,7 @@
       <item href="docs/spring.html" name="Spring Support" />
       <item href="docs/springBatch.html" name="Spring Batch Support" />
       <item href="docs/kotlinOverview.html" name="Kotlin Support" collapse="true" >
+        <item href="docs/kotlinCaseExpressions.html" name="Kotlin Case Expressions"/>
         <item href="docs/kotlinWhereClauses.html" name="Kotlin Where Clauses" />
         <item href="docs/kotlinMyBatis3.html" name="Kotlin Support for MyBatis3" />
         <item href="docs/kotlinSpring.html" name="Kotlin Support for Spring" />

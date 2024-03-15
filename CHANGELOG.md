@@ -4,9 +4,30 @@ This log will detail notable changes to MyBatis Dynamic SQL. Full details are av
 
 ## Release 1.5.1 - Unreleased
 
-This is a minor release with a few small enhancements.
+This is a minor release with several enhancements.
 
 GitHub milestone: [https://github.com/mybatis/mybatis-dynamic-sql/milestone/13](https://github.com/mybatis/mybatis-dynamic-sql/milestone/13)
+
+### Case Expressions and Cast Function
+We've added support for CASE expressions to the library. Both simple and searched case expressions are supported.
+This is a fairly extensive enhancement as case expressions are quite complex, but we were able to reuse many of the
+building blocks from the WHERE and HAVING support already in the library. You should be able to build CASE expressions
+with relatively few limitations.
+
+It is also common to use a CAST function with CASE expressions, so we have added CAST as a built-in function
+in the library.
+
+The DSL for both Java and Kotlin has been updated to fully support CASE expressions in the same idiomatic forms
+as other parts of the library.
+
+We've tested this extensively and the code is, of course, 100% covered by test code. But it is possible that we've not
+covered every possible scenario. Please let us know if you find issues.
+
+Full documentation is available here:
+- [Java Case Expression DSL Documentation](caseExpressions.md)
+- [Kotlin Case Expression DSL Documentation](kotlinCaseExpressions.md)
+
+The pull request for this change is 
 
 ### Parameter Values in Joins
 
