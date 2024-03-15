@@ -11,7 +11,7 @@ A simple case expression checks the values of a single column. It looks like thi
 
 ```sql
 select case id
-    when 1, 2, 3 then true 
+    when 1, 2, 3 then true
     else false
   end as small_id
 from foo
@@ -32,8 +32,8 @@ A searched case expression allows arbitrary logic, and it can check the values o
 
 ```sql
 select case
-    when animal_name = 'Small brown bat' or animal_name = 'Large brown bat' then 'Bat' 
-    when animal_name = 'Artic fox' or animal_name = 'Red fox' then 'Fox' 
+    when animal_name = 'Small brown bat' or animal_name = 'Large brown bat' then 'Bat'
+    when animal_name = 'Artic fox' or animal_name = 'Red fox' then 'Fox'
     else 'Other'
   end as animal_type
 from foo
@@ -44,7 +44,7 @@ from foo
 The library will always render the "when" part of a case expression using bind variables. Rendering of the "then" and
 "else" parts of a case expression may or may not use bind variables depending on how you write the query. In general,
 the library will render "then" and "else" as constants - meaning not using bind variables. If you wish to use bind
-variables for these parts of a case expressions, then you can use the `value` function to turn a constant into a 
+variables for these parts of a case expressions, then you can use the `value` function to turn a constant into a
 bind variable. We will show examples of the different renderings in the following sections.
 
 If you choose to use bind variables for all "then" and "else" values, it is highly likely that the database will
@@ -186,8 +186,8 @@ statement - so avoid the use of conditions like "isEqualToWhenPresent", etc.
 The rendered SQL will be as follows (without the line breaks):
 ```sql
 select case
-    when animal_name = ? or animal_name = ? then 'Bat' 
-    when animal_name = ? or animal_name = ? then 'Fox' 
+    when animal_name = ? or animal_name = ? then 'Bat'
+    when animal_name = ? or animal_name = ? then 'Fox'
     else 'Other'
   end as animal_type
 from foo

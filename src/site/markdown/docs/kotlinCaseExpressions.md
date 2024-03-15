@@ -11,7 +11,7 @@ A simple case expression checks the values of a single column. It looks like thi
 
 ```sql
 select case id
-    when 1, 2, 3 then true 
+    when 1, 2, 3 then true
     else false
   end as small_id
 from foo
@@ -32,8 +32,8 @@ A searched case expression allows arbitrary logic, and it can check the values o
 
 ```sql
 select case
-    when animal_name = 'Small brown bat' or animal_name = 'Large brown bat' then 'Bat' 
-    when animal_name = 'Artic fox' or animal_name = 'Red fox' then 'Fox' 
+    when animal_name = 'Small brown bat' or animal_name = 'Large brown bat' then 'Bat'
+    when animal_name = 'Artic fox' or animal_name = 'Red fox' then 'Fox'
     else 'Other'
   end as animal_type
 from foo
@@ -206,8 +206,8 @@ statement - so avoid the use of conditions like "isEqualToWhenPresent", etc.
 The rendered SQL will be as follows (without the line breaks):
 ```sql
 select case
-    when animal_name = ? or animal_name = ? then 'Bat' 
-    when animal_name = ? or animal_name = ? then 'Fox' 
+    when animal_name = ? or animal_name = ? then 'Bat'
+    when animal_name = ? or animal_name = ? then 'Fox'
     else 'Other'
   end as animal_type
 from foo

@@ -27,7 +27,7 @@ Full documentation is available here:
 - [Java Case Expression DSL Documentation](caseExpressions.md)
 - [Kotlin Case Expression DSL Documentation](kotlinCaseExpressions.md)
 
-The pull request for this change is 
+The pull request for this change is ([#761](https://github.com/mybatis/mybatis-dynamic-sql/pull/761))
 
 ### Parameter Values in Joins
 
