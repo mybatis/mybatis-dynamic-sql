@@ -535,6 +535,10 @@ public interface SqlBuilder {
         return cast(stringConstant(value));
     }
 
+    static CastFinisher cast(Double value) {
+        return cast(constant(value.toString()));
+    }
+
     static CastFinisher cast(BasicColumn column) {
         return new CastFinisher(column);
     }

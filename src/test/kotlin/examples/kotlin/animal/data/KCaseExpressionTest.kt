@@ -841,6 +841,49 @@ class KCaseExpressionTest {
     }
 
     @Test
+    fun testCaseCastDoubles() {
+        newSession().use { session ->
+            val mapper = session.getMapper(CommonSelectMapper::class.java)
+
+            val selectStatement = select(
+                animalName,
+                case(animalName) {
+                    `when`(isEqualTo("Artic fox"), isEqualTo("Red fox")) { then( 1.1) }
+                    `else`(cast { 2.2 `as` "DOUBLE" })
+                }.`as`("IsAFox")
+            ) {
+                from(animalData)
+                where { id.isIn(31, 32, 38, 39) }
+                orderBy(id)
+            }
+
+            val expected = "select animal_name, " +
+                    "case animal_name when = #{parameters.p1,jdbcType=VARCHAR}, = #{parameters.p2,jdbcType=VARCHAR} then 1.1 " +
+                    "else cast(2.2 as DOUBLE) end " +
+                    "as IsAFox from AnimalData where id in " +
+                    "(#{parameters.p3,jdbcType=INTEGER},#{parameters.p4,jdbcType=INTEGER},#{parameters.p5,jdbcType=INTEGER},#{parameters.p6,jdbcType=INTEGER}) " +
+                    "order by id"
+            assertThat(selectStatement.selectStatement).isEqualTo(expected)
+            assertThat(selectStatement.parameters)
+                .containsOnly(
+                    entry("p1", "Artic fox"),
+                    entry("p2", "Red fox"),
+                    entry("p3", 31),
+                    entry("p4", 32),
+                    entry("p5", 38),
+                    entry("p6", 39)
+                )
+
+            val records = mapper.selectManyMappedRows(selectStatement)
+            assertThat(records).hasSize(4)
+            assertThat(records[0]).containsOnly(entry("ANIMAL_NAME", "Cat"), entry("ISAFOX", 2.2))
+            assertThat(records[1]).containsOnly(entry("ANIMAL_NAME", "Artic fox"), entry("ISAFOX", 1.1))
+            assertThat(records[2]).containsOnly(entry("ANIMAL_NAME", "Red fox"), entry("ISAFOX", 1.1))
+            assertThat(records[3]).containsOnly(entry("ANIMAL_NAME", "Raccoon"), entry("ISAFOX", 2.2))
+        }
+    }
+
+    @Test
     fun testInvalidDoubleElseSimple() {
         assertThatExceptionOfType(KInvalidSQLException::class.java).isThrownBy {
             case(animalName) {

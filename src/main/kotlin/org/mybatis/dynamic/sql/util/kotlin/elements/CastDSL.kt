@@ -31,6 +31,10 @@ class CastDSL {
         cast = SqlBuilder.cast(this).`as`(targetType)
     }
 
+    infix fun Double.`as`(targetType: String) {
+        cast = SqlBuilder.cast(this).`as`(targetType)
+    }
+
     infix fun BasicColumn.`as`(targetType: String) {
         cast = SqlBuilder.cast(this).`as`(targetType)
     }
