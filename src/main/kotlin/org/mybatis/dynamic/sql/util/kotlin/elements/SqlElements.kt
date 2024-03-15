@@ -23,7 +23,6 @@ import org.mybatis.dynamic.sql.BoundValue
 import org.mybatis.dynamic.sql.Constant
 import org.mybatis.dynamic.sql.SortSpecification
 import org.mybatis.dynamic.sql.SqlBuilder
-import org.mybatis.dynamic.sql.SqlBuilder.CastFinisher
 import org.mybatis.dynamic.sql.SqlColumn
 import org.mybatis.dynamic.sql.StringConstant
 import org.mybatis.dynamic.sql.VisitableCondition
@@ -50,6 +49,7 @@ import org.mybatis.dynamic.sql.select.function.Upper
 import org.mybatis.dynamic.sql.util.kotlin.GroupingCriteriaCollector
 import org.mybatis.dynamic.sql.util.kotlin.GroupingCriteriaReceiver
 import org.mybatis.dynamic.sql.util.kotlin.KotlinSubQueryBuilder
+import org.mybatis.dynamic.sql.util.kotlin.invalidIfNull
 import org.mybatis.dynamic.sql.where.condition.IsBetween
 import org.mybatis.dynamic.sql.where.condition.IsEqualTo
 import org.mybatis.dynamic.sql.where.condition.IsEqualToColumn
@@ -167,11 +167,8 @@ fun <T> subtract(
     vararg subsequentColumns: BasicColumn
 ): Subtract<T> = Subtract.of(firstColumn, secondColumn, subsequentColumns.asList())
 
-fun cast(value: String): CastFinisher = SqlBuilder.cast(value)
-
-fun cast(column: BasicColumn): CastFinisher = SqlBuilder.cast(column)
-
-infix fun CastFinisher.`as`(targetType: String): Cast = this.`as`(targetType)
+fun cast(receiver: CastDSL.() -> Unit): Cast =
+    invalidIfNull(CastDSL().apply(receiver).cast, "ERROR.43")
 
 fun <T> concat(
     firstColumn: BindableColumn<T>,

@@ -28,7 +28,6 @@ import org.junit.jupiter.api.Test
 import org.mybatis.dynamic.sql.exception.InvalidSqlException
 import org.mybatis.dynamic.sql.util.Messages
 import org.mybatis.dynamic.sql.util.kotlin.KInvalidSQLException
-import org.mybatis.dynamic.sql.util.kotlin.elements.`as`
 import org.mybatis.dynamic.sql.util.kotlin.elements.case
 import org.mybatis.dynamic.sql.util.kotlin.elements.cast
 import org.mybatis.dynamic.sql.util.kotlin.elements.isEqualTo
@@ -217,7 +216,7 @@ class KCaseExpressionTest {
                         or { animalName isEqualTo "Big brown bat" }
                         then(value("Bat"))
                     }
-                    `else`(cast(value("Not a Fox or a bat")) `as` "VARCHAR(30)")
+                    `else`(cast { value("Not a Fox or a bat") `as` "VARCHAR(30)" })
                 }.`as`("AnimalType")
             ) {
                 from(animalData, "a")
@@ -720,7 +719,7 @@ class KCaseExpressionTest {
             val selectStatement = select(
                 animalName,
                 case(animalName) {
-                    `when`(isEqualTo("Artic fox"), isEqualTo("Red fox")) { then(cast("It's a fox") `as` "VARCHAR(30)") }
+                    `when`(isEqualTo("Artic fox"), isEqualTo("Red fox")) { then(cast { "It's a fox" `as` "VARCHAR(30)" })}
                     `else`("It's not a fox")
                 }.`as`("IsAFox")
             ) {
