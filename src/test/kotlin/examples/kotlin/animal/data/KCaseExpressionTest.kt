@@ -947,4 +947,21 @@ class KCaseExpressionTest {
             select(case (id) { `else`("Fred") }) { from (animalData) }
         }.withMessage(Messages.getString("ERROR.40"))
     }
+
+    @Test
+    fun testInvalidCastMissingAs() {
+        assertThatExceptionOfType(KInvalidSQLException::class.java).isThrownBy {
+            cast {}
+        }.withMessage(Messages.getString("ERROR.43"))
+    }
+
+    @Test
+    fun testInvalidCastDoubleAs() {
+        assertThatExceptionOfType(KInvalidSQLException::class.java).isThrownBy {
+            cast {
+                "Fred" `as` "VARCHAR"
+                "Wilma" `as` "VARCHAR"
+            }
+        }.withMessage(Messages.getString("ERROR.43"))
+    }
 }
