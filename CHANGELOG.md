@@ -21,7 +21,7 @@ The DSL for both Java and Kotlin has been updated to fully support CASE expressi
 as other parts of the library.
 
 We've tested this extensively and the code is, of course, 100% covered by test code. But it is possible that we've not
-covered every possible scenario. Please let us know if you find issues.
+covered every scenario. Please let us know if you find issues.
 
 Full documentation is available here:
 - [Java Case Expression DSL Documentation](caseExpressions.md)
