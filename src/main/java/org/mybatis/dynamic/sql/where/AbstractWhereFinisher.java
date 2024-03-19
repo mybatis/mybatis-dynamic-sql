@@ -29,6 +29,10 @@ public abstract class AbstractWhereFinisher<T extends AbstractWhereFinisher<T>> 
         implements ConfigurableStatement<T> {
     private final StatementConfiguration statementConfiguration;
 
+    protected AbstractWhereFinisher(StatementConfiguration statementConfiguration) {
+        this.statementConfiguration = Objects.requireNonNull(statementConfiguration);
+    }
+
     void initialize(SqlCriterion sqlCriterion) {
         setInitialCriterion(sqlCriterion, StatementType.WHERE);
     }
@@ -36,10 +40,6 @@ public abstract class AbstractWhereFinisher<T extends AbstractWhereFinisher<T>> 
     void initialize(SqlCriterion sqlCriterion, List<AndOrCriteriaGroup> subCriteria) {
         setInitialCriterion(sqlCriterion, StatementType.WHERE);
         super.subCriteria.addAll(subCriteria);
-    }
-
-    protected AbstractWhereFinisher(StatementConfiguration statementConfiguration) {
-        this.statementConfiguration = Objects.requireNonNull(statementConfiguration);
     }
 
     @Override
