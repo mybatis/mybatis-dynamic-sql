@@ -19,7 +19,7 @@ import org.mybatis.dynamic.sql.BasicColumn
 import org.mybatis.dynamic.sql.VisitableCondition
 import org.mybatis.dynamic.sql.select.caseexpression.BasicWhenCondition
 import org.mybatis.dynamic.sql.select.caseexpression.ConditionBasedWhenCondition
-import org.mybatis.dynamic.sql.select.caseexpression.SearchedCaseModel.SearchedWhenCondition
+import org.mybatis.dynamic.sql.select.caseexpression.SearchedCaseWhenCondition
 import org.mybatis.dynamic.sql.select.caseexpression.SimpleCaseWhenCondition
 import org.mybatis.dynamic.sql.util.kotlin.GroupingCriteriaCollector
 import org.mybatis.dynamic.sql.util.kotlin.assertNull
@@ -30,12 +30,16 @@ class KSearchedCaseDSL : KElseDSL {
             assertNull(field, "ERROR.42") //$NON-NLS-1$
             field = value
         }
-    internal val whenConditions = mutableListOf<SearchedWhenCondition>()
+    internal val whenConditions = mutableListOf<SearchedCaseWhenCondition>()
 
-    fun `when`(dslCompleter: SearchedCaseCriteriaCollector.() -> Unit) {
-        val dsl = SearchedCaseCriteriaCollector().apply(dslCompleter)
-        whenConditions.add(SearchedWhenCondition(dsl.initialCriterion, dsl.subCriteria, dsl.thenValue))
-    }
+    fun `when`(dslCompleter: SearchedCaseCriteriaCollector.() -> Unit) =
+        SearchedCaseCriteriaCollector().apply(dslCompleter).run {
+            whenConditions.add(SearchedCaseWhenCondition.Builder().withInitialCriterion(initialCriterion)
+                .withSubCriteria(subCriteria)
+                .withThenValue(thenValue)
+                .build())
+
+        }
 
     override fun `else`(column: BasicColumn) {
         this.elseValue = column

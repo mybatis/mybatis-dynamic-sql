@@ -49,6 +49,10 @@ public abstract class AbstractWhereFinisher<T extends AbstractWhereFinisher<T>> 
     }
 
     protected WhereModel buildModel() {
-        return new WhereModel(getInitialCriterion(), subCriteria, statementConfiguration);
+        return new WhereModel.Builder()
+                .withInitialCriterion(getInitialCriterion())
+                .withSubCriteria(subCriteria)
+                .withStatementConfiguration(statementConfiguration)
+                .build();
     }
 }

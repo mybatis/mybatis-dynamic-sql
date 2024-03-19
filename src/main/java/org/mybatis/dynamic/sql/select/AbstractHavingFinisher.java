@@ -33,6 +33,9 @@ public abstract class AbstractHavingFinisher<T extends AbstractHavingFinisher<T>
     }
 
     protected HavingModel buildModel() {
-        return new HavingModel(getInitialCriterion(), subCriteria);
+        return new HavingModel.Builder()
+                .withInitialCriterion(getInitialCriterion())
+                .withSubCriteria(subCriteria)
+                .build();
     }
 }

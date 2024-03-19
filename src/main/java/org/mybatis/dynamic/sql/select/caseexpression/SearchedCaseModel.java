@@ -17,21 +17,17 @@ package org.mybatis.dynamic.sql.select.caseexpression;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import org.mybatis.dynamic.sql.AndOrCriteriaGroup;
 import org.mybatis.dynamic.sql.BasicColumn;
-import org.mybatis.dynamic.sql.SqlCriterion;
-import org.mybatis.dynamic.sql.common.AbstractBooleanExpressionModel;
 import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.select.render.SearchedCaseRenderer;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 import org.mybatis.dynamic.sql.util.Validator;
 
 public class SearchedCaseModel implements BasicColumn {
-    private final List<SearchedWhenCondition> whenConditions;
+    private final List<SearchedCaseWhenCondition> whenConditions;
     private final BasicColumn elseValue;
     private final String alias;
 
@@ -42,7 +38,7 @@ public class SearchedCaseModel implements BasicColumn {
         Validator.assertNotEmpty(whenConditions, "ERROR.40"); //$NON-NLS-1$
     }
 
-    public Stream<SearchedWhenCondition> whenConditions() {
+    public Stream<SearchedCaseWhenCondition> whenConditions() {
         return whenConditions.stream();
     }
 
@@ -68,27 +64,12 @@ public class SearchedCaseModel implements BasicColumn {
         return new SearchedCaseRenderer(this, renderingContext).render();
     }
 
-    public static class SearchedWhenCondition extends AbstractBooleanExpressionModel {
-
-        private final BasicColumn thenValue;
-
-        public BasicColumn thenValue() {
-            return thenValue;
-        }
-
-        public SearchedWhenCondition(SqlCriterion initialCriterion, List<AndOrCriteriaGroup> subCriteria,
-                                     BasicColumn thenValue) {
-            super(initialCriterion, subCriteria);
-            this.thenValue = Objects.requireNonNull(thenValue);
-        }
-    }
-
     public static class Builder {
-        private final List<SearchedWhenCondition> whenConditions = new ArrayList<>();
+        private final List<SearchedCaseWhenCondition> whenConditions = new ArrayList<>();
         private BasicColumn elseValue;
         private String alias;
 
-        public Builder withWhenConditions(List<SearchedWhenCondition> whenConditions) {
+        public Builder withWhenConditions(List<SearchedCaseWhenCondition> whenConditions) {
             this.whenConditions.addAll(whenConditions);
             return this;
         }

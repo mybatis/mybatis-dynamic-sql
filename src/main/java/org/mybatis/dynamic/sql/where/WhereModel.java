@@ -15,12 +15,9 @@
  */
 package org.mybatis.dynamic.sql.where;
 
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-import org.mybatis.dynamic.sql.AndOrCriteriaGroup;
-import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.common.AbstractBooleanExpressionModel;
 import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
 import org.mybatis.dynamic.sql.render.RenderingContext;
@@ -33,10 +30,9 @@ import org.mybatis.dynamic.sql.where.render.WhereRenderer;
 public class WhereModel extends AbstractBooleanExpressionModel {
     private final StatementConfiguration statementConfiguration;
 
-    public WhereModel(SqlCriterion initialCriterion, List<AndOrCriteriaGroup> subCriteria,
-            StatementConfiguration statementConfiguration) {
-        super(initialCriterion, subCriteria);
-        this.statementConfiguration = Objects.requireNonNull(statementConfiguration);
+    private WhereModel(Builder builder) {
+        super(builder);
+        statementConfiguration = Objects.requireNonNull(builder.statementConfiguration);
     }
 
     public boolean isNonRenderingClauseAllowed() {
@@ -99,5 +95,23 @@ public class WhereModel extends AbstractBooleanExpressionModel {
         return WhereClauseProvider.withWhereClause(fragmentAndParameters.fragment())
                 .withParameters(fragmentAndParameters.parameters())
                 .build();
+    }
+
+    public static class Builder extends AbstractBuilder<Builder> {
+        private StatementConfiguration statementConfiguration;
+
+        public Builder withStatementConfiguration(StatementConfiguration statementConfiguration) {
+            this.statementConfiguration = statementConfiguration;
+            return this;
+        }
+
+        public WhereModel build() {
+            return new WhereModel(this);
+        }
+
+        @Override
+        protected Builder getThis() {
+            return this;
+        }
     }
 }

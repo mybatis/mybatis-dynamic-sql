@@ -16,17 +16,17 @@
 package org.mybatis.dynamic.sql.select.render;
 
 import org.mybatis.dynamic.sql.common.AbstractBooleanExpressionRenderer;
-import org.mybatis.dynamic.sql.select.caseexpression.SearchedCaseModel.SearchedWhenCondition;
+import org.mybatis.dynamic.sql.select.caseexpression.SearchedCaseWhenCondition;
 
-public class SearchedCaseWhenConditionRenderer extends AbstractBooleanExpressionRenderer<SearchedWhenCondition> {
+public class SearchedCaseWhenConditionRenderer extends AbstractBooleanExpressionRenderer<SearchedCaseWhenCondition> {
     protected SearchedCaseWhenConditionRenderer(Builder builder) {
         super("when", builder);
     }
 
     public static class Builder
-            extends AbstractBooleanExpressionRenderer.AbstractBuilder<SearchedWhenCondition, Builder> {
+            extends AbstractBooleanExpressionRenderer.AbstractBuilder<SearchedCaseWhenCondition, Builder> {
 
-        protected Builder(SearchedWhenCondition model) {
+        protected Builder(SearchedCaseWhenCondition model) {
             super(model);
         }
 
