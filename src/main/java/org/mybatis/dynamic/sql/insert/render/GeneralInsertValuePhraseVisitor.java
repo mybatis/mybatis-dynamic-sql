@@ -25,6 +25,7 @@ import org.mybatis.dynamic.sql.util.ConstantMapping;
 import org.mybatis.dynamic.sql.util.GeneralInsertMappingVisitor;
 import org.mybatis.dynamic.sql.util.NullMapping;
 import org.mybatis.dynamic.sql.util.StringConstantMapping;
+import org.mybatis.dynamic.sql.util.StringUtilities;
 import org.mybatis.dynamic.sql.util.ValueMapping;
 import org.mybatis.dynamic.sql.util.ValueOrNullMapping;
 import org.mybatis.dynamic.sql.util.ValueWhenPresentMapping;
@@ -52,7 +53,7 @@ public class GeneralInsertValuePhraseVisitor extends GeneralInsertMappingVisitor
     @Override
     public Optional<FieldAndValueAndParameters> visit(StringConstantMapping mapping) {
         return FieldAndValueAndParameters.withFieldName(mapping.columnName())
-                .withValuePhrase("'" + mapping.constant() + "'") //$NON-NLS-1$ //$NON-NLS-2$
+                .withValuePhrase(StringUtilities.formatConstantForSQL(mapping.constant()))
                 .buildOptional();
     }
 

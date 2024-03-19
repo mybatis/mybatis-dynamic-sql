@@ -29,6 +29,7 @@ import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 import org.mybatis.dynamic.sql.util.NullMapping;
 import org.mybatis.dynamic.sql.util.SelectMapping;
 import org.mybatis.dynamic.sql.util.StringConstantMapping;
+import org.mybatis.dynamic.sql.util.StringUtilities;
 import org.mybatis.dynamic.sql.util.UpdateMappingVisitor;
 import org.mybatis.dynamic.sql.util.ValueMapping;
 import org.mybatis.dynamic.sql.util.ValueOrNullMapping;
@@ -58,9 +59,8 @@ public class SetPhraseVisitor extends UpdateMappingVisitor<Optional<FragmentAndP
     @Override
     public Optional<FragmentAndParameters> visit(StringConstantMapping mapping) {
         String fragment = mapping.mapColumn(renderingContext::aliasedColumnName)
-                + " = '" //$NON-NLS-1$
-                + mapping.constant()
-                + "'"; //$NON-NLS-1$
+                + " = " //$NON-NLS-1$
+                + StringUtilities.formatConstantForSQL(mapping.constant());
 
         return FragmentAndParameters.withFragment(fragment)
                 .buildOptional();
