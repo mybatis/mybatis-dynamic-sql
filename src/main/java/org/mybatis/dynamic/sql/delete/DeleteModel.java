@@ -22,6 +22,7 @@ import org.jetbrains.annotations.NotNull;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.common.CommonBuilder;
 import org.mybatis.dynamic.sql.common.OrderByModel;
+import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
 import org.mybatis.dynamic.sql.delete.render.DeleteRenderer;
 import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
@@ -33,6 +34,7 @@ public class DeleteModel {
     private final WhereModel whereModel;
     private final Long limit;
     private final OrderByModel orderByModel;
+    private final StatementConfiguration statementConfiguration;
 
     private DeleteModel(Builder builder) {
         table = Objects.requireNonNull(builder.table());
@@ -40,6 +42,7 @@ public class DeleteModel {
         tableAlias = builder.tableAlias();
         limit = builder.limit();
         orderByModel = builder.orderByModel();
+        statementConfiguration = Objects.requireNonNull(builder.statementConfiguration());
     }
 
     public SqlTable table() {
@@ -66,6 +69,7 @@ public class DeleteModel {
     public DeleteStatementProvider render(RenderingStrategy renderingStrategy) {
         return DeleteRenderer.withDeleteModel(this)
                 .withRenderingStrategy(renderingStrategy)
+                .withStatementConfiguration(statementConfiguration)
                 .build()
                 .render();
     }

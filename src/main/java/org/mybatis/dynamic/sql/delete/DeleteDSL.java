@@ -83,6 +83,7 @@ public class DeleteDSL<R> extends AbstractWhereStarter<DeleteDSL<R>.DeleteWhereB
                 .withLimit(limit)
                 .withOrderByModel(orderByModel)
                 .withWhereModel(whereBuilder == null ? null : whereBuilder.buildWhereModel())
+                .withStatementConfiguration(statementConfiguration)
                 .build();
 
         return adapterFunction.apply(deleteModel);

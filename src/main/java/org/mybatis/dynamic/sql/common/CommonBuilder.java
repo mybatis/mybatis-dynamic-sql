@@ -16,6 +16,7 @@
 package org.mybatis.dynamic.sql.common;
 
 import org.mybatis.dynamic.sql.SqlTable;
+import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
 import org.mybatis.dynamic.sql.where.WhereModel;
 
 /**
@@ -29,6 +30,7 @@ public abstract class CommonBuilder<T extends CommonBuilder<T>> {
     private WhereModel whereModel;
     private Long limit;
     private OrderByModel orderByModel;
+    private StatementConfiguration statementConfiguration;
 
     public SqlTable table() {
         return table;
@@ -48,6 +50,10 @@ public abstract class CommonBuilder<T extends CommonBuilder<T>> {
 
     public OrderByModel orderByModel() {
         return orderByModel;
+    }
+
+    public StatementConfiguration statementConfiguration() {
+        return statementConfiguration;
     }
 
     public T withTable(SqlTable table) {
@@ -72,6 +78,11 @@ public abstract class CommonBuilder<T extends CommonBuilder<T>> {
 
     public T withOrderByModel(OrderByModel orderByModel) {
         this.orderByModel = orderByModel;
+        return getThis();
+    }
+
+    public T withStatementConfiguration(StatementConfiguration statementConfiguration) {
+        this.statementConfiguration = statementConfiguration;
         return getThis();
     }
 
