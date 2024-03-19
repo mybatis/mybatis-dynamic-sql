@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
 
 import org.mybatis.dynamic.sql.common.OrderByModel;
 import org.mybatis.dynamic.sql.common.OrderByRenderer;
+import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
 import org.mybatis.dynamic.sql.render.ExplicitTableAliasCalculator;
 import org.mybatis.dynamic.sql.render.RenderedParameterInfo;
 import org.mybatis.dynamic.sql.render.RenderingContext;
@@ -43,6 +44,8 @@ public class UpdateRenderer {
         TableAliasCalculator tableAliasCalculator = builder.updateModel.tableAlias()
                 .map(a -> ExplicitTableAliasCalculator.of(updateModel.table(), a))
                 .orElseGet(TableAliasCalculator::empty);
+        // TODO - Add configuration to RenderingContext
+        Objects.requireNonNull(builder.statementConfiguration);
         renderingContext = RenderingContext
                 .withRenderingStrategy(Objects.requireNonNull(builder.renderingStrategy))
                 .withTableAliasCalculator(tableAliasCalculator)
@@ -134,6 +137,7 @@ public class UpdateRenderer {
     public static class Builder {
         private UpdateModel updateModel;
         private RenderingStrategy renderingStrategy;
+        private StatementConfiguration statementConfiguration;
 
         public Builder withUpdateModel(UpdateModel updateModel) {
             this.updateModel = updateModel;
@@ -142,6 +146,11 @@ public class UpdateRenderer {
 
         public Builder withRenderingStrategy(RenderingStrategy renderingStrategy) {
             this.renderingStrategy = renderingStrategy;
+            return this;
+        }
+
+        public Builder withStatementConfiguration(StatementConfiguration statementConfiguration) {
+            this.statementConfiguration = statementConfiguration;
             return this;
         }
 
