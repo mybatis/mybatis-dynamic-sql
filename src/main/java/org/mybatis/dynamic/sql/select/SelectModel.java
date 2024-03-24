@@ -57,6 +57,17 @@ public class SelectModel {
     @NotNull
     public SelectStatementProvider render(RenderingStrategy renderingStrategy) {
         RenderingContext renderingContext = RenderingContext.withRenderingStrategy(renderingStrategy).build();
+        return render(renderingContext);
+    }
+
+    /**
+     * This version is for rendering sub-queries, union queries, etc.
+     *
+     * @param renderingContext the rendering context
+     * @return a rendered select statement and parameters
+     */
+    @NotNull
+    public SelectStatementProvider render(RenderingContext renderingContext) {
         return SelectRenderer.withSelectModel(this)
                 .withRenderingContext(renderingContext)
                 .build()

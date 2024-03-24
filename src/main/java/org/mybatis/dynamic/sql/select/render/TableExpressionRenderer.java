@@ -39,11 +39,7 @@ public class TableExpressionRenderer implements TableExpressionVisitor<FragmentA
 
     @Override
     public FragmentAndParameters visit(SubQuery subQuery) {
-        SelectStatementProvider selectStatement = new SelectRenderer.Builder()
-                .withSelectModel(subQuery.selectModel())
-                .withRenderingContext(renderingContext)
-                .build()
-                .render();
+        SelectStatementProvider selectStatement = subQuery.selectModel().render(renderingContext);
 
         String fragment = "(" + selectStatement.getSelectStatement() + ")"; //$NON-NLS-1$ //$NON-NLS-2$
 

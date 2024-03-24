@@ -62,10 +62,7 @@ public class MultiSelectRenderer {
     }
 
     private FragmentAndParameters renderSelect(SelectModel selectModel) {
-        SelectStatementProvider selectStatement = SelectRenderer.withSelectModel(selectModel)
-                .withRenderingContext(renderingContext)
-                .build()
-                .render();
+        SelectStatementProvider selectStatement = selectModel.render(renderingContext);
 
         return FragmentAndParameters
                 .withFragment("(" + selectStatement.getSelectStatement() + ")") //$NON-NLS-1$ //$NON-NLS-2$
@@ -74,10 +71,7 @@ public class MultiSelectRenderer {
     }
 
     private FragmentAndParameters renderSelect(UnionQuery unionQuery) {
-        SelectStatementProvider selectStatement = SelectRenderer.withSelectModel(unionQuery.selectModel())
-                .withRenderingContext(renderingContext)
-                .build()
-                .render();
+        SelectStatementProvider selectStatement = unionQuery.selectModel().render(renderingContext);
 
         return FragmentAndParameters.withFragment(
                 unionQuery.connector() + " (" + selectStatement.getSelectStatement() + ")") //$NON-NLS-1$ //$NON-NLS-2$

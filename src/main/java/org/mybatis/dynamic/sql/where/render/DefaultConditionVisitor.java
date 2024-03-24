@@ -94,10 +94,7 @@ public class DefaultConditionVisitor<T> implements ConditionVisitor<T, FragmentA
 
     @Override
     public FragmentAndParameters visit(AbstractSubselectCondition<T> condition) {
-        SelectStatementProvider selectStatement = SelectRenderer.withSelectModel(condition.selectModel())
-                .withRenderingContext(renderingContext)
-                .build()
-                .render();
+        SelectStatementProvider selectStatement = condition.selectModel().render(renderingContext);
 
         String finalFragment = condition.operator()
                 + " (" //$NON-NLS-1$
