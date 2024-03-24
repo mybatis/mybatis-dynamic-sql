@@ -50,6 +50,7 @@ public class SelectDSL<R> implements Buildable<R>, ConfigurableStatement<SelectD
     private Long limit;
     private Long offset;
     private Long fetchFirstRows;
+    final StatementConfiguration statementConfiguration = new StatementConfiguration();
 
     private SelectDSL(Function<SelectModel, R> adapterFunction) {
         this.adapterFunction = Objects.requireNonNull(adapterFunction);
@@ -124,7 +125,7 @@ public class SelectDSL<R> implements Buildable<R>, ConfigurableStatement<SelectD
 
     @Override
     public SelectDSL<R> configureStatement(Consumer<StatementConfiguration> consumer) {
-        queryExpressions.forEach(q -> q.configureStatement(consumer));
+        consumer.accept(statementConfiguration);
         return this;
     }
 
