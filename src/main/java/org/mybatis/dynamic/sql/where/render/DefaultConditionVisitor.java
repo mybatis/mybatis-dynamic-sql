@@ -30,7 +30,6 @@ import org.mybatis.dynamic.sql.BindableColumn;
 import org.mybatis.dynamic.sql.ConditionVisitor;
 import org.mybatis.dynamic.sql.render.RenderedParameterInfo;
 import org.mybatis.dynamic.sql.render.RenderingContext;
-import org.mybatis.dynamic.sql.select.render.SelectRenderer;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 import org.mybatis.dynamic.sql.util.FragmentCollector;
