@@ -135,6 +135,7 @@ public class SelectDSL<R> implements Buildable<R>, ConfigurableStatement<SelectD
         SelectModel selectModel = SelectModel.withQueryExpressions(buildModels())
                 .withOrderByModel(orderByModel)
                 .withPagingModel(buildPagingModel().orElse(null))
+                .withStatementConfiguration(statementConfiguration)
                 .build();
         return adapterFunction.apply(selectModel);
     }

@@ -24,6 +24,7 @@ import java.util.stream.Stream;
 
 import org.jetbrains.annotations.NotNull;
 import org.mybatis.dynamic.sql.common.OrderByModel;
+import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
 import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.select.render.SelectRenderer;
@@ -34,12 +35,14 @@ public class SelectModel {
     private final List<QueryExpressionModel> queryExpressions;
     private final OrderByModel orderByModel;
     private final PagingModel pagingModel;
+    private final StatementConfiguration statementConfiguration;
 
     private SelectModel(Builder builder) {
         queryExpressions = Objects.requireNonNull(builder.queryExpressions);
         Validator.assertNotEmpty(queryExpressions, "ERROR.14"); //$NON-NLS-1$
         orderByModel = builder.orderByModel;
         pagingModel = builder.pagingModel;
+        statementConfiguration = Objects.requireNonNull(builder.statementConfiguration);
     }
 
     public <R> Stream<R> mapQueryExpressions(Function<QueryExpressionModel, R> mapper) {
@@ -82,6 +85,7 @@ public class SelectModel {
         private final List<QueryExpressionModel> queryExpressions = new ArrayList<>();
         private OrderByModel orderByModel;
         private PagingModel pagingModel;
+        private StatementConfiguration statementConfiguration;
 
         public Builder withQueryExpression(QueryExpressionModel queryExpression) {
             this.queryExpressions.add(queryExpression);
@@ -100,6 +104,11 @@ public class SelectModel {
 
         public Builder withPagingModel(PagingModel pagingModel) {
             this.pagingModel = pagingModel;
+            return this;
+        }
+
+        public Builder withStatementConfiguration(StatementConfiguration statementConfiguration) {
+            this.statementConfiguration = statementConfiguration;
             return this;
         }
 

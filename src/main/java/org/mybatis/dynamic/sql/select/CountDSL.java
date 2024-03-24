@@ -81,6 +81,7 @@ public class CountDSL<R> extends AbstractQueryExpressionDSL<CountDSL<R>.CountWhe
 
         return new SelectModel.Builder()
                 .withQueryExpression(queryExpressionModel)
+                .withStatementConfiguration(statementConfiguration)
                 .build();
     }
 
