@@ -31,7 +31,7 @@ public class WhereRenderer extends AbstractBooleanExpressionRenderer<WhereModel>
     public Optional<FragmentAndParameters> render() {
         Optional<FragmentAndParameters> whereClause = super.render();
 
-        if (whereClause.isPresent() || model.isNonRenderingClauseAllowed()) {
+        if (whereClause.isPresent() || renderingContext.isNonRenderingClauseAllowed()) {
             return whereClause;
         } else {
             throw new NonRenderingWhereClauseException();

@@ -35,10 +35,6 @@ public class WhereModel extends AbstractBooleanExpressionModel {
         statementConfiguration = Objects.requireNonNull(builder.statementConfiguration);
     }
 
-    public boolean isNonRenderingClauseAllowed() {
-        return statementConfiguration.isNonRenderingWhereClauseAllowed();
-    }
-
     /**
      * Renders a where clause without table aliases.
      *

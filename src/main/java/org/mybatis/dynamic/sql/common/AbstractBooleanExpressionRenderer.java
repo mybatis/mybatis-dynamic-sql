@@ -32,11 +32,13 @@ public abstract class AbstractBooleanExpressionRenderer<M extends AbstractBoolea
     protected final M model;
     private final String prefix;
     private final CriterionRenderer criterionRenderer;
+    protected final RenderingContext renderingContext;
 
     protected AbstractBooleanExpressionRenderer(String prefix, AbstractBuilder<M, ?> builder) {
         model = Objects.requireNonNull(builder.model);
         this.prefix = Objects.requireNonNull(prefix);
-        criterionRenderer = new CriterionRenderer(builder.renderingContext);
+        renderingContext = Objects.requireNonNull(builder.renderingContext);
+        criterionRenderer = new CriterionRenderer(renderingContext);
     }
 
     public Optional<FragmentAndParameters> render() {
