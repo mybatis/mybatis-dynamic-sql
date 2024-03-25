@@ -33,7 +33,6 @@ import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 import org.mybatis.dynamic.sql.util.FragmentCollector;
 import org.mybatis.dynamic.sql.util.Validator;
 import org.mybatis.dynamic.sql.where.WhereModel;
-import org.mybatis.dynamic.sql.where.render.WhereRenderer;
 
 public class UpdateRenderer {
     private final UpdateModel updateModel;
@@ -104,10 +103,7 @@ public class UpdateRenderer {
     }
 
     private Optional<FragmentAndParameters> renderWhereClause(WhereModel whereModel) {
-        return WhereRenderer.withWhereModel(whereModel)
-                .withRenderingContext(renderingContext)
-                .build()
-                .render();
+        return whereModel.render(renderingContext);
     }
 
     private Optional<FragmentAndParameters> calculateLimitClause() {

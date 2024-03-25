@@ -33,7 +33,6 @@ import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 import org.mybatis.dynamic.sql.util.FragmentCollector;
 import org.mybatis.dynamic.sql.util.StringUtilities;
 import org.mybatis.dynamic.sql.where.WhereModel;
-import org.mybatis.dynamic.sql.where.render.WhereRenderer;
 
 public class QueryExpressionRenderer {
     private final QueryExpressionModel queryExpression;
@@ -168,10 +167,7 @@ public class QueryExpressionRenderer {
     }
 
     private Optional<FragmentAndParameters> renderWhereClause(WhereModel whereModel) {
-        return WhereRenderer.withWhereModel(whereModel)
-                .withRenderingContext(renderingContext)
-                .build()
-                .render();
+        return whereModel.render(renderingContext);
     }
 
     private Optional<FragmentAndParameters> calculateGroupByClause() {
