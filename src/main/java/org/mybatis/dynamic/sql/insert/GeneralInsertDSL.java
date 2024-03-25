@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import org.jetbrains.annotations.NotNull;
@@ -28,7 +27,6 @@ import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
 import org.mybatis.dynamic.sql.util.AbstractColumnMapping;
 import org.mybatis.dynamic.sql.util.Buildable;
-import org.mybatis.dynamic.sql.util.ConfigurableStatement;
 import org.mybatis.dynamic.sql.util.ConstantMapping;
 import org.mybatis.dynamic.sql.util.NullMapping;
 import org.mybatis.dynamic.sql.util.StringConstantMapping;
@@ -36,10 +34,9 @@ import org.mybatis.dynamic.sql.util.ValueMapping;
 import org.mybatis.dynamic.sql.util.ValueOrNullMapping;
 import org.mybatis.dynamic.sql.util.ValueWhenPresentMapping;
 
-public class GeneralInsertDSL implements Buildable<GeneralInsertModel>, ConfigurableStatement<GeneralInsertDSL> {
+public class GeneralInsertDSL implements Buildable<GeneralInsertModel> {
     private final List<AbstractColumnMapping> columnMappings;
     private final SqlTable table;
-    private final StatementConfiguration statementConfiguration = new StatementConfiguration();
 
     private GeneralInsertDSL(Builder builder) {
         table = Objects.requireNonNull(builder.table);
@@ -56,18 +53,12 @@ public class GeneralInsertDSL implements Buildable<GeneralInsertModel>, Configur
         return new GeneralInsertModel.Builder()
                 .withTable(table)
                 .withInsertMappings(columnMappings)
-                .withStatementConfiguration(statementConfiguration)
+                .withStatementConfiguration(new StatementConfiguration()) // nothing configurable in this statement yet
                 .build();
     }
 
     public static GeneralInsertDSL insertInto(SqlTable table) {
         return new GeneralInsertDSL.Builder().withTable(table).build();
-    }
-
-    @Override
-    public GeneralInsertDSL configureStatement(Consumer<StatementConfiguration> consumer) {
-        consumer.accept(statementConfiguration);
-        return this;
     }
 
     public class SetClauseFinisher<T> {
