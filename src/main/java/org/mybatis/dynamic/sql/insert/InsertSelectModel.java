@@ -20,6 +20,7 @@ import java.util.Optional;
 
 import org.jetbrains.annotations.NotNull;
 import org.mybatis.dynamic.sql.SqlTable;
+import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
 import org.mybatis.dynamic.sql.insert.render.InsertSelectRenderer;
 import org.mybatis.dynamic.sql.insert.render.InsertSelectStatementProvider;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
@@ -29,11 +30,13 @@ public class InsertSelectModel {
     private final SqlTable table;
     private final InsertColumnListModel columnList;
     private final SelectModel selectModel;
+    private final StatementConfiguration statementConfiguration;
 
     private InsertSelectModel(Builder builder) {
         table = Objects.requireNonNull(builder.table);
         columnList = builder.columnList;
         selectModel = Objects.requireNonNull(builder.selectModel);
+        statementConfiguration = Objects.requireNonNull(builder.statementConfiguration);
     }
 
     public SqlTable table() {
@@ -52,6 +55,7 @@ public class InsertSelectModel {
     public InsertSelectStatementProvider render(RenderingStrategy renderingStrategy) {
         return InsertSelectRenderer.withInsertSelectModel(this)
                 .withRenderingStrategy(renderingStrategy)
+                .withStatementConfiguration(statementConfiguration)
                 .build()
                 .render();
     }
@@ -64,6 +68,7 @@ public class InsertSelectModel {
         private SqlTable table;
         private InsertColumnListModel columnList;
         private SelectModel selectModel;
+        private StatementConfiguration statementConfiguration;
 
         public Builder withTable(SqlTable table) {
             this.table = table;
@@ -77,6 +82,11 @@ public class InsertSelectModel {
 
         public Builder withSelectModel(SelectModel selectModel) {
             this.selectModel = selectModel;
+            return this;
+        }
+
+        public Builder withStatementConfiguration(StatementConfiguration statementConfiguration) {
+            this.statementConfiguration = statementConfiguration;
             return this;
         }
 
