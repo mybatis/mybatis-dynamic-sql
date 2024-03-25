@@ -23,6 +23,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.mybatis.dynamic.sql.BindableColumn;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
+import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
 
 /**
  * This class encapsulates all the supporting items related to rendering, and contains many utility methods
@@ -38,11 +39,13 @@ public class RenderingContext {
     private final TableAliasCalculator tableAliasCalculator;
     private final String configuredParameterName;
     private final String calculatedParameterName;
+    private final StatementConfiguration statementConfiguration;
 
     private RenderingContext(Builder builder) {
         renderingStrategy = Objects.requireNonNull(builder.renderingStrategy);
         configuredParameterName = builder.parameterName;
         tableAliasCalculator = Objects.requireNonNull(builder.tableAliasCalculator);
+        statementConfiguration = Objects.requireNonNull(builder.statementConfiguration);
 
         // reasonable defaults
         sequence = builder.sequence == null ? new AtomicInteger(1) : builder.sequence;
@@ -114,6 +117,7 @@ public class RenderingContext {
                 .withSequence(this.sequence)
                 .withParameterName(this.configuredParameterName)
                 .withTableAliasCalculator(tac)
+                .withStatementConfiguration(statementConfiguration)
                 .build();
     }
 
@@ -126,6 +130,7 @@ public class RenderingContext {
         private AtomicInteger sequence;
         private TableAliasCalculator tableAliasCalculator = TableAliasCalculator.empty();
         private String parameterName;
+        private StatementConfiguration statementConfiguration;
 
         public Builder withRenderingStrategy(RenderingStrategy renderingStrategy) {
             this.renderingStrategy = renderingStrategy;
@@ -144,6 +149,11 @@ public class RenderingContext {
 
         public Builder withParameterName(String parameterName) {
             this.parameterName = parameterName;
+            return this;
+        }
+
+        public Builder withStatementConfiguration(StatementConfiguration statementConfiguration) {
+            this.statementConfiguration = statementConfiguration;
             return this;
         }
 

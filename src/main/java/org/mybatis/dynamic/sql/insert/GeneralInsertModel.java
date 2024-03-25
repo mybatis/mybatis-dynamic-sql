@@ -23,6 +23,7 @@ import java.util.stream.Stream;
 
 import org.jetbrains.annotations.NotNull;
 import org.mybatis.dynamic.sql.SqlTable;
+import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
 import org.mybatis.dynamic.sql.insert.render.GeneralInsertRenderer;
 import org.mybatis.dynamic.sql.insert.render.GeneralInsertStatementProvider;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
@@ -33,11 +34,13 @@ public class GeneralInsertModel {
 
     private final SqlTable table;
     private final List<AbstractColumnMapping> insertMappings;
+    private final StatementConfiguration statementConfiguration;
 
     private GeneralInsertModel(Builder builder) {
         table = Objects.requireNonNull(builder.table);
         Validator.assertNotEmpty(builder.insertMappings, "ERROR.6"); //$NON-NLS-1$
         insertMappings = builder.insertMappings;
+        statementConfiguration = Objects.requireNonNull(builder.statementConfiguration);
     }
 
     public <R> Stream<R> mapColumnMappings(Function<AbstractColumnMapping, R> mapper) {
@@ -52,6 +55,7 @@ public class GeneralInsertModel {
     public GeneralInsertStatementProvider render(RenderingStrategy renderingStrategy) {
         return GeneralInsertRenderer.withInsertModel(this)
                 .withRenderingStrategy(renderingStrategy)
+                .withStatementConfiguration(statementConfiguration)
                 .build()
                 .render();
     }
@@ -59,6 +63,7 @@ public class GeneralInsertModel {
     public static class Builder {
         private SqlTable table;
         private final List<AbstractColumnMapping> insertMappings = new ArrayList<>();
+        private StatementConfiguration statementConfiguration;
 
         public Builder withTable(SqlTable table) {
             this.table = table;
@@ -67,6 +72,11 @@ public class GeneralInsertModel {
 
         public Builder withInsertMappings(List<? extends AbstractColumnMapping> insertMappings) {
             this.insertMappings.addAll(insertMappings);
+            return this;
+        }
+
+        public Builder withStatementConfiguration(StatementConfiguration statementConfiguration) {
+            this.statementConfiguration = statementConfiguration;
             return this;
         }
 

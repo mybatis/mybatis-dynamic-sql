@@ -48,7 +48,8 @@ public class WhereModel extends AbstractBooleanExpressionModel {
      * @return rendered where clause
      */
     public Optional<WhereClauseProvider> render(RenderingStrategy renderingStrategy) {
-        RenderingContext renderingContext = RenderingContext.withRenderingStrategy(renderingStrategy).build();
+        RenderingContext renderingContext = RenderingContext.withRenderingStrategy(renderingStrategy)
+                .withStatementConfiguration(statementConfiguration).build();
 
         return render(renderingContext).map(this::toWhereClauseProvider);
     }
@@ -58,6 +59,7 @@ public class WhereModel extends AbstractBooleanExpressionModel {
         RenderingContext renderingContext = RenderingContext
                 .withRenderingStrategy(renderingStrategy)
                 .withTableAliasCalculator(tableAliasCalculator)
+                .withStatementConfiguration(statementConfiguration)
                 .build();
 
         return render(renderingContext).map(this::toWhereClauseProvider);
@@ -67,6 +69,7 @@ public class WhereModel extends AbstractBooleanExpressionModel {
         RenderingContext renderingContext = RenderingContext
                 .withRenderingStrategy(renderingStrategy)
                 .withParameterName(parameterName)
+                .withStatementConfiguration(statementConfiguration)
                 .build();
 
         return render(renderingContext).map(this::toWhereClauseProvider);
@@ -78,6 +81,7 @@ public class WhereModel extends AbstractBooleanExpressionModel {
                 .withRenderingStrategy(renderingStrategy)
                 .withTableAliasCalculator(tableAliasCalculator)
                 .withParameterName(parameterName)
+                .withStatementConfiguration(statementConfiguration)
                 .build();
 
         return render(renderingContext).map(this::toWhereClauseProvider);

@@ -41,11 +41,10 @@ public class DeleteRenderer {
         TableAliasCalculator tableAliasCalculator = builder.deleteModel.tableAlias()
                 .map(a -> ExplicitTableAliasCalculator.of(deleteModel.table(), a))
                 .orElseGet(TableAliasCalculator::empty);
-        // TODO - Add configuration to RenderingContext
-        Objects.requireNonNull(builder.statementConfiguration);
         renderingContext = RenderingContext
                 .withRenderingStrategy(Objects.requireNonNull(builder.renderingStrategy))
                 .withTableAliasCalculator(tableAliasCalculator)
+                .withStatementConfiguration(builder.statementConfiguration)
                 .build();
     }
 

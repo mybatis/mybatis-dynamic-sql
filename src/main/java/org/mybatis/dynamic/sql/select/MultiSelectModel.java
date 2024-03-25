@@ -24,6 +24,7 @@ import java.util.stream.Stream;
 
 import org.jetbrains.annotations.NotNull;
 import org.mybatis.dynamic.sql.common.OrderByModel;
+import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.select.render.MultiSelectRenderer;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
@@ -34,12 +35,14 @@ public class MultiSelectModel {
     private final List<UnionQuery> unionQueries;
     private final OrderByModel orderByModel;
     private final PagingModel pagingModel;
+    private final StatementConfiguration statementConfiguration;
 
     private MultiSelectModel(Builder builder) {
         initialSelect = Objects.requireNonNull(builder.initialSelect);
         unionQueries = builder.unionQueries;
         orderByModel = builder.orderByModel;
         pagingModel = builder.pagingModel;
+        statementConfiguration = Objects.requireNonNull(builder.statementConfiguration);
         Validator.assertNotEmpty(unionQueries, "ERROR.35"); //$NON-NLS-1$
     }
 
@@ -64,6 +67,7 @@ public class MultiSelectModel {
         return new MultiSelectRenderer.Builder()
                 .withMultiSelectModel(this)
                 .withRenderingStrategy(renderingStrategy)
+                .withStatementConfiguration(statementConfiguration)
                 .build()
                 .render();
     }
@@ -73,6 +77,7 @@ public class MultiSelectModel {
         private final List<UnionQuery> unionQueries = new ArrayList<>();
         private OrderByModel orderByModel;
         private PagingModel pagingModel;
+        private StatementConfiguration statementConfiguration;
 
         public Builder withInitialSelect(SelectModel initialSelect) {
             this.initialSelect = initialSelect;
@@ -91,6 +96,11 @@ public class MultiSelectModel {
 
         public Builder withPagingModel(PagingModel pagingModel) {
             this.pagingModel = pagingModel;
+            return this;
+        }
+
+        public Builder withStatementConfiguration(StatementConfiguration statementConfiguration) {
+            this.statementConfiguration = statementConfiguration;
             return this;
         }
 

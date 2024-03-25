@@ -43,11 +43,10 @@ public class UpdateRenderer {
         TableAliasCalculator tableAliasCalculator = builder.updateModel.tableAlias()
                 .map(a -> ExplicitTableAliasCalculator.of(updateModel.table(), a))
                 .orElseGet(TableAliasCalculator::empty);
-        // TODO - Add configuration to RenderingContext
-        Objects.requireNonNull(builder.statementConfiguration);
         renderingContext = RenderingContext
                 .withRenderingStrategy(Objects.requireNonNull(builder.renderingStrategy))
                 .withTableAliasCalculator(tableAliasCalculator)
+                .withStatementConfiguration(builder.statementConfiguration)
                 .build();
     }
 

@@ -24,6 +24,7 @@ import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
+import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
 import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.render.HavingRenderer;
@@ -65,6 +66,7 @@ class HavingModelTest {
     private Optional<FragmentAndParameters> renderHavingModel(HavingModel havingModel) {
         RenderingContext renderingContext = RenderingContext
                 .withRenderingStrategy(RenderingStrategies.SPRING_NAMED_PARAMETER)
+                .withStatementConfiguration(new StatementConfiguration())
                 .build();
 
         return HavingRenderer.withHavingModel(havingModel)

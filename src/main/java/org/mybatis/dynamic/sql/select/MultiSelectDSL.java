@@ -20,19 +20,23 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 import org.jetbrains.annotations.NotNull;
 import org.mybatis.dynamic.sql.SortSpecification;
 import org.mybatis.dynamic.sql.common.OrderByModel;
+import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
 import org.mybatis.dynamic.sql.util.Buildable;
+import org.mybatis.dynamic.sql.util.ConfigurableStatement;
 
-public class MultiSelectDSL implements Buildable<MultiSelectModel> {
+public class MultiSelectDSL implements Buildable<MultiSelectModel>, ConfigurableStatement<MultiSelectDSL> {
     private final List<UnionQuery> unionQueries = new ArrayList<>();
     private final SelectModel initialSelect;
     private OrderByModel orderByModel;
     private Long limit;
     private Long offset;
     private Long fetchFirstRows;
+    private StatementConfiguration statementConfiguration = new StatementConfiguration();
 
     public MultiSelectDSL(Buildable<SelectModel> builder) {
         initialSelect = builder.build();
@@ -80,6 +84,7 @@ public class MultiSelectDSL implements Buildable<MultiSelectModel> {
                 .withUnionQueries(unionQueries)
                 .withOrderByModel(orderByModel)
                 .withPagingModel(buildPagingModel().orElse(null))
+                .withStatementConfiguration(statementConfiguration)
                 .build();
     }
 
@@ -89,6 +94,12 @@ public class MultiSelectDSL implements Buildable<MultiSelectModel> {
                 .withOffset(offset)
                 .withFetchFirstRows(fetchFirstRows)
                 .build();
+    }
+
+    @Override
+    public MultiSelectDSL configureStatement(Consumer<StatementConfiguration> consumer) {
+        consumer.accept(statementConfiguration);
+        return this;
     }
 
     public class LimitFinisher implements Buildable<MultiSelectModel> {

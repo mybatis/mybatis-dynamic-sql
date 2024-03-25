@@ -31,6 +31,7 @@ import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.common.OrderByModel;
+import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
 import org.mybatis.dynamic.sql.exception.DynamicSqlException;
 import org.mybatis.dynamic.sql.exception.InvalidSqlException;
 import org.mybatis.dynamic.sql.insert.BatchInsertModel;
@@ -243,6 +244,7 @@ class InvalidSQLTest {
 
         RenderingContext renderingContext = RenderingContext
                 .withRenderingStrategy(RenderingStrategies.MYBATIS3)
+                .withStatementConfiguration(new StatementConfiguration())
                 .build();
 
         assertThat(pagingModel).isPresent();
