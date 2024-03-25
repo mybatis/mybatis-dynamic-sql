@@ -24,7 +24,7 @@ import org.mybatis.dynamic.sql.util.Buildable;
 /**
  *  DSL for standalone where clauses.
  *
- *  This can also be used to create reusable where clauses for different statements.
+ *  <p>This can also be used to create reusable where clauses for different statements.
  */
 public class WhereDSL extends AbstractWhereStarter<WhereDSL.StandaloneWhereFinisher, WhereDSL> {
     private final StatementConfiguration statementConfiguration = new StatementConfiguration();
