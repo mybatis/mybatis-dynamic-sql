@@ -36,7 +36,7 @@ public class MultiSelectDSL implements Buildable<MultiSelectModel>, Configurable
     private Long limit;
     private Long offset;
     private Long fetchFirstRows;
-    private StatementConfiguration statementConfiguration = new StatementConfiguration();
+    private final StatementConfiguration statementConfiguration = new StatementConfiguration();
 
     public MultiSelectDSL(Buildable<SelectModel> builder) {
         initialSelect = builder.build();
