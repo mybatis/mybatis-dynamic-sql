@@ -15,12 +15,12 @@
  */
 package org.mybatis.dynamic.sql.where;
 
+import java.util.Optional;
+
 import org.mybatis.dynamic.sql.common.AbstractBooleanExpressionModel;
 import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 import org.mybatis.dynamic.sql.where.render.WhereRenderer;
-
-import java.util.Optional;
 
 public class EmbeddedWhereModel extends AbstractBooleanExpressionModel {
     private EmbeddedWhereModel(Builder builder) {
