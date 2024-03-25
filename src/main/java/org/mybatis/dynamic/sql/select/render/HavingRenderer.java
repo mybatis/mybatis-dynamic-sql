@@ -18,7 +18,7 @@ package org.mybatis.dynamic.sql.select.render;
 import org.mybatis.dynamic.sql.common.AbstractBooleanExpressionRenderer;
 import org.mybatis.dynamic.sql.select.HavingModel;
 
-public class HavingRenderer extends AbstractBooleanExpressionRenderer<HavingModel> {
+public class HavingRenderer extends AbstractBooleanExpressionRenderer {
     private HavingRenderer(Builder builder) {
         super("having", builder); //$NON-NLS-1$
     }
@@ -27,7 +27,7 @@ public class HavingRenderer extends AbstractBooleanExpressionRenderer<HavingMode
         return new Builder(havingModel);
     }
 
-    public static class Builder extends AbstractBuilder<HavingModel, Builder> {
+    public static class Builder extends AbstractBuilder<Builder> {
         public Builder(HavingModel havingModel) {
             super(havingModel);
         }

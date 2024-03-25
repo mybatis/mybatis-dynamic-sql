@@ -18,13 +18,13 @@ package org.mybatis.dynamic.sql.select.render;
 import org.mybatis.dynamic.sql.common.AbstractBooleanExpressionRenderer;
 import org.mybatis.dynamic.sql.select.caseexpression.SearchedCaseWhenCondition;
 
-public class SearchedCaseWhenConditionRenderer extends AbstractBooleanExpressionRenderer<SearchedCaseWhenCondition> {
+public class SearchedCaseWhenConditionRenderer extends AbstractBooleanExpressionRenderer {
     protected SearchedCaseWhenConditionRenderer(Builder builder) {
         super("when", builder);
     }
 
     public static class Builder
-            extends AbstractBooleanExpressionRenderer.AbstractBuilder<SearchedCaseWhenCondition, Builder> {
+            extends AbstractBooleanExpressionRenderer.AbstractBuilder<Builder> {
 
         protected Builder(SearchedCaseWhenCondition model) {
             super(model);

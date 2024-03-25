@@ -28,13 +28,13 @@ import org.mybatis.dynamic.sql.util.FragmentCollector;
 import org.mybatis.dynamic.sql.where.render.CriterionRenderer;
 import org.mybatis.dynamic.sql.where.render.RenderedCriterion;
 
-public abstract class AbstractBooleanExpressionRenderer<M extends AbstractBooleanExpressionModel> {
-    protected final M model;
+public abstract class AbstractBooleanExpressionRenderer {
+    protected final AbstractBooleanExpressionModel model;
     private final String prefix;
     private final CriterionRenderer criterionRenderer;
     protected final RenderingContext renderingContext;
 
-    protected AbstractBooleanExpressionRenderer(String prefix, AbstractBuilder<M, ?> builder) {
+    protected AbstractBooleanExpressionRenderer(String prefix, AbstractBuilder<?> builder) {
         model = Objects.requireNonNull(builder.model);
         this.prefix = Objects.requireNonNull(prefix);
         renderingContext = Objects.requireNonNull(builder.renderingContext);
@@ -82,11 +82,11 @@ public abstract class AbstractBooleanExpressionRenderer<M extends AbstractBoolea
         return spaceAfter(prefix) + fragment;
     }
 
-    public abstract static class AbstractBuilder<M, B extends AbstractBuilder<M, B>> {
-        private final M model;
+    public abstract static class AbstractBuilder<B extends AbstractBuilder<B>> {
+        private final AbstractBooleanExpressionModel model;
         private RenderingContext renderingContext;
 
-        protected AbstractBuilder(M model) {
+        protected AbstractBuilder(AbstractBooleanExpressionModel model) {
             this.model = model;
         }
 
