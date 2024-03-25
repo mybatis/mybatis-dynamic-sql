@@ -30,7 +30,7 @@ import org.mybatis.dynamic.sql.util.Buildable;
 import org.mybatis.dynamic.sql.util.Utilities;
 import org.mybatis.dynamic.sql.where.AbstractWhereFinisher;
 import org.mybatis.dynamic.sql.where.AbstractWhereStarter;
-import org.mybatis.dynamic.sql.where.WhereModel;
+import org.mybatis.dynamic.sql.where.EmbeddedWhereModel;
 
 public class DeleteDSL<R> extends AbstractWhereStarter<DeleteDSL<R>.DeleteWhereBuilder, DeleteDSL<R>>
         implements Buildable<R> {
@@ -111,7 +111,7 @@ public class DeleteDSL<R> extends AbstractWhereStarter<DeleteDSL<R>.DeleteWhereB
     public class DeleteWhereBuilder extends AbstractWhereFinisher<DeleteWhereBuilder> implements Buildable<R> {
 
         private DeleteWhereBuilder() {
-            super(statementConfiguration);
+            super(DeleteDSL.this);
         }
 
         public DeleteDSL<R> limit(long limit) {
@@ -138,7 +138,7 @@ public class DeleteDSL<R> extends AbstractWhereStarter<DeleteDSL<R>.DeleteWhereB
             return this;
         }
 
-        protected WhereModel buildWhereModel() {
+        protected EmbeddedWhereModel buildWhereModel() {
             return buildModel();
         }
     }

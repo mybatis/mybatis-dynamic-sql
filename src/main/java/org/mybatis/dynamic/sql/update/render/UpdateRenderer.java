@@ -32,7 +32,7 @@ import org.mybatis.dynamic.sql.update.UpdateModel;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 import org.mybatis.dynamic.sql.util.FragmentCollector;
 import org.mybatis.dynamic.sql.util.Validator;
-import org.mybatis.dynamic.sql.where.WhereModel;
+import org.mybatis.dynamic.sql.where.EmbeddedWhereModel;
 
 public class UpdateRenderer {
     private final UpdateModel updateModel;
@@ -101,7 +101,7 @@ public class UpdateRenderer {
         return updateModel.whereModel().flatMap(this::renderWhereClause);
     }
 
-    private Optional<FragmentAndParameters> renderWhereClause(WhereModel whereModel) {
+    private Optional<FragmentAndParameters> renderWhereClause(EmbeddedWhereModel whereModel) {
         return whereModel.render(renderingContext);
     }
 

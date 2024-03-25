@@ -45,7 +45,7 @@ import org.mybatis.dynamic.sql.util.ValueOrNullMapping;
 import org.mybatis.dynamic.sql.util.ValueWhenPresentMapping;
 import org.mybatis.dynamic.sql.where.AbstractWhereFinisher;
 import org.mybatis.dynamic.sql.where.AbstractWhereStarter;
-import org.mybatis.dynamic.sql.where.WhereModel;
+import org.mybatis.dynamic.sql.where.EmbeddedWhereModel;
 
 public class UpdateDSL<R> extends AbstractWhereStarter<UpdateDSL<R>.UpdateWhereBuilder, UpdateDSL<R>>
         implements Buildable<R> {
@@ -192,7 +192,7 @@ public class UpdateDSL<R> extends AbstractWhereStarter<UpdateDSL<R>.UpdateWhereB
     public class UpdateWhereBuilder extends AbstractWhereFinisher<UpdateWhereBuilder> implements Buildable<R> {
 
         private UpdateWhereBuilder() {
-            super(statementConfiguration);
+            super(UpdateDSL.this);
         }
 
         public UpdateDSL<R> limit(long limit) {
@@ -219,7 +219,7 @@ public class UpdateDSL<R> extends AbstractWhereStarter<UpdateDSL<R>.UpdateWhereB
             return this;
         }
 
-        protected WhereModel buildWhereModel() {
+        protected EmbeddedWhereModel buildWhereModel() {
             return buildModel();
         }
     }

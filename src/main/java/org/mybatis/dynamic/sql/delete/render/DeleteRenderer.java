@@ -30,7 +30,7 @@ import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 import org.mybatis.dynamic.sql.util.FragmentCollector;
-import org.mybatis.dynamic.sql.where.WhereModel;
+import org.mybatis.dynamic.sql.where.EmbeddedWhereModel;
 
 public class DeleteRenderer {
     private final DeleteModel deleteModel;
@@ -75,7 +75,7 @@ public class DeleteRenderer {
         return deleteModel.whereModel().flatMap(this::renderWhereClause);
     }
 
-    private Optional<FragmentAndParameters> renderWhereClause(WhereModel whereModel) {
+    private Optional<FragmentAndParameters> renderWhereClause(EmbeddedWhereModel whereModel) {
         return whereModel.render(renderingContext);
     }
 

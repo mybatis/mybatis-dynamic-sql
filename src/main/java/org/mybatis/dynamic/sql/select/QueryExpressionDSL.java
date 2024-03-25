@@ -38,7 +38,7 @@ import org.mybatis.dynamic.sql.util.Buildable;
 import org.mybatis.dynamic.sql.util.Utilities;
 import org.mybatis.dynamic.sql.where.AbstractWhereFinisher;
 import org.mybatis.dynamic.sql.where.AbstractWhereStarter;
-import org.mybatis.dynamic.sql.where.WhereModel;
+import org.mybatis.dynamic.sql.where.EmbeddedWhereModel;
 
 public class QueryExpressionDSL<R>
         extends AbstractQueryExpressionDSL<QueryExpressionDSL<R>.QueryExpressionWhereBuilder, QueryExpressionDSL<R>>
@@ -275,7 +275,7 @@ public class QueryExpressionDSL<R>
     public class QueryExpressionWhereBuilder extends AbstractWhereFinisher<QueryExpressionWhereBuilder>
             implements Buildable<R> {
         private QueryExpressionWhereBuilder() {
-            super(selectDSL.statementConfiguration);
+            super(QueryExpressionDSL.this);
         }
 
         public UnionBuilder union() {
@@ -325,7 +325,7 @@ public class QueryExpressionDSL<R>
             return this;
         }
 
-        protected WhereModel buildWhereModel() {
+        protected EmbeddedWhereModel buildWhereModel() {
             return super.buildModel();
         }
     }

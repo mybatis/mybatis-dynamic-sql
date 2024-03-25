@@ -29,7 +29,7 @@ import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.TableExpression;
 import org.mybatis.dynamic.sql.select.join.JoinModel;
 import org.mybatis.dynamic.sql.util.Validator;
-import org.mybatis.dynamic.sql.where.WhereModel;
+import org.mybatis.dynamic.sql.where.EmbeddedWhereModel;
 
 public class QueryExpressionModel {
     private final String connector;
@@ -38,7 +38,7 @@ public class QueryExpressionModel {
     private final TableExpression table;
     private final JoinModel joinModel;
     private final Map<SqlTable, String> tableAliases;
-    private final WhereModel whereModel;
+    private final EmbeddedWhereModel whereModel;
     private final GroupByModel groupByModel;
     private final HavingModel havingModel;
 
@@ -75,7 +75,7 @@ public class QueryExpressionModel {
         return tableAliases;
     }
 
-    public Optional<WhereModel> whereModel() {
+    public Optional<EmbeddedWhereModel> whereModel() {
         return Optional.ofNullable(whereModel);
     }
 
@@ -101,7 +101,7 @@ public class QueryExpressionModel {
         private final List<BasicColumn> selectList = new ArrayList<>();
         private TableExpression table;
         private final Map<SqlTable, String> tableAliases = new HashMap<>();
-        private WhereModel whereModel;
+        private EmbeddedWhereModel whereModel;
         private JoinModel joinModel;
         private GroupByModel groupByModel;
         private HavingModel havingModel;
@@ -136,7 +136,7 @@ public class QueryExpressionModel {
             return this;
         }
 
-        public Builder withWhereModel(WhereModel whereModel) {
+        public Builder withWhereModel(EmbeddedWhereModel whereModel) {
             this.whereModel = whereModel;
             return this;
         }

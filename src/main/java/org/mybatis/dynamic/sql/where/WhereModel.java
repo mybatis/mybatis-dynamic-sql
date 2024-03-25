@@ -47,7 +47,7 @@ public class WhereModel extends AbstractBooleanExpressionModel {
         RenderingContext renderingContext = RenderingContext.withRenderingStrategy(renderingStrategy)
                 .withStatementConfiguration(statementConfiguration).build();
 
-        return render(renderingContext).map(this::toWhereClauseProvider);
+        return render(renderingContext);
     }
 
     public Optional<WhereClauseProvider> render(RenderingStrategy renderingStrategy,
@@ -58,7 +58,7 @@ public class WhereModel extends AbstractBooleanExpressionModel {
                 .withStatementConfiguration(statementConfiguration)
                 .build();
 
-        return render(renderingContext).map(this::toWhereClauseProvider);
+        return render(renderingContext);
     }
 
     public Optional<WhereClauseProvider> render(RenderingStrategy renderingStrategy, String parameterName) {
@@ -68,7 +68,7 @@ public class WhereModel extends AbstractBooleanExpressionModel {
                 .withStatementConfiguration(statementConfiguration)
                 .build();
 
-        return render(renderingContext).map(this::toWhereClauseProvider);
+        return render(renderingContext);
     }
 
     public Optional<WhereClauseProvider> render(RenderingStrategy renderingStrategy,
@@ -80,14 +80,15 @@ public class WhereModel extends AbstractBooleanExpressionModel {
                 .withStatementConfiguration(statementConfiguration)
                 .build();
 
-        return render(renderingContext).map(this::toWhereClauseProvider);
+        return render(renderingContext);
     }
 
-    public Optional<FragmentAndParameters> render(RenderingContext renderingContext) {
+    private Optional<WhereClauseProvider> render(RenderingContext renderingContext) {
         return WhereRenderer.withWhereModel(this)
                 .withRenderingContext(renderingContext)
                 .build()
-                .render();
+                .render()
+                .map(this::toWhereClauseProvider);
     }
 
     private WhereClauseProvider toWhereClauseProvider(FragmentAndParameters fragmentAndParameters) {
