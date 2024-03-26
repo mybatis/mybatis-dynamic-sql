@@ -905,4 +905,17 @@ class PersonMapperTest {
                 "select id, first_name, last_name, birth_date, employed, occupation, address_id from Person"
         assertThat(insertStatement.insertStatement).isEqualTo(expected)
     }
+
+    @Test
+    fun testRenderingEmptyList() {
+        val selectStatement = select(id, firstName, lastName, birthDate, employed, occupation, addressId) {
+            from(person)
+            where { id isIn emptyList() }
+            configureStatement { isEmptyListConditionRenderingAllowed = true }
+        }
+
+        val expected = "select id, first_name, last_name, birth_date, employed, occupation, address_id from Person " +
+                "where id in ()"
+        assertThat(selectStatement.selectStatement).isEqualTo(expected)
+    }
 }

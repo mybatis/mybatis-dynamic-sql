@@ -23,6 +23,8 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.mybatis.dynamic.sql.render.RenderingContext;
+
 public abstract class AbstractListValueCondition<T> implements VisitableCondition<T> {
     protected final Collection<T> values;
 
@@ -37,6 +39,15 @@ public abstract class AbstractListValueCondition<T> implements VisitableConditio
     @Override
     public boolean isEmpty() {
         return values.isEmpty();
+    }
+
+    @Override
+    public boolean shouldRender(RenderingContext renderingContext) {
+        if (isEmpty()) {
+            return renderingContext.isEmptyListConditionRenderingAllowed();
+        } else {
+            return true;
+        }
     }
 
     @Override

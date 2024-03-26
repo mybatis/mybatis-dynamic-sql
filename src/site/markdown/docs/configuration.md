@@ -7,12 +7,6 @@ The library can be configured globally - which will change the behavior for all 
 can be configured. There are sensible defaults for all configuration values, so configuration is not strictly necessary.
 If you want to change any of the default behaviors of the library, then the information on this page will help.
 
-Prior to version 1.4.1 of the library, there was no configurable behavior in the library. In version 1.4.1 we changed
-the default behavior of the library to throw an exception if a where clause fails to render. We did this out of an
-abundance of caution because the optional conditions in a where clause could lead to a statement that affected all
-rows in a table (for example, a delete statement could inadvertently delete all rows in a table). If you want the library
-to function as it did before version 1.4.1 , then you can change the global configuration as shown below.
-
 ## Global Configuration
 
 On first use the library will initialize the global configuration. The global configuration can be specified via a property
@@ -24,9 +18,10 @@ The configuration file is a standard Java properties file. The possible values a
 
 ## Global Configuration Properties
 
-| Property                       | Default | Meaning                                                                                                                                                                                                                                                                                               |
-|--------------------------------|---------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| nonRenderingWhereClauseAllowed | false   | If a where clause is specified, but fails to render, then the library will throw a `NonRenderingWhereClauseException` by default. If you set this value to true, then no exception will be thrown. This could enable statements to be rendered without where clauses that affect all rows in a table. |
+| Property                           | Default | Available in Version | Meaning                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
+|------------------------------------|---------|----------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| emptyListConditionRenderingAllowed | false   | 1.5.1+               | If a list condition ("in", "not in", etc.) has an empty list - either though its initial values, or through filtering, the condition will be dropped from the where clause by default. If you set this value to true, then the condition will render even though the resulting SQL will be invalid. This will likely cause an SQLException at runtime, but it could be viewed as a protective measure so that statements do not effect more rows than desired. |
+| nonRenderingWhereClauseAllowed     | false   | 1.4.1+               | If a where clause is specified, but fails to render, then the library will throw a `NonRenderingWhereClauseException` by default. If you set this value to true, then no exception will be thrown. This could enable statements to be rendered without where clauses that affect all rows in a table.                                                                                                                                                          |
 
 ## Statement Configuration
 
