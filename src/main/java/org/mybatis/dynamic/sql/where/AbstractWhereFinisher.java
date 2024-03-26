@@ -27,7 +27,11 @@ import org.mybatis.dynamic.sql.util.ConfigurableStatement;
 
 public abstract class AbstractWhereFinisher<T extends AbstractWhereFinisher<T>> extends AbstractBooleanExpressionDSL<T>
         implements ConfigurableStatement<T> {
-    private final StatementConfiguration statementConfiguration;
+    private final ConfigurableStatement<?> parentStatement;
+
+    protected AbstractWhereFinisher(ConfigurableStatement<?> parentStatement) {
+        this.parentStatement = Objects.requireNonNull(parentStatement);
+    }
 
     void initialize(SqlCriterion sqlCriterion) {
         setInitialCriterion(sqlCriterion, StatementType.WHERE);
@@ -38,17 +42,16 @@ public abstract class AbstractWhereFinisher<T extends AbstractWhereFinisher<T>> 
         super.subCriteria.addAll(subCriteria);
     }
 
-    protected AbstractWhereFinisher(StatementConfiguration statementConfiguration) {
-        this.statementConfiguration = Objects.requireNonNull(statementConfiguration);
-    }
-
     @Override
     public T configureStatement(Consumer<StatementConfiguration> consumer) {
-        consumer.accept(statementConfiguration);
+        parentStatement.configureStatement(consumer);
         return getThis();
     }
 
-    protected WhereModel buildModel() {
-        return new WhereModel(getInitialCriterion(), subCriteria, statementConfiguration);
+    protected EmbeddedWhereModel buildModel() {
+        return new EmbeddedWhereModel.Builder()
+                .withInitialCriterion(getInitialCriterion())
+                .withSubCriteria(subCriteria)
+                .build();
     }
 }

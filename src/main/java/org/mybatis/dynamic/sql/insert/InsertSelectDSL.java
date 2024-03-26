@@ -18,18 +18,22 @@ package org.mybatis.dynamic.sql.insert;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Consumer;
 
 import org.jetbrains.annotations.NotNull;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
+import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
 import org.mybatis.dynamic.sql.select.SelectModel;
 import org.mybatis.dynamic.sql.util.Buildable;
+import org.mybatis.dynamic.sql.util.ConfigurableStatement;
 
-public class InsertSelectDSL implements Buildable<InsertSelectModel> {
+public class InsertSelectDSL implements Buildable<InsertSelectModel>, ConfigurableStatement<InsertSelectDSL> {
 
     private final SqlTable table;
     private final InsertColumnListModel columnList;
     private final SelectModel selectModel;
+    private final StatementConfiguration statementConfiguration = new StatementConfiguration();
 
     private InsertSelectDSL(SqlTable table, InsertColumnListModel columnList, SelectModel selectModel) {
         this.table = Objects.requireNonNull(table);
@@ -49,11 +53,18 @@ public class InsertSelectDSL implements Buildable<InsertSelectModel> {
         return InsertSelectModel.withTable(table)
                 .withColumnList(columnList)
                 .withSelectModel(selectModel)
+                .withStatementConfiguration(statementConfiguration)
                 .build();
     }
 
     public static InsertColumnGatherer insertInto(SqlTable table) {
         return new InsertColumnGatherer(table);
+    }
+
+    @Override
+    public InsertSelectDSL configureStatement(Consumer<StatementConfiguration> consumer) {
+        consumer.accept(statementConfiguration);
+        return this;
     }
 
     public static class InsertColumnGatherer {

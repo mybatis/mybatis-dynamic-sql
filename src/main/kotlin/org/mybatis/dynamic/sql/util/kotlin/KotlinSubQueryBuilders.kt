@@ -19,6 +19,7 @@ import org.mybatis.dynamic.sql.BasicColumn
 import org.mybatis.dynamic.sql.SqlBuilder
 import org.mybatis.dynamic.sql.SqlColumn
 import org.mybatis.dynamic.sql.SqlTable
+import org.mybatis.dynamic.sql.configuration.StatementConfiguration
 import org.mybatis.dynamic.sql.insert.InsertSelectModel
 import org.mybatis.dynamic.sql.select.SelectModel
 import org.mybatis.dynamic.sql.util.Buildable
@@ -63,6 +64,7 @@ typealias InsertSelectCompleter = KotlinInsertSelectSubQueryBuilder.() -> Unit
 class KotlinInsertSelectSubQueryBuilder : KotlinBaseSubQueryBuilder(), Buildable<InsertSelectModel> {
     private var columnList: List<SqlColumn<*>>? = null
     private var table: SqlTable? = null
+    private var statementConfigurator: (StatementConfiguration.() -> Unit)? = null
 
     fun into(table: SqlTable) {
         this.table = table
@@ -74,18 +76,24 @@ class KotlinInsertSelectSubQueryBuilder : KotlinBaseSubQueryBuilder(), Buildable
         this.columnList = columnList
     }
 
+    fun configureStatement(c: StatementConfiguration.() -> Unit) {
+        statementConfigurator = c
+    }
+
     override fun build(): InsertSelectModel {
         assertNotNull(table, "ERROR.29") //$NON-NLS-1$
 
-        return if (columnList == null) {
+        val dsl = if (columnList == null) {
             SqlBuilder.insertInto(table)
                 .withSelectStatement { buildSelectModel() }
-                .build()
         } else {
             SqlBuilder.insertInto(table)
                 .withColumnList(columnList)
                 .withSelectStatement { buildSelectModel() }
-                .build()
         }
+
+        statementConfigurator?.let { dsl.configureStatement(it) }
+
+        return dsl.build()
     }
 }

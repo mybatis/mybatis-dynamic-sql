@@ -13,32 +13,35 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.mybatis.dynamic.sql.select.render;
+package org.mybatis.dynamic.sql.where;
 
-import org.mybatis.dynamic.sql.common.AbstractBooleanExpressionRenderer;
-import org.mybatis.dynamic.sql.select.HavingModel;
+import java.util.Optional;
 
-public class HavingRenderer extends AbstractBooleanExpressionRenderer {
-    private HavingRenderer(Builder builder) {
-        super("having", builder); //$NON-NLS-1$
+import org.mybatis.dynamic.sql.common.AbstractBooleanExpressionModel;
+import org.mybatis.dynamic.sql.render.RenderingContext;
+import org.mybatis.dynamic.sql.util.FragmentAndParameters;
+import org.mybatis.dynamic.sql.where.render.WhereRenderer;
+
+public class EmbeddedWhereModel extends AbstractBooleanExpressionModel {
+    private EmbeddedWhereModel(Builder builder) {
+        super(builder);
     }
 
-    public static Builder withHavingModel(HavingModel havingModel) {
-        return new Builder(havingModel);
+    public Optional<FragmentAndParameters> render(RenderingContext renderingContext) {
+        return WhereRenderer.withWhereModel(this)
+                .withRenderingContext(renderingContext)
+                .build()
+                .render();
     }
 
     public static class Builder extends AbstractBuilder<Builder> {
-        public Builder(HavingModel havingModel) {
-            super(havingModel);
+        public EmbeddedWhereModel build() {
+            return new EmbeddedWhereModel(this);
         }
 
         @Override
         protected Builder getThis() {
             return this;
-        }
-
-        public HavingRenderer build() {
-            return new HavingRenderer(this);
         }
     }
 }

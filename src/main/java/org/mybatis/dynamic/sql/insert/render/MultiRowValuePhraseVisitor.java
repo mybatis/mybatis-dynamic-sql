@@ -23,6 +23,7 @@ import org.mybatis.dynamic.sql.util.NullMapping;
 import org.mybatis.dynamic.sql.util.PropertyMapping;
 import org.mybatis.dynamic.sql.util.RowMapping;
 import org.mybatis.dynamic.sql.util.StringConstantMapping;
+import org.mybatis.dynamic.sql.util.StringUtilities;
 
 public class MultiRowValuePhraseVisitor extends MultiRowInsertMappingVisitor<FieldAndValueAndParameters> {
     protected final RenderingStrategy renderingStrategy;
@@ -50,7 +51,7 @@ public class MultiRowValuePhraseVisitor extends MultiRowInsertMappingVisitor<Fie
     @Override
     public FieldAndValueAndParameters visit(StringConstantMapping mapping) {
         return FieldAndValueAndParameters.withFieldName(mapping.columnName())
-                .withValuePhrase("'" + mapping.constant() + "'") //$NON-NLS-1$ //$NON-NLS-2$
+                .withValuePhrase(StringUtilities.formatConstantForSQL(mapping.constant()))
                 .build();
     }
 

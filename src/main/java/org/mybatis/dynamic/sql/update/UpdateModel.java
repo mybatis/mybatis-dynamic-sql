@@ -26,20 +26,22 @@ import org.jetbrains.annotations.NotNull;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.common.CommonBuilder;
 import org.mybatis.dynamic.sql.common.OrderByModel;
+import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.update.render.UpdateRenderer;
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
 import org.mybatis.dynamic.sql.util.AbstractColumnMapping;
 import org.mybatis.dynamic.sql.util.Validator;
-import org.mybatis.dynamic.sql.where.WhereModel;
+import org.mybatis.dynamic.sql.where.EmbeddedWhereModel;
 
 public class UpdateModel {
     private final SqlTable table;
     private final String tableAlias;
-    private final WhereModel whereModel;
+    private final EmbeddedWhereModel whereModel;
     private final List<AbstractColumnMapping> columnMappings;
     private final Long limit;
     private final OrderByModel orderByModel;
+    private final StatementConfiguration statementConfiguration;
 
     private UpdateModel(Builder builder) {
         table = Objects.requireNonNull(builder.table());
@@ -49,6 +51,7 @@ public class UpdateModel {
         limit = builder.limit();
         orderByModel = builder.orderByModel();
         Validator.assertNotEmpty(columnMappings, "ERROR.17"); //$NON-NLS-1$
+        statementConfiguration = Objects.requireNonNull(builder.statementConfiguration());
     }
 
     public SqlTable table() {
@@ -59,7 +62,7 @@ public class UpdateModel {
         return Optional.ofNullable(tableAlias);
     }
 
-    public Optional<WhereModel> whereModel() {
+    public Optional<EmbeddedWhereModel> whereModel() {
         return Optional.ofNullable(whereModel);
     }
 
@@ -79,6 +82,7 @@ public class UpdateModel {
     public UpdateStatementProvider render(RenderingStrategy renderingStrategy) {
         return UpdateRenderer.withUpdateModel(this)
                 .withRenderingStrategy(renderingStrategy)
+                .withStatementConfiguration(statementConfiguration)
                 .build()
                 .render();
     }

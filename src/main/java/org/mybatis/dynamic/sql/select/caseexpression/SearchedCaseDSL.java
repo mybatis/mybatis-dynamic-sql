@@ -29,7 +29,7 @@ import org.mybatis.dynamic.sql.VisitableCondition;
 import org.mybatis.dynamic.sql.common.AbstractBooleanExpressionDSL;
 
 public class SearchedCaseDSL implements ElseDSL<SearchedCaseDSL.SearchedCaseEnder> {
-    private final List<SearchedCaseModel.SearchedWhenCondition> whenConditions = new ArrayList<>();
+    private final List<SearchedCaseWhenCondition> whenConditions = new ArrayList<>();
     private BasicColumn elseValue;
 
     public <T> WhenDSL when(BindableColumn<T> column, VisitableCondition<T> condition,
@@ -85,8 +85,11 @@ public class SearchedCaseDSL implements ElseDSL<SearchedCaseDSL.SearchedCaseEnde
 
         @Override
         public SearchedCaseDSL then(BasicColumn column) {
-            whenConditions.add(new SearchedCaseModel.SearchedWhenCondition(getInitialCriterion(), subCriteria,
-                    column));
+            whenConditions.add(new SearchedCaseWhenCondition.Builder()
+                    .withInitialCriterion(getInitialCriterion())
+                    .withSubCriteria(subCriteria)
+                    .withThenValue(column)
+                    .build());
             return SearchedCaseDSL.this;
         }
 

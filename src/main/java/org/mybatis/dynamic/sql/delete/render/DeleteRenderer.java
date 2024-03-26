@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
 
 import org.mybatis.dynamic.sql.common.OrderByModel;
 import org.mybatis.dynamic.sql.common.OrderByRenderer;
+import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
 import org.mybatis.dynamic.sql.delete.DeleteModel;
 import org.mybatis.dynamic.sql.render.ExplicitTableAliasCalculator;
 import org.mybatis.dynamic.sql.render.RenderedParameterInfo;
@@ -29,8 +30,7 @@ import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 import org.mybatis.dynamic.sql.util.FragmentCollector;
-import org.mybatis.dynamic.sql.where.WhereModel;
-import org.mybatis.dynamic.sql.where.render.WhereRenderer;
+import org.mybatis.dynamic.sql.where.EmbeddedWhereModel;
 
 public class DeleteRenderer {
     private final DeleteModel deleteModel;
@@ -44,6 +44,7 @@ public class DeleteRenderer {
         renderingContext = RenderingContext
                 .withRenderingStrategy(Objects.requireNonNull(builder.renderingStrategy))
                 .withTableAliasCalculator(tableAliasCalculator)
+                .withStatementConfiguration(builder.statementConfiguration)
                 .build();
     }
 
@@ -74,11 +75,8 @@ public class DeleteRenderer {
         return deleteModel.whereModel().flatMap(this::renderWhereClause);
     }
 
-    private Optional<FragmentAndParameters> renderWhereClause(WhereModel whereModel) {
-        return WhereRenderer.withWhereModel(whereModel)
-                .withRenderingContext(renderingContext)
-                .build()
-                .render();
+    private Optional<FragmentAndParameters> renderWhereClause(EmbeddedWhereModel whereModel) {
+        return whereModel.render(renderingContext);
     }
 
     private Optional<FragmentAndParameters> calculateLimitClause() {
@@ -108,6 +106,7 @@ public class DeleteRenderer {
     public static class Builder {
         private DeleteModel deleteModel;
         private RenderingStrategy renderingStrategy;
+        private StatementConfiguration statementConfiguration;
 
         public Builder withDeleteModel(DeleteModel deleteModel) {
             this.deleteModel = deleteModel;
@@ -116,6 +115,11 @@ public class DeleteRenderer {
 
         public Builder withRenderingStrategy(RenderingStrategy renderingStrategy) {
             this.renderingStrategy = renderingStrategy;
+            return this;
+        }
+
+        public Builder withStatementConfiguration(StatementConfiguration statementConfiguration) {
+            this.statementConfiguration = statementConfiguration;
             return this;
         }
 

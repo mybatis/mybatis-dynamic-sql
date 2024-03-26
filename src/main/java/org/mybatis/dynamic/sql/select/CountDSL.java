@@ -27,7 +27,7 @@ import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
 import org.mybatis.dynamic.sql.util.Buildable;
 import org.mybatis.dynamic.sql.util.Utilities;
 import org.mybatis.dynamic.sql.where.AbstractWhereFinisher;
-import org.mybatis.dynamic.sql.where.WhereModel;
+import org.mybatis.dynamic.sql.where.EmbeddedWhereModel;
 
 /**
  * DSL for building count queries. Count queries are specializations of select queries. They have joins and where
@@ -81,6 +81,7 @@ public class CountDSL<R> extends AbstractQueryExpressionDSL<CountDSL<R>.CountWhe
 
         return new SelectModel.Builder()
                 .withQueryExpression(queryExpressionModel)
+                .withStatementConfiguration(statementConfiguration)
                 .build();
     }
 
@@ -130,7 +131,7 @@ public class CountDSL<R> extends AbstractQueryExpressionDSL<CountDSL<R>.CountWhe
     public class CountWhereBuilder extends AbstractWhereFinisher<CountWhereBuilder>
             implements Buildable<R> {
         private CountWhereBuilder() {
-            super(statementConfiguration);
+            super(CountDSL.this);
         }
 
         @NotNull
@@ -144,7 +145,7 @@ public class CountDSL<R> extends AbstractQueryExpressionDSL<CountDSL<R>.CountWhe
             return this;
         }
 
-        protected WhereModel buildWhereModel() {
+        protected EmbeddedWhereModel buildWhereModel() {
             return super.buildModel();
         }
     }

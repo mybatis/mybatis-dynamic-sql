@@ -38,7 +38,7 @@ import org.mybatis.dynamic.sql.util.Buildable;
 import org.mybatis.dynamic.sql.util.Utilities;
 import org.mybatis.dynamic.sql.where.AbstractWhereFinisher;
 import org.mybatis.dynamic.sql.where.AbstractWhereStarter;
-import org.mybatis.dynamic.sql.where.WhereModel;
+import org.mybatis.dynamic.sql.where.EmbeddedWhereModel;
 
 public class QueryExpressionDSL<R>
         extends AbstractQueryExpressionDSL<QueryExpressionDSL<R>.QueryExpressionWhereBuilder, QueryExpressionDSL<R>>
@@ -50,7 +50,6 @@ public class QueryExpressionDSL<R>
     private final List<BasicColumn> selectList;
     private QueryExpressionWhereBuilder whereBuilder;
     private GroupByModel groupByModel;
-    private final StatementConfiguration statementConfiguration = new StatementConfiguration();
     private QueryExpressionHavingBuilder havingBuilder;
 
     protected QueryExpressionDSL(FromGatherer<R> fromGatherer, TableExpression table) {
@@ -75,7 +74,7 @@ public class QueryExpressionDSL<R>
 
     @Override
     public QueryExpressionDSL<R> configureStatement(Consumer<StatementConfiguration> consumer) {
-        consumer.accept(statementConfiguration);
+        selectDSL.configureStatement(consumer);
         return this;
     }
 
@@ -276,7 +275,7 @@ public class QueryExpressionDSL<R>
     public class QueryExpressionWhereBuilder extends AbstractWhereFinisher<QueryExpressionWhereBuilder>
             implements Buildable<R> {
         private QueryExpressionWhereBuilder() {
-            super(statementConfiguration);
+            super(QueryExpressionDSL.this);
         }
 
         public UnionBuilder union() {
@@ -326,7 +325,7 @@ public class QueryExpressionDSL<R>
             return this;
         }
 
-        protected WhereModel buildWhereModel() {
+        protected EmbeddedWhereModel buildWhereModel() {
             return super.buildModel();
         }
     }
@@ -394,7 +393,7 @@ public class QueryExpressionDSL<R>
 
         @Override
         public JoinSpecificationFinisher configureStatement(Consumer<StatementConfiguration> consumer) {
-            consumer.accept(statementConfiguration);
+            selectDSL.configureStatement(consumer);
             return this;
         }
 

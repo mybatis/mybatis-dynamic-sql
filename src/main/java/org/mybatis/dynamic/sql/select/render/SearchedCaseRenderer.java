@@ -24,6 +24,7 @@ import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.exception.InvalidSqlException;
 import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.select.caseexpression.SearchedCaseModel;
+import org.mybatis.dynamic.sql.select.caseexpression.SearchedCaseWhenCondition;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 import org.mybatis.dynamic.sql.util.FragmentCollector;
 import org.mybatis.dynamic.sql.util.Messages;
@@ -56,12 +57,12 @@ public class SearchedCaseRenderer {
                 .toFragmentAndParameters(Collectors.joining(" ")); //$NON-NLS-1$
     }
 
-    private FragmentAndParameters renderWhenCondition(SearchedCaseModel.SearchedWhenCondition whenCondition) {
+    private FragmentAndParameters renderWhenCondition(SearchedCaseWhenCondition whenCondition) {
         return Stream.of(renderWhen(whenCondition), renderThen(whenCondition)).collect(FragmentCollector.collect())
                 .toFragmentAndParameters(Collectors.joining(" ")); //$NON-NLS-1$
     }
 
-    private FragmentAndParameters renderWhen(SearchedCaseModel.SearchedWhenCondition whenCondition) {
+    private FragmentAndParameters renderWhen(SearchedCaseWhenCondition whenCondition) {
         SearchedCaseWhenConditionRenderer renderer = new SearchedCaseWhenConditionRenderer.Builder(whenCondition)
                 .withRenderingContext(renderingContext)
                 .build();
@@ -70,7 +71,7 @@ public class SearchedCaseRenderer {
                 .orElseThrow(() -> new InvalidSqlException(Messages.getString("ERROR.39"))); //$NON-NLS-1$
     }
 
-    private FragmentAndParameters renderThen(SearchedCaseModel.SearchedWhenCondition whenCondition) {
+    private FragmentAndParameters renderThen(SearchedCaseWhenCondition whenCondition) {
         return whenCondition.thenValue().render(renderingContext).mapFragment(f -> "then " + f);
     }
 

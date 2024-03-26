@@ -16,7 +16,8 @@
 package org.mybatis.dynamic.sql.common;
 
 import org.mybatis.dynamic.sql.SqlTable;
-import org.mybatis.dynamic.sql.where.WhereModel;
+import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
+import org.mybatis.dynamic.sql.where.EmbeddedWhereModel;
 
 /**
  * Builder class shared between the delete and update model builders.
@@ -26,9 +27,10 @@ import org.mybatis.dynamic.sql.where.WhereModel;
 public abstract class CommonBuilder<T extends CommonBuilder<T>> {
     private SqlTable table;
     private String tableAlias;
-    private WhereModel whereModel;
+    private EmbeddedWhereModel whereModel;
     private Long limit;
     private OrderByModel orderByModel;
+    private StatementConfiguration statementConfiguration;
 
     public SqlTable table() {
         return table;
@@ -38,7 +40,7 @@ public abstract class CommonBuilder<T extends CommonBuilder<T>> {
         return tableAlias;
     }
 
-    public WhereModel whereModel() {
+    public EmbeddedWhereModel whereModel() {
         return whereModel;
     }
 
@@ -48,6 +50,10 @@ public abstract class CommonBuilder<T extends CommonBuilder<T>> {
 
     public OrderByModel orderByModel() {
         return orderByModel;
+    }
+
+    public StatementConfiguration statementConfiguration() {
+        return statementConfiguration;
     }
 
     public T withTable(SqlTable table) {
@@ -60,7 +66,7 @@ public abstract class CommonBuilder<T extends CommonBuilder<T>> {
         return getThis();
     }
 
-    public T withWhereModel(WhereModel whereModel) {
+    public T withWhereModel(EmbeddedWhereModel whereModel) {
         this.whereModel = whereModel;
         return getThis();
     }
@@ -72,6 +78,11 @@ public abstract class CommonBuilder<T extends CommonBuilder<T>> {
 
     public T withOrderByModel(OrderByModel orderByModel) {
         this.orderByModel = orderByModel;
+        return getThis();
+    }
+
+    public T withStatementConfiguration(StatementConfiguration statementConfiguration) {
+        this.statementConfiguration = statementConfiguration;
         return getThis();
     }
 

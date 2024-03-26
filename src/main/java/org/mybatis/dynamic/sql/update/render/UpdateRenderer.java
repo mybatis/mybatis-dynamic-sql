@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
 
 import org.mybatis.dynamic.sql.common.OrderByModel;
 import org.mybatis.dynamic.sql.common.OrderByRenderer;
+import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
 import org.mybatis.dynamic.sql.render.ExplicitTableAliasCalculator;
 import org.mybatis.dynamic.sql.render.RenderedParameterInfo;
 import org.mybatis.dynamic.sql.render.RenderingContext;
@@ -31,8 +32,7 @@ import org.mybatis.dynamic.sql.update.UpdateModel;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 import org.mybatis.dynamic.sql.util.FragmentCollector;
 import org.mybatis.dynamic.sql.util.Validator;
-import org.mybatis.dynamic.sql.where.WhereModel;
-import org.mybatis.dynamic.sql.where.render.WhereRenderer;
+import org.mybatis.dynamic.sql.where.EmbeddedWhereModel;
 
 public class UpdateRenderer {
     private final UpdateModel updateModel;
@@ -46,6 +46,7 @@ public class UpdateRenderer {
         renderingContext = RenderingContext
                 .withRenderingStrategy(Objects.requireNonNull(builder.renderingStrategy))
                 .withTableAliasCalculator(tableAliasCalculator)
+                .withStatementConfiguration(builder.statementConfiguration)
                 .build();
     }
 
@@ -100,11 +101,8 @@ public class UpdateRenderer {
         return updateModel.whereModel().flatMap(this::renderWhereClause);
     }
 
-    private Optional<FragmentAndParameters> renderWhereClause(WhereModel whereModel) {
-        return WhereRenderer.withWhereModel(whereModel)
-                .withRenderingContext(renderingContext)
-                .build()
-                .render();
+    private Optional<FragmentAndParameters> renderWhereClause(EmbeddedWhereModel whereModel) {
+        return whereModel.render(renderingContext);
     }
 
     private Optional<FragmentAndParameters> calculateLimitClause() {
@@ -134,6 +132,7 @@ public class UpdateRenderer {
     public static class Builder {
         private UpdateModel updateModel;
         private RenderingStrategy renderingStrategy;
+        private StatementConfiguration statementConfiguration;
 
         public Builder withUpdateModel(UpdateModel updateModel) {
             this.updateModel = updateModel;
@@ -142,6 +141,11 @@ public class UpdateRenderer {
 
         public Builder withRenderingStrategy(RenderingStrategy renderingStrategy) {
             this.renderingStrategy = renderingStrategy;
+            return this;
+        }
+
+        public Builder withStatementConfiguration(StatementConfiguration statementConfiguration) {
+            this.statementConfiguration = statementConfiguration;
             return this;
         }
 

@@ -17,12 +17,12 @@ package org.mybatis.dynamic.sql.where.render;
 
 import java.util.Optional;
 
+import org.mybatis.dynamic.sql.common.AbstractBooleanExpressionModel;
 import org.mybatis.dynamic.sql.common.AbstractBooleanExpressionRenderer;
 import org.mybatis.dynamic.sql.exception.NonRenderingWhereClauseException;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
-import org.mybatis.dynamic.sql.where.WhereModel;
 
-public class WhereRenderer extends AbstractBooleanExpressionRenderer<WhereModel> {
+public class WhereRenderer extends AbstractBooleanExpressionRenderer {
     private WhereRenderer(Builder builder) {
         super("where", builder); //$NON-NLS-1$
     }
@@ -31,19 +31,19 @@ public class WhereRenderer extends AbstractBooleanExpressionRenderer<WhereModel>
     public Optional<FragmentAndParameters> render() {
         Optional<FragmentAndParameters> whereClause = super.render();
 
-        if (whereClause.isPresent() || model.isNonRenderingClauseAllowed()) {
+        if (whereClause.isPresent() || renderingContext.isNonRenderingClauseAllowed()) {
             return whereClause;
         } else {
             throw new NonRenderingWhereClauseException();
         }
     }
 
-    public static Builder withWhereModel(WhereModel whereModel) {
+    public static Builder withWhereModel(AbstractBooleanExpressionModel whereModel) {
         return new Builder(whereModel);
     }
 
-    public static class Builder extends AbstractBuilder<WhereModel, Builder> {
-        public Builder(WhereModel whereModel) {
+    public static class Builder extends AbstractBuilder<Builder> {
+        public Builder(AbstractBooleanExpressionModel whereModel) {
             super(whereModel);
         }
 

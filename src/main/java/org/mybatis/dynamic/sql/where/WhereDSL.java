@@ -21,6 +21,11 @@ import org.jetbrains.annotations.NotNull;
 import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
 import org.mybatis.dynamic.sql.util.Buildable;
 
+/**
+ *  DSL for standalone where clauses.
+ *
+ *  <p>This can also be used to create reusable where clauses for different statements.
+ */
 public class WhereDSL extends AbstractWhereStarter<WhereDSL.StandaloneWhereFinisher, WhereDSL> {
     private final StatementConfiguration statementConfiguration = new StatementConfiguration();
     private final StandaloneWhereFinisher whereBuilder = new StandaloneWhereFinisher();
@@ -39,7 +44,7 @@ public class WhereDSL extends AbstractWhereStarter<WhereDSL.StandaloneWhereFinis
     public class StandaloneWhereFinisher extends AbstractWhereFinisher<StandaloneWhereFinisher>
             implements Buildable<WhereModel> {
         private StandaloneWhereFinisher() {
-            super(statementConfiguration);
+            super(WhereDSL.this);
         }
 
         @Override
@@ -50,7 +55,11 @@ public class WhereDSL extends AbstractWhereStarter<WhereDSL.StandaloneWhereFinis
         @NotNull
         @Override
         public WhereModel build() {
-            return buildModel();
+            return new WhereModel.Builder()
+                    .withInitialCriterion(getInitialCriterion())
+                    .withSubCriteria(subCriteria)
+                    .withStatementConfiguration(statementConfiguration)
+                    .build();
         }
 
         public WhereApplier toWhereApplier() {

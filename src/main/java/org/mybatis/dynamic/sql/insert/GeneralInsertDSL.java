@@ -24,6 +24,7 @@ import java.util.function.Supplier;
 import org.jetbrains.annotations.NotNull;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
+import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
 import org.mybatis.dynamic.sql.util.AbstractColumnMapping;
 import org.mybatis.dynamic.sql.util.Buildable;
 import org.mybatis.dynamic.sql.util.ConstantMapping;
@@ -52,6 +53,7 @@ public class GeneralInsertDSL implements Buildable<GeneralInsertModel> {
         return new GeneralInsertModel.Builder()
                 .withTable(table)
                 .withInsertMappings(columnMappings)
+                .withStatementConfiguration(new StatementConfiguration()) // nothing configurable in this statement yet
                 .build();
     }
 

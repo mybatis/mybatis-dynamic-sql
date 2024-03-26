@@ -30,7 +30,6 @@ import org.mybatis.dynamic.sql.BindableColumn;
 import org.mybatis.dynamic.sql.ConditionVisitor;
 import org.mybatis.dynamic.sql.render.RenderedParameterInfo;
 import org.mybatis.dynamic.sql.render.RenderingContext;
-import org.mybatis.dynamic.sql.select.render.SelectRenderer;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 import org.mybatis.dynamic.sql.util.FragmentCollector;
@@ -94,10 +93,7 @@ public class DefaultConditionVisitor<T> implements ConditionVisitor<T, FragmentA
 
     @Override
     public FragmentAndParameters visit(AbstractSubselectCondition<T> condition) {
-        SelectStatementProvider selectStatement = SelectRenderer.withSelectModel(condition.selectModel())
-                .withRenderingContext(renderingContext)
-                .build()
-                .render();
+        SelectStatementProvider selectStatement = condition.selectModel().render(renderingContext);
 
         String finalFragment = condition.operator()
                 + " (" //$NON-NLS-1$

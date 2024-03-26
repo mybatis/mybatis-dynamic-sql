@@ -13,32 +13,40 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.mybatis.dynamic.sql.select.render;
+package org.mybatis.dynamic.sql.select.caseexpression;
 
-import org.mybatis.dynamic.sql.common.AbstractBooleanExpressionRenderer;
-import org.mybatis.dynamic.sql.select.HavingModel;
+import java.util.Objects;
 
-public class HavingRenderer extends AbstractBooleanExpressionRenderer {
-    private HavingRenderer(Builder builder) {
-        super("having", builder); //$NON-NLS-1$
+import org.mybatis.dynamic.sql.BasicColumn;
+import org.mybatis.dynamic.sql.common.AbstractBooleanExpressionModel;
+
+public class SearchedCaseWhenCondition extends AbstractBooleanExpressionModel {
+    private final BasicColumn thenValue;
+
+    public BasicColumn thenValue() {
+        return thenValue;
     }
 
-    public static Builder withHavingModel(HavingModel havingModel) {
-        return new Builder(havingModel);
+    private SearchedCaseWhenCondition(Builder builder) {
+        super(builder);
+        thenValue = Objects.requireNonNull(builder.thenValue);
     }
 
     public static class Builder extends AbstractBuilder<Builder> {
-        public Builder(HavingModel havingModel) {
-            super(havingModel);
+        private BasicColumn thenValue;
+
+        public Builder withThenValue(BasicColumn thenValue) {
+            this.thenValue = thenValue;
+            return this;
+        }
+
+        public SearchedCaseWhenCondition build() {
+            return new SearchedCaseWhenCondition(this);
         }
 
         @Override
         protected Builder getThis() {
             return this;
-        }
-
-        public HavingRenderer build() {
-            return new HavingRenderer(this);
         }
     }
 }
