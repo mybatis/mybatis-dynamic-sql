@@ -63,6 +63,8 @@ types - which is a rare usage. Please let us know if this causes an undo hardshi
 3. Refactored the conditions to separate the concept of an empty condition from that of a renderable condition. This
    will enable a future change where conditions could decide to allow rendering even if they are considered empty (such
    as rendering empty lists). This change should be transparent to users unless they have implemented custom conditions.
+4. Added a configuration setting to allow empty list conditions to render. This could generate invalid SQL, but might be
+   a good safety measure in some cases.
 
 ## Release 1.5.0 - April 21, 2023
 

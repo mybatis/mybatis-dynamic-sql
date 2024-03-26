@@ -15,6 +15,8 @@
  */
 package org.mybatis.dynamic.sql;
 
+import org.mybatis.dynamic.sql.render.RenderingContext;
+
 import java.util.Collection;
 import java.util.Objects;
 import java.util.function.Function;
@@ -37,6 +39,15 @@ public abstract class AbstractListValueCondition<T> implements VisitableConditio
     @Override
     public boolean isEmpty() {
         return values.isEmpty();
+    }
+
+    @Override
+    public boolean shouldRender(RenderingContext renderingContext) {
+        if (isEmpty()) {
+            return renderingContext.isEmptyListConditionRenderingAllowed();
+        } else {
+            return true;
+        }
     }
 
     @Override
