@@ -18,6 +18,7 @@ package org.mybatis.dynamic.sql.util.kotlin
 import org.mybatis.dynamic.sql.BasicColumn
 import org.mybatis.dynamic.sql.SortSpecification
 import org.mybatis.dynamic.sql.SqlBuilder
+import org.mybatis.dynamic.sql.configuration.StatementConfiguration
 import org.mybatis.dynamic.sql.select.MultiSelectDSL
 import org.mybatis.dynamic.sql.select.MultiSelectModel
 import org.mybatis.dynamic.sql.util.Buildable
@@ -72,6 +73,10 @@ class KotlinMultiSelectBuilder: Buildable<MultiSelectModel> {
 
     fun fetchFirst(fetchFirstRows: Long) {
         getDsl().fetchFirst(fetchFirstRows).rowsOnly()
+    }
+
+    fun configureStatement(c: StatementConfiguration.() -> Unit) {
+        getDsl().configureStatement(c)
     }
 
     override fun build(): MultiSelectModel =

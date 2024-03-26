@@ -28,10 +28,12 @@ import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.person
 import org.apache.ibatis.session.ExecutorType
 import org.apache.ibatis.session.SqlSessionFactory
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.TestInstance.Lifecycle
+import org.mybatis.dynamic.sql.exception.NonRenderingWhereClauseException
 import org.mybatis.dynamic.sql.util.kotlin.elements.add
 import org.mybatis.dynamic.sql.util.kotlin.elements.constant
 import org.mybatis.dynamic.sql.util.kotlin.elements.isIn
@@ -823,5 +825,84 @@ class PersonMapperTest {
                 assertThat(addressId).isEqualTo(2)
             }
         }
+    }
+
+    @Test
+    fun testMultiSelectWithNonRenderingWhereClauseDisAllowed() {
+        assertThatExceptionOfType(NonRenderingWhereClauseException::class.java).isThrownBy {
+            multiSelect {
+                select(id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId) {
+                    from(person)
+                    where { id isLessThanOrEqualTo 2 }
+                    orderBy(id)
+                    limit(1)
+                }
+                union {
+                    select(id.`as`("A_ID"), firstName, lastName, birthDate, employed, occupation, addressId) {
+                        from(person)
+                        where { id isGreaterThanOrEqualToWhenPresent null }
+                        orderBy(id.descending())
+                        limit(1)
+                    }
+                }
+                orderBy(sortColumn("A_ID"))
+                limit(2)
+                offset(1)
+            }
+        }
+    }
+
+    @Test
+    fun testMultiSelectWithNonRenderingWhereClauseAllowed() {
+        val selectStatement = multiSelect {
+            select(id, firstName) {
+                from(person)
+                where { id isLessThanOrEqualTo 2 }
+            }
+            union {
+                select(id, firstName) {
+                    from(person)
+                    where { id isGreaterThanOrEqualToWhenPresent null }
+                    // following should be ignored in favor of the statement configuration...
+                    configureStatement { isNonRenderingWhereClauseAllowed = false }
+                }
+            }
+            configureStatement { isNonRenderingWhereClauseAllowed = true }
+        }
+
+        val expected = "(select id, first_name from Person where id <= #{parameters.p1,jdbcType=INTEGER}) " +
+                "union (select id, first_name from Person)"
+        assertThat(selectStatement.selectStatement).isEqualTo(expected)
+    }
+
+    @Test
+    fun testInsertSelectWithNonRenderingWhereClauseDisAllowed() {
+        assertThatExceptionOfType(NonRenderingWhereClauseException::class.java).isThrownBy {
+            insertSelect {
+                into(person)
+                select(id, firstName, lastName, birthDate, employed, occupation, addressId) {
+                    from(person)
+                    where { id isGreaterThanOrEqualToWhenPresent null }
+                }
+            }
+        }
+    }
+
+    @Test
+    fun testInsertSelectWithNonRenderingWhereClauseAllowed() {
+        val insertStatement = insertSelect {
+            into(person)
+            select(id, firstName, lastName, birthDate, employed, occupation, addressId) {
+                from(person)
+                where { id isGreaterThanOrEqualToWhenPresent null }
+                // following should be ignored in favor of the statement configuration...
+                configureStatement { isNonRenderingWhereClauseAllowed = false }
+            }
+            configureStatement { isNonRenderingWhereClauseAllowed = true }
+        }
+
+        val expected = "insert into Person " +
+                "select id, first_name, last_name, birth_date, employed, occupation, address_id from Person"
+        assertThat(insertStatement.insertStatement).isEqualTo(expected)
     }
 }
