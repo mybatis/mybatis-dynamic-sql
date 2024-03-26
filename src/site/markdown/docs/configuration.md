@@ -56,3 +56,32 @@ val deleteStatement = deleteFrom(person) {
 }
 ```
 
+## Configuration Scope with Select Statements
+
+Select statements can stand alone, or they can be embedded within other statements. For example, the library supports
+writing insert statements with an embedded select, or select statements that contain other select statements for sub
+queries. The select DSLs (both Java and Kotlin) appear to allow you to specify statement configuration on embedded
+select statements, but this is not supported in point of fact. Statement configuration must ALWAYS be specified on the
+outermost statement. Any configuration specified on embedded select statements will be ignored. We realize this could be
+confusing! But we've made this decision hoping to minimize code duplication and maximize consistency.
+
+So the best practice is to ALWAYS specify the statement configuration as the LAST call to the DSL before calling
+`build`, or before ending a Kotlin lambda.
+
+The following Kotlin code snippet shows this in action...
+
+```kotlin
+val insertStatement = insertSelect {
+    into(person)
+    select(id, firstName, lastName, birthDate, employed, occupation, addressId) {
+        from(person)
+        where { id isGreaterThanOrEqualToWhenPresent null }
+        // the following will be ignored in favor of the enclosing statement configuration...
+        configureStatement { isNonRenderingWhereClauseAllowed = false }
+    }
+    configureStatement { isNonRenderingWhereClauseAllowed = true }
+}
+```
+
+The inner `configureStatement` call will be ignored in this case, only the `configureStatement` call scoped to the
+insert statement itself will be in effect.
