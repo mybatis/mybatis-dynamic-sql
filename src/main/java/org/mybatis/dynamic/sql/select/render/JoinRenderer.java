@@ -39,7 +39,8 @@ public class JoinRenderer {
     }
 
     public FragmentAndParameters render() {
-        return joinModel.joinSpecifications().map(this::renderJoinSpecification)
+        return joinModel.joinSpecifications()
+                .map(this::renderJoinSpecification)
                 .collect(FragmentCollector.collect())
                 .toFragmentAndParameters(Collectors.joining(" ")); //$NON-NLS-1$
     }

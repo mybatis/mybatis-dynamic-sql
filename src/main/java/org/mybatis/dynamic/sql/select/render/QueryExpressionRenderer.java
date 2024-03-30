@@ -130,7 +130,8 @@ public class QueryExpressionRenderer {
     }
 
     private FragmentAndParameters calculateColumnList() {
-        return queryExpression.columns().map(this::renderColumnAndAlias)
+        return queryExpression.columns()
+                .map(this::renderColumnAndAlias)
                 .collect(FragmentCollector.collect())
                 .toFragmentAndParameters(Collectors.joining(", ")); //$NON-NLS-1$
     }
@@ -175,7 +176,8 @@ public class QueryExpressionRenderer {
     }
 
     private FragmentAndParameters renderGroupBy(GroupByModel groupByModel) {
-        return groupByModel.columns().map(this::renderColumn)
+        return groupByModel.columns()
+                .map(this::renderColumn)
                 .collect(FragmentCollector.collect())
                 .toFragmentAndParameters(
                         Collectors.joining(", ", "group by ", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$)

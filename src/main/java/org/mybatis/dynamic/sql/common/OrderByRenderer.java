@@ -22,7 +22,8 @@ import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 
 public class OrderByRenderer {
     public FragmentAndParameters render(OrderByModel orderByModel) {
-        String phrase = orderByModel.columns().map(this::calculateOrderByPhrase)
+        String phrase = orderByModel.columns()
+                .map(this::calculateOrderByPhrase)
                 .collect(Collectors.joining(", ", "order by ", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         return FragmentAndParameters.fromFragment(phrase);
     }

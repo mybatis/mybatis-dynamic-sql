@@ -63,7 +63,8 @@ public class InsertSelectRenderer {
     }
 
     private String calculateColumnsPhrase(InsertColumnListModel columnList) {
-        return columnList.columns().map(SqlColumn::name)
+        return columnList.columns()
+                .map(SqlColumn::name)
                 .collect(Collectors.joining(", ", "(", ")")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
 
