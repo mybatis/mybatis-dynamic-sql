@@ -47,7 +47,8 @@ public class MultiSelectRenderer {
         FragmentAndParameters initialSelect = renderSelect(multiSelectModel.initialSelect());
 
         FragmentCollector fragmentCollector = multiSelectModel
-                .mapUnionQueries(this::renderSelect)
+                .unionQueries()
+                .map(this::renderSelect)
                 .collect(FragmentCollector.collect(initialSelect));
 
         renderOrderBy().ifPresent(fragmentCollector::add);

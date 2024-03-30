@@ -39,7 +39,8 @@ public class SelectRenderer {
 
     public SelectStatementProvider render() {
         FragmentCollector fragmentCollector = selectModel
-                .mapQueryExpressions(this::renderQueryExpression)
+                .queryExpressions()
+                .map(this::renderQueryExpression)
                 .collect(FragmentCollector.collect());
 
         renderOrderBy().ifPresent(fragmentCollector::add);

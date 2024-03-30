@@ -20,7 +20,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Function;
 import java.util.stream.Stream;
 
 import org.mybatis.dynamic.sql.SqlTable;
@@ -37,8 +36,8 @@ public abstract class AbstractMultiRowInsertModel<T> {
         columnMappings = Objects.requireNonNull(builder.columnMappings);
     }
 
-    public <R> Stream<R> mapColumnMappings(Function<AbstractColumnMapping, R> mapper) {
-        return columnMappings.stream().map(mapper);
+    public Stream<AbstractColumnMapping> columnMappings() {
+        return columnMappings.stream();
     }
 
     public List<T> records() {

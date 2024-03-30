@@ -18,7 +18,6 @@ package org.mybatis.dynamic.sql.insert;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Function;
 import java.util.stream.Stream;
 
 import org.mybatis.dynamic.sql.SqlColumn;
@@ -33,8 +32,8 @@ public class InsertColumnListModel {
         this.columns.addAll(columns);
     }
 
-    public <R> Stream<R> mapColumns(Function<SqlColumn<?>, R> mapper) {
-        return columns.stream().map(mapper);
+    public Stream<SqlColumn<?>> columns() {
+        return columns.stream();
     }
 
     public static InsertColumnListModel of(List<SqlColumn<?>> columns) {

@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Function;
 import java.util.stream.Stream;
 
 import org.jetbrains.annotations.NotNull;
@@ -66,8 +65,8 @@ public class UpdateModel {
         return Optional.ofNullable(whereModel);
     }
 
-    public <R> Stream<R> mapColumnMappings(Function<AbstractColumnMapping, R> mapper) {
-        return columnMappings.stream().map(mapper);
+    public Stream<AbstractColumnMapping> columnMappings() {
+        return columnMappings.stream();
     }
 
     public Optional<Long> limit() {

@@ -36,7 +36,7 @@ public class MultiRowInsertRenderer<T> {
         // the prefix is a generic format that will be resolved below with String.format(...)
         MultiRowValuePhraseVisitor visitor =
                 new MultiRowValuePhraseVisitor(renderingStrategy, "records[%s]"); //$NON-NLS-1$
-        FieldAndValueCollector collector = model.mapColumnMappings(m -> m.accept(visitor))
+        FieldAndValueCollector collector = model.columnMappings().map(m -> m.accept(visitor))
                 .collect(FieldAndValueCollector.collect());
 
         String insertStatement = calculateInsertStatement(collector);

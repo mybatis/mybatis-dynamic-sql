@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Function;
 import java.util.stream.Stream;
 
 import org.jetbrains.annotations.NotNull;
@@ -45,8 +44,8 @@ public class SelectModel {
         statementConfiguration = Objects.requireNonNull(builder.statementConfiguration);
     }
 
-    public <R> Stream<R> mapQueryExpressions(Function<QueryExpressionModel, R> mapper) {
-        return queryExpressions.stream().map(mapper);
+    public Stream<QueryExpressionModel> queryExpressions() {
+        return queryExpressions.stream();
     }
 
     public Optional<OrderByModel> orderByModel() {

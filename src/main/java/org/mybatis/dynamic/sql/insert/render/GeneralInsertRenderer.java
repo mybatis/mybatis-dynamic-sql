@@ -38,7 +38,7 @@ public class GeneralInsertRenderer {
 
     public GeneralInsertStatementProvider render() {
         GeneralInsertValuePhraseVisitor visitor = new GeneralInsertValuePhraseVisitor(renderingContext);
-        FieldAndValueCollector collector = model.mapColumnMappings(m -> m.accept(visitor))
+        FieldAndValueCollector collector = model.columnMappings().map(m -> m.accept(visitor))
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .collect(FieldAndValueCollector.collect());

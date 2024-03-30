@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Function;
 import java.util.stream.Stream;
 
 import org.jetbrains.annotations.NotNull;
@@ -50,8 +49,8 @@ public class MultiSelectModel {
         return initialSelect;
     }
 
-    public <R> Stream<R> mapUnionQueries(Function<UnionQuery, R> mapper) {
-        return unionQueries.stream().map(mapper);
+    public Stream<UnionQuery> unionQueries() {
+        return unionQueries.stream();
     }
 
     public Optional<OrderByModel> orderByModel() {

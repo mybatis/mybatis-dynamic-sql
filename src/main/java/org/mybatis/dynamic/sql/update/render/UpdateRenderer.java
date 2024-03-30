@@ -78,7 +78,7 @@ public class UpdateRenderer {
         SetPhraseVisitor visitor = new SetPhraseVisitor(renderingContext);
 
         List<Optional<FragmentAndParameters>> fragmentsAndParameters =
-                updateModel.mapColumnMappings(m -> m.accept(visitor))
+                updateModel.columnMappings().map(m -> m.accept(visitor))
                         .collect(Collectors.toList());
 
         Validator.assertFalse(fragmentsAndParameters.stream().noneMatch(Optional::isPresent),

@@ -18,7 +18,6 @@ package org.mybatis.dynamic.sql.select.join;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Function;
 import java.util.stream.Stream;
 
 import org.mybatis.dynamic.sql.TableExpression;
@@ -41,8 +40,8 @@ public class JoinSpecification {
         return table;
     }
 
-    public <R> Stream<R> mapJoinCriteria(Function<JoinCriterion<?>, R> mapper) {
-        return joinCriteria.stream().map(mapper);
+    public Stream<JoinCriterion<?>> joinCriteria() {
+        return joinCriteria.stream();
     }
 
     public JoinType joinType() {

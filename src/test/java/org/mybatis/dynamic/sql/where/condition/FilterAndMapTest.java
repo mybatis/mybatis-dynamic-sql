@@ -433,7 +433,7 @@ class FilterAndMapTest {
         IsIn<String> cond = SqlBuilder.isIn("Fred", "Wilma");
         assertThat(cond.isEmpty()).isFalse();
         IsIn<String> mapped = cond.map(String::toUpperCase);
-        List<String> mappedValues = mapped.mapValues(Function.identity()).collect(Collectors.toList());
+        List<String> mappedValues = mapped.values().map(Function.identity()).collect(Collectors.toList());
         assertThat(mappedValues).containsExactly("FRED", "WILMA");
     }
 
@@ -442,31 +442,31 @@ class FilterAndMapTest {
         IsNotIn<String> cond = SqlBuilder.isNotIn("Fred", "Wilma");
         assertThat(cond.isEmpty()).isFalse();
         IsNotIn<String> mapped = cond.map(String::toUpperCase);
-        List<String> mappedValues = mapped.mapValues(Function.identity()).collect(Collectors.toList());
+        List<String> mappedValues = mapped.values().map(Function.identity()).collect(Collectors.toList());
         assertThat(mappedValues).containsExactly("FRED", "WILMA");
     }
 
     @Test
     void testIsNotInCaseInsensitiveRenderableMapShouldReturnMappedObject() {
         IsNotInCaseInsensitive cond = SqlBuilder.isNotInCaseInsensitive("Fred  ", "Wilma  ");
-        List<String> values = cond.mapValues(Function.identity()).collect(Collectors.toList());
+        List<String> values = cond.values().map(Function.identity()).collect(Collectors.toList());
         assertThat(values).containsExactly("FRED  ", "WILMA  ");
         assertThat(cond.isEmpty()).isFalse();
 
         IsNotInCaseInsensitive mapped = cond.map(String::trim);
-        List<String> mappedValues = mapped.mapValues(Function.identity()).collect(Collectors.toList());
+        List<String> mappedValues = mapped.values().map(Function.identity()).collect(Collectors.toList());
         assertThat(mappedValues).containsExactly("FRED", "WILMA");
     }
 
     @Test
     void testIsInCaseInsensitiveRenderableMapShouldReturnMappedObject() {
         IsInCaseInsensitive cond = SqlBuilder.isInCaseInsensitive("Fred  ", "Wilma  ");
-        List<String> values = cond.mapValues(Function.identity()).collect(Collectors.toList());
+        List<String> values = cond.values().map(Function.identity()).collect(Collectors.toList());
         assertThat(values).containsExactly("FRED  ", "WILMA  ");
         assertThat(cond.isEmpty()).isFalse();
 
         IsInCaseInsensitive mapped = cond.map(String::trim);
-        List<String> mappedValues = mapped.mapValues(Function.identity()).collect(Collectors.toList());
+        List<String> mappedValues = mapped.values().map(Function.identity()).collect(Collectors.toList());
         assertThat(mappedValues).containsExactly("FRED", "WILMA");
     }
 
