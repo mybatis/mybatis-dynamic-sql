@@ -85,7 +85,7 @@ public class GeneralInsertValuePhraseVisitor extends GeneralInsertMappingVisitor
     }
 
     private Optional<FieldAndValueAndParameters> buildFragment(AbstractColumnMapping mapping, Object value) {
-        RenderedParameterInfo parameterInfo = mapping.mapColumn(renderingContext::calculateParameterInfo);
+        RenderedParameterInfo parameterInfo = mapping.column().map(renderingContext::calculateParameterInfo);
 
         return FieldAndValueAndParameters.withFieldName(mapping.columnName())
                 .withValuePhrase(parameterInfo.renderedPlaceHolder())

@@ -58,14 +58,14 @@ public class MultiRowValuePhraseVisitor extends MultiRowInsertMappingVisitor<Fie
     @Override
     public FieldAndValueAndParameters visit(PropertyMapping mapping) {
         return FieldAndValueAndParameters.withFieldName(mapping.columnName())
-                .withValuePhrase(mapping.mapColumn(c -> calculateJdbcPlaceholder(c, mapping.property())))
+                .withValuePhrase(mapping.column().map(c -> calculateJdbcPlaceholder(c, mapping.property())))
                 .build();
     }
 
     @Override
     public FieldAndValueAndParameters visit(RowMapping mapping) {
         return FieldAndValueAndParameters.withFieldName(mapping.columnName())
-                .withValuePhrase(mapping.mapColumn(this::calculateJdbcPlaceholder))
+                .withValuePhrase(mapping.column().map(this::calculateJdbcPlaceholder))
                 .build();
     }
 

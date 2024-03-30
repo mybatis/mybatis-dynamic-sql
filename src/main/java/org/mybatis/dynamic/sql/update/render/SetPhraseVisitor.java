@@ -49,7 +49,7 @@ public class SetPhraseVisitor extends UpdateMappingVisitor<Optional<FragmentAndP
 
     @Override
     public Optional<FragmentAndParameters> visit(ConstantMapping mapping) {
-        String fragment = mapping.mapColumn(renderingContext::aliasedColumnName)
+        String fragment = mapping.column().map(renderingContext::aliasedColumnName)
                 + " = " + mapping.constant(); //$NON-NLS-1$
         return FragmentAndParameters.withFragment(fragment)
                 .buildOptional();
@@ -57,7 +57,7 @@ public class SetPhraseVisitor extends UpdateMappingVisitor<Optional<FragmentAndP
 
     @Override
     public Optional<FragmentAndParameters> visit(StringConstantMapping mapping) {
-        String fragment = mapping.mapColumn(renderingContext::aliasedColumnName)
+        String fragment = mapping.column().map(renderingContext::aliasedColumnName)
                 + " = " //$NON-NLS-1$
                 + StringUtilities.formatConstantForSQL(mapping.constant());
 
@@ -85,7 +85,7 @@ public class SetPhraseVisitor extends UpdateMappingVisitor<Optional<FragmentAndP
     @Override
     public Optional<FragmentAndParameters> visit(SelectMapping mapping) {
         SelectStatementProvider selectStatement = mapping.selectModel().render(renderingContext);
-        String fragment = mapping.mapColumn(renderingContext::aliasedColumnName)
+        String fragment = mapping.column().map(renderingContext::aliasedColumnName)
                 + " = (" //$NON-NLS-1$
                 + selectStatement.getSelectStatement()
                 + ")"; //$NON-NLS-1$
@@ -99,7 +99,7 @@ public class SetPhraseVisitor extends UpdateMappingVisitor<Optional<FragmentAndP
     public Optional<FragmentAndParameters> visit(ColumnToColumnMapping mapping) {
         FragmentAndParameters renderedColumn = mapping.rightColumn().render(renderingContext);
 
-        String setPhrase = mapping.mapColumn(renderingContext::aliasedColumnName)
+        String setPhrase = mapping.column().map(renderingContext::aliasedColumnName)
                 + " = "  //$NON-NLS-1$
                 + renderedColumn.fragment();
 
@@ -109,8 +109,8 @@ public class SetPhraseVisitor extends UpdateMappingVisitor<Optional<FragmentAndP
     }
 
     private <T> Optional<FragmentAndParameters> buildValueFragment(AbstractColumnMapping mapping, T value) {
-        RenderedParameterInfo parameterInfo = mapping.mapColumn(renderingContext::calculateParameterInfo);
-        String setPhrase = mapping.mapColumn(renderingContext::aliasedColumnName)
+        RenderedParameterInfo parameterInfo = mapping.column().map(renderingContext::calculateParameterInfo);
+        String setPhrase = mapping.column().map(renderingContext::aliasedColumnName)
                 + " = "  //$NON-NLS-1$
                 + parameterInfo.renderedPlaceHolder();
 
@@ -121,7 +121,7 @@ public class SetPhraseVisitor extends UpdateMappingVisitor<Optional<FragmentAndP
 
     private Optional<FragmentAndParameters> buildNullFragment(AbstractColumnMapping mapping) {
         return FragmentAndParameters
-                .withFragment(mapping.mapColumn(renderingContext::aliasedColumnName) + " = null") //$NON-NLS-1$
+                .withFragment(mapping.column().map(renderingContext::aliasedColumnName) + " = null") //$NON-NLS-1$
                 .buildOptional();
     }
 }
