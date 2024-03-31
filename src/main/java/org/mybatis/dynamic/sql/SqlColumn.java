@@ -18,7 +18,6 @@ package org.mybatis.dynamic.sql;
 import java.sql.JDBCType;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Function;
 
 import org.jetbrains.annotations.NotNull;
 import org.mybatis.dynamic.sql.render.RenderingContext;
@@ -172,10 +171,6 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
     public <S> SqlColumn<S> withJavaType(Class<S> javaType) {
         Builder<S> b = copy();
         return b.withJavaType(javaType).build();
-    }
-
-    public <R> R map(Function<SqlColumn<?>, R> mapper) {
-        return mapper.apply(this);
     }
 
     /**
