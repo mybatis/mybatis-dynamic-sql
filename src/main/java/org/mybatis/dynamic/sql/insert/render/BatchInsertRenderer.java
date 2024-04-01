@@ -23,17 +23,16 @@ import org.mybatis.dynamic.sql.render.RenderingStrategy;
 public class BatchInsertRenderer<T> {
 
     private final BatchInsertModel<T> model;
-    private final RenderingStrategy renderingStrategy;
+    private final MultiRowValuePhraseVisitor visitor;
 
     private BatchInsertRenderer(Builder<T> builder) {
         model = Objects.requireNonNull(builder.model);
-        renderingStrategy = Objects.requireNonNull(builder.renderingStrategy);
+        visitor = new MultiRowValuePhraseVisitor(builder.renderingStrategy, "row"); //$NON-NLS-1$)
     }
 
     public BatchInsert<T> render() {
-        MultiRowValuePhraseVisitor visitor = new MultiRowValuePhraseVisitor(renderingStrategy, "row"); //$NON-NLS-1$)
         FieldAndValueCollector collector = model.columnMappings()
-                .map(m -> m.accept(visitor))
+                .map(visitor::renderMapping)
                 .collect(FieldAndValueCollector.collect());
 
         String insertStatement = InsertRenderingUtilities.calculateInsertStatement(model.table(), collector);

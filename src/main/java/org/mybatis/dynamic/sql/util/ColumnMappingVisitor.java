@@ -31,6 +31,10 @@ package org.mybatis.dynamic.sql.util;
  *            The type of object created by the visitor
  */
 public interface ColumnMappingVisitor<R> {
+    default R renderMapping(AbstractColumnMapping mapping) {
+        return mapping.accept(this);
+    }
+
     R visit(NullMapping mapping);
 
     R visit(ConstantMapping mapping);

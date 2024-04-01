@@ -25,13 +25,15 @@ import org.mybatis.dynamic.sql.util.RowMapping;
 import org.mybatis.dynamic.sql.util.StringConstantMapping;
 import org.mybatis.dynamic.sql.util.StringUtilities;
 
+import java.util.Objects;
+
 public class MultiRowValuePhraseVisitor extends MultiRowInsertMappingVisitor<FieldAndValueAndParameters> {
     protected final RenderingStrategy renderingStrategy;
     protected final String prefix;
 
     protected MultiRowValuePhraseVisitor(RenderingStrategy renderingStrategy, String prefix) {
-        this.renderingStrategy = renderingStrategy;
-        this.prefix = prefix;
+        this.renderingStrategy = Objects.requireNonNull(renderingStrategy);
+        this.prefix = Objects.requireNonNull(prefix);
     }
 
     @Override

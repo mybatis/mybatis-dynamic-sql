@@ -37,6 +37,7 @@ import org.mybatis.dynamic.sql.where.EmbeddedWhereModel;
 public class UpdateRenderer {
     private final UpdateModel updateModel;
     private final RenderingContext renderingContext;
+    private final SetPhraseVisitor visitor;
 
     private UpdateRenderer(Builder builder) {
         updateModel = Objects.requireNonNull(builder.updateModel);
@@ -48,6 +49,7 @@ public class UpdateRenderer {
                 .withTableAliasCalculator(tableAliasCalculator)
                 .withStatementConfiguration(builder.statementConfiguration)
                 .build();
+        visitor = new SetPhraseVisitor(renderingContext);
     }
 
     public UpdateStatementProvider render() {
@@ -75,10 +77,8 @@ public class UpdateRenderer {
     }
 
     private FragmentAndParameters calculateSetPhrase() {
-        SetPhraseVisitor visitor = new SetPhraseVisitor(renderingContext);
-
         List<Optional<FragmentAndParameters>> fragmentsAndParameters = updateModel.columnMappings()
-                        .map(m -> m.accept(visitor))
+                        .map(visitor::renderMapping)
                         .collect(Collectors.toList());
 
         Validator.assertFalse(fragmentsAndParameters.stream().noneMatch(Optional::isPresent),
