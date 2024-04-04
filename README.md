@@ -26,8 +26,14 @@ similar):
             where {
                 active isEqualTo "Y"
                 and { id(isEqualToWhenPresent(id_).map { it?.padStart(5, '0') }) }
-                and { firstName(isLikeCaseInsensitiveWhenPresent(firstName_).map { "%" + it.trim() + "%" }) }
-                and { lastName(isLikeCaseInsensitiveWhenPresent(lastName_).map { "%" + it.trim() + "%" }) }
+                and {
+                    firstName(isLikeCaseInsensitiveWhenPresent(firstName_)
+                        .map { "%" + it.trim() + "%" })
+                }
+                and {
+                    lastName(isLikeCaseInsensitiveWhenPresent(lastName_)
+                        .map { "%" + it.trim() + "%" })
+                }
             }
             orderBy(lastName, firstName)
             limit(500)
