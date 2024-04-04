@@ -78,7 +78,7 @@ public class UpdateRenderer {
 
     private FragmentAndParameters calculateSetPhrase() {
         List<Optional<FragmentAndParameters>> fragmentsAndParameters = updateModel.columnMappings()
-                        .map(visitor::renderMapping)
+                        .map(m -> m.accept(visitor))
                         .collect(Collectors.toList());
 
         Validator.assertFalse(fragmentsAndParameters.stream().noneMatch(Optional::isPresent),

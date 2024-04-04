@@ -35,7 +35,7 @@ public class MultiRowInsertRenderer<T> {
 
     public MultiRowInsertStatementProvider<T> render() {
         FieldAndValueCollector collector = model.columnMappings()
-                .map(visitor::renderMapping)
+                .map(m -> m.accept(visitor))
                 .collect(FieldAndValueCollector.collect());
 
         String insertStatement = calculateInsertStatement(collector);

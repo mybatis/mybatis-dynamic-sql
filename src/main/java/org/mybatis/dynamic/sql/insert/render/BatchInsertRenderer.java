@@ -32,7 +32,7 @@ public class BatchInsertRenderer<T> {
 
     public BatchInsert<T> render() {
         FieldAndValueCollector collector = model.columnMappings()
-                .map(visitor::renderMapping)
+                .map(m -> m.accept(visitor))
                 .collect(FieldAndValueCollector.collect());
 
         String insertStatement = InsertRenderingUtilities.calculateInsertStatement(model.table(), collector);

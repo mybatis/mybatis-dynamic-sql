@@ -34,7 +34,7 @@ public class InsertRenderer<T> {
 
     public InsertStatementProvider<T> render() {
         FieldAndValueCollector collector = model.columnMappings()
-                .map(visitor::renderMapping)
+                .map(m -> m.accept(visitor))
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .collect(FieldAndValueCollector.collect());
