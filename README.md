@@ -24,7 +24,7 @@ similar):
         select(id, firstName, lastName) {
             from(Customer)
             where {
-                active isEqualTo "Y"
+                active isEqualTo true
                 and { id(isEqualToWhenPresent(id_).map { it?.padStart(5, '0') }) }
                 and {
                     firstName(isLikeCaseInsensitiveWhenPresent(firstName_)
