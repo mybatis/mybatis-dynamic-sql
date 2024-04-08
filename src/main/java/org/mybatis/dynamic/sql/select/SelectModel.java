@@ -18,42 +18,26 @@ package org.mybatis.dynamic.sql.select;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Stream;
 
 import org.jetbrains.annotations.NotNull;
-import org.mybatis.dynamic.sql.common.OrderByModel;
-import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
 import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.select.render.SelectRenderer;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.util.Validator;
 
-public class SelectModel {
+public class SelectModel extends AbstractSelectModel {
     private final List<QueryExpressionModel> queryExpressions;
-    private final OrderByModel orderByModel;
-    private final PagingModel pagingModel;
-    private final StatementConfiguration statementConfiguration;
 
     private SelectModel(Builder builder) {
+        super(builder);
         queryExpressions = Objects.requireNonNull(builder.queryExpressions);
         Validator.assertNotEmpty(queryExpressions, "ERROR.14"); //$NON-NLS-1$
-        orderByModel = builder.orderByModel;
-        pagingModel = builder.pagingModel;
-        statementConfiguration = Objects.requireNonNull(builder.statementConfiguration);
     }
 
     public Stream<QueryExpressionModel> queryExpressions() {
         return queryExpressions.stream();
-    }
-
-    public Optional<OrderByModel> orderByModel() {
-        return Optional.ofNullable(orderByModel);
-    }
-
-    public Optional<PagingModel> pagingModel() {
-        return Optional.ofNullable(pagingModel);
     }
 
     @NotNull
@@ -82,11 +66,8 @@ public class SelectModel {
         return new Builder().withQueryExpressions(queryExpressions);
     }
 
-    public static class Builder {
+    public static class Builder extends AbstractBuilder<Builder> {
         private final List<QueryExpressionModel> queryExpressions = new ArrayList<>();
-        private OrderByModel orderByModel;
-        private PagingModel pagingModel;
-        private StatementConfiguration statementConfiguration;
 
         public Builder withQueryExpression(QueryExpressionModel queryExpression) {
             this.queryExpressions.add(queryExpression);
@@ -98,18 +79,8 @@ public class SelectModel {
             return this;
         }
 
-        public Builder withOrderByModel(OrderByModel orderByModel) {
-            this.orderByModel = orderByModel;
-            return this;
-        }
-
-        public Builder withPagingModel(PagingModel pagingModel) {
-            this.pagingModel = pagingModel;
-            return this;
-        }
-
-        public Builder withStatementConfiguration(StatementConfiguration statementConfiguration) {
-            this.statementConfiguration = statementConfiguration;
+        @Override
+        protected Builder getThis() {
             return this;
         }
 
