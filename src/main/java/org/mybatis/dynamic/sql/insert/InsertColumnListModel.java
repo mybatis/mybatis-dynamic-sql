@@ -32,6 +32,7 @@ public class InsertColumnListModel {
         this.columns.addAll(columns);
     }
 
+    @SuppressWarnings("java:S1452")
     public Stream<SqlColumn<?>> columns() {
         return columns.stream();
     }

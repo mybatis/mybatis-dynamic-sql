@@ -40,6 +40,7 @@ public class JoinSpecification {
         return table;
     }
 
+    @SuppressWarnings("java:S1452")
     public Stream<JoinCriterion<?>> joinCriteria() {
         return joinCriteria.stream();
     }

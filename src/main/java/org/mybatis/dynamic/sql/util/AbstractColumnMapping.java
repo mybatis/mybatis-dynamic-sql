@@ -30,6 +30,7 @@ public abstract class AbstractColumnMapping {
         return column.name();
     }
 
+    @SuppressWarnings("java:S1452")
     public SqlColumn<?> column() {
         return column;
     }
