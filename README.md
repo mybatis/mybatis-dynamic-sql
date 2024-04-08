@@ -20,18 +20,20 @@ For example, a typical search can be coded with a query like this (the following
 similar):
 
 ```kotlin
-   fun search(id_: String?, firstName_: String?, lastName_: String?) =
+   data class SearchParameters(val id: String?, val firstName: String?, val lastName: String?)
+
+   fun search(searchParameters: SearchParameters) =
         select(id, firstName, lastName) {
             from(Customer)
             where {
                 active isEqualTo true
-                and { id(isEqualToWhenPresent(id_).map { it?.padStart(5, '0') }) }
+                and { id isEqualToWhenPresent searchParameters.id }
                 and {
-                    firstName(isLikeCaseInsensitiveWhenPresent(firstName_)
+                    firstName(isLikeCaseInsensitiveWhenPresent(searchParameters.firstName)
                         .map { "%" + it.trim() + "%" })
                 }
                 and {
-                    lastName(isLikeCaseInsensitiveWhenPresent(lastName_)
+                    lastName(isLikeCaseInsensitiveWhenPresent(searchParameters.lastName)
                         .map { "%" + it.trim() + "%" })
                 }
             }
@@ -44,9 +46,9 @@ This query does quite a lot...
 
 1. It is a search with three search criteria - any combination of search criteria can be used
 2. Only records with an active status will be returned
-3. If `id_` is specified, it will be padded to length 5 with '0' at the beginning of the string
-4. If `firstName_` is specified, it will be used in a case-insensitive search and SQL wildcards will be appended
-5. If `lastName_` is specified, it will be used in a case-insensitive search and SQL wildcards will be appended
+3. If `id` is specified, it will be used as a filter
+4. If `firstName` is specified, it will be used in a case-insensitive search and SQL wildcards will be appended
+5. If `lastName` is specified, it will be used in a case-insensitive search and SQL wildcards will be appended
 6. The query results are limited to 500 rows
 
 Using the dynamic SQL features of the library eliminates a lot of code that would be required for checking nulls,
