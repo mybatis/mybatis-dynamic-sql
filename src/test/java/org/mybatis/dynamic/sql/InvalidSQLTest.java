@@ -162,7 +162,8 @@ class InvalidSQLTest {
 
     @Test
     void testInvalidSelectStatementWithoutQueryExpressions() {
-        SelectModel.Builder builder = new SelectModel.Builder();
+        SelectModel.Builder builder =
+                new SelectModel.Builder().withStatementConfiguration(new StatementConfiguration());
 
         assertThatExceptionOfType(InvalidSqlException.class).isThrownBy(builder::build)
                 .withMessage(Messages.getString("ERROR.14"));
