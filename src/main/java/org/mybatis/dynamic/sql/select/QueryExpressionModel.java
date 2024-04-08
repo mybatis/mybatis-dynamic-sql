@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Function;
 import java.util.stream.Stream;
 
 import org.mybatis.dynamic.sql.BasicColumn;
@@ -63,8 +62,8 @@ public class QueryExpressionModel {
         return isDistinct;
     }
 
-    public <R> Stream<R> mapColumns(Function<BasicColumn, R> mapper) {
-        return selectList.stream().map(mapper);
+    public Stream<BasicColumn> columns() {
+        return selectList.stream();
     }
 
     public TableExpression table() {

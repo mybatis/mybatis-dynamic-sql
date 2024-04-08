@@ -25,17 +25,16 @@ import org.mybatis.dynamic.sql.util.Validator;
 public class InsertRenderer<T> {
 
     private final InsertModel<T> model;
-    private final RenderingStrategy renderingStrategy;
+    private final ValuePhraseVisitor visitor;
 
     private InsertRenderer(Builder<T> builder) {
         model = Objects.requireNonNull(builder.model);
-        renderingStrategy = Objects.requireNonNull(builder.renderingStrategy);
+        visitor = new ValuePhraseVisitor(builder.renderingStrategy);
     }
 
     public InsertStatementProvider<T> render() {
-        ValuePhraseVisitor visitor = new ValuePhraseVisitor(renderingStrategy);
-
-        FieldAndValueCollector collector = model.mapColumnMappings(m -> m.accept(visitor))
+        FieldAndValueCollector collector = model.columnMappings()
+                .map(m -> m.accept(visitor))
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .collect(FieldAndValueCollector.collect());

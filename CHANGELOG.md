@@ -6,7 +6,7 @@ This log will detail notable changes to MyBatis Dynamic SQL. Full details are av
 
 This is a minor release with several enhancements.
 
-GitHub milestone: [https://github.com/mybatis/mybatis-dynamic-sql/milestone/13](https://github.com/mybatis/mybatis-dynamic-sql/milestone/13)
+GitHub milestone: [https://github.com/mybatis/mybatis-dynamic-sql/milestone/13?closed=1](https://github.com/mybatis/mybatis-dynamic-sql/milestone/13?closed=1)
 
 ### Case Expressions and Cast Function
 We've added support for CASE expressions to the library. Both simple and searched case expressions are supported.

@@ -25,18 +25,17 @@ import org.mybatis.dynamic.sql.render.RenderingStrategy;
 public class MultiRowInsertRenderer<T> {
 
     private final MultiRowInsertModel<T> model;
-    private final RenderingStrategy renderingStrategy;
+    private final MultiRowValuePhraseVisitor visitor;
 
     private MultiRowInsertRenderer(Builder<T> builder) {
         model = Objects.requireNonNull(builder.model);
-        renderingStrategy = Objects.requireNonNull(builder.renderingStrategy);
+        // the prefix is a generic format that will be resolved below with String.format(...)
+        visitor = new MultiRowValuePhraseVisitor(builder.renderingStrategy, "records[%s]"); //$NON-NLS-1$
     }
 
     public MultiRowInsertStatementProvider<T> render() {
-        // the prefix is a generic format that will be resolved below with String.format(...)
-        MultiRowValuePhraseVisitor visitor =
-                new MultiRowValuePhraseVisitor(renderingStrategy, "records[%s]"); //$NON-NLS-1$
-        FieldAndValueCollector collector = model.mapColumnMappings(m -> m.accept(visitor))
+        FieldAndValueCollector collector = model.columnMappings()
+                .map(m -> m.accept(visitor))
                 .collect(FieldAndValueCollector.collect());
 
         String insertStatement = calculateInsertStatement(collector);

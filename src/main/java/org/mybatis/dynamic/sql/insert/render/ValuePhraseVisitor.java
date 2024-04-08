@@ -60,7 +60,7 @@ public class ValuePhraseVisitor extends InsertMappingVisitor<Optional<FieldAndVa
     @Override
     public Optional<FieldAndValueAndParameters> visit(PropertyMapping mapping) {
         return FieldAndValueAndParameters.withFieldName(mapping.columnName())
-                .withValuePhrase(mapping.mapColumn(c -> calculateJdbcPlaceholder(c, mapping.property())))
+                .withValuePhrase(calculateJdbcPlaceholder(mapping.column(), mapping.property()))
                 .buildOptional();
     }
 
@@ -76,7 +76,7 @@ public class ValuePhraseVisitor extends InsertMappingVisitor<Optional<FieldAndVa
     @Override
     public Optional<FieldAndValueAndParameters> visit(RowMapping mapping) {
         return FieldAndValueAndParameters.withFieldName(mapping.columnName())
-                .withValuePhrase(mapping.mapColumn(this::calculateJdbcPlaceholder))
+                .withValuePhrase(calculateJdbcPlaceholder(mapping.column()))
                 .buildOptional();
     }
 

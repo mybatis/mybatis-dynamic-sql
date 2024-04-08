@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Function;
 import java.util.stream.Stream;
 
 import org.mybatis.dynamic.sql.BasicColumn;
@@ -34,8 +33,8 @@ public class GroupByModel {
         this.columns.addAll(columns);
     }
 
-    public <R> Stream<R> mapColumns(Function<BasicColumn, R> mapper) {
-        return columns.stream().map(mapper);
+    public Stream<BasicColumn> columns() {
+        return columns.stream();
     }
 
     public static GroupByModel of(Collection<? extends BasicColumn> columns) {

@@ -18,7 +18,6 @@ package org.mybatis.dynamic.sql.insert;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Function;
 import java.util.stream.Stream;
 
 import org.jetbrains.annotations.NotNull;
@@ -43,8 +42,8 @@ public class GeneralInsertModel {
         statementConfiguration = Objects.requireNonNull(builder.statementConfiguration);
     }
 
-    public <R> Stream<R> mapColumnMappings(Function<AbstractColumnMapping, R> mapper) {
-        return insertMappings.stream().map(mapper);
+    public Stream<AbstractColumnMapping> columnMappings() {
+        return insertMappings.stream();
     }
 
     public SqlTable table() {

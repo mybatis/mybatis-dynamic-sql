@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Function;
 import java.util.stream.Stream;
 
 import org.mybatis.dynamic.sql.SortSpecification;
@@ -34,8 +33,8 @@ public class OrderByModel {
         this.columns.addAll(columns);
     }
 
-    public <R> Stream<R> mapColumns(Function<SortSpecification, R> mapper) {
-        return columns.stream().map(mapper);
+    public Stream<SortSpecification> columns() {
+        return columns.stream();
     }
 
     public static OrderByModel of(Collection<? extends SortSpecification> columns) {

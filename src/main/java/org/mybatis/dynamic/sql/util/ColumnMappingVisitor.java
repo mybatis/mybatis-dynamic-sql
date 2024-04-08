@@ -21,7 +21,7 @@ package org.mybatis.dynamic.sql.util;
  * may or may not be supported. For example, it makes no sense to map a column to another column in
  * an insert - so the ColumnToColumnMapping is only supported on update statements.
  *
- * <p>Rather than implement this interface directly, we recommend implementing one of the derived
+ * <p>Rather than implement this interface directly, we recommend extending one of the derived
  * classes. The derived classes encapsulate the rules about which mappings are applicable to the
  * different types of statements.
  *

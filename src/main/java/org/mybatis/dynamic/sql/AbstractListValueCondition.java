@@ -32,8 +32,8 @@ public abstract class AbstractListValueCondition<T> implements VisitableConditio
         this.values = Objects.requireNonNull(values);
     }
 
-    public final <R> Stream<R> mapValues(Function<T, R> mapper) {
-        return values.stream().map(mapper);
+    public final Stream<T> values() {
+        return values.stream();
     }
 
     @Override
