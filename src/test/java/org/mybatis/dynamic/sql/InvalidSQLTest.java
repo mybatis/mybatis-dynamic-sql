@@ -248,13 +248,13 @@ class InvalidSQLTest {
                 .withStatementConfiguration(new StatementConfiguration())
                 .build();
 
-        assertThat(pagingModel).isPresent();
+        assertThat(pagingModel).hasValueSatisfying(pm -> {
+            FetchFirstPagingModelRenderer renderer = new FetchFirstPagingModelRenderer(renderingContext, pm);
 
-        FetchFirstPagingModelRenderer renderer = new FetchFirstPagingModelRenderer(renderingContext, pagingModel.get());
-
-        assertThatExceptionOfType(InvalidSqlException.class)
-                .isThrownBy(renderer::render)
-                .withMessage(Messages.getInternalErrorString(InternalError.INTERNAL_ERROR_13));
+            assertThatExceptionOfType(InvalidSqlException.class)
+                    .isThrownBy(renderer::render)
+                    .withMessage(Messages.getInternalErrorString(InternalError.INTERNAL_ERROR_13));
+        });
     }
 
     @Test

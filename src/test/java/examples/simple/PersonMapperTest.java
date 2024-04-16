@@ -422,8 +422,8 @@ class PersonMapperTest {
             assertThat(rows).isEqualTo(1);
 
             Optional<PersonRecord> newRecord = mapper.selectByPrimaryKey(100);
-            assertThat(newRecord).isPresent();
-            assertThat(newRecord.get().getOccupation()).isEqualTo("Programmer");
+            assertThat(newRecord).hasValueSatisfying(r ->
+                    assertThat(r.getOccupation()).isEqualTo("Programmer"));
         }
     }
 
@@ -450,9 +450,10 @@ class PersonMapperTest {
             assertThat(rows).isEqualTo(1);
 
             Optional<PersonRecord> newRecord = mapper.selectByPrimaryKey(100);
-            assertThat(newRecord).isPresent();
-            assertThat(newRecord.get().getOccupation()).isEqualTo("Programmer");
-            assertThat(newRecord.get().getFirstName()).isEqualTo("Joe");
+            assertThat(newRecord).hasValueSatisfying(r -> {
+                assertThat(r.getOccupation()).isEqualTo("Programmer");
+                assertThat(r.getFirstName()).isEqualTo("Joe");
+            });
         }
     }
 
@@ -482,8 +483,8 @@ class PersonMapperTest {
             assertThat(rows).isEqualTo(1);
 
             Optional<PersonRecord> newRecord = mapper.selectByPrimaryKey(100);
-            assertThat(newRecord).isPresent();
-            assertThat(newRecord.get().getOccupation()).isEqualTo("Programmer");
+            assertThat(newRecord).hasValueSatisfying(r ->
+                    assertThat(r.getOccupation()).isEqualTo("Programmer"));
         }
     }
 
@@ -510,8 +511,8 @@ class PersonMapperTest {
             assertThat(rows).isEqualTo(1);
 
             Optional<PersonRecord> newRecord = mapper.selectByPrimaryKey(100);
-            assertThat(newRecord).isPresent();
-            assertThat(newRecord.get().getOccupation()).isEqualTo("Programmer");
+            assertThat(newRecord).hasValueSatisfying(r ->
+                    assertThat(r.getOccupation()).isEqualTo("Programmer"));
         }
     }
 
@@ -539,8 +540,8 @@ class PersonMapperTest {
             assertThat(rows).isEqualTo(7);
 
             Optional<PersonRecord> newRecord = mapper.selectByPrimaryKey(100);
-            assertThat(newRecord).isPresent();
-            assertThat(newRecord.get().getOccupation()).isEqualTo("Programmer");
+            assertThat(newRecord).hasValueSatisfying(r ->
+                    assertThat(r.getOccupation()).isEqualTo("Programmer"));
         }
     }
 
@@ -569,8 +570,8 @@ class PersonMapperTest {
             assertThat(rows).isEqualTo(1);
 
             Optional<PersonRecord> newRecord = mapper.selectByPrimaryKey(100);
-            assertThat(newRecord).isPresent();
-            assertThat(newRecord.get().getOccupation()).isEqualTo("Programmer");
+            assertThat(newRecord).hasValueSatisfying(r ->
+                    assertThat(r.getOccupation()).isEqualTo("Programmer"));
         }
     }
 
