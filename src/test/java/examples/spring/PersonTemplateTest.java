@@ -405,8 +405,7 @@ class PersonTemplateTest {
                 .from(person)
                 .where(id, isEqualTo(100));
         Optional<PersonRecord> newRecord = template.selectOne(selectStatement, personRowMapper);
-        assertThat(newRecord).isPresent();
-        assertThat(newRecord.get().getOccupation()).isEqualTo("Programmer");
+        assertThat(newRecord).hasValueSatisfying(r -> assertThat(r.getOccupation()).isEqualTo("Programmer"));
     }
 
     @Test
@@ -435,8 +434,8 @@ class PersonTemplateTest {
                 .from(person)
                 .where(id, isEqualTo(100));
         Optional<PersonRecord> newRecord = template.selectOne(selectStatement, personRowMapper);
-        assertThat(newRecord).isPresent();
-        assertThat(newRecord.get().getLastName().getName()).isEqualTo("Smith");
+        assertThat(newRecord).hasValueSatisfying(r ->
+                assertThat(r.getLastName().getName()).isEqualTo("Smith"));
     }
 
     @Test
@@ -473,9 +472,10 @@ class PersonTemplateTest {
                 .from(person)
                 .where(id, isEqualTo(100));
         Optional<PersonRecord> newRecord = template.selectOne(selectStatement, personRowMapper);
-        assertThat(newRecord).isPresent();
-        assertThat(newRecord.get().getOccupation()).isEqualTo("Programmer");
-        assertThat(newRecord.get().getFirstName()).isEqualTo("Joe");
+        assertThat(newRecord).hasValueSatisfying(r -> {
+            assertThat(r.getOccupation()).isEqualTo("Programmer");
+            assertThat(r.getFirstName()).isEqualTo("Joe");
+        });
     }
 
     @Test
@@ -519,9 +519,10 @@ class PersonTemplateTest {
                 .from(person)
                 .where(id, isEqualTo(100));
         Optional<PersonRecord> newRecord = template.selectOne(selectStatement, personRowMapper);
-        assertThat(newRecord).isPresent();
-        assertThat(newRecord.get().getOccupation()).isEqualTo("Programmer");
-        assertThat(newRecord.get().getFirstName()).isEqualTo("Joe");
+        assertThat(newRecord).hasValueSatisfying(r -> {
+            assertThat(r.getOccupation()).isEqualTo("Programmer");
+            assertThat(r.getFirstName()).isEqualTo("Joe");
+        });
     }
 
     @Test
@@ -548,8 +549,7 @@ class PersonTemplateTest {
                 .from(person)
                 .where(id, isEqualTo(100));
         Optional<PersonRecord> newRecord = template.selectOne(selectStatement, personRowMapper);
-        assertThat(newRecord).isPresent();
-        assertThat(newRecord.get().getOccupation()).isEqualTo("Programmer");
+        assertThat(newRecord).hasValueSatisfying(r -> assertThat(r.getOccupation()).isEqualTo("Programmer"));
     }
 
     @Test
@@ -577,8 +577,7 @@ class PersonTemplateTest {
                 .where(id, isEqualTo(100));
 
         Optional<PersonRecord> newRecord = template.selectOne(selectStatement, personRowMapper);
-        assertThat(newRecord).isPresent();
-        assertThat(newRecord.get().getOccupation()).isEqualTo("Programmer");
+        assertThat(newRecord).hasValueSatisfying(r -> assertThat(r.getOccupation()).isEqualTo("Programmer"));
     }
 
     @Test
