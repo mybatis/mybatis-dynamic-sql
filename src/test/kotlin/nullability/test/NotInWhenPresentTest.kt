@@ -176,7 +176,7 @@ class NotInWhenPresentTest {
 
             fun testFunction() {
                 countFrom(person) {
-                    where { id (isNotInWhenPresent(null)) }
+                    where { id (isNotInWhenPresent(null as List<Int>?) ) }
                 }
             }
         """
