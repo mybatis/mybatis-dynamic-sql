@@ -677,7 +677,7 @@ open class InfixElementsTest {
     fun testIsNotLike() {
         val selectStatement = select(firstName) {
             from(person)
-            where { firstName  isNotLike "F%" }
+            where { firstName isNotLike "F%" }
             orderBy(id)
         }
 
@@ -695,7 +695,7 @@ open class InfixElementsTest {
     fun testIsNotLikeWhenPresent() {
         val selectStatement = select(firstName) {
             from(person)
-            where { firstName  isNotLikeWhenPresent "F%" }
+            where { firstName isNotLikeWhenPresent "F%" }
             orderBy(id)
         }
 
@@ -955,10 +955,10 @@ open class InfixElementsTest {
         val selectStatement = select(firstName) {
             from(person)
             where {
-                upper(firstName) (
-                isLike(fn).filter(String::isNotBlank)
-                    .map(String::uppercase)
-                    .map { "%$it%" })
+                upper(firstName)(
+                    isLike(fn).filter(String::isNotBlank)
+                        .map(String::uppercase)
+                        .map { "%$it%" })
             }
             orderBy(id)
             configureStatement { isNonRenderingWhereClauseAllowed = true }
@@ -981,7 +981,7 @@ open class InfixElementsTest {
         val selectStatement = select(firstName) {
             from(person)
             where {
-                upper(firstName) (isLike(fn).filter(String::isNotBlank)
+                upper(firstName)(isLike(fn).filter(String::isNotBlank)
                     .map(String::uppercase)
                     .map { "%$it%" })
             }
@@ -1263,5 +1263,253 @@ open class InfixElementsTest {
         }
 
         assertThat(selectStatement.selectStatement).isEqualTo("select id from Person")
+    }
+
+    @Test
+    fun testIsInArray() {
+        fun search(vararg names: String) {
+            val selectStatement = select(firstName) {
+                from(person)
+                where { firstName isIn names }
+                orderBy(id)
+            }
+
+            assertThat(selectStatement.selectStatement)
+                .isEqualTo("select first_name from Person where first_name in (:p1,:p2) order by id")
+
+            val rows = template.selectList(selectStatement, String::class)
+
+            assertThat(rows).hasSize(2)
+            assertThat(rows[0]).isEqualTo("Fred")
+        }
+
+        search("Fred", "Wilma")
+    }
+
+    @Test
+    fun testIsInArrayWhenPresent() {
+        fun search(vararg names: String?) {
+            val selectStatement = select(firstName) {
+                from(person)
+                where { firstName isInWhenPresent names }
+                orderBy(id)
+            }
+
+            assertThat(selectStatement.selectStatement)
+                .isEqualTo("select first_name from Person where first_name in (:p1,:p2) order by id")
+
+            val rows = template.selectList(selectStatement, String::class)
+
+            assertThat(rows).hasSize(2)
+            assertThat(rows[0]).isEqualTo("Fred")
+        }
+
+        search("Fred", null, "Wilma")
+    }
+
+    @Test
+    fun testIsInArrayWhenPresentNullArray() {
+        val selectStatement = select(firstName) {
+            from(person)
+            where {
+                id isLessThan 10
+                and { firstName isInWhenPresent null as Array<String>? }
+            }
+            orderBy(id)
+        }
+
+        assertThat(selectStatement.selectStatement)
+            .isEqualTo("select first_name from Person where id < :p1 order by id")
+
+        val rows = template.selectList(selectStatement, String::class)
+
+        assertThat(rows).hasSize(6)
+        assertThat(rows[0]).isEqualTo("Fred")
+    }
+
+    @Test
+    fun testIsNotInArray() {
+        fun search(vararg names: String) {
+            val selectStatement = select(firstName) {
+                from(person)
+                where { firstName isNotIn names }
+                orderBy(id)
+            }
+
+            assertThat(selectStatement.selectStatement)
+                .isEqualTo("select first_name from Person where first_name not in (:p1,:p2) order by id")
+
+            val rows = template.selectList(selectStatement, String::class)
+
+            assertThat(rows).hasSize(4)
+            assertThat(rows[0]).isEqualTo("Pebbles")
+        }
+
+        search("Fred", "Wilma")
+    }
+
+    @Test
+    fun testIsNotInArrayWhenPresent() {
+        fun search(vararg names: String?) {
+            val selectStatement = select(firstName) {
+                from(person)
+                where { firstName isNotInWhenPresent names }
+                orderBy(id)
+            }
+
+            assertThat(selectStatement.selectStatement)
+                .isEqualTo("select first_name from Person where first_name not in (:p1,:p2) order by id")
+
+            val rows = template.selectList(selectStatement, String::class)
+
+            assertThat(rows).hasSize(4)
+            assertThat(rows[0]).isEqualTo("Pebbles")
+        }
+
+        search("Fred", null, "Wilma")
+    }
+
+    @Test
+    fun testIsNotInArrayWhenPresentNullArray() {
+        val selectStatement = select(firstName) {
+            from(person)
+            where {
+                id isLessThan 10
+                and { firstName isNotInWhenPresent null as Array<String>? }
+            }
+            orderBy(id)
+        }
+
+        assertThat(selectStatement.selectStatement)
+            .isEqualTo("select first_name from Person where id < :p1 order by id")
+
+        val rows = template.selectList(selectStatement, String::class)
+
+        assertThat(rows).hasSize(6)
+        assertThat(rows[0]).isEqualTo("Fred")
+    }
+
+    @Test
+    fun testIsInArrayCaseInsensitive() {
+        fun search(vararg names: String) {
+            val selectStatement = select(firstName) {
+                from(person)
+                where { firstName isInCaseInsensitive names }
+                orderBy(id)
+            }
+
+            assertThat(selectStatement.selectStatement)
+                .isEqualTo("select first_name from Person where upper(first_name) in (:p1,:p2) order by id")
+
+            val rows = template.selectList(selectStatement, String::class)
+
+            assertThat(rows).hasSize(2)
+            assertThat(rows[0]).isEqualTo("Fred")
+        }
+
+        search("Fred", "Wilma")
+    }
+
+    @Test
+    fun testIsInArrayCaseInsensitiveWhenPresent() {
+        fun search(vararg names: String?) {
+            val selectStatement = select(firstName) {
+                from(person)
+                where { firstName isInCaseInsensitiveWhenPresent names }
+                orderBy(id)
+            }
+
+            assertThat(selectStatement.selectStatement)
+                .isEqualTo("select first_name from Person where upper(first_name) in (:p1,:p2) order by id")
+
+            val rows = template.selectList(selectStatement, String::class)
+
+            assertThat(rows).hasSize(2)
+            assertThat(rows[0]).isEqualTo("Fred")
+        }
+
+        search("Fred", null, "Wilma")
+    }
+
+    @Test
+    fun testIsInArrayCaseInsensitiveWhenPresentNullArray() {
+        val selectStatement = select(firstName) {
+            from(person)
+            where {
+                id isLessThan 10
+                and { firstName isInCaseInsensitiveWhenPresent null as Array<String>? }
+            }
+            orderBy(id)
+        }
+
+        assertThat(selectStatement.selectStatement)
+            .isEqualTo("select first_name from Person where id < :p1 order by id")
+
+        val rows = template.selectList(selectStatement, String::class)
+
+        assertThat(rows).hasSize(6)
+        assertThat(rows[0]).isEqualTo("Fred")
+    }
+
+    @Test
+    fun testIsNotInArrayCaseInsensitive() {
+        fun search(vararg names: String) {
+            val selectStatement = select(firstName) {
+                from(person)
+                where { firstName isNotInCaseInsensitive names }
+                orderBy(id)
+            }
+
+            assertThat(selectStatement.selectStatement)
+                .isEqualTo("select first_name from Person where upper(first_name) not in (:p1,:p2) order by id")
+
+            val rows = template.selectList(selectStatement, String::class)
+
+            assertThat(rows).hasSize(4)
+            assertThat(rows[0]).isEqualTo("Pebbles")
+        }
+
+        search("Fred", "Wilma")
+    }
+
+    @Test
+    fun testIsNotInArrayCaseInsensitiveWhenPresent() {
+        fun search(vararg names: String?) {
+            val selectStatement = select(firstName) {
+                from(person)
+                where { firstName isNotInCaseInsensitiveWhenPresent names }
+                orderBy(id)
+            }
+
+            assertThat(selectStatement.selectStatement)
+                .isEqualTo("select first_name from Person where upper(first_name) not in (:p1,:p2) order by id")
+
+            val rows = template.selectList(selectStatement, String::class)
+
+            assertThat(rows).hasSize(4)
+            assertThat(rows[0]).isEqualTo("Pebbles")
+        }
+
+        search("Fred", null, "Wilma")
+    }
+
+    @Test
+    fun testIsNotInArrayCaseInsensitiveWhenPresentNullArray() {
+        val selectStatement = select(firstName) {
+            from(person)
+            where {
+                id isLessThan 10
+                and { firstName isNotInCaseInsensitiveWhenPresent null as Array<String>? }
+            }
+            orderBy(id)
+        }
+
+        assertThat(selectStatement.selectStatement)
+            .isEqualTo("select first_name from Person where id < :p1 order by id")
+
+        val rows = template.selectList(selectStatement, String::class)
+
+        assertThat(rows).hasSize(6)
+        assertThat(rows[0]).isEqualTo("Fred")
     }
 }
