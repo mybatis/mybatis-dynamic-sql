@@ -67,7 +67,7 @@ types - which is a rare usage. Please let us know if this causes an undo hardshi
    a good safety measure in some cases.
 5. Added Array based functions for the "in" and "not in" conditions in the Kotlin DSL. These functions allow a more
    natural use of an Array as an input for an "in" condition. They also allow easy reuse of a vararg argument in a
-   function.
+   function. ([#781](https://github.com/mybatis/mybatis-dynamic-sql/pull/781))
 
 ## Release 1.5.0 - April 21, 2023
 
