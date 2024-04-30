@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AbstractTwoValueCondition.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql</a> &gt; <span class="el_source">AbstractTwoValueCondition.java</span></div><h1>AbstractTwoValueCondition.java</h1><pre class="source lang-java linenums">/*
+ *    Copyright 2016-2024 the original author or authors.
+ *
+ *    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *       https://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+package org.mybatis.dynamic.sql;
+
+import java.util.function.BiFunction;
+import java.util.function.BiPredicate;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
+
+public abstract class AbstractTwoValueCondition&lt;T&gt; implements VisitableCondition&lt;T&gt; {
+    protected final T value1;
+    protected final T value2;
+
+<span class="fc" id="L28">    protected AbstractTwoValueCondition(T value1, T value2) {</span>
+<span class="fc" id="L29">        this.value1 = value1;</span>
+<span class="fc" id="L30">        this.value2 = value2;</span>
+<span class="fc" id="L31">    }</span>
+
+    public T value1() {
+<span class="fc" id="L34">        return value1;</span>
+    }
+
+    public T value2() {
+<span class="fc" id="L38">        return value2;</span>
+    }
+
+    @Override
+    public &lt;R&gt; R accept(ConditionVisitor&lt;T, R&gt; visitor) {
+<span class="fc" id="L43">        return visitor.visit(this);</span>
+    }
+
+    protected &lt;S extends AbstractTwoValueCondition&lt;T&gt;&gt; S filterSupport(BiPredicate&lt;? super T, ? super T&gt; predicate,
+            Supplier&lt;S&gt; emptySupplier, S self) {
+<span class="fc bfc" id="L48" title="All 2 branches covered.">        if (isEmpty()) {</span>
+<span class="fc" id="L49">            return self;</span>
+        } else {
+<span class="fc bfc" id="L51" title="All 2 branches covered.">            return predicate.test(value1, value2) ? self : emptySupplier.get();</span>
+        }
+    }
+
+    protected &lt;S extends AbstractTwoValueCondition&lt;T&gt;&gt; S filterSupport(Predicate&lt;? super T&gt; predicate,
+            Supplier&lt;S&gt; emptySupplier, S self) {
+<span class="fc bfc" id="L57" title="All 4 branches covered.">        return filterSupport((v1, v2) -&gt; predicate.test(v1) &amp;&amp; predicate.test(v2), emptySupplier, self);</span>
+    }
+
+    protected &lt;R, S extends AbstractTwoValueCondition&lt;R&gt;&gt; S mapSupport(Function&lt;? super T, ? extends R&gt; mapper1,
+            Function&lt;? super T, ? extends R&gt; mapper2, BiFunction&lt;R, R, S&gt; constructor, Supplier&lt;S&gt; emptySupplier) {
+<span class="fc bfc" id="L62" title="All 2 branches covered.">        if (isEmpty()) {</span>
+<span class="fc" id="L63">            return emptySupplier.get();</span>
+        } else {
+<span class="fc" id="L65">            return constructor.apply(mapper1.apply(value1), mapper2.apply(value2));</span>
+        }
+    }
+
+    /**
+     * If renderable and the values match the predicate, returns this condition. Else returns a condition
+     *     that will not render.
+     *
+     * @param predicate predicate applied to the values, if renderable
+     * @return this condition if renderable and the values match the predicate, otherwise a condition
+     *     that will not render.
+     */
+    public abstract AbstractTwoValueCondition&lt;T&gt; filter(BiPredicate&lt;? super T, ? super T&gt; predicate);
+
+    /**
+     * If renderable and both values match the predicate, returns this condition. Else returns a condition
+     *     that will not render. This function implements a short-circuiting test. If the
+     *     first value does not match the predicate, then the second value will not be tested.
+     *
+     * @param predicate predicate applied to both values, if renderable
+     * @return this condition if renderable and the values match the predicate, otherwise a condition
+     *     that will not render.
+     */
+    public abstract AbstractTwoValueCondition&lt;T&gt; filter(Predicate&lt;? super T&gt; predicate);
+
+    public abstract String operator1();
+
+    public abstract String operator2();
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

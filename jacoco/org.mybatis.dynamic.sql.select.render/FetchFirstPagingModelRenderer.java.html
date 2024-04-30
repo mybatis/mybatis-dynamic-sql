@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>FetchFirstPagingModelRenderer.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.select.render</a> &gt; <span class="el_source">FetchFirstPagingModelRenderer.java</span></div><h1>FetchFirstPagingModelRenderer.java</h1><pre class="source lang-java linenums">/*
+ *    Copyright 2016-2024 the original author or authors.
+ *
+ *    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *       https://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+package org.mybatis.dynamic.sql.select.render;
+
+import org.mybatis.dynamic.sql.exception.InvalidSqlException;
+import org.mybatis.dynamic.sql.render.RenderedParameterInfo;
+import org.mybatis.dynamic.sql.render.RenderingContext;
+import org.mybatis.dynamic.sql.select.PagingModel;
+import org.mybatis.dynamic.sql.util.FragmentAndParameters;
+import org.mybatis.dynamic.sql.util.InternalError;
+import org.mybatis.dynamic.sql.util.Messages;
+
+public class FetchFirstPagingModelRenderer {
+    private final RenderingContext renderingContext;
+    private final PagingModel pagingModel;
+
+<span class="fc" id="L30">    public FetchFirstPagingModelRenderer(RenderingContext renderingContext, PagingModel pagingModel) {</span>
+<span class="fc" id="L31">        this.renderingContext = renderingContext;</span>
+<span class="fc" id="L32">        this.pagingModel = pagingModel;</span>
+<span class="fc" id="L33">    }</span>
+
+    public FragmentAndParameters render() {
+<span class="fc" id="L36">        return pagingModel.offset()</span>
+<span class="fc" id="L37">                .map(this::renderWithOffset)</span>
+<span class="fc" id="L38">                .orElseGet(this::renderFetchFirstRowsOnly);</span>
+    }
+
+    private FragmentAndParameters renderWithOffset(Long offset) {
+<span class="fc" id="L42">        return pagingModel.fetchFirstRows()</span>
+<span class="fc" id="L43">                .map(ffr -&gt; renderOffsetAndFetchFirstRows(offset, ffr))</span>
+<span class="fc" id="L44">                .orElseGet(() -&gt; renderOffsetOnly(offset));</span>
+    }
+
+    private FragmentAndParameters renderFetchFirstRowsOnly() {
+<span class="fc" id="L48">        return pagingModel.fetchFirstRows().map(this::renderFetchFirstRowsOnly)</span>
+<span class="fc" id="L49">                .orElseThrow(() -&gt;</span>
+<span class="fc" id="L50">                        new InvalidSqlException(Messages.getInternalErrorString(InternalError.INTERNAL_ERROR_13)));</span>
+    }
+
+    private FragmentAndParameters renderFetchFirstRowsOnly(Long fetchFirstRows) {
+<span class="fc" id="L54">        RenderedParameterInfo parameterInfo = renderingContext.calculateParameterInfo();</span>
+<span class="fc" id="L55">        return FragmentAndParameters</span>
+<span class="fc" id="L56">                .withFragment(&quot;fetch first &quot; + parameterInfo.renderedPlaceHolder() //$NON-NLS-1$</span>
+                    + &quot; rows only&quot;) //$NON-NLS-1$
+<span class="fc" id="L58">                .withParameter(parameterInfo.parameterMapKey(), fetchFirstRows)</span>
+<span class="fc" id="L59">                .build();</span>
+    }
+
+    private FragmentAndParameters renderOffsetOnly(Long offset) {
+<span class="fc" id="L63">        RenderedParameterInfo parameterInfo = renderingContext.calculateParameterInfo();</span>
+<span class="fc" id="L64">        return FragmentAndParameters.withFragment(&quot;offset &quot; + parameterInfo.renderedPlaceHolder() //$NON-NLS-1$</span>
+                + &quot; rows&quot;) //$NON-NLS-1$
+<span class="fc" id="L66">                .withParameter(parameterInfo.parameterMapKey(), offset)</span>
+<span class="fc" id="L67">                .build();</span>
+    }
+
+    private FragmentAndParameters renderOffsetAndFetchFirstRows(Long offset, Long fetchFirstRows) {
+<span class="fc" id="L71">        RenderedParameterInfo parameterInfo1 = renderingContext.calculateParameterInfo();</span>
+<span class="fc" id="L72">        RenderedParameterInfo parameterInfo2 = renderingContext.calculateParameterInfo();</span>
+<span class="fc" id="L73">        return FragmentAndParameters.withFragment(&quot;offset &quot; + parameterInfo1.renderedPlaceHolder() //$NON-NLS-1$</span>
+<span class="fc" id="L74">                + &quot; rows fetch first &quot; + parameterInfo2.renderedPlaceHolder() //$NON-NLS-1$</span>
+                + &quot; rows only&quot;) //$NON-NLS-1$
+<span class="fc" id="L76">                .withParameter(parameterInfo1.parameterMapKey(), offset)</span>
+<span class="fc" id="L77">                .withParameter(parameterInfo2.parameterMapKey(), fetchFirstRows)</span>
+<span class="fc" id="L78">                .build();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

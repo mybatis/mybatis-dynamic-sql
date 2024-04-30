@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MultiRowInsertRenderer.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.insert.render</a> &gt; <span class="el_source">MultiRowInsertRenderer.java</span></div><h1>MultiRowInsertRenderer.java</h1><pre class="source lang-java linenums">/*
+ *    Copyright 2016-2024 the original author or authors.
+ *
+ *    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *       https://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+package org.mybatis.dynamic.sql.insert.render;
+
+import static org.mybatis.dynamic.sql.util.StringUtilities.spaceBefore;
+
+import java.util.Objects;
+
+import org.mybatis.dynamic.sql.insert.MultiRowInsertModel;
+import org.mybatis.dynamic.sql.render.RenderingStrategy;
+
+public class MultiRowInsertRenderer&lt;T&gt; {
+
+    private final MultiRowInsertModel&lt;T&gt; model;
+    private final MultiRowValuePhraseVisitor visitor;
+
+<span class="fc" id="L30">    private MultiRowInsertRenderer(Builder&lt;T&gt; builder) {</span>
+<span class="fc" id="L31">        model = Objects.requireNonNull(builder.model);</span>
+        // the prefix is a generic format that will be resolved below with String.format(...)
+<span class="fc" id="L33">        visitor = new MultiRowValuePhraseVisitor(builder.renderingStrategy, &quot;records[%s]&quot;); //$NON-NLS-1$</span>
+<span class="fc" id="L34">    }</span>
+
+    public MultiRowInsertStatementProvider&lt;T&gt; render() {
+<span class="fc" id="L37">        FieldAndValueCollector collector = model.columnMappings()</span>
+<span class="fc" id="L38">                .map(m -&gt; m.accept(visitor))</span>
+<span class="fc" id="L39">                .collect(FieldAndValueCollector.collect());</span>
+
+<span class="fc" id="L41">        String insertStatement = calculateInsertStatement(collector);</span>
+
+<span class="fc" id="L43">        return new DefaultMultiRowInsertStatementProvider.Builder&lt;T&gt;().withRecords(model.records())</span>
+<span class="fc" id="L44">                .withInsertStatement(insertStatement)</span>
+<span class="fc" id="L45">                .build();</span>
+    }
+
+    private String calculateInsertStatement(FieldAndValueCollector collector) {
+<span class="fc" id="L49">        String statementStart = InsertRenderingUtilities.calculateInsertStatementStart(model.table());</span>
+<span class="fc" id="L50">        String columnsPhrase = collector.columnsPhrase();</span>
+<span class="fc" id="L51">        String valuesPhrase = collector.multiRowInsertValuesPhrase(model.recordCount());</span>
+
+<span class="fc" id="L53">        return statementStart + spaceBefore(columnsPhrase) + spaceBefore(valuesPhrase);</span>
+    }
+
+    public static &lt;T&gt; Builder&lt;T&gt; withMultiRowInsertModel(MultiRowInsertModel&lt;T&gt; model) {
+<span class="fc" id="L57">        return new Builder&lt;T&gt;().withMultiRowInsertModel(model);</span>
+    }
+
+<span class="fc" id="L60">    public static class Builder&lt;T&gt; {</span>
+        private MultiRowInsertModel&lt;T&gt; model;
+        private RenderingStrategy renderingStrategy;
+
+        public Builder&lt;T&gt; withMultiRowInsertModel(MultiRowInsertModel&lt;T&gt; model) {
+<span class="fc" id="L65">            this.model = model;</span>
+<span class="fc" id="L66">            return this;</span>
+        }
+
+        public Builder&lt;T&gt; withRenderingStrategy(RenderingStrategy renderingStrategy) {
+<span class="fc" id="L70">            this.renderingStrategy = renderingStrategy;</span>
+<span class="fc" id="L71">            return this;</span>
+        }
+
+        public MultiRowInsertRenderer&lt;T&gt; build() {
+<span class="fc" id="L75">            return new MultiRowInsertRenderer&lt;&gt;(this);</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

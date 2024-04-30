@@ -413,77 +413,77 @@
 <a class="jxr_linenumber" name="L405" href="#L405">405</a>                 .from(person)
 <a class="jxr_linenumber" name="L406" href="#L406">406</a>                 .where(id, isEqualTo(100));
 <a class="jxr_linenumber" name="L407" href="#L407">407</a>         Optional&lt;PersonRecord&gt; newRecord = template.selectOne(selectStatement, personRowMapper);
-<a class="jxr_linenumber" name="L408" href="#L408">408</a>         assertThat(newRecord).isPresent();
-<a class="jxr_linenumber" name="L409" href="#L409">409</a>         assertThat(newRecord.get().getOccupation()).isEqualTo(<span class="jxr_string">"Programmer"</span>);
-<a class="jxr_linenumber" name="L410" href="#L410">410</a>     }
-<a class="jxr_linenumber" name="L411" href="#L411">411</a> 
-<a class="jxr_linenumber" name="L412" href="#L412">412</a>     @Test
-<a class="jxr_linenumber" name="L413" href="#L413">413</a>     <strong class="jxr_keyword">void</strong> testUpdateByPrimaryKeyWithTypeHandler() {
-<a class="jxr_linenumber" name="L414" href="#L414">414</a> 
-<a class="jxr_linenumber" name="L415" href="#L415">415</a>         Buildable&lt;GeneralInsertModel&gt; insertStatement = insertInto(person)
-<a class="jxr_linenumber" name="L416" href="#L416">416</a>                 .set(id).toValue(100)
-<a class="jxr_linenumber" name="L417" href="#L417">417</a>                 .set(firstName).toValue(<span class="jxr_string">"Joe"</span>)
-<a class="jxr_linenumber" name="L418" href="#L418">418</a>                 .set(lastName).toValue(LastName.of(<span class="jxr_string">"Jones"</span>))
-<a class="jxr_linenumber" name="L419" href="#L419">419</a>                 .set(birthDate).toValue(<strong class="jxr_keyword">new</strong> Date())
-<a class="jxr_linenumber" name="L420" href="#L420">420</a>                 .set(employed).toValue(<strong class="jxr_keyword">true</strong>)
-<a class="jxr_linenumber" name="L421" href="#L421">421</a>                 .set(occupation).toValue(<span class="jxr_string">"Developer"</span>)
-<a class="jxr_linenumber" name="L422" href="#L422">422</a>                 .set(addressId).toValue(1);
-<a class="jxr_linenumber" name="L423" href="#L423">423</a> 
-<a class="jxr_linenumber" name="L424" href="#L424">424</a>         <strong class="jxr_keyword">int</strong> rows = template.generalInsert(insertStatement);
-<a class="jxr_linenumber" name="L425" href="#L425">425</a>         assertThat(rows).isEqualTo(1);
-<a class="jxr_linenumber" name="L426" href="#L426">426</a> 
-<a class="jxr_linenumber" name="L427" href="#L427">427</a>         Buildable&lt;UpdateModel&gt; updateStatement = update(person)
-<a class="jxr_linenumber" name="L428" href="#L428">428</a>                 .set(lastName).equalTo(LastName.of(<span class="jxr_string">"Smith"</span>))
-<a class="jxr_linenumber" name="L429" href="#L429">429</a>                 .where(id, isEqualTo(100));
-<a class="jxr_linenumber" name="L430" href="#L430">430</a> 
-<a class="jxr_linenumber" name="L431" href="#L431">431</a>         rows = template.update(updateStatement);
-<a class="jxr_linenumber" name="L432" href="#L432">432</a>         assertThat(rows).isEqualTo(1);
-<a class="jxr_linenumber" name="L433" href="#L433">433</a> 
-<a class="jxr_linenumber" name="L434" href="#L434">434</a>         Buildable&lt;SelectModel&gt; selectStatement = select(id, firstName, lastName, birthDate, employed, occupation, addressId)
-<a class="jxr_linenumber" name="L435" href="#L435">435</a>                 .from(person)
-<a class="jxr_linenumber" name="L436" href="#L436">436</a>                 .where(id, isEqualTo(100));
-<a class="jxr_linenumber" name="L437" href="#L437">437</a>         Optional&lt;PersonRecord&gt; newRecord = template.selectOne(selectStatement, personRowMapper);
-<a class="jxr_linenumber" name="L438" href="#L438">438</a>         assertThat(newRecord).isPresent();
-<a class="jxr_linenumber" name="L439" href="#L439">439</a>         assertThat(newRecord.get().getLastName().getName()).isEqualTo(<span class="jxr_string">"Smith"</span>);
-<a class="jxr_linenumber" name="L440" href="#L440">440</a>     }
-<a class="jxr_linenumber" name="L441" href="#L441">441</a> 
-<a class="jxr_linenumber" name="L442" href="#L442">442</a>     @Test
-<a class="jxr_linenumber" name="L443" href="#L443">443</a>     <strong class="jxr_keyword">void</strong> testUpdateByPrimaryKeySelective() {
-<a class="jxr_linenumber" name="L444" href="#L444">444</a>         Buildable&lt;GeneralInsertModel&gt; insertStatement = insertInto(person)
-<a class="jxr_linenumber" name="L445" href="#L445">445</a>                 .set(id).toValue(100)
-<a class="jxr_linenumber" name="L446" href="#L446">446</a>                 .set(firstName).toValue(<span class="jxr_string">"Joe"</span>)
-<a class="jxr_linenumber" name="L447" href="#L447">447</a>                 .set(lastName).toValue(LastName.of(<span class="jxr_string">"Jones"</span>))
-<a class="jxr_linenumber" name="L448" href="#L448">448</a>                 .set(birthDate).toValue(<strong class="jxr_keyword">new</strong> Date())
-<a class="jxr_linenumber" name="L449" href="#L449">449</a>                 .set(employed).toValue(<strong class="jxr_keyword">true</strong>)
-<a class="jxr_linenumber" name="L450" href="#L450">450</a>                 .set(occupation).toValue(<span class="jxr_string">"Developer"</span>)
-<a class="jxr_linenumber" name="L451" href="#L451">451</a>                 .set(addressId).toValue(1);
-<a class="jxr_linenumber" name="L452" href="#L452">452</a> 
-<a class="jxr_linenumber" name="L453" href="#L453">453</a>         <strong class="jxr_keyword">int</strong> rows = template.generalInsert(insertStatement);
-<a class="jxr_linenumber" name="L454" href="#L454">454</a>         assertThat(rows).isEqualTo(1);
-<a class="jxr_linenumber" name="L455" href="#L455">455</a> 
-<a class="jxr_linenumber" name="L456" href="#L456">456</a>         <a name="PersonRecord" href="../../examples/spring/PersonRecord.html#PersonRecord">PersonRecord</a> updateRecord = <strong class="jxr_keyword">new</strong> <a name="PersonRecord" href="../../examples/spring/PersonRecord.html#PersonRecord">PersonRecord</a>();
-<a class="jxr_linenumber" name="L457" href="#L457">457</a>         updateRecord.setId(100);
-<a class="jxr_linenumber" name="L458" href="#L458">458</a>         updateRecord.setOccupation(<span class="jxr_string">"Programmer"</span>);
-<a class="jxr_linenumber" name="L459" href="#L459">459</a> 
-<a class="jxr_linenumber" name="L460" href="#L460">460</a>         Buildable&lt;UpdateModel&gt; updateStatement = update(person)
-<a class="jxr_linenumber" name="L461" href="#L461">461</a>                 .set(firstName).equalToWhenPresent(updateRecord::getFirstName)
-<a class="jxr_linenumber" name="L462" href="#L462">462</a>                 .set(lastName).equalToWhenPresent(updateRecord::getLastName)
-<a class="jxr_linenumber" name="L463" href="#L463">463</a>                 .set(birthDate).equalToWhenPresent(updateRecord::getBirthDate)
-<a class="jxr_linenumber" name="L464" href="#L464">464</a>                 .set(employed).equalToWhenPresent(updateRecord::getEmployed)
-<a class="jxr_linenumber" name="L465" href="#L465">465</a>                 .set(occupation).equalToWhenPresent(updateRecord::getOccupation)
-<a class="jxr_linenumber" name="L466" href="#L466">466</a>                 .set(addressId).equalToWhenPresent(updateRecord::getAddressId)
-<a class="jxr_linenumber" name="L467" href="#L467">467</a>                 .where(id, isEqualTo(updateRecord::getId));
-<a class="jxr_linenumber" name="L468" href="#L468">468</a> 
-<a class="jxr_linenumber" name="L469" href="#L469">469</a>         rows = template.update(updateStatement);
-<a class="jxr_linenumber" name="L470" href="#L470">470</a>         assertThat(rows).isEqualTo(1);
-<a class="jxr_linenumber" name="L471" href="#L471">471</a> 
-<a class="jxr_linenumber" name="L472" href="#L472">472</a>         Buildable&lt;SelectModel&gt; selectStatement = select(id, firstName, lastName, birthDate, employed, occupation, addressId)
-<a class="jxr_linenumber" name="L473" href="#L473">473</a>                 .from(person)
-<a class="jxr_linenumber" name="L474" href="#L474">474</a>                 .where(id, isEqualTo(100));
-<a class="jxr_linenumber" name="L475" href="#L475">475</a>         Optional&lt;PersonRecord&gt; newRecord = template.selectOne(selectStatement, personRowMapper);
-<a class="jxr_linenumber" name="L476" href="#L476">476</a>         assertThat(newRecord).isPresent();
-<a class="jxr_linenumber" name="L477" href="#L477">477</a>         assertThat(newRecord.get().getOccupation()).isEqualTo(<span class="jxr_string">"Programmer"</span>);
-<a class="jxr_linenumber" name="L478" href="#L478">478</a>         assertThat(newRecord.get().getFirstName()).isEqualTo(<span class="jxr_string">"Joe"</span>);
+<a class="jxr_linenumber" name="L408" href="#L408">408</a>         assertThat(newRecord).hasValueSatisfying(r -&gt; assertThat(r.getOccupation()).isEqualTo(<span class="jxr_string">"Programmer"</span>));
+<a class="jxr_linenumber" name="L409" href="#L409">409</a>     }
+<a class="jxr_linenumber" name="L410" href="#L410">410</a> 
+<a class="jxr_linenumber" name="L411" href="#L411">411</a>     @Test
+<a class="jxr_linenumber" name="L412" href="#L412">412</a>     <strong class="jxr_keyword">void</strong> testUpdateByPrimaryKeyWithTypeHandler() {
+<a class="jxr_linenumber" name="L413" href="#L413">413</a> 
+<a class="jxr_linenumber" name="L414" href="#L414">414</a>         Buildable&lt;GeneralInsertModel&gt; insertStatement = insertInto(person)
+<a class="jxr_linenumber" name="L415" href="#L415">415</a>                 .set(id).toValue(100)
+<a class="jxr_linenumber" name="L416" href="#L416">416</a>                 .set(firstName).toValue(<span class="jxr_string">"Joe"</span>)
+<a class="jxr_linenumber" name="L417" href="#L417">417</a>                 .set(lastName).toValue(LastName.of(<span class="jxr_string">"Jones"</span>))
+<a class="jxr_linenumber" name="L418" href="#L418">418</a>                 .set(birthDate).toValue(<strong class="jxr_keyword">new</strong> Date())
+<a class="jxr_linenumber" name="L419" href="#L419">419</a>                 .set(employed).toValue(<strong class="jxr_keyword">true</strong>)
+<a class="jxr_linenumber" name="L420" href="#L420">420</a>                 .set(occupation).toValue(<span class="jxr_string">"Developer"</span>)
+<a class="jxr_linenumber" name="L421" href="#L421">421</a>                 .set(addressId).toValue(1);
+<a class="jxr_linenumber" name="L422" href="#L422">422</a> 
+<a class="jxr_linenumber" name="L423" href="#L423">423</a>         <strong class="jxr_keyword">int</strong> rows = template.generalInsert(insertStatement);
+<a class="jxr_linenumber" name="L424" href="#L424">424</a>         assertThat(rows).isEqualTo(1);
+<a class="jxr_linenumber" name="L425" href="#L425">425</a> 
+<a class="jxr_linenumber" name="L426" href="#L426">426</a>         Buildable&lt;UpdateModel&gt; updateStatement = update(person)
+<a class="jxr_linenumber" name="L427" href="#L427">427</a>                 .set(lastName).equalTo(LastName.of(<span class="jxr_string">"Smith"</span>))
+<a class="jxr_linenumber" name="L428" href="#L428">428</a>                 .where(id, isEqualTo(100));
+<a class="jxr_linenumber" name="L429" href="#L429">429</a> 
+<a class="jxr_linenumber" name="L430" href="#L430">430</a>         rows = template.update(updateStatement);
+<a class="jxr_linenumber" name="L431" href="#L431">431</a>         assertThat(rows).isEqualTo(1);
+<a class="jxr_linenumber" name="L432" href="#L432">432</a> 
+<a class="jxr_linenumber" name="L433" href="#L433">433</a>         Buildable&lt;SelectModel&gt; selectStatement = select(id, firstName, lastName, birthDate, employed, occupation, addressId)
+<a class="jxr_linenumber" name="L434" href="#L434">434</a>                 .from(person)
+<a class="jxr_linenumber" name="L435" href="#L435">435</a>                 .where(id, isEqualTo(100));
+<a class="jxr_linenumber" name="L436" href="#L436">436</a>         Optional&lt;PersonRecord&gt; newRecord = template.selectOne(selectStatement, personRowMapper);
+<a class="jxr_linenumber" name="L437" href="#L437">437</a>         assertThat(newRecord).hasValueSatisfying(r -&gt;
+<a class="jxr_linenumber" name="L438" href="#L438">438</a>                 assertThat(r.getLastName().getName()).isEqualTo(<span class="jxr_string">"Smith"</span>));
+<a class="jxr_linenumber" name="L439" href="#L439">439</a>     }
+<a class="jxr_linenumber" name="L440" href="#L440">440</a> 
+<a class="jxr_linenumber" name="L441" href="#L441">441</a>     @Test
+<a class="jxr_linenumber" name="L442" href="#L442">442</a>     <strong class="jxr_keyword">void</strong> testUpdateByPrimaryKeySelective() {
+<a class="jxr_linenumber" name="L443" href="#L443">443</a>         Buildable&lt;GeneralInsertModel&gt; insertStatement = insertInto(person)
+<a class="jxr_linenumber" name="L444" href="#L444">444</a>                 .set(id).toValue(100)
+<a class="jxr_linenumber" name="L445" href="#L445">445</a>                 .set(firstName).toValue(<span class="jxr_string">"Joe"</span>)
+<a class="jxr_linenumber" name="L446" href="#L446">446</a>                 .set(lastName).toValue(LastName.of(<span class="jxr_string">"Jones"</span>))
+<a class="jxr_linenumber" name="L447" href="#L447">447</a>                 .set(birthDate).toValue(<strong class="jxr_keyword">new</strong> Date())
+<a class="jxr_linenumber" name="L448" href="#L448">448</a>                 .set(employed).toValue(<strong class="jxr_keyword">true</strong>)
+<a class="jxr_linenumber" name="L449" href="#L449">449</a>                 .set(occupation).toValue(<span class="jxr_string">"Developer"</span>)
+<a class="jxr_linenumber" name="L450" href="#L450">450</a>                 .set(addressId).toValue(1);
+<a class="jxr_linenumber" name="L451" href="#L451">451</a> 
+<a class="jxr_linenumber" name="L452" href="#L452">452</a>         <strong class="jxr_keyword">int</strong> rows = template.generalInsert(insertStatement);
+<a class="jxr_linenumber" name="L453" href="#L453">453</a>         assertThat(rows).isEqualTo(1);
+<a class="jxr_linenumber" name="L454" href="#L454">454</a> 
+<a class="jxr_linenumber" name="L455" href="#L455">455</a>         <a name="PersonRecord" href="../../examples/spring/PersonRecord.html#PersonRecord">PersonRecord</a> updateRecord = <strong class="jxr_keyword">new</strong> <a name="PersonRecord" href="../../examples/spring/PersonRecord.html#PersonRecord">PersonRecord</a>();
+<a class="jxr_linenumber" name="L456" href="#L456">456</a>         updateRecord.setId(100);
+<a class="jxr_linenumber" name="L457" href="#L457">457</a>         updateRecord.setOccupation(<span class="jxr_string">"Programmer"</span>);
+<a class="jxr_linenumber" name="L458" href="#L458">458</a> 
+<a class="jxr_linenumber" name="L459" href="#L459">459</a>         Buildable&lt;UpdateModel&gt; updateStatement = update(person)
+<a class="jxr_linenumber" name="L460" href="#L460">460</a>                 .set(firstName).equalToWhenPresent(updateRecord::getFirstName)
+<a class="jxr_linenumber" name="L461" href="#L461">461</a>                 .set(lastName).equalToWhenPresent(updateRecord::getLastName)
+<a class="jxr_linenumber" name="L462" href="#L462">462</a>                 .set(birthDate).equalToWhenPresent(updateRecord::getBirthDate)
+<a class="jxr_linenumber" name="L463" href="#L463">463</a>                 .set(employed).equalToWhenPresent(updateRecord::getEmployed)
+<a class="jxr_linenumber" name="L464" href="#L464">464</a>                 .set(occupation).equalToWhenPresent(updateRecord::getOccupation)
+<a class="jxr_linenumber" name="L465" href="#L465">465</a>                 .set(addressId).equalToWhenPresent(updateRecord::getAddressId)
+<a class="jxr_linenumber" name="L466" href="#L466">466</a>                 .where(id, isEqualTo(updateRecord::getId));
+<a class="jxr_linenumber" name="L467" href="#L467">467</a> 
+<a class="jxr_linenumber" name="L468" href="#L468">468</a>         rows = template.update(updateStatement);
+<a class="jxr_linenumber" name="L469" href="#L469">469</a>         assertThat(rows).isEqualTo(1);
+<a class="jxr_linenumber" name="L470" href="#L470">470</a> 
+<a class="jxr_linenumber" name="L471" href="#L471">471</a>         Buildable&lt;SelectModel&gt; selectStatement = select(id, firstName, lastName, birthDate, employed, occupation, addressId)
+<a class="jxr_linenumber" name="L472" href="#L472">472</a>                 .from(person)
+<a class="jxr_linenumber" name="L473" href="#L473">473</a>                 .where(id, isEqualTo(100));
+<a class="jxr_linenumber" name="L474" href="#L474">474</a>         Optional&lt;PersonRecord&gt; newRecord = template.selectOne(selectStatement, personRowMapper);
+<a class="jxr_linenumber" name="L475" href="#L475">475</a>         assertThat(newRecord).hasValueSatisfying(r -&gt; {
+<a class="jxr_linenumber" name="L476" href="#L476">476</a>             assertThat(r.getOccupation()).isEqualTo(<span class="jxr_string">"Programmer"</span>);
+<a class="jxr_linenumber" name="L477" href="#L477">477</a>             assertThat(r.getFirstName()).isEqualTo(<span class="jxr_string">"Joe"</span>);
+<a class="jxr_linenumber" name="L478" href="#L478">478</a>         });
 <a class="jxr_linenumber" name="L479" href="#L479">479</a>     }
 <a class="jxr_linenumber" name="L480" href="#L480">480</a> 
 <a class="jxr_linenumber" name="L481" href="#L481">481</a>     @Test
@@ -527,37 +527,37 @@
 <a class="jxr_linenumber" name="L519" href="#L519">519</a>                 .from(person)
 <a class="jxr_linenumber" name="L520" href="#L520">520</a>                 .where(id, isEqualTo(100));
 <a class="jxr_linenumber" name="L521" href="#L521">521</a>         Optional&lt;PersonRecord&gt; newRecord = template.selectOne(selectStatement, personRowMapper);
-<a class="jxr_linenumber" name="L522" href="#L522">522</a>         assertThat(newRecord).isPresent();
-<a class="jxr_linenumber" name="L523" href="#L523">523</a>         assertThat(newRecord.get().getOccupation()).isEqualTo(<span class="jxr_string">"Programmer"</span>);
-<a class="jxr_linenumber" name="L524" href="#L524">524</a>         assertThat(newRecord.get().getFirstName()).isEqualTo(<span class="jxr_string">"Joe"</span>);
-<a class="jxr_linenumber" name="L525" href="#L525">525</a>     }
-<a class="jxr_linenumber" name="L526" href="#L526">526</a> 
-<a class="jxr_linenumber" name="L527" href="#L527">527</a>     @Test
-<a class="jxr_linenumber" name="L528" href="#L528">528</a>     <strong class="jxr_keyword">void</strong> testUpdateOneField() {
-<a class="jxr_linenumber" name="L529" href="#L529">529</a>         Buildable&lt;GeneralInsertModel&gt; insertStatement = insertInto(person)
-<a class="jxr_linenumber" name="L530" href="#L530">530</a>                 .set(id).toValue(100)
-<a class="jxr_linenumber" name="L531" href="#L531">531</a>                 .set(firstName).toValue(<span class="jxr_string">"Joe"</span>)
-<a class="jxr_linenumber" name="L532" href="#L532">532</a>                 .set(lastName).toValue(LastName.of(<span class="jxr_string">"Jones"</span>))
-<a class="jxr_linenumber" name="L533" href="#L533">533</a>                 .set(birthDate).toValue(<strong class="jxr_keyword">new</strong> Date())
-<a class="jxr_linenumber" name="L534" href="#L534">534</a>                 .set(employed).toValue(<strong class="jxr_keyword">true</strong>)
-<a class="jxr_linenumber" name="L535" href="#L535">535</a>                 .set(occupation).toValue(<span class="jxr_string">"Developer"</span>)
-<a class="jxr_linenumber" name="L536" href="#L536">536</a>                 .set(addressId).toValue(1);
-<a class="jxr_linenumber" name="L537" href="#L537">537</a> 
-<a class="jxr_linenumber" name="L538" href="#L538">538</a>         <strong class="jxr_keyword">int</strong> rows = template.generalInsert(insertStatement);
-<a class="jxr_linenumber" name="L539" href="#L539">539</a>         assertThat(rows).isEqualTo(1);
-<a class="jxr_linenumber" name="L540" href="#L540">540</a> 
-<a class="jxr_linenumber" name="L541" href="#L541">541</a>         Buildable&lt;UpdateModel&gt; updateStatement = update(person)
-<a class="jxr_linenumber" name="L542" href="#L542">542</a>                 .set(occupation).equalTo(<span class="jxr_string">"Programmer"</span>)
-<a class="jxr_linenumber" name="L543" href="#L543">543</a>                 .where(id, isEqualTo(100));
-<a class="jxr_linenumber" name="L544" href="#L544">544</a>         rows = template.update(updateStatement);
-<a class="jxr_linenumber" name="L545" href="#L545">545</a>         assertThat(rows).isEqualTo(1);
-<a class="jxr_linenumber" name="L546" href="#L546">546</a> 
-<a class="jxr_linenumber" name="L547" href="#L547">547</a>         Buildable&lt;SelectModel&gt; selectStatement = select(id, firstName, lastName, birthDate, employed, occupation, addressId)
-<a class="jxr_linenumber" name="L548" href="#L548">548</a>                 .from(person)
-<a class="jxr_linenumber" name="L549" href="#L549">549</a>                 .where(id, isEqualTo(100));
-<a class="jxr_linenumber" name="L550" href="#L550">550</a>         Optional&lt;PersonRecord&gt; newRecord = template.selectOne(selectStatement, personRowMapper);
-<a class="jxr_linenumber" name="L551" href="#L551">551</a>         assertThat(newRecord).isPresent();
-<a class="jxr_linenumber" name="L552" href="#L552">552</a>         assertThat(newRecord.get().getOccupation()).isEqualTo(<span class="jxr_string">"Programmer"</span>);
+<a class="jxr_linenumber" name="L522" href="#L522">522</a>         assertThat(newRecord).hasValueSatisfying(r -&gt; {
+<a class="jxr_linenumber" name="L523" href="#L523">523</a>             assertThat(r.getOccupation()).isEqualTo(<span class="jxr_string">"Programmer"</span>);
+<a class="jxr_linenumber" name="L524" href="#L524">524</a>             assertThat(r.getFirstName()).isEqualTo(<span class="jxr_string">"Joe"</span>);
+<a class="jxr_linenumber" name="L525" href="#L525">525</a>         });
+<a class="jxr_linenumber" name="L526" href="#L526">526</a>     }
+<a class="jxr_linenumber" name="L527" href="#L527">527</a> 
+<a class="jxr_linenumber" name="L528" href="#L528">528</a>     @Test
+<a class="jxr_linenumber" name="L529" href="#L529">529</a>     <strong class="jxr_keyword">void</strong> testUpdateOneField() {
+<a class="jxr_linenumber" name="L530" href="#L530">530</a>         Buildable&lt;GeneralInsertModel&gt; insertStatement = insertInto(person)
+<a class="jxr_linenumber" name="L531" href="#L531">531</a>                 .set(id).toValue(100)
+<a class="jxr_linenumber" name="L532" href="#L532">532</a>                 .set(firstName).toValue(<span class="jxr_string">"Joe"</span>)
+<a class="jxr_linenumber" name="L533" href="#L533">533</a>                 .set(lastName).toValue(LastName.of(<span class="jxr_string">"Jones"</span>))
+<a class="jxr_linenumber" name="L534" href="#L534">534</a>                 .set(birthDate).toValue(<strong class="jxr_keyword">new</strong> Date())
+<a class="jxr_linenumber" name="L535" href="#L535">535</a>                 .set(employed).toValue(<strong class="jxr_keyword">true</strong>)
+<a class="jxr_linenumber" name="L536" href="#L536">536</a>                 .set(occupation).toValue(<span class="jxr_string">"Developer"</span>)
+<a class="jxr_linenumber" name="L537" href="#L537">537</a>                 .set(addressId).toValue(1);
+<a class="jxr_linenumber" name="L538" href="#L538">538</a> 
+<a class="jxr_linenumber" name="L539" href="#L539">539</a>         <strong class="jxr_keyword">int</strong> rows = template.generalInsert(insertStatement);
+<a class="jxr_linenumber" name="L540" href="#L540">540</a>         assertThat(rows).isEqualTo(1);
+<a class="jxr_linenumber" name="L541" href="#L541">541</a> 
+<a class="jxr_linenumber" name="L542" href="#L542">542</a>         Buildable&lt;UpdateModel&gt; updateStatement = update(person)
+<a class="jxr_linenumber" name="L543" href="#L543">543</a>                 .set(occupation).equalTo(<span class="jxr_string">"Programmer"</span>)
+<a class="jxr_linenumber" name="L544" href="#L544">544</a>                 .where(id, isEqualTo(100));
+<a class="jxr_linenumber" name="L545" href="#L545">545</a>         rows = template.update(updateStatement);
+<a class="jxr_linenumber" name="L546" href="#L546">546</a>         assertThat(rows).isEqualTo(1);
+<a class="jxr_linenumber" name="L547" href="#L547">547</a> 
+<a class="jxr_linenumber" name="L548" href="#L548">548</a>         Buildable&lt;SelectModel&gt; selectStatement = select(id, firstName, lastName, birthDate, employed, occupation, addressId)
+<a class="jxr_linenumber" name="L549" href="#L549">549</a>                 .from(person)
+<a class="jxr_linenumber" name="L550" href="#L550">550</a>                 .where(id, isEqualTo(100));
+<a class="jxr_linenumber" name="L551" href="#L551">551</a>         Optional&lt;PersonRecord&gt; newRecord = template.selectOne(selectStatement, personRowMapper);
+<a class="jxr_linenumber" name="L552" href="#L552">552</a>         assertThat(newRecord).hasValueSatisfying(r -&gt; assertThat(r.getOccupation()).isEqualTo(<span class="jxr_string">"Programmer"</span>));
 <a class="jxr_linenumber" name="L553" href="#L553">553</a>     }
 <a class="jxr_linenumber" name="L554" href="#L554">554</a> 
 <a class="jxr_linenumber" name="L555" href="#L555">555</a>     @Test
@@ -585,221 +585,220 @@
 <a class="jxr_linenumber" name="L577" href="#L577">577</a>                 .where(id, isEqualTo(100));
 <a class="jxr_linenumber" name="L578" href="#L578">578</a> 
 <a class="jxr_linenumber" name="L579" href="#L579">579</a>         Optional&lt;PersonRecord&gt; newRecord = template.selectOne(selectStatement, personRowMapper);
-<a class="jxr_linenumber" name="L580" href="#L580">580</a>         assertThat(newRecord).isPresent();
-<a class="jxr_linenumber" name="L581" href="#L581">581</a>         assertThat(newRecord.get().getOccupation()).isEqualTo(<span class="jxr_string">"Programmer"</span>);
-<a class="jxr_linenumber" name="L582" href="#L582">582</a>     }
-<a class="jxr_linenumber" name="L583" href="#L583">583</a> 
-<a class="jxr_linenumber" name="L584" href="#L584">584</a>     @Test
-<a class="jxr_linenumber" name="L585" href="#L585">585</a>     <strong class="jxr_keyword">void</strong> testCount() {
-<a class="jxr_linenumber" name="L586" href="#L586">586</a>         Buildable&lt;SelectModel&gt; countStatement = countFrom(person)
-<a class="jxr_linenumber" name="L587" href="#L587">587</a>                 .where(occupation, isNull());
-<a class="jxr_linenumber" name="L588" href="#L588">588</a> 
-<a class="jxr_linenumber" name="L589" href="#L589">589</a>         <strong class="jxr_keyword">long</strong> rows = template.count(countStatement);
-<a class="jxr_linenumber" name="L590" href="#L590">590</a>         assertThat(rows).isEqualTo(2L);
-<a class="jxr_linenumber" name="L591" href="#L591">591</a>     }
-<a class="jxr_linenumber" name="L592" href="#L592">592</a> 
-<a class="jxr_linenumber" name="L593" href="#L593">593</a>     @Test
-<a class="jxr_linenumber" name="L594" href="#L594">594</a>     <strong class="jxr_keyword">void</strong> testCountAll() {
-<a class="jxr_linenumber" name="L595" href="#L595">595</a>         Buildable&lt;SelectModel&gt; countStatement = countFrom(person);
-<a class="jxr_linenumber" name="L596" href="#L596">596</a> 
-<a class="jxr_linenumber" name="L597" href="#L597">597</a>         <strong class="jxr_keyword">long</strong> rows = template.count(countStatement);
-<a class="jxr_linenumber" name="L598" href="#L598">598</a>         assertThat(rows).isEqualTo(6L);
-<a class="jxr_linenumber" name="L599" href="#L599">599</a>     }
-<a class="jxr_linenumber" name="L600" href="#L600">600</a> 
-<a class="jxr_linenumber" name="L601" href="#L601">601</a>     @Test
-<a class="jxr_linenumber" name="L602" href="#L602">602</a>     <strong class="jxr_keyword">void</strong> testCountLastName() {
-<a class="jxr_linenumber" name="L603" href="#L603">603</a>         Buildable&lt;SelectModel&gt; countStatement = countColumn(lastName).from(person);
-<a class="jxr_linenumber" name="L604" href="#L604">604</a> 
-<a class="jxr_linenumber" name="L605" href="#L605">605</a>         <strong class="jxr_keyword">long</strong> rows = template.count(countStatement);
-<a class="jxr_linenumber" name="L606" href="#L606">606</a>         assertThat(rows).isEqualTo(6L);
-<a class="jxr_linenumber" name="L607" href="#L607">607</a>     }
-<a class="jxr_linenumber" name="L608" href="#L608">608</a> 
-<a class="jxr_linenumber" name="L609" href="#L609">609</a>     @Test
-<a class="jxr_linenumber" name="L610" href="#L610">610</a>     <strong class="jxr_keyword">void</strong> testCountDistinctLastName() {
-<a class="jxr_linenumber" name="L611" href="#L611">611</a>         Buildable&lt;SelectModel&gt; countStatement = countDistinctColumn(lastName).from(person);
-<a class="jxr_linenumber" name="L612" href="#L612">612</a> 
-<a class="jxr_linenumber" name="L613" href="#L613">613</a>         <strong class="jxr_keyword">long</strong> rows = template.count(countStatement);
-<a class="jxr_linenumber" name="L614" href="#L614">614</a>         assertThat(rows).isEqualTo(2L);
-<a class="jxr_linenumber" name="L615" href="#L615">615</a>     }
-<a class="jxr_linenumber" name="L616" href="#L616">616</a> 
-<a class="jxr_linenumber" name="L617" href="#L617">617</a>     @Test
-<a class="jxr_linenumber" name="L618" href="#L618">618</a>     <strong class="jxr_keyword">void</strong> testTypeHandledLike() {
-<a class="jxr_linenumber" name="L619" href="#L619">619</a>         Buildable&lt;SelectModel&gt; selectStatement = select(id, firstName, lastName, birthDate, employed, occupation, addressId)
-<a class="jxr_linenumber" name="L620" href="#L620">620</a>                 .from(person)
-<a class="jxr_linenumber" name="L621" href="#L621">621</a>                 .where(lastName, isLike(LastName.of(<span class="jxr_string">"Fl%"</span>)))
-<a class="jxr_linenumber" name="L622" href="#L622">622</a>                 .orderBy(id);
-<a class="jxr_linenumber" name="L623" href="#L623">623</a> 
-<a class="jxr_linenumber" name="L624" href="#L624">624</a>         List&lt;PersonRecord&gt; rows = template.selectList(selectStatement, personRowMapper);
-<a class="jxr_linenumber" name="L625" href="#L625">625</a>         assertThat(rows).hasSize(3);
-<a class="jxr_linenumber" name="L626" href="#L626">626</a>         assertThat(rows.get(0).getFirstName()).isEqualTo(<span class="jxr_string">"Fred"</span>);
-<a class="jxr_linenumber" name="L627" href="#L627">627</a>     }
-<a class="jxr_linenumber" name="L628" href="#L628">628</a> 
-<a class="jxr_linenumber" name="L629" href="#L629">629</a>     @Test
-<a class="jxr_linenumber" name="L630" href="#L630">630</a>     <strong class="jxr_keyword">void</strong> testTypeHandledNotLike() {
-<a class="jxr_linenumber" name="L631" href="#L631">631</a>         Buildable&lt;SelectModel&gt; selectStatement = select(id, firstName, lastName, birthDate, employed, occupation, addressId)
-<a class="jxr_linenumber" name="L632" href="#L632">632</a>                 .from(person)
-<a class="jxr_linenumber" name="L633" href="#L633">633</a>                 .where(lastName, isNotLike(LastName.of(<span class="jxr_string">"Fl%"</span>)))
-<a class="jxr_linenumber" name="L634" href="#L634">634</a>                 .orderBy(id);
-<a class="jxr_linenumber" name="L635" href="#L635">635</a> 
-<a class="jxr_linenumber" name="L636" href="#L636">636</a>         List&lt;PersonRecord&gt; rows = template.selectList(selectStatement, personRowMapper);
-<a class="jxr_linenumber" name="L637" href="#L637">637</a> 
-<a class="jxr_linenumber" name="L638" href="#L638">638</a>         assertThat(rows).hasSize(3);
-<a class="jxr_linenumber" name="L639" href="#L639">639</a>         assertThat(rows.get(0).getFirstName()).isEqualTo(<span class="jxr_string">"Barney"</span>);
-<a class="jxr_linenumber" name="L640" href="#L640">640</a>     }
-<a class="jxr_linenumber" name="L641" href="#L641">641</a> 
-<a class="jxr_linenumber" name="L642" href="#L642">642</a>     @Test
-<a class="jxr_linenumber" name="L643" href="#L643">643</a>     <strong class="jxr_keyword">void</strong> testAutoMapping() {
-<a class="jxr_linenumber" name="L644" href="#L644">644</a>         Buildable&lt;SelectModel&gt; selectStatement = select(address.id.as(<span class="jxr_string">"id"</span>), address.streetAddress,
-<a class="jxr_linenumber" name="L645" href="#L645">645</a>                 address.city, address.state)
-<a class="jxr_linenumber" name="L646" href="#L646">646</a>                 .from(address)
-<a class="jxr_linenumber" name="L647" href="#L647">647</a>                 .orderBy(address.id);
-<a class="jxr_linenumber" name="L648" href="#L648">648</a> 
-<a class="jxr_linenumber" name="L649" href="#L649">649</a>         List&lt;AddressRecord&gt; records = template.selectList(selectStatement,
-<a class="jxr_linenumber" name="L650" href="#L650">650</a>                 BeanPropertyRowMapper.newInstance(AddressRecord.<strong class="jxr_keyword">class</strong>));
-<a class="jxr_linenumber" name="L651" href="#L651">651</a> 
-<a class="jxr_linenumber" name="L652" href="#L652">652</a>         assertThat(records).hasSize(2);
-<a class="jxr_linenumber" name="L653" href="#L653">653</a>         assertThat(records.get(0).getId()).isEqualTo(1);
-<a class="jxr_linenumber" name="L654" href="#L654">654</a>         assertThat(records.get(0).getStreetAddress()).isEqualTo(<span class="jxr_string">"123 Main Street"</span>);
-<a class="jxr_linenumber" name="L655" href="#L655">655</a>         assertThat(records.get(0).getCity()).isEqualTo(<span class="jxr_string">"Bedrock"</span>);
-<a class="jxr_linenumber" name="L656" href="#L656">656</a>         assertThat(records.get(0).getState()).isEqualTo(<span class="jxr_string">"IN"</span>);
-<a class="jxr_linenumber" name="L657" href="#L657">657</a>     }
-<a class="jxr_linenumber" name="L658" href="#L658">658</a> 
-<a class="jxr_linenumber" name="L659" href="#L659">659</a>     @Test
-<a class="jxr_linenumber" name="L660" href="#L660">660</a>     <strong class="jxr_keyword">void</strong> testJoinAllRows() {
-<a class="jxr_linenumber" name="L661" href="#L661">661</a>         Buildable&lt;SelectModel&gt; selectStatement = select(id, firstName, lastName, birthDate, employed, occupation,
-<a class="jxr_linenumber" name="L662" href="#L662">662</a>                 address.id, address.streetAddress, address.city, address.state)
-<a class="jxr_linenumber" name="L663" href="#L663">663</a>                 .from(person)
-<a class="jxr_linenumber" name="L664" href="#L664">664</a>                 .join(address, on(person.addressId, equalTo(address.id)))
-<a class="jxr_linenumber" name="L665" href="#L665">665</a>                 .orderBy(id);
-<a class="jxr_linenumber" name="L666" href="#L666">666</a> 
-<a class="jxr_linenumber" name="L667" href="#L667">667</a>         List&lt;PersonWithAddress&gt; records = template.selectList(selectStatement, personWithAddressRowMapper);
-<a class="jxr_linenumber" name="L668" href="#L668">668</a> 
-<a class="jxr_linenumber" name="L669" href="#L669">669</a>         assertThat(records).hasSize(6);
-<a class="jxr_linenumber" name="L670" href="#L670">670</a>         assertThat(records.get(0).getId()).isEqualTo(1);
-<a class="jxr_linenumber" name="L671" href="#L671">671</a>         assertThat(records.get(0).getEmployed()).isTrue();
-<a class="jxr_linenumber" name="L672" href="#L672">672</a>         assertThat(records.get(0).getFirstName()).isEqualTo(<span class="jxr_string">"Fred"</span>);
-<a class="jxr_linenumber" name="L673" href="#L673">673</a>         assertThat(records.get(0).getLastName()).isEqualTo(LastName.of(<span class="jxr_string">"Flintstone"</span>));
-<a class="jxr_linenumber" name="L674" href="#L674">674</a>         assertThat(records.get(0).getOccupation()).isEqualTo(<span class="jxr_string">"Brontosaurus Operator"</span>);
-<a class="jxr_linenumber" name="L675" href="#L675">675</a>         assertThat(records.get(0).getBirthDate()).isNotNull();
-<a class="jxr_linenumber" name="L676" href="#L676">676</a>         assertThat(records.get(0).getAddress().getId()).isEqualTo(1);
-<a class="jxr_linenumber" name="L677" href="#L677">677</a>         assertThat(records.get(0).getAddress().getStreetAddress()).isEqualTo(<span class="jxr_string">"123 Main Street"</span>);
-<a class="jxr_linenumber" name="L678" href="#L678">678</a>         assertThat(records.get(0).getAddress().getCity()).isEqualTo(<span class="jxr_string">"Bedrock"</span>);
-<a class="jxr_linenumber" name="L679" href="#L679">679</a>         assertThat(records.get(0).getAddress().getState()).isEqualTo(<span class="jxr_string">"IN"</span>);
-<a class="jxr_linenumber" name="L680" href="#L680">680</a>     }
-<a class="jxr_linenumber" name="L681" href="#L681">681</a> 
-<a class="jxr_linenumber" name="L682" href="#L682">682</a>     @Test
-<a class="jxr_linenumber" name="L683" href="#L683">683</a>     <strong class="jxr_keyword">void</strong> testJoinOneRow() {
-<a class="jxr_linenumber" name="L684" href="#L684">684</a>         Buildable&lt;SelectModel&gt; selectStatement = select(id, firstName, lastName, birthDate, employed, occupation,
-<a class="jxr_linenumber" name="L685" href="#L685">685</a>                 address.id, address.streetAddress, address.city, address.state)
-<a class="jxr_linenumber" name="L686" href="#L686">686</a>                 .from(person)
-<a class="jxr_linenumber" name="L687" href="#L687">687</a>                 .join(address, on(person.addressId, equalTo(address.id)))
-<a class="jxr_linenumber" name="L688" href="#L688">688</a>                 .where(id, isEqualTo(1));
-<a class="jxr_linenumber" name="L689" href="#L689">689</a> 
-<a class="jxr_linenumber" name="L690" href="#L690">690</a>         List&lt;PersonWithAddress&gt; records = template.selectList(selectStatement, personWithAddressRowMapper);
-<a class="jxr_linenumber" name="L691" href="#L691">691</a> 
-<a class="jxr_linenumber" name="L692" href="#L692">692</a>         assertThat(records).hasSize(1);
-<a class="jxr_linenumber" name="L693" href="#L693">693</a>         assertThat(records.get(0).getId()).isEqualTo(1);
-<a class="jxr_linenumber" name="L694" href="#L694">694</a>         assertThat(records.get(0).getEmployed()).isTrue();
-<a class="jxr_linenumber" name="L695" href="#L695">695</a>         assertThat(records.get(0).getFirstName()).isEqualTo(<span class="jxr_string">"Fred"</span>);
-<a class="jxr_linenumber" name="L696" href="#L696">696</a>         assertThat(records.get(0).getLastName()).isEqualTo(LastName.of(<span class="jxr_string">"Flintstone"</span>));
-<a class="jxr_linenumber" name="L697" href="#L697">697</a>         assertThat(records.get(0).getOccupation()).isEqualTo(<span class="jxr_string">"Brontosaurus Operator"</span>);
-<a class="jxr_linenumber" name="L698" href="#L698">698</a>         assertThat(records.get(0).getBirthDate()).isNotNull();
-<a class="jxr_linenumber" name="L699" href="#L699">699</a>         assertThat(records.get(0).getAddress().getId()).isEqualTo(1);
-<a class="jxr_linenumber" name="L700" href="#L700">700</a>         assertThat(records.get(0).getAddress().getStreetAddress()).isEqualTo(<span class="jxr_string">"123 Main Street"</span>);
-<a class="jxr_linenumber" name="L701" href="#L701">701</a>         assertThat(records.get(0).getAddress().getCity()).isEqualTo(<span class="jxr_string">"Bedrock"</span>);
-<a class="jxr_linenumber" name="L702" href="#L702">702</a>         assertThat(records.get(0).getAddress().getState()).isEqualTo(<span class="jxr_string">"IN"</span>);
-<a class="jxr_linenumber" name="L703" href="#L703">703</a>     }
-<a class="jxr_linenumber" name="L704" href="#L704">704</a> 
-<a class="jxr_linenumber" name="L705" href="#L705">705</a>     @Test
-<a class="jxr_linenumber" name="L706" href="#L706">706</a>     <strong class="jxr_keyword">void</strong> testJoinPrimaryKey() {
-<a class="jxr_linenumber" name="L707" href="#L707">707</a>         Buildable&lt;SelectModel&gt; selectStatement = select(id, firstName, lastName, birthDate, employed, occupation,
-<a class="jxr_linenumber" name="L708" href="#L708">708</a>                 address.id, address.streetAddress, address.city, address.state)
-<a class="jxr_linenumber" name="L709" href="#L709">709</a>                 .from(person)
-<a class="jxr_linenumber" name="L710" href="#L710">710</a>                 .join(address, on(person.addressId, equalTo(address.id)))
-<a class="jxr_linenumber" name="L711" href="#L711">711</a>                 .where(id, isEqualTo(1));
-<a class="jxr_linenumber" name="L712" href="#L712">712</a> 
-<a class="jxr_linenumber" name="L713" href="#L713">713</a>         Optional&lt;PersonWithAddress&gt; record = template.selectOne(selectStatement, personWithAddressRowMapper);
-<a class="jxr_linenumber" name="L714" href="#L714">714</a> 
-<a class="jxr_linenumber" name="L715" href="#L715">715</a>         assertThat(record).hasValueSatisfying(r -&gt; {
-<a class="jxr_linenumber" name="L716" href="#L716">716</a>             assertThat(r.getId()).isEqualTo(1);
-<a class="jxr_linenumber" name="L717" href="#L717">717</a>             assertThat(r.getEmployed()).isTrue();
-<a class="jxr_linenumber" name="L718" href="#L718">718</a>             assertThat(r.getFirstName()).isEqualTo(<span class="jxr_string">"Fred"</span>);
-<a class="jxr_linenumber" name="L719" href="#L719">719</a>             assertThat(r.getLastName()).isEqualTo(LastName.of(<span class="jxr_string">"Flintstone"</span>));
-<a class="jxr_linenumber" name="L720" href="#L720">720</a>             assertThat(r.getOccupation()).isEqualTo(<span class="jxr_string">"Brontosaurus Operator"</span>);
-<a class="jxr_linenumber" name="L721" href="#L721">721</a>             assertThat(r.getBirthDate()).isNotNull();
-<a class="jxr_linenumber" name="L722" href="#L722">722</a>             assertThat(r.getAddress().getId()).isEqualTo(1);
-<a class="jxr_linenumber" name="L723" href="#L723">723</a>             assertThat(r.getAddress().getStreetAddress()).isEqualTo(<span class="jxr_string">"123 Main Street"</span>);
-<a class="jxr_linenumber" name="L724" href="#L724">724</a>             assertThat(r.getAddress().getCity()).isEqualTo(<span class="jxr_string">"Bedrock"</span>);
-<a class="jxr_linenumber" name="L725" href="#L725">725</a>             assertThat(r.getAddress().getState()).isEqualTo(<span class="jxr_string">"IN"</span>);
-<a class="jxr_linenumber" name="L726" href="#L726">726</a>         });
-<a class="jxr_linenumber" name="L727" href="#L727">727</a>     }
-<a class="jxr_linenumber" name="L728" href="#L728">728</a> 
-<a class="jxr_linenumber" name="L729" href="#L729">729</a>     @Test
-<a class="jxr_linenumber" name="L730" href="#L730">730</a>     <strong class="jxr_keyword">void</strong> testJoinPrimaryKeyInvalidRecord() {
-<a class="jxr_linenumber" name="L731" href="#L731">731</a>         Buildable&lt;SelectModel&gt; selectStatement = select(id, firstName, lastName, birthDate, employed, occupation,
-<a class="jxr_linenumber" name="L732" href="#L732">732</a>                 address.id, address.streetAddress, address.city, address.state)
-<a class="jxr_linenumber" name="L733" href="#L733">733</a>                 .from(person)
-<a class="jxr_linenumber" name="L734" href="#L734">734</a>                 .join(address, on(person.addressId, equalTo(address.id)))
-<a class="jxr_linenumber" name="L735" href="#L735">735</a>                 .where(id, isEqualTo(55));
-<a class="jxr_linenumber" name="L736" href="#L736">736</a> 
-<a class="jxr_linenumber" name="L737" href="#L737">737</a>         Optional&lt;PersonWithAddress&gt; record = template.selectOne(selectStatement, personWithAddressRowMapper);
-<a class="jxr_linenumber" name="L738" href="#L738">738</a>         assertThat(record).isEmpty();
-<a class="jxr_linenumber" name="L739" href="#L739">739</a>     }
-<a class="jxr_linenumber" name="L740" href="#L740">740</a> 
-<a class="jxr_linenumber" name="L741" href="#L741">741</a>     @Test
-<a class="jxr_linenumber" name="L742" href="#L742">742</a>     <strong class="jxr_keyword">void</strong> testJoinCount() {
-<a class="jxr_linenumber" name="L743" href="#L743">743</a>         Buildable&lt;SelectModel&gt; countStatement = countFrom(person)
-<a class="jxr_linenumber" name="L744" href="#L744">744</a>                 .join(address, on(person.addressId, equalTo(address.id)))
-<a class="jxr_linenumber" name="L745" href="#L745">745</a>                 .where(id, isEqualTo(55));
-<a class="jxr_linenumber" name="L746" href="#L746">746</a> 
-<a class="jxr_linenumber" name="L747" href="#L747">747</a>         <strong class="jxr_keyword">long</strong> count = template.count(countStatement);
-<a class="jxr_linenumber" name="L748" href="#L748">748</a>         assertThat(count).isZero();
-<a class="jxr_linenumber" name="L749" href="#L749">749</a>     }
-<a class="jxr_linenumber" name="L750" href="#L750">750</a> 
-<a class="jxr_linenumber" name="L751" href="#L751">751</a>     @Test
-<a class="jxr_linenumber" name="L752" href="#L752">752</a>     <strong class="jxr_keyword">void</strong> testJoinCountWithSubCriteria() {
-<a class="jxr_linenumber" name="L753" href="#L753">753</a>         Buildable&lt;SelectModel&gt; countStatement = countFrom(person)
-<a class="jxr_linenumber" name="L754" href="#L754">754</a>                 .join(address, on(person.addressId, equalTo(address.id)))
-<a class="jxr_linenumber" name="L755" href="#L755">755</a>                 .where(person.id, isEqualTo(55), or(person.id, isEqualTo(1)));
-<a class="jxr_linenumber" name="L756" href="#L756">756</a> 
-<a class="jxr_linenumber" name="L757" href="#L757">757</a>         <strong class="jxr_keyword">long</strong> count = template.count(countStatement);
-<a class="jxr_linenumber" name="L758" href="#L758">758</a>         assertThat(count).isEqualTo(1);
-<a class="jxr_linenumber" name="L759" href="#L759">759</a>     }
-<a class="jxr_linenumber" name="L760" href="#L760">760</a> 
-<a class="jxr_linenumber" name="L761" href="#L761">761</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> RowMapper&lt;PersonWithAddress&gt; personWithAddressRowMapper =
-<a class="jxr_linenumber" name="L762" href="#L762">762</a>             (rs, i) -&gt; {
-<a class="jxr_linenumber" name="L763" href="#L763">763</a>                 <a name="PersonWithAddress" href="../../examples/spring/PersonWithAddress.html#PersonWithAddress">PersonWithAddress</a> record = <strong class="jxr_keyword">new</strong> <a name="PersonWithAddress" href="../../examples/spring/PersonWithAddress.html#PersonWithAddress">PersonWithAddress</a>();
-<a class="jxr_linenumber" name="L764" href="#L764">764</a>                 record.setId(rs.getInt(1));
-<a class="jxr_linenumber" name="L765" href="#L765">765</a>                 record.setFirstName(rs.getString(2));
-<a class="jxr_linenumber" name="L766" href="#L766">766</a>                 record.setLastName(LastName.of(rs.getString(3)));
-<a class="jxr_linenumber" name="L767" href="#L767">767</a>                 record.setBirthDate(rs.getTimestamp(4));
-<a class="jxr_linenumber" name="L768" href="#L768">768</a>                 record.setEmployed(<span class="jxr_string">"Yes"</span>.equals(rs.getString(5)));
-<a class="jxr_linenumber" name="L769" href="#L769">769</a>                 record.setOccupation(rs.getString(6));
-<a class="jxr_linenumber" name="L770" href="#L770">770</a> 
-<a class="jxr_linenumber" name="L771" href="#L771">771</a>                 <a name="AddressRecord" href="../../examples/spring/AddressRecord.html#AddressRecord">AddressRecord</a> address = <strong class="jxr_keyword">new</strong> <a name="AddressRecord" href="../../examples/spring/AddressRecord.html#AddressRecord">AddressRecord</a>();
-<a class="jxr_linenumber" name="L772" href="#L772">772</a>                 record.setAddress(address);
-<a class="jxr_linenumber" name="L773" href="#L773">773</a>                 address.setId(rs.getInt(7));
-<a class="jxr_linenumber" name="L774" href="#L774">774</a>                 address.setStreetAddress(rs.getString(8));
-<a class="jxr_linenumber" name="L775" href="#L775">775</a>                 address.setCity(rs.getString(9));
-<a class="jxr_linenumber" name="L776" href="#L776">776</a>                 address.setState(rs.getString(10));
-<a class="jxr_linenumber" name="L777" href="#L777">777</a> 
-<a class="jxr_linenumber" name="L778" href="#L778">778</a>                 <strong class="jxr_keyword">return</strong> record;
-<a class="jxr_linenumber" name="L779" href="#L779">779</a>             };
+<a class="jxr_linenumber" name="L580" href="#L580">580</a>         assertThat(newRecord).hasValueSatisfying(r -&gt; assertThat(r.getOccupation()).isEqualTo(<span class="jxr_string">"Programmer"</span>));
+<a class="jxr_linenumber" name="L581" href="#L581">581</a>     }
+<a class="jxr_linenumber" name="L582" href="#L582">582</a> 
+<a class="jxr_linenumber" name="L583" href="#L583">583</a>     @Test
+<a class="jxr_linenumber" name="L584" href="#L584">584</a>     <strong class="jxr_keyword">void</strong> testCount() {
+<a class="jxr_linenumber" name="L585" href="#L585">585</a>         Buildable&lt;SelectModel&gt; countStatement = countFrom(person)
+<a class="jxr_linenumber" name="L586" href="#L586">586</a>                 .where(occupation, isNull());
+<a class="jxr_linenumber" name="L587" href="#L587">587</a> 
+<a class="jxr_linenumber" name="L588" href="#L588">588</a>         <strong class="jxr_keyword">long</strong> rows = template.count(countStatement);
+<a class="jxr_linenumber" name="L589" href="#L589">589</a>         assertThat(rows).isEqualTo(2L);
+<a class="jxr_linenumber" name="L590" href="#L590">590</a>     }
+<a class="jxr_linenumber" name="L591" href="#L591">591</a> 
+<a class="jxr_linenumber" name="L592" href="#L592">592</a>     @Test
+<a class="jxr_linenumber" name="L593" href="#L593">593</a>     <strong class="jxr_keyword">void</strong> testCountAll() {
+<a class="jxr_linenumber" name="L594" href="#L594">594</a>         Buildable&lt;SelectModel&gt; countStatement = countFrom(person);
+<a class="jxr_linenumber" name="L595" href="#L595">595</a> 
+<a class="jxr_linenumber" name="L596" href="#L596">596</a>         <strong class="jxr_keyword">long</strong> rows = template.count(countStatement);
+<a class="jxr_linenumber" name="L597" href="#L597">597</a>         assertThat(rows).isEqualTo(6L);
+<a class="jxr_linenumber" name="L598" href="#L598">598</a>     }
+<a class="jxr_linenumber" name="L599" href="#L599">599</a> 
+<a class="jxr_linenumber" name="L600" href="#L600">600</a>     @Test
+<a class="jxr_linenumber" name="L601" href="#L601">601</a>     <strong class="jxr_keyword">void</strong> testCountLastName() {
+<a class="jxr_linenumber" name="L602" href="#L602">602</a>         Buildable&lt;SelectModel&gt; countStatement = countColumn(lastName).from(person);
+<a class="jxr_linenumber" name="L603" href="#L603">603</a> 
+<a class="jxr_linenumber" name="L604" href="#L604">604</a>         <strong class="jxr_keyword">long</strong> rows = template.count(countStatement);
+<a class="jxr_linenumber" name="L605" href="#L605">605</a>         assertThat(rows).isEqualTo(6L);
+<a class="jxr_linenumber" name="L606" href="#L606">606</a>     }
+<a class="jxr_linenumber" name="L607" href="#L607">607</a> 
+<a class="jxr_linenumber" name="L608" href="#L608">608</a>     @Test
+<a class="jxr_linenumber" name="L609" href="#L609">609</a>     <strong class="jxr_keyword">void</strong> testCountDistinctLastName() {
+<a class="jxr_linenumber" name="L610" href="#L610">610</a>         Buildable&lt;SelectModel&gt; countStatement = countDistinctColumn(lastName).from(person);
+<a class="jxr_linenumber" name="L611" href="#L611">611</a> 
+<a class="jxr_linenumber" name="L612" href="#L612">612</a>         <strong class="jxr_keyword">long</strong> rows = template.count(countStatement);
+<a class="jxr_linenumber" name="L613" href="#L613">613</a>         assertThat(rows).isEqualTo(2L);
+<a class="jxr_linenumber" name="L614" href="#L614">614</a>     }
+<a class="jxr_linenumber" name="L615" href="#L615">615</a> 
+<a class="jxr_linenumber" name="L616" href="#L616">616</a>     @Test
+<a class="jxr_linenumber" name="L617" href="#L617">617</a>     <strong class="jxr_keyword">void</strong> testTypeHandledLike() {
+<a class="jxr_linenumber" name="L618" href="#L618">618</a>         Buildable&lt;SelectModel&gt; selectStatement = select(id, firstName, lastName, birthDate, employed, occupation, addressId)
+<a class="jxr_linenumber" name="L619" href="#L619">619</a>                 .from(person)
+<a class="jxr_linenumber" name="L620" href="#L620">620</a>                 .where(lastName, isLike(LastName.of(<span class="jxr_string">"Fl%"</span>)))
+<a class="jxr_linenumber" name="L621" href="#L621">621</a>                 .orderBy(id);
+<a class="jxr_linenumber" name="L622" href="#L622">622</a> 
+<a class="jxr_linenumber" name="L623" href="#L623">623</a>         List&lt;PersonRecord&gt; rows = template.selectList(selectStatement, personRowMapper);
+<a class="jxr_linenumber" name="L624" href="#L624">624</a>         assertThat(rows).hasSize(3);
+<a class="jxr_linenumber" name="L625" href="#L625">625</a>         assertThat(rows.get(0).getFirstName()).isEqualTo(<span class="jxr_string">"Fred"</span>);
+<a class="jxr_linenumber" name="L626" href="#L626">626</a>     }
+<a class="jxr_linenumber" name="L627" href="#L627">627</a> 
+<a class="jxr_linenumber" name="L628" href="#L628">628</a>     @Test
+<a class="jxr_linenumber" name="L629" href="#L629">629</a>     <strong class="jxr_keyword">void</strong> testTypeHandledNotLike() {
+<a class="jxr_linenumber" name="L630" href="#L630">630</a>         Buildable&lt;SelectModel&gt; selectStatement = select(id, firstName, lastName, birthDate, employed, occupation, addressId)
+<a class="jxr_linenumber" name="L631" href="#L631">631</a>                 .from(person)
+<a class="jxr_linenumber" name="L632" href="#L632">632</a>                 .where(lastName, isNotLike(LastName.of(<span class="jxr_string">"Fl%"</span>)))
+<a class="jxr_linenumber" name="L633" href="#L633">633</a>                 .orderBy(id);
+<a class="jxr_linenumber" name="L634" href="#L634">634</a> 
+<a class="jxr_linenumber" name="L635" href="#L635">635</a>         List&lt;PersonRecord&gt; rows = template.selectList(selectStatement, personRowMapper);
+<a class="jxr_linenumber" name="L636" href="#L636">636</a> 
+<a class="jxr_linenumber" name="L637" href="#L637">637</a>         assertThat(rows).hasSize(3);
+<a class="jxr_linenumber" name="L638" href="#L638">638</a>         assertThat(rows.get(0).getFirstName()).isEqualTo(<span class="jxr_string">"Barney"</span>);
+<a class="jxr_linenumber" name="L639" href="#L639">639</a>     }
+<a class="jxr_linenumber" name="L640" href="#L640">640</a> 
+<a class="jxr_linenumber" name="L641" href="#L641">641</a>     @Test
+<a class="jxr_linenumber" name="L642" href="#L642">642</a>     <strong class="jxr_keyword">void</strong> testAutoMapping() {
+<a class="jxr_linenumber" name="L643" href="#L643">643</a>         Buildable&lt;SelectModel&gt; selectStatement = select(address.id.as(<span class="jxr_string">"id"</span>), address.streetAddress,
+<a class="jxr_linenumber" name="L644" href="#L644">644</a>                 address.city, address.state)
+<a class="jxr_linenumber" name="L645" href="#L645">645</a>                 .from(address)
+<a class="jxr_linenumber" name="L646" href="#L646">646</a>                 .orderBy(address.id);
+<a class="jxr_linenumber" name="L647" href="#L647">647</a> 
+<a class="jxr_linenumber" name="L648" href="#L648">648</a>         List&lt;AddressRecord&gt; records = template.selectList(selectStatement,
+<a class="jxr_linenumber" name="L649" href="#L649">649</a>                 BeanPropertyRowMapper.newInstance(AddressRecord.<strong class="jxr_keyword">class</strong>));
+<a class="jxr_linenumber" name="L650" href="#L650">650</a> 
+<a class="jxr_linenumber" name="L651" href="#L651">651</a>         assertThat(records).hasSize(2);
+<a class="jxr_linenumber" name="L652" href="#L652">652</a>         assertThat(records.get(0).getId()).isEqualTo(1);
+<a class="jxr_linenumber" name="L653" href="#L653">653</a>         assertThat(records.get(0).getStreetAddress()).isEqualTo(<span class="jxr_string">"123 Main Street"</span>);
+<a class="jxr_linenumber" name="L654" href="#L654">654</a>         assertThat(records.get(0).getCity()).isEqualTo(<span class="jxr_string">"Bedrock"</span>);
+<a class="jxr_linenumber" name="L655" href="#L655">655</a>         assertThat(records.get(0).getState()).isEqualTo(<span class="jxr_string">"IN"</span>);
+<a class="jxr_linenumber" name="L656" href="#L656">656</a>     }
+<a class="jxr_linenumber" name="L657" href="#L657">657</a> 
+<a class="jxr_linenumber" name="L658" href="#L658">658</a>     @Test
+<a class="jxr_linenumber" name="L659" href="#L659">659</a>     <strong class="jxr_keyword">void</strong> testJoinAllRows() {
+<a class="jxr_linenumber" name="L660" href="#L660">660</a>         Buildable&lt;SelectModel&gt; selectStatement = select(id, firstName, lastName, birthDate, employed, occupation,
+<a class="jxr_linenumber" name="L661" href="#L661">661</a>                 address.id, address.streetAddress, address.city, address.state)
+<a class="jxr_linenumber" name="L662" href="#L662">662</a>                 .from(person)
+<a class="jxr_linenumber" name="L663" href="#L663">663</a>                 .join(address, on(person.addressId, equalTo(address.id)))
+<a class="jxr_linenumber" name="L664" href="#L664">664</a>                 .orderBy(id);
+<a class="jxr_linenumber" name="L665" href="#L665">665</a> 
+<a class="jxr_linenumber" name="L666" href="#L666">666</a>         List&lt;PersonWithAddress&gt; records = template.selectList(selectStatement, personWithAddressRowMapper);
+<a class="jxr_linenumber" name="L667" href="#L667">667</a> 
+<a class="jxr_linenumber" name="L668" href="#L668">668</a>         assertThat(records).hasSize(6);
+<a class="jxr_linenumber" name="L669" href="#L669">669</a>         assertThat(records.get(0).getId()).isEqualTo(1);
+<a class="jxr_linenumber" name="L670" href="#L670">670</a>         assertThat(records.get(0).getEmployed()).isTrue();
+<a class="jxr_linenumber" name="L671" href="#L671">671</a>         assertThat(records.get(0).getFirstName()).isEqualTo(<span class="jxr_string">"Fred"</span>);
+<a class="jxr_linenumber" name="L672" href="#L672">672</a>         assertThat(records.get(0).getLastName()).isEqualTo(LastName.of(<span class="jxr_string">"Flintstone"</span>));
+<a class="jxr_linenumber" name="L673" href="#L673">673</a>         assertThat(records.get(0).getOccupation()).isEqualTo(<span class="jxr_string">"Brontosaurus Operator"</span>);
+<a class="jxr_linenumber" name="L674" href="#L674">674</a>         assertThat(records.get(0).getBirthDate()).isNotNull();
+<a class="jxr_linenumber" name="L675" href="#L675">675</a>         assertThat(records.get(0).getAddress().getId()).isEqualTo(1);
+<a class="jxr_linenumber" name="L676" href="#L676">676</a>         assertThat(records.get(0).getAddress().getStreetAddress()).isEqualTo(<span class="jxr_string">"123 Main Street"</span>);
+<a class="jxr_linenumber" name="L677" href="#L677">677</a>         assertThat(records.get(0).getAddress().getCity()).isEqualTo(<span class="jxr_string">"Bedrock"</span>);
+<a class="jxr_linenumber" name="L678" href="#L678">678</a>         assertThat(records.get(0).getAddress().getState()).isEqualTo(<span class="jxr_string">"IN"</span>);
+<a class="jxr_linenumber" name="L679" href="#L679">679</a>     }
+<a class="jxr_linenumber" name="L680" href="#L680">680</a> 
+<a class="jxr_linenumber" name="L681" href="#L681">681</a>     @Test
+<a class="jxr_linenumber" name="L682" href="#L682">682</a>     <strong class="jxr_keyword">void</strong> testJoinOneRow() {
+<a class="jxr_linenumber" name="L683" href="#L683">683</a>         Buildable&lt;SelectModel&gt; selectStatement = select(id, firstName, lastName, birthDate, employed, occupation,
+<a class="jxr_linenumber" name="L684" href="#L684">684</a>                 address.id, address.streetAddress, address.city, address.state)
+<a class="jxr_linenumber" name="L685" href="#L685">685</a>                 .from(person)
+<a class="jxr_linenumber" name="L686" href="#L686">686</a>                 .join(address, on(person.addressId, equalTo(address.id)))
+<a class="jxr_linenumber" name="L687" href="#L687">687</a>                 .where(id, isEqualTo(1));
+<a class="jxr_linenumber" name="L688" href="#L688">688</a> 
+<a class="jxr_linenumber" name="L689" href="#L689">689</a>         List&lt;PersonWithAddress&gt; records = template.selectList(selectStatement, personWithAddressRowMapper);
+<a class="jxr_linenumber" name="L690" href="#L690">690</a> 
+<a class="jxr_linenumber" name="L691" href="#L691">691</a>         assertThat(records).hasSize(1);
+<a class="jxr_linenumber" name="L692" href="#L692">692</a>         assertThat(records.get(0).getId()).isEqualTo(1);
+<a class="jxr_linenumber" name="L693" href="#L693">693</a>         assertThat(records.get(0).getEmployed()).isTrue();
+<a class="jxr_linenumber" name="L694" href="#L694">694</a>         assertThat(records.get(0).getFirstName()).isEqualTo(<span class="jxr_string">"Fred"</span>);
+<a class="jxr_linenumber" name="L695" href="#L695">695</a>         assertThat(records.get(0).getLastName()).isEqualTo(LastName.of(<span class="jxr_string">"Flintstone"</span>));
+<a class="jxr_linenumber" name="L696" href="#L696">696</a>         assertThat(records.get(0).getOccupation()).isEqualTo(<span class="jxr_string">"Brontosaurus Operator"</span>);
+<a class="jxr_linenumber" name="L697" href="#L697">697</a>         assertThat(records.get(0).getBirthDate()).isNotNull();
+<a class="jxr_linenumber" name="L698" href="#L698">698</a>         assertThat(records.get(0).getAddress().getId()).isEqualTo(1);
+<a class="jxr_linenumber" name="L699" href="#L699">699</a>         assertThat(records.get(0).getAddress().getStreetAddress()).isEqualTo(<span class="jxr_string">"123 Main Street"</span>);
+<a class="jxr_linenumber" name="L700" href="#L700">700</a>         assertThat(records.get(0).getAddress().getCity()).isEqualTo(<span class="jxr_string">"Bedrock"</span>);
+<a class="jxr_linenumber" name="L701" href="#L701">701</a>         assertThat(records.get(0).getAddress().getState()).isEqualTo(<span class="jxr_string">"IN"</span>);
+<a class="jxr_linenumber" name="L702" href="#L702">702</a>     }
+<a class="jxr_linenumber" name="L703" href="#L703">703</a> 
+<a class="jxr_linenumber" name="L704" href="#L704">704</a>     @Test
+<a class="jxr_linenumber" name="L705" href="#L705">705</a>     <strong class="jxr_keyword">void</strong> testJoinPrimaryKey() {
+<a class="jxr_linenumber" name="L706" href="#L706">706</a>         Buildable&lt;SelectModel&gt; selectStatement = select(id, firstName, lastName, birthDate, employed, occupation,
+<a class="jxr_linenumber" name="L707" href="#L707">707</a>                 address.id, address.streetAddress, address.city, address.state)
+<a class="jxr_linenumber" name="L708" href="#L708">708</a>                 .from(person)
+<a class="jxr_linenumber" name="L709" href="#L709">709</a>                 .join(address, on(person.addressId, equalTo(address.id)))
+<a class="jxr_linenumber" name="L710" href="#L710">710</a>                 .where(id, isEqualTo(1));
+<a class="jxr_linenumber" name="L711" href="#L711">711</a> 
+<a class="jxr_linenumber" name="L712" href="#L712">712</a>         Optional&lt;PersonWithAddress&gt; record = template.selectOne(selectStatement, personWithAddressRowMapper);
+<a class="jxr_linenumber" name="L713" href="#L713">713</a> 
+<a class="jxr_linenumber" name="L714" href="#L714">714</a>         assertThat(record).hasValueSatisfying(r -&gt; {
+<a class="jxr_linenumber" name="L715" href="#L715">715</a>             assertThat(r.getId()).isEqualTo(1);
+<a class="jxr_linenumber" name="L716" href="#L716">716</a>             assertThat(r.getEmployed()).isTrue();
+<a class="jxr_linenumber" name="L717" href="#L717">717</a>             assertThat(r.getFirstName()).isEqualTo(<span class="jxr_string">"Fred"</span>);
+<a class="jxr_linenumber" name="L718" href="#L718">718</a>             assertThat(r.getLastName()).isEqualTo(LastName.of(<span class="jxr_string">"Flintstone"</span>));
+<a class="jxr_linenumber" name="L719" href="#L719">719</a>             assertThat(r.getOccupation()).isEqualTo(<span class="jxr_string">"Brontosaurus Operator"</span>);
+<a class="jxr_linenumber" name="L720" href="#L720">720</a>             assertThat(r.getBirthDate()).isNotNull();
+<a class="jxr_linenumber" name="L721" href="#L721">721</a>             assertThat(r.getAddress().getId()).isEqualTo(1);
+<a class="jxr_linenumber" name="L722" href="#L722">722</a>             assertThat(r.getAddress().getStreetAddress()).isEqualTo(<span class="jxr_string">"123 Main Street"</span>);
+<a class="jxr_linenumber" name="L723" href="#L723">723</a>             assertThat(r.getAddress().getCity()).isEqualTo(<span class="jxr_string">"Bedrock"</span>);
+<a class="jxr_linenumber" name="L724" href="#L724">724</a>             assertThat(r.getAddress().getState()).isEqualTo(<span class="jxr_string">"IN"</span>);
+<a class="jxr_linenumber" name="L725" href="#L725">725</a>         });
+<a class="jxr_linenumber" name="L726" href="#L726">726</a>     }
+<a class="jxr_linenumber" name="L727" href="#L727">727</a> 
+<a class="jxr_linenumber" name="L728" href="#L728">728</a>     @Test
+<a class="jxr_linenumber" name="L729" href="#L729">729</a>     <strong class="jxr_keyword">void</strong> testJoinPrimaryKeyInvalidRecord() {
+<a class="jxr_linenumber" name="L730" href="#L730">730</a>         Buildable&lt;SelectModel&gt; selectStatement = select(id, firstName, lastName, birthDate, employed, occupation,
+<a class="jxr_linenumber" name="L731" href="#L731">731</a>                 address.id, address.streetAddress, address.city, address.state)
+<a class="jxr_linenumber" name="L732" href="#L732">732</a>                 .from(person)
+<a class="jxr_linenumber" name="L733" href="#L733">733</a>                 .join(address, on(person.addressId, equalTo(address.id)))
+<a class="jxr_linenumber" name="L734" href="#L734">734</a>                 .where(id, isEqualTo(55));
+<a class="jxr_linenumber" name="L735" href="#L735">735</a> 
+<a class="jxr_linenumber" name="L736" href="#L736">736</a>         Optional&lt;PersonWithAddress&gt; record = template.selectOne(selectStatement, personWithAddressRowMapper);
+<a class="jxr_linenumber" name="L737" href="#L737">737</a>         assertThat(record).isEmpty();
+<a class="jxr_linenumber" name="L738" href="#L738">738</a>     }
+<a class="jxr_linenumber" name="L739" href="#L739">739</a> 
+<a class="jxr_linenumber" name="L740" href="#L740">740</a>     @Test
+<a class="jxr_linenumber" name="L741" href="#L741">741</a>     <strong class="jxr_keyword">void</strong> testJoinCount() {
+<a class="jxr_linenumber" name="L742" href="#L742">742</a>         Buildable&lt;SelectModel&gt; countStatement = countFrom(person)
+<a class="jxr_linenumber" name="L743" href="#L743">743</a>                 .join(address, on(person.addressId, equalTo(address.id)))
+<a class="jxr_linenumber" name="L744" href="#L744">744</a>                 .where(id, isEqualTo(55));
+<a class="jxr_linenumber" name="L745" href="#L745">745</a> 
+<a class="jxr_linenumber" name="L746" href="#L746">746</a>         <strong class="jxr_keyword">long</strong> count = template.count(countStatement);
+<a class="jxr_linenumber" name="L747" href="#L747">747</a>         assertThat(count).isZero();
+<a class="jxr_linenumber" name="L748" href="#L748">748</a>     }
+<a class="jxr_linenumber" name="L749" href="#L749">749</a> 
+<a class="jxr_linenumber" name="L750" href="#L750">750</a>     @Test
+<a class="jxr_linenumber" name="L751" href="#L751">751</a>     <strong class="jxr_keyword">void</strong> testJoinCountWithSubCriteria() {
+<a class="jxr_linenumber" name="L752" href="#L752">752</a>         Buildable&lt;SelectModel&gt; countStatement = countFrom(person)
+<a class="jxr_linenumber" name="L753" href="#L753">753</a>                 .join(address, on(person.addressId, equalTo(address.id)))
+<a class="jxr_linenumber" name="L754" href="#L754">754</a>                 .where(person.id, isEqualTo(55), or(person.id, isEqualTo(1)));
+<a class="jxr_linenumber" name="L755" href="#L755">755</a> 
+<a class="jxr_linenumber" name="L756" href="#L756">756</a>         <strong class="jxr_keyword">long</strong> count = template.count(countStatement);
+<a class="jxr_linenumber" name="L757" href="#L757">757</a>         assertThat(count).isEqualTo(1);
+<a class="jxr_linenumber" name="L758" href="#L758">758</a>     }
+<a class="jxr_linenumber" name="L759" href="#L759">759</a> 
+<a class="jxr_linenumber" name="L760" href="#L760">760</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> RowMapper&lt;PersonWithAddress&gt; personWithAddressRowMapper =
+<a class="jxr_linenumber" name="L761" href="#L761">761</a>             (rs, i) -&gt; {
+<a class="jxr_linenumber" name="L762" href="#L762">762</a>                 <a name="PersonWithAddress" href="../../examples/spring/PersonWithAddress.html#PersonWithAddress">PersonWithAddress</a> record = <strong class="jxr_keyword">new</strong> <a name="PersonWithAddress" href="../../examples/spring/PersonWithAddress.html#PersonWithAddress">PersonWithAddress</a>();
+<a class="jxr_linenumber" name="L763" href="#L763">763</a>                 record.setId(rs.getInt(1));
+<a class="jxr_linenumber" name="L764" href="#L764">764</a>                 record.setFirstName(rs.getString(2));
+<a class="jxr_linenumber" name="L765" href="#L765">765</a>                 record.setLastName(LastName.of(rs.getString(3)));
+<a class="jxr_linenumber" name="L766" href="#L766">766</a>                 record.setBirthDate(rs.getTimestamp(4));
+<a class="jxr_linenumber" name="L767" href="#L767">767</a>                 record.setEmployed(<span class="jxr_string">"Yes"</span>.equals(rs.getString(5)));
+<a class="jxr_linenumber" name="L768" href="#L768">768</a>                 record.setOccupation(rs.getString(6));
+<a class="jxr_linenumber" name="L769" href="#L769">769</a> 
+<a class="jxr_linenumber" name="L770" href="#L770">770</a>                 <a name="AddressRecord" href="../../examples/spring/AddressRecord.html#AddressRecord">AddressRecord</a> address = <strong class="jxr_keyword">new</strong> <a name="AddressRecord" href="../../examples/spring/AddressRecord.html#AddressRecord">AddressRecord</a>();
+<a class="jxr_linenumber" name="L771" href="#L771">771</a>                 record.setAddress(address);
+<a class="jxr_linenumber" name="L772" href="#L772">772</a>                 address.setId(rs.getInt(7));
+<a class="jxr_linenumber" name="L773" href="#L773">773</a>                 address.setStreetAddress(rs.getString(8));
+<a class="jxr_linenumber" name="L774" href="#L774">774</a>                 address.setCity(rs.getString(9));
+<a class="jxr_linenumber" name="L775" href="#L775">775</a>                 address.setState(rs.getString(10));
+<a class="jxr_linenumber" name="L776" href="#L776">776</a> 
+<a class="jxr_linenumber" name="L777" href="#L777">777</a>                 <strong class="jxr_keyword">return</strong> record;
+<a class="jxr_linenumber" name="L778" href="#L778">778</a>             };
+<a class="jxr_linenumber" name="L779" href="#L779">779</a> 
 <a class="jxr_linenumber" name="L780" href="#L780">780</a> 
-<a class="jxr_linenumber" name="L781" href="#L781">781</a> 
-<a class="jxr_linenumber" name="L782" href="#L782">782</a>     <strong class="jxr_keyword">static</strong> RowMapper&lt;PersonRecord&gt; personRowMapper =
-<a class="jxr_linenumber" name="L783" href="#L783">783</a>             (rs, i) -&gt; {
-<a class="jxr_linenumber" name="L784" href="#L784">784</a>                 <a name="PersonRecord" href="../../examples/spring/PersonRecord.html#PersonRecord">PersonRecord</a> record = <strong class="jxr_keyword">new</strong> <a name="PersonRecord" href="../../examples/spring/PersonRecord.html#PersonRecord">PersonRecord</a>();
-<a class="jxr_linenumber" name="L785" href="#L785">785</a>                 record.setId(rs.getInt(1));
-<a class="jxr_linenumber" name="L786" href="#L786">786</a>                 record.setFirstName(rs.getString(2));
-<a class="jxr_linenumber" name="L787" href="#L787">787</a>                 record.setLastName(LastName.of(rs.getString(3)));
-<a class="jxr_linenumber" name="L788" href="#L788">788</a>                 record.setBirthDate(rs.getTimestamp(4));
-<a class="jxr_linenumber" name="L789" href="#L789">789</a>                 record.setEmployed(<span class="jxr_string">"Yes"</span>.equals(rs.getString(5)));
-<a class="jxr_linenumber" name="L790" href="#L790">790</a>                 record.setOccupation(rs.getString(6));
-<a class="jxr_linenumber" name="L791" href="#L791">791</a>                 record.setAddressId(rs.getInt(7));
-<a class="jxr_linenumber" name="L792" href="#L792">792</a>                 <strong class="jxr_keyword">return</strong> record;
-<a class="jxr_linenumber" name="L793" href="#L793">793</a>             };
-<a class="jxr_linenumber" name="L794" href="#L794">794</a> }
+<a class="jxr_linenumber" name="L781" href="#L781">781</a>     <strong class="jxr_keyword">static</strong> RowMapper&lt;PersonRecord&gt; personRowMapper =
+<a class="jxr_linenumber" name="L782" href="#L782">782</a>             (rs, i) -&gt; {
+<a class="jxr_linenumber" name="L783" href="#L783">783</a>                 <a name="PersonRecord" href="../../examples/spring/PersonRecord.html#PersonRecord">PersonRecord</a> record = <strong class="jxr_keyword">new</strong> <a name="PersonRecord" href="../../examples/spring/PersonRecord.html#PersonRecord">PersonRecord</a>();
+<a class="jxr_linenumber" name="L784" href="#L784">784</a>                 record.setId(rs.getInt(1));
+<a class="jxr_linenumber" name="L785" href="#L785">785</a>                 record.setFirstName(rs.getString(2));
+<a class="jxr_linenumber" name="L786" href="#L786">786</a>                 record.setLastName(LastName.of(rs.getString(3)));
+<a class="jxr_linenumber" name="L787" href="#L787">787</a>                 record.setBirthDate(rs.getTimestamp(4));
+<a class="jxr_linenumber" name="L788" href="#L788">788</a>                 record.setEmployed(<span class="jxr_string">"Yes"</span>.equals(rs.getString(5)));
+<a class="jxr_linenumber" name="L789" href="#L789">789</a>                 record.setOccupation(rs.getString(6));
+<a class="jxr_linenumber" name="L790" href="#L790">790</a>                 record.setAddressId(rs.getInt(7));
+<a class="jxr_linenumber" name="L791" href="#L791">791</a>                 <strong class="jxr_keyword">return</strong> record;
+<a class="jxr_linenumber" name="L792" href="#L792">792</a>             };
+<a class="jxr_linenumber" name="L793" href="#L793">793</a> }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2016&#x2013;2024 <a href="https://www.mybatis.org/">MyBatis.org</a>. All rights reserved.</div>

@@ -1,0 +1,479 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GroupingCriteriaCollector.kt</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.util.kotlin</a> &gt; <span class="el_source">GroupingCriteriaCollector.kt</span></div><h1>GroupingCriteriaCollector.kt</h1><pre class="source lang-java linenums">/*
+ *    Copyright 2016-2024 the original author or authors.
+ *
+ *    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *       https://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+package org.mybatis.dynamic.sql.util.kotlin
+
+import org.mybatis.dynamic.sql.AndOrCriteriaGroup
+import org.mybatis.dynamic.sql.BasicColumn
+import org.mybatis.dynamic.sql.BindableColumn
+import org.mybatis.dynamic.sql.ColumnAndConditionCriterion
+import org.mybatis.dynamic.sql.CriteriaGroup
+import org.mybatis.dynamic.sql.ExistsCriterion
+import org.mybatis.dynamic.sql.NotCriterion
+import org.mybatis.dynamic.sql.SqlBuilder
+import org.mybatis.dynamic.sql.SqlCriterion
+import org.mybatis.dynamic.sql.VisitableCondition
+
+typealias GroupingCriteriaReceiver = GroupingCriteriaCollector.() -&gt; Unit
+
+<span class="fc" id="L31">fun GroupingCriteriaReceiver.andThen(after: SubCriteriaCollector.() -&gt; Unit): GroupingCriteriaReceiver = {</span>
+<span class="fc" id="L32">    invoke(this)</span>
+<span class="fc" id="L33">    after(this)</span>
+<span class="fc" id="L34">}</span>
+
+<span class="fc" id="L36">@MyBatisDslMarker</span>
+<span class="fc" id="L37">sealed class SubCriteriaCollector {</span>
+<span class="fc" id="L38">    internal val subCriteria = mutableListOf&lt;AndOrCriteriaGroup&gt;()</span>
+
+    /**
+     * Add sub criterion joined with &quot;and&quot; to the current context. If the receiver adds more than one
+     * criterion that renders then parentheses will be added.
+     *
+     * This function may be called multiple times in a context.
+     *
+     * @param criteriaReceiver a function to create the contained criteria
+     */
+    fun and(criteriaReceiver: GroupingCriteriaReceiver): Unit =
+<span class="fc" id="L49">        GroupingCriteriaCollector().apply(criteriaReceiver).let {</span>
+<span class="fc" id="L50">            subCriteria.add(</span>
+<span class="fc" id="L51">                AndOrCriteriaGroup.Builder().withConnector(&quot;and&quot;) //$NON-NLS-1$</span>
+<span class="fc" id="L52">                    .withInitialCriterion(it.initialCriterion)</span>
+<span class="fc" id="L53">                    .withSubCriteria(it.subCriteria)</span>
+<span class="fc" id="L54">                    .build()</span>
+            )
+<span class="fc" id="L56">        }</span>
+
+    /**
+     * Add a list of criteria joined with &quot;and&quot; to the current context. If the list contains more than
+     * one criterion that renders then parentheses will be added. This function is distinguished from the
+     * other overload in that it can accept a pre-created list of criteria and does not require any criterion
+     * to be the initial criterion. The first criterion that renders will be rendered without the &quot;and&quot; or &quot;or&quot;.
+     *
+     * This function may be called multiple times in a context.
+     *
+     * @param criteria a list of pre-created criteria
+     *
+     */
+    fun and(criteria: List&lt;AndOrCriteriaGroup&gt;) {
+<span class="fc" id="L70">        subCriteria.add(</span>
+<span class="fc" id="L71">            AndOrCriteriaGroup.Builder().withConnector(&quot;and&quot;) //$NON-NLS-1$</span>
+<span class="fc" id="L72">                .withSubCriteria(criteria)</span>
+<span class="fc" id="L73">                .build()</span>
+        )
+<span class="fc" id="L75">    }</span>
+
+    /**
+     * Add sub criterion joined with &quot;or&quot; to the current context. If the receiver adds more than one
+     * criterion that renders then parentheses will be added.
+     *
+     * This function may be called multiple times in a context.
+     *
+     * @param criteriaReceiver a function to create the contained criteria
+     */
+    fun or(criteriaReceiver: GroupingCriteriaReceiver): Unit =
+<span class="fc" id="L86">        GroupingCriteriaCollector().apply(criteriaReceiver).let {</span>
+<span class="fc" id="L87">            subCriteria.add(</span>
+<span class="fc" id="L88">                AndOrCriteriaGroup.Builder().withConnector(&quot;or&quot;) //$NON-NLS-1$</span>
+<span class="fc" id="L89">                    .withInitialCriterion(it.initialCriterion)</span>
+<span class="fc" id="L90">                    .withSubCriteria(it.subCriteria)</span>
+<span class="fc" id="L91">                    .build()</span>
+            )
+<span class="fc" id="L93">        }</span>
+
+    /**
+     * Add a list of criteria joined with &quot;or&quot; to the current context. If the list contains more than
+     * one criterion that renders then parentheses will be added. This function is distinguished from the
+     * other overload in that it can accept a pre-created list of criteria and does not require any criterion
+     * to be the initial criterion. The first criterion that renders will be rendered without the &quot;and&quot; or &quot;or&quot;.
+     *
+     * This function may be called multiple times in a context.
+     *
+     * @param criteria a list of pre-created criteria
+     *
+     */
+    fun or(criteria: List&lt;AndOrCriteriaGroup&gt;) {
+<span class="fc" id="L107">        subCriteria.add(</span>
+<span class="fc" id="L108">            AndOrCriteriaGroup.Builder().withConnector(&quot;or&quot;) //$NON-NLS-1$</span>
+<span class="fc" id="L109">                .withSubCriteria(criteria)</span>
+<span class="fc" id="L110">                .build()</span>
+        )
+<span class="fc" id="L112">    }</span>
+}
+
+/**
+ * This class is used to gather criteria for a having or where clause. The class gathers two types of criteria:
+ * an initial criterion, and sub-criteria connected by either an &quot;and&quot; or an &quot;or&quot;.
+ *
+ * An initial criterion can be one of four types:
+ * - A column and condition (called with the invoke operator on a column, or an infix function)
+ * - An exists operator (called with the &quot;exists&quot; function)
+ * - A criteria group which is essentially parenthesis within the where clause (called with the &quot;group&quot; function)
+ * - A criteria group preceded with &quot;not&quot; (called with the &quot;not&quot; function)
+ *
+ * Only one of the initial criterion functions should be called within each scope. If you need more than one,
+ * use a sub-criterion joined with &quot;and&quot; or &quot;or&quot;
+ */
+@Suppress(&quot;TooManyFunctions&quot;)
+@MyBatisDslMarker
+<span class="fc" id="L130">open class GroupingCriteriaCollector : SubCriteriaCollector() {</span>
+<span class="fc" id="L131">    internal var initialCriterion: SqlCriterion? = null</span>
+        private set(value) {
+<span class="fc" id="L133">            assertNull(field, &quot;ERROR.21&quot;) //$NON-NLS-1$</span>
+<span class="fc" id="L134">            field = value</span>
+<span class="fc" id="L135">        }</span>
+
+    /**
+     * Add an initial criterion preceded with &quot;not&quot; to the current context. If the receiver adds more than one
+     * criterion that renders then parentheses will be added.
+     *
+     * This may only be called once per scope, and cannot be combined with &quot;exists&quot;, &quot;group&quot;, &quot;invoke&quot;,
+     * or any infix function in the same scope.
+     *
+     * @param criteriaReceiver a function to create the contained criteria
+     */
+    fun not(criteriaReceiver: GroupingCriteriaReceiver): Unit =
+<span class="fc" id="L147">        GroupingCriteriaCollector().apply(criteriaReceiver).let {</span>
+<span class="fc" id="L148">            initialCriterion = NotCriterion.Builder()</span>
+<span class="fc" id="L149">                .withInitialCriterion(it.initialCriterion)</span>
+<span class="fc" id="L150">                .withSubCriteria(it.subCriteria)</span>
+<span class="fc" id="L151">                .build()</span>
+<span class="fc" id="L152">        }</span>
+
+    /**
+     * Add an initial criterion preceded with &quot;not&quot; to the current context. If the list contains more than
+     * one criterion that renders then parentheses will be added. This function is distinguished from the
+     * other overload in that it can accept a pre-created list of criteria and does not require any criterion
+     * to be the initial criterion. The first criterion that renders will be rendered without the &quot;and&quot; or &quot;or&quot;.
+     *
+     * This may only be called once per scope, and cannot be combined with &quot;exists&quot;, &quot;group&quot;, &quot;invoke&quot;,
+     * or any infix function in the same scope.
+     *
+     * @param criteria a list of pre-created criteria
+     *
+     */
+    fun not(criteria: List&lt;AndOrCriteriaGroup&gt;) {
+<span class="fc" id="L167">        initialCriterion = NotCriterion.Builder().withSubCriteria(criteria).build()</span>
+<span class="fc" id="L168">    }</span>
+
+    /**
+     * Add an initial criterion composed of a sub-query preceded with &quot;exists&quot; to the current context.
+     *
+     * This should only be specified once per scope, and cannot be combined with &quot;invoke&quot;,
+     * &quot;group&quot;, &quot;not&quot;, or any infix function in the same scope.
+     *
+     * @param kotlinSubQueryBuilder a function to create a select statement
+     */
+    fun exists(kotlinSubQueryBuilder: KotlinSubQueryBuilder.() -&gt; Unit): Unit =
+<span class="fc" id="L179">        KotlinSubQueryBuilder().apply(kotlinSubQueryBuilder).let {</span>
+<span class="fc" id="L180">            initialCriterion = ExistsCriterion.Builder().withExistsPredicate(SqlBuilder.exists(it)).build()</span>
+<span class="fc" id="L181">        }</span>
+
+    /**
+     * Add an initial criterion to the current context. If the receiver adds more than one
+     * criterion that renders at runtime then parentheses will be added.
+     *
+     * This may only be specified once per scope, and cannot be combined with &quot;exists&quot;, &quot;invoke&quot;,
+     * &quot;not&quot;, or any infix function in the same scope.
+     *
+     * This could &quot;almost&quot; be an operator invoke function. The problem is that
+     * to call it a user would need to use &quot;this&quot; explicitly. We think that is too
+     * confusing, so we'll stick with the function name of &quot;group&quot;
+     *
+     * @param criteriaReceiver a function to create the contained criteria
+     */
+    fun group(criteriaReceiver: GroupingCriteriaReceiver): Unit =
+<span class="fc" id="L197">        GroupingCriteriaCollector().apply(criteriaReceiver).let {</span>
+<span class="fc" id="L198">            initialCriterion = CriteriaGroup.Builder()</span>
+<span class="fc" id="L199">                .withInitialCriterion(it.initialCriterion)</span>
+<span class="fc" id="L200">                .withSubCriteria(it.subCriteria)</span>
+<span class="fc" id="L201">                .build()</span>
+<span class="fc" id="L202">        }</span>
+
+    /**
+     * Add an initial criterion preceded to the current context. If the list contains more than
+     * one criterion that renders then parentheses will be added. This function is distinguished from the
+     * other overload in that it can accept a pre-created list of criteria and does not require any criterion
+     * to be the initial criterion. The first criterion that renders will be rendered without the &quot;and&quot; or &quot;or&quot;.
+     *
+     * This may only be specified once per scope, and cannot be combined with &quot;exists&quot;, &quot;invoke&quot;,
+     * &quot;not&quot;, or any infix function in the same scope.
+     *
+     * @param criteria a list of pre-created criteria
+     *
+     */
+    fun group(criteria: List&lt;AndOrCriteriaGroup&gt;) {
+<span class="fc" id="L217">        initialCriterion = CriteriaGroup.Builder().withSubCriteria(criteria).build()</span>
+<span class="fc" id="L218">    }</span>
+
+    /**
+     * Add an initial criterion to the current context based on a column and condition.
+     * You can use it like &quot;A.invoke(isEqualTo(3))&quot; or &quot;A (isEqualTo(3))&quot;.
+     *
+     * This is an extension function to a BindableColumn, but is scoped to the context of the
+     * current collector.
+     *
+     * This should only be specified once per scope, and cannot be combined with &quot;exists&quot;, &quot;group&quot;,
+     * &quot;not&quot;, or any infix function in the same scope.
+     *
+     * @param condition the condition to be applied to this column, in this scope
+     */
+    operator fun &lt;T&gt; BindableColumn&lt;T&gt;.invoke(condition: VisitableCondition&lt;T&gt;) {
+<span class="fc" id="L233">        initialCriterion = ColumnAndConditionCriterion.withColumn(this)</span>
+<span class="fc" id="L234">            .withCondition(condition)</span>
+<span class="fc" id="L235">            .build()</span>
+<span class="fc" id="L236">    }</span>
+
+    // infix functions...we may be able to rewrite these as extension functions once Kotlin solves the multiple
+    // receivers problem (https://youtrack.jetbrains.com/issue/KT-42435)
+
+    // conditions for all data types
+<span class="fc" id="L242">    fun BindableColumn&lt;*&gt;.isNull() = invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isNull())</span>
+
+<span class="fc" id="L244">    fun BindableColumn&lt;*&gt;.isNotNull() = invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isNotNull())</span>
+
+    infix fun &lt;T&gt; BindableColumn&lt;T&gt;.isEqualTo(value: T &amp; Any) =
+<span class="fc" id="L247">        invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isEqualTo(value))</span>
+
+    infix fun BindableColumn&lt;*&gt;.isEqualTo(subQuery: KotlinSubQueryBuilder.() -&gt; Unit) =
+<span class="fc" id="L250">        invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isEqualTo(subQuery))</span>
+
+    infix fun BindableColumn&lt;*&gt;.isEqualTo(column: BasicColumn) =
+<span class="fc" id="L253">        invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isEqualTo(column))</span>
+
+    infix fun &lt;T&gt; BindableColumn&lt;T&gt;.isEqualToWhenPresent(value: T?) =
+<span class="fc" id="L256">        invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isEqualToWhenPresent(value))</span>
+
+    infix fun &lt;T&gt; BindableColumn&lt;T&gt;.isNotEqualTo(value: T &amp; Any) =
+<span class="fc" id="L259">        invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isNotEqualTo(value))</span>
+
+    infix fun BindableColumn&lt;*&gt;.isNotEqualTo(subQuery: KotlinSubQueryBuilder.() -&gt; Unit) =
+<span class="fc" id="L262">        invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isNotEqualTo(subQuery))</span>
+
+    infix fun BindableColumn&lt;*&gt;.isNotEqualTo(column: BasicColumn) =
+<span class="fc" id="L265">        invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isNotEqualTo(column))</span>
+
+    infix fun &lt;T&gt; BindableColumn&lt;T&gt;.isNotEqualToWhenPresent(value: T?) =
+<span class="fc" id="L268">        invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isNotEqualToWhenPresent(value))</span>
+
+    infix fun &lt;T&gt; BindableColumn&lt;T&gt;.isGreaterThan(value: T &amp; Any) =
+<span class="fc" id="L271">        invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isGreaterThan(value))</span>
+
+    infix fun BindableColumn&lt;*&gt;.isGreaterThan(subQuery: KotlinSubQueryBuilder.() -&gt; Unit) =
+<span class="fc" id="L274">        invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isGreaterThan(subQuery))</span>
+
+    infix fun BindableColumn&lt;*&gt;.isGreaterThan(column: BasicColumn) =
+<span class="fc" id="L277">        invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isGreaterThan(column))</span>
+
+    infix fun &lt;T&gt; BindableColumn&lt;T&gt;.isGreaterThanWhenPresent(value: T?) =
+<span class="fc" id="L280">        invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isGreaterThanWhenPresent(value))</span>
+
+    infix fun &lt;T&gt; BindableColumn&lt;T&gt;.isGreaterThanOrEqualTo(value: T &amp; Any) =
+<span class="fc" id="L283">        invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isGreaterThanOrEqualTo(value))</span>
+
+    infix fun BindableColumn&lt;*&gt;.isGreaterThanOrEqualTo(subQuery: KotlinSubQueryBuilder.() -&gt; Unit) =
+<span class="fc" id="L286">        invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isGreaterThanOrEqualTo(subQuery))</span>
+
+    infix fun BindableColumn&lt;*&gt;.isGreaterThanOrEqualTo(column: BasicColumn) =
+<span class="fc" id="L289">        invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isGreaterThanOrEqualTo(column))</span>
+
+    infix fun &lt;T&gt; BindableColumn&lt;T&gt;.isGreaterThanOrEqualToWhenPresent(value: T?) =
+<span class="fc" id="L292">        invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isGreaterThanOrEqualToWhenPresent(value))</span>
+
+    infix fun &lt;T&gt; BindableColumn&lt;T&gt;.isLessThan(value: T &amp; Any) =
+<span class="fc" id="L295">        invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isLessThan(value))</span>
+
+    infix fun BindableColumn&lt;*&gt;.isLessThan(subQuery: KotlinSubQueryBuilder.() -&gt; Unit) =
+<span class="fc" id="L298">        invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isLessThan(subQuery))</span>
+
+    infix fun BindableColumn&lt;*&gt;.isLessThan(column: BasicColumn) =
+<span class="fc" id="L301">        invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isLessThan(column))</span>
+
+    infix fun &lt;T&gt; BindableColumn&lt;T&gt;.isLessThanWhenPresent(value: T?) =
+<span class="fc" id="L304">        invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isLessThanWhenPresent(value))</span>
+
+    infix fun &lt;T&gt; BindableColumn&lt;T&gt;.isLessThanOrEqualTo(value: T &amp; Any) =
+<span class="fc" id="L307">        invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isLessThanOrEqualTo(value))</span>
+
+    infix fun BindableColumn&lt;*&gt;.isLessThanOrEqualTo(subQuery: KotlinSubQueryBuilder.() -&gt; Unit) =
+<span class="fc" id="L310">        invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isLessThanOrEqualTo(subQuery))</span>
+
+    infix fun BindableColumn&lt;*&gt;.isLessThanOrEqualTo(column: BasicColumn) =
+<span class="fc" id="L313">        invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isLessThanOrEqualTo(column))</span>
+
+    infix fun &lt;T&gt; BindableColumn&lt;T&gt;.isLessThanOrEqualToWhenPresent(value: T?) =
+<span class="fc" id="L316">        invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isLessThanOrEqualToWhenPresent(value))</span>
+
+<span class="fc" id="L318">    fun &lt;T&gt; BindableColumn&lt;T&gt;.isIn(vararg values: T &amp; Any) = isIn(values.asList())</span>
+
+    @JvmName(&quot;isInArray&quot;)
+    infix fun &lt;T&gt; BindableColumn&lt;T&gt;.isIn(values: Array&lt;out T &amp; Any&gt;) =
+<span class="fc" id="L322">        invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isIn(values))</span>
+
+    infix fun &lt;T&gt; BindableColumn&lt;T&gt;.isIn(values: Collection&lt;T &amp; Any&gt;) =
+<span class="fc" id="L325">        invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isIn(values))</span>
+
+    infix fun BindableColumn&lt;*&gt;.isIn(subQuery: KotlinSubQueryBuilder.() -&gt; Unit) =
+<span class="fc" id="L328">        invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isIn(subQuery))</span>
+
+<span class="fc" id="L330">    fun &lt;T&gt; BindableColumn&lt;T&gt;.isInWhenPresent(vararg values: T?) = isInWhenPresent(values.asList())</span>
+
+    @JvmName(&quot;isInArrayWhenPresent&quot;)
+    infix fun &lt;T&gt; BindableColumn&lt;T&gt;.isInWhenPresent(values: Array&lt;out T?&gt;?) =
+<span class="fc" id="L334">        invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isInWhenPresent(values))</span>
+
+    infix fun &lt;T&gt; BindableColumn&lt;T&gt;.isInWhenPresent(values: Collection&lt;T?&gt;?) =
+<span class="fc" id="L337">        invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isInWhenPresent(values))</span>
+
+<span class="fc" id="L339">    fun &lt;T&gt; BindableColumn&lt;T&gt;.isNotIn(vararg values: T &amp; Any) = isNotIn(values.asList())</span>
+
+    @JvmName(&quot;isNotInArray&quot;)
+    infix fun &lt;T&gt; BindableColumn&lt;T&gt;.isNotIn(values: Array&lt;out T &amp; Any&gt;) =
+<span class="fc" id="L343">        invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isNotIn(values))</span>
+
+    infix fun &lt;T&gt; BindableColumn&lt;T&gt;.isNotIn(values: Collection&lt;T &amp; Any&gt;) =
+<span class="fc" id="L346">        invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isNotIn(values))</span>
+
+    infix fun BindableColumn&lt;*&gt;.isNotIn(subQuery: KotlinSubQueryBuilder.() -&gt; Unit) =
+<span class="fc" id="L349">        invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isNotIn(subQuery))</span>
+
+<span class="fc" id="L351">    fun &lt;T&gt; BindableColumn&lt;T&gt;.isNotInWhenPresent(vararg values: T?) = isNotInWhenPresent(values.asList())</span>
+
+    @JvmName(&quot;isNotInArrayWhenPresent&quot;)
+    infix fun &lt;T&gt; BindableColumn&lt;T&gt;.isNotInWhenPresent(values: Array&lt;out T?&gt;?) =
+<span class="fc" id="L355">        invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isNotInWhenPresent(values))</span>
+
+    infix fun &lt;T&gt; BindableColumn&lt;T&gt;.isNotInWhenPresent(values: Collection&lt;T?&gt;?) =
+<span class="fc" id="L358">        invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isNotInWhenPresent(values))</span>
+
+    infix fun &lt;T&gt; BindableColumn&lt;T&gt;.isBetween(value1: T &amp; Any) =
+<span class="fc" id="L361">        SecondValueCollector&lt;T &amp; Any&gt; {</span>
+<span class="fc" id="L362">            invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isBetween(value1).and(it))</span>
+<span class="fc" id="L363">        }</span>
+
+    infix fun &lt;T&gt; BindableColumn&lt;T&gt;.isBetweenWhenPresent(value1: T?) =
+<span class="fc" id="L366">        NullableSecondValueCollector&lt;T&gt; {</span>
+<span class="fc" id="L367">            invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isBetweenWhenPresent(value1).and(it))</span>
+<span class="fc" id="L368">        }</span>
+
+    infix fun &lt;T&gt; BindableColumn&lt;T&gt;.isNotBetween(value1: T &amp; Any) =
+<span class="fc" id="L371">        SecondValueCollector&lt;T &amp; Any&gt; {</span>
+<span class="fc" id="L372">            invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isNotBetween(value1).and(it))</span>
+<span class="fc" id="L373">        }</span>
+
+    infix fun &lt;T&gt; BindableColumn&lt;T&gt;.isNotBetweenWhenPresent(value1: T?) =
+<span class="fc" id="L376">        NullableSecondValueCollector&lt;T&gt; {</span>
+<span class="fc" id="L377">            invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isNotBetweenWhenPresent(value1).and(it))</span>
+<span class="fc" id="L378">        }</span>
+
+    // for string columns, but generic for columns with type handlers
+    infix fun &lt;T&gt; BindableColumn&lt;T&gt;.isLike(value: T &amp; Any) =
+<span class="fc" id="L382">        invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isLike(value))</span>
+
+    infix fun &lt;T&gt; BindableColumn&lt;T&gt;.isLikeWhenPresent(value: T?) =
+<span class="fc" id="L385">        invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isLikeWhenPresent(value))</span>
+
+    infix fun &lt;T&gt; BindableColumn&lt;T&gt;.isNotLike(value: T &amp; Any) =
+<span class="fc" id="L388">        invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isNotLike(value))</span>
+
+    infix fun &lt;T&gt; BindableColumn&lt;T&gt;.isNotLikeWhenPresent(value: T?) =
+<span class="fc" id="L391">        invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isNotLikeWhenPresent(value))</span>
+
+    // shortcuts for booleans
+<span class="fc" id="L394">    fun BindableColumn&lt;Boolean&gt;.isTrue() = isEqualTo(true)</span>
+
+<span class="fc" id="L396">    fun BindableColumn&lt;Boolean&gt;.isFalse() = isEqualTo(false)</span>
+
+    // conditions for strings only
+    infix fun BindableColumn&lt;String&gt;.isLikeCaseInsensitive(value: String) =
+<span class="fc" id="L400">        invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isLikeCaseInsensitive(value))</span>
+
+    infix fun BindableColumn&lt;String&gt;.isLikeCaseInsensitiveWhenPresent(value: String?) =
+<span class="fc" id="L403">        invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isLikeCaseInsensitiveWhenPresent(value))</span>
+
+    infix fun BindableColumn&lt;String&gt;.isNotLikeCaseInsensitive(value: String) =
+<span class="fc" id="L406">        invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isNotLikeCaseInsensitive(value))</span>
+
+    infix fun BindableColumn&lt;String&gt;.isNotLikeCaseInsensitiveWhenPresent(value: String?) =
+<span class="fc" id="L409">        invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isNotLikeCaseInsensitiveWhenPresent(value))</span>
+
+<span class="fc" id="L411">    fun BindableColumn&lt;String&gt;.isInCaseInsensitive(vararg values: String) = isInCaseInsensitive(values.asList())</span>
+
+    @JvmName(&quot;isInArrayCaseInsensitive&quot;)
+    infix fun BindableColumn&lt;String&gt;.isInCaseInsensitive(values: Array&lt;out String&gt;) =
+<span class="fc" id="L415">        invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isInCaseInsensitive(values))</span>
+
+    infix fun BindableColumn&lt;String&gt;.isInCaseInsensitive(values: Collection&lt;String&gt;) =
+<span class="fc" id="L418">        invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isInCaseInsensitive(values))</span>
+
+    fun BindableColumn&lt;String&gt;.isInCaseInsensitiveWhenPresent(vararg values: String?) =
+<span class="fc" id="L421">        isInCaseInsensitiveWhenPresent(values.asList())</span>
+
+    @JvmName(&quot;isInArrayCaseInsensitiveWhenPresent&quot;)
+    infix fun BindableColumn&lt;String&gt;.isInCaseInsensitiveWhenPresent(values: Array&lt;out String?&gt;?) =
+<span class="fc" id="L425">        invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isInCaseInsensitiveWhenPresent(values))</span>
+
+    infix fun BindableColumn&lt;String&gt;.isInCaseInsensitiveWhenPresent(values: Collection&lt;String?&gt;?) =
+<span class="fc" id="L428">        invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isInCaseInsensitiveWhenPresent(values))</span>
+
+    fun BindableColumn&lt;String&gt;.isNotInCaseInsensitive(vararg values: String) =
+<span class="fc" id="L431">        isNotInCaseInsensitive(values.asList())</span>
+
+    @JvmName(&quot;isNotInArrayCaseInsensitive&quot;)
+    infix fun BindableColumn&lt;String&gt;.isNotInCaseInsensitive(values: Array&lt;out String&gt;) =
+<span class="fc" id="L435">        invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isNotInCaseInsensitive(values))</span>
+
+    infix fun BindableColumn&lt;String&gt;.isNotInCaseInsensitive(values: Collection&lt;String&gt;) =
+<span class="fc" id="L438">        invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isNotInCaseInsensitive(values))</span>
+
+    fun BindableColumn&lt;String&gt;.isNotInCaseInsensitiveWhenPresent(vararg values: String?) =
+<span class="fc" id="L441">        isNotInCaseInsensitiveWhenPresent(values.asList())</span>
+
+    @JvmName(&quot;isNotInArrayCaseInsensitiveWhenPresent&quot;)
+    infix fun BindableColumn&lt;String&gt;.isNotInCaseInsensitiveWhenPresent(values: Array&lt;out String?&gt;?) =
+<span class="fc" id="L445">        invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isNotInCaseInsensitiveWhenPresent(values))</span>
+
+    infix fun BindableColumn&lt;String&gt;.isNotInCaseInsensitiveWhenPresent(values: Collection&lt;String?&gt;?) =
+<span class="fc" id="L448">        invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isNotInCaseInsensitiveWhenPresent(values))</span>
+
+    companion object {
+<span class="fc" id="L451">        fun having(receiver: GroupingCriteriaReceiver): GroupingCriteriaReceiver = receiver</span>
+
+        /**
+         * Function for code simplification. This allows creation of an independent where clause
+         * that can be reused in different statements. For example:
+         *
+         * val whereClause = where { id isEqualTo 3 }
+         *
+         * val rows = countFrom(foo) {
+         *   where(whereClause)
+         * }
+         *
+         * Use of this function is optional. You can also write code like this:
+         *
+         * val whereClause: GroupingCriteriaReceiver = { id isEqualTo 3 }
+         *
+         */
+<span class="fc" id="L468">        fun where(receiver: GroupingCriteriaReceiver): GroupingCriteriaReceiver = receiver</span>
+    }
+}
+
+<span class="fc" id="L472">class SecondValueCollector&lt;T&gt; (private val consumer: (T) -&gt; Unit) {</span>
+<span class="fc" id="L473">    infix fun and(value2: T) = consumer.invoke(value2)</span>
+}
+
+<span class="fc" id="L476">class NullableSecondValueCollector&lt;T&gt; (private val consumer: (T?) -&gt; Unit) {</span>
+<span class="fc" id="L477">    infix fun and(value2: T?) = consumer.invoke(value2)</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

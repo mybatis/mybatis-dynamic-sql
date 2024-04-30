@@ -26,7 +26,7 @@
 <a class="jxr_linenumber" name="L18" href="#L18">18</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.common.AbstractBooleanExpressionRenderer;
 <a class="jxr_linenumber" name="L19" href="#L19">19</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.select.HavingModel;
 <a class="jxr_linenumber" name="L20" href="#L20">20</a>  
-<a class="jxr_linenumber" name="L21" href="#L21">21</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="HavingRenderer" href="../../../../../../org/mybatis/dynamic/sql/select/render/HavingRenderer.html#HavingRenderer">HavingRenderer</a> <strong class="jxr_keyword">extends</strong> AbstractBooleanExpressionRenderer&lt;HavingModel&gt; {
+<a class="jxr_linenumber" name="L21" href="#L21">21</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="HavingRenderer" href="../../../../../../org/mybatis/dynamic/sql/select/render/HavingRenderer.html#HavingRenderer">HavingRenderer</a> <strong class="jxr_keyword">extends</strong> <a name="AbstractBooleanExpressionRenderer" href="../../../../../../org/mybatis/dynamic/sql/common/AbstractBooleanExpressionRenderer.html#AbstractBooleanExpressionRenderer">AbstractBooleanExpressionRenderer</a> {
 <a class="jxr_linenumber" name="L22" href="#L22">22</a>      <strong class="jxr_keyword">private</strong> <a name="HavingRenderer" href="../../../../../../org/mybatis/dynamic/sql/select/render/HavingRenderer.html#HavingRenderer">HavingRenderer</a>(Builder builder) {
 <a class="jxr_linenumber" name="L23" href="#L23">23</a>          <strong class="jxr_keyword">super</strong>(<span class="jxr_string">"having"</span>, builder); <em class="jxr_comment">//$NON-NLS-1$</em>
 <a class="jxr_linenumber" name="L24" href="#L24">24</a>      }
@@ -35,7 +35,7 @@
 <a class="jxr_linenumber" name="L27" href="#L27">27</a>          <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> Builder(havingModel);
 <a class="jxr_linenumber" name="L28" href="#L28">28</a>      }
 <a class="jxr_linenumber" name="L29" href="#L29">29</a>  
-<a class="jxr_linenumber" name="L30" href="#L30">30</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">class</strong> Builder <strong class="jxr_keyword">extends</strong> AbstractBuilder&lt;HavingModel, Builder&gt; {
+<a class="jxr_linenumber" name="L30" href="#L30">30</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">class</strong> Builder <strong class="jxr_keyword">extends</strong> AbstractBuilder&lt;Builder&gt; {
 <a class="jxr_linenumber" name="L31" href="#L31">31</a>          <strong class="jxr_keyword">public</strong> Builder(<a name="HavingModel" href="../../../../../../org/mybatis/dynamic/sql/select/HavingModel.html#HavingModel">HavingModel</a> havingModel) {
 <a class="jxr_linenumber" name="L32" href="#L32">32</a>              <strong class="jxr_keyword">super</strong>(havingModel);
 <a class="jxr_linenumber" name="L33" href="#L33">33</a>          }

@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DeleteDSL.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.delete</a> &gt; <span class="el_source">DeleteDSL.java</span></div><h1>DeleteDSL.java</h1><pre class="source lang-java linenums">/*
+ *    Copyright 2016-2024 the original author or authors.
+ *
+ *    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *       https://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+package org.mybatis.dynamic.sql.delete;
+
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Objects;
+import java.util.function.Consumer;
+import java.util.function.Function;
+
+import org.jetbrains.annotations.NotNull;
+import org.mybatis.dynamic.sql.SortSpecification;
+import org.mybatis.dynamic.sql.SqlTable;
+import org.mybatis.dynamic.sql.common.OrderByModel;
+import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
+import org.mybatis.dynamic.sql.util.Buildable;
+import org.mybatis.dynamic.sql.util.Utilities;
+import org.mybatis.dynamic.sql.where.AbstractWhereFinisher;
+import org.mybatis.dynamic.sql.where.AbstractWhereStarter;
+import org.mybatis.dynamic.sql.where.EmbeddedWhereModel;
+
+public class DeleteDSL&lt;R&gt; extends AbstractWhereStarter&lt;DeleteDSL&lt;R&gt;.DeleteWhereBuilder, DeleteDSL&lt;R&gt;&gt;
+        implements Buildable&lt;R&gt; {
+
+    private final Function&lt;DeleteModel, R&gt; adapterFunction;
+    private final SqlTable table;
+    private final String tableAlias;
+    private DeleteWhereBuilder whereBuilder;
+<span class="fc" id="L42">    private final StatementConfiguration statementConfiguration = new StatementConfiguration();</span>
+    private Long limit;
+    private OrderByModel orderByModel;
+
+<span class="fc" id="L46">    private DeleteDSL(SqlTable table, String tableAlias, Function&lt;DeleteModel, R&gt; adapterFunction) {</span>
+<span class="fc" id="L47">        this.table = Objects.requireNonNull(table);</span>
+<span class="fc" id="L48">        this.tableAlias = tableAlias;</span>
+<span class="fc" id="L49">        this.adapterFunction = Objects.requireNonNull(adapterFunction);</span>
+<span class="fc" id="L50">    }</span>
+
+    @Override
+    public DeleteWhereBuilder where() {
+<span class="fc" id="L54">        whereBuilder = Utilities.buildIfNecessary(whereBuilder, DeleteWhereBuilder::new);</span>
+<span class="fc" id="L55">        return whereBuilder;</span>
+    }
+
+    public DeleteDSL&lt;R&gt; limit(long limit) {
+<span class="fc" id="L59">        this.limit = limit;</span>
+<span class="fc" id="L60">        return this;</span>
+    }
+
+    public DeleteDSL&lt;R&gt; orderBy(SortSpecification... columns) {
+<span class="fc" id="L64">        return orderBy(Arrays.asList(columns));</span>
+    }
+
+    public DeleteDSL&lt;R&gt; orderBy(Collection&lt;? extends SortSpecification&gt; columns) {
+<span class="fc" id="L68">        orderByModel = OrderByModel.of(columns);</span>
+<span class="fc" id="L69">        return this;</span>
+    }
+
+    /**
+     * WARNING! Calling this method could result in a delete statement that deletes
+     * all rows in a table.
+     *
+     * @return the model class
+     */
+    @NotNull
+    @Override
+    public R build() {
+<span class="fc" id="L81">        DeleteModel deleteModel = DeleteModel.withTable(table)</span>
+<span class="fc" id="L82">                .withTableAlias(tableAlias)</span>
+<span class="fc" id="L83">                .withLimit(limit)</span>
+<span class="fc" id="L84">                .withOrderByModel(orderByModel)</span>
+<span class="fc bfc" id="L85" title="All 2 branches covered.">                .withWhereModel(whereBuilder == null ? null : whereBuilder.buildWhereModel())</span>
+<span class="fc" id="L86">                .withStatementConfiguration(statementConfiguration)</span>
+<span class="fc" id="L87">                .build();</span>
+
+<span class="fc" id="L89">        return adapterFunction.apply(deleteModel);</span>
+    }
+
+    @Override
+    public DeleteDSL&lt;R&gt; configureStatement(Consumer&lt;StatementConfiguration&gt; consumer) {
+<span class="fc" id="L94">        consumer.accept(statementConfiguration);</span>
+<span class="fc" id="L95">        return this;</span>
+    }
+
+    public static &lt;R&gt; DeleteDSL&lt;R&gt; deleteFrom(Function&lt;DeleteModel, R&gt; adapterFunction, SqlTable table,
+            String tableAlias) {
+<span class="fc" id="L100">        return new DeleteDSL&lt;&gt;(table, tableAlias, adapterFunction);</span>
+    }
+
+    public static DeleteDSL&lt;DeleteModel&gt; deleteFrom(SqlTable table) {
+<span class="fc" id="L104">        return deleteFrom(Function.identity(), table, null);</span>
+    }
+
+    public static DeleteDSL&lt;DeleteModel&gt; deleteFrom(SqlTable table, String tableAlias) {
+<span class="fc" id="L108">        return deleteFrom(Function.identity(), table, tableAlias);</span>
+    }
+
+    public class DeleteWhereBuilder extends AbstractWhereFinisher&lt;DeleteWhereBuilder&gt; implements Buildable&lt;R&gt; {
+
+<span class="fc" id="L113">        private DeleteWhereBuilder() {</span>
+<span class="fc" id="L114">            super(DeleteDSL.this);</span>
+<span class="fc" id="L115">        }</span>
+
+        public DeleteDSL&lt;R&gt; limit(long limit) {
+<span class="fc" id="L118">            return DeleteDSL.this.limit(limit);</span>
+        }
+
+        public DeleteDSL&lt;R&gt; orderBy(SortSpecification... columns) {
+<span class="fc" id="L122">            return orderBy(Arrays.asList(columns));</span>
+        }
+
+        public DeleteDSL&lt;R&gt; orderBy(Collection&lt;? extends SortSpecification&gt; columns) {
+<span class="fc" id="L126">            orderByModel = OrderByModel.of(columns);</span>
+<span class="fc" id="L127">            return DeleteDSL.this;</span>
+        }
+
+        @NotNull
+        @Override
+        public R build() {
+<span class="fc" id="L133">            return DeleteDSL.this.build();</span>
+        }
+
+        @Override
+        protected DeleteWhereBuilder getThis() {
+<span class="fc" id="L138">            return this;</span>
+        }
+
+        protected EmbeddedWhereModel buildWhereModel() {
+<span class="fc" id="L142">            return buildModel();</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

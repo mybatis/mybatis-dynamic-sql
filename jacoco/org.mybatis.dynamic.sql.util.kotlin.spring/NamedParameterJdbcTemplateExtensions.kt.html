@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>NamedParameterJdbcTemplateExtensions.kt</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.util.kotlin.spring</a> &gt; <span class="el_source">NamedParameterJdbcTemplateExtensions.kt</span></div><h1>NamedParameterJdbcTemplateExtensions.kt</h1><pre class="source lang-java linenums">/*
+ *    Copyright 2016-2024 the original author or authors.
+ *
+ *    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *       https://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+@file:Suppress(&quot;TooManyFunctions&quot;)
+package org.mybatis.dynamic.sql.util.kotlin.spring
+
+import org.mybatis.dynamic.sql.BasicColumn
+import org.mybatis.dynamic.sql.SqlTable
+import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider
+import org.mybatis.dynamic.sql.insert.render.BatchInsert
+import org.mybatis.dynamic.sql.insert.render.GeneralInsertStatementProvider
+import org.mybatis.dynamic.sql.insert.render.InsertSelectStatementProvider
+import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider
+import org.mybatis.dynamic.sql.insert.render.MultiRowInsertStatementProvider
+import org.mybatis.dynamic.sql.select.render.SelectStatementProvider
+import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider
+import org.mybatis.dynamic.sql.util.kotlin.CountCompleter
+import org.mybatis.dynamic.sql.util.kotlin.DeleteCompleter
+import org.mybatis.dynamic.sql.util.kotlin.GeneralInsertCompleter
+import org.mybatis.dynamic.sql.util.kotlin.InsertSelectCompleter
+import org.mybatis.dynamic.sql.util.kotlin.KotlinBatchInsertCompleter
+import org.mybatis.dynamic.sql.util.kotlin.KotlinInsertCompleter
+import org.mybatis.dynamic.sql.util.kotlin.KotlinMultiRowInsertCompleter
+import org.mybatis.dynamic.sql.util.kotlin.MyBatisDslMarker
+import org.mybatis.dynamic.sql.util.kotlin.SelectCompleter
+import org.mybatis.dynamic.sql.util.kotlin.UpdateCompleter
+import org.mybatis.dynamic.sql.util.spring.BatchInsertUtility
+import org.springframework.dao.EmptyResultDataAccessException
+import org.springframework.jdbc.core.RowMapper
+import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
+import org.springframework.jdbc.support.KeyHolder
+import java.sql.ResultSet
+import kotlin.reflect.KClass
+
+fun NamedParameterJdbcTemplate.count(selectStatement: SelectStatementProvider): Long =
+<span class="fc" id="L50">    queryForObject(selectStatement.selectStatement, selectStatement.parameters, Long::class.java)!!</span>
+
+fun NamedParameterJdbcTemplate.count(column: BasicColumn, completer: CountCompleter): Long =
+<span class="fc" id="L53">    count(org.mybatis.dynamic.sql.util.kotlin.spring.count(column, completer))</span>
+
+fun NamedParameterJdbcTemplate.countDistinct(column: BasicColumn, completer: CountCompleter): Long =
+<span class="fc" id="L56">    count(org.mybatis.dynamic.sql.util.kotlin.spring.countDistinct(column, completer))</span>
+
+fun NamedParameterJdbcTemplate.countFrom(table: SqlTable, completer: CountCompleter): Long =
+<span class="fc" id="L59">    count(org.mybatis.dynamic.sql.util.kotlin.spring.countFrom(table, completer))</span>
+
+fun NamedParameterJdbcTemplate.delete(deleteStatement: DeleteStatementProvider): Int =
+<span class="fc" id="L62">    update(deleteStatement.deleteStatement, deleteStatement.parameters)</span>
+
+fun NamedParameterJdbcTemplate.deleteFrom(table: SqlTable, completer: DeleteCompleter): Int =
+<span class="fc" id="L65">    delete(org.mybatis.dynamic.sql.util.kotlin.spring.deleteFrom(table, completer))</span>
+
+// batch insert
+fun &lt;T&gt; NamedParameterJdbcTemplate.insertBatch(insertStatement: BatchInsert&lt;T&gt;): IntArray =
+<span class="fc" id="L69">    batchUpdate(insertStatement.insertStatementSQL, BatchInsertUtility.createBatch(insertStatement.records))</span>
+
+fun &lt;T : Any&gt; NamedParameterJdbcTemplate.insertBatch(
+    vararg records: T,
+    completer: KotlinBatchInsertCompleter&lt;T&gt;
+): IntArray =
+<span class="fc" id="L75">    insertBatch(records.asList(), completer)</span>
+
+fun &lt;T : Any&gt; NamedParameterJdbcTemplate.insertBatch(
+    records: List&lt;T&gt;,
+    completer: KotlinBatchInsertCompleter&lt;T&gt;
+): IntArray =
+<span class="fc" id="L81">    insertBatch(org.mybatis.dynamic.sql.util.kotlin.spring.insertBatch(records, completer))</span>
+
+// single row insert
+fun &lt;T&gt; NamedParameterJdbcTemplate.insert(insertStatement: InsertStatementProvider&lt;T&gt;): Int =
+<span class="fc" id="L85">    update(insertStatement.insertStatement, BeanPropertySqlParameterSource(insertStatement))</span>
+
+fun &lt;T&gt; NamedParameterJdbcTemplate.insert(
+    insertStatement: InsertStatementProvider&lt;T&gt;,
+    keyHolder: KeyHolder
+): Int =
+<span class="fc" id="L91">    update(insertStatement.insertStatement, BeanPropertySqlParameterSource(insertStatement), keyHolder)</span>
+
+fun &lt;T : Any&gt; NamedParameterJdbcTemplate.insert(row: T, completer: KotlinInsertCompleter&lt;T&gt;): Int =
+<span class="fc" id="L94">    insert(org.mybatis.dynamic.sql.util.kotlin.spring.insert(row, completer))</span>
+
+// general insert
+fun NamedParameterJdbcTemplate.generalInsert(insertStatement: GeneralInsertStatementProvider): Int =
+<span class="fc" id="L98">    update(insertStatement.insertStatement, insertStatement.parameters)</span>
+
+fun NamedParameterJdbcTemplate.generalInsert(
+    insertStatement: GeneralInsertStatementProvider,
+    keyHolder: KeyHolder
+): Int =
+<span class="fc" id="L104">    update(insertStatement.insertStatement, MapSqlParameterSource(insertStatement.parameters), keyHolder)</span>
+
+fun NamedParameterJdbcTemplate.insertInto(table: SqlTable, completer: GeneralInsertCompleter): Int =
+<span class="fc" id="L107">    generalInsert(org.mybatis.dynamic.sql.util.kotlin.spring.insertInto(table, completer))</span>
+
+// multiple row insert
+fun &lt;T : Any&gt; NamedParameterJdbcTemplate.insertMultiple(
+    vararg records: T,
+    completer: KotlinMultiRowInsertCompleter&lt;T&gt;
+): Int =
+<span class="fc" id="L114">    insertMultiple(records.asList(), completer)</span>
+
+fun &lt;T : Any&gt; NamedParameterJdbcTemplate.insertMultiple(
+    records: List&lt;T&gt;,
+    completer: KotlinMultiRowInsertCompleter&lt;T&gt;
+): Int =
+<span class="fc" id="L120">    insertMultiple(org.mybatis.dynamic.sql.util.kotlin.spring.insertMultiple(records, completer))</span>
+
+fun &lt;T&gt; NamedParameterJdbcTemplate.insertMultiple(insertStatement: MultiRowInsertStatementProvider&lt;T&gt;): Int =
+<span class="fc" id="L123">    update(insertStatement.insertStatement, BeanPropertySqlParameterSource(insertStatement))</span>
+
+fun &lt;T&gt; NamedParameterJdbcTemplate.insertMultiple(
+    insertStatement: MultiRowInsertStatementProvider&lt;T&gt;,
+    keyHolder: KeyHolder
+): Int =
+<span class="fc" id="L129">    update(insertStatement.insertStatement, BeanPropertySqlParameterSource(insertStatement), keyHolder)</span>
+
+fun NamedParameterJdbcTemplate.insertSelect(completer: InsertSelectCompleter): Int =
+<span class="fc" id="L132">    insertSelect(org.mybatis.dynamic.sql.util.kotlin.spring.insertSelect(completer))</span>
+
+fun NamedParameterJdbcTemplate.insertSelect(insertStatement: InsertSelectStatementProvider): Int =
+<span class="fc" id="L135">    update(insertStatement.insertStatement, MapSqlParameterSource(insertStatement.parameters))</span>
+
+fun NamedParameterJdbcTemplate.insertSelect(
+    insertStatement: InsertSelectStatementProvider,
+    keyHolder: KeyHolder
+): Int =
+<span class="fc" id="L141">    update(insertStatement.insertStatement, MapSqlParameterSource(insertStatement.parameters), keyHolder)</span>
+
+// insert with KeyHolder support
+fun NamedParameterJdbcTemplate.withKeyHolder(keyHolder: KeyHolder, block: KeyHolderHelper.() -&gt; Int): Int =
+<span class="fc" id="L145">    KeyHolderHelper(keyHolder, this).run(block)</span>
+
+fun NamedParameterJdbcTemplate.select(
+    vararg selectList: BasicColumn,
+    completer: SelectCompleter
+): SelectListMapperGatherer =
+<span class="fc" id="L151">    select(selectList.toList(), completer)</span>
+
+fun NamedParameterJdbcTemplate.select(
+    selectList: List&lt;BasicColumn&gt;,
+    completer: SelectCompleter
+): SelectListMapperGatherer =
+<span class="fc" id="L157">    SelectListMapperGatherer(org.mybatis.dynamic.sql.util.kotlin.spring.select(selectList, completer), this)</span>
+
+fun NamedParameterJdbcTemplate.selectDistinct(
+    vararg selectList: BasicColumn,
+    completer: SelectCompleter
+): SelectListMapperGatherer =
+<span class="fc" id="L163">    selectDistinct(selectList.toList(), completer)</span>
+
+fun NamedParameterJdbcTemplate.selectDistinct(
+    selectList: List&lt;BasicColumn&gt;,
+    completer: SelectCompleter
+): SelectListMapperGatherer =
+<span class="fc" id="L169">    SelectListMapperGatherer(</span>
+<span class="fc" id="L170">        org.mybatis.dynamic.sql.util.kotlin.spring.selectDistinct(selectList, completer),</span>
+<span class="fc" id="L171">        this</span>
+<span class="fc" id="L172">    )</span>
+
+fun &lt;T&gt; NamedParameterJdbcTemplate.selectList(
+    selectStatement: SelectStatementProvider,
+    rowMapper: (rs: ResultSet, rowNum: Int) -&gt; T
+<span class="fc" id="L177">): List&lt;T&gt; = selectList(selectStatement, RowMapper(rowMapper))</span>
+
+fun &lt;T&gt; NamedParameterJdbcTemplate.selectList(
+    selectStatement: SelectStatementProvider,
+    rowMapper: RowMapper&lt;T&gt;
+): List&lt;T&gt; =
+<span class="fc" id="L183">    query(selectStatement.selectStatement, selectStatement.parameters, rowMapper)</span>
+
+fun &lt;T : Any&gt; NamedParameterJdbcTemplate.selectList(
+    selectStatement: SelectStatementProvider,
+    type: KClass&lt;T&gt;
+): List&lt;T&gt; =
+<span class="fc" id="L189">    queryForList(selectStatement.selectStatement, selectStatement.parameters, type.java)</span>
+
+fun NamedParameterJdbcTemplate.selectOne(
+    vararg selectList: BasicColumn,
+    completer: SelectCompleter
+): SelectOneMapperGatherer =
+<span class="fc" id="L195">    selectOne(selectList.toList(), completer)</span>
+
+fun NamedParameterJdbcTemplate.selectOne(
+    selectList: List&lt;BasicColumn&gt;,
+    completer: SelectCompleter
+): SelectOneMapperGatherer =
+<span class="fc" id="L201">    SelectOneMapperGatherer(</span>
+<span class="fc" id="L202">        org.mybatis.dynamic.sql.util.kotlin.spring.select(selectList, completer),</span>
+<span class="fc" id="L203">        this</span>
+<span class="fc" id="L204">    )</span>
+
+fun &lt;T&gt; NamedParameterJdbcTemplate.selectOne(
+    selectStatement: SelectStatementProvider,
+    rowMapper: (rs: ResultSet, rowNum: Int) -&gt; T
+<span class="fc" id="L209">): T? = selectOne(selectStatement, RowMapper(rowMapper))</span>
+
+@SuppressWarnings(&quot;SwallowedException&quot;)
+fun &lt;T&gt; NamedParameterJdbcTemplate.selectOne(
+    selectStatement: SelectStatementProvider,
+    rowMapper: RowMapper&lt;T&gt;
+<span class="fc" id="L215">): T? = try {</span>
+<span class="fc" id="L216">    queryForObject(selectStatement.selectStatement, selectStatement.parameters, rowMapper)</span>
+<span class="fc" id="L217">} catch (e: EmptyResultDataAccessException) {</span>
+<span class="fc" id="L218">    null</span>
+<span class="fc" id="L219">}</span>
+
+@SuppressWarnings(&quot;SwallowedException&quot;)
+fun &lt;T : Any&gt; NamedParameterJdbcTemplate.selectOne(
+    selectStatement: SelectStatementProvider,
+    type: KClass&lt;T&gt;
+<span class="fc" id="L225">): T? = try {</span>
+<span class="fc" id="L226">    queryForObject(selectStatement.selectStatement, selectStatement.parameters, type.java)</span>
+<span class="fc" id="L227">} catch (e: EmptyResultDataAccessException) {</span>
+<span class="fc" id="L228">    null</span>
+<span class="fc" id="L229">}</span>
+
+fun NamedParameterJdbcTemplate.update(updateStatement: UpdateStatementProvider): Int =
+<span class="fc" id="L232">    update(updateStatement.updateStatement, updateStatement.parameters)</span>
+
+fun NamedParameterJdbcTemplate.update(table: SqlTable, completer: UpdateCompleter): Int =
+<span class="fc" id="L235">    update(org.mybatis.dynamic.sql.util.kotlin.spring.update(table, completer))</span>
+
+// support classes for select DSL
+<span class="fc" id="L238">@MyBatisDslMarker</span>
+<span class="fc" id="L239">class SelectListMapperGatherer(</span>
+<span class="fc" id="L240">    private val selectStatement: SelectStatementProvider,</span>
+<span class="fc" id="L241">    private val template: NamedParameterJdbcTemplate</span>
+) {
+    fun &lt;T&gt; withRowMapper(rowMapper: (rs: ResultSet, rowNum: Int) -&gt; T): List&lt;T&gt; =
+<span class="fc" id="L244">        template.selectList(selectStatement, rowMapper)</span>
+
+    fun &lt;T&gt; withRowMapper(rowMapper: RowMapper&lt;T&gt;): List&lt;T&gt; =
+<span class="fc" id="L247">        template.selectList(selectStatement, rowMapper)</span>
+}
+
+<span class="fc" id="L250">@MyBatisDslMarker</span>
+<span class="fc" id="L251">class SelectOneMapperGatherer(</span>
+<span class="fc" id="L252">    private val selectStatement: SelectStatementProvider,</span>
+<span class="fc" id="L253">    private val template: NamedParameterJdbcTemplate</span>
+) {
+    fun &lt;T&gt; withRowMapper(rowMapper: (rs: ResultSet, rowNum: Int) -&gt; T): T? =
+<span class="fc" id="L256">        template.selectOne(selectStatement, rowMapper)</span>
+
+    fun &lt;T&gt; withRowMapper(rowMapper: RowMapper&lt;T&gt;): T? =
+<span class="fc" id="L259">        template.selectOne(selectStatement, rowMapper)</span>
+}
+
+<span class="fc" id="L262">@MyBatisDslMarker</span>
+<span class="fc" id="L263">class KeyHolderHelper(private val keyHolder: KeyHolder, private val template: NamedParameterJdbcTemplate) {</span>
+    fun insertInto(table: SqlTable, completer: GeneralInsertCompleter): Int =
+<span class="fc" id="L265">        template.generalInsert(org.mybatis.dynamic.sql.util.kotlin.spring.insertInto(table, completer), keyHolder)</span>
+
+    fun &lt;T : Any&gt; insert(row: T, completer: KotlinInsertCompleter&lt;T&gt;): Int =
+<span class="fc" id="L268">        template.insert(org.mybatis.dynamic.sql.util.kotlin.spring.insert(row, completer), keyHolder)</span>
+
+    fun &lt;T : Any&gt; insertMultiple(vararg records: T, completer: KotlinMultiRowInsertCompleter&lt;T&gt;): Int =
+<span class="fc" id="L271">        insertMultiple(records.asList(), completer)</span>
+
+    fun &lt;T : Any&gt; insertMultiple(records: List&lt;T&gt;, completer: KotlinMultiRowInsertCompleter&lt;T&gt;): Int =
+<span class="fc" id="L274">        template.insertMultiple(org.mybatis.dynamic.sql.util.kotlin.spring.insertMultiple(records, completer),</span>
+<span class="fc" id="L275">            keyHolder)</span>
+
+    fun insertSelect(completer: InsertSelectCompleter): Int =
+<span class="fc" id="L278">        template.insertSelect(org.mybatis.dynamic.sql.util.kotlin.spring.insertSelect(completer), keyHolder)</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

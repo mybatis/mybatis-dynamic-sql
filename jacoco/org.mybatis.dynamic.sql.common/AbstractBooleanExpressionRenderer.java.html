@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AbstractBooleanExpressionRenderer.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.common</a> &gt; <span class="el_source">AbstractBooleanExpressionRenderer.java</span></div><h1>AbstractBooleanExpressionRenderer.java</h1><pre class="source lang-java linenums">/*
+ *    Copyright 2016-2024 the original author or authors.
+ *
+ *    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *       https://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+package org.mybatis.dynamic.sql.common;
+
+import static org.mybatis.dynamic.sql.util.StringUtilities.spaceAfter;
+
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import org.mybatis.dynamic.sql.SqlCriterion;
+import org.mybatis.dynamic.sql.render.RenderingContext;
+import org.mybatis.dynamic.sql.util.FragmentAndParameters;
+import org.mybatis.dynamic.sql.util.FragmentCollector;
+import org.mybatis.dynamic.sql.where.render.CriterionRenderer;
+import org.mybatis.dynamic.sql.where.render.RenderedCriterion;
+
+public abstract class AbstractBooleanExpressionRenderer {
+    protected final AbstractBooleanExpressionModel model;
+    private final String prefix;
+    private final CriterionRenderer criterionRenderer;
+    protected final RenderingContext renderingContext;
+
+<span class="fc" id="L37">    protected AbstractBooleanExpressionRenderer(String prefix, AbstractBuilder&lt;?&gt; builder) {</span>
+<span class="fc" id="L38">        model = Objects.requireNonNull(builder.model);</span>
+<span class="fc" id="L39">        this.prefix = Objects.requireNonNull(prefix);</span>
+<span class="fc" id="L40">        renderingContext = Objects.requireNonNull(builder.renderingContext);</span>
+<span class="fc" id="L41">        criterionRenderer = new CriterionRenderer(renderingContext);</span>
+<span class="fc" id="L42">    }</span>
+
+    public Optional&lt;FragmentAndParameters&gt; render() {
+<span class="fc" id="L45">        return model.initialCriterion()</span>
+<span class="fc" id="L46">                .map(this::renderWithInitialCriterion)</span>
+<span class="fc" id="L47">                .orElseGet(this::renderWithoutInitialCriterion)</span>
+<span class="fc" id="L48">                .map(RenderedCriterion::fragmentAndParameters);</span>
+    }
+
+    private Optional&lt;RenderedCriterion&gt; renderWithInitialCriterion(SqlCriterion initialCriterion) {
+<span class="fc" id="L52">        return criterionRenderer.render(initialCriterion, model.subCriteria(), this::calculateClause);</span>
+    }
+
+    private Optional&lt;RenderedCriterion&gt; renderWithoutInitialCriterion() {
+<span class="fc" id="L56">        return criterionRenderer.render(model.subCriteria(), this::calculateClause);</span>
+    }
+
+    private String calculateClause(FragmentCollector collector) {
+<span class="fc bfc" id="L60" title="All 2 branches covered.">        if (collector.hasMultipleFragments()) {</span>
+<span class="fc" id="L61">            return collector.collectFragments(</span>
+<span class="fc" id="L62">                    Collectors.joining(&quot; &quot;, spaceAfter(prefix), &quot;&quot;)); //$NON-NLS-1$ //$NON-NLS-2$</span>
+        } else {
+<span class="fc" id="L64">            return collector.firstFragment()</span>
+<span class="fc" id="L65">                    .map(this::stripEnclosingParenthesesIfPresent)</span>
+<span class="fc" id="L66">                    .map(this::addPrefix)</span>
+<span class="fc" id="L67">                    .orElse(&quot;&quot;); //$NON-NLS-1$</span>
+        }
+    }
+
+    private String stripEnclosingParenthesesIfPresent(String fragment) {
+        // The fragment will have surrounding open/close parentheses if there is more than one rendered condition.
+        // Since there is only a single fragment, we don't need these in the final rendered clause
+<span class="fc bfc" id="L74" title="All 4 branches covered.">        if (fragment.startsWith(&quot;(&quot;) &amp;&amp; fragment.endsWith(&quot;)&quot;)) { //$NON-NLS-1$ //$NON-NLS-2$</span>
+<span class="fc" id="L75">            return fragment.substring(1, fragment.length() - 1);</span>
+        } else {
+<span class="fc" id="L77">            return fragment;</span>
+        }
+    }
+
+    private String addPrefix(String fragment) {
+<span class="fc" id="L82">        return spaceAfter(prefix) + fragment;</span>
+    }
+
+    public abstract static class AbstractBuilder&lt;B extends AbstractBuilder&lt;B&gt;&gt; {
+        private final AbstractBooleanExpressionModel model;
+        private RenderingContext renderingContext;
+
+<span class="fc" id="L89">        protected AbstractBuilder(AbstractBooleanExpressionModel model) {</span>
+<span class="fc" id="L90">            this.model = model;</span>
+<span class="fc" id="L91">        }</span>
+
+        public B withRenderingContext(RenderingContext renderingContext) {
+<span class="fc" id="L94">            this.renderingContext = renderingContext;</span>
+<span class="fc" id="L95">            return getThis();</span>
+        }
+
+        protected abstract B getThis();
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

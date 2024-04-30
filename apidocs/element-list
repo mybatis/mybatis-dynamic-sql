@@ -9,6 +9,7 @@ org.mybatis.dynamic.sql.insert.render
 org.mybatis.dynamic.sql.render
 org.mybatis.dynamic.sql.select
 org.mybatis.dynamic.sql.select.aggregate
+org.mybatis.dynamic.sql.select.caseexpression
 org.mybatis.dynamic.sql.select.function
 org.mybatis.dynamic.sql.select.join
 org.mybatis.dynamic.sql.select.render

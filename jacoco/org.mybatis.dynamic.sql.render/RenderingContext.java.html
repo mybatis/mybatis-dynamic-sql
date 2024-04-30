@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RenderingContext.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.render</a> &gt; <span class="el_source">RenderingContext.java</span></div><h1>RenderingContext.java</h1><pre class="source lang-java linenums">/*
+ *    Copyright 2016-2024 the original author or authors.
+ *
+ *    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *       https://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+package org.mybatis.dynamic.sql.render;
+
+import static org.mybatis.dynamic.sql.util.StringUtilities.spaceBefore;
+
+import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import org.mybatis.dynamic.sql.BindableColumn;
+import org.mybatis.dynamic.sql.SqlColumn;
+import org.mybatis.dynamic.sql.SqlTable;
+import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
+
+/**
+ * This class encapsulates all the supporting items related to rendering, and contains many utility methods
+ * used during the rendering process.
+ *
+ * @since 1.5.1
+ * @author Jeff Butler
+ */
+public class RenderingContext {
+
+    private final RenderingStrategy renderingStrategy;
+    private final AtomicInteger sequence;
+    private final TableAliasCalculator tableAliasCalculator;
+    private final String configuredParameterName;
+    private final String calculatedParameterName;
+    private final StatementConfiguration statementConfiguration;
+
+<span class="fc" id="L44">    private RenderingContext(Builder builder) {</span>
+<span class="fc" id="L45">        renderingStrategy = Objects.requireNonNull(builder.renderingStrategy);</span>
+<span class="fc" id="L46">        configuredParameterName = builder.parameterName;</span>
+<span class="fc" id="L47">        tableAliasCalculator = Objects.requireNonNull(builder.tableAliasCalculator);</span>
+<span class="fc" id="L48">        statementConfiguration = Objects.requireNonNull(builder.statementConfiguration);</span>
+
+        // reasonable defaults
+<span class="fc bfc" id="L51" title="All 2 branches covered.">        sequence = builder.sequence == null ? new AtomicInteger(1) : builder.sequence;</span>
+<span class="fc bfc" id="L52" title="All 2 branches covered.">        calculatedParameterName = builder.parameterName == null ? RenderingStrategy.DEFAULT_PARAMETER_PREFIX</span>
+<span class="fc" id="L53">                : builder.parameterName + &quot;.&quot; + RenderingStrategy.DEFAULT_PARAMETER_PREFIX;  //$NON-NLS-1$</span>
+<span class="fc" id="L54">    }</span>
+
+    public TableAliasCalculator tableAliasCalculator() {
+        // this method can be removed when the renderWithTableAlias method is removed from BasicColumn
+<span class="fc" id="L58">        return tableAliasCalculator;</span>
+    }
+
+    private String nextMapKey() {
+<span class="fc" id="L62">        return renderingStrategy.formatParameterMapKey(sequence);</span>
+    }
+
+    private String renderedPlaceHolder(String mapKey) {
+<span class="fc" id="L66">        return renderingStrategy.getFormattedJdbcPlaceholder(calculatedParameterName, mapKey);</span>
+    }
+
+    private &lt;T&gt; String renderedPlaceHolder(String mapKey, BindableColumn&lt;T&gt; column) {
+<span class="fc" id="L70">        return  column.renderingStrategy().orElse(renderingStrategy)</span>
+<span class="fc" id="L71">                .getFormattedJdbcPlaceholder(column, calculatedParameterName, mapKey);</span>
+    }
+
+    public RenderedParameterInfo calculateParameterInfo() {
+<span class="fc" id="L75">        String mapKey = nextMapKey();</span>
+<span class="fc" id="L76">        return new RenderedParameterInfo(mapKey, renderedPlaceHolder(mapKey));</span>
+    }
+
+    public &lt;T&gt; RenderedParameterInfo calculateParameterInfo(BindableColumn&lt;T&gt; column) {
+<span class="fc" id="L80">        String mapKey = nextMapKey();</span>
+<span class="fc" id="L81">        return new RenderedParameterInfo(mapKey, renderedPlaceHolder(mapKey, column));</span>
+    }
+
+    public &lt;T&gt; String aliasedColumnName(SqlColumn&lt;T&gt; column) {
+<span class="fc" id="L85">        return tableAliasCalculator.aliasForColumn(column.table())</span>
+<span class="fc" id="L86">                .map(alias -&gt; aliasedColumnName(column, alias))</span>
+<span class="fc" id="L87">                .orElseGet(column::name);</span>
+    }
+
+    public &lt;T&gt; String aliasedColumnName(SqlColumn&lt;T&gt; column, String explicitAlias) {
+<span class="fc" id="L91">        return explicitAlias + &quot;.&quot; + column.name();  //$NON-NLS-1$</span>
+    }
+
+    public String aliasedTableName(SqlTable table) {
+<span class="fc" id="L95">        return tableAliasCalculator.aliasForTable(table)</span>
+<span class="fc" id="L96">                .map(a -&gt; table.tableNameAtRuntime() + spaceBefore(a))</span>
+<span class="fc" id="L97">                .orElseGet(table::tableNameAtRuntime);</span>
+    }
+
+    public boolean isNonRenderingClauseAllowed() {
+<span class="fc" id="L101">        return statementConfiguration.isNonRenderingWhereClauseAllowed();</span>
+    }
+
+    public boolean isEmptyListConditionRenderingAllowed() {
+<span class="fc" id="L105">        return statementConfiguration.isEmptyListConditionRenderingAllowed();</span>
+    }
+
+    /**
+     * Create a new rendering context based on this, with the table alias calculator modified to include the
+     * specified child table alias calculator. This is used by the query expression renderer when the alias calculator
+     * may change during rendering.
+     *
+     * @param childTableAliasCalculator the child table alias calculator
+     * @return a new rendering context whose table alias calculator is composed of the former calculator as parent, and
+     *     the new child calculator
+     */
+    public RenderingContext withChildTableAliasCalculator(TableAliasCalculator childTableAliasCalculator) {
+<span class="fc" id="L118">        TableAliasCalculator tac = new TableAliasCalculatorWithParent.Builder()</span>
+<span class="fc" id="L119">                .withParent(tableAliasCalculator)</span>
+<span class="fc" id="L120">                .withChild(childTableAliasCalculator)</span>
+<span class="fc" id="L121">                .build();</span>
+
+<span class="fc" id="L123">        return new Builder()</span>
+<span class="fc" id="L124">                .withRenderingStrategy(this.renderingStrategy)</span>
+<span class="fc" id="L125">                .withSequence(this.sequence)</span>
+<span class="fc" id="L126">                .withParameterName(this.configuredParameterName)</span>
+<span class="fc" id="L127">                .withTableAliasCalculator(tac)</span>
+<span class="fc" id="L128">                .withStatementConfiguration(statementConfiguration)</span>
+<span class="fc" id="L129">                .build();</span>
+    }
+
+    public static Builder withRenderingStrategy(RenderingStrategy renderingStrategy) {
+<span class="fc" id="L133">        return new Builder().withRenderingStrategy(renderingStrategy);</span>
+    }
+
+<span class="fc" id="L136">    public static class Builder {</span>
+        private RenderingStrategy renderingStrategy;
+        private AtomicInteger sequence;
+<span class="fc" id="L139">        private TableAliasCalculator tableAliasCalculator = TableAliasCalculator.empty();</span>
+        private String parameterName;
+        private StatementConfiguration statementConfiguration;
+
+        public Builder withRenderingStrategy(RenderingStrategy renderingStrategy) {
+<span class="fc" id="L144">            this.renderingStrategy = renderingStrategy;</span>
+<span class="fc" id="L145">            return this;</span>
+        }
+
+        public Builder withSequence(AtomicInteger sequence) {
+<span class="fc" id="L149">            this.sequence = sequence;</span>
+<span class="fc" id="L150">            return this;</span>
+        }
+
+        public Builder withTableAliasCalculator(TableAliasCalculator tableAliasCalculator) {
+<span class="fc" id="L154">            this.tableAliasCalculator = tableAliasCalculator;</span>
+<span class="fc" id="L155">            return this;</span>
+        }
+
+        public Builder withParameterName(String parameterName) {
+<span class="fc" id="L159">            this.parameterName = parameterName;</span>
+<span class="fc" id="L160">            return this;</span>
+        }
+
+        public Builder withStatementConfiguration(StatementConfiguration statementConfiguration) {
+<span class="fc" id="L164">            this.statementConfiguration = statementConfiguration;</span>
+<span class="fc" id="L165">            return this;</span>
+        }
+
+        public RenderingContext build() {
+<span class="fc" id="L169">            return new RenderingContext(this);</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

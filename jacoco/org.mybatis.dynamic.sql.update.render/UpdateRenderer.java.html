@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UpdateRenderer.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.update.render</a> &gt; <span class="el_source">UpdateRenderer.java</span></div><h1>UpdateRenderer.java</h1><pre class="source lang-java linenums">/*
+ *    Copyright 2016-2024 the original author or authors.
+ *
+ *    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *       https://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+package org.mybatis.dynamic.sql.update.render;
+
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import org.mybatis.dynamic.sql.common.OrderByModel;
+import org.mybatis.dynamic.sql.common.OrderByRenderer;
+import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
+import org.mybatis.dynamic.sql.render.ExplicitTableAliasCalculator;
+import org.mybatis.dynamic.sql.render.RenderedParameterInfo;
+import org.mybatis.dynamic.sql.render.RenderingContext;
+import org.mybatis.dynamic.sql.render.RenderingStrategy;
+import org.mybatis.dynamic.sql.render.TableAliasCalculator;
+import org.mybatis.dynamic.sql.update.UpdateModel;
+import org.mybatis.dynamic.sql.util.FragmentAndParameters;
+import org.mybatis.dynamic.sql.util.FragmentCollector;
+import org.mybatis.dynamic.sql.util.Validator;
+import org.mybatis.dynamic.sql.where.EmbeddedWhereModel;
+
+public class UpdateRenderer {
+    private final UpdateModel updateModel;
+    private final RenderingContext renderingContext;
+    private final SetPhraseVisitor visitor;
+
+<span class="fc" id="L42">    private UpdateRenderer(Builder builder) {</span>
+<span class="fc" id="L43">        updateModel = Objects.requireNonNull(builder.updateModel);</span>
+<span class="fc" id="L44">        TableAliasCalculator tableAliasCalculator = builder.updateModel.tableAlias()</span>
+<span class="fc" id="L45">                .map(a -&gt; ExplicitTableAliasCalculator.of(updateModel.table(), a))</span>
+<span class="fc" id="L46">                .orElseGet(TableAliasCalculator::empty);</span>
+<span class="fc" id="L47">        renderingContext = RenderingContext</span>
+<span class="fc" id="L48">                .withRenderingStrategy(Objects.requireNonNull(builder.renderingStrategy))</span>
+<span class="fc" id="L49">                .withTableAliasCalculator(tableAliasCalculator)</span>
+<span class="fc" id="L50">                .withStatementConfiguration(builder.statementConfiguration)</span>
+<span class="fc" id="L51">                .build();</span>
+<span class="fc" id="L52">        visitor = new SetPhraseVisitor(renderingContext);</span>
+<span class="fc" id="L53">    }</span>
+
+    public UpdateStatementProvider render() {
+<span class="fc" id="L56">        FragmentCollector fragmentCollector = new FragmentCollector();</span>
+
+<span class="fc" id="L58">        fragmentCollector.add(calculateUpdateStatementStart());</span>
+<span class="fc" id="L59">        fragmentCollector.add(calculateSetPhrase());</span>
+<span class="fc" id="L60">        calculateWhereClause().ifPresent(fragmentCollector::add);</span>
+<span class="fc" id="L61">        calculateOrderByClause().ifPresent(fragmentCollector::add);</span>
+<span class="fc" id="L62">        calculateLimitClause().ifPresent(fragmentCollector::add);</span>
+
+<span class="fc" id="L64">        return toUpdateStatementProvider(fragmentCollector);</span>
+    }
+
+    private UpdateStatementProvider toUpdateStatementProvider(FragmentCollector fragmentCollector) {
+<span class="fc" id="L68">        return DefaultUpdateStatementProvider</span>
+<span class="fc" id="L69">                .withUpdateStatement(fragmentCollector.collectFragments(Collectors.joining(&quot; &quot;))) //$NON-NLS-1$</span>
+<span class="fc" id="L70">                .withParameters(fragmentCollector.parameters())</span>
+<span class="fc" id="L71">                .build();</span>
+    }
+
+    private FragmentAndParameters calculateUpdateStatementStart() {
+<span class="fc" id="L75">        String aliasedTableName = renderingContext.aliasedTableName(updateModel.table());</span>
+<span class="fc" id="L76">        return FragmentAndParameters.fromFragment(&quot;update &quot; + aliasedTableName); //$NON-NLS-1$</span>
+    }
+
+    private FragmentAndParameters calculateSetPhrase() {
+<span class="fc" id="L80">        List&lt;Optional&lt;FragmentAndParameters&gt;&gt; fragmentsAndParameters = updateModel.columnMappings()</span>
+<span class="fc" id="L81">                        .map(m -&gt; m.accept(visitor))</span>
+<span class="fc" id="L82">                        .collect(Collectors.toList());</span>
+
+<span class="fc" id="L84">        Validator.assertFalse(fragmentsAndParameters.stream().noneMatch(Optional::isPresent),</span>
+                &quot;ERROR.18&quot;); //$NON-NLS-1$
+
+<span class="fc" id="L87">        FragmentCollector fragmentCollector = fragmentsAndParameters.stream()</span>
+<span class="fc" id="L88">                .filter(Optional::isPresent)</span>
+<span class="fc" id="L89">                .map(Optional::get)</span>
+<span class="fc" id="L90">                .collect(FragmentCollector.collect());</span>
+
+<span class="fc" id="L92">        return toSetPhrase(fragmentCollector);</span>
+    }
+
+    private FragmentAndParameters toSetPhrase(FragmentCollector fragmentCollector) {
+<span class="fc" id="L96">        return fragmentCollector.toFragmentAndParameters(</span>
+<span class="fc" id="L97">                Collectors.joining(&quot;, &quot;, &quot;set &quot;, &quot;&quot;)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$</span>
+    }
+
+    private Optional&lt;FragmentAndParameters&gt; calculateWhereClause() {
+<span class="fc" id="L101">        return updateModel.whereModel().flatMap(this::renderWhereClause);</span>
+    }
+
+    private Optional&lt;FragmentAndParameters&gt; renderWhereClause(EmbeddedWhereModel whereModel) {
+<span class="fc" id="L105">        return whereModel.render(renderingContext);</span>
+    }
+
+    private Optional&lt;FragmentAndParameters&gt; calculateLimitClause() {
+<span class="fc" id="L109">        return updateModel.limit().map(this::renderLimitClause);</span>
+    }
+
+    private FragmentAndParameters renderLimitClause(Long limit) {
+<span class="fc" id="L113">        RenderedParameterInfo parameterInfo = renderingContext.calculateParameterInfo();</span>
+
+<span class="fc" id="L115">        return FragmentAndParameters.withFragment(&quot;limit &quot; + parameterInfo.renderedPlaceHolder()) //$NON-NLS-1$</span>
+<span class="fc" id="L116">                .withParameter(parameterInfo.parameterMapKey(), limit)</span>
+<span class="fc" id="L117">                .build();</span>
+    }
+
+    private Optional&lt;FragmentAndParameters&gt; calculateOrderByClause() {
+<span class="fc" id="L121">        return updateModel.orderByModel().map(this::renderOrderByClause);</span>
+    }
+
+    private FragmentAndParameters renderOrderByClause(OrderByModel orderByModel) {
+<span class="fc" id="L125">        return new OrderByRenderer().render(orderByModel);</span>
+    }
+
+    public static Builder withUpdateModel(UpdateModel updateModel) {
+<span class="fc" id="L129">        return new Builder().withUpdateModel(updateModel);</span>
+    }
+
+<span class="fc" id="L132">    public static class Builder {</span>
+        private UpdateModel updateModel;
+        private RenderingStrategy renderingStrategy;
+        private StatementConfiguration statementConfiguration;
+
+        public Builder withUpdateModel(UpdateModel updateModel) {
+<span class="fc" id="L138">            this.updateModel = updateModel;</span>
+<span class="fc" id="L139">            return this;</span>
+        }
+
+        public Builder withRenderingStrategy(RenderingStrategy renderingStrategy) {
+<span class="fc" id="L143">            this.renderingStrategy = renderingStrategy;</span>
+<span class="fc" id="L144">            return this;</span>
+        }
+
+        public Builder withStatementConfiguration(StatementConfiguration statementConfiguration) {
+<span class="fc" id="L148">            this.statementConfiguration = statementConfiguration;</span>
+<span class="fc" id="L149">            return this;</span>
+        }
+
+        public UpdateRenderer build() {
+<span class="fc" id="L153">            return new UpdateRenderer(this);</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

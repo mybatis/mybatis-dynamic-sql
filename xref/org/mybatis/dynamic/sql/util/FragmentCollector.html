@@ -74,19 +74,23 @@
 <a class="jxr_linenumber" name="L66" href="#L66">66</a>          <strong class="jxr_keyword">return</strong> fragments.size() &gt; 1;
 <a class="jxr_linenumber" name="L67" href="#L67">67</a>      }
 <a class="jxr_linenumber" name="L68" href="#L68">68</a>  
-<a class="jxr_linenumber" name="L69" href="#L69">69</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> Collector&lt;FragmentAndParameters, FragmentCollector, FragmentCollector&gt; collect() {
-<a class="jxr_linenumber" name="L70" href="#L70">70</a>          <strong class="jxr_keyword">return</strong> Collector.of(FragmentCollector::<strong class="jxr_keyword">new</strong>,
-<a class="jxr_linenumber" name="L71" href="#L71">71</a>                  FragmentCollector::add,
-<a class="jxr_linenumber" name="L72" href="#L72">72</a>                  FragmentCollector::merge);
-<a class="jxr_linenumber" name="L73" href="#L73">73</a>      }
-<a class="jxr_linenumber" name="L74" href="#L74">74</a>  
-<a class="jxr_linenumber" name="L75" href="#L75">75</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> Collector&lt;FragmentAndParameters, FragmentCollector, FragmentCollector&gt; collect(
-<a class="jxr_linenumber" name="L76" href="#L76">76</a>              <a name="FragmentAndParameters" href="../../../../../org/mybatis/dynamic/sql/util/FragmentAndParameters.html#FragmentAndParameters">FragmentAndParameters</a> initialFragment) {
-<a class="jxr_linenumber" name="L77" href="#L77">77</a>          <strong class="jxr_keyword">return</strong> Collector.of(() -&gt; <strong class="jxr_keyword">new</strong> <a name="FragmentCollector" href="../../../../../org/mybatis/dynamic/sql/util/FragmentCollector.html#FragmentCollector">FragmentCollector</a>(initialFragment),
-<a class="jxr_linenumber" name="L78" href="#L78">78</a>                  FragmentCollector::add,
-<a class="jxr_linenumber" name="L79" href="#L79">79</a>                  FragmentCollector::merge);
-<a class="jxr_linenumber" name="L80" href="#L80">80</a>      }
-<a class="jxr_linenumber" name="L81" href="#L81">81</a>  }
+<a class="jxr_linenumber" name="L69" href="#L69">69</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> isEmpty() {
+<a class="jxr_linenumber" name="L70" href="#L70">70</a>          <strong class="jxr_keyword">return</strong> fragments.isEmpty();
+<a class="jxr_linenumber" name="L71" href="#L71">71</a>      }
+<a class="jxr_linenumber" name="L72" href="#L72">72</a>  
+<a class="jxr_linenumber" name="L73" href="#L73">73</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> Collector&lt;FragmentAndParameters, FragmentCollector, FragmentCollector&gt; collect() {
+<a class="jxr_linenumber" name="L74" href="#L74">74</a>          <strong class="jxr_keyword">return</strong> Collector.of(FragmentCollector::<strong class="jxr_keyword">new</strong>,
+<a class="jxr_linenumber" name="L75" href="#L75">75</a>                  FragmentCollector::add,
+<a class="jxr_linenumber" name="L76" href="#L76">76</a>                  FragmentCollector::merge);
+<a class="jxr_linenumber" name="L77" href="#L77">77</a>      }
+<a class="jxr_linenumber" name="L78" href="#L78">78</a>  
+<a class="jxr_linenumber" name="L79" href="#L79">79</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> Collector&lt;FragmentAndParameters, FragmentCollector, FragmentCollector&gt; collect(
+<a class="jxr_linenumber" name="L80" href="#L80">80</a>              <a name="FragmentAndParameters" href="../../../../../org/mybatis/dynamic/sql/util/FragmentAndParameters.html#FragmentAndParameters">FragmentAndParameters</a> initialFragment) {
+<a class="jxr_linenumber" name="L81" href="#L81">81</a>          <strong class="jxr_keyword">return</strong> Collector.of(() -&gt; <strong class="jxr_keyword">new</strong> <a name="FragmentCollector" href="../../../../../org/mybatis/dynamic/sql/util/FragmentCollector.html#FragmentCollector">FragmentCollector</a>(initialFragment),
+<a class="jxr_linenumber" name="L82" href="#L82">82</a>                  FragmentCollector::add,
+<a class="jxr_linenumber" name="L83" href="#L83">83</a>                  FragmentCollector::merge);
+<a class="jxr_linenumber" name="L84" href="#L84">84</a>      }
+<a class="jxr_linenumber" name="L85" href="#L85">85</a>  }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2016&#x2013;2024 <a href="https://www.mybatis.org/">MyBatis.org</a>. All rights reserved.</div>

@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AbstractBooleanExpressionDSL.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.common</a> &gt; <span class="el_source">AbstractBooleanExpressionDSL.java</span></div><h1>AbstractBooleanExpressionDSL.java</h1><pre class="source lang-java linenums">/*
+ *    Copyright 2016-2024 the original author or authors.
+ *
+ *    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *       https://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+package org.mybatis.dynamic.sql.common;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import org.jetbrains.annotations.NotNull;
+import org.mybatis.dynamic.sql.AndOrCriteriaGroup;
+import org.mybatis.dynamic.sql.BindableColumn;
+import org.mybatis.dynamic.sql.ColumnAndConditionCriterion;
+import org.mybatis.dynamic.sql.CriteriaGroup;
+import org.mybatis.dynamic.sql.ExistsCriterion;
+import org.mybatis.dynamic.sql.ExistsPredicate;
+import org.mybatis.dynamic.sql.SqlCriterion;
+import org.mybatis.dynamic.sql.VisitableCondition;
+import org.mybatis.dynamic.sql.util.Validator;
+
+<span class="fc" id="L33">public abstract class AbstractBooleanExpressionDSL&lt;T extends AbstractBooleanExpressionDSL&lt;T&gt;&gt; {</span>
+    private SqlCriterion initialCriterion; // WARNING - may be null!
+<span class="fc" id="L35">    protected final List&lt;AndOrCriteriaGroup&gt; subCriteria = new ArrayList&lt;&gt;();</span>
+
+    @NotNull
+    public &lt;S&gt; T and(BindableColumn&lt;S&gt; column, VisitableCondition&lt;S&gt; condition,
+                     AndOrCriteriaGroup... subCriteria) {
+<span class="fc" id="L40">        return and(column, condition, Arrays.asList(subCriteria));</span>
+    }
+
+    @NotNull
+    public &lt;S&gt; T and(BindableColumn&lt;S&gt; column, VisitableCondition&lt;S&gt; condition,
+                     List&lt;AndOrCriteriaGroup&gt; subCriteria) {
+<span class="fc" id="L46">        addSubCriteria(&quot;and&quot;, buildCriterion(column, condition), subCriteria); //$NON-NLS-1$</span>
+<span class="fc" id="L47">        return getThis();</span>
+    }
+
+    @NotNull
+    public T and(ExistsPredicate existsPredicate, AndOrCriteriaGroup... subCriteria) {
+<span class="fc" id="L52">        return and(existsPredicate, Arrays.asList(subCriteria));</span>
+    }
+
+    @NotNull
+    public T and(ExistsPredicate existsPredicate, List&lt;AndOrCriteriaGroup&gt; subCriteria) {
+<span class="fc" id="L57">        addSubCriteria(&quot;and&quot;, buildCriterion(existsPredicate), subCriteria); //$NON-NLS-1$</span>
+<span class="fc" id="L58">        return getThis();</span>
+    }
+
+    @NotNull
+    public T and(SqlCriterion initialCriterion, AndOrCriteriaGroup... subCriteria) {
+<span class="fc" id="L63">        return and(initialCriterion, Arrays.asList(subCriteria));</span>
+    }
+
+    @NotNull
+    public T and(SqlCriterion initialCriterion, List&lt;AndOrCriteriaGroup&gt; subCriteria) {
+<span class="fc" id="L68">        addSubCriteria(&quot;and&quot;, buildCriterion(initialCriterion), subCriteria); //$NON-NLS-1$</span>
+<span class="fc" id="L69">        return getThis();</span>
+    }
+
+    @NotNull
+    public T and(List&lt;AndOrCriteriaGroup&gt; criteria) {
+<span class="fc" id="L74">        addSubCriteria(&quot;and&quot;, criteria); //$NON-NLS-1$</span>
+<span class="fc" id="L75">        return getThis();</span>
+    }
+
+    @NotNull
+    public &lt;S&gt; T or(BindableColumn&lt;S&gt; column, VisitableCondition&lt;S&gt; condition,
+                    AndOrCriteriaGroup... subCriteria) {
+<span class="fc" id="L81">        return or(column, condition, Arrays.asList(subCriteria));</span>
+    }
+
+    @NotNull
+    public &lt;S&gt; T or(BindableColumn&lt;S&gt; column, VisitableCondition&lt;S&gt; condition,
+                    List&lt;AndOrCriteriaGroup&gt; subCriteria) {
+<span class="fc" id="L87">        addSubCriteria(&quot;or&quot;, buildCriterion(column, condition), subCriteria); //$NON-NLS-1$</span>
+<span class="fc" id="L88">        return getThis();</span>
+    }
+
+    @NotNull
+    public T or(ExistsPredicate existsPredicate, AndOrCriteriaGroup... subCriteria) {
+<span class="fc" id="L93">        return or(existsPredicate, Arrays.asList(subCriteria));</span>
+    }
+
+    @NotNull
+    public T or(ExistsPredicate existsPredicate, List&lt;AndOrCriteriaGroup&gt; subCriteria) {
+<span class="fc" id="L98">        addSubCriteria(&quot;or&quot;, buildCriterion(existsPredicate), subCriteria); //$NON-NLS-1$</span>
+<span class="fc" id="L99">        return getThis();</span>
+    }
+
+    @NotNull
+    public T or(SqlCriterion initialCriterion, AndOrCriteriaGroup... subCriteria) {
+<span class="fc" id="L104">        return or(initialCriterion, Arrays.asList(subCriteria));</span>
+    }
+
+    @NotNull
+    public T or(SqlCriterion initialCriterion, List&lt;AndOrCriteriaGroup&gt; subCriteria) {
+<span class="fc" id="L109">        addSubCriteria(&quot;or&quot;, buildCriterion(initialCriterion), subCriteria); //$NON-NLS-1$</span>
+<span class="fc" id="L110">        return getThis();</span>
+    }
+
+    @NotNull
+    public T or(List&lt;AndOrCriteriaGroup&gt; criteria) {
+<span class="fc" id="L115">        addSubCriteria(&quot;or&quot;, criteria); //$NON-NLS-1$</span>
+<span class="fc" id="L116">        return getThis();</span>
+    }
+
+    private &lt;R&gt; SqlCriterion buildCriterion(BindableColumn&lt;R&gt; column, VisitableCondition&lt;R&gt; condition) {
+<span class="fc" id="L120">        return ColumnAndConditionCriterion.withColumn(column).withCondition(condition).build();</span>
+    }
+
+    private SqlCriterion buildCriterion(ExistsPredicate existsPredicate) {
+<span class="fc" id="L124">        return new ExistsCriterion.Builder().withExistsPredicate(existsPredicate).build();</span>
+    }
+
+    private SqlCriterion buildCriterion(SqlCriterion initialCriterion) {
+<span class="fc" id="L128">        return new CriteriaGroup.Builder().withInitialCriterion(initialCriterion).build();</span>
+    }
+
+    private void addSubCriteria(String connector, SqlCriterion initialCriterion,
+                                List&lt;AndOrCriteriaGroup&gt; subCriteria) {
+<span class="fc" id="L133">        this.subCriteria.add(new AndOrCriteriaGroup.Builder()</span>
+<span class="fc" id="L134">                .withInitialCriterion(initialCriterion)</span>
+<span class="fc" id="L135">                .withConnector(connector)</span>
+<span class="fc" id="L136">                .withSubCriteria(subCriteria)</span>
+<span class="fc" id="L137">                .build());</span>
+<span class="fc" id="L138">    }</span>
+
+    private void addSubCriteria(String connector, List&lt;AndOrCriteriaGroup&gt; criteria) {
+<span class="fc" id="L141">        this.subCriteria.add(new AndOrCriteriaGroup.Builder()</span>
+<span class="fc" id="L142">                .withConnector(connector)</span>
+<span class="fc" id="L143">                .withSubCriteria(criteria)</span>
+<span class="fc" id="L144">                .build());</span>
+<span class="fc" id="L145">    }</span>
+
+    protected void setInitialCriterion(SqlCriterion initialCriterion) {
+<span class="fc" id="L148">        this.initialCriterion = initialCriterion;</span>
+<span class="fc" id="L149">    }</span>
+
+    protected void setInitialCriterion(SqlCriterion initialCriterion, StatementType statementType) {
+<span class="fc bfc" id="L152" title="All 2 branches covered.">        Validator.assertTrue(this.initialCriterion == null, statementType.messageNumber());</span>
+<span class="fc" id="L153">        setInitialCriterion(initialCriterion);</span>
+<span class="fc" id="L154">    }</span>
+
+    // may be null!
+    protected SqlCriterion getInitialCriterion() {
+<span class="fc" id="L158">        return initialCriterion;</span>
+    }
+
+    protected abstract T getThis();
+
+<span class="fc" id="L163">    public enum StatementType {</span>
+<span class="fc" id="L164">        WHERE(&quot;ERROR.32&quot;), //$NON-NLS-1$</span>
+<span class="fc" id="L165">        HAVING(&quot;ERROR.31&quot;); //$NON-NLS-1$</span>
+
+        private final String messageNumber;
+
+        public String messageNumber() {
+<span class="fc" id="L170">            return messageNumber;</span>
+        }
+
+<span class="fc" id="L173">        StatementType(String messageNumber) {</span>
+<span class="fc" id="L174">            this.messageNumber = messageNumber;</span>
+<span class="fc" id="L175">        }</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>KotlinSubQueryBuilders.kt</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.util.kotlin</a> &gt; <span class="el_source">KotlinSubQueryBuilders.kt</span></div><h1>KotlinSubQueryBuilders.kt</h1><pre class="source lang-java linenums">/*
+ *    Copyright 2016-2024 the original author or authors.
+ *
+ *    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *       https://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+package org.mybatis.dynamic.sql.util.kotlin
+
+import org.mybatis.dynamic.sql.BasicColumn
+import org.mybatis.dynamic.sql.SqlBuilder
+import org.mybatis.dynamic.sql.SqlColumn
+import org.mybatis.dynamic.sql.SqlTable
+import org.mybatis.dynamic.sql.configuration.StatementConfiguration
+import org.mybatis.dynamic.sql.insert.InsertSelectModel
+import org.mybatis.dynamic.sql.select.SelectModel
+import org.mybatis.dynamic.sql.util.Buildable
+
+@MyBatisDslMarker
+sealed class KotlinBaseSubQueryBuilder {
+    private var selectBuilder: KotlinSelectBuilder? = null
+
+    fun select(vararg selectList: BasicColumn, completer: SelectCompleter): Unit =
+<span class="fc" id="L32">        select(selectList.toList(), completer)</span>
+
+    fun select(selectList: List&lt;BasicColumn&gt;, completer: SelectCompleter) {
+<span class="fc" id="L35">        selectBuilder = KotlinSelectBuilder(SqlBuilder.select(selectList)).apply(completer)</span>
+<span class="fc" id="L36">    }</span>
+
+    fun selectDistinct(vararg selectList: BasicColumn, completer: SelectCompleter): Unit =
+<span class="fc" id="L39">        selectDistinct(selectList.toList(), completer)</span>
+
+    fun selectDistinct(selectList: List&lt;BasicColumn&gt;, completer: SelectCompleter) {
+<span class="fc" id="L42">        selectBuilder = KotlinSelectBuilder(SqlBuilder.selectDistinct(selectList)).apply(completer)</span>
+<span class="fc" id="L43">    }</span>
+
+<span class="fc" id="L45">    internal fun buildSelectModel(): SelectModel = invalidIfNull(selectBuilder, &quot;ERROR.28&quot;).build() //$NON-NLS-1$</span>
+}
+
+<span class="fc" id="L48">class KotlinSubQueryBuilder : KotlinBaseSubQueryBuilder(), Buildable&lt;SelectModel&gt; {</span>
+<span class="fc" id="L49">    override fun build(): SelectModel = buildSelectModel()</span>
+}
+
+<span class="fc" id="L52">class KotlinQualifiedSubQueryBuilder : KotlinBaseSubQueryBuilder(), Buildable&lt;SelectModel&gt; {</span>
+<span class="pc" id="L53">    var correlationName: String? = null</span>
+
+    operator fun String.unaryPlus() {
+<span class="fc" id="L56">        correlationName = this</span>
+<span class="fc" id="L57">    }</span>
+
+<span class="fc" id="L59">    override fun build(): SelectModel = buildSelectModel()</span>
+}
+
+typealias InsertSelectCompleter = KotlinInsertSelectSubQueryBuilder.() -&gt; Unit
+
+<span class="fc" id="L64">class KotlinInsertSelectSubQueryBuilder : KotlinBaseSubQueryBuilder(), Buildable&lt;InsertSelectModel&gt; {</span>
+    private var columnList: List&lt;SqlColumn&lt;*&gt;&gt;? = null
+    private var table: SqlTable? = null
+    private var statementConfigurator: (StatementConfiguration.() -&gt; Unit)? = null
+
+    fun into(table: SqlTable) {
+<span class="fc" id="L70">        this.table = table</span>
+<span class="fc" id="L71">    }</span>
+
+<span class="fc" id="L73">    fun columns(vararg columnList: SqlColumn&lt;*&gt;): Unit = columns(columnList.asList())</span>
+
+    fun columns(columnList: List&lt;SqlColumn&lt;*&gt;&gt;) {
+<span class="fc" id="L76">        this.columnList = columnList</span>
+<span class="fc" id="L77">    }</span>
+
+    fun configureStatement(c: StatementConfiguration.() -&gt; Unit) {
+<span class="fc" id="L80">        statementConfigurator = c</span>
+<span class="fc" id="L81">    }</span>
+
+    override fun build(): InsertSelectModel {
+<span class="fc" id="L84">        assertNotNull(table, &quot;ERROR.29&quot;) //$NON-NLS-1$</span>
+
+<span class="fc bfc" id="L86" title="All 2 branches covered.">        val dsl = if (columnList == null) {</span>
+<span class="fc" id="L87">            SqlBuilder.insertInto(table)</span>
+<span class="fc" id="L88">                .withSelectStatement { buildSelectModel() }</span>
+        } else {
+<span class="fc" id="L90">            SqlBuilder.insertInto(table)</span>
+<span class="fc" id="L91">                .withColumnList(columnList)</span>
+<span class="fc" id="L92">                .withSelectStatement { buildSelectModel() }</span>
+        }
+
+<span class="fc bfc" id="L95" title="All 2 branches covered.">        statementConfigurator?.let { dsl.configureStatement(it) }</span>
+
+<span class="fc" id="L97">        return dsl.build()</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

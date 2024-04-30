@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AbstractListValueCondition.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql</a> &gt; <span class="el_source">AbstractListValueCondition.java</span></div><h1>AbstractListValueCondition.java</h1><pre class="source lang-java linenums">/*
+ *    Copyright 2016-2024 the original author or authors.
+ *
+ *    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *       https://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+package org.mybatis.dynamic.sql;
+
+import java.util.Collection;
+import java.util.Objects;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import org.mybatis.dynamic.sql.render.RenderingContext;
+
+public abstract class AbstractListValueCondition&lt;T&gt; implements VisitableCondition&lt;T&gt; {
+    protected final Collection&lt;T&gt; values;
+
+<span class="fc" id="L31">    protected AbstractListValueCondition(Collection&lt;T&gt; values) {</span>
+<span class="fc" id="L32">        this.values = Objects.requireNonNull(values);</span>
+<span class="fc" id="L33">    }</span>
+
+    public final Stream&lt;T&gt; values() {
+<span class="fc" id="L36">        return values.stream();</span>
+    }
+
+    @Override
+    public boolean isEmpty() {
+<span class="fc" id="L41">        return values.isEmpty();</span>
+    }
+
+    @Override
+    public boolean shouldRender(RenderingContext renderingContext) {
+<span class="fc bfc" id="L46" title="All 2 branches covered.">        if (isEmpty()) {</span>
+<span class="fc" id="L47">            return renderingContext.isEmptyListConditionRenderingAllowed();</span>
+        } else {
+<span class="fc" id="L49">            return true;</span>
+        }
+    }
+
+    @Override
+    public &lt;R&gt; R accept(ConditionVisitor&lt;T, R&gt; visitor) {
+<span class="fc" id="L55">        return visitor.visit(this);</span>
+    }
+
+    private &lt;R&gt; Collection&lt;R&gt; applyMapper(Function&lt;? super T, ? extends R&gt; mapper) {
+<span class="fc" id="L59">        Objects.requireNonNull(mapper);</span>
+<span class="fc" id="L60">        return values.stream().map(mapper).collect(Collectors.toList());</span>
+    }
+
+    private Collection&lt;T&gt; applyFilter(Predicate&lt;? super T&gt; predicate) {
+<span class="fc" id="L64">        Objects.requireNonNull(predicate);</span>
+<span class="fc" id="L65">        return values.stream().filter(predicate).collect(Collectors.toList());</span>
+    }
+
+    protected &lt;S extends AbstractListValueCondition&lt;T&gt;&gt; S filterSupport(Predicate&lt;? super T&gt; predicate,
+            Function&lt;Collection&lt;T&gt;, S&gt; constructor, S self, Supplier&lt;S&gt; emptySupplier) {
+<span class="fc bfc" id="L70" title="All 2 branches covered.">        if (isEmpty()) {</span>
+<span class="fc" id="L71">            return self;</span>
+        } else {
+<span class="fc" id="L73">            Collection&lt;T&gt; filtered = applyFilter(predicate);</span>
+<span class="fc bfc" id="L74" title="All 2 branches covered.">            return filtered.isEmpty() ? emptySupplier.get() : constructor.apply(filtered);</span>
+        }
+    }
+
+    protected &lt;R, S extends AbstractListValueCondition&lt;R&gt;&gt; S mapSupport(Function&lt;? super T, ? extends R&gt; mapper,
+            Function&lt;Collection&lt;R&gt;, S&gt; constructor, Supplier&lt;S&gt; emptySupplier) {
+<span class="fc bfc" id="L80" title="All 2 branches covered.">        if (isEmpty()) {</span>
+<span class="fc" id="L81">            return emptySupplier.get();</span>
+        } else {
+<span class="fc" id="L83">            return constructor.apply(applyMapper(mapper));</span>
+        }
+    }
+
+    /**
+     * If renderable, apply the predicate to each value in the list and return a new condition with the filtered values.
+     *     Else returns a condition that will not render (this). If all values are filtered out of the value
+     *     list, then the condition will not render.
+     *
+     * @param predicate
+     *            predicate applied to the values, if renderable
+     *
+     * @return a new condition with filtered values if renderable, otherwise a condition that will not render.
+     */
+    public abstract AbstractListValueCondition&lt;T&gt; filter(Predicate&lt;? super T&gt; predicate);
+
+    public abstract String operator();
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

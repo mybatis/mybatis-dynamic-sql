@@ -1,0 +1,291 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CommonSelectMapper.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.util.mybatis3</a> &gt; <span class="el_source">CommonSelectMapper.java</span></div><h1>CommonSelectMapper.java</h1><pre class="source lang-java linenums">/*
+ *    Copyright 2016-2024 the original author or authors.
+ *
+ *    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *       https://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+package org.mybatis.dynamic.sql.util.mybatis3;
+
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import org.apache.ibatis.annotations.SelectProvider;
+import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
+import org.mybatis.dynamic.sql.util.SqlProviderAdapter;
+
+/**
+ * This is a general purpose MyBatis mapper for select statements. It allows you to execute select statements without
+ * having to write a custom {@link org.apache.ibatis.annotations.ResultMap} for each statement.
+ *
+ * &lt;p&gt;This mapper contains three types of methods:
+ * &lt;ul&gt;
+ *   &lt;li&gt;The selectOneMappedRow and selectManyMappedRows methods allow you to use select statements with
+ *     any number of columns. MyBatis will process the rows and return a Map of values, or a List of Maps.&lt;/li&gt;
+ *   &lt;li&gt;The selectOne and selectMany methods also allow you to use select statements with any number of columns.
+ *   These methods also allow you to specify a function that will transform a Map of row values into a specific
+ *   object.&lt;/li&gt;
+ *   &lt;li&gt;The other methods are for result sets with a single column. There are functions for many
+ *   data types (Integer, Long, String, etc.) There are also functions that return a single value, and Optional value,
+ *   or a List of values.&lt;/li&gt;
+ * &lt;/ul&gt;
+ *
+ * &lt;p&gt;This mapper can be injected as-is into a MyBatis configuration, or it can be extended with existing mappers.
+ *
+ * @author Jeff Butler
+ */
+public interface CommonSelectMapper {
+    /**
+     * Select a single row as a Map of values. The row may have any number of columns.
+     * The Map key will be the column name as returned from the
+     * database (may be aliased if an alias is specified in the select statement). Map entries will be
+     * of data types determined by the JDBC driver. MyBatis will call ResultSet.getObject() to retrieve
+     * values from the ResultSet. Reference your JDBC driver documentation to learn about type mappings
+     * for your specific database.
+     *
+     * @param selectStatement the select statement
+     * @return A Map containing the row values.
+     */
+    @SelectProvider(type = SqlProviderAdapter.class, method = &quot;select&quot;)
+    Map&lt;String, Object&gt; selectOneMappedRow(SelectStatementProvider selectStatement);
+
+    /**
+     * Select a single row of values and then convert the values to a custom type. This is similar
+     * to the Spring JDBC template method of processing result sets. In this case, MyBatis will first extract
+     * the row values into a Map, and then a row mapper can retrieve values from the Map and use them
+     * to construct a custom object.
+     *
+     * &lt;p&gt;See {@link CommonSelectMapper#selectOneMappedRow(SelectStatementProvider)} for details about
+     * how MyBatis will construct the Map of values.
+     *
+     * @param selectStatement the select statement
+     * @param rowMapper a function that will convert a Map of row values to the desired data type
+     * @param &lt;R&gt; the datatype of the converted object
+     * @return the converted object
+     */
+    default &lt;R&gt; R selectOne(SelectStatementProvider selectStatement,
+                            Function&lt;Map&lt;String, Object&gt;, R&gt; rowMapper) {
+<span class="fc" id="L80">        return rowMapper.apply(selectOneMappedRow(selectStatement));</span>
+    }
+
+    /**
+     * Select any number of rows and return a List of Maps containing row values (one Map for each row returned).
+     * The rows may have any number of columns.
+     * The Map key will be the column name as returned from the
+     * database (may be aliased if an alias is specified in the select statement). Map entries will be
+     * of data types determined by the JDBC driver. MyBatis will call ResultSet.getObject() to retrieve
+     * values from the ResultSet. Reference your JDBC driver documentation to learn about type mappings
+     * for your specific database.
+     *
+     * @param selectStatement the select statement
+     * @return A List of Maps containing the row values.
+     */
+    @SelectProvider(type = SqlProviderAdapter.class, method = &quot;select&quot;)
+    List&lt;Map&lt;String, Object&gt;&gt; selectManyMappedRows(SelectStatementProvider selectStatement);
+
+    /**
+     * Select any number of rows and then convert the values to a custom type. This is similar to the
+     * Spring JDBC template method of processing result sets. In this case, MyBatis will first extract the
+     * row values into a List of Map, and them a row mapper can retrieve values from the Map and use them
+     * to construct a custom object for each row.
+     *
+     * @param selectStatement the select statement
+     * @param rowMapper a function that will convert a Map of row values to the desired data type
+     * @param &lt;R&gt; the datatype of the converted object
+     * @return the List of converted objects
+     */
+    default &lt;R&gt; List&lt;R&gt; selectMany(SelectStatementProvider selectStatement,
+                                   Function&lt;Map&lt;String, Object&gt;, R&gt; rowMapper) {
+<span class="fc" id="L111">        return selectManyMappedRows(selectStatement).stream()</span>
+<span class="fc" id="L112">                .map(rowMapper)</span>
+<span class="fc" id="L113">                .collect(Collectors.toList());</span>
+    }
+
+    /**
+     * Retrieve a single {@link java.math.BigDecimal} from a result set. The result set must have
+     * only one column and one or zero rows. The column must be retrievable from the result set
+     * via the ResultSet.getBigDecimal() method.
+     *
+     * @param selectStatement the select statement
+     * @return the extracted value. May be null if zero rows are returned, or if the returned
+     *     column is null
+     */
+    @SelectProvider(type = SqlProviderAdapter.class, method = &quot;select&quot;)
+    BigDecimal selectOneBigDecimal(SelectStatementProvider selectStatement);
+
+    /**
+     * Retrieve a single {@link java.math.BigDecimal} from a result set. The result set must have
+     * only one column and one or zero rows. The column must be retrievable from the result set
+     * via the ResultSet.getBigDecimal() method.
+     *
+     * @param selectStatement the select statement
+     * @return the extracted value. The Optional will be empty if zero rows are returned, or if the returned
+     *     column is null
+     */
+    @SelectProvider(type = SqlProviderAdapter.class, method = &quot;select&quot;)
+    Optional&lt;BigDecimal&gt; selectOptionalBigDecimal(SelectStatementProvider selectStatement);
+
+    /**
+     * Retrieve a List of {@link java.math.BigDecimal} from a result set. The result set must have
+     * only one column, but can have any number of rows. The column must be retrievable from the result set
+     * via the ResultSet.getBigDecimal() method.
+     *
+     * @param selectStatement the select statement
+     * @return the list of extracted values. Any value may be null if a column in the result set is null
+     */
+    @SelectProvider(type = SqlProviderAdapter.class, method = &quot;select&quot;)
+    List&lt;BigDecimal&gt; selectManyBigDecimals(SelectStatementProvider selectStatement);
+
+    /**
+     * Retrieve a single {@link java.lang.Double} from a result set. The result set must have
+     * only one column and one or zero rows. The column must be retrievable from the result set
+     * via the ResultSet.getDouble() method.
+     *
+     * @param selectStatement the select statement
+     * @return the extracted value. May be null if zero rows are returned, or if the returned
+     *     column is null
+     */
+    @SelectProvider(type = SqlProviderAdapter.class, method = &quot;select&quot;)
+    Double selectOneDouble(SelectStatementProvider selectStatement);
+
+    /**
+     * Retrieve a single {@link java.lang.Double} from a result set. The result set must have
+     * only one column and one or zero rows. The column must be retrievable from the result set
+     * via the ResultSet.getDouble() method.
+     *
+     * @param selectStatement the select statement
+     * @return the extracted value. The Optional will be empty if zero rows are returned, or if the returned
+     *     column is null
+     */
+    @SelectProvider(type = SqlProviderAdapter.class, method = &quot;select&quot;)
+    Optional&lt;Double&gt; selectOptionalDouble(SelectStatementProvider selectStatement);
+
+    /**
+     * Retrieve a List of {@link java.lang.Double} from a result set. The result set must have
+     * only one column, but can have any number of rows. The column must be retrievable from the result set
+     * via the ResultSet.getDouble() method.
+     *
+     * @param selectStatement the select statement
+     * @return the list of extracted values. Any value may be null if a column in the result set is null
+     */
+    @SelectProvider(type = SqlProviderAdapter.class, method = &quot;select&quot;)
+    List&lt;Double&gt; selectManyDoubles(SelectStatementProvider selectStatement);
+
+    /**
+     * Retrieve a single {@link java.lang.Integer} from a result set. The result set must have
+     * only one column and one or zero rows. The column must be retrievable from the result set
+     * via the ResultSet.getInt() method.
+     *
+     * @param selectStatement the select statement
+     * @return the extracted value. May be null if zero rows are returned, or if the returned
+     *     column is null
+     */
+    @SelectProvider(type = SqlProviderAdapter.class, method = &quot;select&quot;)
+    Integer selectOneInteger(SelectStatementProvider selectStatement);
+
+    /**
+     * Retrieve a single {@link java.lang.Integer} from a result set. The result set must have
+     * only one column and one or zero rows. The column must be retrievable from the result set
+     * via the ResultSet.getInt() method.
+     *
+     * @param selectStatement the select statement
+     * @return the extracted value. The Optional will be empty if zero rows are returned, or if the returned
+     *     column is null
+     */
+    @SelectProvider(type = SqlProviderAdapter.class, method = &quot;select&quot;)
+    Optional&lt;Integer&gt; selectOptionalInteger(SelectStatementProvider selectStatement);
+
+    /**
+     * Retrieve a List of {@link java.lang.Integer} from a result set. The result set must have
+     * only one column, but can have any number of rows. The column must be retrievable from the result set
+     * via the ResultSet.getInt() method.
+     *
+     * @param selectStatement the select statement
+     * @return the list of extracted values. Any value may be null if a column in the result set is null
+     */
+    @SelectProvider(type = SqlProviderAdapter.class, method = &quot;select&quot;)
+    List&lt;Integer&gt; selectManyIntegers(SelectStatementProvider selectStatement);
+
+    /**
+     * Retrieve a single {@link java.lang.Long} from a result set. The result set must have
+     * only one column and one or zero rows. The column must be retrievable from the result set
+     * via the ResultSet.getLong() method.
+     *
+     * @param selectStatement the select statement
+     * @return the extracted value. May be null if zero rows are returned, or if the returned
+     *     column is null
+     */
+    @SelectProvider(type = SqlProviderAdapter.class, method = &quot;select&quot;)
+    Long selectOneLong(SelectStatementProvider selectStatement);
+
+    /**
+     * Retrieve a single {@link java.lang.Long} from a result set. The result set must have
+     * only one column and one or zero rows. The column must be retrievable from the result set
+     * via the ResultSet.getLong() method.
+     *
+     * @param selectStatement the select statement
+     * @return the extracted value. The Optional will be empty if zero rows are returned, or if the returned
+     *     column is null
+     */
+    @SelectProvider(type = SqlProviderAdapter.class, method = &quot;select&quot;)
+    Optional&lt;Long&gt; selectOptionalLong(SelectStatementProvider selectStatement);
+
+    /**
+     * Retrieve a List of {@link java.lang.Long} from a result set. The result set must have
+     * only one column, but can have any number of rows. The column must be retrievable from the result set
+     * via the ResultSet.getLong() method.
+     *
+     * @param selectStatement the select statement
+     * @return the list of extracted values. Any value may be null if a column in the result set is null
+     */
+    @SelectProvider(type = SqlProviderAdapter.class, method = &quot;select&quot;)
+    List&lt;Long&gt; selectManyLongs(SelectStatementProvider selectStatement);
+
+    /**
+     * Retrieve a single {@link java.lang.String} from a result set. The result set must have
+     * only one column and one or zero rows. The column must be retrievable from the result set
+     * via the ResultSet.getString() method.
+     *
+     * @param selectStatement the select statement
+     * @return the extracted value. May be null if zero rows are returned, or if the returned
+     *     column is null
+     */
+    @SelectProvider(type = SqlProviderAdapter.class, method = &quot;select&quot;)
+    String selectOneString(SelectStatementProvider selectStatement);
+
+    /**
+     * Retrieve a single {@link java.lang.String} from a result set. The result set must have
+     * only one column and one or zero rows. The column must be retrievable from the result set
+     * via the ResultSet.getString() method.
+     *
+     * @param selectStatement the select statement
+     * @return the extracted value. The Optional will be empty if zero rows are returned, or if the returned
+     *     column is null
+     */
+    @SelectProvider(type = SqlProviderAdapter.class, method = &quot;select&quot;)
+    Optional&lt;String&gt; selectOptionalString(SelectStatementProvider selectStatement);
+
+    /**
+     * Retrieve a List of {@link java.lang.String} from a result set. The result set must have
+     * only one column, but can have any number of rows. The column must be retrievable from the result set
+     * via the ResultSet.getString() method.
+     *
+     * @param selectStatement the select statement
+     * @return the list of extracted values. Any value may be null if a column in the result set is null
+     */
+    @SelectProvider(type = SqlProviderAdapter.class, method = &quot;select&quot;)
+    List&lt;String&gt; selectManyStrings(SelectStatementProvider selectStatement);
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>
