@@ -109,10 +109,7 @@ class MyBatisMapToRowTest {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             CompoundKeyMapper mapper = session.getMapper(CompoundKeyMapper.class);
 
-            List<Integer> integers = new ArrayList<>();
-            integers.add(1);
-            integers.add(2);
-            integers.add(3);
+            List<Integer> integers = List.of(1, 2, 3);
 
             MultiRowInsertStatementProvider<Integer> insertStatement = insertMultiple(integers)
                     .into(compoundKey)
@@ -142,10 +139,7 @@ class MyBatisMapToRowTest {
         try (SqlSession session = sqlSessionFactory.openSession(ExecutorType.BATCH)) {
             CompoundKeyMapper mapper = session.getMapper(CompoundKeyMapper.class);
 
-            List<Integer> integers = new ArrayList<>();
-            integers.add(1);
-            integers.add(2);
-            integers.add(3);
+            List<Integer> integers = List.of(1, 2, 3);
 
             BatchInsert<Integer> insertStatement = insertBatch(integers)
                     .into(compoundKey)

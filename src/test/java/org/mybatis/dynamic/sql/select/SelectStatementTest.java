@@ -180,9 +180,7 @@ class SelectStatementTest {
 
     @Test
     void testOrderByMultipleColumnsWithCollection() {
-        Collection<SortSpecification> orderByColumns = new ArrayList<>();
-        orderByColumns.add(column2.descending());
-        orderByColumns.add(column1);
+        Collection<SortSpecification> orderByColumns = List.of(column2.descending(), column1);
 
         SelectStatementProvider selectStatement = select(column1.as("A_COLUMN1"), column2)
                 .from(table, "a")
