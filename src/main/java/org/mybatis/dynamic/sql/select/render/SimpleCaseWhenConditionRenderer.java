@@ -46,9 +46,14 @@ public class SimpleCaseWhenConditionRenderer<T> implements SimpleCaseWhenConditi
 
     @Override
     public FragmentAndParameters visit(ConditionBasedWhenCondition<T> whenCondition) {
-        return whenCondition.conditions().map(this::renderCondition)
-                .collect(FragmentCollector.collect())
-                .toFragmentAndParameters(Collectors.joining(", ")); //$NON-NLS-1$
+        FragmentCollector fragmentCollector = whenCondition.conditions()
+                .filter(this::shouldRender)
+                .map(this::renderCondition)
+                .collect(FragmentCollector.collect());
+
+        Validator.assertFalse(fragmentCollector.isEmpty(), "ERROR.39"); //$NON-NLS-1$
+
+        return fragmentCollector.toFragmentAndParameters(Collectors.joining(", ")); //$NON-NLS-1$
     }
 
     @Override
@@ -58,8 +63,11 @@ public class SimpleCaseWhenConditionRenderer<T> implements SimpleCaseWhenConditi
                 .toFragmentAndParameters(Collectors.joining(", ")); //$NON-NLS-1$
     }
 
+    private boolean shouldRender(VisitableCondition<T> condition) {
+        return condition.shouldRender(renderingContext);
+    }
+
     private FragmentAndParameters renderCondition(VisitableCondition<T> condition) {
-        Validator.assertTrue(condition.shouldRender(renderingContext), "ERROR.39"); //$NON-NLS-1$
         return condition.accept(conditionVisitor);
     }
 
