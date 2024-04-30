@@ -6,6 +6,8 @@ This log will detail notable changes to MyBatis Dynamic SQL. Full details are av
 
 This is a minor release with several enhancements.
 
+**Important:** This is the last release that will be compatible with Java 8.
+
 GitHub milestone: [https://github.com/mybatis/mybatis-dynamic-sql/milestone/13?closed=1](https://github.com/mybatis/mybatis-dynamic-sql/milestone/13?closed=1)
 
 ### Case Expressions and Cast Function

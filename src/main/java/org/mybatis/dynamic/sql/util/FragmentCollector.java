@@ -66,6 +66,10 @@ public class FragmentCollector {
         return fragments.size() > 1;
     }
 
+    public boolean isEmpty() {
+        return fragments.isEmpty();
+    }
+
     public static Collector<FragmentAndParameters, FragmentCollector, FragmentCollector> collect() {
         return Collector.of(FragmentCollector::new,
                 FragmentCollector::add,

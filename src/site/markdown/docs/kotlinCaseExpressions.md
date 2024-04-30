@@ -200,8 +200,8 @@ select(case {
 ```
 
 The full syntax of "where" and "having" clauses is supported in the "when" clause - but that may or may not be supported
-by your database. Testing is crucial. In addition, the library does not support conditions that don't render in a case
-statement - so avoid the use of conditions like "isEqualToWhenPresent", etc.
+by your database. Testing is crucial. The library supports optional conditions in "when" clauses, but at least one
+condition must render, else the library will throw an `InvalidSqlException`.
 
 The rendered SQL will be as follows (without the line breaks):
 ```sql
