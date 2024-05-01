@@ -888,7 +888,7 @@ class KCaseExpressionTest {
     fun testInvalidDoubleElseSimple() {
         assertThatExceptionOfType(KInvalidSQLException::class.java).isThrownBy {
             case(animalName) {
-                `when`(isEqualTo("Artic fox"), isEqualTo("Red fox")) then "'yes'"
+                `when`(isEqualTo("Artic fox"), isEqualTo("Red fox")) then "yes"
                 `else`("Fred")
                 `else`("Wilma")
             }
@@ -901,9 +901,9 @@ class KCaseExpressionTest {
             case {
                 `when` {
                     id isEqualTo 22
-                    then("'yes'")
+                    this then "yes"
                 }
-                `else`("Fred")
+                this `else` "Fred"
                 `else`("Wilma")
             }
         }.withMessage(Messages.getString("ERROR.42"))
@@ -915,8 +915,8 @@ class KCaseExpressionTest {
             case {
                 `when` {
                     id isEqualTo 22
-                    then("'yes'")
-                    then("'no'")
+                    then("yes")
+                    then("no")
                 }
             }
         }.withMessage(Messages.getString("ERROR.41"))

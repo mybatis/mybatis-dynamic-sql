@@ -38,10 +38,9 @@ class KSearchedCaseDSL : KElseDSL {
                 .withSubCriteria(subCriteria)
                 .withThenValue(thenValue)
                 .build())
-
         }
 
-    override fun `else`(column: BasicColumn) {
+    override infix fun `else`(column: BasicColumn) {
         this.elseValue = column
     }
 }
@@ -53,7 +52,7 @@ class SearchedCaseCriteriaCollector : GroupingCriteriaCollector(), KThenDSL {
             field = value
         }
 
-    override fun then(column: BasicColumn) {
+    override infix fun then(column: BasicColumn) {
         thenValue = column
     }
 }
@@ -67,26 +66,26 @@ class KSimpleCaseDSL<T : Any> : KElseDSL {
     internal val whenConditions = mutableListOf<SimpleCaseWhenCondition<T>>()
 
     fun `when`(firstCondition: VisitableCondition<T>, vararg subsequentConditions: VisitableCondition<T>) =
-        SimpleCaseThenGatherer {
+        SimpleCaseThenGatherer { thenValue ->
             val allConditions = buildList {
                 add(firstCondition)
                 addAll(subsequentConditions)
             }
 
-            whenConditions.add(ConditionBasedWhenCondition(allConditions, it))
+            whenConditions.add(ConditionBasedWhenCondition(allConditions, thenValue))
         }
 
     fun `when`(firstValue: T, vararg subsequentValues: T) =
-        SimpleCaseThenGatherer {
+        SimpleCaseThenGatherer { thenValue ->
             val allConditions = buildList {
                 add(firstValue)
                 addAll(subsequentValues)
             }
 
-            whenConditions.add(BasicWhenCondition(allConditions, it))
+            whenConditions.add(BasicWhenCondition(allConditions, thenValue))
         }
 
-    override fun `else`(column: BasicColumn) {
+    override infix fun `else`(column: BasicColumn) {
         this.elseValue = column
     }
 }
@@ -122,25 +121,25 @@ interface KThenDSL {
 }
 
 interface KElseDSL {
-    fun `else`(value: String) {
+    infix fun `else`(value: String) {
         `else`(stringConstant(value))
     }
 
-    fun `else`(value: Boolean) {
+    infix fun `else`(value: Boolean) {
         `else`(constant<String>(value.toString()))
     }
 
-    fun `else`(value: Int) {
+    infix fun `else`(value: Int) {
         `else`(constant<String>(value.toString()))
     }
 
-    fun `else`(value: Long) {
+    infix fun `else`(value: Long) {
         `else`(constant<String>(value.toString()))
     }
 
-    fun `else`(value: Double) {
+    infix fun `else`(value: Double) {
         `else`(constant<String>(value.toString()))
     }
 
-    fun `else`(column: BasicColumn)
+    infix fun `else`(column: BasicColumn)
 }
