@@ -38,10 +38,9 @@ class KSearchedCaseDSL : KElseDSL {
                 .withSubCriteria(subCriteria)
                 .withThenValue(thenValue)
                 .build())
-
         }
 
-    override fun `else`(column: BasicColumn) {
+    override infix fun `else`(column: BasicColumn) {
         this.elseValue = column
     }
 }
@@ -53,7 +52,7 @@ class SearchedCaseCriteriaCollector : GroupingCriteriaCollector(), KThenDSL {
             field = value
         }
 
-    override fun then(column: BasicColumn) {
+    override infix fun then(column: BasicColumn) {
         thenValue = column
     }
 }
@@ -66,88 +65,71 @@ class KSimpleCaseDSL<T : Any> : KElseDSL {
         }
     internal val whenConditions = mutableListOf<SimpleCaseWhenCondition<T>>()
 
-    fun `when`(firstCondition: VisitableCondition<T>, vararg subsequentConditions: VisitableCondition<T>,
-               completer: SimpleCaseThenGatherer.() -> Unit) =
-        SimpleCaseThenGatherer().apply(completer).run {
-            val allConditions = buildList {
-                add(firstCondition)
-                addAll(subsequentConditions)
-            }
-
-            whenConditions.add(ConditionBasedWhenCondition(allConditions, thenValue))
+    fun `when`(vararg conditions: VisitableCondition<T>) =
+        SimpleCaseThenGatherer { thenValue ->
+            whenConditions.add(ConditionBasedWhenCondition(conditions.asList(), thenValue))
         }
 
-    fun `when`(firstValue: T, vararg subsequentValues: T, completer: SimpleCaseThenGatherer.() -> Unit) =
-        SimpleCaseThenGatherer().apply(completer).run {
-            val allConditions = buildList {
-                add(firstValue)
-                addAll(subsequentValues)
-            }
-
-            whenConditions.add(BasicWhenCondition(allConditions, thenValue))
+    fun `when`(vararg values: T) =
+        SimpleCaseThenGatherer { thenValue ->
+            whenConditions.add(BasicWhenCondition(values.asList(), thenValue))
         }
 
-    override fun `else`(column: BasicColumn) {
+    override infix fun `else`(column: BasicColumn) {
         this.elseValue = column
     }
 }
 
-class SimpleCaseThenGatherer: KThenDSL {
-    internal var thenValue: BasicColumn? = null
-        private set(value) {
-            assertNull(field, "ERROR.41") //$NON-NLS-1$
-            field = value
-        }
-
-    override fun then(column: BasicColumn) {
-        thenValue = column
+class SimpleCaseThenGatherer(private val consumer: (BasicColumn) -> Unit): KThenDSL {
+    override infix fun then(column: BasicColumn) {
+        consumer.invoke(column)
     }
 }
 
 interface KThenDSL {
-    fun then(value: String) {
+    infix fun then(value: String) {
         then(stringConstant(value))
     }
 
-    fun then(value: Boolean) {
+    infix fun then(value: Boolean) {
         then(constant<String>(value.toString()))
     }
 
-    fun then(value: Int) {
+    infix fun then(value: Int) {
         then(constant<String>(value.toString()))
     }
 
-    fun then(value: Long) {
+    infix fun then(value: Long) {
         then(constant<String>(value.toString()))
     }
 
-    fun then(value: Double) {
+    infix fun then(value: Double) {
         then(constant<String>(value.toString()))
     }
 
-    fun then(column: BasicColumn)
+    infix fun then(column: BasicColumn)
 }
 
 interface KElseDSL {
-    fun `else`(value: String) {
+    infix fun `else`(value: String) {
         `else`(stringConstant(value))
     }
 
-    fun `else`(value: Boolean) {
+    infix fun `else`(value: Boolean) {
         `else`(constant<String>(value.toString()))
     }
 
-    fun `else`(value: Int) {
+    infix fun `else`(value: Int) {
         `else`(constant<String>(value.toString()))
     }
 
-    fun `else`(value: Long) {
+    infix fun `else`(value: Long) {
         `else`(constant<String>(value.toString()))
     }
 
-    fun `else`(value: Double) {
+    infix fun `else`(value: Double) {
         `else`(constant<String>(value.toString()))
     }
 
-    fun `else`(column: BasicColumn)
+    infix fun `else`(column: BasicColumn)
 }
