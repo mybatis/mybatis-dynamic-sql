@@ -66,25 +66,24 @@ class KSimpleCaseDSL<T : Any> : KElseDSL {
         }
     internal val whenConditions = mutableListOf<SimpleCaseWhenCondition<T>>()
 
-    fun `when`(firstCondition: VisitableCondition<T>, vararg subsequentConditions: VisitableCondition<T>,
-               completer: SimpleCaseThenGatherer.() -> Unit) =
-        SimpleCaseThenGatherer().apply(completer).run {
+    fun `when`(firstCondition: VisitableCondition<T>, vararg subsequentConditions: VisitableCondition<T>) =
+        SimpleCaseThenGatherer {
             val allConditions = buildList {
                 add(firstCondition)
                 addAll(subsequentConditions)
             }
 
-            whenConditions.add(ConditionBasedWhenCondition(allConditions, thenValue))
+            whenConditions.add(ConditionBasedWhenCondition(allConditions, it))
         }
 
-    fun `when`(firstValue: T, vararg subsequentValues: T, completer: SimpleCaseThenGatherer.() -> Unit) =
-        SimpleCaseThenGatherer().apply(completer).run {
+    fun `when`(firstValue: T, vararg subsequentValues: T) =
+        SimpleCaseThenGatherer {
             val allConditions = buildList {
                 add(firstValue)
                 addAll(subsequentValues)
             }
 
-            whenConditions.add(BasicWhenCondition(allConditions, thenValue))
+            whenConditions.add(BasicWhenCondition(allConditions, it))
         }
 
     override fun `else`(column: BasicColumn) {
@@ -92,40 +91,34 @@ class KSimpleCaseDSL<T : Any> : KElseDSL {
     }
 }
 
-class SimpleCaseThenGatherer: KThenDSL {
-    internal var thenValue: BasicColumn? = null
-        private set(value) {
-            assertNull(field, "ERROR.41") //$NON-NLS-1$
-            field = value
-        }
-
-    override fun then(column: BasicColumn) {
-        thenValue = column
+class SimpleCaseThenGatherer(private val consumer: (BasicColumn) -> Unit): KThenDSL {
+    override infix fun then(column: BasicColumn) {
+        consumer.invoke(column)
     }
 }
 
 interface KThenDSL {
-    fun then(value: String) {
+    infix fun then(value: String) {
         then(stringConstant(value))
     }
 
-    fun then(value: Boolean) {
+    infix fun then(value: Boolean) {
         then(constant<String>(value.toString()))
     }
 
-    fun then(value: Int) {
+    infix fun then(value: Int) {
         then(constant<String>(value.toString()))
     }
 
-    fun then(value: Long) {
+    infix fun then(value: Long) {
         then(constant<String>(value.toString()))
     }
 
-    fun then(value: Double) {
+    infix fun then(value: Double) {
         then(constant<String>(value.toString()))
     }
 
-    fun then(column: BasicColumn)
+    infix fun then(column: BasicColumn)
 }
 
 interface KElseDSL {
