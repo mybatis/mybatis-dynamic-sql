@@ -72,7 +72,7 @@ A simple case expression can be coded like the following in the Kotlin DSL:
 
 ```kotlin
 select(case(id) {
-    `when`(1, 2, 3) { then(true) }
+    `when`(1, 2, 3) then true
     `else`(false)
   } `as` "small_id"
 ) {
@@ -91,7 +91,7 @@ you can write the query as follows:
 
 ```kotlin
 select(case(id) {
-    `when`(1, 2, 3) { then(value(true)) }
+    `when`(1, 2, 3) then value(true)
     `else`(value(false))
   } `as` "small_id"
 ) {
@@ -111,7 +111,7 @@ expected data type. Here's an example of using the `cast` function:
 
 ```kotlin
 select(case(id) {
-    `when`(1, 2, 3) { then(value(true)) }
+    `when`(1, 2, 3) then value(true)
     `else`(cast { value(false) `as` "BOOLEAN" })
   } `as` "small_id"
 ) {
@@ -134,8 +134,8 @@ A simple case expression can be coded like the following in the Kotlin DSL:
 
 ```kotlin
 select(case(total_length) {
-    `when`(isLessThan(10)) { then("small") }
-    `when`(isGreaterThan(20)) { then("large") }
+    `when`(isLessThan(10)) then "small"
+    `when`(isGreaterThan(20)) then "large"
     `else`("medium")
   } `as` "tshirt_size"
 ) {
@@ -158,8 +158,8 @@ VARCHAR, you can use the `cast` function as follows:
 
 ```kotlin
 select(case(total_length) {
-    `when`(isLessThan(10)) { then("small") }
-    `when`(isGreaterThan(20)) { then("large") }
+    `when`(isLessThan(10)) then "small"
+    `when`(isGreaterThan(20)) then "large"
     `else`(cast { "medium" `as` "VARCHAR(6)" })
   } `as` "tshirt_size"
 ) {
