@@ -290,8 +290,7 @@ class SelectStatementTest {
         List<String> emptyList = Collections.emptyList();
         SelectModel selectModel = select(column1, column3)
                 .from(table, "a")
-                .where(column3, isIn(emptyList))
-                .configureStatement(c -> c.setEmptyListConditionRenderingAllowed(false))
+                .where(column3, isInWhenPresent(emptyList))
                 .build();
 
         assertThatExceptionOfType(RuntimeException.class).isThrownBy(() ->
@@ -304,8 +303,7 @@ class SelectStatementTest {
         List<String> emptyList = Collections.emptyList();
         SelectModel selectModel = select(column1, column3)
                 .from(table, "a")
-                .where(column3, isNotIn(emptyList))
-                .configureStatement(c -> c.setEmptyListConditionRenderingAllowed(false))
+                .where(column3, isNotInWhenPresent(emptyList))
                 .build();
 
         assertThatExceptionOfType(RuntimeException.class).isThrownBy(() ->
@@ -330,8 +328,7 @@ class SelectStatementTest {
     void testInCaseInsensitiveEmptyList() {
         SelectModel selectModel = select(column1, column3)
                 .from(table, "a")
-                .where(column3, isInCaseInsensitive(Collections.emptyList()))
-                .configureStatement(c -> c.setEmptyListConditionRenderingAllowed(false))
+                .where(column3, isInCaseInsensitiveWhenPresent(Collections.emptyList()))
                 .build();
 
         assertThatExceptionOfType(RuntimeException.class).isThrownBy(() ->
@@ -368,8 +365,7 @@ class SelectStatementTest {
     void testNotInCaseInsensitiveEmptyList() {
         SelectModel selectModel = select(column1, column3)
                 .from(table, "a")
-                .where(column3, isNotInCaseInsensitive(Collections.emptyList()))
-                .configureStatement(c -> c.setEmptyListConditionRenderingAllowed(false))
+                .where(column3, isNotInCaseInsensitiveWhenPresent(Collections.emptyList()))
                 .build();
 
         assertThatExceptionOfType(NonRenderingWhereClauseException.class).isThrownBy(() ->

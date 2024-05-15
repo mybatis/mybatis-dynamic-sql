@@ -24,7 +24,6 @@ import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
 import org.mybatis.dynamic.sql.AbstractListValueCondition;
-import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.util.StringUtilities;
 
 public class IsNotInCaseInsensitiveWhenPresent extends AbstractListValueCondition<String>
@@ -40,11 +39,6 @@ public class IsNotInCaseInsensitiveWhenPresent extends AbstractListValueConditio
     }
 
     @Override
-    public boolean shouldRender(RenderingContext renderingContext) {
-        return !isEmpty();
-    }
-
-    @Override
     public String operator() {
         return "not in"; //$NON-NLS-1$
     }
@@ -55,12 +49,11 @@ public class IsNotInCaseInsensitiveWhenPresent extends AbstractListValueConditio
     }
 
     /**
-     * If renderable, apply the mapping to each value in the list return a new condition with the mapped values.
-     *     Else return a condition that will not render (this).
+     * If not empty, apply the mapping to each value in the list return a new condition with the mapped values.
+     *     Else return an empty condition (this).
      *
-     * @param mapper a mapping function to apply to the values, if renderable
-     * @return a new condition with mapped values if renderable, otherwise a condition
-     *     that will not render.
+     * @param mapper a mapping function to apply to the values, if not empty
+     * @return a new condition with mapped values if renderable, otherwise an empty condition
      */
     public IsNotInCaseInsensitiveWhenPresent map(UnaryOperator<String> mapper) {
         return mapSupport(mapper, IsNotInCaseInsensitiveWhenPresent::new, IsNotInCaseInsensitiveWhenPresent::empty);

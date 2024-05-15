@@ -693,8 +693,7 @@ class AnimalDataTest {
 
         SelectModel selectModel = select(id, animalName, bodyWeight, brainWeight)
                 .from(animalData)
-                .where(id, isIn(inValues).filter(Objects::nonNull).filter(i -> i != 22))
-                .configureStatement(c -> c.setEmptyListConditionRenderingAllowed(false))
+                .where(id, isInWhenPresent(inValues).filter(Objects::nonNull).filter(i -> i != 22))
                 .build();
 
         assertThatExceptionOfType(NonRenderingWhereClauseException.class).isThrownBy(() ->
@@ -706,8 +705,7 @@ class AnimalDataTest {
     void testInConditionWithEmptyList() {
         SelectModel selectModel = select(id, animalName, bodyWeight, brainWeight)
                 .from(animalData)
-                .where(id, isIn(Collections.emptyList()))
-                .configureStatement(c -> c.setEmptyListConditionRenderingAllowed(false))
+                .where(id, isInWhenPresent(Collections.emptyList()))
                 .build();
 
         assertThatExceptionOfType(NonRenderingWhereClauseException.class).isThrownBy(() ->
@@ -802,9 +800,8 @@ class AnimalDataTest {
     void testNotInConditionWithEventuallyEmptyListForceRendering() {
         SelectModel selectModel = select(id, animalName, bodyWeight, brainWeight)
                 .from(animalData)
-                .where(id, isNotIn(null, 22, null)
+                .where(id, isNotInWhenPresent(null, 22, null)
                         .filter(Objects::nonNull).filter(i -> i != 22))
-                .configureStatement(c -> c.setEmptyListConditionRenderingAllowed(false))
                 .build();
 
         assertThatExceptionOfType(NonRenderingWhereClauseException.class).isThrownBy(() ->

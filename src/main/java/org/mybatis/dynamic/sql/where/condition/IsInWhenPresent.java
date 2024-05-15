@@ -24,7 +24,6 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import org.mybatis.dynamic.sql.AbstractListValueCondition;
-import org.mybatis.dynamic.sql.render.RenderingContext;
 
 public class IsInWhenPresent<T> extends AbstractListValueCondition<T> {
     private static final IsInWhenPresent<?> EMPTY = new IsInWhenPresent<>(Collections.emptyList());
@@ -40,11 +39,6 @@ public class IsInWhenPresent<T> extends AbstractListValueCondition<T> {
     }
 
     @Override
-    public boolean shouldRender(RenderingContext renderingContext) {
-        return !isEmpty();
-    }
-
-    @Override
     public String operator() {
         return "in"; //$NON-NLS-1$
     }
@@ -55,13 +49,12 @@ public class IsInWhenPresent<T> extends AbstractListValueCondition<T> {
     }
 
     /**
-     * If renderable, apply the mapping to each value in the list return a new condition with the mapped values.
-     *     Else return a condition that will not render (this).
+     * If not empty, apply the mapping to each value in the list return a new condition with the mapped values.
+     *     Else return an empty condition (this).
      *
-     * @param mapper a mapping function to apply to the values, if renderable
+     * @param mapper a mapping function to apply to the values, if not empty
      * @param <R> type of the new condition
-     * @return a new condition with mapped values if renderable, otherwise a condition
-     *     that will not render.
+     * @return a new condition with mapped values if renderable, otherwise an empty condition
      */
     public <R> IsInWhenPresent<R> map(Function<? super T, ? extends R> mapper) {
         Function<Collection<R>, IsInWhenPresent<R>> constructor = IsInWhenPresent::new;
