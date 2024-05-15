@@ -66,14 +66,10 @@ class KSimpleCaseDSL<T : Any> : KElseDSL {
     internal val whenConditions = mutableListOf<SimpleCaseWhenCondition<T>>()
 
     fun `when`(vararg conditions: VisitableCondition<T>) =
-        SimpleCaseThenGatherer { thenValue ->
-            whenConditions.add(ConditionBasedWhenCondition(conditions.asList(), thenValue))
-        }
+        SimpleCaseThenGatherer { whenConditions.add(ConditionBasedWhenCondition(conditions.asList(), it)) }
 
     fun `when`(vararg values: T) =
-        SimpleCaseThenGatherer { thenValue ->
-            whenConditions.add(BasicWhenCondition(values.asList(), thenValue))
-        }
+        SimpleCaseThenGatherer { whenConditions.add(BasicWhenCondition(values.asList(), it)) }
 
     override infix fun `else`(column: BasicColumn) {
         this.elseValue = column
