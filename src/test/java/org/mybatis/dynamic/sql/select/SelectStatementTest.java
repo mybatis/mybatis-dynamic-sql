@@ -291,6 +291,7 @@ class SelectStatementTest {
         SelectModel selectModel = select(column1, column3)
                 .from(table, "a")
                 .where(column3, isIn(emptyList))
+                .configureStatement(c -> c.setEmptyListConditionRenderingAllowed(false))
                 .build();
 
         assertThatExceptionOfType(RuntimeException.class).isThrownBy(() ->
@@ -304,6 +305,7 @@ class SelectStatementTest {
         SelectModel selectModel = select(column1, column3)
                 .from(table, "a")
                 .where(column3, isNotIn(emptyList))
+                .configureStatement(c -> c.setEmptyListConditionRenderingAllowed(false))
                 .build();
 
         assertThatExceptionOfType(RuntimeException.class).isThrownBy(() ->
@@ -329,6 +331,7 @@ class SelectStatementTest {
         SelectModel selectModel = select(column1, column3)
                 .from(table, "a")
                 .where(column3, isInCaseInsensitive(Collections.emptyList()))
+                .configureStatement(c -> c.setEmptyListConditionRenderingAllowed(false))
                 .build();
 
         assertThatExceptionOfType(RuntimeException.class).isThrownBy(() ->
@@ -366,6 +369,7 @@ class SelectStatementTest {
         SelectModel selectModel = select(column1, column3)
                 .from(table, "a")
                 .where(column3, isNotInCaseInsensitive(Collections.emptyList()))
+                .configureStatement(c -> c.setEmptyListConditionRenderingAllowed(false))
                 .build();
 
         assertThatExceptionOfType(NonRenderingWhereClauseException.class).isThrownBy(() ->

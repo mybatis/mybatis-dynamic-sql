@@ -522,7 +522,7 @@ class OptionalConditionsWithPredicatesAnimalDataTest {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
-                    .where(animalName, isInCaseInsensitive())
+                    .where(animalName, isInCaseInsensitiveWhenPresent())
                     .and(id, isLessThanOrEqualTo(10))
                     .orderBy(id)
                     .build()
@@ -602,7 +602,7 @@ class OptionalConditionsWithPredicatesAnimalDataTest {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
-                    .where(animalName, isNotInCaseInsensitive())
+                    .where(animalName, isNotInCaseInsensitiveWhenPresent())
                     .and(id, isLessThanOrEqualTo(10))
                     .orderBy(id)
                     .build()
