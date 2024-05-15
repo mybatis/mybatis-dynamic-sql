@@ -76,6 +76,8 @@ import org.mybatis.dynamic.sql.where.condition.IsGreaterThanOrEqualToWithSubsele
 import org.mybatis.dynamic.sql.where.condition.IsGreaterThanWithSubselect;
 import org.mybatis.dynamic.sql.where.condition.IsIn;
 import org.mybatis.dynamic.sql.where.condition.IsInCaseInsensitive;
+import org.mybatis.dynamic.sql.where.condition.IsInCaseInsensitiveWhenPresent;
+import org.mybatis.dynamic.sql.where.condition.IsInWhenPresent;
 import org.mybatis.dynamic.sql.where.condition.IsInWithSubselect;
 import org.mybatis.dynamic.sql.where.condition.IsLessThan;
 import org.mybatis.dynamic.sql.where.condition.IsLessThanColumn;
@@ -91,6 +93,8 @@ import org.mybatis.dynamic.sql.where.condition.IsNotEqualToColumn;
 import org.mybatis.dynamic.sql.where.condition.IsNotEqualToWithSubselect;
 import org.mybatis.dynamic.sql.where.condition.IsNotIn;
 import org.mybatis.dynamic.sql.where.condition.IsNotInCaseInsensitive;
+import org.mybatis.dynamic.sql.where.condition.IsNotInCaseInsensitiveWhenPresent;
+import org.mybatis.dynamic.sql.where.condition.IsNotInWhenPresent;
 import org.mybatis.dynamic.sql.where.condition.IsNotInWithSubselect;
 import org.mybatis.dynamic.sql.where.condition.IsNotLike;
 import org.mybatis.dynamic.sql.where.condition.IsNotLikeCaseInsensitive;
@@ -764,12 +768,12 @@ public interface SqlBuilder {
     }
 
     @SafeVarargs
-    static <T> IsIn<T> isInWhenPresent(T... values) {
-        return IsIn.of(values).filter(Objects::nonNull);
+    static <T> IsInWhenPresent<T> isInWhenPresent(T... values) {
+        return IsInWhenPresent.of(values);
     }
 
-    static <T> IsIn<T> isInWhenPresent(Collection<T> values) {
-        return values == null ? IsIn.empty() : IsIn.of(values).filter(Objects::nonNull);
+    static <T> IsInWhenPresent<T> isInWhenPresent(Collection<T> values) {
+        return values == null ? IsInWhenPresent.empty() : IsInWhenPresent.of(values);
     }
 
     @SafeVarargs
@@ -786,12 +790,12 @@ public interface SqlBuilder {
     }
 
     @SafeVarargs
-    static <T> IsNotIn<T> isNotInWhenPresent(T... values) {
-        return IsNotIn.of(values).filter(Objects::nonNull);
+    static <T> IsNotInWhenPresent<T> isNotInWhenPresent(T... values) {
+        return IsNotInWhenPresent.of(values);
     }
 
-    static <T> IsNotIn<T> isNotInWhenPresent(Collection<T> values) {
-        return values == null ? IsNotIn.empty() : IsNotIn.of(values).filter(Objects::nonNull);
+    static <T> IsNotInWhenPresent<T> isNotInWhenPresent(Collection<T> values) {
+        return values == null ? IsNotInWhenPresent.empty() : IsNotInWhenPresent.of(values);
     }
 
     static <T> IsBetween.Builder<T> isBetween(T value1) {
@@ -909,12 +913,12 @@ public interface SqlBuilder {
         return IsInCaseInsensitive.of(values);
     }
 
-    static IsInCaseInsensitive isInCaseInsensitiveWhenPresent(String... values) {
-        return IsInCaseInsensitive.of(values).filter(Objects::nonNull);
+    static IsInCaseInsensitiveWhenPresent isInCaseInsensitiveWhenPresent(String... values) {
+        return IsInCaseInsensitiveWhenPresent.of(values);
     }
 
-    static IsInCaseInsensitive isInCaseInsensitiveWhenPresent(Collection<String> values) {
-        return values == null ? IsInCaseInsensitive.empty() : IsInCaseInsensitive.of(values).filter(Objects::nonNull);
+    static IsInCaseInsensitiveWhenPresent isInCaseInsensitiveWhenPresent(Collection<String> values) {
+        return values == null ? IsInCaseInsensitiveWhenPresent.empty() : IsInCaseInsensitiveWhenPresent.of(values);
     }
 
     static IsNotInCaseInsensitive isNotInCaseInsensitive(String... values) {
@@ -925,13 +929,13 @@ public interface SqlBuilder {
         return IsNotInCaseInsensitive.of(values);
     }
 
-    static IsNotInCaseInsensitive isNotInCaseInsensitiveWhenPresent(String... values) {
-        return IsNotInCaseInsensitive.of(values).filter(Objects::nonNull);
+    static IsNotInCaseInsensitiveWhenPresent isNotInCaseInsensitiveWhenPresent(String... values) {
+        return IsNotInCaseInsensitiveWhenPresent.of(values);
     }
 
-    static IsNotInCaseInsensitive isNotInCaseInsensitiveWhenPresent(Collection<String> values) {
-        return values == null ? IsNotInCaseInsensitive.empty() :
-                IsNotInCaseInsensitive.of(values).filter(Objects::nonNull);
+    static IsNotInCaseInsensitiveWhenPresent isNotInCaseInsensitiveWhenPresent(Collection<String> values) {
+        return values == null ? IsNotInCaseInsensitiveWhenPresent.empty() :
+                IsNotInCaseInsensitiveWhenPresent.of(values);
     }
 
     // order by support
