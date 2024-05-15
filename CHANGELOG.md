@@ -4,7 +4,11 @@ This log will detail notable changes to MyBatis Dynamic SQL. Full details are av
 
 ## Release 1.5.2 - Unreleased
 
-This is a small maintenance release with improvements to the Kotlin DSL for CASE expressions.
+This is a small maintenance release with improvements to the Kotlin DSL for CASE expressions. We worked on this soon
+after the 1.5.1 release, so wanted to get it out quickly.
+See this PR for details: ([#785](https://github.com/mybatis/mybatis-dynamic-sql/pull/785))
+
+GitHub milestone: [https://github.com/mybatis/mybatis-dynamic-sql/milestone/14?closed=1](https://github.com/mybatis/mybatis-dynamic-sql/milestone/14?closed=1)
 
 **Important:** This is the last release that will be compatible with Java 8.
 
