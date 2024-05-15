@@ -26,7 +26,7 @@ public class GlobalConfiguration {
     public static final String CONFIGURATION_FILE_PROPERTY = "mybatis-dynamic-sql.configurationFile"; //$NON-NLS-1$
     private static final String DEFAULT_PROPERTY_FILE = "mybatis-dynamic-sql.properties"; //$NON-NLS-1$
     private boolean isNonRenderingWhereClauseAllowed = false;
-    private boolean isEmptyListConditionRenderingAllowed = false;
+    private boolean isEmptyListConditionRenderingAllowed = true;
     private final Properties properties = new Properties();
 
     public GlobalConfiguration() {
@@ -67,7 +67,7 @@ public class GlobalConfiguration {
         String value = properties.getProperty("nonRenderingWhereClauseAllowed", "false"); //$NON-NLS-1$ //$NON-NLS-2$
         isNonRenderingWhereClauseAllowed = Boolean.parseBoolean(value);
 
-        value = properties.getProperty("emptyListConditionRenderingAllowed", "false"); //$NON-NLS-1$ //$NON-NLS-2$
+        value = properties.getProperty("emptyListConditionRenderingAllowed", "true"); //$NON-NLS-1$ //$NON-NLS-2$
         isEmptyListConditionRenderingAllowed = Boolean.parseBoolean(value);
     }
 
