@@ -769,7 +769,7 @@ public interface SqlBuilder {
 
     @SafeVarargs
     static <T> IsInWhenPresent<T> isInWhenPresent(T... values) {
-        return values == null ? IsInWhenPresent.empty() : IsInWhenPresent.of(values);
+        return IsInWhenPresent.of(values);
     }
 
     static <T> IsInWhenPresent<T> isInWhenPresent(Collection<T> values) {
@@ -791,7 +791,7 @@ public interface SqlBuilder {
 
     @SafeVarargs
     static <T> IsNotInWhenPresent<T> isNotInWhenPresent(T... values) {
-        return values == null ? IsNotInWhenPresent.empty() : IsNotInWhenPresent.of(values);
+        return IsNotInWhenPresent.of(values);
     }
 
     static <T> IsNotInWhenPresent<T> isNotInWhenPresent(Collection<T> values) {
@@ -914,7 +914,7 @@ public interface SqlBuilder {
     }
 
     static IsInCaseInsensitiveWhenPresent isInCaseInsensitiveWhenPresent(String... values) {
-        return values == null ? IsInCaseInsensitiveWhenPresent.empty() : IsInCaseInsensitiveWhenPresent.of(values);
+        return IsInCaseInsensitiveWhenPresent.of(values);
     }
 
     static IsInCaseInsensitiveWhenPresent isInCaseInsensitiveWhenPresent(Collection<String> values) {
@@ -930,8 +930,7 @@ public interface SqlBuilder {
     }
 
     static IsNotInCaseInsensitiveWhenPresent isNotInCaseInsensitiveWhenPresent(String... values) {
-        return values == null ? IsNotInCaseInsensitiveWhenPresent.empty() :
-                IsNotInCaseInsensitiveWhenPresent.of(values);
+        return IsNotInCaseInsensitiveWhenPresent.of(values);
     }
 
     static IsNotInCaseInsensitiveWhenPresent isNotInCaseInsensitiveWhenPresent(Collection<String> values) {
