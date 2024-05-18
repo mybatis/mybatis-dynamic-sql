@@ -4,9 +4,16 @@ This log will detail notable changes to MyBatis Dynamic SQL. Full details are av
 
 ## Release 1.5.2 - Unreleased
 
-This is a small maintenance release with improvements to the Kotlin DSL for CASE expressions. We worked on this soon
-after the 1.5.1 release, so wanted to get it out quickly.
-See this PR for details: ([#785](https://github.com/mybatis/mybatis-dynamic-sql/pull/785))
+This is a small maintenance release with the following changes:
+
+1. Improvements to the Kotlin DSL for CASE expressions (infix methods for "else" and "then"). See this PR for 
+   details: ([#785](https://github.com/mybatis/mybatis-dynamic-sql/pull/785))
+2. **Potentially Breaking Change**: the "in" conditions ("isIn", "isNotIn", "isInCaseInsensitive",
+   "isNotInCaseInsensitive") will now render if the input list of values is empty. This will lead
+   to a runtime exception. This change was made out of an abundance of caution and is the safest choice.
+   If you wish to allow "in" conditions to be removed from where clauses when the list is empty,
+   then use the "when present" versions of those conditions. Please see the discussion here for details
+   https://github.com/mybatis/mybatis-dynamic-sql/issues/788
 
 GitHub milestone: [https://github.com/mybatis/mybatis-dynamic-sql/milestone/14?closed=1](https://github.com/mybatis/mybatis-dynamic-sql/milestone/14?closed=1)
 
