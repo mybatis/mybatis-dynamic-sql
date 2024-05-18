@@ -21,6 +21,7 @@ import static examples.animal.data.AnimalDataDynamicSqlSupport.bodyWeight;
 import static examples.animal.data.AnimalDataDynamicSqlSupport.brainWeight;
 import static examples.animal.data.AnimalDataDynamicSqlSupport.id;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
 
 import java.io.InputStream;
@@ -82,10 +83,12 @@ class OptionalConditionsWithPredicatesAnimalDataTest {
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
             List<AnimalData> animals = mapper.selectMany(selectStatement);
-            assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData order by id");
-            assertThat(animals).hasSize(65);
-            assertThat(animals.get(0).getId()).isEqualTo(1);
-            assertThat(animals.get(1).getId()).isEqualTo(2);
+            assertAll(
+                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData order by id"),
+                    () -> assertThat(animals).hasSize(65),
+                    () -> assertThat(animals.get(0).getId()).isEqualTo(1),
+                    () -> assertThat(animals.get(1).getId()).isEqualTo(2)
+            );
         }
     }
 
@@ -102,10 +105,12 @@ class OptionalConditionsWithPredicatesAnimalDataTest {
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
             List<AnimalData> animals = mapper.selectMany(selectStatement);
-            assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id = #{parameters.p1,jdbcType=INTEGER} or id = #{parameters.p2,jdbcType=INTEGER} order by id");
-            assertThat(animals).hasSize(2);
-            assertThat(animals.get(0).getId()).isEqualTo(3);
-            assertThat(animals.get(1).getId()).isEqualTo(4);
+            assertAll(
+                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id = #{parameters.p1,jdbcType=INTEGER} or id = #{parameters.p2,jdbcType=INTEGER} order by id"),
+                    () -> assertThat(animals).hasSize(2),
+                    () -> assertThat(animals.get(0).getId()).isEqualTo(3),
+                    () -> assertThat(animals.get(1).getId()).isEqualTo(4)
+            );
         }
     }
 
@@ -122,10 +127,12 @@ class OptionalConditionsWithPredicatesAnimalDataTest {
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
             List<AnimalData> animals = mapper.selectMany(selectStatement);
-            assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id = #{parameters.p1,jdbcType=INTEGER} or id = #{parameters.p2,jdbcType=INTEGER} order by id");
-            assertThat(animals).hasSize(2);
-            assertThat(animals.get(0).getId()).isEqualTo(3);
-            assertThat(animals.get(1).getId()).isEqualTo(4);
+            assertAll(
+                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id = #{parameters.p1,jdbcType=INTEGER} or id = #{parameters.p2,jdbcType=INTEGER} order by id"),
+                    () -> assertThat(animals).hasSize(2),
+                    () -> assertThat(animals.get(0).getId()).isEqualTo(3),
+                    () -> assertThat(animals.get(1).getId()).isEqualTo(4)
+            );
         }
     }
 
@@ -143,10 +150,12 @@ class OptionalConditionsWithPredicatesAnimalDataTest {
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
             List<AnimalData> animals = mapper.selectMany(selectStatement);
-            assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id = #{parameters.p1,jdbcType=INTEGER} or id = #{parameters.p2,jdbcType=INTEGER} order by id");
-            assertThat(animals).hasSize(2);
-            assertThat(animals.get(0).getId()).isEqualTo(3);
-            assertThat(animals.get(1).getId()).isEqualTo(4);
+            assertAll(
+                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id = #{parameters.p1,jdbcType=INTEGER} or id = #{parameters.p2,jdbcType=INTEGER} order by id"),
+                    () -> assertThat(animals).hasSize(2),
+                    () -> assertThat(animals.get(0).getId()).isEqualTo(3),
+                    () -> assertThat(animals.get(1).getId()).isEqualTo(4)
+            );
         }
     }
 
@@ -162,10 +171,12 @@ class OptionalConditionsWithPredicatesAnimalDataTest {
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
             List<AnimalData> animals = mapper.selectMany(selectStatement);
-            assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id = #{parameters.p1,jdbcType=INTEGER} or id = #{parameters.p2,jdbcType=INTEGER} order by id");
-            assertThat(animals).hasSize(2);
-            assertThat(animals.get(0).getId()).isEqualTo(3);
-            assertThat(animals.get(1).getId()).isEqualTo(4);
+            assertAll(
+                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id = #{parameters.p1,jdbcType=INTEGER} or id = #{parameters.p2,jdbcType=INTEGER} order by id"),
+                    () -> assertThat(animals).hasSize(2),
+                    () -> assertThat(animals.get(0).getId()).isEqualTo(3),
+                    () -> assertThat(animals.get(1).getId()).isEqualTo(4)
+            );
         }
     }
 
@@ -180,9 +191,11 @@ class OptionalConditionsWithPredicatesAnimalDataTest {
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
             List<AnimalData> animals = mapper.selectMany(selectStatement);
-            assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id = #{parameters.p1,jdbcType=INTEGER} order by id");
-            assertThat(animals).hasSize(1);
-            assertThat(animals.get(0).getId()).isEqualTo(4);
+            assertAll(
+                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id = #{parameters.p1,jdbcType=INTEGER} order by id"),
+                    () -> assertThat(animals).hasSize(1),
+                    () -> assertThat(animals.get(0).getId()).isEqualTo(4)
+            );
         }
     }
 
@@ -198,9 +211,11 @@ class OptionalConditionsWithPredicatesAnimalDataTest {
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
             List<AnimalData> animals = mapper.selectMany(selectStatement);
-            assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id <= #{parameters.p1,jdbcType=INTEGER} order by id");
-            assertThat(animals).hasSize(10);
-            assertThat(animals.get(0).getId()).isEqualTo(1);
+            assertAll(
+                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id <= #{parameters.p1,jdbcType=INTEGER} order by id"),
+                    () -> assertThat(animals).hasSize(10),
+                    () -> assertThat(animals.get(0).getId()).isEqualTo(1)
+            );
         }
     }
 
@@ -216,9 +231,11 @@ class OptionalConditionsWithPredicatesAnimalDataTest {
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
             List<AnimalData> animals = mapper.selectMany(selectStatement);
-            assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id <> #{parameters.p1,jdbcType=INTEGER} and id <= #{parameters.p2,jdbcType=INTEGER} order by id");
-            assertThat(animals).hasSize(9);
-            assertThat(animals.get(0).getId()).isEqualTo(1);
+            assertAll(
+                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id <> #{parameters.p1,jdbcType=INTEGER} and id <= #{parameters.p2,jdbcType=INTEGER} order by id"),
+                    () -> assertThat(animals).hasSize(9),
+                    () -> assertThat(animals.get(0).getId()).isEqualTo(1)
+            );
         }
     }
 
@@ -234,9 +251,11 @@ class OptionalConditionsWithPredicatesAnimalDataTest {
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
             List<AnimalData> animals = mapper.selectMany(selectStatement);
-            assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id <= #{parameters.p1,jdbcType=INTEGER} order by id");
-            assertThat(animals).hasSize(10);
-            assertThat(animals.get(0).getId()).isEqualTo(1);
+            assertAll(
+                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id <= #{parameters.p1,jdbcType=INTEGER} order by id"),
+                    () -> assertThat(animals).hasSize(10),
+                    () -> assertThat(animals.get(0).getId()).isEqualTo(1)
+            );
         }
     }
 
@@ -252,9 +271,11 @@ class OptionalConditionsWithPredicatesAnimalDataTest {
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
             List<AnimalData> animals = mapper.selectMany(selectStatement);
-            assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id > #{parameters.p1,jdbcType=INTEGER} and id <= #{parameters.p2,jdbcType=INTEGER} order by id");
-            assertThat(animals).hasSize(6);
-            assertThat(animals.get(0).getId()).isEqualTo(5);
+            assertAll(
+                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id > #{parameters.p1,jdbcType=INTEGER} and id <= #{parameters.p2,jdbcType=INTEGER} order by id"),
+                    () -> assertThat(animals).hasSize(6),
+                    () -> assertThat(animals.get(0).getId()).isEqualTo(5)
+            );
         }
     }
 
@@ -270,9 +291,11 @@ class OptionalConditionsWithPredicatesAnimalDataTest {
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
             List<AnimalData> animals = mapper.selectMany(selectStatement);
-            assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id <= #{parameters.p1,jdbcType=INTEGER} order by id");
-            assertThat(animals).hasSize(10);
-            assertThat(animals.get(0).getId()).isEqualTo(1);
+            assertAll(
+                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id <= #{parameters.p1,jdbcType=INTEGER} order by id"),
+                    () -> assertThat(animals).hasSize(10),
+                    () -> assertThat(animals.get(0).getId()).isEqualTo(1)
+            );
         }
     }
 
@@ -288,9 +311,11 @@ class OptionalConditionsWithPredicatesAnimalDataTest {
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
             List<AnimalData> animals = mapper.selectMany(selectStatement);
-            assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id >= #{parameters.p1,jdbcType=INTEGER} and id <= #{parameters.p2,jdbcType=INTEGER} order by id");
-            assertThat(animals).hasSize(7);
-            assertThat(animals.get(0).getId()).isEqualTo(4);
+            assertAll(
+                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id >= #{parameters.p1,jdbcType=INTEGER} and id <= #{parameters.p2,jdbcType=INTEGER} order by id"),
+                    () -> assertThat(animals).hasSize(7),
+                    () -> assertThat(animals.get(0).getId()).isEqualTo(4)
+            );
         }
     }
 
@@ -306,9 +331,11 @@ class OptionalConditionsWithPredicatesAnimalDataTest {
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
             List<AnimalData> animals = mapper.selectMany(selectStatement);
-            assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id <= #{parameters.p1,jdbcType=INTEGER} order by id");
-            assertThat(animals).hasSize(10);
-            assertThat(animals.get(0).getId()).isEqualTo(1);
+            assertAll(
+                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id <= #{parameters.p1,jdbcType=INTEGER} order by id"),
+                    () -> assertThat(animals).hasSize(10),
+                    () -> assertThat(animals.get(0).getId()).isEqualTo(1)
+            );
         }
     }
 
@@ -323,9 +350,11 @@ class OptionalConditionsWithPredicatesAnimalDataTest {
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
             List<AnimalData> animals = mapper.selectMany(selectStatement);
-            assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id < #{parameters.p1,jdbcType=INTEGER} order by id");
-            assertThat(animals).hasSize(3);
-            assertThat(animals.get(0).getId()).isEqualTo(1);
+            assertAll(
+                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id < #{parameters.p1,jdbcType=INTEGER} order by id"),
+                    () -> assertThat(animals).hasSize(3),
+                    () -> assertThat(animals.get(0).getId()).isEqualTo(1)
+            );
         }
     }
 
@@ -341,9 +370,11 @@ class OptionalConditionsWithPredicatesAnimalDataTest {
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
             List<AnimalData> animals = mapper.selectMany(selectStatement);
-            assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id <= #{parameters.p1,jdbcType=INTEGER} order by id");
-            assertThat(animals).hasSize(10);
-            assertThat(animals.get(0).getId()).isEqualTo(1);
+            assertAll(
+                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id <= #{parameters.p1,jdbcType=INTEGER} order by id"),
+                    () -> assertThat(animals).hasSize(10),
+                    () -> assertThat(animals.get(0).getId()).isEqualTo(1)
+            );
         }
     }
 
@@ -358,9 +389,11 @@ class OptionalConditionsWithPredicatesAnimalDataTest {
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
             List<AnimalData> animals = mapper.selectMany(selectStatement);
-            assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id <= #{parameters.p1,jdbcType=INTEGER} order by id");
-            assertThat(animals).hasSize(4);
-            assertThat(animals.get(0).getId()).isEqualTo(1);
+            assertAll(
+                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id <= #{parameters.p1,jdbcType=INTEGER} order by id"),
+                    () -> assertThat(animals).hasSize(4),
+                    () -> assertThat(animals.get(0).getId()).isEqualTo(1)
+            );
         }
     }
 
@@ -376,9 +409,11 @@ class OptionalConditionsWithPredicatesAnimalDataTest {
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
             List<AnimalData> animals = mapper.selectMany(selectStatement);
-            assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id <= #{parameters.p1,jdbcType=INTEGER} order by id");
-            assertThat(animals).hasSize(10);
-            assertThat(animals.get(0).getId()).isEqualTo(1);
+            assertAll(
+                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id <= #{parameters.p1,jdbcType=INTEGER} order by id"),
+                    () -> assertThat(animals).hasSize(10),
+                    () -> assertThat(animals.get(0).getId()).isEqualTo(1)
+            );
         }
     }
 
@@ -393,9 +428,11 @@ class OptionalConditionsWithPredicatesAnimalDataTest {
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
             List<AnimalData> animals = mapper.selectMany(selectStatement);
-            assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id in (#{parameters.p1,jdbcType=INTEGER},#{parameters.p2,jdbcType=INTEGER},#{parameters.p3,jdbcType=INTEGER}) order by id");
-            assertThat(animals).hasSize(3);
-            assertThat(animals.get(0).getId()).isEqualTo(4);
+            assertAll(
+                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id in (#{parameters.p1,jdbcType=INTEGER},#{parameters.p2,jdbcType=INTEGER},#{parameters.p3,jdbcType=INTEGER}) order by id"),
+                    () -> assertThat(animals).hasSize(3),
+                    () -> assertThat(animals.get(0).getId()).isEqualTo(4)
+            );
         }
     }
 
@@ -410,10 +447,12 @@ class OptionalConditionsWithPredicatesAnimalDataTest {
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
             List<AnimalData> animals = mapper.selectMany(selectStatement);
-            assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id in (#{parameters.p1,jdbcType=INTEGER},#{parameters.p2,jdbcType=INTEGER}) order by id");
-            assertThat(animals).hasSize(2);
-            assertThat(animals.get(0).getId()).isEqualTo(6);
-            assertThat(animals.get(1).getId()).isEqualTo(8);
+            assertAll(
+                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id in (#{parameters.p1,jdbcType=INTEGER},#{parameters.p2,jdbcType=INTEGER}) order by id"),
+                    () -> assertThat(animals).hasSize(2),
+                    () -> assertThat(animals.get(0).getId()).isEqualTo(6),
+                    () -> assertThat(animals.get(1).getId()).isEqualTo(8)
+            );
         }
     }
 
@@ -428,9 +467,11 @@ class OptionalConditionsWithPredicatesAnimalDataTest {
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
             List<AnimalData> animals = mapper.selectMany(selectStatement);
-            assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where upper(animal_name) in (#{parameters.p1,jdbcType=VARCHAR},#{parameters.p2,jdbcType=VARCHAR}) order by id");
-            assertThat(animals).hasSize(2);
-            assertThat(animals.get(0).getId()).isEqualTo(4);
+            assertAll(
+                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where upper(animal_name) in (#{parameters.p1,jdbcType=VARCHAR},#{parameters.p2,jdbcType=VARCHAR}) order by id"),
+                    () -> assertThat(animals).hasSize(2),
+                    () -> assertThat(animals.get(0).getId()).isEqualTo(4)
+            );
         }
     }
 
@@ -448,9 +489,11 @@ class OptionalConditionsWithPredicatesAnimalDataTest {
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
             List<AnimalData> animals = mapper.selectMany(selectStatement);
-            assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where animal_name in (#{parameters.p1,jdbcType=VARCHAR},#{parameters.p2,jdbcType=VARCHAR}) order by id");
-            assertThat(animals).hasSize(2);
-            assertThat(animals.get(0).getId()).isEqualTo(4);
+            assertAll(
+                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where animal_name in (#{parameters.p1,jdbcType=VARCHAR},#{parameters.p2,jdbcType=VARCHAR}) order by id"),
+                    () -> assertThat(animals).hasSize(2),
+                    () -> assertThat(animals.get(0).getId()).isEqualTo(4)
+            );
         }
     }
 
@@ -465,9 +508,11 @@ class OptionalConditionsWithPredicatesAnimalDataTest {
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
             List<AnimalData> animals = mapper.selectMany(selectStatement);
-            assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where animal_name in (#{parameters.p1,jdbcType=VARCHAR},#{parameters.p2,jdbcType=VARCHAR}) order by id");
-            assertThat(animals).hasSize(2);
-            assertThat(animals.get(0).getId()).isEqualTo(4);
+            assertAll(
+                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where animal_name in (#{parameters.p1,jdbcType=VARCHAR},#{parameters.p2,jdbcType=VARCHAR}) order by id"),
+                    () -> assertThat(animals).hasSize(2),
+                    () -> assertThat(animals.get(0).getId()).isEqualTo(4)
+            );
         }
     }
 
@@ -483,9 +528,11 @@ class OptionalConditionsWithPredicatesAnimalDataTest {
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
             List<AnimalData> animals = mapper.selectMany(selectStatement);
-            assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id <= #{parameters.p1,jdbcType=INTEGER} order by id");
-            assertThat(animals).hasSize(10);
-            assertThat(animals.get(0).getId()).isEqualTo(1);
+            assertAll(
+                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id <= #{parameters.p1,jdbcType=INTEGER} order by id"),
+                    () -> assertThat(animals).hasSize(10),
+                    () -> assertThat(animals.get(0).getId()).isEqualTo(1)
+            );
         }
     }
 
@@ -501,9 +548,11 @@ class OptionalConditionsWithPredicatesAnimalDataTest {
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
             List<AnimalData> animals = mapper.selectMany(selectStatement);
-            assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id not in (#{parameters.p1,jdbcType=INTEGER},#{parameters.p2,jdbcType=INTEGER},#{parameters.p3,jdbcType=INTEGER}) and id <= #{parameters.p4,jdbcType=INTEGER} order by id");
-            assertThat(animals).hasSize(7);
-            assertThat(animals.get(0).getId()).isEqualTo(1);
+            assertAll(
+                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id not in (#{parameters.p1,jdbcType=INTEGER},#{parameters.p2,jdbcType=INTEGER},#{parameters.p3,jdbcType=INTEGER}) and id <= #{parameters.p4,jdbcType=INTEGER} order by id"),
+                    () -> assertThat(animals).hasSize(7),
+                    () -> assertThat(animals.get(0).getId()).isEqualTo(1)
+            );
         }
     }
 
@@ -519,9 +568,11 @@ class OptionalConditionsWithPredicatesAnimalDataTest {
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
             List<AnimalData> animals = mapper.selectMany(selectStatement);
-            assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id not in (#{parameters.p1,jdbcType=INTEGER},#{parameters.p2,jdbcType=INTEGER}) and id <= #{parameters.p3,jdbcType=INTEGER} order by id");
-            assertThat(animals).hasSize(8);
-            assertThat(animals.get(0).getId()).isEqualTo(1);
+            assertAll(
+                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id not in (#{parameters.p1,jdbcType=INTEGER},#{parameters.p2,jdbcType=INTEGER}) and id <= #{parameters.p3,jdbcType=INTEGER} order by id"),
+                    () -> assertThat(animals).hasSize(8),
+                    () -> assertThat(animals.get(0).getId()).isEqualTo(1)
+            );
         }
     }
 
@@ -537,9 +588,11 @@ class OptionalConditionsWithPredicatesAnimalDataTest {
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
             List<AnimalData> animals = mapper.selectMany(selectStatement);
-            assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where upper(animal_name) not in (#{parameters.p1,jdbcType=VARCHAR},#{parameters.p2,jdbcType=VARCHAR}) and id <= #{parameters.p3,jdbcType=INTEGER} order by id");
-            assertThat(animals).hasSize(8);
-            assertThat(animals.get(0).getId()).isEqualTo(1);
+            assertAll(
+                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where upper(animal_name) not in (#{parameters.p1,jdbcType=VARCHAR},#{parameters.p2,jdbcType=VARCHAR}) and id <= #{parameters.p3,jdbcType=INTEGER} order by id"),
+                    () -> assertThat(animals).hasSize(8),
+                    () -> assertThat(animals.get(0).getId()).isEqualTo(1)
+            );
         }
     }
 
@@ -555,9 +608,11 @@ class OptionalConditionsWithPredicatesAnimalDataTest {
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
             List<AnimalData> animals = mapper.selectMany(selectStatement);
-            assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id <= #{parameters.p1,jdbcType=INTEGER} order by id");
-            assertThat(animals).hasSize(10);
-            assertThat(animals.get(0).getId()).isEqualTo(1);
+            assertAll(
+                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id <= #{parameters.p1,jdbcType=INTEGER} order by id"),
+                    () -> assertThat(animals).hasSize(10),
+                    () -> assertThat(animals.get(0).getId()).isEqualTo(1)
+            );
         }
     }
 
@@ -572,9 +627,11 @@ class OptionalConditionsWithPredicatesAnimalDataTest {
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
             List<AnimalData> animals = mapper.selectMany(selectStatement);
-            assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id between #{parameters.p1,jdbcType=INTEGER} and #{parameters.p2,jdbcType=INTEGER} order by id");
-            assertThat(animals).hasSize(4);
-            assertThat(animals.get(0).getId()).isEqualTo(3);
+            assertAll(
+                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id between #{parameters.p1,jdbcType=INTEGER} and #{parameters.p2,jdbcType=INTEGER} order by id"),
+                    () -> assertThat(animals).hasSize(4),
+                    () -> assertThat(animals.get(0).getId()).isEqualTo(3)
+            );
         }
     }
 
@@ -590,9 +647,11 @@ class OptionalConditionsWithPredicatesAnimalDataTest {
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
             List<AnimalData> animals = mapper.selectMany(selectStatement);
-            assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id <= #{parameters.p1,jdbcType=INTEGER} order by id");
-            assertThat(animals).hasSize(10);
-            assertThat(animals.get(0).getId()).isEqualTo(1);
+            assertAll(
+                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id <= #{parameters.p1,jdbcType=INTEGER} order by id"),
+                    () -> assertThat(animals).hasSize(10),
+                    () -> assertThat(animals.get(0).getId()).isEqualTo(1)
+            );
         }
     }
 
@@ -608,9 +667,11 @@ class OptionalConditionsWithPredicatesAnimalDataTest {
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
             List<AnimalData> animals = mapper.selectMany(selectStatement);
-            assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id <= #{parameters.p1,jdbcType=INTEGER} order by id");
-            assertThat(animals).hasSize(10);
-            assertThat(animals.get(0).getId()).isEqualTo(1);
+            assertAll(
+                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id <= #{parameters.p1,jdbcType=INTEGER} order by id"),
+                    () -> assertThat(animals).hasSize(10),
+                    () -> assertThat(animals.get(0).getId()).isEqualTo(1)
+            );
         }
     }
 
@@ -626,9 +687,11 @@ class OptionalConditionsWithPredicatesAnimalDataTest {
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
             List<AnimalData> animals = mapper.selectMany(selectStatement);
-            assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id <= #{parameters.p1,jdbcType=INTEGER} order by id");
-            assertThat(animals).hasSize(10);
-            assertThat(animals.get(0).getId()).isEqualTo(1);
+            assertAll(
+                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id <= #{parameters.p1,jdbcType=INTEGER} order by id"),
+                    () -> assertThat(animals).hasSize(10),
+                    () -> assertThat(animals.get(0).getId()).isEqualTo(1)
+            );
         }
     }
 
@@ -644,9 +707,11 @@ class OptionalConditionsWithPredicatesAnimalDataTest {
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
             List<AnimalData> animals = mapper.selectMany(selectStatement);
-            assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id not between #{parameters.p1,jdbcType=INTEGER} and #{parameters.p2,jdbcType=INTEGER} and id <= #{parameters.p3,jdbcType=INTEGER} order by id");
-            assertThat(animals).hasSize(6);
-            assertThat(animals.get(0).getId()).isEqualTo(1);
+            assertAll(
+                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id not between #{parameters.p1,jdbcType=INTEGER} and #{parameters.p2,jdbcType=INTEGER} and id <= #{parameters.p3,jdbcType=INTEGER} order by id"),
+                    () -> assertThat(animals).hasSize(6),
+                    () -> assertThat(animals.get(0).getId()).isEqualTo(1)
+            );
         }
     }
 
@@ -662,9 +727,11 @@ class OptionalConditionsWithPredicatesAnimalDataTest {
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
             List<AnimalData> animals = mapper.selectMany(selectStatement);
-            assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id <= #{parameters.p1,jdbcType=INTEGER} order by id");
-            assertThat(animals).hasSize(10);
-            assertThat(animals.get(0).getId()).isEqualTo(1);
+            assertAll(
+                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id <= #{parameters.p1,jdbcType=INTEGER} order by id"),
+                    () -> assertThat(animals).hasSize(10),
+                    () -> assertThat(animals.get(0).getId()).isEqualTo(1)
+            );
         }
     }
 
@@ -680,9 +747,11 @@ class OptionalConditionsWithPredicatesAnimalDataTest {
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
             List<AnimalData> animals = mapper.selectMany(selectStatement);
-            assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id <= #{parameters.p1,jdbcType=INTEGER} order by id");
-            assertThat(animals).hasSize(10);
-            assertThat(animals.get(0).getId()).isEqualTo(1);
+            assertAll(
+                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id <= #{parameters.p1,jdbcType=INTEGER} order by id"),
+                    () -> assertThat(animals).hasSize(10),
+                    () -> assertThat(animals.get(0).getId()).isEqualTo(1)
+            );
         }
     }
 
@@ -698,9 +767,11 @@ class OptionalConditionsWithPredicatesAnimalDataTest {
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
             List<AnimalData> animals = mapper.selectMany(selectStatement);
-            assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id <= #{parameters.p1,jdbcType=INTEGER} order by id");
-            assertThat(animals).hasSize(10);
-            assertThat(animals.get(0).getId()).isEqualTo(1);
+            assertAll(
+                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id <= #{parameters.p1,jdbcType=INTEGER} order by id"),
+                    () -> assertThat(animals).hasSize(10),
+                    () -> assertThat(animals.get(0).getId()).isEqualTo(1)
+            );
         }
     }
 
@@ -716,9 +787,11 @@ class OptionalConditionsWithPredicatesAnimalDataTest {
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
             List<AnimalData> animals = mapper.selectMany(selectStatement);
-            assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where animal_name like #{parameters.p1,jdbcType=VARCHAR} and id <= #{parameters.p2,jdbcType=INTEGER} order by id");
-            assertThat(animals).hasSize(2);
-            assertThat(animals.get(0).getId()).isEqualTo(6);
+            assertAll(
+                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where animal_name like #{parameters.p1,jdbcType=VARCHAR} and id <= #{parameters.p2,jdbcType=INTEGER} order by id"),
+                    () -> assertThat(animals).hasSize(2),
+                    () -> assertThat(animals.get(0).getId()).isEqualTo(6)
+            );
         }
     }
 
@@ -734,9 +807,11 @@ class OptionalConditionsWithPredicatesAnimalDataTest {
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
             List<AnimalData> animals = mapper.selectMany(selectStatement);
-            assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id <= #{parameters.p1,jdbcType=INTEGER} order by id");
-            assertThat(animals).hasSize(10);
-            assertThat(animals.get(0).getId()).isEqualTo(1);
+            assertAll(
+                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id <= #{parameters.p1,jdbcType=INTEGER} order by id"),
+                    () -> assertThat(animals).hasSize(10),
+                    () -> assertThat(animals.get(0).getId()).isEqualTo(1)
+            );
         }
     }
 
@@ -752,9 +827,11 @@ class OptionalConditionsWithPredicatesAnimalDataTest {
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
             List<AnimalData> animals = mapper.selectMany(selectStatement);
-            assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where upper(animal_name) like #{parameters.p1,jdbcType=VARCHAR} and id <= #{parameters.p2,jdbcType=INTEGER} order by id");
-            assertThat(animals).hasSize(2);
-            assertThat(animals.get(0).getId()).isEqualTo(6);
+            assertAll(
+                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where upper(animal_name) like #{parameters.p1,jdbcType=VARCHAR} and id <= #{parameters.p2,jdbcType=INTEGER} order by id"),
+                    () -> assertThat(animals).hasSize(2),
+                    () -> assertThat(animals.get(0).getId()).isEqualTo(6)
+            );
         }
     }
 
@@ -770,9 +847,11 @@ class OptionalConditionsWithPredicatesAnimalDataTest {
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
             List<AnimalData> animals = mapper.selectMany(selectStatement);
-            assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id <= #{parameters.p1,jdbcType=INTEGER} order by id");
-            assertThat(animals).hasSize(10);
-            assertThat(animals.get(0).getId()).isEqualTo(1);
+            assertAll(
+                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id <= #{parameters.p1,jdbcType=INTEGER} order by id"),
+                    () -> assertThat(animals).hasSize(10),
+                    () -> assertThat(animals.get(0).getId()).isEqualTo(1)
+            );
         }
     }
 
@@ -788,9 +867,11 @@ class OptionalConditionsWithPredicatesAnimalDataTest {
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
             List<AnimalData> animals = mapper.selectMany(selectStatement);
-            assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where animal_name not like #{parameters.p1,jdbcType=VARCHAR} and id <= #{parameters.p2,jdbcType=INTEGER} order by id");
-            assertThat(animals).hasSize(8);
-            assertThat(animals.get(0).getId()).isEqualTo(1);
+            assertAll(
+                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where animal_name not like #{parameters.p1,jdbcType=VARCHAR} and id <= #{parameters.p2,jdbcType=INTEGER} order by id"),
+                    () -> assertThat(animals).hasSize(8),
+                    () -> assertThat(animals.get(0).getId()).isEqualTo(1)
+            );
         }
     }
 
@@ -806,9 +887,11 @@ class OptionalConditionsWithPredicatesAnimalDataTest {
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
             List<AnimalData> animals = mapper.selectMany(selectStatement);
-            assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id <= #{parameters.p1,jdbcType=INTEGER} order by id");
-            assertThat(animals).hasSize(10);
-            assertThat(animals.get(0).getId()).isEqualTo(1);
+            assertAll(
+                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id <= #{parameters.p1,jdbcType=INTEGER} order by id"),
+                    () -> assertThat(animals).hasSize(10),
+                    () -> assertThat(animals.get(0).getId()).isEqualTo(1)
+            );
         }
     }
 
@@ -824,9 +907,11 @@ class OptionalConditionsWithPredicatesAnimalDataTest {
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
             List<AnimalData> animals = mapper.selectMany(selectStatement);
-            assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where upper(animal_name) not like #{parameters.p1,jdbcType=VARCHAR} and id <= #{parameters.p2,jdbcType=INTEGER} order by id");
-            assertThat(animals).hasSize(8);
-            assertThat(animals.get(0).getId()).isEqualTo(1);
+            assertAll(
+                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where upper(animal_name) not like #{parameters.p1,jdbcType=VARCHAR} and id <= #{parameters.p2,jdbcType=INTEGER} order by id"),
+                    () -> assertThat(animals).hasSize(8),
+                    () -> assertThat(animals.get(0).getId()).isEqualTo(1)
+            );
         }
     }
 
@@ -842,9 +927,11 @@ class OptionalConditionsWithPredicatesAnimalDataTest {
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
             List<AnimalData> animals = mapper.selectMany(selectStatement);
-            assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id <= #{parameters.p1,jdbcType=INTEGER} order by id");
-            assertThat(animals).hasSize(10);
-            assertThat(animals.get(0).getId()).isEqualTo(1);
+            assertAll(
+                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id <= #{parameters.p1,jdbcType=INTEGER} order by id"),
+                    () -> assertThat(animals).hasSize(10),
+                    () -> assertThat(animals.get(0).getId()).isEqualTo(1)
+            );
         }
     }
 }
