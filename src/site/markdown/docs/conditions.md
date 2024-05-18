@@ -220,7 +220,7 @@ This statement will be rendered as follows:
    delete from foo where status = ? and id in ()
 ```
 
-This will cause a runtime error due to invalid SQL, but it eliminates the possibility of deleting ALL active rows with
+This will cause a runtime error due to invalid SQL, but it eliminates the possibility of deleting ALLs rows with
 active status. If you want to allow the "in" condition to drop from the SQL if the list is empty, then use the
 "inWhenPresent" condition.
 
