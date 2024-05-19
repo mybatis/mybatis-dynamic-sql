@@ -672,7 +672,7 @@ class AnimalDataTest {
 
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
-                    .where(id, isIn(null, 22, null).filter(Objects::nonNull).filter(i -> i != 22))
+                    .where(id, isInWhenPresent(null, 22, null).filter(i -> i != 22))
                     .configureStatement(c -> c.setNonRenderingWhereClauseAllowed(true))
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
@@ -693,7 +693,7 @@ class AnimalDataTest {
 
         SelectModel selectModel = select(id, animalName, bodyWeight, brainWeight)
                 .from(animalData)
-                .where(id, isIn(inValues).filter(Objects::nonNull).filter(i -> i != 22))
+                .where(id, isInWhenPresent(inValues).filter(Objects::nonNull).filter(i -> i != 22))
                 .build();
 
         assertThatExceptionOfType(NonRenderingWhereClauseException.class).isThrownBy(() ->
@@ -705,7 +705,7 @@ class AnimalDataTest {
     void testInConditionWithEmptyList() {
         SelectModel selectModel = select(id, animalName, bodyWeight, brainWeight)
                 .from(animalData)
-                .where(id, isIn(Collections.emptyList()))
+                .where(id, isInWhenPresent(Collections.emptyList()))
                 .build();
 
         assertThatExceptionOfType(NonRenderingWhereClauseException.class).isThrownBy(() ->
@@ -784,7 +784,7 @@ class AnimalDataTest {
 
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
-                    .where(id, isNotIn(null, 22, null).filter(Objects::nonNull).filter(i -> i != 22))
+                    .where(id, isNotInWhenPresent(null, 22, null).filter(i -> i != 22))
                     .configureStatement(c -> c.setNonRenderingWhereClauseAllowed(true))
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
@@ -800,7 +800,7 @@ class AnimalDataTest {
     void testNotInConditionWithEventuallyEmptyListForceRendering() {
         SelectModel selectModel = select(id, animalName, bodyWeight, brainWeight)
                 .from(animalData)
-                .where(id, isNotIn(null, 22, null)
+                .where(id, isNotInWhenPresent(null, 22, null)
                         .filter(Objects::nonNull).filter(i -> i != 22))
                 .build();
 

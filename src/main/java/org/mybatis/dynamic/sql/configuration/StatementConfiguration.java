@@ -25,13 +25,6 @@ import org.mybatis.dynamic.sql.exception.NonRenderingWhereClauseException;
  * Configurable behaviors are detailed below:
  *
  * <dl>
- *     <dt>emptyListConditionRenderingAllowed</dt>
- *     <dd>If false (default), the framework will not render list conditions that are empty in a where clause.
- *         This is beneficial in that it will not allow the library to generate invalid SQL, but it has a
- *         potentially dangerous side effect where a statement could be generated that impacts more rows
- *         then expected. If true, an empty list will be rendered as "in ()", "not in ()", etc. which will likely
- *         cause an SQLException at runtime.
- *     </dd>
  *     <dt>nonRenderingWhereClauseAllowed</dt>
  *     <dd>If false (default), the framework will throw a {@link NonRenderingWhereClauseException}
  *         if a where clause is specified in the statement, but it fails to render because all
@@ -51,24 +44,12 @@ public class StatementConfiguration {
     private boolean isNonRenderingWhereClauseAllowed =
             GlobalContext.getConfiguration().isIsNonRenderingWhereClauseAllowed();
 
-    private boolean isEmptyListConditionRenderingAllowed =
-            GlobalContext.getConfiguration().isEmptyListConditionRenderingAllowed();
-
     public boolean isNonRenderingWhereClauseAllowed() {
         return isNonRenderingWhereClauseAllowed;
     }
 
     public StatementConfiguration setNonRenderingWhereClauseAllowed(boolean nonRenderingWhereClauseAllowed) {
         isNonRenderingWhereClauseAllowed = nonRenderingWhereClauseAllowed;
-        return this;
-    }
-
-    public boolean isEmptyListConditionRenderingAllowed() {
-        return isEmptyListConditionRenderingAllowed;
-    }
-
-    public StatementConfiguration setEmptyListConditionRenderingAllowed(boolean emptyListConditionRenderingAllowed) {
-        isEmptyListConditionRenderingAllowed = emptyListConditionRenderingAllowed;
         return this;
     }
 }

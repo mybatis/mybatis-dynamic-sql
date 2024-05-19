@@ -22,6 +22,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 import org.mybatis.dynamic.sql.AbstractListValueCondition;
+import org.mybatis.dynamic.sql.render.RenderingContext;
 
 public class IsNotIn<T> extends AbstractListValueCondition<T> {
     private static final IsNotIn<?> EMPTY = new IsNotIn<>(Collections.emptyList());
@@ -37,6 +38,11 @@ public class IsNotIn<T> extends AbstractListValueCondition<T> {
     }
 
     @Override
+    public boolean shouldRender(RenderingContext renderingContext) {
+        return true;
+    }
+
+    @Override
     public String operator() {
         return "not in"; //$NON-NLS-1$
     }
@@ -47,13 +53,12 @@ public class IsNotIn<T> extends AbstractListValueCondition<T> {
     }
 
     /**
-     * If renderable, apply the mapping to each value in the list return a new condition with the mapped values.
-     *     Else return a condition that will not render (this).
+     * If not empty, apply the mapping to each value in the list return a new condition with the mapped values.
+     *     Else return an empty condition (this).
      *
-     * @param mapper a mapping function to apply to the values, if renderable
+     * @param mapper a mapping function to apply to the values, if not empty
      * @param <R> type of the new condition
-     * @return a new condition with mapped values if renderable, otherwise a condition
-     *     that will not render.
+     * @return a new condition with mapped values if renderable, otherwise an empty condition
      */
     public <R> IsNotIn<R> map(Function<? super T, ? extends R> mapper) {
         Function<Collection<R>, IsNotIn<R>> constructor = IsNotIn::new;
