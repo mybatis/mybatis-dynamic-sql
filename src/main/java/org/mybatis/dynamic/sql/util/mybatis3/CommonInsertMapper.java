@@ -29,7 +29,7 @@ import org.mybatis.dynamic.sql.util.SqlProviderAdapter;
  * insert statements that do NOT expect generated keys.
  *
  * @param <T>
- *            the type of record associated with this mapper
+ *            the type of row associated with this mapper
  */
 public interface CommonInsertMapper<T> extends CommonGeneralInsertMapper {
     /**

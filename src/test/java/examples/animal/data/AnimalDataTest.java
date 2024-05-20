@@ -1498,11 +1498,11 @@ class AnimalDataTest {
     void testUpdate() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
-            AnimalData record = new AnimalData();
-            record.setBodyWeight(2.6);
+            AnimalData row = new AnimalData();
+            row.setBodyWeight(2.6);
 
             UpdateStatementProvider updateStatement = update(animalData)
-                    .set(bodyWeight).equalTo(record.getBodyWeight())
+                    .set(bodyWeight).equalTo(row.getBodyWeight())
                     .set(animalName).equalToNull()
                     .where(id, isIn(1, 5, 7))
                     .or(id, isIn(2, 6, 8), and(animalName, isLike("%bat")))
@@ -1556,13 +1556,13 @@ class AnimalDataTest {
     void testInsert() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
-            AnimalData record = new AnimalData();
-            record.setId(100);
-            record.setAnimalName("Old Shep");
-            record.setBodyWeight(22.5);
-            record.setBrainWeight(1.2);
+            AnimalData row = new AnimalData();
+            row.setId(100);
+            row.setAnimalName("Old Shep");
+            row.setBodyWeight(22.5);
+            row.setBrainWeight(1.2);
 
-            InsertStatementProvider<AnimalData> insertStatement = insert(record)
+            InsertStatementProvider<AnimalData> insertStatement = insert(row)
                     .into(animalData)
                     .map(id).toProperty("id")
                     .map(animalName).toProperty("animalName")
@@ -1580,13 +1580,13 @@ class AnimalDataTest {
     void testInsertNull() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
-            AnimalData record = new AnimalData();
-            record.setId(100);
-            record.setAnimalName("Old Shep");
-            record.setBodyWeight(22.5);
-            record.setBrainWeight(1.2);
+            AnimalData row = new AnimalData();
+            row.setId(100);
+            row.setAnimalName("Old Shep");
+            row.setBodyWeight(22.5);
+            row.setBrainWeight(1.2);
 
-            InsertStatementProvider<AnimalData> insertStatement = insert(record)
+            InsertStatementProvider<AnimalData> insertStatement = insert(row)
                     .into(animalData)
                     .map(id).toProperty("id")
                     .map(animalName).toNull()
@@ -1605,17 +1605,17 @@ class AnimalDataTest {
         try (SqlSession sqlSession = sqlSessionFactory.openSession(ExecutorType.BATCH)) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             List<AnimalData> records = new ArrayList<>();
-            AnimalData record = new AnimalData();
-            record.setId(100);
-            record.setAnimalName("Old Shep");
-            record.setBodyWeight(22.5);
-            records.add(record);
+            AnimalData row = new AnimalData();
+            row.setId(100);
+            row.setAnimalName("Old Shep");
+            row.setBodyWeight(22.5);
+            records.add(row);
 
-            record = new AnimalData();
-            record.setId(101);
-            record.setAnimalName("Old Dan");
-            record.setBodyWeight(22.5);
-            records.add(record);
+            row = new AnimalData();
+            row.setId(101);
+            row.setAnimalName("Old Dan");
+            row.setBodyWeight(22.5);
+            records.add(row);
 
             BatchInsert<AnimalData> batchInsert = insertBatch(records)
                     .into(animalData)
@@ -1655,17 +1655,17 @@ class AnimalDataTest {
         try (SqlSession sqlSession = sqlSessionFactory.openSession(ExecutorType.BATCH)) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             List<AnimalData> records = new ArrayList<>();
-            AnimalData record = new AnimalData();
-            record.setId(100);
-            record.setAnimalName("Old Shep");
-            record.setBodyWeight(22.5);
-            records.add(record);
+            AnimalData row = new AnimalData();
+            row.setId(100);
+            row.setAnimalName("Old Shep");
+            row.setBodyWeight(22.5);
+            records.add(row);
 
-            record = new AnimalData();
-            record.setId(101);
-            record.setAnimalName("Old Dan");
-            record.setBodyWeight(22.5);
-            records.add(record);
+            row = new AnimalData();
+            row.setId(101);
+            row.setAnimalName("Old Dan");
+            row.setBodyWeight(22.5);
+            records.add(row);
 
             BatchInsert<AnimalData> batchInsert = insertBatch(records)
                     .into(animalData)
@@ -2245,14 +2245,14 @@ class AnimalDataTest {
             int rows = mapper.update(updateStatement);
             assertThat(rows).isEqualTo(1);
 
-            AnimalData record = MyBatis3Utils.selectOne(mapper::selectOne,
+            AnimalData row = MyBatis3Utils.selectOne(mapper::selectOne,
                     BasicColumn.columnList(id, bodyWeight, brainWeight),
                     animalData,
                     c -> c.where(id, isEqualTo(1))
             );
 
-            assertThat(record.getBodyWeight()).isEqualTo(-2.86);
-            assertThat(record.getBrainWeight()).isEqualTo(2.005);
+            assertThat(row.getBodyWeight()).isEqualTo(-2.86);
+            assertThat(row.getBrainWeight()).isEqualTo(2.005);
         }
     }
 
@@ -2278,14 +2278,14 @@ class AnimalDataTest {
             int rows = mapper.update(updateStatement);
             assertThat(rows).isEqualTo(1);
 
-            AnimalData record = MyBatis3Utils.selectOne(mapper::selectOne,
+            AnimalData row = MyBatis3Utils.selectOne(mapper::selectOne,
                     BasicColumn.columnList(id, bodyWeight, brainWeight),
                     animalData,
                     c -> c.where(id, isEqualTo(1))
             );
 
-            assertThat(record.getBodyWeight()).isEqualTo(0.42, within(.001));
-            assertThat(record.getBrainWeight()).isEqualTo(.0025);
+            assertThat(row.getBodyWeight()).isEqualTo(0.42, within(.001));
+            assertThat(row.getBrainWeight()).isEqualTo(.0025);
         }
     }
 }

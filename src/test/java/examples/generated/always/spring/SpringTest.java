@@ -94,12 +94,12 @@ class SpringTest {
 
         List<GeneratedAlwaysRecord> records = template.query(selectStatement.getSelectStatement(), namedParameters,
                 (rs, rowNum) -> {
-                    GeneratedAlwaysRecord record = new GeneratedAlwaysRecord();
-                    record.setId(rs.getInt(1));
-                    record.setFirstName(rs.getString(2));
-                    record.setLastName(rs.getString(3));
-                    record.setFullName(rs.getString(4));
-                    return record;
+                    GeneratedAlwaysRecord row = new GeneratedAlwaysRecord();
+                    row.setId(rs.getInt(1));
+                    row.setFirstName(rs.getString(2));
+                    row.setLastName(rs.getString(3));
+                    row.setFullName(rs.getString(4));
+                    return row;
                 });
 
         assertThat(records).hasSize(3);
@@ -129,12 +129,12 @@ class SpringTest {
 
     @Test
     void testInsert() {
-        GeneratedAlwaysRecord record = new GeneratedAlwaysRecord();
-        record.setId(100);
-        record.setFirstName("Bob");
-        record.setLastName("Jones");
+        GeneratedAlwaysRecord row = new GeneratedAlwaysRecord();
+        row.setId(100);
+        row.setFirstName("Bob");
+        row.setLastName("Jones");
 
-        InsertStatementProvider<GeneratedAlwaysRecord> insertStatement = insert(record)
+        InsertStatementProvider<GeneratedAlwaysRecord> insertStatement = insert(row)
                 .into(generatedAlways)
                 .map(id).toProperty("id")
                 .map(firstName).toProperty("firstName")
@@ -154,12 +154,12 @@ class SpringTest {
 
     @Test
     void testInsertWithExtensions() {
-        GeneratedAlwaysRecord record = new GeneratedAlwaysRecord();
-        record.setId(100);
-        record.setFirstName("Bob");
-        record.setLastName("Jones");
+        GeneratedAlwaysRecord row = new GeneratedAlwaysRecord();
+        row.setId(100);
+        row.setFirstName("Bob");
+        row.setLastName("Jones");
 
-        Buildable<InsertModel<GeneratedAlwaysRecord>> insertStatement = insert(record)
+        Buildable<InsertModel<GeneratedAlwaysRecord>> insertStatement = insert(row)
                 .into(generatedAlways)
                 .map(id).toProperty("id")
                 .map(firstName).toProperty("firstName")
@@ -229,17 +229,17 @@ class SpringTest {
     @Test
     void testInsertBatch() {
         List<GeneratedAlwaysRecord> records = new ArrayList<>();
-        GeneratedAlwaysRecord record = new GeneratedAlwaysRecord();
-        record.setId(100);
-        record.setFirstName("Bob");
-        record.setLastName("Jones");
-        records.add(record);
+        GeneratedAlwaysRecord row = new GeneratedAlwaysRecord();
+        row.setId(100);
+        row.setFirstName("Bob");
+        row.setLastName("Jones");
+        records.add(row);
 
-        record = new GeneratedAlwaysRecord();
-        record.setId(101);
-        record.setFirstName("Jim");
-        record.setLastName("Smith");
-        records.add(record);
+        row = new GeneratedAlwaysRecord();
+        row.setId(101);
+        row.setFirstName("Jim");
+        row.setLastName("Smith");
+        records.add(row);
 
         SqlParameterSource[] batch = BatchInsertUtility.createBatch(records);
 
@@ -263,17 +263,17 @@ class SpringTest {
         NamedParameterJdbcTemplateExtensions extensions = new NamedParameterJdbcTemplateExtensions(template);
 
         List<GeneratedAlwaysRecord> records = new ArrayList<>();
-        GeneratedAlwaysRecord record = new GeneratedAlwaysRecord();
-        record.setId(100);
-        record.setFirstName("Bob");
-        record.setLastName("Jones");
-        records.add(record);
+        GeneratedAlwaysRecord row = new GeneratedAlwaysRecord();
+        row.setId(100);
+        row.setFirstName("Bob");
+        row.setLastName("Jones");
+        records.add(row);
 
-        record = new GeneratedAlwaysRecord();
-        record.setId(101);
-        record.setFirstName("Jim");
-        record.setLastName("Smith");
-        records.add(record);
+        row = new GeneratedAlwaysRecord();
+        row.setId(101);
+        row.setFirstName("Jim");
+        row.setLastName("Smith");
+        records.add(row);
 
         Buildable<BatchInsertModel<GeneratedAlwaysRecord>> insertStatement = insertBatch(records)
                 .into(generatedAlways)
@@ -294,17 +294,17 @@ class SpringTest {
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         List<GeneratedAlwaysRecord> records = new ArrayList<>();
-        GeneratedAlwaysRecord record = new GeneratedAlwaysRecord();
-        record.setId(100);
-        record.setFirstName("Bob");
-        record.setLastName("Jones");
-        records.add(record);
+        GeneratedAlwaysRecord row = new GeneratedAlwaysRecord();
+        row.setId(100);
+        row.setFirstName("Bob");
+        row.setLastName("Jones");
+        records.add(row);
 
-        record = new GeneratedAlwaysRecord();
-        record.setId(101);
-        record.setFirstName("Jim");
-        record.setLastName("Smith");
-        records.add(record);
+        row = new GeneratedAlwaysRecord();
+        row.setId(101);
+        row.setFirstName("Jim");
+        row.setLastName("Smith");
+        records.add(row);
 
         Buildable<MultiRowInsertModel<GeneratedAlwaysRecord>> insertStatement = insertMultiple(records).into(generatedAlways)
                 .map(id).toProperty("id")

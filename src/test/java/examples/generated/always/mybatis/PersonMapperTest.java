@@ -70,14 +70,14 @@ class PersonMapperTest {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             PersonMapper mapper = session.getMapper(PersonMapper.class);
 
-            PersonRecord record = new PersonRecord();
-            record.setFirstName("Fred");
-            record.setLastName("Flintstone");
+            PersonRecord row = new PersonRecord();
+            row.setFirstName("Fred");
+            row.setLastName("Flintstone");
 
-            int rows = mapper.insert(record);
+            int rows = mapper.insert(row);
 
             assertThat(rows).isEqualTo(1);
-            assertThat(record.getId()).isEqualTo(22);
+            assertThat(row.getId()).isEqualTo(22);
 
             InsertSelectStatementProvider insertSelectStatement = SqlBuilder.insertInto(person)
                     .withColumnList(firstName, lastName)

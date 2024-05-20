@@ -83,8 +83,8 @@ class ArrayTest {
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
 
-            Optional<NamesRecord> record = mapper.selectOne(selectStatement);
-            assertThat(record).hasValueSatisfying( r -> {
+            Optional<NamesRecord> row = mapper.selectOne(selectStatement);
+            assertThat(row).hasValueSatisfying( r -> {
                 assertThat(r.getId()).isEqualTo(1);
                 assertThat(r.getNames()).isEqualTo(someNames);
             });
@@ -112,8 +112,8 @@ class ArrayTest {
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
 
-            Optional<NamesRecord> record = mapper.selectOne(selectStatement);
-            assertThat(record).hasValueSatisfying( r -> {
+            Optional<NamesRecord> row = mapper.selectOne(selectStatement);
+            assertThat(row).hasValueSatisfying( r -> {
                 assertThat(r.getId()).isEqualTo(1);
                 assertThat(r.getNames()).isEqualTo(someNames);
             });

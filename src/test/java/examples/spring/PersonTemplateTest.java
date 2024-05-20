@@ -187,9 +187,9 @@ class PersonTemplateTest {
                 .from(person)
                 .where(id, isEqualTo(300));
 
-        Optional<PersonRecord> record = template.selectOne(selectStatement, personRowMapper);
+        Optional<PersonRecord> row = template.selectOne(selectStatement, personRowMapper);
 
-        assertThat(record).isNotPresent();
+        assertThat(row).isNotPresent();
     }
 
     @Test
@@ -236,16 +236,16 @@ class PersonTemplateTest {
 
     @Test
     void testInsert() {
-        PersonRecord record = new PersonRecord();
-        record.setId(100);
-        record.setFirstName("Joe");
-        record.setLastName(LastName.of("Jones"));
-        record.setBirthDate(new Date());
-        record.setEmployed(true);
-        record.setOccupation("Developer");
-        record.setAddressId(1);
+        PersonRecord row = new PersonRecord();
+        row.setId(100);
+        row.setFirstName("Joe");
+        row.setLastName(LastName.of("Jones"));
+        row.setBirthDate(new Date());
+        row.setEmployed(true);
+        row.setOccupation("Developer");
+        row.setAddressId(1);
 
-        Buildable<InsertModel<PersonRecord>> insertStatement = insert(record).into(person)
+        Buildable<InsertModel<PersonRecord>> insertStatement = insert(row).into(person)
                 .map(id).toProperty("id")
                 .map(firstName).toProperty("firstName")
                 .map(lastName).toProperty("lastNameAsString")
@@ -280,25 +280,25 @@ class PersonTemplateTest {
 
         List<PersonRecord> records = new ArrayList<>();
 
-        PersonRecord record = new PersonRecord();
-        record.setId(100);
-        record.setFirstName("Joe");
-        record.setLastName(LastName.of("Jones"));
-        record.setBirthDate(new Date());
-        record.setEmployed(true);
-        record.setOccupation("Developer");
-        record.setAddressId(1);
-        records.add(record);
+        PersonRecord row = new PersonRecord();
+        row.setId(100);
+        row.setFirstName("Joe");
+        row.setLastName(LastName.of("Jones"));
+        row.setBirthDate(new Date());
+        row.setEmployed(true);
+        row.setOccupation("Developer");
+        row.setAddressId(1);
+        records.add(row);
 
-        record = new PersonRecord();
-        record.setId(101);
-        record.setFirstName("Sarah");
-        record.setLastName(LastName.of("Smith"));
-        record.setBirthDate(new Date());
-        record.setEmployed(true);
-        record.setOccupation("Architect");
-        record.setAddressId(2);
-        records.add(record);
+        row = new PersonRecord();
+        row.setId(101);
+        row.setFirstName("Sarah");
+        row.setLastName(LastName.of("Smith"));
+        row.setBirthDate(new Date());
+        row.setEmployed(true);
+        row.setOccupation("Architect");
+        row.setAddressId(2);
+        records.add(row);
 
         Buildable<MultiRowInsertModel<PersonRecord>> insertStatement = insertMultiple(records).into(person)
                 .map(id).toProperty("id")
@@ -319,25 +319,25 @@ class PersonTemplateTest {
 
         List<PersonRecord> records = new ArrayList<>();
 
-        PersonRecord record = new PersonRecord();
-        record.setId(100);
-        record.setFirstName("Joe");
-        record.setLastName(LastName.of("Jones"));
-        record.setBirthDate(new Date());
-        record.setEmployed(true);
-        record.setOccupation("Developer");
-        record.setAddressId(1);
-        records.add(record);
+        PersonRecord row = new PersonRecord();
+        row.setId(100);
+        row.setFirstName("Joe");
+        row.setLastName(LastName.of("Jones"));
+        row.setBirthDate(new Date());
+        row.setEmployed(true);
+        row.setOccupation("Developer");
+        row.setAddressId(1);
+        records.add(row);
 
-        record = new PersonRecord();
-        record.setId(101);
-        record.setFirstName("Sarah");
-        record.setLastName(LastName.of("Smith"));
-        record.setBirthDate(new Date());
-        record.setEmployed(true);
-        record.setOccupation("Architect");
-        record.setAddressId(2);
-        records.add(record);
+        row = new PersonRecord();
+        row.setId(101);
+        row.setFirstName("Sarah");
+        row.setLastName(LastName.of("Smith"));
+        row.setBirthDate(new Date());
+        row.setEmployed(true);
+        row.setOccupation("Architect");
+        row.setAddressId(2);
+        records.add(row);
 
         Buildable<BatchInsertModel<PersonRecord>> insertStatement = insertBatch(records).into(person)
                 .map(id).toProperty("id")
@@ -357,22 +357,22 @@ class PersonTemplateTest {
 
     @Test
     void testInsertSelective() {
-        PersonRecord record = new PersonRecord();
-        record.setId(100);
-        record.setFirstName("Joe");
-        record.setLastName(LastName.of("Jones"));
-        record.setBirthDate(new Date());
-        record.setEmployed(false);
-        record.setAddressId(1);
+        PersonRecord row = new PersonRecord();
+        row.setId(100);
+        row.setFirstName("Joe");
+        row.setLastName(LastName.of("Jones"));
+        row.setBirthDate(new Date());
+        row.setEmployed(false);
+        row.setAddressId(1);
 
-        Buildable<InsertModel<PersonRecord>> insertStatement = insert(record).into(person)
-                .map(id).toPropertyWhenPresent("id", record::getId)
-                .map(firstName).toPropertyWhenPresent("firstName", record::getFirstName)
-                .map(lastName).toPropertyWhenPresent("lastNameAsString", record::getLastNameAsString)
-                .map(birthDate).toPropertyWhenPresent("birthDate", record::getBirthDate)
-                .map(employed).toPropertyWhenPresent("employedAsString", record::getEmployedAsString)
-                .map(occupation).toPropertyWhenPresent("occupation", record::getOccupation)
-                .map(addressId).toPropertyWhenPresent("addressId", record::getAddressId);
+        Buildable<InsertModel<PersonRecord>> insertStatement = insert(row).into(person)
+                .map(id).toPropertyWhenPresent("id", row::getId)
+                .map(firstName).toPropertyWhenPresent("firstName", row::getFirstName)
+                .map(lastName).toPropertyWhenPresent("lastNameAsString", row::getLastNameAsString)
+                .map(birthDate).toPropertyWhenPresent("birthDate", row::getBirthDate)
+                .map(employed).toPropertyWhenPresent("employedAsString", row::getEmployedAsString)
+                .map(occupation).toPropertyWhenPresent("occupation", row::getOccupation)
+                .map(addressId).toPropertyWhenPresent("addressId", row::getAddressId);
 
         int rows = template.insert(insertStatement);
 
@@ -480,16 +480,16 @@ class PersonTemplateTest {
 
     @Test
     void testUpdate() {
-        PersonRecord record = new PersonRecord();
-        record.setId(100);
-        record.setFirstName("Joe");
-        record.setLastName(LastName.of("Jones"));
-        record.setBirthDate(new Date());
-        record.setEmployed(true);
-        record.setOccupation("Developer");
-        record.setAddressId(1);
+        PersonRecord row = new PersonRecord();
+        row.setId(100);
+        row.setFirstName("Joe");
+        row.setLastName(LastName.of("Jones"));
+        row.setBirthDate(new Date());
+        row.setEmployed(true);
+        row.setOccupation("Developer");
+        row.setAddressId(1);
 
-        Buildable<InsertModel<PersonRecord>> insertStatement = insert(record).into(person)
+        Buildable<InsertModel<PersonRecord>> insertStatement = insert(row).into(person)
                 .map(id).toProperty("id")
                 .map(firstName).toProperty("firstName")
                 .map(lastName).toProperty("lastNameAsString")
@@ -501,16 +501,16 @@ class PersonTemplateTest {
         int rows = template.insert(insertStatement);
         assertThat(rows).isEqualTo(1);
 
-        record.setOccupation("Programmer");
+        row.setOccupation("Programmer");
 
         Buildable<UpdateModel> updateStatement = update(person)
-                .set(firstName).equalTo(record::getFirstName)
-                .set(lastName).equalTo(record::getLastName)
-                .set(birthDate).equalTo(record::getBirthDate)
-                .set(employed).equalTo(record::getEmployed)
-                .set(occupation).equalTo(record::getOccupation)
-                .set(addressId).equalTo(record::getAddressId)
-                .where(id, isEqualTo(record::getId));
+                .set(firstName).equalTo(row::getFirstName)
+                .set(lastName).equalTo(row::getLastName)
+                .set(birthDate).equalTo(row::getBirthDate)
+                .set(employed).equalTo(row::getEmployed)
+                .set(occupation).equalTo(row::getOccupation)
+                .set(addressId).equalTo(row::getAddressId)
+                .where(id, isEqualTo(row::getId));
 
         rows = template.update(updateStatement);
         assertThat(rows).isEqualTo(1);
@@ -709,9 +709,9 @@ class PersonTemplateTest {
                 .join(address, on(person.addressId, equalTo(address.id)))
                 .where(id, isEqualTo(1));
 
-        Optional<PersonWithAddress> record = template.selectOne(selectStatement, personWithAddressRowMapper);
+        Optional<PersonWithAddress> row = template.selectOne(selectStatement, personWithAddressRowMapper);
 
-        assertThat(record).hasValueSatisfying(r -> {
+        assertThat(row).hasValueSatisfying(r -> {
             assertThat(r.getId()).isEqualTo(1);
             assertThat(r.getEmployed()).isTrue();
             assertThat(r.getFirstName()).isEqualTo("Fred");
@@ -733,8 +733,8 @@ class PersonTemplateTest {
                 .join(address, on(person.addressId, equalTo(address.id)))
                 .where(id, isEqualTo(55));
 
-        Optional<PersonWithAddress> record = template.selectOne(selectStatement, personWithAddressRowMapper);
-        assertThat(record).isEmpty();
+        Optional<PersonWithAddress> row = template.selectOne(selectStatement, personWithAddressRowMapper);
+        assertThat(row).isEmpty();
     }
 
     @Test
@@ -759,35 +759,35 @@ class PersonTemplateTest {
 
     private final RowMapper<PersonWithAddress> personWithAddressRowMapper =
             (rs, i) -> {
-                PersonWithAddress record = new PersonWithAddress();
-                record.setId(rs.getInt(1));
-                record.setFirstName(rs.getString(2));
-                record.setLastName(LastName.of(rs.getString(3)));
-                record.setBirthDate(rs.getTimestamp(4));
-                record.setEmployed("Yes".equals(rs.getString(5)));
-                record.setOccupation(rs.getString(6));
+                PersonWithAddress row = new PersonWithAddress();
+                row.setId(rs.getInt(1));
+                row.setFirstName(rs.getString(2));
+                row.setLastName(LastName.of(rs.getString(3)));
+                row.setBirthDate(rs.getTimestamp(4));
+                row.setEmployed("Yes".equals(rs.getString(5)));
+                row.setOccupation(rs.getString(6));
 
                 AddressRecord address = new AddressRecord();
-                record.setAddress(address);
+                row.setAddress(address);
                 address.setId(rs.getInt(7));
                 address.setStreetAddress(rs.getString(8));
                 address.setCity(rs.getString(9));
                 address.setState(rs.getString(10));
 
-                return record;
+                return row;
             };
 
 
     static RowMapper<PersonRecord> personRowMapper =
             (rs, i) -> {
-                PersonRecord record = new PersonRecord();
-                record.setId(rs.getInt(1));
-                record.setFirstName(rs.getString(2));
-                record.setLastName(LastName.of(rs.getString(3)));
-                record.setBirthDate(rs.getTimestamp(4));
-                record.setEmployed("Yes".equals(rs.getString(5)));
-                record.setOccupation(rs.getString(6));
-                record.setAddressId(rs.getInt(7));
-                return record;
+                PersonRecord row = new PersonRecord();
+                row.setId(rs.getInt(1));
+                row.setFirstName(rs.getString(2));
+                row.setLastName(LastName.of(rs.getString(3)));
+                row.setBirthDate(rs.getTimestamp(4));
+                row.setEmployed("Yes".equals(rs.getString(5)));
+                row.setOccupation(rs.getString(6));
+                row.setAddressId(rs.getInt(7));
+                return row;
             };
 }
