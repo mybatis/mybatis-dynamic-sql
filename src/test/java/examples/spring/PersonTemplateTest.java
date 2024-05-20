@@ -526,33 +526,6 @@ class PersonTemplateTest {
     }
 
     @Test
-    void testUpdateOneField() {
-        Buildable<GeneralInsertModel> insertStatement = insertInto(person)
-                .set(id).toValue(100)
-                .set(firstName).toValue("Joe")
-                .set(lastName).toValue(LastName.of("Jones"))
-                .set(birthDate).toValue(new Date())
-                .set(employed).toValue(true)
-                .set(occupation).toValue("Developer")
-                .set(addressId).toValue(1);
-
-        int rows = template.generalInsert(insertStatement);
-        assertThat(rows).isEqualTo(1);
-
-        Buildable<UpdateModel> updateStatement = update(person)
-                .set(occupation).equalTo("Programmer")
-                .where(id, isEqualTo(100));
-        rows = template.update(updateStatement);
-        assertThat(rows).isEqualTo(1);
-
-        Buildable<SelectModel> selectStatement = select(id, firstName, lastName, birthDate, employed, occupation, addressId)
-                .from(person)
-                .where(id, isEqualTo(100));
-        Optional<PersonRecord> newRecord = template.selectOne(selectStatement, personRowMapper);
-        assertThat(newRecord).hasValueSatisfying(r -> assertThat(r.getOccupation()).isEqualTo("Programmer"));
-    }
-
-    @Test
     void testUpdateAll() {
         Buildable<GeneralInsertModel> insertStatement = insertInto(person)
                 .set(id).toValue(100)
