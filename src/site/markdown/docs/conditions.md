@@ -203,7 +203,7 @@ case String values to enable case-insensitive queries. There are extension point
 mapping if you so desire.
 
 Starting with version 1.5.2, we made a change to the rendering rules for the "in" conditions. This was done to limit the
-danger of conditions failing to render and thus affecting more rows than expected. For the base conditions ("isIn", 
+danger of conditions failing to render and thus affecting more rows than expected. For the base conditions ("isIn",
 "isNotIn", etc.), if the list of values is empty, then the condition will still render, but the resulting SQL will
 be invalid and will cause a runtime exception. We believe this is the safest outcome. For example, suppose
 a DELETE statement was coded as follows:
@@ -220,7 +220,7 @@ This statement will be rendered as follows:
    delete from foo where status = ? and id in ()
 ```
 
-This will cause a runtime error due to invalid SQL, but it eliminates the possibility of deleting ALLs rows with
+This will cause a runtime error due to invalid SQL, but it eliminates the possibility of deleting ALL rows with
 active status. If you want to allow the "in" condition to drop from the SQL if the list is empty, then use the
 "inWhenPresent" condition.
 
