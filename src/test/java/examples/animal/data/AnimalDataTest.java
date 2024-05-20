@@ -103,7 +103,7 @@ class AnimalDataTest {
 
             assertAll(
                     () -> assertThat(animals).hasSize(65),
-                    () -> assertThat(animals).element(0).isNotNull().extracting(AnimalData::getId).isEqualTo(1)
+                    () -> assertThat(animals).first().isNotNull().extracting(AnimalData::getId).isEqualTo(1)
             );
         }
     }
@@ -122,7 +122,7 @@ class AnimalDataTest {
             List<AnimalData> animals = mapper.selectManyWithRowBounds(selectStatement, rowBounds);
             assertAll(
                     () -> assertThat(animals).hasSize(6),
-                    () -> assertThat(animals).element(0).isNotNull().extracting(AnimalData::getId).isEqualTo(5)
+                    () -> assertThat(animals).first().isNotNull().extracting(AnimalData::getId).isEqualTo(5)
             );
         }
     }
@@ -139,7 +139,7 @@ class AnimalDataTest {
             List<AnimalData> animals = mapper.selectMany(selectStatement);
             assertAll(
                     () -> assertThat(animals).hasSize(65),
-                    () -> assertThat(animals).element(0).isNotNull().extracting(AnimalData::getId).isEqualTo(65)
+                    () -> assertThat(animals).first().isNotNull().extracting(AnimalData::getId).isEqualTo(65)
             );
         }
     }
@@ -157,7 +157,7 @@ class AnimalDataTest {
             assertAll(
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select * from AnimalData order by id DESC"),
                     () -> assertThat(animals).hasSize(65),
-                    () -> assertThat(animals).element(0).isNotNull()
+                    () -> assertThat(animals).first().isNotNull()
                             .extracting("ID", "ANIMAL_NAME")
                             .containsExactly(65, "Brachiosaurus")
             );
@@ -177,7 +177,7 @@ class AnimalDataTest {
             assertAll(
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select * from AnimalData order by id DESC"),
                     () -> assertThat(animals).hasSize(65),
-                    () -> assertThat(animals).element(0).isNotNull()
+                    () -> assertThat(animals).first().isNotNull()
                             .extracting(AnimalData::getId).isEqualTo(65)
             );
         }
@@ -196,7 +196,7 @@ class AnimalDataTest {
             assertAll(
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select ad.* from AnimalData ad order by id DESC"),
                     () -> assertThat(animals).hasSize(65),
-                    () -> assertThat(animals).element(0).isNotNull().extracting(AnimalData::getId).isEqualTo(65)
+                    () -> assertThat(animals).first().isNotNull().extracting(AnimalData::getId).isEqualTo(65)
             );
         }
     }
@@ -1788,7 +1788,7 @@ class AnimalDataTest {
 
             assertAll(
                     () -> assertThat(rows).hasSize(14),
-                    () -> assertThat(rows).element(0).isNotNull().extracting(AnimalData::getId).isEqualTo(65)
+                    () -> assertThat(rows).first().isNotNull().extracting(AnimalData::getId).isEqualTo(65)
             );
         }
     }
@@ -1810,7 +1810,7 @@ class AnimalDataTest {
 
             assertAll(
                     () -> assertThat(rows).hasSize(14),
-                    () -> assertThat(rows).element(0).isNotNull().extracting(AnimalData::getId).isEqualTo(65)
+                    () -> assertThat(rows).first().isNotNull().extracting(AnimalData::getId).isEqualTo(65)
             );
         }
     }
