@@ -146,10 +146,9 @@ class SpringTest {
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         int rows = template.update(insertStatement.getInsertStatement(), parameterSource, keyHolder);
-        String generatedKey = (String) keyHolder.getKeys().get("FULL_NAME");
 
         assertThat(rows).isEqualTo(1);
-        assertThat(generatedKey).isEqualTo("Bob Jones");
+        assertThat(keyHolder).extracting(KeyHolder::getKeys).extracting("FULL_NAME").isEqualTo("Bob Jones");
     }
 
     @Test
@@ -170,10 +169,9 @@ class SpringTest {
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         int rows = extensions.insert(insertStatement, keyHolder);
-        String generatedKey = (String) keyHolder.getKeys().get("FULL_NAME");
 
         assertThat(rows).isEqualTo(1);
-        assertThat(generatedKey).isEqualTo("Bob Jones");
+        assertThat(keyHolder).extracting(KeyHolder::getKeys).extracting("FULL_NAME").isEqualTo("Bob Jones");
     }
 
     @Test
@@ -203,10 +201,9 @@ class SpringTest {
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         int rows = template.update(insertStatement.getInsertStatement(), parameterSource, keyHolder);
-        String generatedKey = (String) keyHolder.getKeys().get("FULL_NAME");
 
         assertThat(rows).isEqualTo(1);
-        assertThat(generatedKey).isEqualTo("Bob Jones");
+        assertThat(keyHolder).extracting(KeyHolder::getKeys).extracting("FULL_NAME").isEqualTo("Bob Jones");
     }
 
     @Test
@@ -220,10 +217,9 @@ class SpringTest {
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         int rows = extensions.generalInsert(insertStatement, keyHolder);
-        String generatedKey = (String) keyHolder.getKeys().get("FULL_NAME");
 
         assertThat(rows).isEqualTo(1);
-        assertThat(generatedKey).isEqualTo("Bob Jones");
+        assertThat(keyHolder).extracting(KeyHolder::getKeys).extracting("FULL_NAME").isEqualTo("Bob Jones");
     }
 
     @Test

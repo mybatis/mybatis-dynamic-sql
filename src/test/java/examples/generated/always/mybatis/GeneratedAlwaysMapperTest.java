@@ -56,6 +56,7 @@ class GeneratedAlwaysMapperTest {
     void setup() throws Exception {
         Class.forName(JDBC_DRIVER);
         InputStream is = getClass().getResourceAsStream("/examples/generated/always/CreateGeneratedAlwaysDB.sql");
+        assert is != null;
         try (Connection connection = DriverManager.getConnection(JDBC_URL, "sa", "")) {
             ScriptRunner sr = new ScriptRunner(connection);
             sr.setLogWriter(null);
@@ -324,9 +325,9 @@ class GeneratedAlwaysMapperTest {
 
             assertAll(
                     () -> assertThat(records).hasSize(3),
-                    () -> assertThat(records.get(0).getFullName()).isEqualTo("Fred Jones"),
-                    () -> assertThat(records.get(1).getFullName()).isEqualTo("Pebbles Jones"),
-                    () -> assertThat(records.get(2).getFullName()).isEqualTo("Wilma Jones")
+                    () -> assertThat(records).first().isNotNull().extracting(GeneratedAlwaysRecord::getFullName).isEqualTo("Fred Jones"),
+                    () -> assertThat(records).element(1).isNotNull().extracting(GeneratedAlwaysRecord::getFullName).isEqualTo("Pebbles Jones"),
+                    () -> assertThat(records).element(2).isNotNull().extracting(GeneratedAlwaysRecord::getFullName).isEqualTo("Wilma Jones")
             );
         }
     }

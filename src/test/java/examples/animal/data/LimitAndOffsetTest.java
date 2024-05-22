@@ -50,6 +50,7 @@ class LimitAndOffsetTest {
     void setup() throws Exception {
         Class.forName(JDBC_DRIVER);
         InputStream is = getClass().getResourceAsStream("/examples/animal/data/CreateAnimalData.sql");
+        assert is != null;
         try (Connection connection = DriverManager.getConnection(JDBC_URL, "sa", "")) {
             ScriptRunner sr = new ScriptRunner(connection);
             sr.setLogWriter(null);
@@ -78,7 +79,7 @@ class LimitAndOffsetTest {
 
             assertAll(
                     () -> assertThat(records).hasSize(3),
-                    () -> assertThat(records.get(0).getId()).isEqualTo(23),
+                    () -> assertThat(records).first().isNotNull().extracting(AnimalData::getId).isEqualTo(23),
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select * from AnimalData limit #{parameters.p1} offset #{parameters.p2}"),
                     () -> assertThat(selectStatement.getParameters()).containsEntry("p1", 3L),
                     () -> assertThat(selectStatement.getParameters()).containsEntry("p2", 22L)
@@ -100,7 +101,7 @@ class LimitAndOffsetTest {
 
             assertAll(
                     () -> assertThat(records).hasSize(3),
-                    () -> assertThat(records.get(0).getId()).isEqualTo(1),
+                    () -> assertThat(records).first().isNotNull().extracting(AnimalData::getId).isEqualTo(1),
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select * from AnimalData limit #{parameters.p1}"),
                     () -> assertThat(selectStatement.getParameters()).containsEntry("p1", 3L)
             );
@@ -121,7 +122,7 @@ class LimitAndOffsetTest {
 
             assertAll(
                     () -> assertThat(records).hasSize(43),
-                    () -> assertThat(records.get(0).getId()).isEqualTo(23),
+                    () -> assertThat(records).first().isNotNull().extracting(AnimalData::getId).isEqualTo(23),
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select * from AnimalData offset #{parameters.p1} rows"),
                     () -> assertThat(selectStatement.getParameters()).containsEntry("p1", 22L)
             );
@@ -145,7 +146,7 @@ class LimitAndOffsetTest {
 
             assertAll(
                     () -> assertThat(records).hasSize(3),
-                    () -> assertThat(records.get(0).getId()).isEqualTo(45),
+                    () -> assertThat(records).first().isNotNull().extracting(AnimalData::getId).isEqualTo(45),
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select * from AnimalData where id < #{parameters.p1,jdbcType=INTEGER} and id > #{parameters.p2,jdbcType=INTEGER} limit #{parameters.p3} offset #{parameters.p4}"),
                     () -> assertThat(selectStatement.getParameters()).containsEntry("p3", 3L),
                     () -> assertThat(selectStatement.getParameters()).containsEntry("p4", 22L)
@@ -168,7 +169,7 @@ class LimitAndOffsetTest {
 
             assertAll(
                     () -> assertThat(records).hasSize(3),
-                    () -> assertThat(records.get(0).getId()).isEqualTo(1),
+                    () -> assertThat(records).first().isNotNull().extracting(AnimalData::getId).isEqualTo(1),
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select * from AnimalData where id < #{parameters.p1,jdbcType=INTEGER} limit #{parameters.p2}"),
                     () -> assertThat(selectStatement.getParameters()).containsEntry("p2", 3L)
             );
@@ -190,7 +191,7 @@ class LimitAndOffsetTest {
 
             assertAll(
                     () -> assertThat(records).hasSize(27),
-                    () -> assertThat(records.get(0).getId()).isEqualTo(23),
+                    () -> assertThat(records).first().isNotNull().extracting(AnimalData::getId).isEqualTo(23),
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select * from AnimalData where id < #{parameters.p1,jdbcType=INTEGER} offset #{parameters.p2} rows"),
                     () -> assertThat(selectStatement.getParameters()).containsEntry("p2", 22L)
             );
@@ -213,7 +214,7 @@ class LimitAndOffsetTest {
 
             assertAll(
                     () -> assertThat(records).hasSize(3),
-                    () -> assertThat(records.get(0).getId()).isEqualTo(23),
+                    () -> assertThat(records).first().isNotNull().extracting(AnimalData::getId).isEqualTo(23),
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select * from AnimalData order by id limit #{parameters.p1} offset #{parameters.p2}"),
                     () -> assertThat(selectStatement.getParameters()).containsEntry("p1", 3L),
                     () -> assertThat(selectStatement.getParameters()).containsEntry("p2", 22L)
@@ -236,7 +237,7 @@ class LimitAndOffsetTest {
 
             assertAll(
                     () -> assertThat(records).hasSize(3),
-                    () -> assertThat(records.get(0).getId()).isEqualTo(1),
+                    () -> assertThat(records).first().isNotNull().extracting(AnimalData::getId).isEqualTo(1),
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select * from AnimalData order by id limit #{parameters.p1}"),
                     () -> assertThat(selectStatement.getParameters()).containsEntry("p1", 3L)
             );
@@ -258,7 +259,7 @@ class LimitAndOffsetTest {
 
             assertAll(
                     () -> assertThat(records).hasSize(43),
-                    () -> assertThat(records.get(0).getId()).isEqualTo(23),
+                    () -> assertThat(records).first().isNotNull().extracting(AnimalData::getId).isEqualTo(23),
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select * from AnimalData order by id offset #{parameters.p1} rows"),
                     () -> assertThat(selectStatement.getParameters()).containsEntry("p1", 22L)
             );
