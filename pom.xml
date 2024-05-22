@@ -67,7 +67,7 @@
 
     <module.name>org.mybatis.dynamic.sql</module.name>
 
-    <kotlin.version>1.9.24</kotlin.version>
+    <kotlin.version>2.0.0</kotlin.version>
     <kotlin.compiler.jvmTarget>1.8</kotlin.compiler.jvmTarget>
 
     <sonar.sources>pom.xml,src/main/java,src/main/kotlin</sonar.sources>
@@ -320,7 +320,7 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>build-helper-maven-plugin</artifactId>
-        <version>3.5.0</version>
+        <version>3.6.0</version>
         <executions>
           <execution>
             <goals>
