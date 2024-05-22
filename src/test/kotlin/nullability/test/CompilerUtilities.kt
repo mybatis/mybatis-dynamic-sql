@@ -45,8 +45,8 @@ fun compile(source: String): CompilerErrorMessageCollector {
 }
 
 class CompilerErrorMessageCollector: MessageCollector {
-    val reports = mutableListOf<CompilerErrorReport>()
-     override fun clear() = reports.clear()
+    private val reports = mutableListOf<CompilerErrorReport>()
+    override fun clear() = reports.clear()
 
     override fun hasErrors() = reports.any { it.severity.isError }
 
@@ -69,4 +69,5 @@ data class CompilerErrorReport(
     val message: String,
     val location: CompilerMessageSourceLocation?
 )
+
 data class ErrorLocation(val line: Int, val column: Int)
