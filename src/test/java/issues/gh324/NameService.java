@@ -40,6 +40,7 @@ public class NameService {
         try {
             Class.forName(JDBC_DRIVER);
             InputStream is = getClass().getResourceAsStream("/issues/gh324/CreateDB.sql");
+            assert is != null;
             try (Connection connection = DriverManager.getConnection(JDBC_URL, "sa", "")) {
                 ScriptRunner sr = new ScriptRunner(connection);
                 sr.setLogWriter(null);
