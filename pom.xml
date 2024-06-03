@@ -26,7 +26,7 @@
 
   <groupId>org.mybatis.dynamic-sql</groupId>
   <artifactId>mybatis-dynamic-sql</artifactId>
-  <version>1.5.2-SNAPSHOT</version>
+  <version>1.5.2</version>
 
   <name>MyBatis Dynamic SQL</name>
   <description>MyBatis framework for generating dynamic SQL</description>
@@ -36,7 +36,7 @@
   <scm>
     <connection>scm:git:ssh://git@github.com/mybatis/mybatis-dynamic-sql.git</connection>
     <developerConnection>scm:git:ssh://git@github.com/mybatis/mybatis-dynamic-sql.git</developerConnection>
-    <tag>HEAD</tag>
+    <tag>mybatis-dynamic-sql-1.5.2</tag>
     <url>https://github.com/mybatis/mybatis-dynamic-sql/</url>
   </scm>
   <issueManagement>
@@ -78,7 +78,7 @@
     <osgi.export>org.mybatis.dynamic.sql.*;version=${project.version};-noimport:=true</osgi.export>
 
     <!-- Reproducible Builds -->
-    <project.build.outputTimestamp>1714504234</project.build.outputTimestamp>
+    <project.build.outputTimestamp>1717449261</project.build.outputTimestamp>
   </properties>
 
   <dependencies>
