@@ -2,7 +2,7 @@
 
 This log will detail notable changes to MyBatis Dynamic SQL. Full details are available on the GitHub milestone pages.
 
-## Release 1.5.2 - Unreleased
+## Release 1.5.2 - June 3, 2024
 
 This is a small maintenance release with the following changes:
 
