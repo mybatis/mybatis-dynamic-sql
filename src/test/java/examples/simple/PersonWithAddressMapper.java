@@ -44,13 +44,14 @@ import org.mybatis.dynamic.sql.select.SelectDSLCompleter;
 import org.mybatis.dynamic.sql.select.SelectModel;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.util.SqlProviderAdapter;
+import org.mybatis.dynamic.sql.util.mybatis3.CommonCountMapper;
 import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
 
 /**
  * This is a mapper that shows coding a join
  */
 @Mapper
-public interface PersonWithAddressMapper {
+public interface PersonWithAddressMapper extends CommonCountMapper {
 
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
     @Results(id="PersonWithAddressResult", value= {
@@ -72,9 +73,6 @@ public interface PersonWithAddressMapper {
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
     @ResultMap("PersonWithAddressResult")
     Optional<PersonWithAddress> selectOne(SelectStatementProvider selectStatement);
-
-    @SelectProvider(type=SqlProviderAdapter.class, method="select")
-    long count(SelectStatementProvider selectStatement);
 
     BasicColumn[] selectList =
             BasicColumn.columnList(id.as("A_ID"), firstName, lastName, birthDate, employed, occupation, address.id,
