@@ -64,13 +64,13 @@ class KCustomRenderingTest {
     fun testInsertRecord() {
         sqlSessionFactory.openSession().use {
             val mapper = it.getMapper(KJsonTestMapper::class.java)
-            var record = KJsonTestRecord(
+            var row = KJsonTestRecord(
                 id = 1,
                 description = "Fred",
                 info = "{\"firstName\": \"Fred\", \"lastName\": \"Flintstone\", \"age\": 30}"
             )
 
-            var insertStatement = insert(record) {
+            var insertStatement = insert(row) {
                 into(jsonTest)
                 map(id) toProperty "id"
                 map(description) toProperty "description"
@@ -82,13 +82,13 @@ class KCustomRenderingTest {
             assertThat(insertStatement.insertStatement).isEqualTo(expected)
             var rows = mapper.insert(insertStatement)
             assertThat(rows).isEqualTo(1)
-            record = KJsonTestRecord(
+            row = KJsonTestRecord(
                 id = 2,
                 description = "Wilma",
                 info = "{\"firstName\": \"Wilma\", \"lastName\": \"Flintstone\", \"age\": 25}"
             )
 
-            insertStatement = insert(record) {
+            insertStatement = insert(row) {
                 into(jsonTest)
                 map(id) toProperty "id"
                 map(description) toProperty "description"
@@ -260,9 +260,9 @@ class KCustomRenderingTest {
                 "from JsonTest " +
                 "where info->>'age' = #{parameters.p1,jdbcType=VARCHAR}"
             assertThat(selectStatement.selectStatement).isEqualTo(expected)
-            val record = mapper.selectOne(selectStatement)
-            assertThat(record).isNotNull
-            assertThat(record!!.info).isEqualTo(
+            val row = mapper.selectOne(selectStatement)
+            assertThat(row).isNotNull
+            assertThat(row!!.info).isEqualTo(
                 "{\"firstName\": \"Wilma\", \"lastName\": \"Flintstone\", \"age\": 25}"
             )
         }

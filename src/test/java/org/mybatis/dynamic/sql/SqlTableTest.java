@@ -123,7 +123,7 @@ class SqlTableTest {
     }
 
     static class MySchemaSupplier implements Supplier<Optional<String>> {
-        private static MySchemaSupplier instance = new MySchemaSupplier();
+        private static final MySchemaSupplier instance = new MySchemaSupplier();
 
         static MySchemaSupplier instance() {
             return instance;

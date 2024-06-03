@@ -20,7 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.Test;
 
 class Issue324Test {
-    private NameService nameService = new NameService();
+    private final NameService nameService = new NameService();
 
     @Test
     void testCacheWithAutoCommitOnUpdate() {

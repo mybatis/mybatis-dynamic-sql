@@ -40,6 +40,7 @@ public class NameService {
         try {
             Class.forName(JDBC_DRIVER);
             InputStream is = getClass().getResourceAsStream("/issues/gh324/CreateDB.sql");
+            assert is != null;
             try (Connection connection = DriverManager.getConnection(JDBC_URL, "sa", "")) {
                 ScriptRunner sr = new ScriptRunner(connection);
                 sr.setLogWriter(null);
@@ -59,20 +60,20 @@ public class NameService {
     public void insertRecord() {
         try (SqlSession session = sqlSessionFactory.openSession(true)) {
             NameTableMapper mapper = session.getMapper(NameTableMapper.class);
-            NameRecord record = new NameRecord();
-            record.setId(1);
-            record.setName("Fred");
-            mapper.insert(record);
+            NameRecord row = new NameRecord();
+            row.setId(1);
+            row.setName("Fred");
+            mapper.insert(row);
         }
     }
 
     public void updateRecordWithAutoCommit() {
         try (SqlSession session = sqlSessionFactory.openSession(true)) {
             NameTableMapper mapper = session.getMapper(NameTableMapper.class);
-            NameRecord record = new NameRecord();
-            record.setId(1);
-            record.setName("Barney");
-            mapper.updateByPrimaryKey(record);
+            NameRecord row = new NameRecord();
+            row.setId(1);
+            row.setName("Barney");
+            mapper.updateByPrimaryKey(row);
         }
     }
 
@@ -80,20 +81,20 @@ public class NameService {
         // this should rollback
         try (SqlSession session = sqlSessionFactory.openSession()) {
             NameTableMapper mapper = session.getMapper(NameTableMapper.class);
-            NameRecord record = new NameRecord();
-            record.setId(1);
-            record.setName("Barney");
-            mapper.updateByPrimaryKey(record);
+            NameRecord row = new NameRecord();
+            row.setId(1);
+            row.setName("Barney");
+            mapper.updateByPrimaryKey(row);
         }
     }
 
     public void updateRecordWithoutAutoCommitAndExplicitCommit() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             NameTableMapper mapper = session.getMapper(NameTableMapper.class);
-            NameRecord record = new NameRecord();
-            record.setId(1);
-            record.setName("Barney");
-            mapper.updateByPrimaryKey(record);
+            NameRecord row = new NameRecord();
+            row.setId(1);
+            row.setName("Barney");
+            mapper.updateByPrimaryKey(row);
             session.commit();
         }
     }

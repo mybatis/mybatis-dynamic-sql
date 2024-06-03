@@ -81,12 +81,12 @@ class CustomRenderingTest {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             JsonTestMapper mapper = sqlSession.getMapper(JsonTestMapper.class);
 
-            JsonTestRecord record = new JsonTestRecord();
-            record.setId(1);
-            record.setDescription("Fred");
-            record.setInfo("{\"firstName\": \"Fred\", \"lastName\": \"Flintstone\", \"age\": 30}");
+            JsonTestRecord row = new JsonTestRecord();
+            row.setId(1);
+            row.setDescription("Fred");
+            row.setInfo("{\"firstName\": \"Fred\", \"lastName\": \"Flintstone\", \"age\": 30}");
 
-            InsertStatementProvider<JsonTestRecord> insertStatement = insert(record).into(jsonTest)
+            InsertStatementProvider<JsonTestRecord> insertStatement = insert(row).into(jsonTest)
                     .map(id).toProperty("id")
                     .map(description).toProperty("description")
                     .map(info).toProperty("info")
@@ -102,12 +102,12 @@ class CustomRenderingTest {
             int rows = mapper.insert(insertStatement);
             assertThat(rows).isEqualTo(1);
 
-            record = new JsonTestRecord();
-            record.setId(2);
-            record.setDescription("Wilma");
-            record.setInfo("{\"firstName\": \"Wilma\", \"lastName\": \"Flintstone\", \"age\": 25}");
+            row = new JsonTestRecord();
+            row.setId(2);
+            row.setDescription("Wilma");
+            row.setInfo("{\"firstName\": \"Wilma\", \"lastName\": \"Flintstone\", \"age\": 25}");
 
-            insertStatement = insert(record).into(jsonTest)
+            insertStatement = insert(row).into(jsonTest)
                     .map(id).toProperty("id")
                     .map(description).toProperty("description")
                     .map(info).toProperty("info")
@@ -313,9 +313,9 @@ class CustomRenderingTest {
 
             assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 
-            Optional<JsonTestRecord> record = mapper.selectOne(selectStatement);
+            Optional<JsonTestRecord> row = mapper.selectOne(selectStatement);
 
-            assertThat(record).hasValueSatisfying( r ->
+            assertThat(row).hasValueSatisfying( r ->
                 assertThat(r.getInfo())
                         .isEqualTo("{\"firstName\": \"Wilma\", \"lastName\": \"Flintstone\", \"age\": 25}")
             );

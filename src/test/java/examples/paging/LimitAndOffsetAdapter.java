@@ -28,13 +28,13 @@ import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
  * This adapter modifies the generated SQL by adding a LIMIT and OFFSET clause at the end
  * of the generated SQL.  This can be used to create a paginated query.
  *
- * LIMIT and OFFSET has limited support in relational databases, so this cannot be considered
+ * <p>LIMIT and OFFSET has limited support in relational databases, so this cannot be considered
  * a general solution for all paginated queries (and that is why this adapter lives only in the
  * test source tree and is not packaged with the core library code).
  *
- * I believe it works in MySQL, HSQLDB, and Postgres.
+ * <p>I believe it works in MySQL, HSQLDB, and Postgres.
  *
- * <b>Important Note: </b> this adapter is no longer required for limit and offset support as the
+ * <p><b>Important Note: </b> this adapter is no longer required for limit and offset support as the
  * library now supports limit and offset natively. However, this remains a good example of altering the generated
  * SQL before it is executed.
  *

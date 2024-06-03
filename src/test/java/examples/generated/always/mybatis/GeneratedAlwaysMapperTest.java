@@ -56,6 +56,7 @@ class GeneratedAlwaysMapperTest {
     void setup() throws Exception {
         Class.forName(JDBC_DRIVER);
         InputStream is = getClass().getResourceAsStream("/examples/generated/always/CreateGeneratedAlwaysDB.sql");
+        assert is != null;
         try (Connection connection = DriverManager.getConnection(JDBC_URL, "sa", "")) {
             ScriptRunner sr = new ScriptRunner(connection);
             sr.setLogWriter(null);
@@ -95,14 +96,14 @@ class GeneratedAlwaysMapperTest {
     void testInsert() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             GeneratedAlwaysMapper mapper = session.getMapper(GeneratedAlwaysMapper.class);
-            GeneratedAlwaysRecord record = new GeneratedAlwaysRecord();
-            record.setId(100);
-            record.setFirstName("Joe");
-            record.setLastName("Jones");
+            GeneratedAlwaysRecord row = new GeneratedAlwaysRecord();
+            row.setId(100);
+            row.setFirstName("Joe");
+            row.setLastName("Jones");
 
-            int rows = mapper.insert(record);
+            int rows = mapper.insert(row);
             assertThat(rows).isEqualTo(1);
-            assertThat(record.getFullName()).isEqualTo("Joe Jones");
+            assertThat(row.getFullName()).isEqualTo("Joe Jones");
         }
     }
 
@@ -238,29 +239,29 @@ class GeneratedAlwaysMapperTest {
 
     private List<GeneratedAlwaysRecord> getTestRecords() {
         List<GeneratedAlwaysRecord> records = new ArrayList<>();
-        GeneratedAlwaysRecord record = new GeneratedAlwaysRecord();
-        record.setId(1000);
-        record.setFirstName("George");
-        record.setLastName("Jetson");
-        records.add(record);
+        GeneratedAlwaysRecord row = new GeneratedAlwaysRecord();
+        row.setId(1000);
+        row.setFirstName("George");
+        row.setLastName("Jetson");
+        records.add(row);
 
-        record = new GeneratedAlwaysRecord();
-        record.setId(1001);
-        record.setFirstName("Jane");
-        record.setLastName("Jetson");
-        records.add(record);
+        row = new GeneratedAlwaysRecord();
+        row.setId(1001);
+        row.setFirstName("Jane");
+        row.setLastName("Jetson");
+        records.add(row);
 
-        record = new GeneratedAlwaysRecord();
-        record.setId(1002);
-        record.setFirstName("Judy");
-        record.setLastName("Jetson");
-        records.add(record);
+        row = new GeneratedAlwaysRecord();
+        row.setId(1002);
+        row.setFirstName("Judy");
+        row.setLastName("Jetson");
+        records.add(row);
 
-        record = new GeneratedAlwaysRecord();
-        record.setId(1003);
-        record.setFirstName("Elroy");
-        record.setLastName("Jetson");
-        records.add(record);
+        row = new GeneratedAlwaysRecord();
+        row.setId(1003);
+        row.setFirstName("Elroy");
+        row.setLastName("Jetson");
+        records.add(row);
 
         return records;
     }
@@ -269,16 +270,16 @@ class GeneratedAlwaysMapperTest {
     void testInsertSelective() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             GeneratedAlwaysMapper mapper = session.getMapper(GeneratedAlwaysMapper.class);
-            GeneratedAlwaysRecord record = new GeneratedAlwaysRecord();
-            record.setId(100);
-            record.setFirstName("Joe");
-            record.setLastName("Jones");
+            GeneratedAlwaysRecord row = new GeneratedAlwaysRecord();
+            row.setId(100);
+            row.setFirstName("Joe");
+            row.setLastName("Jones");
 
-            int rows = mapper.insertSelective(record);
+            int rows = mapper.insertSelective(row);
 
             assertAll(
                     () -> assertThat(rows).isEqualTo(1),
-                    () -> assertThat(record.getFullName()).isEqualTo("Joe Jones")
+                    () -> assertThat(row.getFullName()).isEqualTo("Joe Jones")
             );
         }
     }
@@ -287,17 +288,17 @@ class GeneratedAlwaysMapperTest {
     void testUpdateByPrimaryKey() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             GeneratedAlwaysMapper mapper = session.getMapper(GeneratedAlwaysMapper.class);
-            GeneratedAlwaysRecord record = new GeneratedAlwaysRecord();
-            record.setId(100);
-            record.setFirstName("Joe");
-            record.setLastName("Jones");
+            GeneratedAlwaysRecord row = new GeneratedAlwaysRecord();
+            row.setId(100);
+            row.setFirstName("Joe");
+            row.setLastName("Jones");
 
-            int rows = mapper.insert(record);
+            int rows = mapper.insert(row);
             assertThat(rows).isEqualTo(1);
-            assertThat(record.getFullName()).isEqualTo("Joe Jones");
+            assertThat(row.getFullName()).isEqualTo("Joe Jones");
 
-            record.setLastName("Smith");
-            rows = mapper.updateByPrimaryKey(record);
+            row.setLastName("Smith");
+            rows = mapper.updateByPrimaryKey(row);
             assertThat(rows).isEqualTo(1);
 
             Optional<GeneratedAlwaysRecord> newRecord = mapper.selectByPrimaryKey(100);
@@ -311,10 +312,10 @@ class GeneratedAlwaysMapperTest {
     void testUpdateSelective() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             GeneratedAlwaysMapper mapper = session.getMapper(GeneratedAlwaysMapper.class);
-            GeneratedAlwaysRecord record = new GeneratedAlwaysRecord();
-            record.setLastName("Jones");
+            GeneratedAlwaysRecord row = new GeneratedAlwaysRecord();
+            row.setLastName("Jones");
 
-            int rows = mapper.update(c -> GeneratedAlwaysMapper.updateSelectiveColumns(record, c)
+            int rows = mapper.update(c -> GeneratedAlwaysMapper.updateSelectiveColumns(row, c)
                     .where(lastName, isEqualTo("Flintstone")));
             assertThat(rows).isEqualTo(3);
 
@@ -324,9 +325,9 @@ class GeneratedAlwaysMapperTest {
 
             assertAll(
                     () -> assertThat(records).hasSize(3),
-                    () -> assertThat(records.get(0).getFullName()).isEqualTo("Fred Jones"),
-                    () -> assertThat(records.get(1).getFullName()).isEqualTo("Pebbles Jones"),
-                    () -> assertThat(records.get(2).getFullName()).isEqualTo("Wilma Jones")
+                    () -> assertThat(records).first().isNotNull().extracting(GeneratedAlwaysRecord::getFullName).isEqualTo("Fred Jones"),
+                    () -> assertThat(records).element(1).isNotNull().extracting(GeneratedAlwaysRecord::getFullName).isEqualTo("Pebbles Jones"),
+                    () -> assertThat(records).element(2).isNotNull().extracting(GeneratedAlwaysRecord::getFullName).isEqualTo("Wilma Jones")
             );
         }
     }
@@ -335,12 +336,12 @@ class GeneratedAlwaysMapperTest {
     void testUpdateByPrimaryKeySelective() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             GeneratedAlwaysMapper mapper = session.getMapper(GeneratedAlwaysMapper.class);
-            GeneratedAlwaysRecord record = new GeneratedAlwaysRecord();
-            record.setId(100);
-            record.setFirstName("Joe");
-            record.setLastName("Jones");
+            GeneratedAlwaysRecord row = new GeneratedAlwaysRecord();
+            row.setId(100);
+            row.setFirstName("Joe");
+            row.setLastName("Jones");
 
-            int rows = mapper.insert(record);
+            int rows = mapper.insert(row);
             assertThat(rows).isEqualTo(1);
 
             GeneratedAlwaysRecord updateRecord = new GeneratedAlwaysRecord();
