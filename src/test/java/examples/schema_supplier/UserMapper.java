@@ -45,8 +45,8 @@ public interface UserMapper extends CommonInsertMapper<User> {
         return MyBatis3Utils.selectList(this::selectMany, BasicColumn.columnList(id, name), user, completer);
     }
 
-    default int insert(User record) {
-        return insert(SqlBuilder.insert(record)
+    default int insert(User row) {
+        return insert(SqlBuilder.insert(row)
                 .into(user)
                 .map(id).toProperty("id")
                 .map(name).toProperty("name")

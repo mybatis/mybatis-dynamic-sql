@@ -55,8 +55,8 @@ public interface NameTableMapper extends CommonCountMapper, CommonDeleteMapper, 
         );
     }
 
-    default int insert(NameRecord record) {
-        return MyBatis3Utils.insert(this::insert, record, nameTable, c ->
+    default int insert(NameRecord row) {
+        return MyBatis3Utils.insert(this::insert, row, nameTable, c ->
                 c.map(id).toProperty("id")
                         .map(name).toProperty("name")
         );
@@ -66,10 +66,10 @@ public interface NameTableMapper extends CommonCountMapper, CommonDeleteMapper, 
         return MyBatis3Utils.update(this::update, nameTable, completer);
     }
 
-    default int updateByPrimaryKey(NameRecord record) {
+    default int updateByPrimaryKey(NameRecord row) {
         return update(c ->
-                c.set(name).equalTo(record::getName)
-                        .where(id, isEqualTo(record::getId))
+                c.set(name).equalTo(row::getName)
+                        .where(id, isEqualTo(row::getId))
         );
     }
 
