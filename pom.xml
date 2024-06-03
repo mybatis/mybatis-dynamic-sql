@@ -69,7 +69,7 @@
 
     <kotlin.version>2.0.0</kotlin.version>
     <kotlin.compiler.jvmTarget>11</kotlin.compiler.jvmTarget>
-    <kotlin.compiler.apiVersion>1.6</kotlin.compiler.apiVersion>
+    <kotlin.compiler.apiVersion>1.7</kotlin.compiler.apiVersion>
 
     <sonar.sources>pom.xml,src/main/java,src/main/kotlin</sonar.sources>
     <sonar.tests>src/test/java,src/test/kotlin</sonar.tests>
