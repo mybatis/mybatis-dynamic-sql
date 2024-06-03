@@ -316,6 +316,7 @@ class InvalidSQLTest {
         private String alias;
 
         @Override
+        @Deprecated
         public String renderWithTableAlias(TableAliasCalculator tableAliasCalculator) {
             return "count(*)";
         }

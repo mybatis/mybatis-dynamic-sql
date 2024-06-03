@@ -74,8 +74,8 @@ public interface PersonMapper {
         return insertSelectMultiple(insertSelectStatement.getInsertStatement(), insertSelectStatement.getParameters(), keys);
     }
 
-    default int insert(PersonRecord record) {
-        return MyBatis3Utils.insert(this::insert, record, person, c ->
+    default int insert(PersonRecord row) {
+        return MyBatis3Utils.insert(this::insert, row, person, c ->
                 c.map(firstName).toProperty("firstName")
                         .map(lastName).toProperty("lastName"));
     }
