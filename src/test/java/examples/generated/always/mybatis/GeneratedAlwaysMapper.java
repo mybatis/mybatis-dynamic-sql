@@ -80,8 +80,8 @@ public interface GeneratedAlwaysMapper extends CommonUpdateMapper {
         return selectOne(c -> c.where(id, isEqualTo(_id)));
     }
 
-    default int insert(GeneratedAlwaysRecord record) {
-        return MyBatis3Utils.insert(this::insert, record, generatedAlways, c ->
+    default int insert(GeneratedAlwaysRecord row) {
+        return MyBatis3Utils.insert(this::insert, row, generatedAlways, c ->
             c.map(id).toProperty("id")
                     .map(firstName).toProperty("firstName")
                     .map(lastName).toProperty("lastName")
