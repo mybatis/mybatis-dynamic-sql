@@ -235,7 +235,7 @@ fun NamedParameterJdbcTemplate.update(table: SqlTable, completer: UpdateComplete
 <span class="fc" id="L235">    update(org.mybatis.dynamic.sql.util.kotlin.spring.update(table, completer))</span>
 
 // support classes for select DSL
-<span class="fc" id="L238">@MyBatisDslMarker</span>
+@MyBatisDslMarker
 <span class="fc" id="L239">class SelectListMapperGatherer(</span>
 <span class="fc" id="L240">    private val selectStatement: SelectStatementProvider,</span>
 <span class="fc" id="L241">    private val template: NamedParameterJdbcTemplate</span>
@@ -247,7 +247,7 @@ fun NamedParameterJdbcTemplate.update(table: SqlTable, completer: UpdateComplete
 <span class="fc" id="L247">        template.selectList(selectStatement, rowMapper)</span>
 }
 
-<span class="fc" id="L250">@MyBatisDslMarker</span>
+@MyBatisDslMarker
 <span class="fc" id="L251">class SelectOneMapperGatherer(</span>
 <span class="fc" id="L252">    private val selectStatement: SelectStatementProvider,</span>
 <span class="fc" id="L253">    private val template: NamedParameterJdbcTemplate</span>
@@ -259,7 +259,7 @@ fun NamedParameterJdbcTemplate.update(table: SqlTable, completer: UpdateComplete
 <span class="fc" id="L259">        template.selectOne(selectStatement, rowMapper)</span>
 }
 
-<span class="fc" id="L262">@MyBatisDslMarker</span>
+@MyBatisDslMarker
 <span class="fc" id="L263">class KeyHolderHelper(private val keyHolder: KeyHolder, private val template: NamedParameterJdbcTemplate) {</span>
     fun insertInto(table: SqlTable, completer: GeneralInsertCompleter): Int =
 <span class="fc" id="L265">        template.generalInsert(org.mybatis.dynamic.sql.util.kotlin.spring.insertInto(table, completer), keyHolder)</span>

@@ -26,14 +26,14 @@
 <a class="jxr_linenumber" name="L18" href="#L18">18</a>  <strong class="jxr_keyword">import</strong> <strong class="jxr_keyword">static</strong> org.assertj.core.api.Assertions.assertThat;
 <a class="jxr_linenumber" name="L19" href="#L19">19</a>  
 <a class="jxr_linenumber" name="L20" href="#L20">20</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="TestUtils" href="../../issues/gh324/TestUtils.html#TestUtils">TestUtils</a> {
-<a class="jxr_linenumber" name="L21" href="#L21">21</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">void</strong> recordIsFred(<a name="NameRecord" href="../../issues/gh324/NameRecord.html#NameRecord">NameRecord</a> record) {
-<a class="jxr_linenumber" name="L22" href="#L22">22</a>          assertThat(record.getId()).isEqualTo(1);
-<a class="jxr_linenumber" name="L23" href="#L23">23</a>          assertThat(record.getName()).isEqualTo(<span class="jxr_string">"Fred"</span>);
+<a class="jxr_linenumber" name="L21" href="#L21">21</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">void</strong> recordIsFred(<a name="NameRecord" href="../../issues/gh324/NameRecord.html#NameRecord">NameRecord</a> row) {
+<a class="jxr_linenumber" name="L22" href="#L22">22</a>          assertThat(row.getId()).isEqualTo(1);
+<a class="jxr_linenumber" name="L23" href="#L23">23</a>          assertThat(row.getName()).isEqualTo(<span class="jxr_string">"Fred"</span>);
 <a class="jxr_linenumber" name="L24" href="#L24">24</a>      }
 <a class="jxr_linenumber" name="L25" href="#L25">25</a>  
-<a class="jxr_linenumber" name="L26" href="#L26">26</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">void</strong> recordIsBarney(<a name="NameRecord" href="../../issues/gh324/NameRecord.html#NameRecord">NameRecord</a> record) {
-<a class="jxr_linenumber" name="L27" href="#L27">27</a>          assertThat(record.getId()).isEqualTo(1);
-<a class="jxr_linenumber" name="L28" href="#L28">28</a>          assertThat(record.getName()).isEqualTo(<span class="jxr_string">"Barney"</span>);
+<a class="jxr_linenumber" name="L26" href="#L26">26</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">void</strong> recordIsBarney(<a name="NameRecord" href="../../issues/gh324/NameRecord.html#NameRecord">NameRecord</a> row) {
+<a class="jxr_linenumber" name="L27" href="#L27">27</a>          assertThat(row.getId()).isEqualTo(1);
+<a class="jxr_linenumber" name="L28" href="#L28">28</a>          assertThat(row.getName()).isEqualTo(<span class="jxr_string">"Barney"</span>);
 <a class="jxr_linenumber" name="L29" href="#L29">29</a>      }
 <a class="jxr_linenumber" name="L30" href="#L30">30</a>  }
 </pre>

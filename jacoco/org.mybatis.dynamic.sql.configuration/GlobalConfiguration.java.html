@@ -26,57 +26,49 @@ public class GlobalConfiguration {
     public static final String CONFIGURATION_FILE_PROPERTY = &quot;mybatis-dynamic-sql.configurationFile&quot;; //$NON-NLS-1$
     private static final String DEFAULT_PROPERTY_FILE = &quot;mybatis-dynamic-sql.properties&quot;; //$NON-NLS-1$
 <span class="fc" id="L28">    private boolean isNonRenderingWhereClauseAllowed = false;</span>
-<span class="fc" id="L29">    private boolean isEmptyListConditionRenderingAllowed = false;</span>
-<span class="fc" id="L30">    private final Properties properties = new Properties();</span>
+<span class="fc" id="L29">    private final Properties properties = new Properties();</span>
 
-<span class="fc" id="L32">    public GlobalConfiguration() {</span>
-<span class="fc" id="L33">        initialize();</span>
-<span class="fc" id="L34">    }</span>
+<span class="fc" id="L31">    public GlobalConfiguration() {</span>
+<span class="fc" id="L32">        initialize();</span>
+<span class="fc" id="L33">    }</span>
 
     private void initialize() {
-<span class="fc" id="L37">        initializeProperties();</span>
-<span class="fc" id="L38">        initializeKnownProperties();</span>
-<span class="fc" id="L39">    }</span>
+<span class="fc" id="L36">        initializeProperties();</span>
+<span class="fc" id="L37">        initializeKnownProperties();</span>
+<span class="fc" id="L38">    }</span>
 
     private void initializeProperties() {
-<span class="fc" id="L42">        String configFileName = getConfigurationFileName();</span>
-<span class="fc" id="L43">        InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream(configFileName);</span>
-<span class="fc bfc" id="L44" title="All 2 branches covered.">        if (inputStream != null) {</span>
-<span class="fc" id="L45">            loadProperties(inputStream, configFileName);</span>
+<span class="fc" id="L41">        String configFileName = getConfigurationFileName();</span>
+<span class="fc" id="L42">        InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream(configFileName);</span>
+<span class="fc bfc" id="L43" title="All 2 branches covered.">        if (inputStream != null) {</span>
+<span class="fc" id="L44">            loadProperties(inputStream, configFileName);</span>
         }
-<span class="fc" id="L47">    }</span>
+<span class="fc" id="L46">    }</span>
 
     private String getConfigurationFileName() {
-<span class="fc" id="L50">        String property = System.getProperty(CONFIGURATION_FILE_PROPERTY);</span>
-<span class="fc bfc" id="L51" title="All 2 branches covered.">        if (property == null) {</span>
-<span class="fc" id="L52">            return DEFAULT_PROPERTY_FILE;</span>
+<span class="fc" id="L49">        String property = System.getProperty(CONFIGURATION_FILE_PROPERTY);</span>
+<span class="fc bfc" id="L50" title="All 2 branches covered.">        if (property == null) {</span>
+<span class="fc" id="L51">            return DEFAULT_PROPERTY_FILE;</span>
         } else {
-<span class="fc" id="L54">            return property;</span>
+<span class="fc" id="L53">            return property;</span>
         }
     }
 
     void loadProperties(InputStream inputStream, String propertyFile) {
         try {
-<span class="fc" id="L60">            properties.load(inputStream);</span>
-<span class="fc" id="L61">        } catch (IOException e) {</span>
-<span class="fc" id="L62">            throw new DynamicSqlException(Messages.getString(&quot;ERROR.3&quot;, propertyFile), e); //$NON-NLS-1$</span>
-<span class="fc" id="L63">        }</span>
-<span class="fc" id="L64">    }</span>
+<span class="fc" id="L59">            properties.load(inputStream);</span>
+<span class="fc" id="L60">        } catch (IOException e) {</span>
+<span class="fc" id="L61">            throw new DynamicSqlException(Messages.getString(&quot;ERROR.3&quot;, propertyFile), e); //$NON-NLS-1$</span>
+<span class="fc" id="L62">        }</span>
+<span class="fc" id="L63">    }</span>
 
     private void initializeKnownProperties() {
-<span class="fc" id="L67">        String value = properties.getProperty(&quot;nonRenderingWhereClauseAllowed&quot;, &quot;false&quot;); //$NON-NLS-1$ //$NON-NLS-2$</span>
-<span class="fc" id="L68">        isNonRenderingWhereClauseAllowed = Boolean.parseBoolean(value);</span>
-
-<span class="fc" id="L70">        value = properties.getProperty(&quot;emptyListConditionRenderingAllowed&quot;, &quot;false&quot;); //$NON-NLS-1$ //$NON-NLS-2$</span>
-<span class="fc" id="L71">        isEmptyListConditionRenderingAllowed = Boolean.parseBoolean(value);</span>
-<span class="fc" id="L72">    }</span>
+<span class="fc" id="L66">        String value = properties.getProperty(&quot;nonRenderingWhereClauseAllowed&quot;, &quot;false&quot;); //$NON-NLS-1$ //$NON-NLS-2$</span>
+<span class="fc" id="L67">        isNonRenderingWhereClauseAllowed = Boolean.parseBoolean(value);</span>
+<span class="fc" id="L68">    }</span>
 
     public boolean isIsNonRenderingWhereClauseAllowed() {
-<span class="fc" id="L75">        return isNonRenderingWhereClauseAllowed;</span>
-    }
-
-    public boolean isEmptyListConditionRenderingAllowed() {
-<span class="fc" id="L79">        return isEmptyListConditionRenderingAllowed;</span>
+<span class="fc" id="L71">        return isNonRenderingWhereClauseAllowed;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

@@ -79,7 +79,7 @@ import org.mybatis.dynamic.sql.BindableColumn;
     public abstract String getFormattedJdbcPlaceholder(String prefix, String parameterName);
 
     /**
-     * This method generates a binding for a parameter to a placeholder in a record based insert statement.
+     * This method generates a binding for a parameter to a placeholder in a row based insert statement.
      *
      * &lt;p&gt;This binding is specifically for use with insert, batch insert, and multirow insert statements.
      * These statements bind parameters to properties of a row class. The Spring implementation changes the binding
@@ -102,7 +102,7 @@ import org.mybatis.dynamic.sql.BindableColumn;
     }
 
     /**
-     * This method generates a binding for a parameter to a placeholder in a record based insert statement.
+     * This method generates a binding for a parameter to a placeholder in a row based insert statement.
      *
      * &lt;p&gt;This binding is specifically for use with insert, batch insert, and multirow insert statements and the
      * MapToRow mapping. These statements bind parameters to the row class directly.

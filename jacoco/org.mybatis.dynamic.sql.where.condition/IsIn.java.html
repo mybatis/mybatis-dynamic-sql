@@ -22,51 +22,56 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 import org.mybatis.dynamic.sql.AbstractListValueCondition;
+import org.mybatis.dynamic.sql.render.RenderingContext;
 
 public class IsIn&lt;T&gt; extends AbstractListValueCondition&lt;T&gt; {
-<span class="fc" id="L27">    private static final IsIn&lt;?&gt; EMPTY = new IsIn&lt;&gt;(Collections.emptyList());</span>
+<span class="fc" id="L28">    private static final IsIn&lt;?&gt; EMPTY = new IsIn&lt;&gt;(Collections.emptyList());</span>
 
     public static &lt;T&gt; IsIn&lt;T&gt; empty() {
         @SuppressWarnings(&quot;unchecked&quot;)
-<span class="fc" id="L31">        IsIn&lt;T&gt; t = (IsIn&lt;T&gt;) EMPTY;</span>
-<span class="fc" id="L32">        return t;</span>
+<span class="fc" id="L32">        IsIn&lt;T&gt; t = (IsIn&lt;T&gt;) EMPTY;</span>
+<span class="fc" id="L33">        return t;</span>
     }
 
     protected IsIn(Collection&lt;T&gt; values) {
-<span class="fc" id="L36">        super(values);</span>
-<span class="fc" id="L37">    }</span>
+<span class="fc" id="L37">        super(values);</span>
+<span class="fc" id="L38">    }</span>
+
+    @Override
+    public boolean shouldRender(RenderingContext renderingContext) {
+<span class="fc" id="L42">        return true;</span>
+    }
 
     @Override
     public String operator() {
-<span class="fc" id="L41">        return &quot;in&quot;; //$NON-NLS-1$</span>
+<span class="fc" id="L47">        return &quot;in&quot;; //$NON-NLS-1$</span>
     }
 
     @Override
     public IsIn&lt;T&gt; filter(Predicate&lt;? super T&gt; predicate) {
-<span class="fc" id="L46">        return filterSupport(predicate, IsIn::new, this, IsIn::empty);</span>
+<span class="fc" id="L52">        return filterSupport(predicate, IsIn::new, this, IsIn::empty);</span>
     }
 
     /**
-     * If renderable, apply the mapping to each value in the list return a new condition with the mapped values.
-     *     Else return a condition that will not render (this).
+     * If not empty, apply the mapping to each value in the list return a new condition with the mapped values.
+     *     Else return an empty condition (this).
      *
-     * @param mapper a mapping function to apply to the values, if renderable
+     * @param mapper a mapping function to apply to the values, if not empty
      * @param &lt;R&gt; type of the new condition
-     * @return a new condition with mapped values if renderable, otherwise a condition
-     *     that will not render.
+     * @return a new condition with mapped values if renderable, otherwise an empty condition
      */
     public &lt;R&gt; IsIn&lt;R&gt; map(Function&lt;? super T, ? extends R&gt; mapper) {
-<span class="fc" id="L59">        Function&lt;Collection&lt;R&gt;, IsIn&lt;R&gt;&gt; constructor = IsIn::new;</span>
-<span class="fc" id="L60">        return mapSupport(mapper, constructor, IsIn::empty);</span>
+<span class="fc" id="L64">        Function&lt;Collection&lt;R&gt;, IsIn&lt;R&gt;&gt; constructor = IsIn::new;</span>
+<span class="fc" id="L65">        return mapSupport(mapper, constructor, IsIn::empty);</span>
     }
 
     @SafeVarargs
     public static &lt;T&gt; IsIn&lt;T&gt; of(T... values) {
-<span class="fc" id="L65">        return of(Arrays.asList(values));</span>
+<span class="fc" id="L70">        return of(Arrays.asList(values));</span>
     }
 
     public static &lt;T&gt; IsIn&lt;T&gt; of(Collection&lt;T&gt; values) {
-<span class="fc" id="L69">        return new IsIn&lt;&gt;(values);</span>
+<span class="fc" id="L74">        return new IsIn&lt;&gt;(values);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

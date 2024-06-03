@@ -89,12 +89,12 @@
 <a class="jxr_linenumber" name="L81" href="#L81">81</a>          <strong class="jxr_keyword">try</strong> (SqlSession sqlSession = sqlSessionFactory.openSession()) {
 <a class="jxr_linenumber" name="L82" href="#L82">82</a>              <a name="JsonTestMapper" href="../../examples/custom_render/JsonTestMapper.html#JsonTestMapper">JsonTestMapper</a> mapper = sqlSession.getMapper(JsonTestMapper.<strong class="jxr_keyword">class</strong>);
 <a class="jxr_linenumber" name="L83" href="#L83">83</a>  
-<a class="jxr_linenumber" name="L84" href="#L84">84</a>              <a name="JsonTestRecord" href="../../examples/custom_render/JsonTestRecord.html#JsonTestRecord">JsonTestRecord</a> record = <strong class="jxr_keyword">new</strong> <a name="JsonTestRecord" href="../../examples/custom_render/JsonTestRecord.html#JsonTestRecord">JsonTestRecord</a>();
-<a class="jxr_linenumber" name="L85" href="#L85">85</a>              record.setId(1);
-<a class="jxr_linenumber" name="L86" href="#L86">86</a>              record.setDescription(<span class="jxr_string">"Fred"</span>);
-<a class="jxr_linenumber" name="L87" href="#L87">87</a>              record.setInfo(<span class="jxr_string">"{\&quot;firstName\&quot;: \&quot;Fred\&quot;, \&quot;lastName\&quot;: \&quot;Flintstone\&quot;, \&quot;age\&quot;: 30}"</span>);
+<a class="jxr_linenumber" name="L84" href="#L84">84</a>              <a name="JsonTestRecord" href="../../examples/custom_render/JsonTestRecord.html#JsonTestRecord">JsonTestRecord</a> row = <strong class="jxr_keyword">new</strong> <a name="JsonTestRecord" href="../../examples/custom_render/JsonTestRecord.html#JsonTestRecord">JsonTestRecord</a>();
+<a class="jxr_linenumber" name="L85" href="#L85">85</a>              row.setId(1);
+<a class="jxr_linenumber" name="L86" href="#L86">86</a>              row.setDescription(<span class="jxr_string">"Fred"</span>);
+<a class="jxr_linenumber" name="L87" href="#L87">87</a>              row.setInfo(<span class="jxr_string">"{\&quot;firstName\&quot;: \&quot;Fred\&quot;, \&quot;lastName\&quot;: \&quot;Flintstone\&quot;, \&quot;age\&quot;: 30}"</span>);
 <a class="jxr_linenumber" name="L88" href="#L88">88</a>  
-<a class="jxr_linenumber" name="L89" href="#L89">89</a>              InsertStatementProvider&lt;JsonTestRecord&gt; insertStatement = insert(record).into(jsonTest)
+<a class="jxr_linenumber" name="L89" href="#L89">89</a>              InsertStatementProvider&lt;JsonTestRecord&gt; insertStatement = insert(row).into(jsonTest)
 <a class="jxr_linenumber" name="L90" href="#L90">90</a>                      .map(id).toProperty(<span class="jxr_string">"id"</span>)
 <a class="jxr_linenumber" name="L91" href="#L91">91</a>                      .map(description).toProperty(<span class="jxr_string">"description"</span>)
 <a class="jxr_linenumber" name="L92" href="#L92">92</a>                      .map(info).toProperty(<span class="jxr_string">"info"</span>)
@@ -110,12 +110,12 @@
 <a class="jxr_linenumber" name="L102" href="#L102">102</a>             <strong class="jxr_keyword">int</strong> rows = mapper.insert(insertStatement);
 <a class="jxr_linenumber" name="L103" href="#L103">103</a>             assertThat(rows).isEqualTo(1);
 <a class="jxr_linenumber" name="L104" href="#L104">104</a> 
-<a class="jxr_linenumber" name="L105" href="#L105">105</a>             record = <strong class="jxr_keyword">new</strong> <a name="JsonTestRecord" href="../../examples/custom_render/JsonTestRecord.html#JsonTestRecord">JsonTestRecord</a>();
-<a class="jxr_linenumber" name="L106" href="#L106">106</a>             record.setId(2);
-<a class="jxr_linenumber" name="L107" href="#L107">107</a>             record.setDescription(<span class="jxr_string">"Wilma"</span>);
-<a class="jxr_linenumber" name="L108" href="#L108">108</a>             record.setInfo(<span class="jxr_string">"{\&quot;firstName\&quot;: \&quot;Wilma\&quot;, \&quot;lastName\&quot;: \&quot;Flintstone\&quot;, \&quot;age\&quot;: 25}"</span>);
+<a class="jxr_linenumber" name="L105" href="#L105">105</a>             row = <strong class="jxr_keyword">new</strong> <a name="JsonTestRecord" href="../../examples/custom_render/JsonTestRecord.html#JsonTestRecord">JsonTestRecord</a>();
+<a class="jxr_linenumber" name="L106" href="#L106">106</a>             row.setId(2);
+<a class="jxr_linenumber" name="L107" href="#L107">107</a>             row.setDescription(<span class="jxr_string">"Wilma"</span>);
+<a class="jxr_linenumber" name="L108" href="#L108">108</a>             row.setInfo(<span class="jxr_string">"{\&quot;firstName\&quot;: \&quot;Wilma\&quot;, \&quot;lastName\&quot;: \&quot;Flintstone\&quot;, \&quot;age\&quot;: 25}"</span>);
 <a class="jxr_linenumber" name="L109" href="#L109">109</a> 
-<a class="jxr_linenumber" name="L110" href="#L110">110</a>             insertStatement = insert(record).into(jsonTest)
+<a class="jxr_linenumber" name="L110" href="#L110">110</a>             insertStatement = insert(row).into(jsonTest)
 <a class="jxr_linenumber" name="L111" href="#L111">111</a>                     .map(id).toProperty(<span class="jxr_string">"id"</span>)
 <a class="jxr_linenumber" name="L112" href="#L112">112</a>                     .map(description).toProperty(<span class="jxr_string">"description"</span>)
 <a class="jxr_linenumber" name="L113" href="#L113">113</a>                     .map(info).toProperty(<span class="jxr_string">"info"</span>)
@@ -321,9 +321,9 @@
 <a class="jxr_linenumber" name="L313" href="#L313">313</a> 
 <a class="jxr_linenumber" name="L314" href="#L314">314</a>             assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L315" href="#L315">315</a> 
-<a class="jxr_linenumber" name="L316" href="#L316">316</a>             Optional&lt;JsonTestRecord&gt; record = mapper.selectOne(selectStatement);
+<a class="jxr_linenumber" name="L316" href="#L316">316</a>             Optional&lt;JsonTestRecord&gt; row = mapper.selectOne(selectStatement);
 <a class="jxr_linenumber" name="L317" href="#L317">317</a> 
-<a class="jxr_linenumber" name="L318" href="#L318">318</a>             assertThat(record).hasValueSatisfying( r -&gt;
+<a class="jxr_linenumber" name="L318" href="#L318">318</a>             assertThat(row).hasValueSatisfying( r -&gt;
 <a class="jxr_linenumber" name="L319" href="#L319">319</a>                 assertThat(r.getInfo())
 <a class="jxr_linenumber" name="L320" href="#L320">320</a>                         .isEqualTo(<span class="jxr_string">"{\&quot;firstName\&quot;: \&quot;Wilma\&quot;, \&quot;lastName\&quot;: \&quot;Flintstone\&quot;, \&quot;age\&quot;: 25}"</span>)
 <a class="jxr_linenumber" name="L321" href="#L321">321</a>             );

@@ -101,10 +101,6 @@ public class RenderingContext {
 <span class="fc" id="L101">        return statementConfiguration.isNonRenderingWhereClauseAllowed();</span>
     }
 
-    public boolean isEmptyListConditionRenderingAllowed() {
-<span class="fc" id="L105">        return statementConfiguration.isEmptyListConditionRenderingAllowed();</span>
-    }
-
     /**
      * Create a new rendering context based on this, with the table alias calculator modified to include the
      * specified child table alias calculator. This is used by the query expression renderer when the alias calculator
@@ -115,58 +111,58 @@ public class RenderingContext {
      *     the new child calculator
      */
     public RenderingContext withChildTableAliasCalculator(TableAliasCalculator childTableAliasCalculator) {
-<span class="fc" id="L118">        TableAliasCalculator tac = new TableAliasCalculatorWithParent.Builder()</span>
-<span class="fc" id="L119">                .withParent(tableAliasCalculator)</span>
-<span class="fc" id="L120">                .withChild(childTableAliasCalculator)</span>
-<span class="fc" id="L121">                .build();</span>
+<span class="fc" id="L114">        TableAliasCalculator tac = new TableAliasCalculatorWithParent.Builder()</span>
+<span class="fc" id="L115">                .withParent(tableAliasCalculator)</span>
+<span class="fc" id="L116">                .withChild(childTableAliasCalculator)</span>
+<span class="fc" id="L117">                .build();</span>
 
-<span class="fc" id="L123">        return new Builder()</span>
-<span class="fc" id="L124">                .withRenderingStrategy(this.renderingStrategy)</span>
-<span class="fc" id="L125">                .withSequence(this.sequence)</span>
-<span class="fc" id="L126">                .withParameterName(this.configuredParameterName)</span>
-<span class="fc" id="L127">                .withTableAliasCalculator(tac)</span>
-<span class="fc" id="L128">                .withStatementConfiguration(statementConfiguration)</span>
-<span class="fc" id="L129">                .build();</span>
+<span class="fc" id="L119">        return new Builder()</span>
+<span class="fc" id="L120">                .withRenderingStrategy(this.renderingStrategy)</span>
+<span class="fc" id="L121">                .withSequence(this.sequence)</span>
+<span class="fc" id="L122">                .withParameterName(this.configuredParameterName)</span>
+<span class="fc" id="L123">                .withTableAliasCalculator(tac)</span>
+<span class="fc" id="L124">                .withStatementConfiguration(statementConfiguration)</span>
+<span class="fc" id="L125">                .build();</span>
     }
 
     public static Builder withRenderingStrategy(RenderingStrategy renderingStrategy) {
-<span class="fc" id="L133">        return new Builder().withRenderingStrategy(renderingStrategy);</span>
+<span class="fc" id="L129">        return new Builder().withRenderingStrategy(renderingStrategy);</span>
     }
 
-<span class="fc" id="L136">    public static class Builder {</span>
+<span class="fc" id="L132">    public static class Builder {</span>
         private RenderingStrategy renderingStrategy;
         private AtomicInteger sequence;
-<span class="fc" id="L139">        private TableAliasCalculator tableAliasCalculator = TableAliasCalculator.empty();</span>
+<span class="fc" id="L135">        private TableAliasCalculator tableAliasCalculator = TableAliasCalculator.empty();</span>
         private String parameterName;
         private StatementConfiguration statementConfiguration;
 
         public Builder withRenderingStrategy(RenderingStrategy renderingStrategy) {
-<span class="fc" id="L144">            this.renderingStrategy = renderingStrategy;</span>
-<span class="fc" id="L145">            return this;</span>
+<span class="fc" id="L140">            this.renderingStrategy = renderingStrategy;</span>
+<span class="fc" id="L141">            return this;</span>
         }
 
         public Builder withSequence(AtomicInteger sequence) {
-<span class="fc" id="L149">            this.sequence = sequence;</span>
-<span class="fc" id="L150">            return this;</span>
+<span class="fc" id="L145">            this.sequence = sequence;</span>
+<span class="fc" id="L146">            return this;</span>
         }
 
         public Builder withTableAliasCalculator(TableAliasCalculator tableAliasCalculator) {
-<span class="fc" id="L154">            this.tableAliasCalculator = tableAliasCalculator;</span>
-<span class="fc" id="L155">            return this;</span>
+<span class="fc" id="L150">            this.tableAliasCalculator = tableAliasCalculator;</span>
+<span class="fc" id="L151">            return this;</span>
         }
 
         public Builder withParameterName(String parameterName) {
-<span class="fc" id="L159">            this.parameterName = parameterName;</span>
-<span class="fc" id="L160">            return this;</span>
+<span class="fc" id="L155">            this.parameterName = parameterName;</span>
+<span class="fc" id="L156">            return this;</span>
         }
 
         public Builder withStatementConfiguration(StatementConfiguration statementConfiguration) {
-<span class="fc" id="L164">            this.statementConfiguration = statementConfiguration;</span>
-<span class="fc" id="L165">            return this;</span>
+<span class="fc" id="L160">            this.statementConfiguration = statementConfiguration;</span>
+<span class="fc" id="L161">            return this;</span>
         }
 
         public RenderingContext build() {
-<span class="fc" id="L169">            return new RenderingContext(this);</span>
+<span class="fc" id="L165">            return new RenderingContext(this);</span>
         }
     }
 }

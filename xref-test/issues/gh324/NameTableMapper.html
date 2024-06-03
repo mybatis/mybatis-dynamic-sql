@@ -63,8 +63,8 @@
 <a class="jxr_linenumber" name="L55" href="#L55">55</a>          );
 <a class="jxr_linenumber" name="L56" href="#L56">56</a>      }
 <a class="jxr_linenumber" name="L57" href="#L57">57</a>  
-<a class="jxr_linenumber" name="L58" href="#L58">58</a>      <strong class="jxr_keyword">default</strong> <strong class="jxr_keyword">int</strong> insert(<a name="NameRecord" href="../../issues/gh324/NameRecord.html#NameRecord">NameRecord</a> record) {
-<a class="jxr_linenumber" name="L59" href="#L59">59</a>          <strong class="jxr_keyword">return</strong> MyBatis3Utils.insert(<strong class="jxr_keyword">this</strong>::insert, record, nameTable, c -&gt;
+<a class="jxr_linenumber" name="L58" href="#L58">58</a>      <strong class="jxr_keyword">default</strong> <strong class="jxr_keyword">int</strong> insert(<a name="NameRecord" href="../../issues/gh324/NameRecord.html#NameRecord">NameRecord</a> row) {
+<a class="jxr_linenumber" name="L59" href="#L59">59</a>          <strong class="jxr_keyword">return</strong> MyBatis3Utils.insert(<strong class="jxr_keyword">this</strong>::insert, row, nameTable, c -&gt;
 <a class="jxr_linenumber" name="L60" href="#L60">60</a>                  c.map(id).toProperty(<span class="jxr_string">"id"</span>)
 <a class="jxr_linenumber" name="L61" href="#L61">61</a>                          .map(name).toProperty(<span class="jxr_string">"name"</span>)
 <a class="jxr_linenumber" name="L62" href="#L62">62</a>          );
@@ -74,10 +74,10 @@
 <a class="jxr_linenumber" name="L66" href="#L66">66</a>          <strong class="jxr_keyword">return</strong> MyBatis3Utils.update(<strong class="jxr_keyword">this</strong>::update, nameTable, completer);
 <a class="jxr_linenumber" name="L67" href="#L67">67</a>      }
 <a class="jxr_linenumber" name="L68" href="#L68">68</a>  
-<a class="jxr_linenumber" name="L69" href="#L69">69</a>      <strong class="jxr_keyword">default</strong> <strong class="jxr_keyword">int</strong> updateByPrimaryKey(<a name="NameRecord" href="../../issues/gh324/NameRecord.html#NameRecord">NameRecord</a> record) {
+<a class="jxr_linenumber" name="L69" href="#L69">69</a>      <strong class="jxr_keyword">default</strong> <strong class="jxr_keyword">int</strong> updateByPrimaryKey(<a name="NameRecord" href="../../issues/gh324/NameRecord.html#NameRecord">NameRecord</a> row) {
 <a class="jxr_linenumber" name="L70" href="#L70">70</a>          <strong class="jxr_keyword">return</strong> update(c -&gt;
-<a class="jxr_linenumber" name="L71" href="#L71">71</a>                  c.set(name).equalTo(record::getName)
-<a class="jxr_linenumber" name="L72" href="#L72">72</a>                          .where(id, isEqualTo(record::getId))
+<a class="jxr_linenumber" name="L71" href="#L71">71</a>                  c.set(name).equalTo(row::getName)
+<a class="jxr_linenumber" name="L72" href="#L72">72</a>                          .where(id, isEqualTo(row::getId))
 <a class="jxr_linenumber" name="L73" href="#L73">73</a>          );
 <a class="jxr_linenumber" name="L74" href="#L74">74</a>      }
 <a class="jxr_linenumber" name="L75" href="#L75">75</a>  

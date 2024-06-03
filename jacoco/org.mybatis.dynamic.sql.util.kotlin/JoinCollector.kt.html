@@ -23,7 +23,7 @@ import org.mybatis.dynamic.sql.select.join.JoinCriterion
 typealias JoinReceiver = JoinCollector.() -&gt; Unit
 
 <span class="fc" id="L25">@MyBatisDslMarker</span>
-<span class="fc" id="L26">class JoinCollector {</span>
+class JoinCollector {
     private var onJoinCriterion: JoinCriterion&lt;*&gt;? = null
 <span class="fc" id="L28">    internal val andJoinCriteria = mutableListOf&lt;JoinCriterion&lt;*&gt;&gt;()</span>
 

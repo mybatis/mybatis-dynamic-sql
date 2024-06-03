@@ -36,7 +36,7 @@ typealias WhereApplier = KotlinBaseBuilder&lt;*&gt;.() -&gt; Unit
 
 <span class="fc" id="L37">@MyBatisDslMarker</span>
 @Suppress(&quot;TooManyFunctions&quot;)
-<span class="fc" id="L39">abstract class KotlinBaseBuilder&lt;D : AbstractWhereStarter&lt;*,*&gt;&gt; {</span>
+abstract class KotlinBaseBuilder&lt;D : AbstractWhereStarter&lt;*,*&gt;&gt; {
 
     fun configureStatement(c: StatementConfiguration.() -&gt; Unit) {
 <span class="fc" id="L42">        getDsl().configureStatement(c)</span>
@@ -95,7 +95,7 @@ typealias WhereApplier = KotlinBaseBuilder&lt;*&gt;.() -&gt; Unit
     protected abstract fun getDsl(): D
 }
 
-@Suppress(&quot;TooManyFunctions&quot;)
+<span class="fc" id="L98">@Suppress(&quot;TooManyFunctions&quot;)</span>
 <span class="fc" id="L99">abstract class KotlinBaseJoiningBuilder&lt;D : AbstractQueryExpressionDSL&lt;*, *&gt;&gt; : KotlinBaseBuilder&lt;D&gt;() {</span>
 
     fun join(table: SqlTable, joinCriteria: JoinReceiver): Unit =

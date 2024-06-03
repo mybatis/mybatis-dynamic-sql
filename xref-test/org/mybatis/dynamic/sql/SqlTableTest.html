@@ -131,7 +131,7 @@
 <a class="jxr_linenumber" name="L123" href="#L123">123</a>     }
 <a class="jxr_linenumber" name="L124" href="#L124">124</a> 
 <a class="jxr_linenumber" name="L125" href="#L125">125</a>     <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">class</strong> MySchemaSupplier <strong class="jxr_keyword">implements</strong> Supplier&lt;Optional&lt;String&gt;&gt; {
-<a class="jxr_linenumber" name="L126" href="#L126">126</a>         <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> MySchemaSupplier instance = <strong class="jxr_keyword">new</strong> MySchemaSupplier();
+<a class="jxr_linenumber" name="L126" href="#L126">126</a>         <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> MySchemaSupplier instance = <strong class="jxr_keyword">new</strong> MySchemaSupplier();
 <a class="jxr_linenumber" name="L127" href="#L127">127</a> 
 <a class="jxr_linenumber" name="L128" href="#L128">128</a>         <strong class="jxr_keyword">static</strong> MySchemaSupplier instance() {
 <a class="jxr_linenumber" name="L129" href="#L129">129</a>             <strong class="jxr_keyword">return</strong> instance;

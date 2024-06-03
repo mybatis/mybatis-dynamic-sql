@@ -26,7 +26,7 @@ import org.mybatis.dynamic.sql.util.Buildable
 typealias MultiSelectCompleter = KotlinMultiSelectBuilder.() -&gt; Unit
 
 <span class="fc" id="L28">@MyBatisDslMarker</span>
-<span class="fc" id="L29">class KotlinMultiSelectBuilder: Buildable&lt;MultiSelectModel&gt; {</span>
+class KotlinMultiSelectBuilder: Buildable&lt;MultiSelectModel&gt; {
     private var dsl: MultiSelectDSL? = null
         private set(value) {
 <span class="fc" id="L32">            assertNull(field, &quot;ERROR.33&quot;) //$NON-NLS-1$</span>

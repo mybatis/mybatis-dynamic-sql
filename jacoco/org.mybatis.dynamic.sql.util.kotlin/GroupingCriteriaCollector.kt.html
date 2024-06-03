@@ -34,7 +34,7 @@ typealias GroupingCriteriaReceiver = GroupingCriteriaCollector.() -&gt; Unit
 <span class="fc" id="L34">}</span>
 
 <span class="fc" id="L36">@MyBatisDslMarker</span>
-<span class="fc" id="L37">sealed class SubCriteriaCollector {</span>
+sealed class SubCriteriaCollector {
 <span class="fc" id="L38">    internal val subCriteria = mutableListOf&lt;AndOrCriteriaGroup&gt;()</span>
 
     /**
@@ -125,7 +125,7 @@ typealias GroupingCriteriaReceiver = GroupingCriteriaCollector.() -&gt; Unit
  * Only one of the initial criterion functions should be called within each scope. If you need more than one,
  * use a sub-criterion joined with &quot;and&quot; or &quot;or&quot;
  */
-@Suppress(&quot;TooManyFunctions&quot;)
+<span class="fc" id="L128">@Suppress(&quot;TooManyFunctions&quot;)</span>
 @MyBatisDslMarker
 <span class="fc" id="L130">open class GroupingCriteriaCollector : SubCriteriaCollector() {</span>
 <span class="fc" id="L131">    internal var initialCriterion: SqlCriterion? = null</span>

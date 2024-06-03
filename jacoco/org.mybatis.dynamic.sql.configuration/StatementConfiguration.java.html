@@ -25,13 +25,6 @@ import org.mybatis.dynamic.sql.exception.NonRenderingWhereClauseException;
  * Configurable behaviors are detailed below:
  *
  * &lt;dl&gt;
- *     &lt;dt&gt;emptyListConditionRenderingAllowed&lt;/dt&gt;
- *     &lt;dd&gt;If false (default), the framework will not render list conditions that are empty in a where clause.
- *         This is beneficial in that it will not allow the library to generate invalid SQL, but it has a
- *         potentially dangerous side effect where a statement could be generated that impacts more rows
- *         then expected. If true, an empty list will be rendered as &quot;in ()&quot;, &quot;not in ()&quot;, etc. which will likely
- *         cause an SQLException at runtime.
- *     &lt;/dd&gt;
  *     &lt;dt&gt;nonRenderingWhereClauseAllowed&lt;/dt&gt;
  *     &lt;dd&gt;If false (default), the framework will throw a {@link NonRenderingWhereClauseException}
  *         if a where clause is specified in the statement, but it fails to render because all
@@ -47,29 +40,17 @@ import org.mybatis.dynamic.sql.exception.NonRenderingWhereClauseException;
  *
  * @author Jeff Butler
  */
-<span class="fc" id="L50">public class StatementConfiguration {</span>
-<span class="fc" id="L51">    private boolean isNonRenderingWhereClauseAllowed =</span>
-<span class="fc" id="L52">            GlobalContext.getConfiguration().isIsNonRenderingWhereClauseAllowed();</span>
-
-<span class="fc" id="L54">    private boolean isEmptyListConditionRenderingAllowed =</span>
-<span class="fc" id="L55">            GlobalContext.getConfiguration().isEmptyListConditionRenderingAllowed();</span>
+<span class="fc" id="L43">public class StatementConfiguration {</span>
+<span class="fc" id="L44">    private boolean isNonRenderingWhereClauseAllowed =</span>
+<span class="fc" id="L45">            GlobalContext.getConfiguration().isIsNonRenderingWhereClauseAllowed();</span>
 
     public boolean isNonRenderingWhereClauseAllowed() {
-<span class="fc" id="L58">        return isNonRenderingWhereClauseAllowed;</span>
+<span class="fc" id="L48">        return isNonRenderingWhereClauseAllowed;</span>
     }
 
     public StatementConfiguration setNonRenderingWhereClauseAllowed(boolean nonRenderingWhereClauseAllowed) {
-<span class="fc" id="L62">        isNonRenderingWhereClauseAllowed = nonRenderingWhereClauseAllowed;</span>
-<span class="fc" id="L63">        return this;</span>
-    }
-
-    public boolean isEmptyListConditionRenderingAllowed() {
-<span class="fc" id="L67">        return isEmptyListConditionRenderingAllowed;</span>
-    }
-
-    public StatementConfiguration setEmptyListConditionRenderingAllowed(boolean emptyListConditionRenderingAllowed) {
-<span class="fc" id="L71">        isEmptyListConditionRenderingAllowed = emptyListConditionRenderingAllowed;</span>
-<span class="fc" id="L72">        return this;</span>
+<span class="fc" id="L52">        isNonRenderingWhereClauseAllowed = nonRenderingWhereClauseAllowed;</span>
+<span class="fc" id="L53">        return this;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

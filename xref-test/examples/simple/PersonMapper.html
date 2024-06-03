@@ -108,8 +108,8 @@
 <a class="jxr_linenumber" name="L100" href="#L100">100</a>         <strong class="jxr_keyword">return</strong> MyBatis3Utils.generalInsert(<strong class="jxr_keyword">this</strong>::generalInsert, person, completer);
 <a class="jxr_linenumber" name="L101" href="#L101">101</a>     }
 <a class="jxr_linenumber" name="L102" href="#L102">102</a> 
-<a class="jxr_linenumber" name="L103" href="#L103">103</a>     <strong class="jxr_keyword">default</strong> <strong class="jxr_keyword">int</strong> insert(<a name="PersonRecord" href="../../examples/simple/PersonRecord.html#PersonRecord">PersonRecord</a> record) {
-<a class="jxr_linenumber" name="L104" href="#L104">104</a>         <strong class="jxr_keyword">return</strong> MyBatis3Utils.insert(<strong class="jxr_keyword">this</strong>::insert, record, person, c -&gt;
+<a class="jxr_linenumber" name="L103" href="#L103">103</a>     <strong class="jxr_keyword">default</strong> <strong class="jxr_keyword">int</strong> insert(<a name="PersonRecord" href="../../examples/simple/PersonRecord.html#PersonRecord">PersonRecord</a> row) {
+<a class="jxr_linenumber" name="L104" href="#L104">104</a>         <strong class="jxr_keyword">return</strong> MyBatis3Utils.insert(<strong class="jxr_keyword">this</strong>::insert, row, person, c -&gt;
 <a class="jxr_linenumber" name="L105" href="#L105">105</a>             c.map(id).toProperty(<span class="jxr_string">"id"</span>)
 <a class="jxr_linenumber" name="L106" href="#L106">106</a>             .map(firstName).toProperty(<span class="jxr_string">"firstName"</span>)
 <a class="jxr_linenumber" name="L107" href="#L107">107</a>             .map(lastName).toProperty(<span class="jxr_string">"lastName"</span>)
@@ -136,15 +136,15 @@
 <a class="jxr_linenumber" name="L128" href="#L128">128</a>         );
 <a class="jxr_linenumber" name="L129" href="#L129">129</a>     }
 <a class="jxr_linenumber" name="L130" href="#L130">130</a> 
-<a class="jxr_linenumber" name="L131" href="#L131">131</a>     <strong class="jxr_keyword">default</strong> <strong class="jxr_keyword">int</strong> insertSelective(<a name="PersonRecord" href="../../examples/simple/PersonRecord.html#PersonRecord">PersonRecord</a> record) {
-<a class="jxr_linenumber" name="L132" href="#L132">132</a>         <strong class="jxr_keyword">return</strong> MyBatis3Utils.insert(<strong class="jxr_keyword">this</strong>::insert, record, person, c -&gt;
-<a class="jxr_linenumber" name="L133" href="#L133">133</a>             c.map(id).toPropertyWhenPresent(<span class="jxr_string">"id"</span>, record::getId)
-<a class="jxr_linenumber" name="L134" href="#L134">134</a>             .map(firstName).toPropertyWhenPresent(<span class="jxr_string">"firstName"</span>, record::getFirstName)
-<a class="jxr_linenumber" name="L135" href="#L135">135</a>             .map(lastName).toPropertyWhenPresent(<span class="jxr_string">"lastName"</span>, record::getLastName)
-<a class="jxr_linenumber" name="L136" href="#L136">136</a>             .map(birthDate).toPropertyWhenPresent(<span class="jxr_string">"birthDate"</span>, record::getBirthDate)
-<a class="jxr_linenumber" name="L137" href="#L137">137</a>             .map(employed).toPropertyWhenPresent(<span class="jxr_string">"employed"</span>, record::getEmployed)
-<a class="jxr_linenumber" name="L138" href="#L138">138</a>             .map(occupation).toPropertyWhenPresent(<span class="jxr_string">"occupation"</span>, record::getOccupation)
-<a class="jxr_linenumber" name="L139" href="#L139">139</a>             .map(addressId).toPropertyWhenPresent(<span class="jxr_string">"addressId"</span>, record::getAddressId)
+<a class="jxr_linenumber" name="L131" href="#L131">131</a>     <strong class="jxr_keyword">default</strong> <strong class="jxr_keyword">int</strong> insertSelective(<a name="PersonRecord" href="../../examples/simple/PersonRecord.html#PersonRecord">PersonRecord</a> row) {
+<a class="jxr_linenumber" name="L132" href="#L132">132</a>         <strong class="jxr_keyword">return</strong> MyBatis3Utils.insert(<strong class="jxr_keyword">this</strong>::insert, row, person, c -&gt;
+<a class="jxr_linenumber" name="L133" href="#L133">133</a>             c.map(id).toPropertyWhenPresent(<span class="jxr_string">"id"</span>, row::getId)
+<a class="jxr_linenumber" name="L134" href="#L134">134</a>             .map(firstName).toPropertyWhenPresent(<span class="jxr_string">"firstName"</span>, row::getFirstName)
+<a class="jxr_linenumber" name="L135" href="#L135">135</a>             .map(lastName).toPropertyWhenPresent(<span class="jxr_string">"lastName"</span>, row::getLastName)
+<a class="jxr_linenumber" name="L136" href="#L136">136</a>             .map(birthDate).toPropertyWhenPresent(<span class="jxr_string">"birthDate"</span>, row::getBirthDate)
+<a class="jxr_linenumber" name="L137" href="#L137">137</a>             .map(employed).toPropertyWhenPresent(<span class="jxr_string">"employed"</span>, row::getEmployed)
+<a class="jxr_linenumber" name="L138" href="#L138">138</a>             .map(occupation).toPropertyWhenPresent(<span class="jxr_string">"occupation"</span>, row::getOccupation)
+<a class="jxr_linenumber" name="L139" href="#L139">139</a>             .map(addressId).toPropertyWhenPresent(<span class="jxr_string">"addressId"</span>, row::getAddressId)
 <a class="jxr_linenumber" name="L140" href="#L140">140</a>         );
 <a class="jxr_linenumber" name="L141" href="#L141">141</a>     }
 <a class="jxr_linenumber" name="L142" href="#L142">142</a> 
@@ -170,49 +170,49 @@
 <a class="jxr_linenumber" name="L162" href="#L162">162</a>         <strong class="jxr_keyword">return</strong> MyBatis3Utils.update(<strong class="jxr_keyword">this</strong>::update, person, completer);
 <a class="jxr_linenumber" name="L163" href="#L163">163</a>     }
 <a class="jxr_linenumber" name="L164" href="#L164">164</a> 
-<a class="jxr_linenumber" name="L165" href="#L165">165</a>     <strong class="jxr_keyword">static</strong> UpdateDSL&lt;UpdateModel&gt; updateAllColumns(<a name="PersonRecord" href="../../examples/simple/PersonRecord.html#PersonRecord">PersonRecord</a> record,
+<a class="jxr_linenumber" name="L165" href="#L165">165</a>     <strong class="jxr_keyword">static</strong> UpdateDSL&lt;UpdateModel&gt; updateAllColumns(<a name="PersonRecord" href="../../examples/simple/PersonRecord.html#PersonRecord">PersonRecord</a> row,
 <a class="jxr_linenumber" name="L166" href="#L166">166</a>             UpdateDSL&lt;UpdateModel&gt; dsl) {
-<a class="jxr_linenumber" name="L167" href="#L167">167</a>         <strong class="jxr_keyword">return</strong> dsl.set(id).equalTo(record::getId)
-<a class="jxr_linenumber" name="L168" href="#L168">168</a>                 .set(firstName).equalTo(record::getFirstName)
-<a class="jxr_linenumber" name="L169" href="#L169">169</a>                 .set(lastName).equalTo(record::getLastName)
-<a class="jxr_linenumber" name="L170" href="#L170">170</a>                 .set(birthDate).equalTo(record::getBirthDate)
-<a class="jxr_linenumber" name="L171" href="#L171">171</a>                 .set(employed).equalTo(record::getEmployed)
-<a class="jxr_linenumber" name="L172" href="#L172">172</a>                 .set(occupation).equalTo(record::getOccupation)
-<a class="jxr_linenumber" name="L173" href="#L173">173</a>                 .set(addressId).equalTo(record::getAddressId);
+<a class="jxr_linenumber" name="L167" href="#L167">167</a>         <strong class="jxr_keyword">return</strong> dsl.set(id).equalTo(row::getId)
+<a class="jxr_linenumber" name="L168" href="#L168">168</a>                 .set(firstName).equalTo(row::getFirstName)
+<a class="jxr_linenumber" name="L169" href="#L169">169</a>                 .set(lastName).equalTo(row::getLastName)
+<a class="jxr_linenumber" name="L170" href="#L170">170</a>                 .set(birthDate).equalTo(row::getBirthDate)
+<a class="jxr_linenumber" name="L171" href="#L171">171</a>                 .set(employed).equalTo(row::getEmployed)
+<a class="jxr_linenumber" name="L172" href="#L172">172</a>                 .set(occupation).equalTo(row::getOccupation)
+<a class="jxr_linenumber" name="L173" href="#L173">173</a>                 .set(addressId).equalTo(row::getAddressId);
 <a class="jxr_linenumber" name="L174" href="#L174">174</a>     }
 <a class="jxr_linenumber" name="L175" href="#L175">175</a> 
-<a class="jxr_linenumber" name="L176" href="#L176">176</a>     <strong class="jxr_keyword">static</strong> UpdateDSL&lt;UpdateModel&gt; updateSelectiveColumns(<a name="PersonRecord" href="../../examples/simple/PersonRecord.html#PersonRecord">PersonRecord</a> record,
+<a class="jxr_linenumber" name="L176" href="#L176">176</a>     <strong class="jxr_keyword">static</strong> UpdateDSL&lt;UpdateModel&gt; updateSelectiveColumns(<a name="PersonRecord" href="../../examples/simple/PersonRecord.html#PersonRecord">PersonRecord</a> row,
 <a class="jxr_linenumber" name="L177" href="#L177">177</a>             UpdateDSL&lt;UpdateModel&gt; dsl) {
-<a class="jxr_linenumber" name="L178" href="#L178">178</a>         <strong class="jxr_keyword">return</strong> dsl.set(id).equalToWhenPresent(record::getId)
-<a class="jxr_linenumber" name="L179" href="#L179">179</a>                 .set(firstName).equalToWhenPresent(record::getFirstName)
-<a class="jxr_linenumber" name="L180" href="#L180">180</a>                 .set(lastName).equalToWhenPresent(record::getLastName)
-<a class="jxr_linenumber" name="L181" href="#L181">181</a>                 .set(birthDate).equalToWhenPresent(record::getBirthDate)
-<a class="jxr_linenumber" name="L182" href="#L182">182</a>                 .set(employed).equalToWhenPresent(record::getEmployed)
-<a class="jxr_linenumber" name="L183" href="#L183">183</a>                 .set(occupation).equalToWhenPresent(record::getOccupation)
-<a class="jxr_linenumber" name="L184" href="#L184">184</a>                 .set(addressId).equalToWhenPresent(record::getAddressId);
+<a class="jxr_linenumber" name="L178" href="#L178">178</a>         <strong class="jxr_keyword">return</strong> dsl.set(id).equalToWhenPresent(row::getId)
+<a class="jxr_linenumber" name="L179" href="#L179">179</a>                 .set(firstName).equalToWhenPresent(row::getFirstName)
+<a class="jxr_linenumber" name="L180" href="#L180">180</a>                 .set(lastName).equalToWhenPresent(row::getLastName)
+<a class="jxr_linenumber" name="L181" href="#L181">181</a>                 .set(birthDate).equalToWhenPresent(row::getBirthDate)
+<a class="jxr_linenumber" name="L182" href="#L182">182</a>                 .set(employed).equalToWhenPresent(row::getEmployed)
+<a class="jxr_linenumber" name="L183" href="#L183">183</a>                 .set(occupation).equalToWhenPresent(row::getOccupation)
+<a class="jxr_linenumber" name="L184" href="#L184">184</a>                 .set(addressId).equalToWhenPresent(row::getAddressId);
 <a class="jxr_linenumber" name="L185" href="#L185">185</a>     }
 <a class="jxr_linenumber" name="L186" href="#L186">186</a> 
-<a class="jxr_linenumber" name="L187" href="#L187">187</a>     <strong class="jxr_keyword">default</strong> <strong class="jxr_keyword">int</strong> updateByPrimaryKey(<a name="PersonRecord" href="../../examples/simple/PersonRecord.html#PersonRecord">PersonRecord</a> record) {
+<a class="jxr_linenumber" name="L187" href="#L187">187</a>     <strong class="jxr_keyword">default</strong> <strong class="jxr_keyword">int</strong> updateByPrimaryKey(<a name="PersonRecord" href="../../examples/simple/PersonRecord.html#PersonRecord">PersonRecord</a> row) {
 <a class="jxr_linenumber" name="L188" href="#L188">188</a>         <strong class="jxr_keyword">return</strong> update(c -&gt;
-<a class="jxr_linenumber" name="L189" href="#L189">189</a>             c.set(firstName).equalTo(record::getFirstName)
-<a class="jxr_linenumber" name="L190" href="#L190">190</a>             .set(lastName).equalTo(record::getLastName)
-<a class="jxr_linenumber" name="L191" href="#L191">191</a>             .set(birthDate).equalTo(record::getBirthDate)
-<a class="jxr_linenumber" name="L192" href="#L192">192</a>             .set(employed).equalTo(record::getEmployed)
-<a class="jxr_linenumber" name="L193" href="#L193">193</a>             .set(occupation).equalTo(record::getOccupation)
-<a class="jxr_linenumber" name="L194" href="#L194">194</a>             .set(addressId).equalTo(record::getAddressId)
-<a class="jxr_linenumber" name="L195" href="#L195">195</a>             .where(id, isEqualTo(record::getId))
+<a class="jxr_linenumber" name="L189" href="#L189">189</a>             c.set(firstName).equalTo(row::getFirstName)
+<a class="jxr_linenumber" name="L190" href="#L190">190</a>             .set(lastName).equalTo(row::getLastName)
+<a class="jxr_linenumber" name="L191" href="#L191">191</a>             .set(birthDate).equalTo(row::getBirthDate)
+<a class="jxr_linenumber" name="L192" href="#L192">192</a>             .set(employed).equalTo(row::getEmployed)
+<a class="jxr_linenumber" name="L193" href="#L193">193</a>             .set(occupation).equalTo(row::getOccupation)
+<a class="jxr_linenumber" name="L194" href="#L194">194</a>             .set(addressId).equalTo(row::getAddressId)
+<a class="jxr_linenumber" name="L195" href="#L195">195</a>             .where(id, isEqualTo(row::getId))
 <a class="jxr_linenumber" name="L196" href="#L196">196</a>         );
 <a class="jxr_linenumber" name="L197" href="#L197">197</a>     }
 <a class="jxr_linenumber" name="L198" href="#L198">198</a> 
-<a class="jxr_linenumber" name="L199" href="#L199">199</a>     <strong class="jxr_keyword">default</strong> <strong class="jxr_keyword">int</strong> updateByPrimaryKeySelective(<a name="PersonRecord" href="../../examples/simple/PersonRecord.html#PersonRecord">PersonRecord</a> record) {
+<a class="jxr_linenumber" name="L199" href="#L199">199</a>     <strong class="jxr_keyword">default</strong> <strong class="jxr_keyword">int</strong> updateByPrimaryKeySelective(<a name="PersonRecord" href="../../examples/simple/PersonRecord.html#PersonRecord">PersonRecord</a> row) {
 <a class="jxr_linenumber" name="L200" href="#L200">200</a>         <strong class="jxr_keyword">return</strong> update(c -&gt;
-<a class="jxr_linenumber" name="L201" href="#L201">201</a>             c.set(firstName).equalToWhenPresent(record::getFirstName)
-<a class="jxr_linenumber" name="L202" href="#L202">202</a>             .set(lastName).equalToWhenPresent(record::getLastName)
-<a class="jxr_linenumber" name="L203" href="#L203">203</a>             .set(birthDate).equalToWhenPresent(record::getBirthDate)
-<a class="jxr_linenumber" name="L204" href="#L204">204</a>             .set(employed).equalToWhenPresent(record::getEmployed)
-<a class="jxr_linenumber" name="L205" href="#L205">205</a>             .set(occupation).equalToWhenPresent(record::getOccupation)
-<a class="jxr_linenumber" name="L206" href="#L206">206</a>             .set(addressId).equalToWhenPresent(record::getAddressId)
-<a class="jxr_linenumber" name="L207" href="#L207">207</a>             .where(id, isEqualTo(record::getId))
+<a class="jxr_linenumber" name="L201" href="#L201">201</a>             c.set(firstName).equalToWhenPresent(row::getFirstName)
+<a class="jxr_linenumber" name="L202" href="#L202">202</a>             .set(lastName).equalToWhenPresent(row::getLastName)
+<a class="jxr_linenumber" name="L203" href="#L203">203</a>             .set(birthDate).equalToWhenPresent(row::getBirthDate)
+<a class="jxr_linenumber" name="L204" href="#L204">204</a>             .set(employed).equalToWhenPresent(row::getEmployed)
+<a class="jxr_linenumber" name="L205" href="#L205">205</a>             .set(occupation).equalToWhenPresent(row::getOccupation)
+<a class="jxr_linenumber" name="L206" href="#L206">206</a>             .set(addressId).equalToWhenPresent(row::getAddressId)
+<a class="jxr_linenumber" name="L207" href="#L207">207</a>             .where(id, isEqualTo(row::getId))
 <a class="jxr_linenumber" name="L208" href="#L208">208</a>         );
 <a class="jxr_linenumber" name="L209" href="#L209">209</a>     }
 <a class="jxr_linenumber" name="L210" href="#L210">210</a> }

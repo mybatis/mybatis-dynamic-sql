@@ -23,22 +23,10 @@
 <a class="jxr_linenumber" name="L15" href="#L15">15</a>  <em class="jxr_comment"> */</em>
 <a class="jxr_linenumber" name="L16" href="#L16">16</a>  <strong class="jxr_keyword">package</strong> examples.type_conversion;
 <a class="jxr_linenumber" name="L17" href="#L17">17</a>  
-<a class="jxr_linenumber" name="L18" href="#L18">18</a>  <strong class="jxr_keyword">import</strong> java.util.Map;
-<a class="jxr_linenumber" name="L19" href="#L19">19</a>  
-<a class="jxr_linenumber" name="L20" href="#L20">20</a>  <strong class="jxr_keyword">import</strong> org.apache.ibatis.annotations.InsertProvider;
-<a class="jxr_linenumber" name="L21" href="#L21">21</a>  <strong class="jxr_keyword">import</strong> org.apache.ibatis.annotations.SelectProvider;
-<a class="jxr_linenumber" name="L22" href="#L22">22</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.insert.render.GeneralInsertStatementProvider;
-<a class="jxr_linenumber" name="L23" href="#L23">23</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
-<a class="jxr_linenumber" name="L24" href="#L24">24</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.util.SqlProviderAdapter;
-<a class="jxr_linenumber" name="L25" href="#L25">25</a>  
-<a class="jxr_linenumber" name="L26" href="#L26">26</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">interface</strong> <a name="MyFilesMapper" href="../../examples/type_conversion/MyFilesMapper.html#MyFilesMapper">MyFilesMapper</a> {
-<a class="jxr_linenumber" name="L27" href="#L27">27</a>  
-<a class="jxr_linenumber" name="L28" href="#L28">28</a>      @InsertProvider(type = SqlProviderAdapter.<strong class="jxr_keyword">class</strong>, method = <span class="jxr_string">"generalInsert"</span>)
-<a class="jxr_linenumber" name="L29" href="#L29">29</a>      <strong class="jxr_keyword">int</strong> insert(GeneralInsertStatementProvider insertStatement);
-<a class="jxr_linenumber" name="L30" href="#L30">30</a>  
-<a class="jxr_linenumber" name="L31" href="#L31">31</a>      @SelectProvider(type = SqlProviderAdapter.<strong class="jxr_keyword">class</strong>, method = <span class="jxr_string">"select"</span>)
-<a class="jxr_linenumber" name="L32" href="#L32">32</a>      Map&lt;String, Object&gt; generalSelect(SelectStatementProvider selectStatement);
-<a class="jxr_linenumber" name="L33" href="#L33">33</a>  }
+<a class="jxr_linenumber" name="L18" href="#L18">18</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.util.mybatis3.CommonGeneralInsertMapper;
+<a class="jxr_linenumber" name="L19" href="#L19">19</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.util.mybatis3.CommonSelectMapper;
+<a class="jxr_linenumber" name="L20" href="#L20">20</a>  
+<a class="jxr_linenumber" name="L21" href="#L21">21</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">interface</strong> <a name="MyFilesMapper" href="../../examples/type_conversion/MyFilesMapper.html#MyFilesMapper">MyFilesMapper</a> <strong class="jxr_keyword">extends</strong> CommonGeneralInsertMapper, CommonSelectMapper { }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2016&#x2013;2024 <a href="https://www.mybatis.org/">MyBatis.org</a>. All rights reserved.</div>

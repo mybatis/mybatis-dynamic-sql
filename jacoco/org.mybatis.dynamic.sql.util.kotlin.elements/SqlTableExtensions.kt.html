@@ -27,8 +27,8 @@ import kotlin.reflect.KClass
  * This function preserves the non-nullable column type which is lost with the Java
  * native versions.
  */
-@SuppressWarnings(&quot;LongParameterList&quot;)
-<span class="fc" id="L31">fun &lt;T : Any&gt; SqlTable.column(</span>
+<span class="fc" id="L30">@SuppressWarnings(&quot;LongParameterList&quot;)</span>
+fun &lt;T : Any&gt; SqlTable.column(
     name: String,
 <span class="fc" id="L33">    jdbcType: JDBCType? = null,</span>
 <span class="fc" id="L34">    typeHandler: String? = null,</span>

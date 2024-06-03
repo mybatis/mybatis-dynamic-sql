@@ -41,7 +41,7 @@ typealias UpdateCompleter = KotlinUpdateBuilder.() -&gt; Unit
 
 <span class="fc" id="L42">    override fun getDsl(): UpdateDSL&lt;UpdateModel&gt; = dsl</span>
 
-<span class="fc" id="L44">    @MyBatisDslMarker</span>
+    @MyBatisDslMarker
     @Suppress(&quot;TooManyFunctions&quot;)
 <span class="fc" id="L46">    inner class KotlinSetClauseFinisher&lt;T&gt;(private val column: SqlColumn&lt;T&gt;) {</span>
         fun equalToNull(): Unit =

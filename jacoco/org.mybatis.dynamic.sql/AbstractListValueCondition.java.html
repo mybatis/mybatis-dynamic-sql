@@ -23,76 +23,63 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.mybatis.dynamic.sql.render.RenderingContext;
-
 public abstract class AbstractListValueCondition&lt;T&gt; implements VisitableCondition&lt;T&gt; {
     protected final Collection&lt;T&gt; values;
 
-<span class="fc" id="L31">    protected AbstractListValueCondition(Collection&lt;T&gt; values) {</span>
-<span class="fc" id="L32">        this.values = Objects.requireNonNull(values);</span>
-<span class="fc" id="L33">    }</span>
+<span class="fc" id="L29">    protected AbstractListValueCondition(Collection&lt;T&gt; values) {</span>
+<span class="fc" id="L30">        this.values = Objects.requireNonNull(values);</span>
+<span class="fc" id="L31">    }</span>
 
     public final Stream&lt;T&gt; values() {
-<span class="fc" id="L36">        return values.stream();</span>
+<span class="fc" id="L34">        return values.stream();</span>
     }
 
     @Override
     public boolean isEmpty() {
-<span class="fc" id="L41">        return values.isEmpty();</span>
-    }
-
-    @Override
-    public boolean shouldRender(RenderingContext renderingContext) {
-<span class="fc bfc" id="L46" title="All 2 branches covered.">        if (isEmpty()) {</span>
-<span class="fc" id="L47">            return renderingContext.isEmptyListConditionRenderingAllowed();</span>
-        } else {
-<span class="fc" id="L49">            return true;</span>
-        }
+<span class="fc" id="L39">        return values.isEmpty();</span>
     }
 
     @Override
     public &lt;R&gt; R accept(ConditionVisitor&lt;T, R&gt; visitor) {
-<span class="fc" id="L55">        return visitor.visit(this);</span>
+<span class="fc" id="L44">        return visitor.visit(this);</span>
     }
 
     private &lt;R&gt; Collection&lt;R&gt; applyMapper(Function&lt;? super T, ? extends R&gt; mapper) {
-<span class="fc" id="L59">        Objects.requireNonNull(mapper);</span>
-<span class="fc" id="L60">        return values.stream().map(mapper).collect(Collectors.toList());</span>
+<span class="fc" id="L48">        Objects.requireNonNull(mapper);</span>
+<span class="fc" id="L49">        return values.stream().map(mapper).collect(Collectors.toList());</span>
     }
 
     private Collection&lt;T&gt; applyFilter(Predicate&lt;? super T&gt; predicate) {
-<span class="fc" id="L64">        Objects.requireNonNull(predicate);</span>
-<span class="fc" id="L65">        return values.stream().filter(predicate).collect(Collectors.toList());</span>
+<span class="fc" id="L53">        Objects.requireNonNull(predicate);</span>
+<span class="fc" id="L54">        return values.stream().filter(predicate).collect(Collectors.toList());</span>
     }
 
     protected &lt;S extends AbstractListValueCondition&lt;T&gt;&gt; S filterSupport(Predicate&lt;? super T&gt; predicate,
             Function&lt;Collection&lt;T&gt;, S&gt; constructor, S self, Supplier&lt;S&gt; emptySupplier) {
-<span class="fc bfc" id="L70" title="All 2 branches covered.">        if (isEmpty()) {</span>
-<span class="fc" id="L71">            return self;</span>
+<span class="fc bfc" id="L59" title="All 2 branches covered.">        if (isEmpty()) {</span>
+<span class="fc" id="L60">            return self;</span>
         } else {
-<span class="fc" id="L73">            Collection&lt;T&gt; filtered = applyFilter(predicate);</span>
-<span class="fc bfc" id="L74" title="All 2 branches covered.">            return filtered.isEmpty() ? emptySupplier.get() : constructor.apply(filtered);</span>
+<span class="fc" id="L62">            Collection&lt;T&gt; filtered = applyFilter(predicate);</span>
+<span class="fc bfc" id="L63" title="All 2 branches covered.">            return filtered.isEmpty() ? emptySupplier.get() : constructor.apply(filtered);</span>
         }
     }
 
     protected &lt;R, S extends AbstractListValueCondition&lt;R&gt;&gt; S mapSupport(Function&lt;? super T, ? extends R&gt; mapper,
             Function&lt;Collection&lt;R&gt;, S&gt; constructor, Supplier&lt;S&gt; emptySupplier) {
-<span class="fc bfc" id="L80" title="All 2 branches covered.">        if (isEmpty()) {</span>
-<span class="fc" id="L81">            return emptySupplier.get();</span>
+<span class="fc bfc" id="L69" title="All 2 branches covered.">        if (isEmpty()) {</span>
+<span class="fc" id="L70">            return emptySupplier.get();</span>
         } else {
-<span class="fc" id="L83">            return constructor.apply(applyMapper(mapper));</span>
+<span class="fc" id="L72">            return constructor.apply(applyMapper(mapper));</span>
         }
     }
 
     /**
-     * If renderable, apply the predicate to each value in the list and return a new condition with the filtered values.
-     *     Else returns a condition that will not render (this). If all values are filtered out of the value
-     *     list, then the condition will not render.
+     * If not empty, apply the predicate to each value in the list and return a new condition with the filtered values.
+     *     Else returns an empty condition (this).
      *
-     * @param predicate
-     *            predicate applied to the values, if renderable
+     * @param predicate predicate applied to the values, if not empty
      *
-     * @return a new condition with filtered values if renderable, otherwise a condition that will not render.
+     * @return a new condition with filtered values if renderable, otherwise an empty condition
      */
     public abstract AbstractListValueCondition&lt;T&gt; filter(Predicate&lt;? super T&gt; predicate);
 
