@@ -15,19 +15,7 @@
  */
 package examples.type_conversion;
 
-import java.util.Map;
+import org.mybatis.dynamic.sql.util.mybatis3.CommonGeneralInsertMapper;
+import org.mybatis.dynamic.sql.util.mybatis3.CommonSelectMapper;
 
-import org.apache.ibatis.annotations.InsertProvider;
-import org.apache.ibatis.annotations.SelectProvider;
-import org.mybatis.dynamic.sql.insert.render.GeneralInsertStatementProvider;
-import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
-import org.mybatis.dynamic.sql.util.SqlProviderAdapter;
-
-public interface MyFilesMapper {
-
-    @InsertProvider(type = SqlProviderAdapter.class, method = "generalInsert")
-    int insert(GeneralInsertStatementProvider insertStatement);
-
-    @SelectProvider(type = SqlProviderAdapter.class, method = "select")
-    Map<String, Object> generalSelect(SelectStatementProvider selectStatement);
-}
+public interface MyFilesMapper extends CommonGeneralInsertMapper, CommonSelectMapper { }

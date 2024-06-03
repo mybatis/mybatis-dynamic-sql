@@ -59,7 +59,7 @@ import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
  * </pre>
  *
  * <p>You could also implement a helper method that would set fields based on values of a record. For example,
- * the following method would set all fields of a record based on whether or not the values are null:
+ * the following method would set all fields of a row based on whether the values are null:
  *
  * <pre>
  * static UpdateDSL&lt;UpdateModel&gt; updateSelectiveColumns(PersonRecord record,

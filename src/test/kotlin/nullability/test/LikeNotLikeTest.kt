@@ -36,7 +36,9 @@ class LikeNotLikeTest {
         """
 
         val compilerMessageCollector = compile(source)
-        assertThat(compilerMessageCollector.errorLocations()).isEqualTo(listOf(ErrorLocation(9, 34)))
+        assertThat(compilerMessageCollector.errorLocations())
+            .hasSize(1)
+            .contains(ErrorLocation(9, 34))
     }
 
     @Test
@@ -77,7 +79,9 @@ class LikeNotLikeTest {
         """
 
         val compilerMessageCollector = compile(source)
-        assertThat(compilerMessageCollector.errorLocations()).isEqualTo(listOf(ErrorLocation(10, 37)))
+        assertThat(compilerMessageCollector.errorLocations())
+            .hasSize(1)
+            .contains(ErrorLocation(10, 37))
     }
 
     @Test
@@ -118,7 +122,9 @@ class LikeNotLikeTest {
         """
 
         val compilerMessageCollector = compile(source)
-        assertThat(compilerMessageCollector.errorLocations()).isEqualTo(listOf(ErrorLocation(10, 35)))
+        assertThat(compilerMessageCollector.errorLocations())
+            .hasSize(1)
+            .contains(ErrorLocation(10, 35))
     }
 
     @Test
@@ -161,7 +167,9 @@ class LikeNotLikeTest {
         """
 
         val compilerMessageCollector = compile(source)
-        assertThat(compilerMessageCollector.errorLocations()).isEqualTo(listOf(ErrorLocation(11, 38)))
+        assertThat(compilerMessageCollector.errorLocations())
+            .hasSize(1)
+            .contains(ErrorLocation(11, 38))
     }
 
     @Test

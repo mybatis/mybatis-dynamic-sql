@@ -185,16 +185,16 @@ open class CanonicalSpringKotlinTemplateDirectTest {
 
     @Test
     fun testInsert() {
-        val record = PersonRecord(100, "Joe", LastName("Jones"), Date(), true, "Developer", 1)
+        val row = PersonRecord(100, "Joe", LastName("Jones"), Date(), true, "Developer", 1)
 
-        val rows = template.insert(record) {
+        val rows = template.insert(row) {
             into(person)
             map(id) toProperty "id"
             map(firstName) toProperty "firstName"
             map(lastName) toProperty "lastNameAsString"
             map(birthDate) toProperty "birthDate"
             map(employed) toProperty "employedAsString"
-            map(occupation).toPropertyWhenPresent("occupation", record::occupation)
+            map(occupation).toPropertyWhenPresent("occupation", row::occupation)
             map(addressId) toProperty "addressId"
         }
 
@@ -483,14 +483,14 @@ open class CanonicalSpringKotlinTemplateDirectTest {
 
     @Test
     fun testSelectByPrimaryKey() {
-        val record = template.selectOne(
+        val row = template.selectOne(
             id `as` "A_ID", firstName, lastName, birthDate, employed, occupation, addressId
         ) {
             from(person)
             where { id isEqualTo 1 }
         }.withRowMapper(personRowMapper)
 
-        with(record!!) {
+        with(row!!) {
             assertThat(id).isEqualTo(1)
             assertThat(firstName).isEqualTo("Fred")
             assertThat(lastName!!.name).isEqualTo("Flintstone")

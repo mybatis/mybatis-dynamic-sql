@@ -49,6 +49,7 @@ class ArrayTest {
     void setup() throws Exception {
         Class.forName(JDBC_DRIVER);
         InputStream is = getClass().getResourceAsStream("/examples/array/CreateDB.sql");
+        assert is != null;
         try (Connection connection = DriverManager.getConnection(JDBC_URL, "sa", "")) {
             ScriptRunner sr = new ScriptRunner(connection);
             sr.setLogWriter(null);
@@ -83,8 +84,8 @@ class ArrayTest {
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
 
-            Optional<NamesRecord> record = mapper.selectOne(selectStatement);
-            assertThat(record).hasValueSatisfying( r -> {
+            Optional<NamesRecord> row = mapper.selectOne(selectStatement);
+            assertThat(row).hasValueSatisfying( r -> {
                 assertThat(r.getId()).isEqualTo(1);
                 assertThat(r.getNames()).isEqualTo(someNames);
             });
@@ -112,8 +113,8 @@ class ArrayTest {
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
 
-            Optional<NamesRecord> record = mapper.selectOne(selectStatement);
-            assertThat(record).hasValueSatisfying( r -> {
+            Optional<NamesRecord> row = mapper.selectOne(selectStatement);
+            assertThat(row).hasValueSatisfying( r -> {
                 assertThat(r.getId()).isEqualTo(1);
                 assertThat(r.getNames()).isEqualTo(someNames);
             });

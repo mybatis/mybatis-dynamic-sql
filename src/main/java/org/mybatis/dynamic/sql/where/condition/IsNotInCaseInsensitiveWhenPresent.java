@@ -18,38 +18,34 @@ package org.mybatis.dynamic.sql.where.condition;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
+import java.util.stream.Collectors;
 
 import org.mybatis.dynamic.sql.AbstractListValueCondition;
-import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.util.StringUtilities;
 
-public class IsInCaseInsensitive extends AbstractListValueCondition<String>
+public class IsNotInCaseInsensitiveWhenPresent extends AbstractListValueCondition<String>
         implements CaseInsensitiveVisitableCondition {
-    private static final IsInCaseInsensitive EMPTY = new IsInCaseInsensitive(Collections.emptyList());
+    private static final IsNotInCaseInsensitiveWhenPresent EMPTY = new IsNotInCaseInsensitiveWhenPresent(Collections.emptyList());
 
-    public static IsInCaseInsensitive empty() {
+    public static IsNotInCaseInsensitiveWhenPresent empty() {
         return EMPTY;
     }
 
-    protected IsInCaseInsensitive(Collection<String> values) {
-        super(values);
-    }
-
-    @Override
-    public boolean shouldRender(RenderingContext renderingContext) {
-        return true;
+    protected IsNotInCaseInsensitiveWhenPresent(Collection<String> values) {
+        super(values.stream().filter(Objects::nonNull).collect(Collectors.toList()));
     }
 
     @Override
     public String operator() {
-        return "in"; //$NON-NLS-1$
+        return "not in"; //$NON-NLS-1$
     }
 
     @Override
-    public IsInCaseInsensitive filter(Predicate<? super String> predicate) {
-        return filterSupport(predicate, IsInCaseInsensitive::new, this, IsInCaseInsensitive::empty);
+    public IsNotInCaseInsensitiveWhenPresent filter(Predicate<? super String> predicate) {
+        return filterSupport(predicate, IsNotInCaseInsensitiveWhenPresent::new, this, IsNotInCaseInsensitiveWhenPresent::empty);
     }
 
     /**
@@ -59,15 +55,15 @@ public class IsInCaseInsensitive extends AbstractListValueCondition<String>
      * @param mapper a mapping function to apply to the values, if not empty
      * @return a new condition with mapped values if renderable, otherwise an empty condition
      */
-    public IsInCaseInsensitive map(UnaryOperator<String> mapper) {
-        return mapSupport(mapper, IsInCaseInsensitive::new, IsInCaseInsensitive::empty);
+    public IsNotInCaseInsensitiveWhenPresent map(UnaryOperator<String> mapper) {
+        return mapSupport(mapper, IsNotInCaseInsensitiveWhenPresent::new, IsNotInCaseInsensitiveWhenPresent::empty);
     }
 
-    public static IsInCaseInsensitive of(String... values) {
+    public static IsNotInCaseInsensitiveWhenPresent of(String... values) {
         return of(Arrays.asList(values));
     }
 
-    public static IsInCaseInsensitive of(Collection<String> values) {
-        return new IsInCaseInsensitive(values).map(StringUtilities::safelyUpperCase);
+    public static IsNotInCaseInsensitiveWhenPresent of(Collection<String> values) {
+        return new IsNotInCaseInsensitiveWhenPresent(values).map(StringUtilities::safelyUpperCase);
     }
 }

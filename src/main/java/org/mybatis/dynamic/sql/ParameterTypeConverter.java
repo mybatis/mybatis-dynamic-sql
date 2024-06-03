@@ -32,7 +32,7 @@ package org.mybatis.dynamic.sql;
  * Existing converters may be reused if they are marked with this additional interface.
  *
  * <p>The converter is only used for parameters in a parameter map. It is not used for result set processing.
- * It is also not used for insert statements that are based on an external record class. The converter will be called
+ * It is also not used for insert statements that are based on an external row class. The converter will be called
  * in the following circumstances:
  *
  * <ul>

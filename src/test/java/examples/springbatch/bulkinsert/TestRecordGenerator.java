@@ -23,7 +23,7 @@ public class TestRecordGenerator implements ItemReader<PersonRecord> {
 
     private int index = 0;
 
-    private static PersonRecord[] testRecords = {
+    private static final PersonRecord[] testRecords = {
             new PersonRecord("Fred", "Flintstone"),
             new PersonRecord("Wilma", "Flintstone"),
             new PersonRecord("Pebbles", "Flintstone"),

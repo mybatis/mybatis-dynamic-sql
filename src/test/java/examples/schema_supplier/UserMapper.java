@@ -19,24 +19,20 @@ import static examples.schema_supplier.UserDynamicSqlSupport.*;
 
 import java.util.List;
 
-import org.apache.ibatis.annotations.InsertProvider;
 import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.SelectProvider;
 import org.apache.ibatis.type.JdbcType;
 import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.SqlBuilder;
-import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.SelectDSLCompleter;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.util.SqlProviderAdapter;
+import org.mybatis.dynamic.sql.util.mybatis3.CommonInsertMapper;
 import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
 
-public interface UserMapper {
-
-    @InsertProvider(type=SqlProviderAdapter.class, method="insert")
-    int insert(InsertStatementProvider<User> insertStatement);
+public interface UserMapper extends CommonInsertMapper<User> {
 
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
     @Results(id="UserResult", value= {
@@ -49,8 +45,8 @@ public interface UserMapper {
         return MyBatis3Utils.selectList(this::selectMany, BasicColumn.columnList(id, name), user, completer);
     }
 
-    default int insert(User record) {
-        return insert(SqlBuilder.insert(record)
+    default int insert(User row) {
+        return insert(SqlBuilder.insert(row)
                 .into(user)
                 .map(id).toProperty("id")
                 .map(name).toProperty("name")

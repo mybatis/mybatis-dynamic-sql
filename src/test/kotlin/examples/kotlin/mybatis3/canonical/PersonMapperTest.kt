@@ -141,8 +141,8 @@ class PersonMapperTest {
         sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(PersonMapper::class.java)
 
-            val record = mapper.selectByPrimaryKey(300)
-            assertThat(record).isNull()
+            val row = mapper.selectByPrimaryKey(300)
+            assertThat(row).isNull()
         }
     }
 
@@ -215,9 +215,9 @@ class PersonMapperTest {
         sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(PersonMapper::class.java)
 
-            val record = PersonRecord(100, "Joe", LastName("Jones"), Date(), true, "Developer", 1)
+            val row = PersonRecord(100, "Joe", LastName("Jones"), Date(), true, "Developer", 1)
 
-            val rows = mapper.insert(record)
+            val rows = mapper.insert(row)
             assertThat(rows).isEqualTo(1)
         }
     }
@@ -319,9 +319,9 @@ class PersonMapperTest {
         sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(PersonMapper::class.java)
 
-            val record = PersonRecord(100, "Joe", LastName("Jones"), Date(), false, null, 1)
+            val row = PersonRecord(100, "Joe", LastName("Jones"), Date(), false, null, 1)
 
-            val rows = mapper.insertSelective(record)
+            val rows = mapper.insertSelective(row)
             assertThat(rows).isEqualTo(1)
         }
     }
@@ -331,9 +331,9 @@ class PersonMapperTest {
         sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(PersonMapper::class.java)
 
-            val record = PersonRecord(100, "Joe", LastName("Jones"), Date(), true, "Developer", 1)
+            val row = PersonRecord(100, "Joe", LastName("Jones"), Date(), true, "Developer", 1)
 
-            var rows = mapper.insert(record)
+            var rows = mapper.insert(row)
             assertThat(rows).isEqualTo(1)
 
             rows = mapper.update {
@@ -352,9 +352,9 @@ class PersonMapperTest {
         sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(PersonMapper::class.java)
 
-            val record = PersonRecord(100, "Joe", LastName("Jones"), Date(), true, "Developer", 1)
+            val row = PersonRecord(100, "Joe", LastName("Jones"), Date(), true, "Developer", 1)
 
-            var rows = mapper.insert(record)
+            var rows = mapper.insert(row)
             assertThat(rows).isEqualTo(1)
 
             rows = mapper.update {
@@ -374,9 +374,9 @@ class PersonMapperTest {
         sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(PersonMapper::class.java)
 
-            val record = PersonRecord(100, "Joe", LastName("Jones"), Date(), true, "Developer", 1)
+            val row = PersonRecord(100, "Joe", LastName("Jones"), Date(), true, "Developer", 1)
 
-            var rows = mapper.insert(record)
+            var rows = mapper.insert(row)
             assertThat(rows).isEqualTo(1)
 
             rows = mapper.update {
@@ -399,9 +399,9 @@ class PersonMapperTest {
         sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(PersonMapper::class.java)
 
-            val record = PersonRecord(100, "Joe", LastName("Jones"), Date(), true, "Developer", 1)
+            val row = PersonRecord(100, "Joe", LastName("Jones"), Date(), true, "Developer", 1)
 
-            var rows = mapper.insert(record)
+            var rows = mapper.insert(row)
             assertThat(rows).isEqualTo(1)
 
             rows = mapper.update {
@@ -421,9 +421,9 @@ class PersonMapperTest {
         sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(PersonMapper::class.java)
 
-            val record = PersonRecord(100, "Joe", LastName("Jones"), Date(), true, "Developer", 1)
+            val row = PersonRecord(100, "Joe", LastName("Jones"), Date(), true, "Developer", 1)
 
-            var rows = mapper.insert(record)
+            var rows = mapper.insert(row)
             assertThat(rows).isEqualTo(1)
 
             rows = mapper.update {
@@ -442,9 +442,9 @@ class PersonMapperTest {
         sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(PersonMapper::class.java)
 
-            val record = PersonRecord(100, "Joe", LastName("Jones"), Date(), true, "Developer", 1)
+            val row = PersonRecord(100, "Joe", LastName("Jones"), Date(), true, "Developer", 1)
 
-            var rows = mapper.insert(record)
+            var rows = mapper.insert(row)
             assertThat(rows).isEqualTo(1)
 
             rows = mapper.update {
@@ -463,9 +463,9 @@ class PersonMapperTest {
         sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(PersonMapper::class.java)
 
-            val record = PersonRecord(100, "Joe", LastName("Jones"), Date(), true, "Developer", 1)
+            val row = PersonRecord(100, "Joe", LastName("Jones"), Date(), true, "Developer", 1)
 
-            var rows = mapper.insert(record)
+            var rows = mapper.insert(row)
             assertThat(rows).isEqualTo(1)
 
             rows = mapper.update {
@@ -717,10 +717,10 @@ class PersonMapperTest {
         sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(PersonWithAddressMapper::class.java)
 
-            val record = mapper.selectByPrimaryKey(1)
+            val row = mapper.selectByPrimaryKey(1)
 
-            assertThat(record).isNotNull
-            with(record!!) {
+            assertThat(row).isNotNull
+            with(row!!) {
                 assertThat(id).isEqualTo(1)
                 assertThat(employed).isTrue
                 assertThat(firstName).isEqualTo("Fred")
@@ -741,9 +741,9 @@ class PersonMapperTest {
         sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(PersonWithAddressMapper::class.java)
 
-            val record = mapper.selectByPrimaryKey(55)
+            val row = mapper.selectByPrimaryKey(55)
 
-            assertThat(record).isNull()
+            assertThat(row).isNull()
         }
     }
 
@@ -911,7 +911,6 @@ class PersonMapperTest {
         val selectStatement = select(id, firstName, lastName, birthDate, employed, occupation, addressId) {
             from(person)
             where { id isIn emptyList() }
-            configureStatement { isEmptyListConditionRenderingAllowed = true }
         }
 
         val expected = "select id, first_name, last_name, birth_date, employed, occupation, address_id from Person " +

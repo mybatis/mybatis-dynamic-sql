@@ -36,7 +36,9 @@ class BetweenTest {
         """
 
         val compilerMessageCollector = compile(source)
-        assertThat(compilerMessageCollector.errorLocations()).isEqualTo(listOf(ErrorLocation(9, 30)))
+        assertThat(compilerMessageCollector.errorLocations())
+            .hasSize(1)
+            .contains(ErrorLocation(9, 30))
     }
 
     @Test
@@ -56,7 +58,9 @@ class BetweenTest {
         """
 
         val compilerMessageCollector = compile(source)
-        assertThat(compilerMessageCollector.errorLocations()).isEqualTo(listOf(ErrorLocation(9, 36)))
+        assertThat(compilerMessageCollector.errorLocations())
+            .hasSize(1)
+            .contains(ErrorLocation(9, 36))
     }
 
     @Test
@@ -76,10 +80,9 @@ class BetweenTest {
         """
 
         val compilerMessageCollector = compile(source)
-        assertThat(compilerMessageCollector.errorLocations()).isEqualTo(listOf(
-            ErrorLocation(9, 30),
-            ErrorLocation(9, 39)
-        ))
+        assertThat(compilerMessageCollector.errorLocations())
+            .hasSize(2)
+            .contains(ErrorLocation(9, 30), ErrorLocation(9, 39))
     }
 
     @Test
@@ -100,7 +103,9 @@ class BetweenTest {
         """
 
         val compilerMessageCollector = compile(source)
-        assertThat(compilerMessageCollector.errorLocations()).isEqualTo(listOf(ErrorLocation(10, 36)))
+        assertThat(compilerMessageCollector.errorLocations())
+            .hasSize(1)
+            .contains(ErrorLocation(10, 36))
     }
 
     @Test
@@ -121,7 +126,9 @@ class BetweenTest {
         """
 
         val compilerMessageCollector = compile(source)
-        assertThat(compilerMessageCollector.errorLocations()).isEqualTo(listOf(ErrorLocation(10, 38)))
+        assertThat(compilerMessageCollector.errorLocations())
+            .hasSize(1)
+            .contains(ErrorLocation(10, 38))
     }
 
     @Test
@@ -142,9 +149,8 @@ class BetweenTest {
         """
 
         val compilerMessageCollector = compile(source)
-        assertThat(compilerMessageCollector.errorLocations()).isEqualTo(listOf(
-            ErrorLocation(10, 36),
-            ErrorLocation(10, 46)
-        ))
+        assertThat(compilerMessageCollector.errorLocations())
+            .hasSize(2)
+            .contains(ErrorLocation(10, 36), ErrorLocation(10, 46))
     }
 }

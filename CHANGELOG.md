@@ -2,9 +2,21 @@
 
 This log will detail notable changes to MyBatis Dynamic SQL. Full details are available on the GitHub milestone pages.
 
-## Release 1.5.2 - Unreleased
+## Release 1.5.2 - June 3, 2024
 
-This is a small maintenance release with improvements to the Kotlin DSL for CASE expressions.
+This is a small maintenance release with the following changes:
+
+1. Improvements to the Kotlin DSL for CASE expressions (infix methods for "else" and "then"). See this PR for 
+   details: ([#785](https://github.com/mybatis/mybatis-dynamic-sql/pull/785))
+2. **Potentially Breaking Change**: the "in" conditions ("isIn", "isNotIn", "isInCaseInsensitive",
+   "isNotInCaseInsensitive") will now render if the input list of values is empty. This will lead
+   to a runtime exception. This change was made out of an abundance of caution and is the safest choice.
+   If you wish to allow "in" conditions to be removed from where clauses when the list is empty,
+   then use the "when present" versions of those conditions. If you are unsure how this works, please
+   read the documentation here: https://mybatis.org/mybatis-dynamic-sql/docs/conditions.html#optionality-with-the-%E2%80%9Cin%E2%80%9D-conditions
+   For background on the reason for the change, see the discussion here: https://github.com/mybatis/mybatis-dynamic-sql/issues/788
+
+GitHub milestone: [https://github.com/mybatis/mybatis-dynamic-sql/milestone/14?closed=1](https://github.com/mybatis/mybatis-dynamic-sql/milestone/14?closed=1)
 
 **Important:** This is the last release that will be compatible with Java 8.
 
@@ -30,8 +42,8 @@ We've tested this extensively and the code is, of course, 100% covered by test c
 covered every scenario. Please let us know if you find issues.
 
 Full documentation is available here:
-- [Java Case Expression DSL Documentation](caseExpressions.md)
-- [Kotlin Case Expression DSL Documentation](kotlinCaseExpressions.md)
+- [Java Case Expression DSL Documentation](https://mybatis.org/mybatis-dynamic-sql/docs/caseExpressions.html)
+- [Kotlin Case Expression DSL Documentation](https://mybatis.org/mybatis-dynamic-sql/docs/kotlinCaseExpressions.html)
 
 The pull request for this change is ([#761](https://github.com/mybatis/mybatis-dynamic-sql/pull/761))
 

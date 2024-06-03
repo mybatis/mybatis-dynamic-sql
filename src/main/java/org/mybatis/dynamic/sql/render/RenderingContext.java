@@ -101,10 +101,6 @@ public class RenderingContext {
         return statementConfiguration.isNonRenderingWhereClauseAllowed();
     }
 
-    public boolean isEmptyListConditionRenderingAllowed() {
-        return statementConfiguration.isEmptyListConditionRenderingAllowed();
-    }
-
     /**
      * Create a new rendering context based on this, with the table alias calculator modified to include the
      * specified child table alias calculator. This is used by the query expression renderer when the alias calculator

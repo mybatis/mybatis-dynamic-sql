@@ -286,14 +286,13 @@ class SelectStatementTest {
     @Test
     void testInEmptyList() {
         List<String> emptyList = Collections.emptyList();
-        SelectModel selectModel = select(column1, column3)
+        SelectStatementProvider selectStatement = select(column1, column3)
                 .from(table, "a")
                 .where(column3, isIn(emptyList))
-                .build();
+                .build()
+                .render(RenderingStrategies.MYBATIS3);
 
-        assertThatExceptionOfType(RuntimeException.class).isThrownBy(() ->
-                selectModel.render(RenderingStrategies.MYBATIS3)
-        );
+        assertThat(selectStatement.getSelectStatement()).isEqualTo("select a.column1, a.column3 from foo a where a.column3 in ()");
     }
 
     @Test
@@ -301,7 +300,7 @@ class SelectStatementTest {
         List<String> emptyList = Collections.emptyList();
         SelectModel selectModel = select(column1, column3)
                 .from(table, "a")
-                .where(column3, isNotIn(emptyList))
+                .where(column3, isNotInWhenPresent(emptyList))
                 .build();
 
         assertThatExceptionOfType(RuntimeException.class).isThrownBy(() ->
@@ -326,7 +325,7 @@ class SelectStatementTest {
     void testInCaseInsensitiveEmptyList() {
         SelectModel selectModel = select(column1, column3)
                 .from(table, "a")
-                .where(column3, isInCaseInsensitive(Collections.emptyList()))
+                .where(column3, isInCaseInsensitiveWhenPresent(Collections.emptyList()))
                 .build();
 
         assertThatExceptionOfType(RuntimeException.class).isThrownBy(() ->
@@ -361,14 +360,13 @@ class SelectStatementTest {
 
     @Test
     void testNotInCaseInsensitiveEmptyList() {
-        SelectModel selectModel = select(column1, column3)
+        SelectStatementProvider selectStatement = select(column1, column3)
                 .from(table, "a")
                 .where(column3, isNotInCaseInsensitive(Collections.emptyList()))
-                .build();
+                .build()
+                .render(RenderingStrategies.MYBATIS3);
 
-        assertThatExceptionOfType(NonRenderingWhereClauseException.class).isThrownBy(() ->
-                selectModel.render(RenderingStrategies.MYBATIS3)
-        );
+        assertThat(selectStatement.getSelectStatement()).isEqualTo("select a.column1, a.column3 from foo a where upper(a.column3) not in ()");
     }
 
     @Test

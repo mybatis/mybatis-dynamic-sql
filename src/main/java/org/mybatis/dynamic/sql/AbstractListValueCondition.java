@@ -23,8 +23,6 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.mybatis.dynamic.sql.render.RenderingContext;
-
 public abstract class AbstractListValueCondition<T> implements VisitableCondition<T> {
     protected final Collection<T> values;
 
@@ -39,15 +37,6 @@ public abstract class AbstractListValueCondition<T> implements VisitableConditio
     @Override
     public boolean isEmpty() {
         return values.isEmpty();
-    }
-
-    @Override
-    public boolean shouldRender(RenderingContext renderingContext) {
-        if (isEmpty()) {
-            return renderingContext.isEmptyListConditionRenderingAllowed();
-        } else {
-            return true;
-        }
     }
 
     @Override
@@ -85,14 +74,12 @@ public abstract class AbstractListValueCondition<T> implements VisitableConditio
     }
 
     /**
-     * If renderable, apply the predicate to each value in the list and return a new condition with the filtered values.
-     *     Else returns a condition that will not render (this). If all values are filtered out of the value
-     *     list, then the condition will not render.
+     * If not empty, apply the predicate to each value in the list and return a new condition with the filtered values.
+     *     Else returns an empty condition (this).
      *
-     * @param predicate
-     *            predicate applied to the values, if renderable
+     * @param predicate predicate applied to the values, if not empty
      *
-     * @return a new condition with filtered values if renderable, otherwise a condition that will not render.
+     * @return a new condition with filtered values if renderable, otherwise an empty condition
      */
     public abstract AbstractListValueCondition<T> filter(Predicate<? super T> predicate);
 
