@@ -27,7 +27,6 @@ import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import org.mybatis.dynamic.sql.util.kotlin.GroupingCriteriaCollector.Companion.where
-import org.mybatis.dynamic.sql.util.kotlin.WhereApplier
 import org.mybatis.dynamic.sql.util.kotlin.andThen
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.select
 
@@ -41,19 +40,6 @@ class ReusableWhereTest {
             withInitializationScript("/examples/kotlin/mybatis3/CreateSimpleDB.sql")
             withTypeHandler(YesNoTypeHandler::class)
             withMapper(PersonMapper::class)
-        }
-    }
-
-    @Test
-    fun testCountWithDeprecatedClause() {
-        sqlSessionFactory.openSession().use { session ->
-            val mapper = session.getMapper(PersonMapper::class.java)
-
-            val rows = mapper.count {
-                applyWhere(commonWhere)
-            }
-
-            assertThat(rows).isEqualTo(3)
         }
     }
 
@@ -99,27 +85,6 @@ class ReusableWhereTest {
     }
 
     @Test
-    fun testDeprecatedComposition() {
-        val composedWhereClause = commonWhere.andThen {
-            and { birthDate.isNotNull() }
-        }.andThen {
-            or { addressId isLessThan 3 }
-        }
-
-        val selectStatement = select(person.allColumns()) {
-            from(person)
-            applyWhere(composedWhereClause)
-        }
-
-        assertThat(selectStatement.selectStatement).isEqualTo(
-            "select * from Person " +
-                "where id = #{parameters.p1,jdbcType=INTEGER} or occupation is null " +
-                "and birth_date is not null " +
-                "or address_id < #{parameters.p2,jdbcType=INTEGER}"
-        )
-    }
-
-    @Test
     fun testComposition() {
         val composedWhereClause = commonWhereClause.andThen {
             and { birthDate.isNotNull() }
@@ -138,11 +103,6 @@ class ReusableWhereTest {
                     "and birth_date is not null " +
                     "or address_id < #{parameters.p2,jdbcType=INTEGER}"
         )
-    }
-
-    private val commonWhere: WhereApplier = {
-        where { id isEqualTo 1 }
-        or { occupation.isNull() }
     }
 
     private val commonWhereClause = where {
