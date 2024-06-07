@@ -32,7 +32,7 @@ public abstract class AliasableSqlTable<T extends AliasableSqlTable<T>> extends 
     public T withAlias(String alias) {
         T newTable = constructor.get();
         ((AliasableSqlTable<T>) newTable).tableAlias = alias;
-        newTable.nameSupplier = nameSupplier;
+        newTable.tableName = tableName;
         return newTable;
     }
 
@@ -48,7 +48,7 @@ public abstract class AliasableSqlTable<T extends AliasableSqlTable<T>> extends 
         Objects.requireNonNull(name);
         T newTable = constructor.get();
         ((AliasableSqlTable<T>) newTable).tableAlias = tableAlias;
-        newTable.nameSupplier = () -> name;
+        newTable.tableName = name;
         return newTable;
     }
 

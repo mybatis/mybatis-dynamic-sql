@@ -18,22 +18,19 @@ package org.mybatis.dynamic.sql;
 import java.sql.JDBCType;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Supplier;
 
 import org.jetbrains.annotations.NotNull;
 
 public class SqlTable implements TableExpression {
 
-    protected Supplier<String> nameSupplier;
+    protected String tableName;
 
     protected SqlTable(String tableName) {
-        Objects.requireNonNull(tableName);
-
-        this.nameSupplier = () -> tableName;
+        this.tableName = Objects.requireNonNull(tableName);
     }
 
     public String tableNameAtRuntime() {
-        return nameSupplier.get();
+        return tableName;
     }
 
     public BasicColumn allColumns() {
