@@ -57,7 +57,7 @@
 
   <properties>
     <java.version>17</java.version>
-    <java.release.version>11</java.release.version>
+    <java.release.version>17</java.release.version>
     <junit.jupiter.version>5.10.2</junit.jupiter.version>
     <spring.batch.version>5.1.2</spring.batch.version>
 
@@ -68,7 +68,6 @@
     <module.name>org.mybatis.dynamic.sql</module.name>
 
     <kotlin.version>2.0.0</kotlin.version>
-    <kotlin.compiler.jvmTarget>11</kotlin.compiler.jvmTarget>
     <kotlin.compiler.apiVersion>1.7</kotlin.compiler.apiVersion>
 
     <sonar.sources>pom.xml,src/main/java,src/main/kotlin</sonar.sources>
