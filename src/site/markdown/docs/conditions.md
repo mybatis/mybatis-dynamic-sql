@@ -267,7 +267,7 @@ any null or blank string, and you want to trim all strings. This can be accompli
             .where(animalName, isIn("  Mouse", "  ", null, "", "Musk shrew  ")
                     .filter(Objects::nonNull)
                     .map(String::trim)
-                    .filter(st -> !st.isEmpty()))
+                    .filter(not(String::isEmpty)))
             .orderBy(id)
             .build()
             .render(RenderingStrategies.MYBATIS3);
@@ -284,7 +284,7 @@ public class MyInCondition {
         return SqlBuilder.isIn(values)
                .filter(Objects::nonNull)
                .map(String::trim)
-               .filter(st -> !st.isEmpty());
+               .filter(not(String::isEmpty));
     }
 }
 ```
