@@ -88,8 +88,8 @@ public class RenderingContext {
 
     public String aliasedTableName(SqlTable table) {
         return tableAliasCalculator.aliasForTable(table)
-                .map(a -> table.tableNameAtRuntime() + spaceBefore(a))
-                .orElseGet(table::tableNameAtRuntime);
+                .map(a -> table.tableName() + spaceBefore(a))
+                .orElseGet(table::tableName);
     }
 
     public boolean isNonRenderingClauseAllowed() {

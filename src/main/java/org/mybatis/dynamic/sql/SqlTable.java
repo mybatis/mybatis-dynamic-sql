@@ -29,7 +29,7 @@ public class SqlTable implements TableExpression {
         this.tableName = Objects.requireNonNull(tableName);
     }
 
-    public String tableNameAtRuntime() {
+    public String tableName() {
         return tableName;
     }
 

@@ -38,7 +38,7 @@ public class GuaranteedTableAliasCalculator extends ExplicitTableAliasCalculator
         if (alias.isPresent()) {
             return alias;
         } else {
-            return Optional.of(table.tableNameAtRuntime());
+            return Optional.of(table.tableName());
         }
     }
 
