@@ -108,6 +108,6 @@ class InTest {
         val compilerMessageCollector = compile(source)
         assertThat(compilerMessageCollector.errorLocations())
             .hasSize(1)
-// TODO           .contains(ErrorLocation(11, 26))
+            .contains(ErrorLocation(11, 21))
     }
 }
