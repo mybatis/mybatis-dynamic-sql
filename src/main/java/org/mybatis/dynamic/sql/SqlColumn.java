@@ -30,7 +30,7 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
     protected final String name;
     protected final SqlTable table;
     protected final JDBCType jdbcType;
-    protected final boolean isDescending;
+    protected final String descendingPhrase;
     protected final String alias;
     protected final String typeHandler;
     protected final RenderingStrategy renderingStrategy;
@@ -42,7 +42,7 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
         name = Objects.requireNonNull(builder.name);
         table = Objects.requireNonNull(builder.table);
         jdbcType = builder.jdbcType;
-        isDescending = builder.isDescending;
+        descendingPhrase = builder.descendingPhrase;
         alias = builder.alias;
         typeHandler = builder.typeHandler;
         renderingStrategy = builder.renderingStrategy;
@@ -87,7 +87,7 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
     @Override
     public SortSpecification descending() {
         Builder<T> b = copy();
-        return b.withDescending(true).build();
+        return b.withDescendingPhrase(" DESC").build(); //$NON-NLS-1$
     }
 
     @Override
@@ -126,13 +126,8 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
     }
 
     @Override
-    public boolean isDescending() {
-        return isDescending;
-    }
-
-    @Override
-    public String orderByName() {
-        return alias().orElse(name);
+    public FragmentAndParameters renderForOrderBy(RenderingContext renderingContext) {
+        return FragmentAndParameters.fromFragment(alias().orElse(name) + descendingPhrase);
     }
 
     @Override
@@ -188,7 +183,7 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
                 .withName(this.name)
                 .withTable(this.table)
                 .withJdbcType(this.jdbcType)
-                .withDescending(this.isDescending)
+                .withDescendingPhrase(this.descendingPhrase)
                 .withAlias(this.alias)
                 .withTypeHandler(this.typeHandler)
                 .withRenderingStrategy(this.renderingStrategy)
@@ -214,7 +209,7 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
         protected String name;
         protected SqlTable table;
         protected JDBCType jdbcType;
-        protected boolean isDescending = false;
+        protected String descendingPhrase = ""; //$NON-NLS-1$
         protected String alias;
         protected String typeHandler;
         protected RenderingStrategy renderingStrategy;
@@ -237,8 +232,8 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
             return this;
         }
 
-        public Builder<T> withDescending(boolean isDescending) {
-            this.isDescending = isDescending;
+        public Builder<T> withDescendingPhrase(String descendingPhrase) {
+            this.descendingPhrase = descendingPhrase;
             return this;
         }
 

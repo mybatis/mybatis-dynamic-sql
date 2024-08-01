@@ -18,6 +18,8 @@ package org.mybatis.dynamic.sql.select;
 import java.util.Objects;
 
 import org.mybatis.dynamic.sql.SortSpecification;
+import org.mybatis.dynamic.sql.render.RenderingContext;
+import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 
 /**
  * This class is used for an order by phrase where there is no suitable column name
@@ -28,30 +30,25 @@ import org.mybatis.dynamic.sql.SortSpecification;
 public class SimpleSortSpecification implements SortSpecification {
 
     private final String name;
-    private final boolean isDescending;
+    private final String descendingPhrase;
 
     private SimpleSortSpecification(String name) {
-        this(name, false);
+        this(name, ""); //$NON-NLS-1$
     }
 
-    private SimpleSortSpecification(String name, boolean isDescending) {
+    private SimpleSortSpecification(String name, String descendingPhrase) {
         this.name = Objects.requireNonNull(name);
-        this.isDescending = isDescending;
+        this.descendingPhrase = descendingPhrase;
     }
 
     @Override
     public SortSpecification descending() {
-        return new SimpleSortSpecification(name, true);
+        return new SimpleSortSpecification(name, " DESC"); //$NON-NLS-1$
     }
 
     @Override
-    public String orderByName() {
-        return name;
-    }
-
-    @Override
-    public boolean isDescending() {
-        return isDescending;
+    public FragmentAndParameters renderForOrderBy(RenderingContext renderingContext) {
+        return FragmentAndParameters.fromFragment(name + descendingPhrase);
     }
 
     public static SimpleSortSpecification of(String name) {

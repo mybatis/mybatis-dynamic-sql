@@ -96,7 +96,7 @@ public class DeleteRenderer {
     }
 
     private FragmentAndParameters renderOrderByClause(OrderByModel orderByModel) {
-        return new OrderByRenderer().render(orderByModel);
+        return new OrderByRenderer(renderingContext).render(orderByModel);
     }
 
     public static Builder withDeleteModel(DeleteModel deleteModel) {

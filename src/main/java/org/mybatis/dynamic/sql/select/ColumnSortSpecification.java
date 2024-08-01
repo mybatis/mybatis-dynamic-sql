@@ -19,34 +19,31 @@ import java.util.Objects;
 
 import org.mybatis.dynamic.sql.SortSpecification;
 import org.mybatis.dynamic.sql.SqlColumn;
+import org.mybatis.dynamic.sql.render.RenderingContext;
+import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 
 public class ColumnSortSpecification implements SortSpecification {
     private final String tableAlias;
     private final SqlColumn<?> column;
-    private final boolean isDescending;
+    private final String descendingPhrase;
 
     public ColumnSortSpecification(String tableAlias, SqlColumn<?> column) {
-        this(tableAlias, column, false);
+        this(tableAlias, column, ""); //$NON-NLS-1$
     }
 
-    private ColumnSortSpecification(String tableAlias, SqlColumn<?> column, boolean isDescending) {
+    private ColumnSortSpecification(String tableAlias, SqlColumn<?> column, String descendingPhrase) {
         this.tableAlias = Objects.requireNonNull(tableAlias);
         this.column = Objects.requireNonNull(column);
-        this.isDescending = isDescending;
+        this.descendingPhrase = descendingPhrase;
     }
 
     @Override
     public SortSpecification descending() {
-        return new ColumnSortSpecification(tableAlias, column, true);
+        return new ColumnSortSpecification(tableAlias, column, " DESC"); //$NON-NLS-1$
     }
 
     @Override
-    public String orderByName() {
-        return tableAlias + "." + column.name(); //$NON-NLS-1$
-    }
-
-    @Override
-    public boolean isDescending() {
-        return isDescending;
+    public FragmentAndParameters renderForOrderBy(RenderingContext renderingContext) {
+        return FragmentAndParameters.fromFragment(tableAlias + "." + column.name() + descendingPhrase); //$NON-NLS-1$
     }
 }

@@ -15,6 +15,11 @@
  */
 package org.mybatis.dynamic.sql;
 
+import org.mybatis.dynamic.sql.exception.DynamicSqlException;
+import org.mybatis.dynamic.sql.render.RenderingContext;
+import org.mybatis.dynamic.sql.util.FragmentAndParameters;
+import org.mybatis.dynamic.sql.util.Messages;
+
 /**
  * Defines attributes of columns that are necessary for rendering an order by expression.
  *
@@ -34,13 +39,33 @@ public interface SortSpecification {
      * NOT include the "DESC" word for descending sort specifications.
      *
      * @return the order by phrase
+     * @deprecated Please replace this method by overriding the more general "renderForOrderBy" method. Target for
+     *    removal in release 2.1
      */
-    String orderByName();
+    @Deprecated
+    default String orderByName() {
+        throw new DynamicSqlException(Messages.getString("ERROR.44")); //$NON-NLS-1$
+    }
 
     /**
      * Return true if the sort order is descending.
      *
      * @return true if the SortSpecification should render as descending
+     * @deprecated Please replace this method by overriding the more general "renderForOrderBy" method. Target for
+     *    removal in release 2.1
      */
-    boolean isDescending();
+    @Deprecated
+    default boolean isDescending() {
+        throw new DynamicSqlException(Messages.getString("ERROR.44")); //$NON-NLS-1$
+    }
+
+    // the default implementation ensures compatibility with prior releases. When the
+    // deprecated methods are removed, this function can become purely abstract.
+    default FragmentAndParameters renderForOrderBy(RenderingContext renderingContext) {
+        String phrase = orderByName();
+        if (isDescending()) {
+            phrase = phrase + " DESC"; //$NON-NLS-1$
+        }
+        return FragmentAndParameters.fromFragment(phrase);
+    }
 }

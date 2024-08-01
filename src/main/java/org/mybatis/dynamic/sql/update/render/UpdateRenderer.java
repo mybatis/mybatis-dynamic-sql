@@ -122,7 +122,7 @@ public class UpdateRenderer {
     }
 
     private FragmentAndParameters renderOrderByClause(OrderByModel orderByModel) {
-        return new OrderByRenderer().render(orderByModel);
+        return new OrderByRenderer(renderingContext).render(orderByModel);
     }
 
     public static Builder withUpdateModel(UpdateModel updateModel) {

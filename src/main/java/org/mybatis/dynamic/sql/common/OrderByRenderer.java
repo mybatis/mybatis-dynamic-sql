@@ -15,24 +15,24 @@
  */
 package org.mybatis.dynamic.sql.common;
 
+import java.util.Objects;
 import java.util.stream.Collectors;
 
-import org.mybatis.dynamic.sql.SortSpecification;
+import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
+import org.mybatis.dynamic.sql.util.FragmentCollector;
 
 public class OrderByRenderer {
-    public FragmentAndParameters render(OrderByModel orderByModel) {
-        String phrase = orderByModel.columns()
-                .map(this::calculateOrderByPhrase)
-                .collect(Collectors.joining(", ", "order by ", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        return FragmentAndParameters.fromFragment(phrase);
+    private final RenderingContext renderingContext;
+
+    public OrderByRenderer(RenderingContext renderingContext) {
+        this.renderingContext = Objects.requireNonNull(renderingContext);
     }
 
-    private String calculateOrderByPhrase(SortSpecification column) {
-        String phrase = column.orderByName();
-        if (column.isDescending()) {
-            phrase = phrase + " DESC"; //$NON-NLS-1$
-        }
-        return phrase;
+    public FragmentAndParameters render(OrderByModel orderByModel) {
+        return orderByModel.columns().map(c -> c.renderForOrderBy(renderingContext))
+                .collect(FragmentCollector.collect())
+                .toFragmentAndParameters(
+                        Collectors.joining(", ", "order by ", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
 }
