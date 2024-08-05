@@ -4,7 +4,10 @@ This log will detail notable changes to MyBatis Dynamic SQL. Full details are av
 
 ## Release 2.0.0 - Unreleased
 
-The library now requires Java 17.
+Significant changes:
+
+- The library now requires Java 17
+- Deprecated code from prior releases is removed
 
 ## Release 1.5.2 - June 3, 2024
 

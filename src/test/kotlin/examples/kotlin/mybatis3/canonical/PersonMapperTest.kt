@@ -242,7 +242,7 @@ class PersonMapperTest {
     }
 
     @Test
-    fun testInsertSelect() {
+    fun testInsertSelectExtensionFunction() {
         sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(PersonMapper::class.java)
 
@@ -259,7 +259,7 @@ class PersonMapperTest {
     }
 
     @Test
-    fun testDeprecatedInsertSelect() {
+    fun testInsertSelect() {
         sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(PersonMapper::class.java)
 

@@ -957,7 +957,7 @@ class JoinMapperTest {
                 .from(user, "u1");
 
         assertThatExceptionOfType(DuplicateTableAliasException.class).isThrownBy(() -> dsl.join(user, "u2"))
-                .withMessage(Messages.getString("ERROR.1", user.tableNameAtRuntime(), "u2", "u1"));
+                .withMessage(Messages.getString("ERROR.1", user.tableName(), "u2", "u1"));
     }
 
     @Test

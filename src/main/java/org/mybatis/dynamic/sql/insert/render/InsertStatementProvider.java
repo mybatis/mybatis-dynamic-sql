@@ -22,16 +22,6 @@ public interface InsertStatementProvider<T> {
      * Return the row associated with this insert statement.
      *
      * @return the row associated with this insert statement.
-     *
-     * @deprecated in favor of {@link InsertStatementProvider#getRow()}
-     */
-    @Deprecated
-    T getRecord();
-
-    /**
-     * Return the row associated with this insert statement.
-     *
-     * @return the row associated with this insert statement.
      */
     @NotNull
     T getRow();

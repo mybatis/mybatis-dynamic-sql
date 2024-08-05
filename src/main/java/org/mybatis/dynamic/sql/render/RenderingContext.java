@@ -53,11 +53,6 @@ public class RenderingContext {
                 : builder.parameterName + "." + RenderingStrategy.DEFAULT_PARAMETER_PREFIX;  //$NON-NLS-1$
     }
 
-    public TableAliasCalculator tableAliasCalculator() {
-        // this method can be removed when the renderWithTableAlias method is removed from BasicColumn
-        return tableAliasCalculator;
-    }
-
     private String nextMapKey() {
         return renderingStrategy.formatParameterMapKey(sequence);
     }
@@ -93,8 +88,8 @@ public class RenderingContext {
 
     public String aliasedTableName(SqlTable table) {
         return tableAliasCalculator.aliasForTable(table)
-                .map(a -> table.tableNameAtRuntime() + spaceBefore(a))
-                .orElseGet(table::tableNameAtRuntime);
+                .map(a -> table.tableName() + spaceBefore(a))
+                .orElseGet(table::tableName);
     }
 
     public boolean isNonRenderingClauseAllowed() {
