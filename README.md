@@ -78,6 +78,6 @@ The library test cases provide several complete examples of using the library in
 | Kotlin   | Spring JDBC                              | Example using Kotlin utility classes for Spring JDBC Template                      | [../examples/kotlin/spring/canonical](src/test/kotlin/examples/kotlin/spring/canonical)                     |
 
 
-## Requirements 
+## Requirements
 
 The library has no dependencies.  Version 2.x requires Java 17. Version 1.8 requires Java 8.
