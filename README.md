@@ -80,4 +80,4 @@ The library test cases provide several complete examples of using the library in
 
 ## Requirements
 
-The library has no dependencies.  Version 2.x requires Java 17. Version 1.8 requires Java 8.
+The library has no dependencies.  Version 2.x requires Java 17. Version 1.x requires Java 8.
