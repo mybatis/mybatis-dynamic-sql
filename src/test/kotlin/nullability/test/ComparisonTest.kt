@@ -38,7 +38,7 @@ class ComparisonTest {
         val compilerMessageCollector = compile(source)
         assertThat(compilerMessageCollector.errorLocations())
             .hasSize(1)
-// TODO            .contains(ErrorLocation(9, 30))
+            .contains(ErrorLocation(9, 20))
     }
 
     @Test
@@ -81,7 +81,7 @@ class ComparisonTest {
         val compilerMessageCollector = compile(source)
         assertThat(compilerMessageCollector.errorLocations())
             .hasSize(1)
-// TODO           .contains(ErrorLocation(10, 31))
+            .contains(ErrorLocation(10, 21))
     }
 
     @Test
@@ -124,7 +124,7 @@ class ComparisonTest {
         val compilerMessageCollector = compile(source)
         assertThat(compilerMessageCollector.errorLocations())
             .hasSize(1)
-// TODO           .contains(ErrorLocation(9, 33))
+            .contains(ErrorLocation(9, 20))
     }
 
     @Test
@@ -167,7 +167,7 @@ class ComparisonTest {
         val compilerMessageCollector = compile(source)
         assertThat(compilerMessageCollector.errorLocations())
             .hasSize(1)
-// TODO           .contains(ErrorLocation(10, 34))
+            .contains(ErrorLocation(10, 21))
     }
 
     @Test
@@ -210,7 +210,7 @@ class ComparisonTest {
         val compilerMessageCollector = compile(source)
         assertThat(compilerMessageCollector.errorLocations())
             .hasSize(1)
-// TODO           .contains(ErrorLocation(9, 34))
+            .contains(ErrorLocation(9, 20))
     }
 
     @Test
@@ -253,7 +253,7 @@ class ComparisonTest {
         val compilerMessageCollector = compile(source)
         assertThat(compilerMessageCollector.errorLocations())
             .hasSize(1)
-// TODO           .contains(ErrorLocation(10, 35))
+            .contains(ErrorLocation(10, 21))
     }
 
     @Test
@@ -296,7 +296,7 @@ class ComparisonTest {
         val compilerMessageCollector = compile(source)
         assertThat(compilerMessageCollector.errorLocations())
             .hasSize(1)
-// TODO           .contains(ErrorLocation(9, 43))
+            .contains(ErrorLocation(9, 20))
     }
 
     @Test
@@ -339,7 +339,7 @@ class ComparisonTest {
         val compilerMessageCollector = compile(source)
         assertThat(compilerMessageCollector.errorLocations())
             .hasSize(1)
-// TODO           .contains(ErrorLocation(10, 44))
+            .contains(ErrorLocation(10, 21))
     }
 
     @Test
@@ -382,7 +382,7 @@ class ComparisonTest {
         val compilerMessageCollector = compile(source)
         assertThat(compilerMessageCollector.errorLocations())
             .hasSize(1)
-// TODO           .contains(ErrorLocation(9, 31))
+            .contains(ErrorLocation(9, 20))
     }
 
     @Test
@@ -425,7 +425,7 @@ class ComparisonTest {
         val compilerMessageCollector = compile(source)
         assertThat(compilerMessageCollector.errorLocations())
             .hasSize(1)
-// TODO           .contains(ErrorLocation(10, 32))
+            .contains(ErrorLocation(10, 21))
     }
 
     @Test
@@ -468,7 +468,7 @@ class ComparisonTest {
         val compilerMessageCollector = compile(source)
         assertThat(compilerMessageCollector.errorLocations())
             .hasSize(1)
-// TODO           .contains(ErrorLocation(9, 40))
+            .contains(ErrorLocation(9, 20))
     }
 
     @Test
@@ -511,7 +511,7 @@ class ComparisonTest {
         val compilerMessageCollector = compile(source)
         assertThat(compilerMessageCollector.errorLocations())
             .hasSize(1)
-// TODO           .contains(ErrorLocation(10, 41))
+            .contains(ErrorLocation(10, 21))
     }
 
     @Test

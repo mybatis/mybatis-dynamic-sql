@@ -21,7 +21,7 @@
   <parent>
     <groupId>org.mybatis</groupId>
     <artifactId>mybatis-parent</artifactId>
-    <version>44</version>
+    <version>45</version>
   </parent>
 
   <groupId>org.mybatis.dynamic-sql</groupId>
@@ -68,13 +68,13 @@
     <module.name>org.mybatis.dynamic.sql</module.name>
 
     <kotlin.version>2.0.0</kotlin.version>
-    <kotlin.compiler.apiVersion>1.7</kotlin.compiler.apiVersion>
+    <kotlin.compiler.jvmTarget>1.8</kotlin.compiler.jvmTarget>
 
     <sonar.sources>pom.xml,src/main/java,src/main/kotlin</sonar.sources>
     <sonar.tests>src/test/java,src/test/kotlin</sonar.tests>
 
     <kotlin.code.style>official</kotlin.code.style>
-    <test.containers.version>1.19.8</test.containers.version>
+    <test.containers.version>1.20.1</test.containers.version>
     <osgi.export>org.mybatis.dynamic.sql.*;version=${project.version};-noimport:=true</osgi.export>
 
     <!-- Reproducible Builds -->
@@ -84,7 +84,7 @@
   <dependencies>
     <dependency>
       <groupId>org.jetbrains.kotlin</groupId>
-      <artifactId>kotlin-stdlib</artifactId>
+      <artifactId>kotlin-stdlib-jdk8</artifactId>
       <version>${kotlin.version}</version>
       <scope>provided</scope>
       <optional>true</optional>
@@ -92,7 +92,7 @@
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-jdbc</artifactId>
-      <version>6.1.9</version>
+      <version>6.1.11</version>
       <scope>provided</scope>
       <optional>true</optional>
     </dependency>
@@ -125,7 +125,7 @@
     <dependency>
       <groupId>org.assertj</groupId>
       <artifactId>assertj-core</artifactId>
-      <version>3.26.0</version>
+      <version>3.26.3</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -168,7 +168,7 @@
     <dependency>
       <groupId>org.hamcrest</groupId>
       <artifactId>hamcrest</artifactId>
-      <version>2.2</version>
+      <version>3.0</version>
       <scope>test</scope>
     </dependency>
 
@@ -199,7 +199,7 @@
     <dependency>
       <groupId>org.mariadb.jdbc</groupId>
       <artifactId>mariadb-java-client</artifactId>
-      <version>3.4.0</version>
+      <version>3.4.1</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

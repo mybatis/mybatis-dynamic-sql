@@ -38,7 +38,7 @@ class EqualNotEqualTest {
         val compilerMessageCollector = compile(source)
         assertThat(compilerMessageCollector.errorLocations())
             .hasSize(1)
-// TODO           .contains(ErrorLocation(9, 37))
+            .contains(ErrorLocation(9, 27))
     }
 
     @Test
@@ -81,7 +81,7 @@ class EqualNotEqualTest {
         val compilerMessageCollector = compile(source)
         assertThat(compilerMessageCollector.errorLocations())
             .hasSize(1)
-// TODO           .contains(ErrorLocation(10, 40))
+            .contains(ErrorLocation(10, 27))
     }
 
     @Test
@@ -124,7 +124,7 @@ class EqualNotEqualTest {
         val compilerMessageCollector = compile(source)
         assertThat(compilerMessageCollector.errorLocations())
             .hasSize(1)
-// TODO           .contains(ErrorLocation(10, 38))
+            .contains(ErrorLocation(10, 28))
     }
 
     @Test
@@ -169,7 +169,7 @@ class EqualNotEqualTest {
         val compilerMessageCollector = compile(source)
         assertThat(compilerMessageCollector.errorLocations())
             .hasSize(1)
-// TODO           .contains(ErrorLocation(11, 41))
+            .contains(ErrorLocation(11, 28))
     }
 
     @Test
