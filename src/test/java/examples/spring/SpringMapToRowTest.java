@@ -74,10 +74,7 @@ class SpringMapToRowTest {
 
     @Test
     void testInsertMultiple() {
-        List<Integer> integers = new ArrayList<>();
-        integers.add(1);
-        integers.add(2);
-        integers.add(3);
+        List<Integer> integers = List.of(1, 2, 3);
 
         MultiRowInsertStatementProvider<Integer> insertStatement = insertMultiple(integers)
                 .into(compoundKey)
@@ -102,10 +99,7 @@ class SpringMapToRowTest {
 
     @Test
     void testInsertBatch() {
-        List<Integer> integers = new ArrayList<>();
-        integers.add(1);
-        integers.add(2);
-        integers.add(3);
+        List<Integer> integers = List.of(1, 2, 3);
 
         BatchInsert<Integer> insertStatement = insertBatch(integers)
                 .into(compoundKey)

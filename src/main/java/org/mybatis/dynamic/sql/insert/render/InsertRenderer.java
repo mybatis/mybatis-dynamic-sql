@@ -35,8 +35,7 @@ public class InsertRenderer<T> {
     public InsertStatementProvider<T> render() {
         FieldAndValueCollector collector = model.columnMappings()
                 .map(m -> m.accept(visitor))
-                .filter(Optional::isPresent)
-                .map(Optional::get)
+                .flatMap(Optional::stream)
                 .collect(FieldAndValueCollector.collect());
 
         Validator.assertFalse(collector.isEmpty(), "ERROR.10"); //$NON-NLS-1$
