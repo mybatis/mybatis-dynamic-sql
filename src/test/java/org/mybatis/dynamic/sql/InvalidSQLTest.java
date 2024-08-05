@@ -111,8 +111,7 @@ class InvalidSQLTest {
 
     @Test
     void testInvalidMultipleInsertStatementNoMappings() {
-        List<TestRow> records = new ArrayList<>();
-        records.add(new TestRow());
+        List<TestRow> records = List.of(new TestRow());
 
         MultiRowInsertModel.Builder<TestRow> builder = new MultiRowInsertModel.Builder<TestRow>()
                 .withRecords(records)
@@ -133,8 +132,7 @@ class InvalidSQLTest {
 
     @Test
     void testInvalidBatchInsertStatementNoMappings() {
-        List<TestRow> records = new ArrayList<>();
-        records.add(new TestRow());
+        List<TestRow> records = List.of(new TestRow());
 
         BatchInsertModel.Builder<TestRow> builder = new BatchInsertModel.Builder<TestRow>()
                 .withRecords(records)

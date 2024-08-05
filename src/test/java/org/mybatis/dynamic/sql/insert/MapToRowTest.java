@@ -20,7 +20,6 @@ import static org.mybatis.dynamic.sql.SqlBuilder.insertBatch;
 import static org.mybatis.dynamic.sql.SqlBuilder.insertMultiple;
 
 import java.sql.JDBCType;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -37,10 +36,10 @@ class MapToRowTest {
 
     @Test
     void testBasicInsertMultipleWithMyBatis() {
-        List<Record> records = new ArrayList<>();
-        records.add(new Record(33, 1));
-        records.add(new Record(33, 2));
-        records.add(new Record(33, 3));
+        List<Record> records = List.of(
+                new Record(33, 1),
+                new Record(33, 2),
+                new Record(33, 3));
 
         MultiRowInsertStatementProvider<Record> insertStatement = insertMultiple(records)
                 .into(foo)
@@ -55,10 +54,10 @@ class MapToRowTest {
 
     @Test
     void testBasicInsertMultipleWithSpring() {
-        List<Record> records = new ArrayList<>();
-        records.add(new Record(33, 1));
-        records.add(new Record(33, 2));
-        records.add(new Record(33, 3));
+        List<Record> records = List.of(
+                new Record(33, 1),
+                new Record(33, 2),
+                new Record(33, 3));
 
         MultiRowInsertStatementProvider<Record> insertStatement = insertMultiple(records)
                 .into(foo)
@@ -73,10 +72,7 @@ class MapToRowTest {
 
     @Test
     void testBasicInsertMultipleRowMappingWithMyBatis() {
-        List<Integer> integers = new ArrayList<>();
-        integers.add(1);
-        integers.add(2);
-        integers.add(3);
+        List<Integer> integers = List.of(1, 2, 3);
 
         MultiRowInsertStatementProvider<Integer> insertStatement = insertMultiple(integers)
                 .into(foo)
@@ -91,10 +87,7 @@ class MapToRowTest {
 
     @Test
     void testBasicInsertMultipleRowMappingWithSpring() {
-        List<Integer> integers = new ArrayList<>();
-        integers.add(1);
-        integers.add(2);
-        integers.add(3);
+        List<Integer> integers = List.of(1, 2, 3);
 
         MultiRowInsertStatementProvider<Integer> insertStatement = insertMultiple(integers)
                 .into(foo)
@@ -109,10 +102,10 @@ class MapToRowTest {
 
     @Test
     void testBatchInsertWithMyBatis() {
-        List<Record> records = new ArrayList<>();
-        records.add(new Record(33, 1));
-        records.add(new Record(33, 2));
-        records.add(new Record(33, 3));
+        List<Record> records = List.of(
+                new Record(33, 1),
+                new Record(33, 2),
+                new Record(33, 3));
 
         BatchInsert<Record> batchInsert = insertBatch(records)
                 .into(foo)
@@ -127,10 +120,10 @@ class MapToRowTest {
 
     @Test
     void testBatchInsertWithSpring() {
-        List<Record> records = new ArrayList<>();
-        records.add(new Record(33, 1));
-        records.add(new Record(33, 2));
-        records.add(new Record(33, 3));
+        List<Record> records = List.of(
+                new Record(33, 1),
+                new Record(33, 2),
+                new Record(33, 3));
 
         BatchInsert<Record> batchInsert = insertBatch(records)
                 .into(foo)
@@ -145,10 +138,7 @@ class MapToRowTest {
 
     @Test
     void testBatchInsertRowMappingWithMyBatis() {
-        List<Integer> integers = new ArrayList<>();
-        integers.add(1);
-        integers.add(2);
-        integers.add(3);
+        List<Integer> integers = List.of(1, 2, 3);
 
         BatchInsert<Integer> batchInsert = insertBatch(integers)
                 .into(foo)
@@ -163,10 +153,7 @@ class MapToRowTest {
 
     @Test
     void testBatchInsertRowMappingWithSpring() {
-        List<Integer> integers = new ArrayList<>();
-        integers.add(1);
-        integers.add(2);
-        integers.add(3);
+        List<Integer> integers = List.of(1, 2, 3);
 
         BatchInsert<Integer> batchInsert = insertBatch(integers)
                 .into(foo)
