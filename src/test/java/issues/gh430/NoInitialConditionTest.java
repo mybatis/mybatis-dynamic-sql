@@ -19,7 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
 import static org.mybatis.dynamic.sql.subselect.FooDynamicSqlSupport.*;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -32,7 +32,7 @@ class NoInitialConditionTest {
 
     @Test
     void testNoInitialConditionEmptyList() {
-        List<AndOrCriteriaGroup> criteria = new ArrayList<>();
+        List<AndOrCriteriaGroup> criteria = Collections.emptyList();
 
         SelectStatementProvider selectStatement = buildSelectStatement(criteria);
 
@@ -43,8 +43,7 @@ class NoInitialConditionTest {
 
     @Test
     void testNoInitialConditionSingleSub() {
-        List<AndOrCriteriaGroup> criteria = new ArrayList<>();
-        criteria.add(or(column2, isEqualTo(3)));
+        List<AndOrCriteriaGroup> criteria = List.of(or(column2, isEqualTo(3)));
 
         SelectStatementProvider selectStatement = buildSelectStatement(criteria);
 
@@ -56,10 +55,10 @@ class NoInitialConditionTest {
 
     @Test
     void testNoInitialConditionMultipleSubs() {
-        List<AndOrCriteriaGroup> criteria = new ArrayList<>();
-        criteria.add(or(column2, isEqualTo(3)));
-        criteria.add(or(column2, isEqualTo(4)));
-        criteria.add(or(column2, isEqualTo(5)));
+        List<AndOrCriteriaGroup> criteria = List.of(
+            or(column2, isEqualTo(3)),
+            or(column2, isEqualTo(4)),
+            or(column2, isEqualTo(5)));
 
         SelectStatementProvider selectStatement = buildSelectStatement(criteria);
 
@@ -71,10 +70,10 @@ class NoInitialConditionTest {
 
     @Test
     void testNoInitialConditionWhereMultipleSubs() {
-        List<AndOrCriteriaGroup> criteria = new ArrayList<>();
-        criteria.add(or(column2, isEqualTo(3)));
-        criteria.add(or(column2, isEqualTo(4)));
-        criteria.add(or(column2, isEqualTo(5)));
+        List<AndOrCriteriaGroup> criteria = List.of(
+            or(column2, isEqualTo(3)),
+            or(column2, isEqualTo(4)),
+            or(column2, isEqualTo(5)));
 
         SelectStatementProvider selectStatement = select(column1, column2)
                 .from(foo)
@@ -90,10 +89,10 @@ class NoInitialConditionTest {
 
     @Test
     void testNoInitialConditionWhereNotMultipleSubs() {
-        List<AndOrCriteriaGroup> criteria = new ArrayList<>();
-        criteria.add(or(column2, isEqualTo(3)));
-        criteria.add(or(column2, isEqualTo(4)));
-        criteria.add(or(column2, isEqualTo(5)));
+        List<AndOrCriteriaGroup> criteria = List.of(
+                or(column2, isEqualTo(3)),
+                or(column2, isEqualTo(4)),
+                or(column2, isEqualTo(5)));
 
         SelectStatementProvider selectStatement = select(column1, column2)
                 .from(foo)
@@ -110,10 +109,10 @@ class NoInitialConditionTest {
 
     @Test
     void testNoInitialConditionWhereGroupMultipleSubs() {
-        List<AndOrCriteriaGroup> criteria = new ArrayList<>();
-        criteria.add(or(column2, isEqualTo(3)));
-        criteria.add(or(column2, isEqualTo(4)));
-        criteria.add(or(column2, isEqualTo(5)));
+        List<AndOrCriteriaGroup> criteria = List.of(
+                or(column2, isEqualTo(3)),
+                or(column2, isEqualTo(4)),
+                or(column2, isEqualTo(5)));
 
         SelectStatementProvider selectStatement = select(column1, column2)
                 .from(foo)
@@ -130,10 +129,10 @@ class NoInitialConditionTest {
 
     @Test
     void testNoInitialConditionWhereCCAndMultipleSubs() {
-        List<AndOrCriteriaGroup> criteria = new ArrayList<>();
-        criteria.add(or(column2, isEqualTo(3)));
-        criteria.add(or(column2, isEqualTo(4)));
-        criteria.add(or(column2, isEqualTo(5)));
+        List<AndOrCriteriaGroup> criteria = List.of(
+                or(column2, isEqualTo(3)),
+                or(column2, isEqualTo(4)),
+                or(column2, isEqualTo(5)));
 
         SelectStatementProvider selectStatement = select(column1, column2)
                 .from(foo)
@@ -149,10 +148,10 @@ class NoInitialConditionTest {
 
     @Test
     void testNoInitialConditionWhereCCOrMultipleSubs() {
-        List<AndOrCriteriaGroup> criteria = new ArrayList<>();
-        criteria.add(or(column2, isEqualTo(3)));
-        criteria.add(or(column2, isEqualTo(4)));
-        criteria.add(or(column2, isEqualTo(5)));
+        List<AndOrCriteriaGroup> criteria = List.of(
+                or(column2, isEqualTo(3)),
+                or(column2, isEqualTo(4)),
+                or(column2, isEqualTo(5)));
 
         SelectStatementProvider selectStatement = select(column1, column2)
                 .from(foo)
@@ -168,10 +167,10 @@ class NoInitialConditionTest {
 
     @Test
     void testNoInitialConditionWhereOrMultipleSubs() {
-        List<AndOrCriteriaGroup> criteria = new ArrayList<>();
-        criteria.add(or(column2, isEqualTo(3)));
-        criteria.add(or(column2, isEqualTo(4)));
-        criteria.add(or(column2, isEqualTo(5)));
+        List<AndOrCriteriaGroup> criteria = List.of(
+                or(column2, isEqualTo(3)),
+                or(column2, isEqualTo(4)),
+                or(column2, isEqualTo(5)));
 
         SelectStatementProvider selectStatement = select(column1, column2)
                 .from(foo)

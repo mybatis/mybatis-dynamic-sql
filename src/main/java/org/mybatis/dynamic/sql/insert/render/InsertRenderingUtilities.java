@@ -31,6 +31,6 @@ public class InsertRenderingUtilities {
     }
 
     public static String calculateInsertStatementStart(SqlTable table) {
-        return "insert into " + table.tableNameAtRuntime(); //$NON-NLS-1$
+        return "insert into " + table.tableName(); //$NON-NLS-1$
     }
 }

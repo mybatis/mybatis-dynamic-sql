@@ -25,15 +25,6 @@ import org.mybatis.dynamic.sql.where.AbstractWhereStarter
 @DslMarker
 annotation class MyBatisDslMarker
 
-@Deprecated("Please use GroupingCriteriaCollector.where")
-typealias WhereApplier = KotlinBaseBuilder<*>.() -> Unit
-
-@Deprecated("Please use GroupingCriteriaCollector.where")
-fun WhereApplier.andThen(after: WhereApplier): WhereApplier = {
-    invoke(this)
-    after(this)
-}
-
 @MyBatisDslMarker
 @Suppress("TooManyFunctions")
 abstract class KotlinBaseBuilder<D : AbstractWhereStarter<*,*>> {
@@ -50,31 +41,6 @@ abstract class KotlinBaseBuilder<D : AbstractWhereStarter<*,*>> {
     fun where(criteria: List<AndOrCriteriaGroup>) {
         getDsl().where(criteria)
     }
-
-    @Deprecated("Please move the \"and\" function into the where lambda. If the where lambda has more than one condition, you may need to surround the existing conditions with \"group\" first.")
-    fun and(criteria: GroupingCriteriaReceiver): Unit =
-        GroupingCriteriaCollector().apply(criteria).let {
-            getDsl().where().and(it.initialCriterion, it.subCriteria)
-        }
-
-    @Deprecated("Please move the \"and\" function into the where lambda. If the where lambda has more than one condition, you may need to surround the existing conditions with \"group\" first.")
-    fun and(criteria: List<AndOrCriteriaGroup>) {
-        getDsl().where().and(criteria)
-    }
-
-    @Deprecated("Please move the \"or\" function into the where lambda. If the where lambda has more than one condition, you may need to surround the existing conditions with \"group\" first.")
-    fun or(criteria: GroupingCriteriaReceiver): Unit =
-        GroupingCriteriaCollector().apply(criteria).let {
-            getDsl().where().or(it.initialCriterion, it.subCriteria)
-        }
-
-    @Deprecated("Please move the \"or\" function into the where lambda. If the where lambda has more than one condition, you may need to surround the existing conditions with \"group\" first.")
-    fun or(criteria: List<AndOrCriteriaGroup>) {
-        getDsl().where().or(criteria)
-    }
-
-    @Deprecated("Please use GroupingCriteriaCollector.where, then pass it to the \"where\" method")
-    fun applyWhere(whereApplier: WhereApplier) = whereApplier.invoke(this)
 
     /**
      * This function does nothing, but it can be used to make some code snippets more understandable.

@@ -43,6 +43,6 @@ public class DuplicateTableAliasException extends DynamicSqlException {
     }
 
     private static String generateMessage(SqlTable table, String newAlias, String existingAlias) {
-        return Messages.getString("ERROR.1", table.tableNameAtRuntime(), newAlias, existingAlias); //$NON-NLS-1$
+        return Messages.getString("ERROR.1", table.tableName(), newAlias, existingAlias); //$NON-NLS-1$
     }
 }

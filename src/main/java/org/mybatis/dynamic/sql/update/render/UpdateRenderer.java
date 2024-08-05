@@ -85,8 +85,7 @@ public class UpdateRenderer {
                 "ERROR.18"); //$NON-NLS-1$
 
         FragmentCollector fragmentCollector = fragmentsAndParameters.stream()
-                .filter(Optional::isPresent)
-                .map(Optional::get)
+                .flatMap(Optional::stream)
                 .collect(FragmentCollector.collect());
 
         return toSetPhrase(fragmentCollector);

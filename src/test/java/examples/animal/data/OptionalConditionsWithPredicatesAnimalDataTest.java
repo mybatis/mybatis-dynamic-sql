@@ -20,6 +20,7 @@ import static examples.animal.data.AnimalDataDynamicSqlSupport.animalName;
 import static examples.animal.data.AnimalDataDynamicSqlSupport.bodyWeight;
 import static examples.animal.data.AnimalDataDynamicSqlSupport.brainWeight;
 import static examples.animal.data.AnimalDataDynamicSqlSupport.id;
+import static java.util.function.Predicate.not;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
@@ -484,7 +485,7 @@ class OptionalConditionsWithPredicatesAnimalDataTest {
                     .where(animalName, isIn("  Mouse", "  ", null, "", "Musk shrew  ")
                             .filter(Objects::nonNull)
                                     .map(String::trim)
-                                    .filter(st -> !st.isEmpty()))
+                                    .filter(not(String::isEmpty)))
                     .orderBy(id)
                     .build()
                     .render(RenderingStrategies.MYBATIS3);

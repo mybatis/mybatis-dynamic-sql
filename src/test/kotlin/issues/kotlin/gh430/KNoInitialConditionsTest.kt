@@ -175,8 +175,10 @@ class KNoInitialConditionsTest {
 
         val selectStatement = select(column1, column2) {
             from(foo)
-            where { column1 isLessThan Date() }
-            or(criteria)
+            where {
+                column1 isLessThan Date()
+                or(criteria)
+            }
         }
 
         val expected = "select column1, column2 from foo where column1 < :p1 " +
@@ -187,7 +189,9 @@ class KNoInitialConditionsTest {
     private fun buildSelectStatement(criteria: List<AndOrCriteriaGroup>) =
         select(column1, column2) {
             from(foo)
-            where { column1 isLessThan Date() }
-            and(criteria)
+            where {
+                column1 isLessThan Date()
+                and(criteria)
+            }
         }
 }

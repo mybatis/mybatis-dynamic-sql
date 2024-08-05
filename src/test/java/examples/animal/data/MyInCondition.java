@@ -15,6 +15,8 @@
  */
 package examples.animal.data;
 
+import static java.util.function.Predicate.not;
+
 import java.util.Objects;
 
 import org.mybatis.dynamic.sql.SqlBuilder;
@@ -25,6 +27,6 @@ public class MyInCondition {
         return SqlBuilder.isIn(values)
                 .filter(Objects::nonNull)
                 .map((String::trim))
-                .filter(st -> !st.isEmpty());
+                .filter(not(String::isEmpty));
     }
 }

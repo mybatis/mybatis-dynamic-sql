@@ -56,12 +56,7 @@ class EmptyWhereTest {
 
         Variation v4 = new Variation(null, null, "");
 
-        List<Variation> answer = new ArrayList<>();
-        answer.add(v1);
-        answer.add(v2);
-        answer.add(v3);
-        answer.add(v4);
-        return answer;
+        return List.of(v1, v2, v3, v4);
     }
 
     static Stream<Variation> whereVariations() {
