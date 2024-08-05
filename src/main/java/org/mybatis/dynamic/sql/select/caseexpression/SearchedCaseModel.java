@@ -21,20 +21,23 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import org.mybatis.dynamic.sql.BasicColumn;
+import org.mybatis.dynamic.sql.SortSpecification;
 import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.select.render.SearchedCaseRenderer;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 import org.mybatis.dynamic.sql.util.Validator;
 
-public class SearchedCaseModel implements BasicColumn {
+public class SearchedCaseModel implements BasicColumn, SortSpecification {
     private final List<SearchedCaseWhenCondition> whenConditions;
     private final BasicColumn elseValue;
     private final String alias;
+    private final String descendingPhrase;
 
     private SearchedCaseModel(Builder builder) {
         whenConditions = builder.whenConditions;
         alias = builder.alias;
         elseValue = builder.elseValue;
+        descendingPhrase = builder.descendingPhrase;
         Validator.assertNotEmpty(whenConditions, "ERROR.40"); //$NON-NLS-1$
     }
 
@@ -56,7 +59,22 @@ public class SearchedCaseModel implements BasicColumn {
         return new Builder().withWhenConditions(whenConditions)
                 .withElseValue(elseValue)
                 .withAlias(alias)
+                .withDescendingPhrase(descendingPhrase)
                 .build();
+    }
+
+    @Override
+    public SearchedCaseModel descending() {
+        return new Builder().withWhenConditions(whenConditions)
+                .withElseValue(elseValue)
+                .withAlias(alias)
+                .withDescendingPhrase(" DESC") //$NON-NLS-1$
+                .build();
+    }
+
+    @Override
+    public FragmentAndParameters renderForOrderBy(RenderingContext renderingContext) {
+        return render(renderingContext).mapFragment(f -> f + descendingPhrase);
     }
 
     @Override
@@ -68,6 +86,7 @@ public class SearchedCaseModel implements BasicColumn {
         private final List<SearchedCaseWhenCondition> whenConditions = new ArrayList<>();
         private BasicColumn elseValue;
         private String alias;
+        private String descendingPhrase = ""; //$NON-NLS-1$
 
         public Builder withWhenConditions(List<SearchedCaseWhenCondition> whenConditions) {
             this.whenConditions.addAll(whenConditions);
@@ -81,6 +100,11 @@ public class SearchedCaseModel implements BasicColumn {
 
         public Builder withAlias(String alias) {
             this.alias = alias;
+            return this;
+        }
+
+        public Builder withDescendingPhrase(String descendingPhrase) {
+            this.descendingPhrase = descendingPhrase;
             return this;
         }
 

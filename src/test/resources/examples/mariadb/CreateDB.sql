@@ -41,3 +41,15 @@ insert into items values (17, 'Item 17', 117);
 insert into items values (18, 'Item 18', 118);
 insert into items values (19, 'Item 19', 119);
 insert into items values (20, 'Item 20', 120);
+
+create table numbers (
+    id int not null,
+    description varchar(50) not null,
+    primary key (id)
+);
+
+insert into numbers values (1, 'One');
+insert into numbers values (2, 'Two');
+insert into numbers values (3, 'Three');
+insert into numbers values (4, 'Four');
+insert into numbers values (5, 'Five');

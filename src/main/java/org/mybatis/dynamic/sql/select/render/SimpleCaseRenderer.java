@@ -48,7 +48,9 @@ public class SimpleCaseRenderer<T> {
     }
 
     private FragmentAndParameters renderCase() {
-        return simpleCaseModel.column().render(renderingContext)
+        return simpleCaseModel.column().alias()
+                .map(FragmentAndParameters::fromFragment)
+                .orElseGet(() -> simpleCaseModel.column().render(renderingContext))
                 .mapFragment(f -> "case " + f); //$NON-NLS-1$
     }
 
