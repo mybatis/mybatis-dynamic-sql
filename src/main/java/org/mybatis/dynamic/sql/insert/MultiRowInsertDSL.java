@@ -57,11 +57,11 @@ public class MultiRowInsertDSL<T> implements Buildable<MultiRowInsertModel<T>> {
     }
 
     @SafeVarargs
-    public static <T> IntoGatherer<T> insert(T... records) {
+    public static <T> MultiRowInsertDSL.IntoGatherer<T> insert(T... records) {
         return insert(Arrays.asList(records));
     }
 
-    public static <T> IntoGatherer<T> insert(Collection<T> records) {
+    public static <T> MultiRowInsertDSL.IntoGatherer<T> insert(Collection<T> records) {
         return new IntoGatherer<>(records);
     }
 
