@@ -56,7 +56,7 @@ public class BatchInsert<T> {
     }
 
     public List<T> getRecords() {
-        return Collections.unmodifiableList(records);
+        return records;
     }
 
     public static <T> Builder<T> withRecords(List<T> records) {

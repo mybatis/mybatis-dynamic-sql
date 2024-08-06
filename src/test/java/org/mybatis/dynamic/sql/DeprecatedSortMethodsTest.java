@@ -48,9 +48,40 @@ class DeprecatedSortMethodsTest {
 
             @Override
             public boolean isDescending() {
-                return true;
+                return false;
             }
        };
+
+        OrderByModel model = OrderByModel.of(List.of(ss));
+
+        RenderingContext renderingContext = RenderingContext
+                .withRenderingStrategy(RenderingStrategies.MYBATIS3)
+                .withTableAliasCalculator(TableAliasCalculator.empty())
+                .withStatementConfiguration(new StatementConfiguration())
+                .build();
+        OrderByRenderer renderer = new OrderByRenderer(renderingContext);
+        FragmentAndParameters fp = renderer.render(model);
+        assertThat(fp.fragment()).isEqualTo("order by id");
+    }
+
+    @Test
+    void bothMethodsExistDescending() {
+        SortSpecification ss = new SortSpecification() {
+            @Override
+            public SortSpecification descending() {
+                return this;
+            }
+
+            @Override
+            public String orderByName() {
+                return "id";
+            }
+
+            @Override
+            public boolean isDescending() {
+                return true;
+            }
+        };
 
         OrderByModel model = OrderByModel.of(List.of(ss));
 
