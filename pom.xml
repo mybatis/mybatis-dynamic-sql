@@ -164,14 +164,6 @@
       <version>1.5.6</version>
       <scope>test</scope>
     </dependency>
-    <!-- Hamcrest is only here to make Infinitest happy. Not really used in the project. -->
-    <dependency>
-      <groupId>org.hamcrest</groupId>
-      <artifactId>hamcrest</artifactId>
-      <version>3.0</version>
-      <scope>test</scope>
-    </dependency>
-
     <dependency>
       <groupId>org.testcontainers</groupId>
       <artifactId>postgresql</artifactId>
