@@ -40,7 +40,7 @@ public interface SortSpecification {
      *
      * @return the order by phrase
      * @deprecated Please replace this method by overriding the more general "renderForOrderBy" method. Target for
-     *    removal in release 2.1
+     *     removal in release 2.1
      */
     @Deprecated(since = "2.0", forRemoval = true)
     default String orderByName() {
@@ -52,7 +52,7 @@ public interface SortSpecification {
      *
      * @return true if the SortSpecification should render as descending
      * @deprecated Please replace this method by overriding the more general "renderForOrderBy" method. Target for
-     *    removal in release 2.1
+     *     removal in release 2.1
      */
     @Deprecated(since = "2.0", forRemoval = true)
     default boolean isDescending() {

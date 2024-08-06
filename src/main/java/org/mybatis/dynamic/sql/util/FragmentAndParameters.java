@@ -46,7 +46,7 @@ public class FragmentAndParameters {
      * @return a new instance with the same parameters and a transformed fragment
      */
     public FragmentAndParameters mapFragment(UnaryOperator<String> mapper) {
-        return FragmentAndParameters.withFragment(mapper.apply(fragment))
+        return withFragment(mapper.apply(fragment))
                 .withParameters(parameters)
                 .build();
     }

@@ -59,7 +59,7 @@ public class BatchInsertDSL<T> implements Buildable<BatchInsertModel<T>> {
 
     @SafeVarargs
     public static <T> IntoGatherer<T> insert(T... records) {
-        return BatchInsertDSL.insert(Arrays.asList(records));
+        return insert(Arrays.asList(records));
     }
 
     public static <T> IntoGatherer<T> insert(Collection<T> records) {

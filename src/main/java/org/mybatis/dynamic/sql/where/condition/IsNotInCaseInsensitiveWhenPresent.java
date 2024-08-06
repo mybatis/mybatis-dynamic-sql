@@ -27,7 +27,8 @@ import org.mybatis.dynamic.sql.util.StringUtilities;
 
 public class IsNotInCaseInsensitiveWhenPresent extends AbstractListValueCondition<String>
         implements CaseInsensitiveVisitableCondition {
-    private static final IsNotInCaseInsensitiveWhenPresent EMPTY = new IsNotInCaseInsensitiveWhenPresent(Collections.emptyList());
+    private static final IsNotInCaseInsensitiveWhenPresent EMPTY =
+            new IsNotInCaseInsensitiveWhenPresent(Collections.emptyList());
 
     public static IsNotInCaseInsensitiveWhenPresent empty() {
         return EMPTY;
@@ -44,7 +45,8 @@ public class IsNotInCaseInsensitiveWhenPresent extends AbstractListValueConditio
 
     @Override
     public IsNotInCaseInsensitiveWhenPresent filter(Predicate<? super String> predicate) {
-        return filterSupport(predicate, IsNotInCaseInsensitiveWhenPresent::new, this, IsNotInCaseInsensitiveWhenPresent::empty);
+        return filterSupport(predicate, IsNotInCaseInsensitiveWhenPresent::new,
+                this, IsNotInCaseInsensitiveWhenPresent::empty);
     }
 
     /**
