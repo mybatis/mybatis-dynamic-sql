@@ -21,7 +21,6 @@ import java.util.Collections;
 import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
-import java.util.stream.Collectors;
 
 import org.mybatis.dynamic.sql.AbstractListValueCondition;
 import org.mybatis.dynamic.sql.util.StringUtilities;
@@ -35,7 +34,7 @@ public class IsInCaseInsensitiveWhenPresent extends AbstractListValueCondition<S
     }
 
     protected IsInCaseInsensitiveWhenPresent(Collection<String> values) {
-        super(values.stream().filter(Objects::nonNull).collect(Collectors.toList()));
+        super(values.stream().filter(Objects::nonNull).toList());
     }
 
     @Override

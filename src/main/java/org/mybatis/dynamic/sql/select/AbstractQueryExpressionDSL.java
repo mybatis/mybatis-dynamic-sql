@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.TableExpression;
@@ -196,7 +195,7 @@ public abstract class AbstractQueryExpressionDSL<W extends AbstractWhereFinisher
 
         return Optional.of(JoinModel.of(joinSpecificationBuilders.stream()
                 .map(JoinSpecification.Builder::build)
-                .collect(Collectors.toList())));
+                        .toList()));
     }
 
     protected void addTableAlias(SqlTable table, String tableAlias) {

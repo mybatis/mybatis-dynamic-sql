@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 public class BatchInsert<T> {
     private final String insertStatement;
@@ -38,7 +37,7 @@ public class BatchInsert<T> {
     public List<InsertStatementProvider<T>> insertStatements() {
         return records.stream()
                 .map(this::toInsertStatement)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     private InsertStatementProvider<T> toInsertStatement(T row) {

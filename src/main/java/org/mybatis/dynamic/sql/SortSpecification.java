@@ -42,7 +42,7 @@ public interface SortSpecification {
      * @deprecated Please replace this method by overriding the more general "renderForOrderBy" method. Target for
      *    removal in release 2.1
      */
-    @Deprecated
+    @Deprecated(since = "2.0", forRemoval = true)
     default String orderByName() {
         throw new DynamicSqlException(Messages.getString("ERROR.44")); //$NON-NLS-1$
     }
@@ -54,7 +54,7 @@ public interface SortSpecification {
      * @deprecated Please replace this method by overriding the more general "renderForOrderBy" method. Target for
      *    removal in release 2.1
      */
-    @Deprecated
+    @Deprecated(since = "2.0", forRemoval = true)
     default boolean isDescending() {
         throw new DynamicSqlException(Messages.getString("ERROR.44")); //$NON-NLS-1$
     }
