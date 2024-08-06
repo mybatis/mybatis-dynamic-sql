@@ -17,7 +17,6 @@ package org.mybatis.dynamic.sql.util;
 
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider;
 import org.mybatis.dynamic.sql.insert.render.GeneralInsertStatementProvider;
@@ -76,7 +75,7 @@ public class SqlProviderAdapter {
                 .map(Map.Entry::getValue)
                 .filter(String.class::isInstance)
                 .map(String.class::cast)
-                .collect(Collectors.toList());
+                .toList();
 
         if (entries.size() == 1) {
             return entries.get(0);

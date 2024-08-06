@@ -51,7 +51,7 @@ public abstract class AbstractListValueCondition<T> implements VisitableConditio
 
     private Collection<T> applyFilter(Predicate<? super T> predicate) {
         Objects.requireNonNull(predicate);
-        return values.stream().filter(predicate).collect(Collectors.toList());
+        return values.stream().filter(predicate).toList();
     }
 
     protected <S extends AbstractListValueCondition<T>> S filterSupport(Predicate<? super T> predicate,

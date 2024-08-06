@@ -78,8 +78,8 @@ public class UpdateRenderer {
 
     private FragmentAndParameters calculateSetPhrase() {
         List<Optional<FragmentAndParameters>> fragmentsAndParameters = updateModel.columnMappings()
-                        .map(m -> m.accept(visitor))
-                        .collect(Collectors.toList());
+                .map(m -> m.accept(visitor))
+                .toList();
 
         Validator.assertFalse(fragmentsAndParameters.stream().noneMatch(Optional::isPresent),
                 "ERROR.18"); //$NON-NLS-1$
@@ -121,7 +121,7 @@ public class UpdateRenderer {
     }
 
     private FragmentAndParameters renderOrderByClause(OrderByModel orderByModel) {
-        return new OrderByRenderer().render(orderByModel);
+        return new OrderByRenderer(renderingContext).render(orderByModel);
     }
 
     public static Builder withUpdateModel(UpdateModel updateModel) {

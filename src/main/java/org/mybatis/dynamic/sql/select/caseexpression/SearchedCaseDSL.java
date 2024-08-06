@@ -71,7 +71,7 @@ public class SearchedCaseDSL implements ElseDSL<SearchedCaseDSL.SearchedCaseEnde
         return new SearchedCaseEnder();
     }
 
-    public BasicColumn end() {
+    public SearchedCaseModel end() {
         return new SearchedCaseModel.Builder()
                 .withElseValue(elseValue)
                 .withWhenConditions(whenConditions)
@@ -100,7 +100,7 @@ public class SearchedCaseDSL implements ElseDSL<SearchedCaseDSL.SearchedCaseEnde
     }
 
     public class SearchedCaseEnder {
-        public BasicColumn end() {
+        public SearchedCaseModel end() {
             return SearchedCaseDSL.this.end();
         }
     }

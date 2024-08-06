@@ -136,7 +136,7 @@ public class CriterionRenderer implements SqlCriterionVisitor<Optional<RenderedC
     private List<RenderedCriterion> renderSubCriteria(List<AndOrCriteriaGroup> subCriteria) {
         return subCriteria.stream().map(this::renderAndOrCriteriaGroup)
                 .flatMap(Optional::stream)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     private Optional<RenderedCriterion> renderAndOrCriteriaGroup(AndOrCriteriaGroup criterion) {

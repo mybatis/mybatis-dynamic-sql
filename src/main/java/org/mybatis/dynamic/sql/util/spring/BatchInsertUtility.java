@@ -16,7 +16,6 @@
 package org.mybatis.dynamic.sql.util.spring;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSourceUtils;
@@ -35,7 +34,7 @@ public class BatchInsertUtility {
     public static <T> SqlParameterSource[] createBatch(List<T> rows) {
         List<RowHolder<T>> tt = rows.stream()
                 .map(RowHolder::new)
-                .collect(Collectors.toList());
+                .toList();
 
         return SqlParameterSourceUtils.createBatch(tt);
     }

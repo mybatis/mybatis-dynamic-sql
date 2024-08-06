@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import org.apache.ibatis.annotations.SelectProvider;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
@@ -110,7 +109,7 @@ public interface CommonSelectMapper {
                                    Function<Map<String, Object>, R> rowMapper) {
         return selectManyMappedRows(selectStatement).stream()
                 .map(rowMapper)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     /**

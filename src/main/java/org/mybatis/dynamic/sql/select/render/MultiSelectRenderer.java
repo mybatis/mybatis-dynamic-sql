@@ -87,7 +87,7 @@ public class MultiSelectRenderer {
     }
 
     private FragmentAndParameters renderOrderBy(OrderByModel orderByModel) {
-        return new OrderByRenderer().render(orderByModel);
+        return new OrderByRenderer(renderingContext).render(orderByModel);
     }
 
     private Optional<FragmentAndParameters> renderPagingModel() {

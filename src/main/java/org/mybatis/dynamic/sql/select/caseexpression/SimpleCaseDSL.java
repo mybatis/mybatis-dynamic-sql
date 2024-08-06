@@ -60,7 +60,7 @@ public class SimpleCaseDSL<T> implements ElseDSL<SimpleCaseDSL<T>.SimpleCaseEnde
         return new SimpleCaseEnder();
     }
 
-    public BasicColumn end() {
+    public SimpleCaseModel<T> end() {
         return new SimpleCaseModel.Builder<T>()
                 .withColumn(column)
                 .withWhenConditions(whenConditions)
@@ -100,7 +100,7 @@ public class SimpleCaseDSL<T> implements ElseDSL<SimpleCaseDSL<T>.SimpleCaseEnde
     }
 
     public class SimpleCaseEnder {
-        public BasicColumn end() {
+        public SimpleCaseModel<T> end() {
             return SimpleCaseDSL.this.end();
         }
     }

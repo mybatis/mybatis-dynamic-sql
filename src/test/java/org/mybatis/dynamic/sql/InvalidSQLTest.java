@@ -22,7 +22,6 @@ import static org.mybatis.dynamic.sql.SqlBuilder.insertInto;
 import static org.mybatis.dynamic.sql.SqlBuilder.update;
 import static org.mybatis.dynamic.sql.SqlBuilder.value;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.MissingResourceException;

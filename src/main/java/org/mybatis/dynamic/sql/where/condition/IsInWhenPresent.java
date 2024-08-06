@@ -21,7 +21,6 @@ import java.util.Collections;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 import org.mybatis.dynamic.sql.AbstractListValueCondition;
 
@@ -35,7 +34,7 @@ public class IsInWhenPresent<T> extends AbstractListValueCondition<T> {
     }
 
     protected IsInWhenPresent(Collection<T> values) {
-        super(values.stream().filter(Objects::nonNull).collect(Collectors.toList()));
+        super(values.stream().filter(Objects::nonNull).toList());
     }
 
     @Override

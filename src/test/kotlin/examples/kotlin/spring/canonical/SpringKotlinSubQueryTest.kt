@@ -113,12 +113,12 @@ open class SpringKotlinSubQueryTest {
 
     @Test
     fun testBasicSubQueryWithAliases() {
-        val rowNum = DerivedColumn.of<Int>("rownum()") `as` "myRows"
+        val rowNum = DerivedColumn.of<Int>("rownum()")
         val outerFirstName = "b"(firstName)
         val personId = DerivedColumn.of<Int>("personId", "b")
 
         val selectStatement =
-            select(outerFirstName.asCamelCase(), personId, rowNum) {
+            select(outerFirstName.asCamelCase(), personId, rowNum `as` "myRows") {
                 from {
                     select(id `as` "personId", firstName) {
                         from(person, "a")

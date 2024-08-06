@@ -8,6 +8,7 @@ Significant changes:
 
 - The library now requires Java 17
 - Deprecated code from prior releases is removed
+- Allow CASE expressions in ORDER BY Clauses
 
 ## Release 1.5.2 - June 3, 2024
 

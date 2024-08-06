@@ -36,7 +36,9 @@ public class ColumnAndConditionRenderer<T> {
     }
 
     public FragmentAndParameters render() {
-        FragmentAndParameters renderedLeftColumn = column.render(renderingContext);
+        FragmentAndParameters renderedLeftColumn = column.alias()
+                .map(FragmentAndParameters::fromFragment)
+                .orElseGet(() -> column.render(renderingContext));
 
         DefaultConditionVisitor<T> visitor = DefaultConditionVisitor.withColumn(column)
                 .withRenderingContext(renderingContext)

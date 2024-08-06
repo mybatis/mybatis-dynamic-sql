@@ -21,21 +21,21 @@ import java.util.Collections;
 import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
-import java.util.stream.Collectors;
 
 import org.mybatis.dynamic.sql.AbstractListValueCondition;
 import org.mybatis.dynamic.sql.util.StringUtilities;
 
 public class IsNotInCaseInsensitiveWhenPresent extends AbstractListValueCondition<String>
         implements CaseInsensitiveVisitableCondition {
-    private static final IsNotInCaseInsensitiveWhenPresent EMPTY = new IsNotInCaseInsensitiveWhenPresent(Collections.emptyList());
+    private static final IsNotInCaseInsensitiveWhenPresent EMPTY =
+            new IsNotInCaseInsensitiveWhenPresent(Collections.emptyList());
 
     public static IsNotInCaseInsensitiveWhenPresent empty() {
         return EMPTY;
     }
 
     protected IsNotInCaseInsensitiveWhenPresent(Collection<String> values) {
-        super(values.stream().filter(Objects::nonNull).collect(Collectors.toList()));
+        super(values.stream().filter(Objects::nonNull).toList());
     }
 
     @Override
@@ -45,7 +45,8 @@ public class IsNotInCaseInsensitiveWhenPresent extends AbstractListValueConditio
 
     @Override
     public IsNotInCaseInsensitiveWhenPresent filter(Predicate<? super String> predicate) {
-        return filterSupport(predicate, IsNotInCaseInsensitiveWhenPresent::new, this, IsNotInCaseInsensitiveWhenPresent::empty);
+        return filterSupport(predicate, IsNotInCaseInsensitiveWhenPresent::new,
+                this, IsNotInCaseInsensitiveWhenPresent::empty);
     }
 
     /**
