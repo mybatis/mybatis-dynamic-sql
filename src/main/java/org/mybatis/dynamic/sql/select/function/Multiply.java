@@ -23,7 +23,7 @@ import org.mybatis.dynamic.sql.BindableColumn;
 
 public class Multiply<T> extends OperatorFunction<T> {
 
-    private Multiply(BindableColumn<T> firstColumn, BasicColumn secondColumn,
+    private Multiply(BasicColumn firstColumn, BasicColumn secondColumn,
             List<BasicColumn> subsequentColumns) {
         super("*", firstColumn, secondColumn, subsequentColumns); //$NON-NLS-1$
     }

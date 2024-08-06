@@ -23,7 +23,7 @@ import org.mybatis.dynamic.sql.BindableColumn;
 
 public class Concatenate<T> extends OperatorFunction<T> {
 
-    protected Concatenate(BindableColumn<T> firstColumn, BasicColumn secondColumn,
+    protected Concatenate(BasicColumn firstColumn, BasicColumn secondColumn,
             List<BasicColumn> subsequentColumns) {
         super("||", firstColumn, secondColumn, subsequentColumns); //$NON-NLS-1$
     }

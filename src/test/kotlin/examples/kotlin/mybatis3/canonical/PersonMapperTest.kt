@@ -35,13 +35,18 @@ import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.TestInstance.Lifecycle
 import org.mybatis.dynamic.sql.exception.NonRenderingWhereClauseException
 import org.mybatis.dynamic.sql.util.kotlin.elements.add
+import org.mybatis.dynamic.sql.util.kotlin.elements.case
+import org.mybatis.dynamic.sql.util.kotlin.elements.concat
 import org.mybatis.dynamic.sql.util.kotlin.elements.constant
 import org.mybatis.dynamic.sql.util.kotlin.elements.isIn
 import org.mybatis.dynamic.sql.util.kotlin.elements.sortColumn
+import org.mybatis.dynamic.sql.util.kotlin.elements.stringConstant
+import org.mybatis.dynamic.sql.util.kotlin.elements.sum
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.insertInto
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.insertSelect
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.multiSelect
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.select
+import org.mybatis.dynamic.sql.util.mybatis3.CommonSelectMapper
 import java.util.*
 
 @TestInstance(Lifecycle.PER_CLASS)
@@ -55,6 +60,7 @@ class PersonMapperTest {
             withMapper(PersonMapper::class)
             withMapper(PersonWithAddressMapper::class)
             withMapper(AddressMapper::class)
+            withMapper(CommonSelectMapper::class)
             withTypeHandler(YesNoTypeHandler::class)
         }
     }
@@ -916,5 +922,50 @@ class PersonMapperTest {
         val expected = "select id, first_name, last_name, birth_date, employed, occupation, address_id from Person " +
                 "where id in ()"
         assertThat(selectStatement.selectStatement).isEqualTo(expected)
+    }
+
+    @Test
+    fun testSumWithCase() {
+        sqlSessionFactory.openSession().use { session ->
+            val mapper = session.getMapper(CommonSelectMapper::class.java)
+
+            val selectStatement = select(id, sum(case {
+                `when` {
+                    id isEqualTo 1
+                    then(101)
+                }
+                `else`(999)
+            }).`as`("fred")) {
+                from(person)
+                groupBy(id)
+            }
+
+            val expected =
+                "select id, sum(case when id = #{parameters.p1,jdbcType=INTEGER} then 101 else 999 end) as fred from Person group by id"
+            assertThat(selectStatement.selectStatement).isEqualTo(expected)
+
+            val rows = mapper.selectManyMappedRows(selectStatement)
+            assertThat(rows).hasSize(6)
+        }
+    }
+
+    @Test
+    fun testConcat() {
+        sqlSessionFactory.openSession().use { session ->
+            val mapper = session.getMapper(CommonSelectMapper::class.java)
+
+            val selectStatement = select(id, concat(firstName, stringConstant(" "), lastName).`as`("fullname")) {
+                from(person)
+                where { concat(firstName, stringConstant(" "), lastName) isEqualTo "Fred Flintstone" }
+            }
+
+            val expected =
+                "select id, concat(first_name, ' ', last_name) as fullname from Person " +
+                        "where concat(first_name, ' ', last_name) = #{parameters.p1,jdbcType=VARCHAR}"
+            assertThat(selectStatement.selectStatement).isEqualTo(expected)
+
+            val rows = mapper.selectManyMappedRows(selectStatement)
+            assertThat(rows).hasSize(1)
+        }
     }
 }

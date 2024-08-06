@@ -497,6 +497,10 @@ public interface SqlBuilder {
         return Sum.of(column);
     }
 
+    static Sum<Object> sum(BasicColumn column) {
+        return Sum.of(column);
+    }
+
     static <T> Sum<T> sum(BindableColumn<T> column, VisitableCondition<T> condition) {
         return Sum.of(column, condition);
     }

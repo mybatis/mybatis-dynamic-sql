@@ -15,13 +15,14 @@
  */
 package org.mybatis.dynamic.sql.select.function;
 
+import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.BindableColumn;
 import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 
 public class Upper<T> extends AbstractUniTypeFunction<T, Upper<T>> {
 
-    private Upper(BindableColumn<T> column) {
+    private Upper(BasicColumn column) {
         super(column);
     }
 

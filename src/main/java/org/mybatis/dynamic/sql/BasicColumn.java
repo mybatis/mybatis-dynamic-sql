@@ -15,9 +15,11 @@
  */
 package org.mybatis.dynamic.sql;
 
+import java.sql.JDBCType;
 import java.util.Optional;
 
 import org.mybatis.dynamic.sql.render.RenderingContext;
+import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 
 /**
@@ -57,6 +59,18 @@ public interface BasicColumn {
      * @since 1.5.1
      */
     FragmentAndParameters render(RenderingContext renderingContext);
+
+    default Optional<JDBCType> jdbcType() {
+        return Optional.empty();
+    }
+
+    default Optional<String> typeHandler() {
+        return Optional.empty();
+    }
+
+    default Optional<RenderingStrategy> renderingStrategy() {
+        return Optional.empty();
+    }
 
     /**
      * Utility method to make it easier to build column lists for methods that require an

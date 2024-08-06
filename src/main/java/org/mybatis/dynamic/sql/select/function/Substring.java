@@ -15,6 +15,7 @@
  */
 package org.mybatis.dynamic.sql.select.function;
 
+import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.BindableColumn;
 import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
@@ -24,7 +25,7 @@ public class Substring<T> extends AbstractUniTypeFunction<T, Substring<T>> {
     private final int offset;
     private final int length;
 
-    private Substring(BindableColumn<T> column, int offset, int length) {
+    private Substring(BasicColumn column, int offset, int length) {
         super(column);
         this.offset = offset;
         this.length = length;

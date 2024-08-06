@@ -17,6 +17,7 @@ package org.mybatis.dynamic.sql.select.aggregate;
 
 import java.util.function.Function;
 
+import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.BindableColumn;
 import org.mybatis.dynamic.sql.VisitableCondition;
 import org.mybatis.dynamic.sql.render.RenderingContext;
@@ -28,7 +29,7 @@ import org.mybatis.dynamic.sql.where.render.ColumnAndConditionRenderer;
 public class Sum<T> extends AbstractUniTypeFunction<T, Sum<T>> {
     private final Function<RenderingContext, FragmentAndParameters> renderer;
 
-    private Sum(BindableColumn<T> column) {
+    private Sum(BasicColumn column) {
         super(column);
         renderer = rc -> column.render(rc).mapFragment(this::applyAggregate);
     }
@@ -48,7 +49,7 @@ public class Sum<T> extends AbstractUniTypeFunction<T, Sum<T>> {
         };
     }
 
-    private Sum(BindableColumn<T> column, Function<RenderingContext, FragmentAndParameters> renderer) {
+    private Sum(BasicColumn column, Function<RenderingContext, FragmentAndParameters> renderer) {
         super(column);
         this.renderer = renderer;
     }
@@ -68,6 +69,10 @@ public class Sum<T> extends AbstractUniTypeFunction<T, Sum<T>> {
     }
 
     public static <T> Sum<T> of(BindableColumn<T> column) {
+        return new Sum<>(column);
+    }
+
+    public static Sum<Object> of(BasicColumn column) {
         return new Sum<>(column);
     }
 
