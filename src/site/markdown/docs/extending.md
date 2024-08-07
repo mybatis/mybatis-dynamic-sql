@@ -11,10 +11,10 @@ The SELECT support is the most complex part of the library, and also the part of
 extended.  There are two main interfaces involved with extending the SELECT support.  Picking which interface to
 implement is dependent on how you want to use your extension.
 
-| Interface                                | Purpose                                                                                                                               |
-|------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------|
-| `org.mybatis.dynamic.sql.BasicColumn`    | Use this interface if you want to add capabilities to a SELECT list or a GROUP BY expression. For example, using a database function. |
-| `org.mybatis.dynamic.sql.BindableColumn` | Use this interface if you want to add capabilities to a WHERE clause. For example, creating a custom condition.                       |
+| Interface                                | Purpose                                                                                                                                                          |
+|------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `org.mybatis.dynamic.sql.BasicColumn`    | Use this interface if you want to add capabilities to a SELECT list, a GROUP BY, or an ORDER BY expression. For example, using a database function.              |
+| `org.mybatis.dynamic.sql.BindableColumn` | Use this interface if you want to add capabilities to a WHERE clause in addition to the capabilities of `BasicColumn`. For example, creating a custom condition. |
 
 Rendering is the process of generating an appropriate SQL fragment to implement the function or calculated column.
 The library will call a method `render(RenderingContext)` in your implementation. This method should return an
@@ -101,6 +101,7 @@ the function changes the data type from `byte[]` to `String`.
 import java.sql.JDBCType;
 import java.util.Optional;
 
+import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.BindableColumn;
 import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.select.function.AbstractTypeConvertingFunction;
@@ -108,7 +109,7 @@ import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 
 public class ToBase64 extends AbstractTypeConvertingFunction<byte[], String, ToBase64> {
 
-   protected ToBase64(BindableColumn<byte[]> column) {
+   private ToBase64(BasicColumn column) {
       super(column);
    }
 
@@ -143,13 +144,15 @@ public class ToBase64 extends AbstractTypeConvertingFunction<byte[], String, ToB
 The following function implements the common database `UPPER()` function.
 
 ```java
+import org.mybatis.dynamic.sql.BasicColumn;
+import org.mybatis.dynamic.sql.BindableColumn;
 import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.select.function.AbstractUniTypeFunction;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 
 public class Upper extends AbstractUniTypeFunction<String, Upper> {
 
-   private Upper(BindableColumn<String> column) {
+   private Upper(BasicColumn column) {
       super(column);
    }
 
@@ -178,19 +181,21 @@ Note that `FragmentAndParameters` has a utility method that can simplify the imp
 add any new parameters to the resulting fragment. For example, the UPPER function can be simplified as follows:
 
 ```java
+import org.mybatis.dynamic.sql.BasicColumn;
+import org.mybatis.dynamic.sql.BindableColumn;
 import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.select.function.AbstractUniTypeFunction;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 
 public class Upper extends AbstractUniTypeFunction<String, Upper> {
 
-   private Upper(BindableColumn<String> column) {
+   private Upper(BasicColumn column) {
       super(column);
    }
 
    @Override
    public FragmentAndParameters render(RenderingContext renderingContext) {
-      return = column.render(renderingContext).mapFragment(f -> "upper(" + f + ")"); //$NON-NLS-1$ //$NON-NLS-2$
+      return column.render(renderingContext).mapFragment(f -> "upper(" + f + ")"); //$NON-NLS-1$ //$NON-NLS-2$
    }
 
    @Override
@@ -211,9 +216,16 @@ The following function implements the concatenate operator. Note that the operat
 arbitrary length:
 
 ```java
+import java.util.Arrays;
+import java.util.List;
+
+import org.mybatis.dynamic.sql.BasicColumn;
+import org.mybatis.dynamic.sql.BindableColumn;
+import org.mybatis.dynamic.sql.select.function.OperatorFunction;
+
 public class Concatenate<T> extends OperatorFunction<T> {
 
-    protected Concatenate(BindableColumn<T> firstColumn, BasicColumn secondColumn,
+    protected Concatenate(BasicColumn firstColumn, BasicColumn secondColumn,
             List<BasicColumn> subsequentColumns) {
         super("||", firstColumn, secondColumn, subsequentColumns); //$NON-NLS-1$
     }
