@@ -12,6 +12,9 @@ worked to make these changes as minimal as possible.
 
 **Potentially Breaking Changes:**
 
+- If you have implemented any custom implementations of `SortSpecification`, you will need to update those
+  implementations due to a new rendering strategy for ORDER BY phrases. The old methods `isDescending` and `orderByName`
+  are removed in favor of a new method `renderForOrderBy` 
 - If you have implemented any custom functions, you will likely need to make changes. The supplied base classes now
   hold an instance of `BasicColumn` rather than `BindableColumn`. This change was made to make the functions more
   useful in variety of circumstances. If you follow the patterns shown on the
