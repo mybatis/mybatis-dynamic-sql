@@ -18,6 +18,7 @@ package examples.type_conversion;
 import java.sql.JDBCType;
 import java.util.Optional;
 
+import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.BindableColumn;
 import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.select.function.AbstractTypeConvertingFunction;
@@ -25,7 +26,7 @@ import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 
 public class ToBase64 extends AbstractTypeConvertingFunction<byte[], String, ToBase64> {
 
-    protected ToBase64(BindableColumn<byte[]> column) {
+    protected ToBase64(BasicColumn column) {
         super(column);
     }
 

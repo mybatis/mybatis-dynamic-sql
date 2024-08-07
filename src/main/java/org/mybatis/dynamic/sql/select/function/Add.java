@@ -23,7 +23,7 @@ import org.mybatis.dynamic.sql.BindableColumn;
 
 public class Add<T> extends OperatorFunction<T> {
 
-    private Add(BindableColumn<T> firstColumn, BasicColumn secondColumn,
+    private Add(BasicColumn firstColumn, BasicColumn secondColumn,
             List<BasicColumn> subsequentColumns) {
         super("+", firstColumn, secondColumn, subsequentColumns); //$NON-NLS-1$
     }

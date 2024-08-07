@@ -15,6 +15,7 @@
  */
 package org.mybatis.dynamic.sql.select.aggregate;
 
+import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.BindableColumn;
 import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.select.function.AbstractUniTypeFunction;
@@ -22,7 +23,7 @@ import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 
 public class Avg<T> extends AbstractUniTypeFunction<T, Avg<T>> {
 
-    private Avg(BindableColumn<T> column) {
+    private Avg(BasicColumn column) {
         super(column);
     }
 

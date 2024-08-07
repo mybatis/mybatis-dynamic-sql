@@ -35,7 +35,7 @@ public class OperatorFunction<T> extends AbstractUniTypeFunction<T, OperatorFunc
     protected final List<BasicColumn> subsequentColumns = new ArrayList<>();
     private final String operator;
 
-    protected OperatorFunction(String operator, BindableColumn<T> firstColumn, BasicColumn secondColumn,
+    protected OperatorFunction(String operator, BasicColumn firstColumn, BasicColumn secondColumn,
             List<BasicColumn> subsequentColumns) {
         super(firstColumn);
         this.secondColumn = Objects.requireNonNull(secondColumn);
@@ -52,9 +52,7 @@ public class OperatorFunction<T> extends AbstractUniTypeFunction<T, OperatorFunc
     public FragmentAndParameters render(RenderingContext renderingContext) {
         String paddedOperator = " " + operator + " "; //$NON-NLS-1$ //$NON-NLS-2$
 
-        // note - the cast below is added for type inference issues in some compilers
-        return Stream.of(Stream.of((BasicColumn) column),
-                        Stream.of(secondColumn), subsequentColumns.stream())
+        return Stream.of(Stream.of(column, secondColumn), subsequentColumns.stream())
                 .flatMap(Function.identity())
                 .map(column -> column.render(renderingContext))
                 .collect(FragmentCollector.collect())

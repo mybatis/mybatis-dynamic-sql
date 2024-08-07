@@ -4,11 +4,25 @@ This log will detail notable changes to MyBatis Dynamic SQL. Full details are av
 
 ## Release 2.0.0 - Unreleased
 
-Significant changes:
+Release 2.0.0 is a significant milestone for the library. We have moved to Java 17 as the minimum version supported. If
+you are unable to move to this version of Java then the releases in the 1.x line can be used with Java 8.
+
+In addition, we have taken the opportunity to make changes to the library that may break existing code. We have
+worked to make these changes as minimal as possible.
+
+**Potentially Breaking Changes:**
+
+- If you have implemented any custom functions, you will likely need to make changes. The supplied base classes now
+  hold an instance of `BasicColumn` rather than `BindableColumn`. This change was made to make the functions more
+  useful in variety of circumstances. If you follow the patterns shown on the
+  [Extending the Library](https://mybatis.org/mybatis-dynamic-sql/docs/extending.html) page, the change should be
+  limited to changing the private constructor to accept `BasicColumn` rather than `BindableColumn`.
+
+Other important changes:
 
 - The library now requires Java 17
 - Deprecated code from prior releases is removed
-- Allow CASE expressions in ORDER BY Clauses
+- We now allow CASE expressions in ORDER BY Clauses
 
 ## Release 1.5.2 - June 3, 2024
 

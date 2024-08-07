@@ -18,7 +18,7 @@ package org.mybatis.dynamic.sql.select.function;
 import java.sql.JDBCType;
 import java.util.Optional;
 
-import org.mybatis.dynamic.sql.BindableColumn;
+import org.mybatis.dynamic.sql.BasicColumn;
 
 /**
  * Represents a function that does not change the underlying data type.
@@ -33,7 +33,7 @@ import org.mybatis.dynamic.sql.BindableColumn;
 public abstract class AbstractUniTypeFunction<T, U extends AbstractUniTypeFunction<T, U>>
         extends AbstractTypeConvertingFunction<T, T, U> {
 
-    protected AbstractUniTypeFunction(BindableColumn<T> column) {
+    protected AbstractUniTypeFunction(BasicColumn column) {
         super(column);
     }
 

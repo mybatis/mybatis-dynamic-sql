@@ -137,6 +137,8 @@ fun <T> avg(column: BindableColumn<T>): Avg<T> = SqlBuilder.avg(column)
 
 fun <T> sum(column: BindableColumn<T>): Sum<T> = SqlBuilder.sum(column)
 
+fun sum(column: BasicColumn): Sum<*> = SqlBuilder.sum(column)
+
 fun <T> sum(column: BindableColumn<T>, condition: VisitableCondition<T>): Sum<T> = SqlBuilder.sum(column, condition)
 
 // constants

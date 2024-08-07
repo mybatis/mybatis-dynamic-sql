@@ -15,14 +15,11 @@
  */
 package org.mybatis.dynamic.sql;
 
-import java.sql.JDBCType;
 import java.util.Optional;
 
-import org.mybatis.dynamic.sql.render.RenderingStrategy;
-
 /**
- * Describes additional attributes of columns that are necessary for binding the column as a JDBC parameter.
- * Columns in where clauses are typically bound.
+ * Describes a column with a known data type. The type is only used by the compiler to assure type safety
+ * when building clauses with conditions.
  *
  * @author Jeff Butler
  *
@@ -36,18 +33,6 @@ public interface BindableColumn<T> extends BasicColumn {
      */
     @Override
     BindableColumn<T> as(String alias);
-
-    default Optional<JDBCType> jdbcType() {
-        return Optional.empty();
-    }
-
-    default Optional<String> typeHandler() {
-        return Optional.empty();
-    }
-
-    default Optional<RenderingStrategy> renderingStrategy() {
-        return Optional.empty();
-    }
 
     default Object convertParameterType(T value) {
         return value;
