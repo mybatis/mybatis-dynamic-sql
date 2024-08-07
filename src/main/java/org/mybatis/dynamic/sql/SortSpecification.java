@@ -37,7 +37,7 @@ public interface SortSpecification {
      * descending order is desired.
      *
      * @param renderingContext the current rendering context
-     * @return a rendered fragment and  parameters is applicable
+     * @return a rendered fragment and  parameters if applicable
      * @since 2.0.0
      */
     FragmentAndParameters renderForOrderBy(RenderingContext renderingContext);

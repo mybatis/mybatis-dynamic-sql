@@ -12,7 +12,7 @@ worked to make these changes as minimal as possible.
 
 **Potentially Breaking Changes:**
 
-- If you have implemented any custom implementations of `SortSpecification`, you will need to update those
+- If you have created any custom implementations of `SortSpecification`, you will need to update those
   implementations due to a new rendering strategy for ORDER BY phrases. The old methods `isDescending` and `orderByName`
   are removed in favor of a new method `renderForOrderBy` 
 - If you have implemented any custom functions, you will likely need to make changes. The supplied base classes now
