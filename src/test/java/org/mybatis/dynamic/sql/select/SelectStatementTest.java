@@ -21,7 +21,6 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
 
 import java.sql.JDBCType;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -284,18 +283,6 @@ class SelectStatementTest {
     }
 
     @Test
-    void testInEmptyList() {
-        List<String> emptyList = Collections.emptyList();
-        SelectStatementProvider selectStatement = select(column1, column3)
-                .from(table, "a")
-                .where(column3, isIn(emptyList))
-                .build()
-                .render(RenderingStrategies.MYBATIS3);
-
-        assertThat(selectStatement.getSelectStatement()).isEqualTo("select a.column1, a.column3 from foo a where a.column3 in ()");
-    }
-
-    @Test
     void testNotInEmptyList() {
         List<String> emptyList = Collections.emptyList();
         SelectModel selectModel = select(column1, column3)
@@ -356,17 +343,6 @@ class SelectStatementTest {
         assertThatExceptionOfType(NonRenderingWhereClauseException.class).isThrownBy(() ->
                 selectModel.render(RenderingStrategies.MYBATIS3)
         );
-    }
-
-    @Test
-    void testNotInCaseInsensitiveEmptyList() {
-        SelectStatementProvider selectStatement = select(column1, column3)
-                .from(table, "a")
-                .where(column3, isNotInCaseInsensitive(Collections.emptyList()))
-                .build()
-                .render(RenderingStrategies.MYBATIS3);
-
-        assertThat(selectStatement.getSelectStatement()).isEqualTo("select a.column1, a.column3 from foo a where upper(a.column3) not in ()");
     }
 
     @Test

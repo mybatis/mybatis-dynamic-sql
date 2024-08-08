@@ -34,14 +34,12 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.SQLSyntaxErrorException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.ibatis.datasource.unpooled.UnpooledDataSource;
-import org.apache.ibatis.exceptions.PersistenceException;
 import org.apache.ibatis.jdbc.ScriptRunner;
 import org.apache.ibatis.mapping.Environment;
 import org.apache.ibatis.session.Configuration;
@@ -51,8 +49,10 @@ import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mybatis.dynamic.sql.exception.InvalidSqlException;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
+import org.mybatis.dynamic.sql.util.Messages;
 import org.mybatis.dynamic.sql.util.mybatis3.CommonSelectMapper;
 
 class VariousListConditionsTest {
@@ -136,26 +136,15 @@ class VariousListConditionsTest {
 
     @Test
     void testInWithEmptyList() {
-        try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
-            CommonSelectMapper mapper = sqlSession.getMapper(CommonSelectMapper.class);
+        var selectModel = select(id, animalName)
+                .from(animalData)
+                .where(id, isIn(Collections.emptyList()))
+                .orderBy(id)
+                .build();
 
-            SelectStatementProvider selectStatement = select(id, animalName)
-                    .from(animalData)
-                    .where(id, isIn(Collections.emptyList()))
-                    .orderBy(id)
-                    .build()
-                    .render(RenderingStrategies.MYBATIS3);
-
-            assertThat(selectStatement.getSelectStatement()).isEqualTo(
-                    "select id, animal_name from AnimalData " +
-                            "where id in () " +
-                            "order by id"
-            );
-
-            assertThatExceptionOfType(PersistenceException.class).isThrownBy(() ->
-                mapper.selectManyMappedRows(selectStatement)
-            ).withCauseInstanceOf(SQLSyntaxErrorException.class);
-        }
+        assertThatExceptionOfType(InvalidSqlException.class)
+                .isThrownBy(() -> selectModel.render(RenderingStrategies.MYBATIS3))
+                .withMessage(Messages.getString("ERROR.44", "IsIn"));
     }
 
     @Test
@@ -319,121 +308,66 @@ class VariousListConditionsTest {
 
     @Test
     void testInEventuallyEmpty() {
-        try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
-            CommonSelectMapper mapper = sqlSession.getMapper(CommonSelectMapper.class);
+        var selectModel = select(id, animalName)
+                .from(animalData)
+                .where(id, isIn(1, 2).filter(s -> false))
+                .orderBy(id)
+                .build();
 
-            SelectStatementProvider selectStatement = select(id, animalName)
-                    .from(animalData)
-                    .where(id, isIn(1, 2).filter(s -> false))
-                    .orderBy(id)
-                    .build()
-                    .render(RenderingStrategies.MYBATIS3);
-
-            assertThat(selectStatement.getSelectStatement()).isEqualTo(
-                    "select id, animal_name from AnimalData " +
-                            "where id in () " +
-                            "order by id"
-            );
-
-            assertThatExceptionOfType(PersistenceException.class).isThrownBy(
-                    () -> mapper.selectManyMappedRows(selectStatement))
-                    .withCauseInstanceOf(SQLSyntaxErrorException.class);
-        }
+        assertThatExceptionOfType(InvalidSqlException.class)
+                .isThrownBy(() -> selectModel.render(RenderingStrategies.MYBATIS3))
+                .withMessage(Messages.getString("ERROR.44", "IsIn"));
     }
 
     @Test
     void testInCaseInsensitiveEventuallyEmpty() {
-        try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
-            CommonSelectMapper mapper = sqlSession.getMapper(CommonSelectMapper.class);
+        var selectModel = select(id, animalName)
+                .from(animalData)
+                .where(animalName, isInCaseInsensitive("Fred", "Betty").filter(s -> false))
+                .orderBy(id)
+                .build();
 
-            SelectStatementProvider selectStatement = select(id, animalName)
-                    .from(animalData)
-                    .where(animalName, isInCaseInsensitive("Fred", "Betty").filter(s -> false))
-                    .orderBy(id)
-                    .build()
-                    .render(RenderingStrategies.MYBATIS3);
-
-            assertThat(selectStatement.getSelectStatement()).isEqualTo(
-                    "select id, animal_name from AnimalData " +
-                            "where upper(animal_name) in () " +
-                            "order by id"
-            );
-
-            assertThatExceptionOfType(PersistenceException.class).isThrownBy(
-                            () -> mapper.selectManyMappedRows(selectStatement))
-                    .withCauseInstanceOf(SQLSyntaxErrorException.class);
-        }
+        assertThatExceptionOfType(InvalidSqlException.class)
+                .isThrownBy(() -> selectModel.render(RenderingStrategies.MYBATIS3))
+                .withMessage(Messages.getString("ERROR.44", "IsInCaseInsensitive"));
     }
 
     @Test
     void testNotInEventuallyEmpty() {
-        try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
-            CommonSelectMapper mapper = sqlSession.getMapper(CommonSelectMapper.class);
+        var selectModel = select(id, animalName)
+                .from(animalData)
+                .where(id, isNotIn(1, 2).filter(s -> false))
+                .orderBy(id)
+                .build();
 
-            SelectStatementProvider selectStatement = select(id, animalName)
-                    .from(animalData)
-                    .where(id, isNotIn(1, 2).filter(s -> false))
-                    .orderBy(id)
-                    .build()
-                    .render(RenderingStrategies.MYBATIS3);
-
-            assertThat(selectStatement.getSelectStatement()).isEqualTo(
-                    "select id, animal_name from AnimalData " +
-                            "where id not in () " +
-                            "order by id"
-            );
-
-            assertThatExceptionOfType(PersistenceException.class).isThrownBy(
-                            () -> mapper.selectManyMappedRows(selectStatement))
-                    .withCauseInstanceOf(SQLSyntaxErrorException.class);
-        }
+        assertThatExceptionOfType(InvalidSqlException.class)
+                .isThrownBy(() -> selectModel.render(RenderingStrategies.MYBATIS3))
+                .withMessage(Messages.getString("ERROR.44", "IsNotIn"));
     }
 
     @Test
     void testNotInCaseInsensitiveEventuallyEmpty() {
-        try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
-            CommonSelectMapper mapper = sqlSession.getMapper(CommonSelectMapper.class);
+        var selectModel = select(id, animalName)
+                .from(animalData)
+                .where(animalName, isNotInCaseInsensitive("Fred", "Betty").filter(s -> false))
+                .orderBy(id)
+                .build();
 
-            SelectStatementProvider selectStatement = select(id, animalName)
-                    .from(animalData)
-                    .where(animalName, isNotInCaseInsensitive("Fred", "Betty").filter(s -> false))
-                    .orderBy(id)
-                    .build()
-                    .render(RenderingStrategies.MYBATIS3);
-
-            assertThat(selectStatement.getSelectStatement()).isEqualTo(
-                    "select id, animal_name from AnimalData " +
-                            "where upper(animal_name) not in () " +
-                            "order by id"
-            );
-
-            assertThatExceptionOfType(PersistenceException.class).isThrownBy(
-                            () -> mapper.selectManyMappedRows(selectStatement))
-                    .withCauseInstanceOf(SQLSyntaxErrorException.class);
-        }
+        assertThatExceptionOfType(InvalidSqlException.class)
+                .isThrownBy(() -> selectModel.render(RenderingStrategies.MYBATIS3))
+                .withMessage(Messages.getString("ERROR.44", "IsNotInCaseInsensitive"));
     }
 
     @Test
     void testInEventuallyEmptyDoubleFilter() {
-        try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
-            CommonSelectMapper mapper = sqlSession.getMapper(CommonSelectMapper.class);
+        var selectModel = select(id, animalName)
+                .from(animalData)
+                .where(id, isIn(1, 2).filter(s -> false).filter(s -> false))
+                .orderBy(id)
+                .build();
 
-            SelectStatementProvider selectStatement = select(id, animalName)
-                    .from(animalData)
-                    .where(id, isIn(1, 2).filter(s -> false).filter(s -> false))
-                    .orderBy(id)
-                    .build()
-                    .render(RenderingStrategies.MYBATIS3);
-
-            assertThat(selectStatement.getSelectStatement()).isEqualTo(
-                    "select id, animal_name from AnimalData " +
-                            "where id in () " +
-                            "order by id"
-            );
-
-            assertThatExceptionOfType(PersistenceException.class).isThrownBy(
-                            () -> mapper.selectManyMappedRows(selectStatement))
-                    .withCauseInstanceOf(SQLSyntaxErrorException.class);
-        }
+        assertThatExceptionOfType(InvalidSqlException.class)
+                .isThrownBy(() -> selectModel.render(RenderingStrategies.MYBATIS3))
+                .withMessage(Messages.getString("ERROR.44", "IsIn"));
     }
 }

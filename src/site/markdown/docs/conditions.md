@@ -204,20 +204,14 @@ mapping if you so desire.
 
 Starting with version 1.5.2, we made a change to the rendering rules for the "in" conditions. This was done to limit the
 danger of conditions failing to render and thus affecting more rows than expected. For the base conditions ("isIn",
-"isNotIn", etc.), if the list of values is empty, then the condition will still render, but the resulting SQL will
-be invalid and will cause a runtime exception. We believe this is the safest outcome. For example, suppose
+"isNotIn", etc.), if the list of values is empty, then the library will throw
+`org.mybatis.dynamic.sql.exception.InvalidSqlException`. We believe this is the safest outcome. For example, suppose
 a DELETE statement was coded as follows:
 
 ```java
    delete.from(foo)
      .where(status, isTrue())
      .and(id, isIn(Collections.emptyList()));
-```
-
-This statement will be rendered as follows:
-
-```sql
-   delete from foo where status = ? and id in ()
 ```
 
 This will cause a runtime error due to invalid SQL, but it eliminates the possibility of deleting ALL rows with
@@ -229,8 +223,8 @@ and the case-insensitive versions of these conditions:
 
 | Input                                    | Effect                                                                            |
 |------------------------------------------|-----------------------------------------------------------------------------------|
-| isIn(null)                               | NullPointerException                                                              |
-| isIn(Collections.emptyList())            | Rendered as "in ()" (Invalid SQL)                                                 |
+| isIn(null)                               | NullPointerException thrown                                                       |
+| isIn(Collections.emptyList())            | InvalidSqlException thrown                                                        |
 | isIn(2, 3, null)                         | Rendered as "in (?, ?, ?)" (Parameter values are 2, 3, and null)                  |
 | isInWhenPresent(null)                    | Condition Not Rendered                                                            |
 | isInWhenPresent(Collections.emptyList()) | Condition Not Rendered                                                            |

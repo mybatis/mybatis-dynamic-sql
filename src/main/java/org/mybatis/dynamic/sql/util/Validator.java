@@ -26,12 +26,20 @@ public class Validator {
         assertFalse(collection.isEmpty(), messageNumber);
     }
 
+    public static void assertNotEmpty(Collection<?> collection, String messageNumber, String p1) {
+        assertFalse(collection.isEmpty(), messageNumber, p1);
+    }
+
     public static void assertFalse(boolean condition, String messageNumber) {
-        internalAssertFalse(condition, Messages.getString(messageNumber));
+        if (condition) {
+            throw new InvalidSqlException(Messages.getString(messageNumber));
+        }
     }
 
     public static void assertFalse(boolean condition, String messageNumber, String p1) {
-        internalAssertFalse(condition, Messages.getString(messageNumber, p1));
+        if (condition) {
+            throw new InvalidSqlException(Messages.getString(messageNumber, p1));
+        }
     }
 
     public static void assertTrue(boolean condition, String messageNumber) {
@@ -40,11 +48,5 @@ public class Validator {
 
     public static void assertTrue(boolean condition, String messageNumber, String p1) {
         assertFalse(!condition, messageNumber, p1);
-    }
-
-    private static void internalAssertFalse(boolean condition, String message) {
-        if (condition) {
-            throw new InvalidSqlException(message);
-        }
     }
 }
