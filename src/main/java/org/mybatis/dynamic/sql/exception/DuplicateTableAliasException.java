@@ -15,6 +15,7 @@
  */
 package org.mybatis.dynamic.sql.exception;
 
+import java.io.Serial;
 import java.util.Objects;
 
 import org.mybatis.dynamic.sql.SqlTable;
@@ -34,6 +35,7 @@ import org.mybatis.dynamic.sql.util.Messages;
  */
 public class DuplicateTableAliasException extends DynamicSqlException {
 
+    @Serial
     private static final long serialVersionUID = -2631664872557787391L;
 
     public DuplicateTableAliasException(SqlTable table, String newAlias, String existingAlias) {

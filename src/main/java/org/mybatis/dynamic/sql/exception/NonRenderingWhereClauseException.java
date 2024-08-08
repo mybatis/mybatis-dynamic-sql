@@ -19,6 +19,8 @@ import org.mybatis.dynamic.sql.configuration.GlobalConfiguration;
 import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
 import org.mybatis.dynamic.sql.util.Messages;
 
+import java.io.Serial;
+
 /**
  * This exception is thrown when the where clause in a statement will not render.
  * This can happen if all the optional conditions in a where clause fail to
@@ -40,6 +42,7 @@ import org.mybatis.dynamic.sql.util.Messages;
  * @author Jeff Butler
  */
 public class NonRenderingWhereClauseException extends DynamicSqlException {
+    @Serial
     private static final long serialVersionUID = 6619119078542625135L;
 
     public NonRenderingWhereClauseException() {
