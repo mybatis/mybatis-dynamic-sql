@@ -913,18 +913,6 @@ class PersonMapperTest {
     }
 
     @Test
-    fun testRenderingEmptyList() {
-        val selectStatement = select(id, firstName, lastName, birthDate, employed, occupation, addressId) {
-            from(person)
-            where { id isIn emptyList() }
-        }
-
-        val expected = "select id, first_name, last_name, birth_date, employed, occupation, address_id from Person " +
-                "where id in ()"
-        assertThat(selectStatement.selectStatement).isEqualTo(expected)
-    }
-
-    @Test
     fun testSumWithCase() {
         sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(CommonSelectMapper::class.java)

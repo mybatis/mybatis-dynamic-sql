@@ -26,6 +26,10 @@ Other important changes:
 - The library now requires Java 17
 - Deprecated code from prior releases is removed
 - We now allow CASE expressions in ORDER BY Clauses
+- The "In" conditions will now throw `InvalidSqlException` during rendering if the list of values is empty. Previously
+  an empty In condition would render as invalid SQL and would usually cause a runtime exception from the database.
+  With this change, the exception thrown is more predictable and the error is caught before sending the SQL to the
+  database.
 
 ## Release 1.5.2 - June 3, 2024
 

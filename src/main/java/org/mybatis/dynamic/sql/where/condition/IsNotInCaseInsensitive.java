@@ -24,6 +24,7 @@ import java.util.function.UnaryOperator;
 import org.mybatis.dynamic.sql.AbstractListValueCondition;
 import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.util.StringUtilities;
+import org.mybatis.dynamic.sql.util.Validator;
 
 public class IsNotInCaseInsensitive extends AbstractListValueCondition<String>
         implements CaseInsensitiveVisitableCondition {
@@ -39,6 +40,7 @@ public class IsNotInCaseInsensitive extends AbstractListValueCondition<String>
 
     @Override
     public boolean shouldRender(RenderingContext renderingContext) {
+        Validator.assertNotEmpty(values, "ERROR.44", "IsNotInCaseInsensitive"); //$NON-NLS-1$ //$NON-NLS-2$
         return true;
     }
 

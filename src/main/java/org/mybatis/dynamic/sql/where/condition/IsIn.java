@@ -23,6 +23,7 @@ import java.util.function.Predicate;
 
 import org.mybatis.dynamic.sql.AbstractListValueCondition;
 import org.mybatis.dynamic.sql.render.RenderingContext;
+import org.mybatis.dynamic.sql.util.Validator;
 
 public class IsIn<T> extends AbstractListValueCondition<T> {
     private static final IsIn<?> EMPTY = new IsIn<>(Collections.emptyList());
@@ -39,6 +40,7 @@ public class IsIn<T> extends AbstractListValueCondition<T> {
 
     @Override
     public boolean shouldRender(RenderingContext renderingContext) {
+        Validator.assertNotEmpty(values, "ERROR.44", "IsIn"); //$NON-NLS-1$ //$NON-NLS-2$
         return true;
     }
 
