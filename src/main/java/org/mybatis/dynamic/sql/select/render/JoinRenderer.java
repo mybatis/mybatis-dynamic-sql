@@ -20,8 +20,8 @@ import static org.mybatis.dynamic.sql.util.StringUtilities.spaceBefore;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import org.mybatis.dynamic.sql.exception.InvalidSqlException;
 import org.mybatis.dynamic.sql.render.RenderingContext;
-import org.mybatis.dynamic.sql.select.join.JoinCriterion;
 import org.mybatis.dynamic.sql.select.join.JoinModel;
 import org.mybatis.dynamic.sql.select.join.JoinSpecification;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
@@ -47,41 +47,20 @@ public class JoinRenderer {
 
     private FragmentAndParameters renderJoinSpecification(JoinSpecification joinSpecification) {
         FragmentAndParameters renderedTable = joinSpecification.table().accept(tableExpressionRenderer);
-        FragmentAndParameters renderedJoin = renderConditions(joinSpecification);
+        FragmentAndParameters renderedJoinSpecification = JoinSpecificationRenderer
+                .withJoinSpecification(joinSpecification)
+                .withRenderingContext(renderingContext)
+                .build()
+                .render()
+                .orElseThrow(() -> new InvalidSqlException("Join Specifications Must Render")); // TODO
 
         String fragment = joinSpecification.joinType().type()
                 + spaceBefore(renderedTable.fragment())
-                + spaceBefore(renderedJoin.fragment());
+                + spaceBefore(renderedJoinSpecification.fragment());
 
         return FragmentAndParameters.withFragment(fragment)
                 .withParameters(renderedTable.parameters())
-                .withParameters(renderedJoin.parameters())
-                .build();
-    }
-
-    private FragmentAndParameters renderConditions(JoinSpecification joinSpecification) {
-        return joinSpecification.joinCriteria()
-                .map(this::renderCriterion)
-                .collect(FragmentCollector.collect())
-                .toFragmentAndParameters(Collectors.joining(" ")); //$NON-NLS-1$
-    }
-
-    private <T> FragmentAndParameters renderCriterion(JoinCriterion<T> joinCriterion) {
-        FragmentAndParameters renderedColumn = joinCriterion.leftColumn().render(renderingContext);
-
-        String prefix = joinCriterion.connector()
-                + spaceBefore(renderedColumn.fragment());
-
-        JoinConditionRenderer<T> joinConditionRenderer = new JoinConditionRenderer.Builder<T>()
-                .withRenderingContext(renderingContext)
-                .withLeftColumn(joinCriterion.leftColumn())
-                .build();
-
-        FragmentAndParameters suffix = joinCriterion.joinCondition().accept(joinConditionRenderer);
-
-        return FragmentAndParameters.withFragment(prefix + spaceBefore(suffix.fragment()))
-                .withParameters(suffix.parameters())
-                .withParameters(renderedColumn.parameters())
+                .withParameters(renderedJoinSpecification.parameters())
                 .build();
     }
 

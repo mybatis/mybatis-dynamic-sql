@@ -15,34 +15,27 @@
  */
 package org.mybatis.dynamic.sql.select.join;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
-import java.util.stream.Stream;
 
 import org.mybatis.dynamic.sql.TableExpression;
+import org.mybatis.dynamic.sql.common.AbstractBooleanExpressionModel;
 import org.mybatis.dynamic.sql.util.Validator;
 
-public class JoinSpecification {
+public class JoinSpecification extends AbstractBooleanExpressionModel {
 
     private final TableExpression table;
-    private final List<JoinCriterion<?>> joinCriteria;
     private final JoinType joinType;
 
     private JoinSpecification(Builder builder) {
+        super(builder);
         table = Objects.requireNonNull(builder.table);
-        joinCriteria = Objects.requireNonNull(builder.joinCriteria);
         joinType = Objects.requireNonNull(builder.joinType);
-        Validator.assertNotEmpty(joinCriteria, "ERROR.16"); //$NON-NLS-1$
+        Validator.assertFalse(initialCriterion().isEmpty() && subCriteria().isEmpty(),
+                "ERROR.16"); //$NON-NLS-1$
     }
 
     public TableExpression table() {
         return table;
-    }
-
-    @SuppressWarnings("java:S1452")
-    public Stream<JoinCriterion<?>> joinCriteria() {
-        return joinCriteria.stream();
     }
 
     public JoinType joinType() {
@@ -53,23 +46,12 @@ public class JoinSpecification {
         return new Builder().withJoinTable(table);
     }
 
-    public static class Builder {
+    public static class Builder extends AbstractBuilder<Builder> {
         private TableExpression table;
-        private final List<JoinCriterion<?>> joinCriteria = new ArrayList<>();
         private JoinType joinType;
 
         public Builder withJoinTable(TableExpression table) {
             this.table = table;
-            return this;
-        }
-
-        public Builder withJoinCriterion(JoinCriterion<?> joinCriterion) {
-            this.joinCriteria.add(joinCriterion);
-            return this;
-        }
-
-        public Builder withJoinCriteria(List<JoinCriterion<?>> joinCriteria) {
-            this.joinCriteria.addAll(joinCriteria);
             return this;
         }
 
@@ -80,6 +62,11 @@ public class JoinSpecification {
 
         public JoinSpecification build() {
             return new JoinSpecification(this);
+        }
+
+        @Override
+        protected Builder getThis() {
+            return this;
         }
     }
 }

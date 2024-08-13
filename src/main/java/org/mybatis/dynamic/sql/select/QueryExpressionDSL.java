@@ -23,15 +23,17 @@ import java.util.Objects;
 import java.util.function.Consumer;
 
 import org.jetbrains.annotations.NotNull;
+import org.mybatis.dynamic.sql.AndOrCriteriaGroup;
 import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.BindableColumn;
+import org.mybatis.dynamic.sql.ColumnAndConditionCriterion;
 import org.mybatis.dynamic.sql.CriteriaGroup;
 import org.mybatis.dynamic.sql.SortSpecification;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.TableExpression;
+import org.mybatis.dynamic.sql.VisitableCondition;
+import org.mybatis.dynamic.sql.common.AbstractBooleanExpressionDSL;
 import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
-import org.mybatis.dynamic.sql.select.join.JoinCondition;
-import org.mybatis.dynamic.sql.select.join.JoinCriterion;
 import org.mybatis.dynamic.sql.select.join.JoinSpecification;
 import org.mybatis.dynamic.sql.select.join.JoinType;
 import org.mybatis.dynamic.sql.util.Buildable;
@@ -339,50 +341,54 @@ public class QueryExpressionDSL<R>
             this.joinType = joinType;
         }
 
-        public <T> JoinSpecificationFinisher on(BindableColumn<T> joinColumn, JoinCondition<T> joinCondition) {
+        public <T> JoinSpecificationFinisher on(BindableColumn<T> joinColumn, VisitableCondition<T> joinCondition) {
             return new JoinSpecificationFinisher(joinTable, joinColumn, joinCondition, joinType);
         }
 
-        public <T> JoinSpecificationFinisher on(BindableColumn<T> joinColumn, JoinCondition<T> onJoinCondition,
-                JoinCriterion<?>... andJoinCriteria) {
-            return new JoinSpecificationFinisher(joinTable, joinColumn, onJoinCondition, joinType, andJoinCriteria);
+        public <T> JoinSpecificationFinisher on(BindableColumn<T> joinColumn, VisitableCondition<T> onJoinCondition,
+                                                AndOrCriteriaGroup... subCriteria) {
+            return new JoinSpecificationFinisher(joinTable, joinColumn, onJoinCondition, joinType, subCriteria);
         }
     }
 
-    public class JoinSpecificationFinisher
-            extends AbstractWhereStarter<QueryExpressionWhereBuilder, JoinSpecificationFinisher>
-            implements Buildable<R> {
-        private final JoinSpecification.Builder joinSpecificationBuilder;
+    public class JoinSpecificationFinisher extends AbstractBooleanExpressionDSL<JoinSpecificationFinisher>
+            implements AbstractWhereStarter<QueryExpressionWhereBuilder, JoinSpecificationFinisher>, Buildable<R> {
+        private final TableExpression table;
+        private final JoinType joinType;
 
         public <T> JoinSpecificationFinisher(TableExpression table, BindableColumn<T> joinColumn,
-                JoinCondition<T> joinCondition, JoinType joinType) {
-            JoinCriterion<T> joinCriterion = new JoinCriterion.Builder<T>()
-                    .withConnector("on") //$NON-NLS-1$
-                    .withJoinColumn(joinColumn)
-                    .withJoinCondition(joinCondition)
+                VisitableCondition<T> joinCondition, JoinType joinType) {
+            this.table = table;
+            this.joinType = joinType;
+            addJoinSpecificationSupplier(this::buildJoinSpecification);
+
+            ColumnAndConditionCriterion<T> c = ColumnAndConditionCriterion.withColumn(joinColumn)
+                    .withCondition(joinCondition)
                     .build();
 
-            joinSpecificationBuilder = JoinSpecification.withJoinTable(table)
-                    .withJoinType(joinType)
-                    .withJoinCriterion(joinCriterion);
-
-            addJoinSpecificationBuilder(joinSpecificationBuilder);
+            setInitialCriterion(c);
         }
 
         public <T> JoinSpecificationFinisher(TableExpression table, BindableColumn<T> joinColumn,
-                JoinCondition<T> joinCondition, JoinType joinType, JoinCriterion<?>... andJoinCriteria) {
-            JoinCriterion<T> onJoinCriterion = new JoinCriterion.Builder<T>()
-                    .withConnector("on") //$NON-NLS-1$
-                    .withJoinColumn(joinColumn)
-                    .withJoinCondition(joinCondition)
+                VisitableCondition<T> joinCondition, JoinType joinType, AndOrCriteriaGroup... subCriteria) {
+            this.table = table;
+            this.joinType = joinType;
+            addJoinSpecificationSupplier(this::buildJoinSpecification);
+
+            ColumnAndConditionCriterion<T> c = ColumnAndConditionCriterion.withColumn(joinColumn)
+                    .withCondition(joinCondition)
+                    .withSubCriteria(Arrays.asList(subCriteria))
                     .build();
 
-            joinSpecificationBuilder = JoinSpecification.withJoinTable(table)
-                    .withJoinType(joinType)
-                    .withJoinCriterion(onJoinCriterion)
-                    .withJoinCriteria(Arrays.asList(andJoinCriteria));
+            setInitialCriterion(c);
+        }
 
-            addJoinSpecificationBuilder(joinSpecificationBuilder);
+        private JoinSpecification buildJoinSpecification() {
+            return JoinSpecification.withJoinTable(table)
+                    .withJoinType(joinType)
+                    .withInitialCriterion(getInitialCriterion())
+                    .withSubCriteria(subCriteria)
+                    .build();
         }
 
         @NotNull
@@ -400,16 +406,6 @@ public class QueryExpressionDSL<R>
         @Override
         public QueryExpressionWhereBuilder where() {
             return QueryExpressionDSL.this.where();
-        }
-
-        public <T> JoinSpecificationFinisher and(BindableColumn<T> joinColumn, JoinCondition<T> joinCondition) {
-            JoinCriterion<T> joinCriterion = new JoinCriterion.Builder<T>()
-                    .withConnector("and") //$NON-NLS-1$
-                    .withJoinColumn(joinColumn)
-                    .withJoinCondition(joinCondition)
-                    .build();
-            joinSpecificationBuilder.withJoinCriterion(joinCriterion);
-            return this;
         }
 
         public JoinSpecificationStarter join(SqlTable joinTable) {
@@ -494,6 +490,11 @@ public class QueryExpressionDSL<R>
 
         public SelectDSL<R>.FetchFirstFinisher fetchFirst(long fetchFirstRows) {
             return QueryExpressionDSL.this.fetchFirst(fetchFirstRows);
+        }
+
+        @Override
+        protected JoinSpecificationFinisher getThis() {
+            return this;
         }
     }
 

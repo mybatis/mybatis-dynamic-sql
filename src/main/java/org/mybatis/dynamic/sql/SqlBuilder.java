@@ -433,19 +433,9 @@ public interface SqlBuilder {
     }
 
     // join support
-    static <T> JoinCriterion<T> and(BindableColumn<T> joinColumn, JoinCondition<T> joinCondition) {
-        return new JoinCriterion.Builder<T>()
-                .withConnector("and") //$NON-NLS-1$
-                .withJoinColumn(joinColumn)
-                .withJoinCondition(joinCondition)
-                .build();
-    }
-
-    static <T> JoinCriterion<T> on(BindableColumn<T> joinColumn, JoinCondition<T> joinCondition) {
-        return new JoinCriterion.Builder<T>()
-                .withConnector("on") //$NON-NLS-1$
-                .withJoinColumn(joinColumn)
-                .withJoinCondition(joinCondition)
+    static <T> ColumnAndConditionCriterion<T> on(BindableColumn<T> joinColumn, VisitableCondition<T> joinCondition) {
+        return ColumnAndConditionCriterion.withColumn(joinColumn)
+                .withCondition(joinCondition)
                 .build();
     }
 
@@ -460,12 +450,14 @@ public interface SqlBuilder {
         return SearchedCaseDSL.searchedCase();
     }
 
-    static <T> EqualTo<T> equalTo(BindableColumn<T> column) {
-        return new EqualTo<>(column);
+    // TODO - Deprecate?
+    static <T> IsEqualToColumn<T> equalTo(BindableColumn<T> column) {
+        return IsEqualToColumn.of(column);
     }
 
-    static <T> EqualToValue<T> equalTo(T value) {
-        return new EqualToValue<>(value);
+    // TODO - Deprecate?
+    static <T> IsEqualTo<T> equalTo(T value) {
+        return IsEqualTo.of(value);
     }
 
     // aggregate support
