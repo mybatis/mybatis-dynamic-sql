@@ -362,11 +362,11 @@ public class QueryExpressionDSL<R>
             this.joinType = joinType;
             addJoinSpecificationSupplier(this::buildJoinSpecification);
 
-            ColumnAndConditionCriterion<T> c = ColumnAndConditionCriterion.withColumn(joinColumn)
+            ColumnAndConditionCriterion<T> criterion = ColumnAndConditionCriterion.withColumn(joinColumn)
                     .withCondition(joinCondition)
                     .build();
 
-            setInitialCriterion(c);
+            setInitialCriterion(criterion);
         }
 
         public <T> JoinSpecificationFinisher(TableExpression table, BindableColumn<T> joinColumn,
@@ -375,12 +375,12 @@ public class QueryExpressionDSL<R>
             this.joinType = joinType;
             addJoinSpecificationSupplier(this::buildJoinSpecification);
 
-            ColumnAndConditionCriterion<T> c = ColumnAndConditionCriterion.withColumn(joinColumn)
+            ColumnAndConditionCriterion<T> criterion = ColumnAndConditionCriterion.withColumn(joinColumn)
                     .withCondition(joinCondition)
                     .withSubCriteria(Arrays.asList(subCriteria))
                     .build();
 
-            setInitialCriterion(c);
+            setInitialCriterion(criterion);
         }
 
         private JoinSpecification buildJoinSpecification() {
