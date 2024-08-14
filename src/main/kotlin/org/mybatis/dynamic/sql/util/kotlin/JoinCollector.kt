@@ -26,19 +26,28 @@ typealias JoinReceiver = JoinCollector.() -> Unit
 
 @MyBatisDslMarker
 class JoinCollector {
-    private var onJoinCriterion: SqlCriterion? = null
-    internal val andJoinCriteria = mutableListOf<AndOrCriteriaGroup>()
+    private var initialCriterion: SqlCriterion? = null
+    internal val subCriteria = mutableListOf<AndOrCriteriaGroup>()
 
-    internal fun onJoinCriterion() : SqlCriterion = invalidIfNull(onJoinCriterion, "ERROR.22") //$NON-NLS-1$
+    internal fun initialCriterion() : SqlCriterion = invalidIfNull(initialCriterion, "ERROR.22") //$NON-NLS-1$
 
+    fun on (receiver: GroupingCriteriaReceiver) {
+        GroupingCriteriaCollector().apply(receiver).also {
+            initialCriterion = it.initialCriterion
+            subCriteria.addAll(it.subCriteria)
+        }
+    }
+
+    // TODO - Deprecate?
     fun <T> on(leftColumn: BindableColumn<T>): RightColumnCollector<T> = RightColumnCollector {
-        onJoinCriterion = ColumnAndConditionCriterion.withColumn(leftColumn)
+        initialCriterion = ColumnAndConditionCriterion.withColumn(leftColumn)
             .withCondition(it)
             .build()
     }
 
+    // TODO - Deprecate?
     fun <T> and(leftColumn: BindableColumn<T>): RightColumnCollector<T> = RightColumnCollector {
-        andJoinCriteria.add(
+        subCriteria.add(
             AndOrCriteriaGroup.Builder()
                 .withConnector("and") //$NON-NLS-1$
                 .withInitialCriterion(ColumnAndConditionCriterion.withColumn(leftColumn).withCondition(it).build())

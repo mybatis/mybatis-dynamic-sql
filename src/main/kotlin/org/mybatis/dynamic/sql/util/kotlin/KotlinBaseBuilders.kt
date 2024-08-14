@@ -66,12 +66,12 @@ abstract class KotlinBaseJoiningBuilder<D : AbstractQueryExpressionDSL<*, *>> : 
 
     fun join(table: SqlTable, joinCriteria: JoinReceiver): Unit =
         applyToDsl(joinCriteria) { jc ->
-            join(table, jc.onJoinCriterion(), jc.andJoinCriteria)
+            join(table, jc.initialCriterion(), jc.subCriteria)
         }
 
     fun join(table: SqlTable, alias: String, joinCriteria: JoinReceiver): Unit =
         applyToDsl(joinCriteria) { jc ->
-            join(table, alias, jc.onJoinCriterion(), jc.andJoinCriteria)
+            join(table, alias, jc.initialCriterion(), jc.subCriteria)
         }
 
     fun join(
@@ -79,17 +79,17 @@ abstract class KotlinBaseJoiningBuilder<D : AbstractQueryExpressionDSL<*, *>> : 
         joinCriteria: JoinReceiver
     ): Unit =
         applyToDsl(subQuery, joinCriteria) { sq, jc ->
-            join(sq, sq.correlationName, jc.onJoinCriterion(), jc.andJoinCriteria)
+            join(sq, sq.correlationName, jc.initialCriterion(), jc.subCriteria)
         }
 
     fun fullJoin(table: SqlTable, joinCriteria: JoinReceiver): Unit =
         applyToDsl(joinCriteria) { jc ->
-            fullJoin(table, jc.onJoinCriterion(), jc.andJoinCriteria)
+            fullJoin(table, jc.initialCriterion(), jc.subCriteria)
         }
 
     fun fullJoin(table: SqlTable, alias: String, joinCriteria: JoinReceiver): Unit =
         applyToDsl(joinCriteria) { jc ->
-            fullJoin(table, alias, jc.onJoinCriterion(), jc.andJoinCriteria)
+            fullJoin(table, alias, jc.initialCriterion(), jc.subCriteria)
         }
 
     fun fullJoin(
@@ -97,17 +97,17 @@ abstract class KotlinBaseJoiningBuilder<D : AbstractQueryExpressionDSL<*, *>> : 
         joinCriteria: JoinReceiver
     ): Unit =
         applyToDsl(subQuery, joinCriteria) { sq, jc ->
-            fullJoin(sq, sq.correlationName, jc.onJoinCriterion(), jc.andJoinCriteria)
+            fullJoin(sq, sq.correlationName, jc.initialCriterion(), jc.subCriteria)
         }
 
     fun leftJoin(table: SqlTable, joinCriteria: JoinReceiver): Unit =
         applyToDsl(joinCriteria) { jc ->
-            leftJoin(table, jc.onJoinCriterion(), jc.andJoinCriteria)
+            leftJoin(table, jc.initialCriterion(), jc.subCriteria)
         }
 
     fun leftJoin(table: SqlTable, alias: String, joinCriteria: JoinReceiver): Unit =
         applyToDsl(joinCriteria) { jc ->
-            leftJoin(table, alias, jc.onJoinCriterion(), jc.andJoinCriteria)
+            leftJoin(table, alias, jc.initialCriterion(), jc.subCriteria)
         }
 
     fun leftJoin(
@@ -115,17 +115,17 @@ abstract class KotlinBaseJoiningBuilder<D : AbstractQueryExpressionDSL<*, *>> : 
         joinCriteria: JoinReceiver
     ): Unit =
         applyToDsl(subQuery, joinCriteria) { sq, jc ->
-            leftJoin(sq, sq.correlationName, jc.onJoinCriterion(), jc.andJoinCriteria)
+            leftJoin(sq, sq.correlationName, jc.initialCriterion(), jc.subCriteria)
         }
 
     fun rightJoin(table: SqlTable, joinCriteria: JoinReceiver): Unit =
         applyToDsl(joinCriteria) { jc ->
-            rightJoin(table, jc.onJoinCriterion(), jc.andJoinCriteria)
+            rightJoin(table, jc.initialCriterion(), jc.subCriteria)
         }
 
     fun rightJoin(table: SqlTable, alias: String, joinCriteria: JoinReceiver): Unit =
         applyToDsl(joinCriteria) { jc ->
-            rightJoin(table, alias, jc.onJoinCriterion(), jc.andJoinCriteria)
+            rightJoin(table, alias, jc.initialCriterion(), jc.subCriteria)
         }
 
     fun rightJoin(
@@ -133,7 +133,7 @@ abstract class KotlinBaseJoiningBuilder<D : AbstractQueryExpressionDSL<*, *>> : 
         joinCriteria: JoinReceiver
     ): Unit =
         applyToDsl(subQuery, joinCriteria) { sq, jc ->
-            rightJoin(sq, sq.correlationName, jc.onJoinCriterion(), jc.andJoinCriteria)
+            rightJoin(sq, sq.correlationName, jc.initialCriterion(), jc.subCriteria)
         }
 
     private fun applyToDsl(joinCriteria: JoinReceiver, applyJoin: D.(JoinCollector) -> Unit) {
