@@ -30,6 +30,8 @@ Other important changes:
   an empty In condition would render as invalid SQL and would usually cause a runtime exception from the database.
   With this change, the exception thrown is more predictable and the error is caught before sending the SQL to the
   database.
+- All the paging methods (limit, offset, fetchFirst) now have "WhenPresent" variations that will drop the phrase from
+  rendering if a null value is passed in 
 
 ## Release 1.5.2 - June 3, 2024
 
