@@ -15,11 +15,11 @@
  */
 package org.mybatis.dynamic.sql.exception;
 
+import java.io.Serial;
+
 import org.mybatis.dynamic.sql.configuration.GlobalConfiguration;
 import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
 import org.mybatis.dynamic.sql.util.Messages;
-
-import java.io.Serial;
 
 /**
  * This exception is thrown when the where clause in a statement will not render.

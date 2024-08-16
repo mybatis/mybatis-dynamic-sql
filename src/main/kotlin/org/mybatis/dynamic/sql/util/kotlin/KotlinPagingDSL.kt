@@ -15,29 +15,22 @@
  */
 package org.mybatis.dynamic.sql.util.kotlin
 
-import org.mybatis.dynamic.sql.SortSpecification
-import org.mybatis.dynamic.sql.delete.DeleteDSL
-import org.mybatis.dynamic.sql.delete.DeleteModel
-import org.mybatis.dynamic.sql.util.Buildable
-
-typealias DeleteCompleter = KotlinDeleteBuilder.() -> Unit
-
-class KotlinDeleteBuilder(private val dsl: DeleteDSL<DeleteModel>) :
-    KotlinBaseBuilder<DeleteDSL<DeleteModel>>(), Buildable<DeleteModel> {
-
-    fun orderBy(vararg columns: SortSpecification) {
-        dsl.orderBy(columns.toList())
-    }
-
+interface KotlinPagingDSL {
     fun limit(limit: Long) {
         limitWhenPresent(limit)
     }
 
-    fun limitWhenPresent(limit: Long?) {
-        dsl.limitWhenPresent(limit)
+    fun limitWhenPresent(limit: Long?)
+
+    fun offset(offset: Long) {
+        offsetWhenPresent(offset)
     }
 
-    override fun build(): DeleteModel = dsl.build()
+    fun offsetWhenPresent(offset: Long?)
 
-    override fun getDsl(): DeleteDSL<DeleteModel> = dsl
+    fun fetchFirst(fetchFirstRows: Long) {
+        fetchFirstWhenPresent(fetchFirstRows)
+    }
+
+    fun fetchFirstWhenPresent(fetchFirstRows: Long?)
 }

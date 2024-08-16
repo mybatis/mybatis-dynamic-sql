@@ -109,6 +109,24 @@ class AnimalDataTest {
     }
 
     @Test
+    void testSelectAllRowsWithNullLimit() {
+        try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
+            AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
+            SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
+                    .from(animalData)
+                    .limitWhenPresent(null)
+                    .build()
+                    .render(RenderingStrategies.MYBATIS3);
+            List<AnimalData> animals = mapper.selectMany(selectStatement);
+
+            assertAll(
+                    () -> assertThat(animals).hasSize(65),
+                    () -> assertThat(animals).first().isNotNull().extracting(AnimalData::getId).isEqualTo(1)
+            );
+        }
+    }
+
+    @Test
     void testSelectAllRowsWithRowBounds() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
