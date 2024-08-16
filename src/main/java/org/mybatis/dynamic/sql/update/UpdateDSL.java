@@ -76,6 +76,10 @@ public class UpdateDSL<R> extends AbstractWhereStarter<UpdateDSL<R>.UpdateWhereB
     }
 
     public UpdateDSL<R> limit(long limit) {
+        return limitWhenPresent(limit);
+    }
+
+    public UpdateDSL<R> limitWhenPresent(Long limit) {
         this.limit = limit;
         return this;
     }
@@ -196,7 +200,11 @@ public class UpdateDSL<R> extends AbstractWhereStarter<UpdateDSL<R>.UpdateWhereB
         }
 
         public UpdateDSL<R> limit(long limit) {
-            return UpdateDSL.this.limit(limit);
+            return limitWhenPresent(limit);
+        }
+
+        public UpdateDSL<R> limitWhenPresent(Long limit) {
+            return UpdateDSL.this.limitWhenPresent(limit);
         }
 
         public UpdateDSL<R> orderBy(SortSpecification... columns) {

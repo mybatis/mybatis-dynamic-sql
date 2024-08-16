@@ -195,15 +195,27 @@ public class QueryExpressionDSL<R>
     }
 
     public SelectDSL<R>.LimitFinisher limit(long limit) {
-        return selectDSL.limit(limit);
+        return limitWhenPresent(limit);
+    }
+
+    public SelectDSL<R>.LimitFinisher limitWhenPresent(Long limit) {
+        return selectDSL.limitWhenPresent(limit);
     }
 
     public SelectDSL<R>.OffsetFirstFinisher offset(long offset) {
-        return selectDSL.offset(offset);
+        return offsetWhenPresent(offset);
+    }
+
+    public SelectDSL<R>.OffsetFirstFinisher offsetWhenPresent(Long offset) {
+        return selectDSL.offsetWhenPresent(offset);
     }
 
     public SelectDSL<R>.FetchFirstFinisher fetchFirst(long fetchFirstRows) {
-        return selectDSL.fetchFirst(fetchFirstRows);
+        return fetchFirstWhenPresent(fetchFirstRows);
+    }
+
+    public SelectDSL<R>.FetchFirstFinisher fetchFirstWhenPresent(Long fetchFirstRows) {
+        return selectDSL.fetchFirstWhenPresent(fetchFirstRows);
     }
 
     @Override
@@ -303,15 +315,27 @@ public class QueryExpressionDSL<R>
         }
 
         public SelectDSL<R>.LimitFinisher limit(long limit) {
-            return QueryExpressionDSL.this.limit(limit);
+            return limitWhenPresent(limit);
+        }
+
+        public SelectDSL<R>.LimitFinisher limitWhenPresent(Long limit) {
+            return QueryExpressionDSL.this.limitWhenPresent(limit);
         }
 
         public SelectDSL<R>.OffsetFirstFinisher offset(long offset) {
-            return QueryExpressionDSL.this.offset(offset);
+            return offsetWhenPresent(offset);
+        }
+
+        public SelectDSL<R>.OffsetFirstFinisher offsetWhenPresent(Long offset) {
+            return QueryExpressionDSL.this.offsetWhenPresent(offset);
         }
 
         public SelectDSL<R>.FetchFirstFinisher fetchFirst(long fetchFirstRows) {
-            return QueryExpressionDSL.this.fetchFirst(fetchFirstRows);
+            return fetchFirstWhenPresent(fetchFirstRows);
+        }
+
+        public SelectDSL<R>.FetchFirstFinisher fetchFirstWhenPresent(Long fetchFirstRows) {
+            return QueryExpressionDSL.this.fetchFirstWhenPresent(fetchFirstRows);
         }
 
         @NotNull
@@ -485,15 +509,27 @@ public class QueryExpressionDSL<R>
         }
 
         public SelectDSL<R>.LimitFinisher limit(long limit) {
-            return QueryExpressionDSL.this.limit(limit);
+            return limitWhenPresent(limit);
+        }
+
+        public SelectDSL<R>.LimitFinisher limitWhenPresent(Long limit) {
+            return QueryExpressionDSL.this.limitWhenPresent(limit);
         }
 
         public SelectDSL<R>.OffsetFirstFinisher offset(long offset) {
-            return QueryExpressionDSL.this.offset(offset);
+            return offsetWhenPresent(offset);
+        }
+
+        public SelectDSL<R>.OffsetFirstFinisher offsetWhenPresent(Long offset) {
+            return QueryExpressionDSL.this.offsetWhenPresent(offset);
         }
 
         public SelectDSL<R>.FetchFirstFinisher fetchFirst(long fetchFirstRows) {
-            return QueryExpressionDSL.this.fetchFirst(fetchFirstRows);
+            return fetchFirstWhenPresent(fetchFirstRows);
+        }
+
+        public SelectDSL<R>.FetchFirstFinisher fetchFirstWhenPresent(Long fetchFirstRows) {
+            return QueryExpressionDSL.this.fetchFirstWhenPresent(fetchFirstRows);
         }
     }
 
@@ -521,15 +557,27 @@ public class QueryExpressionDSL<R>
         }
 
         public SelectDSL<R>.LimitFinisher limit(long limit) {
-            return QueryExpressionDSL.this.limit(limit);
+            return limitWhenPresent(limit);
+        }
+
+        public SelectDSL<R>.LimitFinisher limitWhenPresent(Long limit) {
+            return QueryExpressionDSL.this.limitWhenPresent(limit);
         }
 
         public SelectDSL<R>.OffsetFirstFinisher offset(long offset) {
-            return QueryExpressionDSL.this.offset(offset);
+            return offsetWhenPresent(offset);
+        }
+
+        public SelectDSL<R>.OffsetFirstFinisher offsetWhenPresent(Long offset) {
+            return QueryExpressionDSL.this.offsetWhenPresent(offset);
         }
 
         public SelectDSL<R>.FetchFirstFinisher fetchFirst(long fetchFirstRows) {
-            return QueryExpressionDSL.this.fetchFirst(fetchFirstRows);
+            return fetchFirstWhenPresent(fetchFirstRows);
+        }
+
+        public SelectDSL<R>.FetchFirstFinisher fetchFirstWhenPresent(Long fetchFirstRows) {
+            return QueryExpressionDSL.this.fetchFirstWhenPresent(fetchFirstRows);
         }
 
         @Override
@@ -575,15 +623,27 @@ public class QueryExpressionDSL<R>
             implements Buildable<R> {
 
         public SelectDSL<R>.FetchFirstFinisher fetchFirst(long fetchFirstRows) {
-            return QueryExpressionDSL.this.fetchFirst(fetchFirstRows);
+            return fetchFirstWhenPresent(fetchFirstRows);
+        }
+
+        public SelectDSL<R>.FetchFirstFinisher fetchFirstWhenPresent(Long fetchFirstRows) {
+            return QueryExpressionDSL.this.fetchFirstWhenPresent(fetchFirstRows);
         }
 
         public SelectDSL<R>.OffsetFirstFinisher offset(long offset) {
-            return QueryExpressionDSL.this.offset(offset);
+            return offsetWhenPresent(offset);
+        }
+
+        public SelectDSL<R>.OffsetFirstFinisher offsetWhenPresent(Long offset) {
+            return QueryExpressionDSL.this.offsetWhenPresent(offset);
         }
 
         public SelectDSL<R>.LimitFinisher limit(long limit) {
-            return QueryExpressionDSL.this.limit(limit);
+            return limitWhenPresent(limit);
+        }
+
+        public SelectDSL<R>.LimitFinisher limitWhenPresent(Long limit) {
+            return QueryExpressionDSL.this.limitWhenPresent(limit);
         }
 
         public SelectDSL<R> orderBy(SortSpecification... columns) {

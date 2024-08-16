@@ -28,7 +28,7 @@ typealias MultiSelectCompleter = KotlinMultiSelectBuilder.() -> Unit
 @MyBatisDslMarker
 class KotlinMultiSelectBuilder: Buildable<MultiSelectModel> {
     private var dsl: MultiSelectDSL? = null
-        private set(value) {
+        set(value) {
             assertNull(field, "ERROR.33") //$NON-NLS-1$
             field = value
         }
@@ -64,15 +64,27 @@ class KotlinMultiSelectBuilder: Buildable<MultiSelectModel> {
     }
 
     fun limit(limit: Long) {
-        getDsl().limit(limit)
+        limitWhenPresent(limit)
+    }
+
+    fun limitWhenPresent(limit: Long?) {
+        getDsl().limitWhenPresent(limit)
     }
 
     fun offset(offset: Long) {
-        getDsl().offset(offset)
+        offsetWhenPresent(offset)
+    }
+
+    fun offsetWhenPresent(offset: Long?) {
+        getDsl().offsetWhenPresent(offset)
     }
 
     fun fetchFirst(fetchFirstRows: Long) {
-        getDsl().fetchFirst(fetchFirstRows).rowsOnly()
+        fetchFirstWhenPresent(fetchFirstRows)
+    }
+
+    fun fetchFirstWhenPresent(fetchFirstRows: Long?) {
+        getDsl().fetchFirstWhenPresent(fetchFirstRows).rowsOnly()
     }
 
     fun configureStatement(c: StatementConfiguration.() -> Unit) {

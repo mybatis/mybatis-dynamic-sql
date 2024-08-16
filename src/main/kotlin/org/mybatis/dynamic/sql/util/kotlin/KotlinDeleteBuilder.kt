@@ -30,7 +30,11 @@ class KotlinDeleteBuilder(private val dsl: DeleteDSL<DeleteModel>) :
     }
 
     fun limit(limit: Long) {
-        dsl.limit(limit)
+        limitWhenPresent(limit)
+    }
+
+    fun limitWhenPresent(limit: Long?) {
+        dsl.limitWhenPresent(limit)
     }
 
     override fun build(): DeleteModel = dsl.build()

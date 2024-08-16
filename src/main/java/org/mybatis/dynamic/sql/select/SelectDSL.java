@@ -108,16 +108,28 @@ public class SelectDSL<R> implements Buildable<R>, ConfigurableStatement<SelectD
     }
 
     public LimitFinisher limit(long limit) {
+        return limitWhenPresent(limit);
+    }
+
+    public LimitFinisher limitWhenPresent(Long limit) {
         this.limit = limit;
         return new LimitFinisher();
     }
 
     public OffsetFirstFinisher offset(long offset) {
+        return offsetWhenPresent(offset);
+    }
+
+    public OffsetFirstFinisher offsetWhenPresent(Long offset) {
         this.offset = offset;
         return new OffsetFirstFinisher();
     }
 
     public FetchFirstFinisher fetchFirst(long fetchFirstRows) {
+        return fetchFirstWhenPresent(fetchFirstRows);
+    }
+
+    public FetchFirstFinisher fetchFirstWhenPresent(Long fetchFirstRows) {
         this.fetchFirstRows = fetchFirstRows;
         return new FetchFirstFinisher();
     }
@@ -155,7 +167,11 @@ public class SelectDSL<R> implements Buildable<R>, ConfigurableStatement<SelectD
 
     public class LimitFinisher implements Buildable<R> {
         public OffsetFinisher offset(long offset) {
-            SelectDSL.this.offset(offset);
+            return offsetWhenPresent(offset);
+        }
+
+        public OffsetFinisher offsetWhenPresent(Long offset) {
+            SelectDSL.this.offsetWhenPresent(offset);
             return new OffsetFinisher();
         }
 
@@ -176,8 +192,11 @@ public class SelectDSL<R> implements Buildable<R>, ConfigurableStatement<SelectD
 
     public class OffsetFirstFinisher implements Buildable<R> {
         public FetchFirstFinisher fetchFirst(long fetchFirstRows) {
-            SelectDSL.this.fetchFirst(fetchFirstRows);
-            return new FetchFirstFinisher();
+            return fetchFirstWhenPresent(fetchFirstRows);
+        }
+
+        public FetchFirstFinisher fetchFirstWhenPresent(Long fetchFirstRows) {
+            return SelectDSL.this.fetchFirstWhenPresent(fetchFirstRows);
         }
 
         @NotNull

@@ -34,7 +34,11 @@ class KotlinUpdateBuilder(private val dsl: UpdateDSL<UpdateModel>) :
     }
 
     fun limit(limit: Long) {
-        dsl.limit(limit)
+        limitWhenPresent(limit)
+    }
+
+    fun limitWhenPresent(limit: Long?) {
+        dsl.limitWhenPresent(limit)
     }
 
     override fun build(): UpdateModel = dsl.build()
