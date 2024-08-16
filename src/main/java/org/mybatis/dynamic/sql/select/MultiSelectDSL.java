@@ -29,7 +29,8 @@ import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
 import org.mybatis.dynamic.sql.util.Buildable;
 import org.mybatis.dynamic.sql.util.ConfigurableStatement;
 
-public class MultiSelectDSL implements Buildable<MultiSelectModel>, ConfigurableStatement<MultiSelectDSL> {
+public class MultiSelectDSL implements Buildable<MultiSelectModel>, ConfigurableStatement<MultiSelectDSL>,
+        PagingDSL<MultiSelectModel> {
     private final List<UnionQuery> unionQueries = new ArrayList<>();
     private final SelectModel initialSelect;
     private OrderByModel orderByModel;
@@ -61,31 +62,22 @@ public class MultiSelectDSL implements Buildable<MultiSelectModel>, Configurable
         return this;
     }
 
-    public LimitFinisher limit(long limit) {
-        return limitWhenPresent(limit);
-    }
-
-    public LimitFinisher limitWhenPresent(Long limit) {
+    @Override
+    public LimitFinisher<MultiSelectModel> limitWhenPresent(Long limit) {
         this.limit = limit;
-        return new LimitFinisher();
+        return new LF();
     }
 
-    public OffsetFirstFinisher offset(long offset) {
-        return offsetWhenPresent(offset);
-    }
-
-    public OffsetFirstFinisher offsetWhenPresent(Long offset) {
+    @Override
+    public OffsetFirstFinisher<MultiSelectModel> offsetWhenPresent(Long offset) {
         this.offset = offset;
-        return new OffsetFirstFinisher();
+        return new OFF();
     }
 
-    public FetchFirstFinisher fetchFirst(long fetchFirstRows) {
-        return fetchFirstWhenPresent(fetchFirstRows);
-    }
-
-    public FetchFirstFinisher fetchFirstWhenPresent(Long fetchFirstRows) {
+    @Override
+    public FetchFirstFinisher<MultiSelectModel> fetchFirstWhenPresent(Long fetchFirstRows) {
         this.fetchFirstRows = fetchFirstRows;
-        return new FetchFirstFinisher();
+        return new FFF();
     }
 
     @NotNull
@@ -114,14 +106,18 @@ public class MultiSelectDSL implements Buildable<MultiSelectModel>, Configurable
         return this;
     }
 
-    public class LimitFinisher implements Buildable<MultiSelectModel> {
-        public OffsetFinisher offset(long offset) {
-            return offsetWhenPresent(offset);
+    class FFF implements FetchFirstFinisher<MultiSelectModel> {
+        @Override
+        public Buildable<MultiSelectModel> rowsOnly() {
+            return MultiSelectDSL.this;
         }
+    }
 
-        public OffsetFinisher offsetWhenPresent(Long offset) {
-            MultiSelectDSL.this.offsetWhenPresent(offset);
-            return new OffsetFinisher();
+    class LF implements LimitFinisher<MultiSelectModel> {
+        @Override
+        public Buildable<MultiSelectModel> offsetWhenPresent(Long offset) {
+            MultiSelectDSL.this.offset = offset;
+            return MultiSelectDSL.this;
         }
 
         @NotNull
@@ -131,37 +127,13 @@ public class MultiSelectDSL implements Buildable<MultiSelectModel>, Configurable
         }
     }
 
-    public class OffsetFinisher implements Buildable<MultiSelectModel> {
-        @NotNull
+    class OFF implements OffsetFirstFinisher<MultiSelectModel> {
         @Override
-        public MultiSelectModel build() {
-            return MultiSelectDSL.this.build();
-        }
-    }
-
-    public class OffsetFirstFinisher implements Buildable<MultiSelectModel> {
-        public FetchFirstFinisher fetchFirst(long fetchFirstRows) {
-            return fetchFirstWhenPresent(fetchFirstRows);
+        public FetchFirstFinisher<MultiSelectModel> fetchFirstWhenPresent(Long fetchFirstRows) {
+            MultiSelectDSL.this.fetchFirstRows = fetchFirstRows;
+            return new FFF();
         }
 
-        public FetchFirstFinisher fetchFirstWhenPresent(Long fetchFirstRows) {
-            return MultiSelectDSL.this.fetchFirstWhenPresent(fetchFirstRows);
-        }
-
-        @NotNull
-        @Override
-        public MultiSelectModel build() {
-            return MultiSelectDSL.this.build();
-        }
-    }
-
-    public class FetchFirstFinisher {
-        public RowsOnlyFinisher rowsOnly() {
-            return new RowsOnlyFinisher();
-        }
-    }
-
-    public class RowsOnlyFinisher implements Buildable<MultiSelectModel> {
         @NotNull
         @Override
         public MultiSelectModel build() {
