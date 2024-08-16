@@ -44,7 +44,7 @@ import org.mybatis.dynamic.sql.where.EmbeddedWhereModel;
 
 public class QueryExpressionDSL<R>
         extends AbstractQueryExpressionDSL<QueryExpressionDSL<R>.QueryExpressionWhereBuilder, QueryExpressionDSL<R>>
-        implements Buildable<R> {
+        implements Buildable<R>, PagingDSL<R> {
 
     private final String connector;
     private final SelectDSL<R> selectDSL;
@@ -196,16 +196,19 @@ public class QueryExpressionDSL<R>
                 .build();
     }
 
-    public SelectDSL<R>.LimitFinisher limit(long limit) {
-        return selectDSL.limit(limit);
+    @Override
+    public PagingDSL.LimitFinisher<R> limitWhenPresent(Long limit) {
+        return selectDSL.limitWhenPresent(limit);
     }
 
-    public SelectDSL<R>.OffsetFirstFinisher offset(long offset) {
-        return selectDSL.offset(offset);
+    @Override
+    public PagingDSL.OffsetFirstFinisher<R> offsetWhenPresent(Long offset) {
+        return selectDSL.offsetWhenPresent(offset);
     }
 
-    public SelectDSL<R>.FetchFirstFinisher fetchFirst(long fetchFirstRows) {
-        return selectDSL.fetchFirst(fetchFirstRows);
+    @Override
+    public PagingDSL.FetchFirstFinisher<R> fetchFirstWhenPresent(Long fetchFirstRows) {
+        return selectDSL.fetchFirstWhenPresent(fetchFirstRows);
     }
 
     @Override
@@ -275,7 +278,7 @@ public class QueryExpressionDSL<R>
     }
 
     public class QueryExpressionWhereBuilder extends AbstractWhereFinisher<QueryExpressionWhereBuilder>
-            implements Buildable<R> {
+            implements Buildable<R>, PagingDSL<R> {
         private QueryExpressionWhereBuilder() {
             super(QueryExpressionDSL.this);
         }
@@ -304,16 +307,19 @@ public class QueryExpressionDSL<R>
             return QueryExpressionDSL.this.groupBy(columns);
         }
 
-        public SelectDSL<R>.LimitFinisher limit(long limit) {
-            return QueryExpressionDSL.this.limit(limit);
+        @Override
+        public PagingDSL.LimitFinisher<R> limitWhenPresent(Long limit) {
+            return QueryExpressionDSL.this.limitWhenPresent(limit);
         }
 
-        public SelectDSL<R>.OffsetFirstFinisher offset(long offset) {
-            return QueryExpressionDSL.this.offset(offset);
+        @Override
+        public PagingDSL.OffsetFirstFinisher<R> offsetWhenPresent(Long offset) {
+            return QueryExpressionDSL.this.offsetWhenPresent(offset);
         }
 
-        public SelectDSL<R>.FetchFirstFinisher fetchFirst(long fetchFirstRows) {
-            return QueryExpressionDSL.this.fetchFirst(fetchFirstRows);
+        @Override
+        public PagingDSL.FetchFirstFinisher<R> fetchFirstWhenPresent(Long fetchFirstRows) {
+            return QueryExpressionDSL.this.fetchFirstWhenPresent(fetchFirstRows);
         }
 
         @NotNull
@@ -351,8 +357,10 @@ public class QueryExpressionDSL<R>
         }
     }
 
-    public class JoinSpecificationFinisher extends AbstractBooleanExpressionDSL<JoinSpecificationFinisher>
-            implements AbstractWhereStarter<QueryExpressionWhereBuilder, JoinSpecificationFinisher>, Buildable<R> {
+    public class JoinSpecificationFinisher
+            extends AbstractBooleanExpressionDSL<JoinSpecificationFinisher>
+            implements AbstractWhereStarter<QueryExpressionWhereBuilder, JoinSpecificationFinisher>, Buildable<R>, PagingDSL<R> {
+
         private final TableExpression table;
         private final JoinType joinType;
 
@@ -480,16 +488,19 @@ public class QueryExpressionDSL<R>
             return QueryExpressionDSL.this.orderBy(columns);
         }
 
-        public SelectDSL<R>.LimitFinisher limit(long limit) {
-            return QueryExpressionDSL.this.limit(limit);
+        @Override
+        public PagingDSL.LimitFinisher<R> limitWhenPresent(Long limit) {
+            return QueryExpressionDSL.this.limitWhenPresent(limit);
         }
 
-        public SelectDSL<R>.OffsetFirstFinisher offset(long offset) {
-            return QueryExpressionDSL.this.offset(offset);
+        @Override
+        public PagingDSL.OffsetFirstFinisher<R> offsetWhenPresent(Long offset) {
+            return QueryExpressionDSL.this.offsetWhenPresent(offset);
         }
 
-        public SelectDSL<R>.FetchFirstFinisher fetchFirst(long fetchFirstRows) {
-            return QueryExpressionDSL.this.fetchFirst(fetchFirstRows);
+        @Override
+        public PagingDSL.FetchFirstFinisher<R> fetchFirstWhenPresent(Long fetchFirstRows) {
+            return QueryExpressionDSL.this.fetchFirstWhenPresent(fetchFirstRows);
         }
 
         @Override
@@ -498,7 +509,8 @@ public class QueryExpressionDSL<R>
         }
     }
 
-    public class GroupByFinisher extends AbstractHavingStarter<QueryExpressionHavingBuilder> implements Buildable<R> {
+    public class GroupByFinisher extends AbstractHavingStarter<QueryExpressionHavingBuilder>
+            implements Buildable<R>, PagingDSL<R> {
         public SelectDSL<R> orderBy(SortSpecification... columns) {
             return orderBy(Arrays.asList(columns));
         }
@@ -521,16 +533,19 @@ public class QueryExpressionDSL<R>
             return QueryExpressionDSL.this.unionAll();
         }
 
-        public SelectDSL<R>.LimitFinisher limit(long limit) {
-            return QueryExpressionDSL.this.limit(limit);
+        @Override
+        public PagingDSL.LimitFinisher<R> limitWhenPresent(Long limit) {
+            return QueryExpressionDSL.this.limitWhenPresent(limit);
         }
 
-        public SelectDSL<R>.OffsetFirstFinisher offset(long offset) {
-            return QueryExpressionDSL.this.offset(offset);
+        @Override
+        public PagingDSL.OffsetFirstFinisher<R> offsetWhenPresent(Long offset) {
+            return QueryExpressionDSL.this.offsetWhenPresent(offset);
         }
 
-        public SelectDSL<R>.FetchFirstFinisher fetchFirst(long fetchFirstRows) {
-            return QueryExpressionDSL.this.fetchFirst(fetchFirstRows);
+        @Override
+        public PagingDSL.FetchFirstFinisher<R> fetchFirstWhenPresent(Long fetchFirstRows) {
+            return QueryExpressionDSL.this.fetchFirstWhenPresent(fetchFirstRows);
         }
 
         @Override
@@ -573,18 +588,21 @@ public class QueryExpressionDSL<R>
     }
 
     public class QueryExpressionHavingBuilder extends AbstractHavingFinisher<QueryExpressionHavingBuilder>
-            implements Buildable<R> {
+            implements Buildable<R>, PagingDSL<R> {
 
-        public SelectDSL<R>.FetchFirstFinisher fetchFirst(long fetchFirstRows) {
-            return QueryExpressionDSL.this.fetchFirst(fetchFirstRows);
+        @Override
+        public PagingDSL.LimitFinisher<R> limitWhenPresent(Long limit) {
+            return QueryExpressionDSL.this.limitWhenPresent(limit);
         }
 
-        public SelectDSL<R>.OffsetFirstFinisher offset(long offset) {
-            return QueryExpressionDSL.this.offset(offset);
+        @Override
+        public PagingDSL.OffsetFirstFinisher<R> offsetWhenPresent(Long offset) {
+            return QueryExpressionDSL.this.offsetWhenPresent(offset);
         }
 
-        public SelectDSL<R>.LimitFinisher limit(long limit) {
-            return QueryExpressionDSL.this.limit(limit);
+        @Override
+        public PagingDSL.FetchFirstFinisher<R> fetchFirstWhenPresent(Long fetchFirstRows) {
+            return QueryExpressionDSL.this.fetchFirstWhenPresent(fetchFirstRows);
         }
 
         public SelectDSL<R> orderBy(SortSpecification... columns) {

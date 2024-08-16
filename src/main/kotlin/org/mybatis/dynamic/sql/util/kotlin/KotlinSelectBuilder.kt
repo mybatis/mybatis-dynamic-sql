@@ -28,7 +28,7 @@ typealias SelectCompleter = KotlinSelectBuilder.() -> Unit
 
 @Suppress("TooManyFunctions")
 class KotlinSelectBuilder(private val fromGatherer: QueryExpressionDSL.FromGatherer<SelectModel>) :
-    KotlinBaseJoiningBuilder<QueryExpressionDSL<SelectModel>>(), Buildable<SelectModel> {
+    KotlinBaseJoiningBuilder<QueryExpressionDSL<SelectModel>>(), Buildable<SelectModel>, KotlinPagingDSL {
 
     private var dsl: KQueryExpressionDSL? = null
 
@@ -58,16 +58,16 @@ class KotlinSelectBuilder(private val fromGatherer: QueryExpressionDSL.FromGathe
         getDsl().orderBy(columns.toList())
     }
 
-    fun limit(limit: Long) {
-        getDsl().limit(limit)
+    override fun limitWhenPresent(limit: Long?) {
+        getDsl().limitWhenPresent(limit)
     }
 
-    fun offset(offset: Long) {
-        getDsl().offset(offset)
+    override fun offsetWhenPresent(offset: Long?) {
+        getDsl().offsetWhenPresent(offset)
     }
 
-    fun fetchFirst(fetchFirstRows: Long) {
-        getDsl().fetchFirst(fetchFirstRows).rowsOnly()
+    override fun fetchFirstWhenPresent(fetchFirstRows: Long?) {
+        getDsl().fetchFirstWhenPresent(fetchFirstRows).rowsOnly()
     }
 
     fun union(union: KotlinUnionBuilder.() -> Unit): Unit =

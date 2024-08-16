@@ -56,6 +56,10 @@ public class DeleteDSL<R> implements AbstractWhereStarter<DeleteDSL<R>.DeleteWhe
     }
 
     public DeleteDSL<R> limit(long limit) {
+        return limitWhenPresent(limit);
+    }
+
+    public DeleteDSL<R> limitWhenPresent(Long limit) {
         this.limit = limit;
         return this;
     }
@@ -115,7 +119,11 @@ public class DeleteDSL<R> implements AbstractWhereStarter<DeleteDSL<R>.DeleteWhe
         }
 
         public DeleteDSL<R> limit(long limit) {
-            return DeleteDSL.this.limit(limit);
+            return limitWhenPresent(limit);
+        }
+
+        public DeleteDSL<R> limitWhenPresent(Long limit) {
+            return DeleteDSL.this.limitWhenPresent(limit);
         }
 
         public DeleteDSL<R> orderBy(SortSpecification... columns) {

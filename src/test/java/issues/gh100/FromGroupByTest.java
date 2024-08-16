@@ -105,7 +105,7 @@ class FromGroupByTest {
 
         QueryExpressionDSL<SelectModel>.GroupByFinisher builder2 = builder1.groupBy(StudentDynamicSqlSupport.name);
 
-        SelectDSL<SelectModel>.LimitFinisher builder3 = builder2.limit(3);
+        var builder3 = builder2.limit(3);
 
         String expected = "select name, count(*)"
                 + " from student"
@@ -162,7 +162,7 @@ class FromGroupByTest {
 
         QueryExpressionDSL<SelectModel>.GroupByFinisher builder2 = builder1.groupBy(StudentDynamicSqlSupport.name);
 
-        SelectDSL<SelectModel>.OffsetFirstFinisher builder3 = builder2.offset(3);
+        var builder3 = builder2.offset(3);
 
         String expected = "select name, count(*)"
                 + " from student"
@@ -219,7 +219,7 @@ class FromGroupByTest {
 
         QueryExpressionDSL<SelectModel>.GroupByFinisher builder2 = builder1.groupBy(StudentDynamicSqlSupport.name);
 
-        SelectDSL<SelectModel>.RowsOnlyFinisher builder3 = builder2.fetchFirst(2).rowsOnly();
+        var builder3 = builder2.fetchFirst(2).rowsOnly();
 
         String expected = "select name, count(*)"
                 + " from student"
@@ -363,7 +363,7 @@ class FromGroupByTest {
 
         SelectDSL<SelectModel> builder3 = builder2.orderBy(StudentDynamicSqlSupport.name);
 
-        SelectDSL<SelectModel>.OffsetFirstFinisher builder4 = builder3.offset(2);
+        var builder4 = builder3.offset(2);
 
         String expected = "select name, count(*)"
                 + " from student"
