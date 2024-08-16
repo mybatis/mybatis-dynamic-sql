@@ -26,7 +26,7 @@ import org.mybatis.dynamic.sql.util.Buildable
 typealias MultiSelectCompleter = KotlinMultiSelectBuilder.() -> Unit
 
 @MyBatisDslMarker
-class KotlinMultiSelectBuilder: Buildable<MultiSelectModel> {
+class KotlinMultiSelectBuilder: Buildable<MultiSelectModel>, KotlinPagingDSL {
     private var dsl: MultiSelectDSL? = null
         set(value) {
             assertNull(field, "ERROR.33") //$NON-NLS-1$
@@ -63,27 +63,15 @@ class KotlinMultiSelectBuilder: Buildable<MultiSelectModel> {
         getDsl().orderBy(columns.asList())
     }
 
-    fun limit(limit: Long) {
-        limitWhenPresent(limit)
-    }
-
-    fun limitWhenPresent(limit: Long?) {
+    override fun limitWhenPresent(limit: Long?) {
         getDsl().limitWhenPresent(limit)
     }
 
-    fun offset(offset: Long) {
-        offsetWhenPresent(offset)
-    }
-
-    fun offsetWhenPresent(offset: Long?) {
+    override fun offsetWhenPresent(offset: Long?) {
         getDsl().offsetWhenPresent(offset)
     }
 
-    fun fetchFirst(fetchFirstRows: Long) {
-        fetchFirstWhenPresent(fetchFirstRows)
-    }
-
-    fun fetchFirstWhenPresent(fetchFirstRows: Long?) {
+    override fun fetchFirstWhenPresent(fetchFirstRows: Long?) {
         getDsl().fetchFirstWhenPresent(fetchFirstRows).rowsOnly()
     }
 
