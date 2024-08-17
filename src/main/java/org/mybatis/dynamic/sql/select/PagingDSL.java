@@ -52,6 +52,7 @@ public interface PagingDSL<T> {
         FetchFirstFinisher<T> fetchFirstWhenPresent(Long fetchFirstRows);
     }
 
+    @FunctionalInterface
     interface FetchFirstFinisher<T> {
         Buildable<T> rowsOnly();
     }

@@ -65,19 +65,19 @@ public class MultiSelectDSL implements Buildable<MultiSelectModel>, Configurable
     @Override
     public LimitFinisher<MultiSelectModel> limitWhenPresent(Long limit) {
         this.limit = limit;
-        return new LF();
+        return new LocalLimitFinisher();
     }
 
     @Override
     public OffsetFirstFinisher<MultiSelectModel> offsetWhenPresent(Long offset) {
         this.offset = offset;
-        return new OFF();
+        return new LocalOffsetFirstFinisher();
     }
 
     @Override
     public FetchFirstFinisher<MultiSelectModel> fetchFirstWhenPresent(Long fetchFirstRows) {
         this.fetchFirstRows = fetchFirstRows;
-        return new FFF();
+        return () -> MultiSelectDSL.this;
     }
 
     @NotNull
@@ -106,38 +106,27 @@ public class MultiSelectDSL implements Buildable<MultiSelectModel>, Configurable
         return this;
     }
 
-    class FFF implements FetchFirstFinisher<MultiSelectModel> {
+    abstract class BaseBuildable implements Buildable<MultiSelectModel> {
+        @NotNull
         @Override
-        public Buildable<MultiSelectModel> rowsOnly() {
-            return MultiSelectDSL.this;
+        public MultiSelectModel build() {
+            return MultiSelectDSL.this.build();
         }
     }
 
-    class LF implements LimitFinisher<MultiSelectModel> {
+    class LocalOffsetFirstFinisher extends BaseBuildable implements OffsetFirstFinisher<MultiSelectModel> {
+        @Override
+        public FetchFirstFinisher<MultiSelectModel> fetchFirstWhenPresent(Long fetchFirstRows) {
+            MultiSelectDSL.this.fetchFirstRows = fetchFirstRows;
+            return () -> MultiSelectDSL.this;
+        }
+    }
+
+    class LocalLimitFinisher extends BaseBuildable implements LimitFinisher<MultiSelectModel> {
         @Override
         public Buildable<MultiSelectModel> offsetWhenPresent(Long offset) {
             MultiSelectDSL.this.offset = offset;
             return MultiSelectDSL.this;
-        }
-
-        @NotNull
-        @Override
-        public MultiSelectModel build() {
-            return MultiSelectDSL.this.build();
-        }
-    }
-
-    class OFF implements OffsetFirstFinisher<MultiSelectModel> {
-        @Override
-        public FetchFirstFinisher<MultiSelectModel> fetchFirstWhenPresent(Long fetchFirstRows) {
-            MultiSelectDSL.this.fetchFirstRows = fetchFirstRows;
-            return new FFF();
-        }
-
-        @NotNull
-        @Override
-        public MultiSelectModel build() {
-            return MultiSelectDSL.this.build();
         }
     }
 }
