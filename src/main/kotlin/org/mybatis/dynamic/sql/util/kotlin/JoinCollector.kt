@@ -15,44 +15,33 @@
  */
 package org.mybatis.dynamic.sql.util.kotlin
 
-import org.mybatis.dynamic.sql.AndOrCriteriaGroup
 import org.mybatis.dynamic.sql.BindableColumn
-import org.mybatis.dynamic.sql.ColumnAndConditionCriterion
 import org.mybatis.dynamic.sql.SqlBuilder
-import org.mybatis.dynamic.sql.SqlCriterion
 import org.mybatis.dynamic.sql.VisitableCondition
 
 typealias JoinReceiver = JoinCollector.() -> Unit
 
 @MyBatisDslMarker
 class JoinCollector {
-    private var initialCriterion: SqlCriterion? = null
-    internal val subCriteria = mutableListOf<AndOrCriteriaGroup>()
+    private val criteriaCollector = GroupingCriteriaCollector()
 
-    internal fun initialCriterion() : SqlCriterion = invalidIfNull(initialCriterion, "ERROR.22") //$NON-NLS-1$
+    internal fun initialCriterion() = invalidIfNull(criteriaCollector.initialCriterion, "ERROR.22") //$NON-NLS-1$
+    internal fun subCriteria() = criteriaCollector.subCriteria
 
     fun on (receiver: GroupingCriteriaReceiver) {
-        GroupingCriteriaCollector().apply(receiver).also {
-            initialCriterion = it.initialCriterion
-            subCriteria.addAll(it.subCriteria)
-        }
+        assertNull(criteriaCollector.initialCriterion, "ERROR.45") //$NON-NLS-1$
+        criteriaCollector.apply(receiver)
     }
 
     // TODO - Deprecate?
     fun <T> on(leftColumn: BindableColumn<T>): RightColumnCollector<T> = RightColumnCollector {
-        initialCriterion = ColumnAndConditionCriterion.withColumn(leftColumn)
-            .withCondition(it)
-            .build()
+        assertNull(criteriaCollector.initialCriterion, "ERROR.45") //$NON-NLS-1$
+        criteriaCollector.apply { leftColumn.invoke(it) }
     }
 
     // TODO - Deprecate?
     fun <T> and(leftColumn: BindableColumn<T>): RightColumnCollector<T> = RightColumnCollector {
-        subCriteria.add(
-            AndOrCriteriaGroup.Builder()
-                .withConnector("and") //$NON-NLS-1$
-                .withInitialCriterion(ColumnAndConditionCriterion.withColumn(leftColumn).withCondition(it).build())
-                .build()
-        )
+        criteriaCollector.and { leftColumn.invoke(it) }
     }
 }
 

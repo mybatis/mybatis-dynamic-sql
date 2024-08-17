@@ -815,4 +815,21 @@ class JoinMapperNewSyntaxTest {
             }
         }.withMessage(Messages.getString("ERROR.22")) //$NON-NLS-1$
     }
+
+    @Test
+    fun testJoinWithDoubleOnCondition() {
+        // create second table instance for self-join
+        val user2 = user.withAlias("other_user")
+
+        assertThatExceptionOfType(KInvalidSQLException::class.java).isThrownBy {
+            select(user.userId, user.userName, user.parentId) {
+                from(user, "u1")
+                join(user2, "u2") {
+                    on { user.userId isEqualTo user2.parentId }
+                    on { user.userId isEqualTo user2.parentId }
+                }
+                where { user2.userId isEqualTo 4 }
+            }
+        }.withMessage(Messages.getString("ERROR.45")) //$NON-NLS-1$
+    }
 }
