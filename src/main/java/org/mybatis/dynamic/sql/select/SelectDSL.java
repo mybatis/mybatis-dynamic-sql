@@ -109,17 +109,17 @@ public class SelectDSL<R> implements Buildable<R>, ConfigurableStatement<SelectD
 
     public LimitFinisher<R> limitWhenPresent(Long limit) {
         this.limit = limit;
-        return new LF();
+        return new LocalLimitFinisher();
     }
 
     public OffsetFirstFinisher<R> offsetWhenPresent(Long offset) {
         this.offset = offset;
-        return new OFF();
+        return new LocalOffsetFirstFinisher();
     }
 
     public FetchFirstFinisher<R> fetchFirstWhenPresent(Long fetchFirstRows) {
         this.fetchFirstRows = fetchFirstRows;
-        return new FFF();
+        return () -> SelectDSL.this;
     }
 
     @Override
@@ -153,38 +153,27 @@ public class SelectDSL<R> implements Buildable<R>, ConfigurableStatement<SelectD
                 .build();
     }
 
-    class FFF implements FetchFirstFinisher<R> {
+    abstract class BaseBuildable implements Buildable<R> {
+        @NotNull
         @Override
-        public Buildable<R> rowsOnly() {
-            return SelectDSL.this;
+        public R build() {
+            return SelectDSL.this.build();
         }
     }
 
-    class LF implements LimitFinisher<R> {
+    class LocalOffsetFirstFinisher extends BaseBuildable implements OffsetFirstFinisher<R> {
+        @Override
+        public FetchFirstFinisher<R> fetchFirstWhenPresent(Long fetchFirstRows) {
+            SelectDSL.this.fetchFirstRows = fetchFirstRows;
+            return () -> SelectDSL.this;
+        }
+    }
+
+    class LocalLimitFinisher extends BaseBuildable implements LimitFinisher<R> {
         @Override
         public Buildable<R> offsetWhenPresent(Long offset) {
             SelectDSL.this.offset = offset;
             return SelectDSL.this;
-        }
-
-        @NotNull
-        @Override
-        public R build() {
-            return SelectDSL.this.build();
-        }
-    }
-
-    class OFF implements OffsetFirstFinisher<R> {
-        @Override
-        public FetchFirstFinisher<R> fetchFirstWhenPresent(Long fetchFirstRows) {
-            SelectDSL.this.fetchFirstRows = fetchFirstRows;
-            return new FFF();
-        }
-
-        @NotNull
-        @Override
-        public R build() {
-            return SelectDSL.this.build();
         }
     }
 }
