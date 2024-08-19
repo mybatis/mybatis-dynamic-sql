@@ -28,18 +28,11 @@ class JoinCollector {
     internal fun initialCriterion() = invalidIfNull(criteriaCollector.initialCriterion, "ERROR.22") //$NON-NLS-1$
     internal fun subCriteria() = criteriaCollector.subCriteria
 
-    fun on (receiver: GroupingCriteriaReceiver) {
-        assertNull(criteriaCollector.initialCriterion, "ERROR.45") //$NON-NLS-1$
-        criteriaCollector.apply(receiver)
-    }
-
-    @Deprecated("Please replace with the \"on\" lambda expression", level = DeprecationLevel.WARNING)
     fun <T> on(leftColumn: BindableColumn<T>): RightColumnCollector<T> = RightColumnCollector {
         assertNull(criteriaCollector.initialCriterion, "ERROR.45") //$NON-NLS-1$
         criteriaCollector.apply { leftColumn.invoke(it) }
     }
 
-    @Deprecated("Please move the \"and\" expression into an \"on\" lambda", level = DeprecationLevel.WARNING)
     fun <T> and(leftColumn: BindableColumn<T>): RightColumnCollector<T> = RightColumnCollector {
         criteriaCollector.and { leftColumn.invoke(it) }
     }

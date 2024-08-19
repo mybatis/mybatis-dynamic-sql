@@ -15,8 +15,6 @@
  */
 package org.mybatis.dynamic.sql.select.render;
 
-import static org.mybatis.dynamic.sql.util.StringUtilities.spaceBefore;
-
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -26,6 +24,7 @@ import org.mybatis.dynamic.sql.select.join.JoinModel;
 import org.mybatis.dynamic.sql.select.join.JoinSpecification;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 import org.mybatis.dynamic.sql.util.FragmentCollector;
+import org.mybatis.dynamic.sql.util.Messages;
 
 public class JoinRenderer {
     private final JoinModel joinModel;
@@ -46,22 +45,17 @@ public class JoinRenderer {
     }
 
     private FragmentAndParameters renderJoinSpecification(JoinSpecification joinSpecification) {
-        FragmentAndParameters renderedTable = joinSpecification.table().accept(tableExpressionRenderer);
-        FragmentAndParameters renderedJoinSpecification = JoinSpecificationRenderer
+        FragmentCollector fc = new FragmentCollector();
+        fc.add(FragmentAndParameters.fromFragment(joinSpecification.joinType().type()));
+        fc.add(joinSpecification.table().accept(tableExpressionRenderer));
+        fc.add(JoinSpecificationRenderer
                 .withJoinSpecification(joinSpecification)
                 .withRenderingContext(renderingContext)
                 .build()
                 .render()
-                .orElseThrow(() -> new InvalidSqlException("Join Specifications Must Render")); // TODO
+                .orElseThrow(() -> new InvalidSqlException(Messages.getString("ERROR.46")))); //$NON-NLS-1$
 
-        String fragment = joinSpecification.joinType().type()
-                + spaceBefore(renderedTable.fragment())
-                + spaceBefore(renderedJoinSpecification.fragment());
-
-        return FragmentAndParameters.withFragment(fragment)
-                .withParameters(renderedTable.parameters())
-                .withParameters(renderedJoinSpecification.parameters())
-                .build();
+        return fc.toFragmentAndParameters(Collectors.joining(" ")); //$NON-NLS-1$
     }
 
     public static Builder withJoinModel(JoinModel joinModel) {
