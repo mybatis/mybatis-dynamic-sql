@@ -435,6 +435,32 @@ public interface SqlBuilder {
                 .build();
     }
 
+    /**
+     * Starting in version 2.0.0, this function is a synonym for {@link SqlBuilder#isEqualTo(BasicColumn)}.
+     *
+     * @param column the column
+     * @return an IsEqualToColumn condition
+     * @param <T> the column type
+     * @deprecated since 2.0.0. Please replace with isEqualTo(column)
+     */
+    @Deprecated(since = "2.0.0", forRemoval = true)
+    static <T> IsEqualToColumn<T> equalTo(BindableColumn<T> column) {
+        return isEqualTo(column);
+    }
+
+    /**
+     * Starting in version 2.0.0, this function is a synonym for {@link SqlBuilder#isEqualTo(Object)}.
+     *
+     * @param value the value
+     * @return an IsEqualTo condition
+     * @param <T> the column type
+     * @deprecated since 2.0.0. Please replace with isEqualTo(value)
+     */
+    @Deprecated(since = "2.0.0", forRemoval = true)
+    static <T> IsEqualTo<T> equalTo(T value) {
+        return isEqualTo(value);
+    }
+
     // case expressions
     @SuppressWarnings("java:S100")
     static <T> SimpleCaseDSL<T> case_(BindableColumn<T> column) {
@@ -444,16 +470,6 @@ public interface SqlBuilder {
     @SuppressWarnings("java:S100")
     static SearchedCaseDSL case_() {
         return SearchedCaseDSL.searchedCase();
-    }
-
-    // TODO - Deprecate?
-    static <T> IsEqualToColumn<T> equalTo(BindableColumn<T> column) {
-        return IsEqualToColumn.of(column);
-    }
-
-    // TODO - Deprecate?
-    static <T> IsEqualTo<T> equalTo(T value) {
-        return IsEqualTo.of(value);
     }
 
     // aggregate support

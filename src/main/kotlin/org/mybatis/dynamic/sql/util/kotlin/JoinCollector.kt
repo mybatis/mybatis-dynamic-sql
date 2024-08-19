@@ -33,20 +33,20 @@ class JoinCollector {
         criteriaCollector.apply(receiver)
     }
 
-    // TODO - Deprecate?
+    @Deprecated("Please replace with the \"on\" lambda expression", level = DeprecationLevel.WARNING)
     fun <T> on(leftColumn: BindableColumn<T>): RightColumnCollector<T> = RightColumnCollector {
         assertNull(criteriaCollector.initialCriterion, "ERROR.45") //$NON-NLS-1$
         criteriaCollector.apply { leftColumn.invoke(it) }
     }
 
-    // TODO - Deprecate?
+    @Deprecated("Please move the \"and\" expression into an \"on\" lambda", level = DeprecationLevel.WARNING)
     fun <T> and(leftColumn: BindableColumn<T>): RightColumnCollector<T> = RightColumnCollector {
         criteriaCollector.and { leftColumn.invoke(it) }
     }
 }
 
 class RightColumnCollector<T>(private val joinConditionConsumer: (VisitableCondition<T>) -> Unit) {
-    infix fun equalTo(rightColumn: BindableColumn<T>) = joinConditionConsumer.invoke(SqlBuilder.equalTo(rightColumn))
+    infix fun equalTo(rightColumn: BindableColumn<T>) = joinConditionConsumer.invoke(SqlBuilder.isEqualTo(rightColumn))
 
-    infix fun equalTo(value: T) = joinConditionConsumer.invoke(SqlBuilder.equalTo(value))
+    infix fun equalTo(value: T) = joinConditionConsumer.invoke(SqlBuilder.isEqualTo(value))
 }
