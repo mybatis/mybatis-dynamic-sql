@@ -36,6 +36,7 @@
     <menu name="User's Guide">
       <item href="docs/introduction.html" name="Introduction" />
       <item href="docs/CHANGELOG.html" name="Change Log" />
+      <item href="docs/migratingV1toV2.html" name="Migrating from V1 to V2" />
       <item href="docs/quickStart.html" name="Quick Start" />
       <item href="docs/exceptions.html" name="Exceptions thrown by the Library" />
       <item href="docs/configuration.html" name="Configuration of the Library" />

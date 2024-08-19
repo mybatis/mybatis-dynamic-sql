@@ -417,9 +417,9 @@ val selectStatement = select(orderMaster.orderId, orderMaster.orderDate, orderDe
    orderDetail.description, orderDetail.quantity
 ) {
    from(orderMaster, "om")
-   join(orderDetail, "od") {
-      on(orderMaster.orderId) equalTo orderDetail.orderId
-      and(orderMaster.orderId) equalTo orderDetail.orderId
+   join(orderDetail, "od") on {
+      orderMaster.orderId isEqualTo orderDetail.orderId
+      and { orderMaster.orderId isEqualTo orderDetail.orderId }
    }
    where { orderMaster.orderId isEqualTo 1 }
    or {
@@ -433,8 +433,7 @@ val selectStatement = select(orderMaster.orderId, orderMaster.orderDate, orderDe
 
 In a select statement you must specify a table in a `from` clause. Everything else is optional.
 
-Multiple join clauses can be specified if you need to join additional tables. In a join clause, you must
-specify an `on` condition, and you may specify additional `and` conditions as necessary. Full, left, right, inner,
+Multiple join clauses can be specified if you need to join additional tables. Full, left, right, inner,
 and outer joins are supported.
 
 Where clauses can be of arbitrary complexity and support all SQL operators including exists operators, subqueries, etc.
