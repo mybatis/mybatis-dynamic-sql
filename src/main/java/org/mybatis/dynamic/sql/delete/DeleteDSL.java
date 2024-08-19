@@ -32,8 +32,8 @@ import org.mybatis.dynamic.sql.where.AbstractWhereFinisher;
 import org.mybatis.dynamic.sql.where.AbstractWhereStarter;
 import org.mybatis.dynamic.sql.where.EmbeddedWhereModel;
 
-public class DeleteDSL<R> extends AbstractWhereStarter<DeleteDSL<R>.DeleteWhereBuilder, DeleteDSL<R>>
-        implements Buildable<R> {
+public class DeleteDSL<R> implements AbstractWhereStarter<DeleteDSL<R>.DeleteWhereBuilder, DeleteDSL<R>>,
+        Buildable<R> {
 
     private final Function<DeleteModel, R> adapterFunction;
     private final SqlTable table;

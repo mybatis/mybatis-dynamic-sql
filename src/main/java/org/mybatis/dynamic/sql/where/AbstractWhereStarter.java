@@ -35,14 +35,14 @@ import org.mybatis.dynamic.sql.util.ConfigurableStatement;
  *
  * @param <F> the implementation of the Where DSL customized for a particular SQL statement.
  */
-public abstract class AbstractWhereStarter<F extends AbstractWhereFinisher<?>, D extends AbstractWhereStarter<F, D>>
-        implements ConfigurableStatement<D> {
+public interface AbstractWhereStarter<F extends AbstractWhereFinisher<?>, D extends AbstractWhereStarter<F, D>>
+        extends ConfigurableStatement<D> {
 
-    public <T> F where(BindableColumn<T> column, VisitableCondition<T> condition, AndOrCriteriaGroup... subCriteria) {
+    default <T> F where(BindableColumn<T> column, VisitableCondition<T> condition, AndOrCriteriaGroup... subCriteria) {
         return where(column, condition, Arrays.asList(subCriteria));
     }
 
-    public <T> F where(BindableColumn<T> column, VisitableCondition<T> condition,
+    default <T> F where(BindableColumn<T> column, VisitableCondition<T> condition,
                        List<AndOrCriteriaGroup> subCriteria) {
         SqlCriterion sqlCriterion = ColumnAndConditionCriterion.withColumn(column)
                 .withCondition(condition)
@@ -52,11 +52,11 @@ public abstract class AbstractWhereStarter<F extends AbstractWhereFinisher<?>, D
         return initialize(sqlCriterion);
     }
 
-    public F where(ExistsPredicate existsPredicate, AndOrCriteriaGroup... subCriteria) {
+    default F where(ExistsPredicate existsPredicate, AndOrCriteriaGroup... subCriteria) {
         return where(existsPredicate, Arrays.asList(subCriteria));
     }
 
-    public F where(ExistsPredicate existsPredicate, List<AndOrCriteriaGroup> subCriteria) {
+    default F where(ExistsPredicate existsPredicate, List<AndOrCriteriaGroup> subCriteria) {
         ExistsCriterion sqlCriterion = new ExistsCriterion.Builder()
                 .withExistsPredicate(existsPredicate)
                 .withSubCriteria(subCriteria)
@@ -65,11 +65,11 @@ public abstract class AbstractWhereStarter<F extends AbstractWhereFinisher<?>, D
         return initialize(sqlCriterion);
     }
 
-    public F where(SqlCriterion initialCriterion, AndOrCriteriaGroup... subCriteria) {
+    default F where(SqlCriterion initialCriterion, AndOrCriteriaGroup... subCriteria) {
         return where(initialCriterion, Arrays.asList(subCriteria));
     }
 
-    public F where(SqlCriterion initialCriterion, List<AndOrCriteriaGroup> subCriteria) {
+    default F where(SqlCriterion initialCriterion, List<AndOrCriteriaGroup> subCriteria) {
         SqlCriterion sqlCriterion = new CriteriaGroup.Builder()
                 .withInitialCriterion(initialCriterion)
                 .withSubCriteria(subCriteria)
@@ -78,7 +78,7 @@ public abstract class AbstractWhereStarter<F extends AbstractWhereFinisher<?>, D
         return initialize(sqlCriterion);
     }
 
-    public F where(List<AndOrCriteriaGroup> subCriteria) {
+    default F where(List<AndOrCriteriaGroup> subCriteria) {
         SqlCriterion sqlCriterion = new CriteriaGroup.Builder()
                 .withSubCriteria(subCriteria)
                 .build();
@@ -86,9 +86,9 @@ public abstract class AbstractWhereStarter<F extends AbstractWhereFinisher<?>, D
         return initialize(sqlCriterion);
     }
 
-    public abstract F where();
+    F where();
 
-    public F applyWhere(WhereApplier whereApplier) {
+    default F applyWhere(WhereApplier whereApplier) {
         F finisher = where();
         whereApplier.accept(finisher);
         return finisher;

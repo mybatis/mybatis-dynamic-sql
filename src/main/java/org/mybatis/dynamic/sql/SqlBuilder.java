@@ -56,10 +56,6 @@ import org.mybatis.dynamic.sql.select.function.OperatorFunction;
 import org.mybatis.dynamic.sql.select.function.Substring;
 import org.mybatis.dynamic.sql.select.function.Subtract;
 import org.mybatis.dynamic.sql.select.function.Upper;
-import org.mybatis.dynamic.sql.select.join.EqualTo;
-import org.mybatis.dynamic.sql.select.join.EqualToValue;
-import org.mybatis.dynamic.sql.select.join.JoinCondition;
-import org.mybatis.dynamic.sql.select.join.JoinCriterion;
 import org.mybatis.dynamic.sql.update.UpdateDSL;
 import org.mybatis.dynamic.sql.update.UpdateModel;
 import org.mybatis.dynamic.sql.util.Buildable;
@@ -433,20 +429,36 @@ public interface SqlBuilder {
     }
 
     // join support
-    static <T> JoinCriterion<T> and(BindableColumn<T> joinColumn, JoinCondition<T> joinCondition) {
-        return new JoinCriterion.Builder<T>()
-                .withConnector("and") //$NON-NLS-1$
-                .withJoinColumn(joinColumn)
-                .withJoinCondition(joinCondition)
+    static <T> ColumnAndConditionCriterion<T> on(BindableColumn<T> joinColumn, VisitableCondition<T> joinCondition) {
+        return ColumnAndConditionCriterion.withColumn(joinColumn)
+                .withCondition(joinCondition)
                 .build();
     }
 
-    static <T> JoinCriterion<T> on(BindableColumn<T> joinColumn, JoinCondition<T> joinCondition) {
-        return new JoinCriterion.Builder<T>()
-                .withConnector("on") //$NON-NLS-1$
-                .withJoinColumn(joinColumn)
-                .withJoinCondition(joinCondition)
-                .build();
+    /**
+     * Starting in version 2.0.0, this function is a synonym for {@link SqlBuilder#isEqualTo(BasicColumn)}.
+     *
+     * @param column the column
+     * @param <T> the column type
+     * @return an IsEqualToColumn condition
+     * @deprecated since 2.0.0. Please replace with isEqualTo(column)
+     */
+    @Deprecated(since = "2.0.0", forRemoval = true)
+    static <T> IsEqualToColumn<T> equalTo(BindableColumn<T> column) {
+        return isEqualTo(column);
+    }
+
+    /**
+     * Starting in version 2.0.0, this function is a synonym for {@link SqlBuilder#isEqualTo(Object)}.
+     *
+     * @param value the value
+     * @param <T> the column type
+     * @return an IsEqualTo condition
+     * @deprecated since 2.0.0. Please replace with isEqualTo(value)
+     */
+    @Deprecated(since = "2.0.0", forRemoval = true)
+    static <T> IsEqualTo<T> equalTo(T value) {
+        return isEqualTo(value);
     }
 
     // case expressions
@@ -458,14 +470,6 @@ public interface SqlBuilder {
     @SuppressWarnings("java:S100")
     static SearchedCaseDSL case_() {
         return SearchedCaseDSL.searchedCase();
-    }
-
-    static <T> EqualTo<T> equalTo(BindableColumn<T> column) {
-        return new EqualTo<>(column);
-    }
-
-    static <T> EqualToValue<T> equalTo(T value) {
-        return new EqualToValue<>(value);
     }
 
     // aggregate support

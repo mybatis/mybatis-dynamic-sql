@@ -15,17 +15,16 @@
  */
 package org.mybatis.dynamic.sql.select.render;
 
-import static org.mybatis.dynamic.sql.util.StringUtilities.spaceBefore;
-
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import org.mybatis.dynamic.sql.exception.InvalidSqlException;
 import org.mybatis.dynamic.sql.render.RenderingContext;
-import org.mybatis.dynamic.sql.select.join.JoinCriterion;
 import org.mybatis.dynamic.sql.select.join.JoinModel;
 import org.mybatis.dynamic.sql.select.join.JoinSpecification;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 import org.mybatis.dynamic.sql.util.FragmentCollector;
+import org.mybatis.dynamic.sql.util.Messages;
 
 public class JoinRenderer {
     private final JoinModel joinModel;
@@ -46,43 +45,17 @@ public class JoinRenderer {
     }
 
     private FragmentAndParameters renderJoinSpecification(JoinSpecification joinSpecification) {
-        FragmentAndParameters renderedTable = joinSpecification.table().accept(tableExpressionRenderer);
-        FragmentAndParameters renderedJoin = renderConditions(joinSpecification);
-
-        String fragment = joinSpecification.joinType().type()
-                + spaceBefore(renderedTable.fragment())
-                + spaceBefore(renderedJoin.fragment());
-
-        return FragmentAndParameters.withFragment(fragment)
-                .withParameters(renderedTable.parameters())
-                .withParameters(renderedJoin.parameters())
-                .build();
-    }
-
-    private FragmentAndParameters renderConditions(JoinSpecification joinSpecification) {
-        return joinSpecification.joinCriteria()
-                .map(this::renderCriterion)
-                .collect(FragmentCollector.collect())
-                .toFragmentAndParameters(Collectors.joining(" ")); //$NON-NLS-1$
-    }
-
-    private <T> FragmentAndParameters renderCriterion(JoinCriterion<T> joinCriterion) {
-        FragmentAndParameters renderedColumn = joinCriterion.leftColumn().render(renderingContext);
-
-        String prefix = joinCriterion.connector()
-                + spaceBefore(renderedColumn.fragment());
-
-        JoinConditionRenderer<T> joinConditionRenderer = new JoinConditionRenderer.Builder<T>()
+        FragmentCollector fc = new FragmentCollector();
+        fc.add(FragmentAndParameters.fromFragment(joinSpecification.joinType().type()));
+        fc.add(joinSpecification.table().accept(tableExpressionRenderer));
+        fc.add(JoinSpecificationRenderer
+                .withJoinSpecification(joinSpecification)
                 .withRenderingContext(renderingContext)
-                .withLeftColumn(joinCriterion.leftColumn())
-                .build();
+                .build()
+                .render()
+                .orElseThrow(() -> new InvalidSqlException(Messages.getString("ERROR.46")))); //$NON-NLS-1$
 
-        FragmentAndParameters suffix = joinCriterion.joinCondition().accept(joinConditionRenderer);
-
-        return FragmentAndParameters.withFragment(prefix + spaceBefore(suffix.fragment()))
-                .withParameters(suffix.parameters())
-                .withParameters(renderedColumn.parameters())
-                .build();
+        return fc.toFragmentAndParameters(Collectors.joining(" ")); //$NON-NLS-1$
     }
 
     public static Builder withJoinModel(JoinModel joinModel) {

@@ -31,7 +31,9 @@ Other important changes:
   With this change, the exception thrown is more predictable and the error is caught before sending the SQL to the
   database.
 - All the paging methods (limit, offset, fetchFirst) now have "WhenPresent" variations that will drop the phrase from
-  rendering if a null value is passed in 
+  rendering if a null value is passed in
+- The JOIN syntax is updated and now allows full boolean expressions like a WHERE clause. The prior JOIN syntax
+  is deprecated and will be removed in a future release.
 
 ## Release 1.5.2 - June 3, 2024
 
