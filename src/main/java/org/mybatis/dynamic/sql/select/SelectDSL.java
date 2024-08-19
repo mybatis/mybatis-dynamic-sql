@@ -119,7 +119,7 @@ public class SelectDSL<R> implements Buildable<R>, ConfigurableStatement<SelectD
 
     public FetchFirstFinisher<R> fetchFirstWhenPresent(Long fetchFirstRows) {
         this.fetchFirstRows = fetchFirstRows;
-        return () -> SelectDSL.this;
+        return () -> this;
     }
 
     @Override

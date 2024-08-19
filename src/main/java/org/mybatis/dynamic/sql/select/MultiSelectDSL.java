@@ -77,7 +77,7 @@ public class MultiSelectDSL implements Buildable<MultiSelectModel>, Configurable
     @Override
     public FetchFirstFinisher<MultiSelectModel> fetchFirstWhenPresent(Long fetchFirstRows) {
         this.fetchFirstRows = fetchFirstRows;
-        return () -> MultiSelectDSL.this;
+        return () -> this;
     }
 
     @NotNull

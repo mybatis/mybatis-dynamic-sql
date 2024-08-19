@@ -359,7 +359,8 @@ public class QueryExpressionDSL<R>
 
     public class JoinSpecificationFinisher
             extends AbstractBooleanExpressionDSL<JoinSpecificationFinisher>
-            implements AbstractWhereStarter<QueryExpressionWhereBuilder, JoinSpecificationFinisher>, Buildable<R>, PagingDSL<R> {
+            implements AbstractWhereStarter<QueryExpressionWhereBuilder, JoinSpecificationFinisher>, Buildable<R>,
+            PagingDSL<R> {
 
         private final TableExpression table;
         private final JoinType joinType;

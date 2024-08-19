@@ -439,8 +439,8 @@ public interface SqlBuilder {
      * Starting in version 2.0.0, this function is a synonym for {@link SqlBuilder#isEqualTo(BasicColumn)}.
      *
      * @param column the column
-     * @return an IsEqualToColumn condition
      * @param <T> the column type
+     * @return an IsEqualToColumn condition
      * @deprecated since 2.0.0. Please replace with isEqualTo(column)
      */
     @Deprecated(since = "2.0.0", forRemoval = true)
@@ -452,8 +452,8 @@ public interface SqlBuilder {
      * Starting in version 2.0.0, this function is a synonym for {@link SqlBuilder#isEqualTo(Object)}.
      *
      * @param value the value
-     * @return an IsEqualTo condition
      * @param <T> the column type
+     * @return an IsEqualTo condition
      * @deprecated since 2.0.0. Please replace with isEqualTo(value)
      */
     @Deprecated(since = "2.0.0", forRemoval = true)

@@ -11,7 +11,7 @@ The changes in the Java DSL are mostly internal and should not impact most users
 deprecated in favor of `isEqualTo`, but all other changes should be hidden.
 
 Like the Java DSL, the V2 Kotlin DSL offers a fully flexible join specification and allows for much more flexible join
-specifications. The changes in the Kotlin DSL allow a more natural expressions of a join specification. The main 
+specifications. The changes in the Kotlin DSL allow a more natural expressions of a join specification. The main
 difference is that the "on" keyword should be moved outside the join specification lambda (it is now an infix function).
 Inside the lambda, the conditions should be rewritten to match the syntax of a where clause.
 
