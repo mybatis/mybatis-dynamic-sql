@@ -21,8 +21,8 @@ import org.mybatis.dynamic.sql.render.MyBatis3RenderingStrategy;
 
 /**
  * This rendering strategy should be used for MyBatis3 statements using the
- * MyBatisPagingItemReader supplied by mybatis-spring integration (http://www.mybatis.org/spring/).
- *
+ * MyBatisPagingItemReader supplied by mybatis-spring integration
+ * (<a href="http://www.mybatis.org/spring/">http://www.mybatis.org/spring/</a>).
  */
 public class SpringBatchPagingItemReaderRenderingStrategy extends MyBatis3RenderingStrategy {
 
