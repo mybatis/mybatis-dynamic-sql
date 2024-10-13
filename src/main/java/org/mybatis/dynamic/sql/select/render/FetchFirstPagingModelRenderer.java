@@ -51,30 +51,30 @@ public class FetchFirstPagingModelRenderer {
     }
 
     private FragmentAndParameters renderFetchFirstRowsOnly(Long fetchFirstRows) {
-        RenderedParameterInfo parameterInfo = renderingContext.calculateParameterInfo();
+        RenderedParameterInfo limitParameterInfo = renderingContext.calculateLimitParameterInfo();
         return FragmentAndParameters
-                .withFragment("fetch first " + parameterInfo.renderedPlaceHolder() //$NON-NLS-1$
+                .withFragment("fetch first " + limitParameterInfo.renderedPlaceHolder() //$NON-NLS-1$
                     + " rows only") //$NON-NLS-1$
-                .withParameter(parameterInfo.parameterMapKey(), fetchFirstRows)
+                .withParameter(limitParameterInfo.parameterMapKey(), fetchFirstRows)
                 .build();
     }
 
     private FragmentAndParameters renderOffsetOnly(Long offset) {
-        RenderedParameterInfo parameterInfo = renderingContext.calculateParameterInfo();
-        return FragmentAndParameters.withFragment("offset " + parameterInfo.renderedPlaceHolder() //$NON-NLS-1$
+        RenderedParameterInfo offsetParameterInfo = renderingContext.calculateOffsetParameterInfo();
+        return FragmentAndParameters.withFragment("offset " + offsetParameterInfo.renderedPlaceHolder() //$NON-NLS-1$
                 + " rows") //$NON-NLS-1$
-                .withParameter(parameterInfo.parameterMapKey(), offset)
+                .withParameter(offsetParameterInfo.parameterMapKey(), offset)
                 .build();
     }
 
     private FragmentAndParameters renderOffsetAndFetchFirstRows(Long offset, Long fetchFirstRows) {
-        RenderedParameterInfo parameterInfo1 = renderingContext.calculateParameterInfo();
-        RenderedParameterInfo parameterInfo2 = renderingContext.calculateParameterInfo();
-        return FragmentAndParameters.withFragment("offset " + parameterInfo1.renderedPlaceHolder() //$NON-NLS-1$
-                + " rows fetch first " + parameterInfo2.renderedPlaceHolder() //$NON-NLS-1$
+        RenderedParameterInfo offsetParameterInfo = renderingContext.calculateOffsetParameterInfo();
+        RenderedParameterInfo limitParameterInfo = renderingContext.calculateParameterInfo();
+        return FragmentAndParameters.withFragment("offset " + offsetParameterInfo.renderedPlaceHolder() //$NON-NLS-1$
+                + " rows fetch first " + limitParameterInfo.renderedPlaceHolder() //$NON-NLS-1$
                 + " rows only") //$NON-NLS-1$
-                .withParameter(parameterInfo1.parameterMapKey(), offset)
-                .withParameter(parameterInfo2.parameterMapKey(), fetchFirstRows)
+                .withParameter(offsetParameterInfo.parameterMapKey(), offset)
+                .withParameter(limitParameterInfo.parameterMapKey(), fetchFirstRows)
                 .build();
     }
 }

@@ -18,48 +18,39 @@ package org.mybatis.dynamic.sql.util.springbatch;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
-import org.mybatis.dynamic.sql.select.QueryExpressionDSL;
-import org.mybatis.dynamic.sql.select.SelectDSL;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 
 public class SpringBatchUtility {
     private SpringBatchUtility() {}
 
-    public static final String PARAMETER_KEY = "mybatis3_dsql_query"; //$NON-NLS-1$
+    static final String PARAMETER_KEY = "mybatis3_dsql_query"; //$NON-NLS-1$
 
-    public static final RenderingStrategy SPRING_BATCH_READER_RENDERING_STRATEGY =
-            new SpringBatchReaderRenderingStrategy();
+    /**
+     * Constant for use in a query intended for use with the MyBatisPagingItemReader.
+     * This value will not be used in the query at runtime because MyBatis Spring integration
+     * will supply a value for _skiprows.
+     *
+     * <p>See <a href="https://mybatis.org/spring/batch.html">https://mybatis.org/spring/batch.html</a> for details.
+     */
+    public static final long MYBATIS_SPRING_BATCH_SKIPROWS = -437L;
+
+    /**
+     * Constant for use in a query intended for use with the MyBatisPagingItemReader.
+     * This value will not be used in the query at runtime because MyBatis Spring integration
+     * will supply a value for _pagesize.
+     *
+     * <p>See <a href="https://mybatis.org/spring/batch.html">https://mybatis.org/spring/batch.html</a> for details.
+     */
+    public static final long MYBATIS_SPRING_BATCH_PAGESIZE = -439L;
+
+    public static final RenderingStrategy SPRING_BATCH_PAGING_ITEM_READER_RENDERING_STRATEGY =
+            new SpringBatchPagingItemReaderRenderingStrategy();
 
     public static Map<String, Object> toParameterValues(SelectStatementProvider selectStatement) {
         Map<String, Object> parameterValues = new HashMap<>();
-        parameterValues.put(PARAMETER_KEY, selectStatement);
+        parameterValues.put(PARAMETER_KEY, selectStatement.getSelectStatement());
+        parameterValues.put("parameters", selectStatement.getParameters()); //$NON-NLS-1$
         return parameterValues;
-    }
-
-    /**
-     * Select builder that renders in a manner appropriate for the MyBatisPagingItemReader.
-     *
-     * <p><b>Important</b> rendered SQL will contain LIMIT and OFFSET clauses in the SELECT statement. If your database
-     * (Oracle) does not support LIMIT and OFFSET, the queries will fail.
-     *
-     * @param selectList a column list for the SELECT statement
-     * @return FromGatherer used to continue a SELECT statement
-     */
-    public static QueryExpressionDSL.FromGatherer<SpringBatchPagingReaderSelectModel> selectForPaging(
-            BasicColumn... selectList) {
-        return SelectDSL.select(SpringBatchPagingReaderSelectModel::new, selectList);
-    }
-
-    /**
-     * Select builder that renders in a manner appropriate for the MyBatisCursorItemReader.
-     *
-     * @param selectList a column list for the SELECT statement
-     * @return FromGatherer used to continue a SELECT statement
-     */
-    public static QueryExpressionDSL.FromGatherer<SpringBatchCursorReaderSelectModel> selectForCursor(
-            BasicColumn... selectList) {
-        return SelectDSL.select(SpringBatchCursorReaderSelectModel::new, selectList);
     }
 }

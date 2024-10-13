@@ -40,6 +40,14 @@ public abstract class RenderingStrategy {
         return "p" + sequence.getAndIncrement(); //$NON-NLS-1$
     }
 
+    public String formatParameterMapKeyForLimit(AtomicInteger sequence) {
+        return formatParameterMapKey(sequence);
+    }
+
+    public String formatParameterMapKeyForOffset(AtomicInteger sequence) {
+        return formatParameterMapKey(sequence);
+    }
+
     /**
      * This method generates a binding for a parameter to a placeholder in a generated SQL statement.
      *
@@ -77,6 +85,10 @@ public abstract class RenderingStrategy {
      * @return the generated binding
      */
     public abstract String getFormattedJdbcPlaceholder(String prefix, String parameterName);
+
+    public String getFormattedJdbcPlaceholderForLimitOrOffset(String prefix, String parameterName) {
+        return getFormattedJdbcPlaceholder(prefix, parameterName);
+    }
 
     /**
      * This method generates a binding for a parameter to a placeholder in a row based insert statement.

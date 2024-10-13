@@ -66,6 +66,18 @@ public class RenderingContext {
                 .getFormattedJdbcPlaceholder(column, calculatedParameterName, mapKey);
     }
 
+    public RenderedParameterInfo calculateLimitParameterInfo() {
+        String mapKey = renderingStrategy.formatParameterMapKeyForLimit(sequence);
+        return new RenderedParameterInfo(mapKey,
+                renderingStrategy.getFormattedJdbcPlaceholderForLimitOrOffset(calculatedParameterName, mapKey));
+    }
+
+    public RenderedParameterInfo calculateOffsetParameterInfo() {
+        String mapKey = renderingStrategy.formatParameterMapKeyForOffset(sequence);
+        return new RenderedParameterInfo(mapKey,
+                renderingStrategy.getFormattedJdbcPlaceholderForLimitOrOffset(calculatedParameterName, mapKey));
+    }
+
     public RenderedParameterInfo calculateParameterInfo() {
         String mapKey = nextMapKey();
         return new RenderedParameterInfo(mapKey, renderedPlaceHolder(mapKey));

@@ -40,19 +40,19 @@ public class LimitAndOffsetPagingModelRenderer {
     }
 
     private FragmentAndParameters renderLimitOnly() {
-        RenderedParameterInfo parameterInfo = renderingContext.calculateParameterInfo();
-        return FragmentAndParameters.withFragment("limit " + parameterInfo.renderedPlaceHolder()) //$NON-NLS-1$
-                .withParameter(parameterInfo.parameterMapKey(), limit)
+        RenderedParameterInfo limitParameterInfo = renderingContext.calculateLimitParameterInfo();
+        return FragmentAndParameters.withFragment("limit " + limitParameterInfo.renderedPlaceHolder()) //$NON-NLS-1$
+                .withParameter(limitParameterInfo.parameterMapKey(), limit)
                 .build();
     }
 
     private FragmentAndParameters renderLimitAndOffset(Long offset) {
-        RenderedParameterInfo parameterInfo1 = renderingContext.calculateParameterInfo();
-        RenderedParameterInfo parameterInfo2 = renderingContext.calculateParameterInfo();
-        return FragmentAndParameters.withFragment("limit " + parameterInfo1.renderedPlaceHolder() //$NON-NLS-1$
-                    + " offset " + parameterInfo2.renderedPlaceHolder()) //$NON-NLS-1$
-                .withParameter(parameterInfo1.parameterMapKey(), limit)
-                .withParameter(parameterInfo2.parameterMapKey(), offset)
+        RenderedParameterInfo limitParameterInfo = renderingContext.calculateLimitParameterInfo();
+        RenderedParameterInfo offsetParameterInfo = renderingContext.calculateOffsetParameterInfo();
+        return FragmentAndParameters.withFragment("limit " + limitParameterInfo.renderedPlaceHolder() //$NON-NLS-1$
+                    + " offset " + offsetParameterInfo.renderedPlaceHolder()) //$NON-NLS-1$
+                .withParameter(limitParameterInfo.parameterMapKey(), limit)
+                .withParameter(offsetParameterInfo.parameterMapKey(), offset)
                 .build();
     }
 }
