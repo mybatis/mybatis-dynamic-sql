@@ -31,6 +31,9 @@ public class SpringBatchUtility {
      * This value will not be used in the query at runtime because MyBatis Spring integration
      * will supply a value for _skiprows.
      *
+     * <p>This value can be used as a parameter for the "offset" method in a query to make the intention
+     * clear that the actual runtime value will be supplied by MyBatis Spring integration.
+     *
      * <p>See <a href="https://mybatis.org/spring/batch.html">https://mybatis.org/spring/batch.html</a> for details.
      */
     public static final long MYBATIS_SPRING_BATCH_SKIPROWS = -437L;
@@ -40,6 +43,9 @@ public class SpringBatchUtility {
      * This value will not be used in the query at runtime because MyBatis Spring integration
      * will supply a value for _pagesize.
      *
+     * <p>This value can be used as a parameter for the "limit" or "fetchFirst" method in a query to make the intention
+     * clear that the actual runtime value will be supplied by MyBatis Spring integration.
+     *
      * <p>See <a href="https://mybatis.org/spring/batch.html">https://mybatis.org/spring/batch.html</a> for details.
      */
     public static final long MYBATIS_SPRING_BATCH_PAGESIZE = -439L;
@@ -48,9 +54,9 @@ public class SpringBatchUtility {
             new SpringBatchPagingItemReaderRenderingStrategy();
 
     public static Map<String, Object> toParameterValues(SelectStatementProvider selectStatement) {
-        Map<String, Object> parameterValues = new HashMap<>();
+        var parameterValues = new HashMap<String, Object>();
         parameterValues.put(PARAMETER_KEY, selectStatement.getSelectStatement());
-        parameterValues.put("parameters", selectStatement.getParameters()); //$NON-NLS-1$
+        parameterValues.put(RenderingStrategy.DEFAULT_PARAMETER_PREFIX, selectStatement.getParameters());
         return parameterValues;
     }
 }
