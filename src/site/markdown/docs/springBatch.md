@@ -85,7 +85,7 @@ to respond to these parameter values that are supplied at runtime. As with the o
 must also be taken to prepare the parameter values for use with this reader. See the following example:
 
 ```java
-@Bean 
+@Bean
 public MyBatisPagingItemReader<PersonRecord> reader(SqlSessionFactory sqlSessionFactory) {
     SelectStatementProvider selectStatement =  select(person.allColumns())
             .from(person)

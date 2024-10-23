@@ -58,6 +58,8 @@
   <properties>
     <java.version>17</java.version>
     <java.release.version>17</java.release.version>
+    <java.test.version>17</java.test.version>
+    <java.test.release.version>17</java.test.release.version>
     <junit.jupiter.version>5.11.1</junit.jupiter.version>
     <spring.batch.version>5.1.2</spring.batch.version>
 

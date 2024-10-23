@@ -37,7 +37,7 @@ public abstract class RenderingStrategy {
     public static final String DEFAULT_PARAMETER_PREFIX = "parameters"; //$NON-NLS-1$
 
     /**
-     * Return a unique key that can be used to place a parameter value in the parameter map
+     * Generate a unique key that can be used to place a parameter value in the parameter map
      *
      * @param sequence a sequence for calculating a unique value
      * @return a key used to place the parameter value in the parameter map
@@ -47,7 +47,20 @@ public abstract class RenderingStrategy {
     }
 
     /**
-     * Return a parameter map key intended as a parameter for a limit or fetch first query.
+     * Return a parameter map key intended as a parameter for a fetch first query.
+     *
+     * <p>By default, this parameter is treated the same as any other. This method is a hook to support
+     * MyBatis Spring Batch.
+     *
+     * @param sequence a sequence for calculating a unique value
+     * @return a key used to place the parameter value in the parameter map
+     */
+    public String formatParameterMapKeyForFetchFirstRows(AtomicInteger sequence) {
+        return formatParameterMapKeyForLimit(sequence);
+    }
+
+    /**
+     * Return a parameter map key intended as a parameter for a limit query.
      *
      * <p>By default, this parameter is treated the same as any other. This method is a hook to support
      * MyBatis Spring Batch.
@@ -123,7 +136,7 @@ public abstract class RenderingStrategy {
      *     {@link RenderingStrategy#formatParameterMapKey(AtomicInteger)}
      * @return the generated binding
      */
-    public String getFormattedJdbcPlaceholderForLimitOrOffset(String prefix, String parameterName) {
+    public String getFormattedJdbcPlaceholderForPagingParameters(String prefix, String parameterName) {
         return getFormattedJdbcPlaceholder(prefix, parameterName);
     }
 

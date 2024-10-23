@@ -27,7 +27,7 @@ import org.mybatis.dynamic.sql.render.MyBatis3RenderingStrategy;
 public class SpringBatchPagingItemReaderRenderingStrategy extends MyBatis3RenderingStrategy {
 
     @Override
-    public String getFormattedJdbcPlaceholderForLimitOrOffset(String prefix, String parameterName) {
+    public String getFormattedJdbcPlaceholderForPagingParameters(String prefix, String parameterName) {
         return "#{" //$NON-NLS-1$
                 + parameterName
                 + "}"; //$NON-NLS-1$

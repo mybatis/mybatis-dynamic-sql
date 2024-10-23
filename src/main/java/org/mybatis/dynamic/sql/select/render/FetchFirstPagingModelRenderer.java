@@ -51,11 +51,11 @@ public class FetchFirstPagingModelRenderer {
     }
 
     private FragmentAndParameters renderFetchFirstRowsOnly(Long fetchFirstRows) {
-        RenderedParameterInfo limitParameterInfo = renderingContext.calculateLimitParameterInfo();
+        RenderedParameterInfo fetchFirstParameterInfo = renderingContext.calculateFetchFirstRowsParameterInfo();
         return FragmentAndParameters
-                .withFragment("fetch first " + limitParameterInfo.renderedPlaceHolder() //$NON-NLS-1$
+                .withFragment("fetch first " + fetchFirstParameterInfo.renderedPlaceHolder() //$NON-NLS-1$
                     + " rows only") //$NON-NLS-1$
-                .withParameter(limitParameterInfo.parameterMapKey(), fetchFirstRows)
+                .withParameter(fetchFirstParameterInfo.parameterMapKey(), fetchFirstRows)
                 .build();
     }
 
@@ -69,12 +69,12 @@ public class FetchFirstPagingModelRenderer {
 
     private FragmentAndParameters renderOffsetAndFetchFirstRows(Long offset, Long fetchFirstRows) {
         RenderedParameterInfo offsetParameterInfo = renderingContext.calculateOffsetParameterInfo();
-        RenderedParameterInfo limitParameterInfo = renderingContext.calculateParameterInfo();
+        RenderedParameterInfo fetchFirstParameterInfo = renderingContext.calculateFetchFirstRowsParameterInfo();
         return FragmentAndParameters.withFragment("offset " + offsetParameterInfo.renderedPlaceHolder() //$NON-NLS-1$
-                + " rows fetch first " + limitParameterInfo.renderedPlaceHolder() //$NON-NLS-1$
+                + " rows fetch first " + fetchFirstParameterInfo.renderedPlaceHolder() //$NON-NLS-1$
                 + " rows only") //$NON-NLS-1$
                 .withParameter(offsetParameterInfo.parameterMapKey(), offset)
-                .withParameter(limitParameterInfo.parameterMapKey(), fetchFirstRows)
+                .withParameter(fetchFirstParameterInfo.parameterMapKey(), fetchFirstRows)
                 .build();
     }
 }
