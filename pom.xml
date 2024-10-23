@@ -60,7 +60,7 @@
     <java.release.version>17</java.release.version>
     <java.test.version>17</java.test.version>
     <java.test.release.version>17</java.test.release.version>
-    <junit.jupiter.version>5.11.1</junit.jupiter.version>
+    <junit.jupiter.version>5.11.3</junit.jupiter.version>
     <spring.batch.version>5.1.2</spring.batch.version>
 
     <checkstyle.config>checkstyle-override.xml</checkstyle.config>
@@ -69,7 +69,7 @@
 
     <module.name>org.mybatis.dynamic.sql</module.name>
 
-    <kotlin.version>2.0.20</kotlin.version>
+    <kotlin.version>2.0.21</kotlin.version>
     <kotlin.compiler.jvmTarget>17</kotlin.compiler.jvmTarget>
     <kotlin.compiler.languageVersion>2.0</kotlin.compiler.languageVersion>
     <kotlin.compiler.apiVersion>2.0</kotlin.compiler.apiVersion>
@@ -78,7 +78,7 @@
     <sonar.tests>src/test/java,src/test/kotlin</sonar.tests>
 
     <kotlin.code.style>official</kotlin.code.style>
-    <test.containers.version>1.20.1</test.containers.version>
+    <test.containers.version>1.20.3</test.containers.version>
     <osgi.export>org.mybatis.dynamic.sql.*;version=${project.version};-noimport:=true</osgi.export>
 
     <!-- Reproducible Builds -->
@@ -96,7 +96,7 @@
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-jdbc</artifactId>
-      <version>6.1.13</version>
+      <version>6.1.14</version>
       <scope>provided</scope>
       <optional>true</optional>
     </dependency>
@@ -165,7 +165,7 @@
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
-      <version>1.5.8</version>
+      <version>1.5.11</version>
       <scope>test</scope>
     </dependency>
     <dependency>
