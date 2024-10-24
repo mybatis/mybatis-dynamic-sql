@@ -70,8 +70,8 @@ SelectStatementProvider selectStatement =  SpringBatchUtility.selectForCursor(pe
         .render();
 ```
 
-That utility method was limited in capability. The new method allows the full capabilities of the library. To migrate,
-follow these steps:
+That utility method was limited in capability and has been removed. The new method described above allows the full
+capabilities of the library. To migrate, follow these steps:
 
 1. Replace `SpringBatchUtility.selectForCursor(...)` with `SqlBuilder.select(...)`
 2. Replace `render()` with `render(RenderingStrategies.MYBATIS3)`
@@ -114,6 +114,26 @@ Notice the following important items:
 2. The query must be rendered with the `SPRING_BATCH_PAGING_ITEM_READER_RENDERING_STRATEGY` rendering strategy. This
    rendering strategy will render the query so that it will respond properly to the runtime values supplied for page size
    and skip rows.
+3. Note the use of `SpringBatchUtility.toParameterValues(...)`. This utility will set up the parameter Map correctly for
+   the rendered statement, and for use with a library supplied `@selectProvider`. See the following for an example of
+   the mapper method used for the query coded above:
+
+```java
+@Mapper
+public interface PersonMapper {
+
+    @SelectProvider(type=SpringBatchProviderAdapter.class, method="select")
+    @Results({
+        @Result(column="id", property="id", id=true),
+        @Result(column="first_name", property="firstName"),
+        @Result(column="last_name", property="lastName")
+    })
+    List<PersonRecord> selectMany(Map<String, Object> parameterValues);
+}
+```
+
+Note the use of the `SpringBatchProviderAdapter` - that adapter knows how to retrieve the rendered queries from the
+parameter map initialed in the method above.
 
 ### Migrating from 1.x Support for MyBatisPagingItemReader
 
@@ -128,9 +148,9 @@ SelectStatementProvider selectStatement =  SpringBatchUtility.selectForPaging(pe
         .render();
 ```
 
-That utility method was very limited in capability. It only supported limit and offset based queries - which are not
-supported in all databases. The new method allows the full capabilities of the library. To migrate,
-follow these steps:
+That utility method was very limited in capability and has been removed. The prior method only supported limit and
+offset based queries - which are not supported in all databases. The new method described above allows the full
+capabilities of the library to be used. To migrate, follow these steps:
 
 1. Replace `SpringBatchUtility.selectForPaging(...)` with `SqlBuilder.select(...)`
 2. Add `limit()`, `fetchFirst()`, and `offset()` method calls as appropriate for your query and database

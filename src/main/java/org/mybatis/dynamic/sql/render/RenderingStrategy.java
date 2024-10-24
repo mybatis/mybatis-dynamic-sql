@@ -37,7 +37,7 @@ public abstract class RenderingStrategy {
     public static final String DEFAULT_PARAMETER_PREFIX = "parameters"; //$NON-NLS-1$
 
     /**
-     * Generate a unique key that can be used to place a parameter value in the parameter map
+     * Generate a unique key that can be used to place a parameter value in the parameter map.
      *
      * @param sequence a sequence for calculating a unique value
      * @return a key used to place the parameter value in the parameter map
