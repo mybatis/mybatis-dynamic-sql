@@ -49,9 +49,9 @@ public interface NameTableMapper extends CommonCountMapper, CommonDeleteMapper, 
         return MyBatis3Utils.selectOne(this::selectOne, selectList, nameTable, completer);
     }
 
-    default Optional<NameRecord> selectByPrimaryKey(Integer id_) {
+    default Optional<NameRecord> selectByPrimaryKey(Integer recordId) {
         return selectOne(c ->
-                c.where(id, isEqualTo(id_))
+                c.where(id, isEqualTo(recordId))
         );
     }
 

@@ -90,9 +90,9 @@ public interface PersonMapper extends CommonCountMapper, CommonDeleteMapper, Com
         return MyBatis3Utils.deleteFrom(this::delete, person, completer);
     }
 
-    default int deleteByPrimaryKey(Integer id_) {
+    default int deleteByPrimaryKey(Integer recordId) {
         return delete(c ->
-            c.where(id, isEqualTo(id_))
+            c.where(id, isEqualTo(recordId))
         );
     }
 
@@ -152,9 +152,9 @@ public interface PersonMapper extends CommonCountMapper, CommonDeleteMapper, Com
         return MyBatis3Utils.selectDistinct(this::selectMany, selectList, person, completer);
     }
 
-    default Optional<PersonRecord> selectByPrimaryKey(Integer id_) {
+    default Optional<PersonRecord> selectByPrimaryKey(Integer recordId) {
         return selectOne(c ->
-            c.where(id, isEqualTo(id_))
+            c.where(id, isEqualTo(recordId))
         );
     }
 

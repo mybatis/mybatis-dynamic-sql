@@ -76,8 +76,8 @@ public interface GeneratedAlwaysMapper extends CommonUpdateMapper {
         return MyBatis3Utils.selectList(this::selectMany, selectList, generatedAlways, completer);
     }
 
-    default Optional<GeneratedAlwaysRecord> selectByPrimaryKey(Integer _id) {
-        return selectOne(c -> c.where(id, isEqualTo(_id)));
+    default Optional<GeneratedAlwaysRecord> selectByPrimaryKey(Integer recordId) {
+        return selectOne(c -> c.where(id, isEqualTo(recordId)));
     }
 
     default int insert(GeneratedAlwaysRecord row) {

@@ -90,9 +90,9 @@ public interface PersonWithAddressMapper extends CommonCountMapper {
         return MyBatis3Utils.selectList(this::selectMany, start, completer);
     }
 
-    default Optional<PersonWithAddress> selectByPrimaryKey(Integer id_) {
+    default Optional<PersonWithAddress> selectByPrimaryKey(Integer recordId) {
         return selectOne(c ->
-            c.where(id, isEqualTo(id_))
+            c.where(id, isEqualTo(recordId))
         );
     }
 
