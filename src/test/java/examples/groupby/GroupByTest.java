@@ -126,7 +126,7 @@ class GroupByTest {
             CommonSelectMapper mapper = session.getMapper(CommonSelectMapper.class);
 
             SelectStatementProvider selectStatement = select(lastName, streetAddress, count().as("count"))
-                    .from(person, "p").join(address, "a").on(person.addressId, equalTo(address.id))
+                    .from(person, "p").join(address, "a").on(person.addressId, isEqualTo(address.id))
                     .groupBy(lastName, streetAddress)
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
@@ -156,10 +156,10 @@ class GroupByTest {
             CommonSelectMapper mapper = session.getMapper(CommonSelectMapper.class);
 
             SelectStatementProvider selectStatement = select(lastName, firstName, streetAddress)
-                    .from(person, "p").join(address, "a").on(person.addressId, equalTo(address.id))
+                    .from(person, "p").join(address, "a").on(person.addressId, isEqualTo(address.id))
                     .union()
                     .select(person2.lastName, person2.firstName, streetAddress)
-                    .from(person2, "p").join(address, "a").on(person2.addressId, equalTo(address.id))
+                    .from(person2, "p").join(address, "a").on(person2.addressId, isEqualTo(address.id))
                     .orderBy(lastName, firstName)
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
@@ -192,10 +192,10 @@ class GroupByTest {
             CommonSelectMapper mapper = session.getMapper(CommonSelectMapper.class);
 
             SelectStatementProvider selectStatement = select(lastName, firstName, streetAddress)
-                    .from(person, "p").join(address, "a").on(person.addressId, equalTo(address.id))
+                    .from(person, "p").join(address, "a").on(person.addressId, isEqualTo(address.id))
                     .unionAll()
                     .select(person2.lastName, person2.firstName, streetAddress)
-                    .from(person2, "p").join(address, "a").on(person2.addressId, equalTo(address.id))
+                    .from(person2, "p").join(address, "a").on(person2.addressId, isEqualTo(address.id))
                     .orderBy(lastName, firstName)
                     .build()
                     .render(RenderingStrategies.MYBATIS3);

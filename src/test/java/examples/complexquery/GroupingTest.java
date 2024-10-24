@@ -33,9 +33,9 @@ import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 
 class GroupingTest {
     private static class Foo extends SqlTable {
-        public SqlColumn<Integer> A = column("A");
-        public SqlColumn<Integer> B = column("B");
-        public SqlColumn<Integer> C = column("C");
+        public SqlColumn<Integer> columnA = column("A");
+        public SqlColumn<Integer> columnB = column("B");
+        public SqlColumn<Integer> columnC = column("C");
 
         public Foo() {
             super("Foo");
@@ -43,16 +43,16 @@ class GroupingTest {
     }
 
     private static final Foo foo = new Foo();
-    private static final SqlColumn<Integer> A = foo.A;
-    private static final SqlColumn<Integer> B = foo.B;
-    private static final SqlColumn<Integer> C = foo.C;
+    private static final SqlColumn<Integer> columnA = foo.columnA;
+    private static final SqlColumn<Integer> columnB = foo.columnB;
+    private static final SqlColumn<Integer> columnC = foo.columnC;
 
     @Test
     void testSimpleGrouping() {
-        SelectStatementProvider selectStatement = select(A, B, C)
+        SelectStatementProvider selectStatement = select(columnA, columnB, columnC)
                 .from(foo)
-                .where(A, isEqualTo(1), or(A, isEqualTo(2)))
-                .and(B, isEqualTo(3))
+                .where(columnA, isEqualTo(1), or(columnA, isEqualTo(2)))
+                .and(columnB, isEqualTo(3))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
@@ -68,14 +68,14 @@ class GroupingTest {
 
     @Test
     void testComplexGrouping() {
-        SelectStatementProvider selectStatement = select(A, B, C)
+        SelectStatementProvider selectStatement = select(columnA, columnB, columnC)
                 .from(foo)
                 .where(
-                        group(A, isEqualTo(1), or(A, isGreaterThan(5))),
-                        and(B, isEqualTo(1)),
-                        or(A, isLessThan(0), and(B, isEqualTo(2)))
+                        group(columnA, isEqualTo(1), or(columnA, isGreaterThan(5))),
+                        and(columnB, isEqualTo(1)),
+                        or(columnA, isLessThan(0), and(columnB, isEqualTo(2)))
                 )
-                .and(C, isEqualTo(1))
+                .and(columnC, isEqualTo(1))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
@@ -94,14 +94,14 @@ class GroupingTest {
 
     @Test
     void testGroupAndExists() {
-        SelectStatementProvider selectStatement = select(A, B, C)
+        SelectStatementProvider selectStatement = select(columnA, columnB, columnC)
                 .from(foo)
                 .where(
-                        group(exists(select(foo.allColumns()).from(foo).where(A, isEqualTo(3))), and (A, isEqualTo(1)), or(A, isGreaterThan(5))),
-                        and(B, isEqualTo(1)),
-                        or(A, isLessThan(0), and(B, isEqualTo(2)))
+                        group(exists(select(foo.allColumns()).from(foo).where(columnA, isEqualTo(3))), and (columnA, isEqualTo(1)), or(columnA, isGreaterThan(5))),
+                        and(columnB, isEqualTo(1)),
+                        or(columnA, isLessThan(0), and(columnB, isEqualTo(2)))
                 )
-                .and(C, isEqualTo(1))
+                .and(columnC, isEqualTo(1))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
@@ -121,14 +121,14 @@ class GroupingTest {
 
     @Test
     void testNestedGrouping() {
-        SelectStatementProvider selectStatement = select(A, B, C)
+        SelectStatementProvider selectStatement = select(columnA, columnB, columnC)
                 .from(foo)
                 .where(
-                        group(group(A, isEqualTo(1), or(A, isGreaterThan(5))), and(A, isGreaterThan(5))),
-                        and(group(A, isEqualTo(1), or(A, isGreaterThan(5))), or(B, isEqualTo(1))),
-                        or(group(A, isEqualTo(1), or(A, isGreaterThan(5))), and(A, isLessThan(0), and(B, isEqualTo(2))))
+                        group(group(columnA, isEqualTo(1), or(columnA, isGreaterThan(5))), and(columnA, isGreaterThan(5))),
+                        and(group(columnA, isEqualTo(1), or(columnA, isGreaterThan(5))), or(columnB, isEqualTo(1))),
+                        or(group(columnA, isEqualTo(1), or(columnA, isGreaterThan(5))), and(columnA, isLessThan(0), and(columnB, isEqualTo(2))))
                 )
-                .and(C, isEqualTo(1))
+                .and(columnC, isEqualTo(1))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
@@ -152,12 +152,12 @@ class GroupingTest {
 
     @Test
     void testAndOrCriteriaGroups() {
-        SelectStatementProvider selectStatement = select(A, B, C)
+        SelectStatementProvider selectStatement = select(columnA, columnB, columnC)
                 .from(foo)
-                .where(A, isEqualTo(6))
-                .and(C, isEqualTo(1))
-                .and(group(A, isEqualTo(1), or(A, isGreaterThan(5))), or(B, isEqualTo(1)))
-                .or(group(A, isEqualTo(1), or(A, isGreaterThan(5))), and(A, isLessThan(0), and(B, isEqualTo(2))))
+                .where(columnA, isEqualTo(6))
+                .and(columnC, isEqualTo(1))
+                .and(group(columnA, isEqualTo(1), or(columnA, isGreaterThan(5))), or(columnB, isEqualTo(1)))
+                .or(group(columnA, isEqualTo(1), or(columnA, isGreaterThan(5))), and(columnA, isLessThan(0), and(columnB, isEqualTo(2))))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 

@@ -83,7 +83,7 @@ class JoinMapperTest {
 
             SelectStatementProvider selectStatement = select(orderMaster.orderId, orderDate, orderDetail.lineNumber, orderDetail.description, orderDetail.quantity)
                     .from(orderMaster, "om")
-                    .join(orderDetail, "od").on(orderMaster.orderId, equalTo(orderDetail.orderId))
+                    .join(orderDetail, "od").on(orderMaster.orderId, isEqualTo(orderDetail.orderId))
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
 
@@ -117,7 +117,7 @@ class JoinMapperTest {
 
             SelectStatementProvider selectStatement = select(orderMaster.orderId, orderDate, orderDetail.lineNumber, orderDetail.description, orderDetail.quantity)
                     .from(orderMaster, "om")
-                    .join(orderDetail, "od", on(orderMaster.orderId, equalTo(orderDetail.orderId)))
+                    .join(orderDetail, "od", on(orderMaster.orderId, isEqualTo(orderDetail.orderId)))
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
 
@@ -149,7 +149,7 @@ class JoinMapperTest {
         // this is a nonsensical join, but it does test the "and" capability
         SelectStatementProvider selectStatement = select(orderMaster.orderId, orderDate, orderDetail.lineNumber, orderDetail.description, orderDetail.quantity)
                 .from(orderMaster, "om")
-                .join(orderDetail, "od").on(orderMaster.orderId, equalTo(orderDetail.orderId), and(orderMaster.orderId, equalTo(orderDetail.orderId)))
+                .join(orderDetail, "od").on(orderMaster.orderId, isEqualTo(orderDetail.orderId), and(orderMaster.orderId, isEqualTo(orderDetail.orderId)))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
@@ -163,9 +163,9 @@ class JoinMapperTest {
         // this is a nonsensical join, but it does test the "and" capability
         SelectStatementProvider selectStatement = select(orderMaster.orderId, orderDate, orderDetail.lineNumber, orderDetail.description, orderDetail.quantity)
                 .from(orderMaster, "om")
-                .join(orderDetail, "od").on(orderMaster.orderId, equalTo(orderDetail.orderId))
+                .join(orderDetail, "od").on(orderMaster.orderId, isEqualTo(orderDetail.orderId))
                 .configureStatement(c -> c.setNonRenderingWhereClauseAllowed(true))
-                .and(orderMaster.orderId, equalTo(orderDetail.orderId))
+                .and(orderMaster.orderId, isEqualTo(orderDetail.orderId))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
@@ -179,7 +179,7 @@ class JoinMapperTest {
         // this is a nonsensical join, but it does test the "and" capability
         SelectStatementProvider selectStatement = select(orderMaster.orderId, orderDate, orderDetail.lineNumber, orderDetail.description, orderDetail.quantity)
                 .from(orderMaster, "om")
-                .join(orderDetail, "od", on(orderMaster.orderId, equalTo(orderDetail.orderId)), and(orderMaster.orderId, equalTo(orderDetail.orderId)))
+                .join(orderDetail, "od", on(orderMaster.orderId, isEqualTo(orderDetail.orderId)), and(orderMaster.orderId, isEqualTo(orderDetail.orderId)))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
@@ -193,7 +193,7 @@ class JoinMapperTest {
         // this is a nonsensical join, but it does test the "and" capability
         SelectStatementProvider selectStatement = select(orderMaster.orderId, orderDate, orderDetail.lineNumber, orderDetail.description, orderDetail.quantity)
                 .from(orderMaster, "om")
-                .leftJoin(orderDetail, "od", on(orderMaster.orderId, equalTo(orderDetail.orderId)), and(orderMaster.orderId, equalTo(orderDetail.orderId)))
+                .leftJoin(orderDetail, "od", on(orderMaster.orderId, isEqualTo(orderDetail.orderId)), and(orderMaster.orderId, isEqualTo(orderDetail.orderId)))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
@@ -207,7 +207,7 @@ class JoinMapperTest {
         // this is a nonsensical join, but it does test the "and" capability
         SelectStatementProvider selectStatement = select(orderMaster.orderId, orderDate, orderDetail.lineNumber, orderDetail.description, orderDetail.quantity)
                 .from(orderMaster, "om")
-                .rightJoin(orderDetail, "od", on(orderMaster.orderId, equalTo(orderDetail.orderId)), and(orderMaster.orderId, equalTo(orderDetail.orderId)))
+                .rightJoin(orderDetail, "od", on(orderMaster.orderId, isEqualTo(orderDetail.orderId)), and(orderMaster.orderId, isEqualTo(orderDetail.orderId)))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
@@ -221,7 +221,7 @@ class JoinMapperTest {
         // this is a nonsensical join, but it does test the "and" capability
         SelectStatementProvider selectStatement = select(orderMaster.orderId, orderDate, orderDetail.lineNumber, orderDetail.description, orderDetail.quantity)
                 .from(orderMaster, "om")
-                .fullJoin(orderDetail, "od", on(orderMaster.orderId, equalTo(orderDetail.orderId)), and(orderMaster.orderId, equalTo(orderDetail.orderId)))
+                .fullJoin(orderDetail, "od", on(orderMaster.orderId, isEqualTo(orderDetail.orderId)), and(orderMaster.orderId, isEqualTo(orderDetail.orderId)))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
@@ -237,8 +237,8 @@ class JoinMapperTest {
 
             SelectStatementProvider selectStatement = select(orderMaster.orderId, orderDate, orderLine.lineNumber, itemMaster.description, orderLine.quantity)
                     .from(orderMaster, "om")
-                    .join(orderLine, "ol").on(orderMaster.orderId, equalTo(orderLine.orderId))
-                    .join(itemMaster, "im").on(orderLine.itemId, equalTo(itemMaster.itemId))
+                    .join(orderLine, "ol").on(orderMaster.orderId, isEqualTo(orderLine.orderId))
+                    .join(itemMaster, "im").on(orderLine.itemId, isEqualTo(itemMaster.itemId))
                     .where(orderMaster.orderId, isEqualTo(2))
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
@@ -268,8 +268,8 @@ class JoinMapperTest {
 
             SelectStatementProvider selectStatement = select(orderMaster.orderId, orderDate, orderLine.lineNumber, itemMaster.description, orderLine.quantity)
                     .from(orderMaster, "om")
-                    .join(orderLine, "ol").on(orderMaster.orderId, equalTo(orderLine.orderId))
-                    .join(itemMaster, "im").on(orderLine.itemId, equalTo(itemMaster.itemId))
+                    .join(orderLine, "ol").on(orderMaster.orderId, isEqualTo(orderLine.orderId))
+                    .join(itemMaster, "im").on(orderLine.itemId, isEqualTo(itemMaster.itemId))
                     .applyWhere(where(orderMaster.orderId, isEqualTo(2)).toWhereApplier())
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
@@ -299,8 +299,8 @@ class JoinMapperTest {
 
             SelectStatementProvider selectStatement = select(orderMaster.orderId, orderDate, orderLine.lineNumber, itemMaster.description, orderLine.quantity)
                     .from(orderMaster, "om")
-                    .join(orderLine, "ol").on(orderMaster.orderId, equalTo(orderLine.orderId))
-                    .join(itemMaster, "im").on(orderLine.itemId, equalTo(itemMaster.itemId))
+                    .join(orderLine, "ol").on(orderMaster.orderId, isEqualTo(orderLine.orderId))
+                    .join(itemMaster, "im").on(orderLine.itemId, isEqualTo(itemMaster.itemId))
                     .where(orderMaster.orderId, isEqualTo(2), and(orderLine.lineNumber, isEqualTo(2)))
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
@@ -328,8 +328,8 @@ class JoinMapperTest {
 
             SelectStatementProvider selectStatement = select(orderMaster.orderId, orderDate, orderLine.lineNumber, itemMaster.description, orderLine.quantity)
                     .from(orderMaster, "om")
-                    .join(orderLine, "ol").on(orderMaster.orderId, equalTo(orderLine.orderId))
-                    .join(itemMaster, "im").on(orderLine.itemId, equalTo(itemMaster.itemId))
+                    .join(orderLine, "ol").on(orderMaster.orderId, isEqualTo(orderLine.orderId))
+                    .join(itemMaster, "im").on(orderLine.itemId, isEqualTo(itemMaster.itemId))
                     .orderBy(orderMaster.orderId)
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
@@ -365,8 +365,8 @@ class JoinMapperTest {
 
             SelectStatementProvider selectStatement = select(orderMaster.orderId, orderDate, orderLine.lineNumber, itemMaster.description, orderLine.quantity)
                     .from(orderMaster)
-                    .join(orderLine).on(orderMaster.orderId, equalTo(orderLine.orderId))
-                    .join(itemMaster).on(orderLine.itemId, equalTo(itemMaster.itemId))
+                    .join(orderLine).on(orderMaster.orderId, isEqualTo(orderLine.orderId))
+                    .join(itemMaster).on(orderLine.itemId, isEqualTo(itemMaster.itemId))
                     .where(orderMaster.orderId, isEqualTo(2))
                     .orderBy(orderMaster.orderId)
                     .build()
@@ -398,7 +398,7 @@ class JoinMapperTest {
 
             SelectStatementProvider selectStatement = select(orderLine.orderId, orderLine.quantity, itemMaster.itemId, itemMaster.description)
                     .from(orderLine, "ol")
-                    .rightJoin(itemMaster, "im").on(orderLine.itemId, equalTo(itemMaster.itemId))
+                    .rightJoin(itemMaster, "im").on(orderLine.itemId, isEqualTo(itemMaster.itemId))
                     .orderBy(itemMaster.itemId)
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
@@ -432,8 +432,8 @@ class JoinMapperTest {
 
             SelectStatementProvider selectStatement = select(orderLine.orderId, orderLine.quantity, itemMaster.itemId, itemMaster.description)
                     .from(orderMaster, "om")
-                    .join(orderLine, "ol").on(orderMaster.orderId, equalTo(orderLine.orderId))
-                    .rightJoin(itemMaster, "im").on(orderLine.itemId, equalTo(itemMaster.itemId))
+                    .join(orderLine, "ol").on(orderMaster.orderId, isEqualTo(orderLine.orderId))
+                    .rightJoin(itemMaster, "im").on(orderLine.itemId, isEqualTo(itemMaster.itemId))
                     .orderBy(orderLine.orderId, itemMaster.itemId)
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
@@ -468,8 +468,8 @@ class JoinMapperTest {
 
             SelectStatementProvider selectStatement = select(orderLine.orderId, orderLine.quantity, itemMaster.itemId, itemMaster.description)
                     .from(orderMaster, "om")
-                    .join(orderLine, "ol", on(orderMaster.orderId, equalTo(orderLine.orderId)))
-                    .rightJoin(itemMaster, "im", on(orderLine.itemId, equalTo(itemMaster.itemId)))
+                    .join(orderLine, "ol", on(orderMaster.orderId, isEqualTo(orderLine.orderId)))
+                    .rightJoin(itemMaster, "im", on(orderLine.itemId, isEqualTo(itemMaster.itemId)))
                     .orderBy(orderLine.orderId, itemMaster.itemId)
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
@@ -504,8 +504,8 @@ class JoinMapperTest {
 
             SelectStatementProvider selectStatement = select(orderLine.orderId, orderLine.quantity, itemMaster.itemId, itemMaster.description)
                     .from(orderMaster)
-                    .join(orderLine).on(orderMaster.orderId, equalTo(orderLine.orderId))
-                    .rightJoin(itemMaster).on(orderLine.itemId, equalTo(itemMaster.itemId))
+                    .join(orderLine).on(orderMaster.orderId, isEqualTo(orderLine.orderId))
+                    .rightJoin(itemMaster).on(orderLine.itemId, isEqualTo(itemMaster.itemId))
                     .orderBy(orderLine.orderId, itemMaster.itemId)
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
@@ -540,7 +540,7 @@ class JoinMapperTest {
 
             SelectStatementProvider selectStatement = select(orderLine.orderId, orderLine.quantity, itemMaster.itemId, itemMaster.description)
                     .from(itemMaster, "im")
-                    .leftJoin(orderLine, "ol").on(orderLine.itemId, equalTo(itemMaster.itemId))
+                    .leftJoin(orderLine, "ol").on(orderLine.itemId, isEqualTo(itemMaster.itemId))
                     .orderBy(itemMaster.itemId)
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
@@ -574,8 +574,8 @@ class JoinMapperTest {
 
             SelectStatementProvider selectStatement = select(orderLine.orderId, orderLine.quantity, itemMaster.itemId, itemMaster.description)
                     .from(orderMaster, "om")
-                    .join(orderLine, "ol").on(orderMaster.orderId, equalTo(orderLine.orderId))
-                    .leftJoin(itemMaster, "im").on(orderLine.itemId, equalTo(itemMaster.itemId))
+                    .join(orderLine, "ol").on(orderMaster.orderId, isEqualTo(orderLine.orderId))
+                    .leftJoin(itemMaster, "im").on(orderLine.itemId, isEqualTo(itemMaster.itemId))
                     .orderBy(orderLine.orderId, itemMaster.itemId)
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
@@ -610,8 +610,8 @@ class JoinMapperTest {
 
             SelectStatementProvider selectStatement = select(orderLine.orderId, orderLine.quantity, itemMaster.itemId, itemMaster.description)
                     .from(orderMaster, "om")
-                    .join(orderLine, "ol", on(orderMaster.orderId, equalTo(orderLine.orderId)))
-                    .leftJoin(itemMaster, "im", on(orderLine.itemId, equalTo(itemMaster.itemId)))
+                    .join(orderLine, "ol", on(orderMaster.orderId, isEqualTo(orderLine.orderId)))
+                    .leftJoin(itemMaster, "im", on(orderLine.itemId, isEqualTo(itemMaster.itemId)))
                     .orderBy(orderLine.orderId, itemMaster.itemId)
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
@@ -646,8 +646,8 @@ class JoinMapperTest {
 
             SelectStatementProvider selectStatement = select(orderLine.orderId, orderLine.quantity, itemMaster.itemId, itemMaster.description)
                     .from(orderMaster)
-                    .join(orderLine).on(orderMaster.orderId, equalTo(orderLine.orderId))
-                    .leftJoin(itemMaster).on(orderLine.itemId, equalTo(itemMaster.itemId))
+                    .join(orderLine).on(orderMaster.orderId, isEqualTo(orderLine.orderId))
+                    .leftJoin(itemMaster).on(orderLine.itemId, isEqualTo(itemMaster.itemId))
                     .orderBy(orderLine.orderId, itemMaster.itemId)
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
@@ -682,7 +682,7 @@ class JoinMapperTest {
 
             SelectStatementProvider selectStatement = select(orderLine.orderId, orderLine.quantity, orderLine.itemId.as("ol_itemid"), itemMaster.itemId.as("im_itemid"), itemMaster.description)
                     .from(itemMaster, "im")
-                    .fullJoin(orderLine, "ol").on(itemMaster.itemId, equalTo(orderLine.itemId))
+                    .fullJoin(orderLine, "ol").on(itemMaster.itemId, isEqualTo(orderLine.itemId))
                     .orderBy(orderLine.orderId, sortColumn("im_itemid"))
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
@@ -723,8 +723,8 @@ class JoinMapperTest {
 
             SelectStatementProvider selectStatement = select(orderLine.orderId, orderLine.quantity, itemMaster.itemId, itemMaster.description)
                     .from(orderMaster, "om")
-                    .join(orderLine, "ol").on(orderMaster.orderId, equalTo(orderLine.orderId))
-                    .fullJoin(itemMaster, "im").on(orderLine.itemId, equalTo(itemMaster.itemId))
+                    .join(orderLine, "ol").on(orderMaster.orderId, isEqualTo(orderLine.orderId))
+                    .fullJoin(itemMaster, "im").on(orderLine.itemId, isEqualTo(itemMaster.itemId))
                     .orderBy(orderLine.orderId, itemMaster.itemId)
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
@@ -765,8 +765,8 @@ class JoinMapperTest {
 
             SelectStatementProvider selectStatement = select(orderLine.orderId, orderLine.quantity, itemMaster.itemId, itemMaster.description)
                     .from(orderMaster, "om")
-                    .join(orderLine, "ol", on(orderMaster.orderId, equalTo(orderLine.orderId)))
-                    .fullJoin(itemMaster, "im", on(orderLine.itemId, equalTo(itemMaster.itemId)))
+                    .join(orderLine, "ol", on(orderMaster.orderId, isEqualTo(orderLine.orderId)))
+                    .fullJoin(itemMaster, "im", on(orderLine.itemId, isEqualTo(itemMaster.itemId)))
                     .orderBy(orderLine.orderId, itemMaster.itemId)
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
@@ -807,8 +807,8 @@ class JoinMapperTest {
 
             SelectStatementProvider selectStatement = select(orderLine.orderId, orderLine.quantity, itemMaster.description)
                     .from(orderMaster, "om")
-                    .join(orderLine, "ol", on(orderMaster.orderId, equalTo(orderLine.orderId)))
-                    .fullJoin(itemMaster, "im", on(orderLine.itemId, equalTo(itemMaster.itemId)))
+                    .join(orderLine, "ol", on(orderMaster.orderId, isEqualTo(orderLine.orderId)))
+                    .fullJoin(itemMaster, "im", on(orderLine.itemId, isEqualTo(itemMaster.itemId)))
                     .orderBy(orderLine.orderId, sortColumn("im", itemMaster.itemId))
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
@@ -846,8 +846,8 @@ class JoinMapperTest {
 
             SelectStatementProvider selectStatement = select(orderLine.orderId, orderLine.quantity, itemMaster.description)
                     .from(orderMaster, "om")
-                    .join(orderLine, "ol", on(orderMaster.orderId, equalTo(orderLine.orderId)))
-                    .fullJoin(itemMaster, "im", on(orderLine.itemId, equalTo(itemMaster.itemId)))
+                    .join(orderLine, "ol", on(orderMaster.orderId, isEqualTo(orderLine.orderId)))
+                    .fullJoin(itemMaster, "im", on(orderLine.itemId, isEqualTo(itemMaster.itemId)))
                     .orderBy(orderLine.orderId, sortColumn("im", itemMaster.itemId).descending())
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
@@ -885,8 +885,8 @@ class JoinMapperTest {
 
             SelectStatementProvider selectStatement = select(orderLine.orderId, orderLine.quantity, itemMaster.itemId, itemMaster.description)
                     .from(orderMaster)
-                    .join(orderLine).on(orderMaster.orderId, equalTo(orderLine.orderId))
-                    .fullJoin(itemMaster).on(orderLine.itemId, equalTo(itemMaster.itemId))
+                    .join(orderLine).on(orderMaster.orderId, isEqualTo(orderLine.orderId))
+                    .fullJoin(itemMaster).on(orderLine.itemId, isEqualTo(itemMaster.itemId))
                     .orderBy(orderLine.orderId, itemMaster.itemId)
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
@@ -931,7 +931,7 @@ class JoinMapperTest {
             // get Bamm Bamm's parent - should be Barney
             SelectStatementProvider selectStatement = select(user.userId, user.userName, user.parentId)
                     .from(user, "u1")
-                    .join(user2, "u2").on(user.userId, equalTo(user2.parentId))
+                    .join(user2, "u2").on(user.userId, isEqualTo(user2.parentId))
                     .where(user2.userId, isEqualTo(4))
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
@@ -971,7 +971,7 @@ class JoinMapperTest {
             // get Bamm Bamm's parent - should be Barney
             SelectStatementProvider selectStatement = select(user.userId, user.userName, user.parentId)
                     .from(user)
-                    .join(user2).on(user.userId, equalTo(user2.parentId))
+                    .join(user2).on(user.userId, isEqualTo(user2.parentId))
                     .where(user2.userId, isEqualTo(4))
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
@@ -1002,7 +1002,7 @@ class JoinMapperTest {
             // get Bamm Bamm's parent - should be Barney
             SelectStatementProvider selectStatement = select(user.userId, user.userName, user.parentId)
                     .from(user, "u1")
-                    .join(user2, "u2").on(user.userId, equalTo(user2.parentId))
+                    .join(user2, "u2").on(user.userId, isEqualTo(user2.parentId))
                     .where(user2.userId, isEqualTo(4))
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
@@ -1029,7 +1029,7 @@ class JoinMapperTest {
 
             SelectStatementProvider selectStatement = select(orderLine.orderId, orderLine.quantity, itemMaster.itemId, itemMaster.description)
                     .from(itemMaster, "im")
-                    .leftJoin(orderLine, "ol").on(orderLine.itemId, equalTo(itemMaster.itemId))
+                    .leftJoin(orderLine, "ol").on(orderLine.itemId, isEqualTo(itemMaster.itemId))
                     .limit(2)
                     .offset(1)
                     .build()
@@ -1064,7 +1064,7 @@ class JoinMapperTest {
 
             SelectStatementProvider selectStatement = select(orderLine.orderId, orderLine.quantity, itemMaster.itemId, itemMaster.description)
                     .from(itemMaster, "im")
-                    .leftJoin(orderLine, "ol").on(orderLine.itemId, equalTo(itemMaster.itemId))
+                    .leftJoin(orderLine, "ol").on(orderLine.itemId, isEqualTo(itemMaster.itemId))
                     .limit(2)
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
@@ -1098,7 +1098,7 @@ class JoinMapperTest {
 
             SelectStatementProvider selectStatement = select(orderLine.orderId, orderLine.quantity, itemMaster.itemId, itemMaster.description)
                     .from(itemMaster, "im")
-                    .leftJoin(orderLine, "ol").on(orderLine.itemId, equalTo(itemMaster.itemId))
+                    .leftJoin(orderLine, "ol").on(orderLine.itemId, isEqualTo(itemMaster.itemId))
                     .offset(2)
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
@@ -1132,7 +1132,7 @@ class JoinMapperTest {
 
             SelectStatementProvider selectStatement = select(orderLine.orderId, orderLine.quantity, itemMaster.itemId, itemMaster.description)
                     .from(itemMaster, "im")
-                    .leftJoin(orderLine, "ol").on(orderLine.itemId, equalTo(itemMaster.itemId))
+                    .leftJoin(orderLine, "ol").on(orderLine.itemId, isEqualTo(itemMaster.itemId))
                     .offset(1)
                     .fetchFirst(2).rowsOnly()
                     .build()
@@ -1167,7 +1167,7 @@ class JoinMapperTest {
 
             SelectStatementProvider selectStatement = select(orderLine.orderId, orderLine.quantity, itemMaster.itemId, itemMaster.description)
                     .from(itemMaster, "im")
-                    .leftJoin(orderLine, "ol").on(orderLine.itemId, equalTo(itemMaster.itemId))
+                    .leftJoin(orderLine, "ol").on(orderLine.itemId, isEqualTo(itemMaster.itemId))
                     .fetchFirst(2).rowsOnly()
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
@@ -1201,8 +1201,8 @@ class JoinMapperTest {
 
             SelectStatementProvider selectStatement = select(orderLine.orderId, orderLine.quantity, itemMaster.itemId, itemMaster.description)
                     .from(itemMaster, "im")
-                    .join(orderLine, "ol").on(orderLine.itemId, equalTo(itemMaster.itemId))
-                    .and(orderLine.orderId, equalTo(1))
+                    .join(orderLine, "ol").on(orderLine.itemId, isEqualTo(itemMaster.itemId))
+                    .and(orderLine.orderId, isEqualTo(1))
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
 
@@ -1235,8 +1235,8 @@ class JoinMapperTest {
 
             SelectStatementProvider selectStatement = select(orderLine.orderId, orderLine.quantity, itemMaster.itemId, itemMaster.description)
                     .from(itemMaster, "im")
-                    .join(orderLine, "ol").on(orderLine.itemId, equalTo(itemMaster.itemId))
-                    .and(orderLine.orderId, equalTo(constant("1")))
+                    .join(orderLine, "ol").on(orderLine.itemId, isEqualTo(itemMaster.itemId))
+                    .and(orderLine.orderId, isEqualTo(constant("1")))
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
 

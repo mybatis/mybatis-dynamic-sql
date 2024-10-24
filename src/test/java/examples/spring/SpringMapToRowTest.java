@@ -24,7 +24,6 @@ import static org.mybatis.dynamic.sql.SqlBuilder.insertBatch;
 import static org.mybatis.dynamic.sql.SqlBuilder.insertMultiple;
 import static org.mybatis.dynamic.sql.SqlBuilder.select;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
 

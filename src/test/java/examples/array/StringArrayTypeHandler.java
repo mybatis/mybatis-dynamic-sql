@@ -22,7 +22,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.apache.ibatis.type.BaseTypeHandler;
 import org.apache.ibatis.type.JdbcType;
@@ -59,7 +58,7 @@ public class StringArrayTypeHandler extends BaseTypeHandler<String[]> {
 
         List<String> stringList = Arrays.stream(objArray)
                 .map(Object::toString)
-                .collect(Collectors.toList());
+                .toList();
 
         String[] stringArray = new String[stringList.size()];
         return stringList.toArray(stringArray);

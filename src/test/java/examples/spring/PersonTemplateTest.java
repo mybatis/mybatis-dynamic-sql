@@ -633,7 +633,7 @@ class PersonTemplateTest {
         Buildable<SelectModel> selectStatement = select(id, firstName, lastName, birthDate, employed, occupation,
                 address.id, address.streetAddress, address.city, address.state)
                 .from(person)
-                .join(address, on(person.addressId, equalTo(address.id)))
+                .join(address, on(person.addressId, isEqualTo(address.id)))
                 .orderBy(id);
 
         List<PersonWithAddress> records = template.selectList(selectStatement, personWithAddressRowMapper);
@@ -656,7 +656,7 @@ class PersonTemplateTest {
         Buildable<SelectModel> selectStatement = select(id, firstName, lastName, birthDate, employed, occupation,
                 address.id, address.streetAddress, address.city, address.state)
                 .from(person)
-                .join(address, on(person.addressId, equalTo(address.id)))
+                .join(address, on(person.addressId, isEqualTo(address.id)))
                 .where(id, isEqualTo(1));
 
         List<PersonWithAddress> records = template.selectList(selectStatement, personWithAddressRowMapper);
@@ -679,7 +679,7 @@ class PersonTemplateTest {
         Buildable<SelectModel> selectStatement = select(id, firstName, lastName, birthDate, employed, occupation,
                 address.id, address.streetAddress, address.city, address.state)
                 .from(person)
-                .join(address, on(person.addressId, equalTo(address.id)))
+                .join(address, on(person.addressId, isEqualTo(address.id)))
                 .where(id, isEqualTo(1));
 
         Optional<PersonWithAddress> row = template.selectOne(selectStatement, personWithAddressRowMapper);
@@ -703,7 +703,7 @@ class PersonTemplateTest {
         Buildable<SelectModel> selectStatement = select(id, firstName, lastName, birthDate, employed, occupation,
                 address.id, address.streetAddress, address.city, address.state)
                 .from(person)
-                .join(address, on(person.addressId, equalTo(address.id)))
+                .join(address, on(person.addressId, isEqualTo(address.id)))
                 .where(id, isEqualTo(55));
 
         Optional<PersonWithAddress> row = template.selectOne(selectStatement, personWithAddressRowMapper);
@@ -713,7 +713,7 @@ class PersonTemplateTest {
     @Test
     void testJoinCount() {
         Buildable<SelectModel> countStatement = countFrom(person)
-                .join(address, on(person.addressId, equalTo(address.id)))
+                .join(address, on(person.addressId, isEqualTo(address.id)))
                 .where(id, isEqualTo(55));
 
         long count = template.count(countStatement);
@@ -723,7 +723,7 @@ class PersonTemplateTest {
     @Test
     void testJoinCountWithSubCriteria() {
         Buildable<SelectModel> countStatement = countFrom(person)
-                .join(address, on(person.addressId, equalTo(address.id)))
+                .join(address, on(person.addressId, isEqualTo(address.id)))
                 .where(person.id, isEqualTo(55), or(person.id, isEqualTo(1)));
 
         long count = template.count(countStatement);

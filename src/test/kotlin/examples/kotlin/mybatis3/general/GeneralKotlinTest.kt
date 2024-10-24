@@ -367,8 +367,8 @@ class GeneralKotlinTest {
                 address.id, address.streetAddress, address.city, address.state
             ) {
                 from(person)
-                join(address) {
-                    on(addressId) equalTo address.id
+                join(address) on {
+                    addressId isEqualTo address.id
                 }
                 where { id isLessThan 4 }
                 orderBy(id)
@@ -403,8 +403,8 @@ class GeneralKotlinTest {
                 address.id, address.streetAddress, address.city, address.state
             ) {
                 from(person)
-                join(address) {
-                    on(addressId) equalTo address.id
+                join(address) on {
+                    addressId isEqualTo address.id
                 }
                 where {
                     id isLessThan 5
@@ -446,8 +446,8 @@ class GeneralKotlinTest {
                 address.id, address.streetAddress, address.city, address.state
             ) {
                 from(person)
-                join(address) {
-                    on(addressId) equalTo address.id
+                join(address) on {
+                    addressId isEqualTo address.id
                 }
                 where {
                     id isEqualTo 5

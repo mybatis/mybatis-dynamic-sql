@@ -80,25 +80,25 @@ public interface PersonWithAddressMapper extends CommonCountMapper {
 
     default Optional<PersonWithAddress> selectOne(SelectDSLCompleter completer) {
         QueryExpressionDSL<SelectModel> start = SqlBuilder.select(selectList).from(person)
-                .join(address, on(person.addressId, equalTo(address.id)));
+                .join(address, on(person.addressId, isEqualTo(address.id)));
         return MyBatis3Utils.selectOne(this::selectOne, start, completer);
     }
 
     default List<PersonWithAddress> select(SelectDSLCompleter completer) {
         QueryExpressionDSL<SelectModel> start = SqlBuilder.select(selectList).from(person)
-                .join(address, on(person.addressId, equalTo(address.id)));
+                .join(address, on(person.addressId, isEqualTo(address.id)));
         return MyBatis3Utils.selectList(this::selectMany, start, completer);
     }
 
-    default Optional<PersonWithAddress> selectByPrimaryKey(Integer id_) {
+    default Optional<PersonWithAddress> selectByPrimaryKey(Integer recordId) {
         return selectOne(c ->
-            c.where(id, isEqualTo(id_))
+            c.where(id, isEqualTo(recordId))
         );
     }
 
     default long count(CountDSLCompleter completer) {
         CountDSL<SelectModel> start = countFrom(person)
-                .join(address, on(person.addressId, equalTo(address.id)));
+                .join(address, on(person.addressId, isEqualTo(address.id)));
         return MyBatis3Utils.countFrom(this::count, start, completer);
     }
 }

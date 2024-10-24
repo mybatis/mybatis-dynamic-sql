@@ -170,7 +170,7 @@ class EmptyWhereTest {
         String lName = "Flintstone";
 
         QueryExpressionDSL<SelectModel>.QueryExpressionWhereBuilder builder = select(id, firstName, PersonDynamicSqlSupport.lastName, orderDate)
-                .from(person).join(order).on(person.id, equalTo(order.personId))
+                .from(person).join(order).on(person.id, isEqualTo(order.personId))
                 .where(id, isEqualTo(3));
 
         builder.and(firstName, isEqualTo(fName).filter(Objects::nonNull));
@@ -192,7 +192,7 @@ class EmptyWhereTest {
     @MethodSource("joinWhereVariations")
     void testJoinVariations(Variation variation) {
         QueryExpressionDSL<SelectModel>.QueryExpressionWhereBuilder builder = select(id, firstName, PersonDynamicSqlSupport.lastName, orderDate)
-                .from(person).join(order).on(person.id, equalTo(order.personId))
+                .from(person).join(order).on(person.id, isEqualTo(order.personId))
                 .where();
 
         builder.and(firstName, isEqualTo(variation.firstName).filter(Objects::nonNull));

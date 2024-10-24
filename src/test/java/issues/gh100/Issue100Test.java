@@ -31,7 +31,7 @@ class Issue100Test {
         SelectStatementProvider selectStatement = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student)
                 .join(StudentRegDynamicSqlSupport.studentReg)
-                .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid))
+                .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid))
                 .where(StudentDynamicSqlSupport.idcard, isEqualTo("fred"))
                 .union()
                 .select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
@@ -60,7 +60,7 @@ class Issue100Test {
                 .from(StudentDynamicSqlSupport.student);
 
         builder.join(StudentRegDynamicSqlSupport.studentReg)
-        .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+        .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 
         SelectStatementProvider selectStatement = builder.build()
                 .render(RenderingStrategies.MYBATIS3);
@@ -76,7 +76,7 @@ class Issue100Test {
                 .from(StudentDynamicSqlSupport.student);
 
         builder.join(StudentRegDynamicSqlSupport.studentReg)
-        .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid))
+        .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid))
         .where(StudentDynamicSqlSupport.idcard, isEqualTo("fred"));
 
         SelectStatementProvider selectStatement = builder.build()
@@ -94,7 +94,7 @@ class Issue100Test {
                 .from(StudentDynamicSqlSupport.student);
 
         builder.join(StudentRegDynamicSqlSupport.studentReg)
-        .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid))
+        .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid))
         .where(StudentDynamicSqlSupport.idcard, isEqualTo("fred"))
         .orderBy(StudentDynamicSqlSupport.id);
 
@@ -114,7 +114,7 @@ class Issue100Test {
                 .from(StudentDynamicSqlSupport.student);
 
         builder.join(StudentRegDynamicSqlSupport.studentReg)
-        .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid))
+        .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid))
         .where(StudentDynamicSqlSupport.idcard, isEqualTo("fred"))
         .orderBy(StudentDynamicSqlSupport.id)
         .limit(3);
@@ -136,7 +136,7 @@ class Issue100Test {
                 .from(StudentDynamicSqlSupport.student);
 
         builder.join(StudentRegDynamicSqlSupport.studentReg)
-        .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid))
+        .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid))
         .where(StudentDynamicSqlSupport.idcard, isEqualTo("fred"))
         .orderBy(StudentDynamicSqlSupport.id)
         .limit(3)
@@ -182,8 +182,8 @@ class Issue100Test {
                 .from(StudentDynamicSqlSupport.student);
 
         builder.join(StudentRegDynamicSqlSupport.studentReg)
-        .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid))
-        .where(StudentDynamicSqlSupport.idcard, isEqualTo("fred"))
+        .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid))
+        .where(StudentDynamicSqlSupport.idcard, equalTo("fred"))
         .orderBy(StudentDynamicSqlSupport.id)
         .offset(2)
         .fetchFirst(3).rowsOnly();
@@ -206,7 +206,7 @@ class Issue100Test {
                 .from(StudentDynamicSqlSupport.student);
 
         builder.join(StudentRegDynamicSqlSupport.studentReg)
-        .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid))
+        .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid))
         .where(StudentDynamicSqlSupport.idcard, isEqualTo("fred"))
         .orderBy(StudentDynamicSqlSupport.id)
         .fetchFirst(3).rowsOnly();
@@ -227,7 +227,7 @@ class Issue100Test {
         QueryExpressionDSL<SelectModel>.JoinSpecificationFinisher on = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student)
                 .join(StudentRegDynamicSqlSupport.studentReg)
-                .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+                .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 
         on.where(StudentDynamicSqlSupport.idcard, isEqualTo("fred"));
 
