@@ -20,7 +20,6 @@ import static examples.joins.OrderDetailDynamicSQLSupport.orderDetail;
 import static examples.joins.OrderLineDynamicSQLSupport.orderLine;
 import static examples.joins.OrderMasterDynamicSQLSupport.orderMaster;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mybatis.dynamic.sql.SqlBuilder.equalTo;
 import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
 import static org.mybatis.dynamic.sql.SqlBuilder.select;
 import static org.mybatis.dynamic.sql.SqlBuilder.sortColumn;
@@ -82,7 +81,7 @@ class JoinSubQueryTest {
                     .from(orderMaster, "om")
                     .join(select(orderDetail.orderId, orderDetail.lineNumber, orderDetail.description, orderDetail.quantity)
                           .from(orderDetail),
-                          "od").on(orderMaster.orderId, equalTo(orderDetail.orderId.qualifiedWith("od")))
+                          "od").on(orderMaster.orderId, isEqualTo(orderDetail.orderId.qualifiedWith("od")))
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
 
@@ -121,11 +120,11 @@ class JoinSubQueryTest {
                     .join(select(orderLine.orderId, orderLine.itemId, orderLine.quantity, orderLine.lineNumber)
                             .from(orderLine),
                             "ol")
-                    .on(orderMaster.orderId, equalTo(orderLine.orderId.qualifiedWith("ol")))
+                    .on(orderMaster.orderId, isEqualTo(orderLine.orderId.qualifiedWith("ol")))
                     .join(select(itemMaster.itemId, itemMaster.description)
                             .from(itemMaster),
                             "im")
-                    .on(orderLine.itemId.qualifiedWith("ol"), equalTo(itemMaster.itemId.qualifiedWith("im")))
+                    .on(orderLine.itemId.qualifiedWith("ol"), isEqualTo(itemMaster.itemId.qualifiedWith("im")))
                     .where(orderMaster.orderId, isEqualTo(2))
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
@@ -158,9 +157,9 @@ class JoinSubQueryTest {
             SelectStatementProvider selectStatement = select(orderMaster.orderId, orderMaster.orderDate, orderLine.lineNumber, itemMaster.description, orderLine.quantity)
                     .from(orderMaster, "om")
                     .join(select(orderLine.allColumns()).from(orderLine), "ol")
-                    .on(orderMaster.orderId, equalTo(orderLine.orderId.qualifiedWith("ol")))
+                    .on(orderMaster.orderId, isEqualTo(orderLine.orderId.qualifiedWith("ol")))
                     .join(select(itemMaster.allColumns()).from(itemMaster), "im")
-                    .on(orderLine.itemId.qualifiedWith("ol"), equalTo(itemMaster.itemId.qualifiedWith("im")))
+                    .on(orderLine.itemId.qualifiedWith("ol"), isEqualTo(itemMaster.itemId.qualifiedWith("im")))
                     .where(orderMaster.orderId, isEqualTo(2))
                     .orderBy(orderMaster.orderId)
                     .build()
@@ -197,7 +196,7 @@ class JoinSubQueryTest {
                     itemMaster.itemId.qualifiedWith("im"), itemMaster.description)
                     .from(orderLine, "ol")
                     .rightJoin(select(itemMaster.allColumns()).from(itemMaster), "im")
-                    .on(orderLine.itemId, equalTo(itemMaster.itemId.qualifiedWith("im")))
+                    .on(orderLine.itemId, isEqualTo(itemMaster.itemId.qualifiedWith("im")))
                     .orderBy(itemMaster.itemId)
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
@@ -232,9 +231,9 @@ class JoinSubQueryTest {
             SelectStatementProvider selectStatement = select(orderLine.orderId, orderLine.quantity,
                     itemMaster.itemId.qualifiedWith(("im")), itemMaster.description)
                     .from(orderMaster, "om")
-                    .join(orderLine, "ol").on(orderMaster.orderId, equalTo(orderLine.orderId))
+                    .join(orderLine, "ol").on(orderMaster.orderId, isEqualTo(orderLine.orderId))
                     .rightJoin(select(itemMaster.allColumns()).from(itemMaster), "im")
-                    .on(orderLine.itemId, equalTo(itemMaster.itemId.qualifiedWith("im")))
+                    .on(orderLine.itemId, isEqualTo(itemMaster.itemId.qualifiedWith("im")))
                     .orderBy(orderLine.orderId, itemMaster.itemId)
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
@@ -271,7 +270,7 @@ class JoinSubQueryTest {
                     itemMaster.itemId.qualifiedWith("im"), itemMaster.description)
                     .from(itemMaster, "im")
                     .leftJoin(select(orderLine.allColumns()).from(orderLine), "ol")
-                    .on(orderLine.itemId.qualifiedWith("ol"), equalTo(itemMaster.itemId))
+                    .on(orderLine.itemId.qualifiedWith("ol"), isEqualTo(itemMaster.itemId))
                     .orderBy(itemMaster.itemId)
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
@@ -307,9 +306,9 @@ class JoinSubQueryTest {
             SelectStatementProvider selectStatement = select(orderLine.orderId, orderLine.quantity,
                     itemMaster.itemId.qualifiedWith("im"), itemMaster.description)
                     .from(orderMaster, "om")
-                    .join(orderLine, "ol").on(orderMaster.orderId, equalTo(orderLine.orderId))
+                    .join(orderLine, "ol").on(orderMaster.orderId, isEqualTo(orderLine.orderId))
                     .leftJoin(select(itemMaster.allColumns()).from(itemMaster), "im")
-                    .on(orderLine.itemId, equalTo(itemMaster.itemId.qualifiedWith("im")))
+                    .on(orderLine.itemId, isEqualTo(itemMaster.itemId.qualifiedWith("im")))
                     .orderBy(orderLine.orderId, itemMaster.itemId)
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
@@ -346,7 +345,7 @@ class JoinSubQueryTest {
                     orderLine.itemId.as("ol_itemid").qualifiedWith("ol"), itemMaster.itemId.as("im_itemid"), itemMaster.description)
                     .from(itemMaster, "im")
                     .fullJoin(select(orderLine.allColumns()).from(orderLine), "ol")
-                    .on(itemMaster.itemId, equalTo(orderLine.itemId.qualifiedWith("ol")))
+                    .on(itemMaster.itemId, isEqualTo(orderLine.itemId.qualifiedWith("ol")))
                     .orderBy(orderLine.orderId, sortColumn("im_itemid"))
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
@@ -389,9 +388,9 @@ class JoinSubQueryTest {
             SelectStatementProvider selectStatement = select(orderLine.orderId, orderLine.quantity,
                     itemMaster.itemId.qualifiedWith("im"), itemMaster.description)
                     .from(orderMaster, "om")
-                    .join(orderLine, "ol").on(orderMaster.orderId, equalTo(orderLine.orderId))
+                    .join(orderLine, "ol").on(orderMaster.orderId, isEqualTo(orderLine.orderId))
                     .fullJoin(select(itemMaster.allColumns()).from(itemMaster), "im")
-                    .on(orderLine.itemId, equalTo(itemMaster.itemId.qualifiedWith("im")))
+                    .on(orderLine.itemId, isEqualTo(itemMaster.itemId.qualifiedWith("im")))
                     .orderBy(orderLine.orderId, itemMaster.itemId)
                     .build()
                     .render(RenderingStrategies.MYBATIS3);

@@ -577,8 +577,8 @@ open class CanonicalSpringKotlinTemplateDirectTest {
             address.id, address.streetAddress, address.city, address.state
         ) {
             from(person, "p")
-            join(address, "a") {
-                on(addressId) equalTo address.id
+            join(address, "a") on {
+                addressId isEqualTo address.id
             }
             where { id isLessThan 4 }
             orderBy(id)

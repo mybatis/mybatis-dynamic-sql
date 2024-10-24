@@ -30,14 +30,12 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import org.mybatis.dynamic.sql.util.Messages
 import org.mybatis.dynamic.sql.util.kotlin.KInvalidSQLException
-import org.mybatis.dynamic.sql.util.kotlin.elements.constant
 import org.mybatis.dynamic.sql.util.kotlin.elements.invoke
-import org.mybatis.dynamic.sql.util.kotlin.elements.max
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.select
 
 @Suppress("LargeClass")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class JoinMapperTest {
+class DeprecatedJoinMapperTest {
     private lateinit var sqlSessionFactory: SqlSessionFactory
 
     @BeforeAll
@@ -45,45 +43,6 @@ class JoinMapperTest {
         sqlSessionFactory = TestUtils.buildSqlSessionFactory {
             withInitializationScript("/examples/kotlin/mybatis3/joins/CreateJoinDB.sql")
             withMapper(JoinMapper::class)
-        }
-    }
-
-    @Test
-    fun testSingleTableJoin() {
-        sqlSessionFactory.openSession().use { session ->
-            val mapper = session.getMapper(JoinMapper::class.java)
-
-            val selectStatement = select(
-                orderMaster.orderId, orderMaster.orderDate,
-                orderDetail.lineNumber, orderDetail.description, orderDetail.quantity
-            ) {
-                from(orderMaster, "om")
-                join(orderDetail, "od") {
-                    on(orderMaster.orderId) equalTo orderDetail.orderId
-                }
-            }
-
-            val expectedStatement = "select om.order_id, om.order_date, od.line_number, od.description, od.quantity" +
-                " from OrderMaster om join OrderDetail od on om.order_id = od.order_id"
-
-            assertThat(selectStatement.selectStatement).isEqualTo(expectedStatement)
-
-            val rows = mapper.selectMany(selectStatement)
-
-            assertThat(rows).hasSize(2)
-
-            with(rows[0]) {
-                assertThat(id).isEqualTo(1)
-                assertThat(details).hasSize(2)
-                assertThat(details?.get(0)?.lineNumber).isEqualTo(1)
-                assertThat(details?.get(1)?.lineNumber).isEqualTo(2)
-            }
-
-            with(rows[1]) {
-                assertThat(id).isEqualTo(2)
-                assertThat(details).hasSize(1)
-                assertThat(details?.get(0)?.lineNumber).isEqualTo(1)
-            }
         }
     }
 
@@ -96,51 +55,16 @@ class JoinMapperTest {
                 orderMaster.orderId, orderMaster.orderDate,
                 orderDetail.lineNumber, orderDetail.description, orderDetail.quantity
             ) {
-                from(orderMaster, "om")
-                join(orderDetail, "od") {
+                from(orderMaster)
+                join(orderDetail) {
                     on(orderMaster.orderId) equalTo orderDetail.orderId
                     and(orderMaster.orderId) equalTo 1
                 }
             }
 
-            val expectedStatement = "select om.order_id, om.order_date, od.line_number, od.description, od.quantity" +
-                    " from OrderMaster om join OrderDetail od on om.order_id = od.order_id" +
-                    " and om.order_id = #{parameters.p1,jdbcType=INTEGER}"
-
-            assertThat(selectStatement.selectStatement).isEqualTo(expectedStatement)
-
-            val rows = mapper.selectMany(selectStatement)
-
-            assertThat(rows).hasSize(1)
-
-            with(rows[0]) {
-                assertThat(id).isEqualTo(1)
-                assertThat(details).hasSize(2)
-                assertThat(details?.get(0)?.lineNumber).isEqualTo(1)
-                assertThat(details?.get(1)?.lineNumber).isEqualTo(2)
-            }
-        }
-    }
-
-    @Test
-    fun testSingleTableJoinWithConstant() {
-        sqlSessionFactory.openSession().use { session ->
-            val mapper = session.getMapper(JoinMapper::class.java)
-
-            val selectStatement = select(
-                orderMaster.orderId, orderMaster.orderDate,
-                orderDetail.lineNumber, orderDetail.description, orderDetail.quantity
-            ) {
-                from(orderMaster, "om")
-                join(orderDetail, "od") {
-                    on(orderMaster.orderId) equalTo orderDetail.orderId
-                    and(orderMaster.orderId) equalTo constant("1")
-                }
-            }
-
-            val expectedStatement = "select om.order_id, om.order_date, od.line_number, od.description, od.quantity" +
-                    " from OrderMaster om join OrderDetail od on om.order_id = od.order_id" +
-                    " and om.order_id = 1"
+            val expectedStatement = "select OrderMaster.order_id, OrderMaster.order_date, OrderDetail.line_number, OrderDetail.description, OrderDetail.quantity" +
+                    " from OrderMaster join OrderDetail on OrderMaster.order_id = OrderDetail.order_id" +
+                    " and OrderMaster.order_id = #{parameters.p1,jdbcType=INTEGER}"
 
             assertThat(selectStatement.selectStatement).isEqualTo(expectedStatement)
 
@@ -174,64 +98,6 @@ class JoinMapperTest {
         val expectedStatement = "select om.order_id, om.order_date, od.line_number, od.description, od.quantity" +
             " from OrderMaster om join OrderDetail od on om.order_id = od.order_id and om.order_id = od.order_id"
         assertThat(selectStatement.selectStatement).isEqualTo(expectedStatement)
-    }
-
-    @Test
-    fun testCompoundJoin2() {
-        // this is a nonsensical join, but it does test the "and" capability
-        val selectStatement = select(
-            orderMaster.orderId, orderMaster.orderDate, orderDetail.lineNumber,
-            orderDetail.description, orderDetail.quantity
-        ) {
-            from(orderMaster, "om")
-            join(orderDetail, "od") {
-                on(orderMaster.orderId) equalTo orderDetail.orderId
-                and(orderMaster.orderId) equalTo orderDetail.orderId
-            }
-            where { orderMaster.orderId isEqualTo 1 }
-        }
-
-        val expectedStatement = "select om.order_id, om.order_date, od.line_number, od.description, od.quantity" +
-            " from OrderMaster om join OrderDetail od on om.order_id = od.order_id and om.order_id = od.order_id" +
-            " where om.order_id = #{parameters.p1,jdbcType=INTEGER}"
-        assertThat(selectStatement.selectStatement).isEqualTo(expectedStatement)
-    }
-
-    @Test
-    fun testMultipleTableJoinWithWhereClause() {
-        sqlSessionFactory.openSession().use { session ->
-            val mapper = session.getMapper(JoinMapper::class.java)
-
-            val selectStatement = select(
-                orderMaster.orderId, orderMaster.orderDate, orderLine.lineNumber,
-                itemMaster.description, orderLine.quantity
-            ) {
-                from(orderMaster, "om")
-                join(orderLine, "ol") {
-                    on(orderMaster.orderId) equalTo orderLine.orderId
-                }
-                join(itemMaster, "im") {
-                    on(orderLine.itemId) equalTo itemMaster.itemId
-                }
-                where { orderMaster.orderId isEqualTo 2 }
-            }
-
-            val expectedStatement = "select om.order_id, om.order_date, ol.line_number, im.description, ol.quantity" +
-                " from OrderMaster om join OrderLine ol" +
-                " on om.order_id = ol.order_id join ItemMaster im on ol.item_id = im.item_id" +
-                " where om.order_id = #{parameters.p1,jdbcType=INTEGER}"
-            assertThat(selectStatement.selectStatement).isEqualTo(expectedStatement)
-
-            val rows = mapper.selectMany(selectStatement)
-
-            assertThat(rows).hasSize(1)
-            with(rows[0]) {
-                assertThat(id).isEqualTo(2)
-                assertThat(details).hasSize(2)
-                assertThat(details?.get(0)?.lineNumber).isEqualTo(1)
-                assertThat(details?.get(1)?.lineNumber).isEqualTo(2)
-            }
-        }
     }
 
     @Test
@@ -704,100 +570,6 @@ class JoinMapperTest {
     }
 
     @Test
-    fun testSelf() {
-        sqlSessionFactory.openSession().use { session ->
-            val mapper = session.getMapper(JoinMapper::class.java)
-
-            // create second table instance for self-join
-            val user2 = UserDynamicSQLSupport.User()
-
-            // get Bamm Bamm's parent - should be Barney
-            val selectStatement = select(user.userId, user.userName, user.parentId) {
-                from(user, "u1")
-                join(user2, "u2") {
-                    on(user.userId) equalTo user2.parentId
-                }
-                where { user2.userId isEqualTo 4 }
-            }
-
-            val expectedStatement = "select u1.user_id, u1.user_name, u1.parent_id" +
-                    " from User u1 join User u2 on u1.user_id = u2.parent_id" +
-                    " where u2.user_id = #{parameters.p1,jdbcType=INTEGER}"
-            assertThat(selectStatement.selectStatement).isEqualTo(expectedStatement)
-            val rows = mapper.selectManyMappedRows(selectStatement)
-
-            assertThat(rows).hasSize(1)
-            assertThat(rows[0]).containsExactly(
-                entry("USER_ID", 2),
-                entry("USER_NAME", "Barney"),
-            )
-        }
-    }
-
-    @Test
-    fun testSelfWithNewAlias() {
-        sqlSessionFactory.openSession().use { session ->
-            val mapper = session.getMapper(JoinMapper::class.java)
-
-            // create second table instance for self-join
-            val user2 = user.withAlias("u2")
-
-            // get Bamm Bamm's parent - should be Barney
-            val selectStatement = select(user.userId, user.userName, user.parentId) {
-                from(user)
-                join(user2) {
-                    on(user.userId) equalTo user2.parentId
-                }
-                where { user2.userId isEqualTo 4 }
-            }
-
-            val expectedStatement = "select User.user_id, User.user_name, User.parent_id" +
-                    " from User join User u2 on User.user_id = u2.parent_id" +
-                    " where u2.user_id = #{parameters.p1,jdbcType=INTEGER}"
-            assertThat(selectStatement.selectStatement).isEqualTo(expectedStatement)
-
-            val rows = mapper.selectManyMappedRows(selectStatement)
-            assertThat(rows).hasSize(1)
-
-            assertThat(rows[0]).containsExactly(
-                entry("USER_ID", 2),
-                entry("USER_NAME", "Barney"),
-            )
-        }
-    }
-
-    @Test
-    fun testSelfWithNewAliasAndOverride() {
-        sqlSessionFactory.openSession().use { session ->
-            val mapper = session.getMapper(JoinMapper::class.java)
-
-            // create second table instance for self-join
-            val user2 = user.withAlias("other_user")
-
-            // get Bamm Bamm's parent - should be Barney
-            val selectStatement = select(user.userId, user.userName, user.parentId) {
-                from(user, "u1")
-                join(user2, "u2") {
-                    on(user.userId) equalTo user2.parentId
-                }
-                where { user2.userId isEqualTo 4 }
-            }
-
-            val expectedStatement = "select u1.user_id, u1.user_name, u1.parent_id" +
-                    " from User u1 join User u2 on u1.user_id = u2.parent_id" +
-                    " where u2.user_id = #{parameters.p1,jdbcType=INTEGER}"
-            assertThat(selectStatement.selectStatement).isEqualTo(expectedStatement)
-            val rows = mapper.selectManyMappedRows(selectStatement)
-            assertThat(rows).hasSize(1)
-
-            assertThat(rows[0]).containsExactly(
-                entry("USER_ID", 2),
-                entry("USER_NAME", "Barney"),
-            )
-        }
-    }
-
-    @Test
     fun testJoinWithNoOnCondition() {
         // create second table instance for self-join
         val user2 = user.withAlias("other_user")
@@ -828,49 +600,5 @@ class JoinMapperTest {
                 where { user2.userId isEqualTo 4 }
             }
         }.withMessage(Messages.getString("ERROR.45")) //$NON-NLS-1$
-    }
-
-    @Test
-    fun testThatAliasesPropagateToSubQueryConditions() {
-        sqlSessionFactory.openSession().use { session ->
-            val mapper = session.getMapper(JoinMapper::class.java)
-
-            val orderLine2 = OrderLineDynamicSQLSupport.OrderLine()
-
-            val selectStatement = select(orderLine.orderId, orderLine.lineNumber) {
-                from(orderLine, "ol")
-                where {
-                    orderLine.lineNumber isEqualTo  {
-                        select(max(orderLine2.lineNumber)) {
-                            from(orderLine2, "ol2")
-                            where { orderLine2.orderId isEqualTo orderLine.orderId }
-                        }
-                    }
-                }
-                orderBy(orderLine.orderId)
-            }
-
-            val expectedStatement = "select ol.order_id, ol.line_number " +
-                    "from OrderLine ol " +
-                    "where ol.line_number = " +
-                    "(select max(ol2.line_number) from OrderLine ol2 where ol2.order_id = ol.order_id) " +
-                    "order by order_id"
-
-            assertThat(selectStatement.selectStatement).isEqualTo(expectedStatement)
-
-            val rows = mapper.selectManyMappedRows(selectStatement)
-
-            assertThat(rows).hasSize(2)
-
-            assertThat(rows[0]).containsOnly(
-                entry("ORDER_ID", 1),
-                entry("LINE_NUMBER", 2)
-            )
-
-            assertThat(rows[1]).containsOnly(
-                entry("ORDER_ID", 2),
-                entry("LINE_NUMBER", 3)
-            )
-        }
     }
 }
