@@ -12,6 +12,10 @@ worked to make these changes as minimal as possible.
 
 **Potentially Breaking Changes:**
 
+- If you use this library with MyBatis' Spring Batch integration, you will need to make changes as we have
+  refactored that support to be more flexible. Please see the
+  [Spring Batch](https://mybatis.org/mybatis-dynamic-sql/docs/springBatch.html) documentation page to see the new usage
+  details.
 - If you have created any custom implementations of `SortSpecification`, you will need to update those
   implementations due to a new rendering strategy for ORDER BY phrases. The old methods `isDescending` and `orderByName`
   are removed in favor of a new method `renderForOrderBy` 

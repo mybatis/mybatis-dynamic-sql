@@ -57,18 +57,27 @@ public class RenderingContext {
         return renderingStrategy.formatParameterMapKey(sequence);
     }
 
-    private String renderedPlaceHolder(String mapKey) {
-        return renderingStrategy.getFormattedJdbcPlaceholder(calculatedParameterName, mapKey);
-    }
-
     private <T> String renderedPlaceHolder(String mapKey, BindableColumn<T> column) {
         return  column.renderingStrategy().orElse(renderingStrategy)
                 .getFormattedJdbcPlaceholder(column, calculatedParameterName, mapKey);
     }
 
-    public RenderedParameterInfo calculateParameterInfo() {
-        String mapKey = nextMapKey();
-        return new RenderedParameterInfo(mapKey, renderedPlaceHolder(mapKey));
+    public RenderedParameterInfo calculateFetchFirstRowsParameterInfo() {
+        String mapKey = renderingStrategy.formatParameterMapKeyForFetchFirstRows(sequence);
+        return new RenderedParameterInfo(mapKey,
+                renderingStrategy.getFormattedJdbcPlaceholderForPagingParameters(calculatedParameterName, mapKey));
+    }
+
+    public RenderedParameterInfo calculateLimitParameterInfo() {
+        String mapKey = renderingStrategy.formatParameterMapKeyForLimit(sequence);
+        return new RenderedParameterInfo(mapKey,
+                renderingStrategy.getFormattedJdbcPlaceholderForPagingParameters(calculatedParameterName, mapKey));
+    }
+
+    public RenderedParameterInfo calculateOffsetParameterInfo() {
+        String mapKey = renderingStrategy.formatParameterMapKeyForOffset(sequence);
+        return new RenderedParameterInfo(mapKey,
+                renderingStrategy.getFormattedJdbcPlaceholderForPagingParameters(calculatedParameterName, mapKey));
     }
 
     public <T> RenderedParameterInfo calculateParameterInfo(BindableColumn<T> column) {

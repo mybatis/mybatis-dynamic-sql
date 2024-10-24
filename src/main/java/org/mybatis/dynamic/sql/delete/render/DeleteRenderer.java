@@ -84,7 +84,7 @@ public class DeleteRenderer {
     }
 
     private FragmentAndParameters renderLimitClause(Long limit) {
-        RenderedParameterInfo parameterInfo = renderingContext.calculateParameterInfo();
+        RenderedParameterInfo parameterInfo = renderingContext.calculateLimitParameterInfo();
 
         return FragmentAndParameters.withFragment("limit " + parameterInfo.renderedPlaceHolder()) //$NON-NLS-1$
                 .withParameter(parameterInfo.parameterMapKey(), limit)

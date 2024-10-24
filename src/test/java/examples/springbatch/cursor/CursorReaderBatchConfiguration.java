@@ -18,10 +18,12 @@ package examples.springbatch.cursor;
 import static examples.springbatch.mapper.PersonDynamicSqlSupport.lastName;
 import static examples.springbatch.mapper.PersonDynamicSqlSupport.person;
 import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
+import static org.mybatis.dynamic.sql.SqlBuilder.select;
 
 import javax.sql.DataSource;
 
 import org.apache.ibatis.session.SqlSessionFactory;
+import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
 import org.mybatis.dynamic.sql.util.springbatch.SpringBatchUtility;
@@ -89,11 +91,11 @@ public class CursorReaderBatchConfiguration {
 
     @Bean
     public MyBatisCursorItemReader<PersonRecord> reader(SqlSessionFactory sqlSessionFactory) {
-        SelectStatementProvider selectStatement =  SpringBatchUtility.selectForCursor(person.allColumns())
+        SelectStatementProvider selectStatement =  select(person.allColumns())
                 .from(person)
                 .where(lastName, isEqualTo("flintstone"))
                 .build()
-                .render();
+                .render(RenderingStrategies.MYBATIS3);
 
         MyBatisCursorItemReader<PersonRecord> reader = new MyBatisCursorItemReader<>();
         reader.setQueryId(PersonMapper.class.getName() + ".selectMany");
