@@ -56,7 +56,7 @@ public abstract class RenderingStrategy {
      * @return a key used to place the parameter value in the parameter map
      */
     public String formatParameterMapKeyForFetchFirstRows(AtomicInteger sequence) {
-        return formatParameterMapKeyForLimit(sequence);
+        return formatParameterMapKey(sequence);
     }
 
     /**

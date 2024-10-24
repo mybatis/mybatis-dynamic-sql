@@ -34,6 +34,11 @@ public class SpringBatchPagingItemReaderRenderingStrategy extends MyBatis3Render
     }
 
     @Override
+    public String formatParameterMapKeyForFetchFirstRows(AtomicInteger sequence) {
+        return "_pagesize"; //$NON-NLS-1$
+    }
+
+    @Override
     public String formatParameterMapKeyForLimit(AtomicInteger sequence) {
         return "_pagesize"; //$NON-NLS-1$
     }
