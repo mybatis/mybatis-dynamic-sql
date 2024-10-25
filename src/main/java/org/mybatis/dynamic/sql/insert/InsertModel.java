@@ -22,8 +22,8 @@ import java.util.stream.Stream;
 
 import org.jetbrains.annotations.NotNull;
 import org.mybatis.dynamic.sql.SqlTable;
-import org.mybatis.dynamic.sql.insert.render.InsertRenderer;
 import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider;
+import org.mybatis.dynamic.sql.render.RendererFactory;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.util.AbstractColumnMapping;
 import org.mybatis.dynamic.sql.util.Validator;
@@ -54,10 +54,8 @@ public class InsertModel<T> {
 
     @NotNull
     public InsertStatementProvider<T> render(RenderingStrategy renderingStrategy) {
-        return InsertRenderer.withInsertModel(this)
-                .withRenderingStrategy(renderingStrategy)
-                .build()
-                .render();
+        return RendererFactory.createInsertRenderer(this)
+                .render(renderingStrategy);
     }
 
     public static <T> Builder<T> withRow(T row) {

@@ -21,8 +21,8 @@ import java.util.Objects;
 import java.util.stream.Stream;
 
 import org.jetbrains.annotations.NotNull;
+import org.mybatis.dynamic.sql.render.RendererFactory;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
-import org.mybatis.dynamic.sql.select.render.MultiSelectRenderer;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.util.Validator;
 
@@ -47,12 +47,8 @@ public class MultiSelectModel extends AbstractSelectModel {
 
     @NotNull
     public SelectStatementProvider render(RenderingStrategy renderingStrategy) {
-        return new MultiSelectRenderer.Builder()
-                .withMultiSelectModel(this)
-                .withRenderingStrategy(renderingStrategy)
-                .withStatementConfiguration(statementConfiguration)
-                .build()
-                .render();
+        return RendererFactory.createMultiSelectRenderer(this, statementConfiguration)
+                .render(renderingStrategy);
     }
 
     public static class Builder extends AbstractBuilder<Builder> {
