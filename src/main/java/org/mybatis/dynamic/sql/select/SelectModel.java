@@ -42,8 +42,10 @@ public class SelectModel extends AbstractSelectModel {
 
     @NotNull
     public SelectStatementProvider render(RenderingStrategy renderingStrategy) {
-        return RendererFactory.createSelectRenderer(this, statementConfiguration)
-                .render(renderingStrategy);
+        RenderingContext renderingContext = RenderingContext.withRenderingStrategy(renderingStrategy)
+                .withStatementConfiguration(statementConfiguration)
+                .build();
+        return render(renderingContext);
     }
 
     /**

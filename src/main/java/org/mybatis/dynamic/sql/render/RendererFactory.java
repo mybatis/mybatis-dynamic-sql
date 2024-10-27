@@ -105,17 +105,6 @@ public interface RendererFactory {
                 .render();
     }
 
-    static Renderable<RenderingStrategy, SelectStatementProvider> createSelectRenderer(
-            SelectModel selectModel, StatementConfiguration statementConfiguration) {
-        return renderingStrategy -> {
-            RenderingContext renderingContext = RenderingContext.withRenderingStrategy(renderingStrategy)
-                    .withStatementConfiguration(statementConfiguration)
-                    .build();
-
-            return createSelectRenderer(selectModel).render(renderingContext);
-        };
-    }
-
     static Renderable<RenderingContext, SelectStatementProvider> createSelectRenderer(
             SelectModel selectModel) {
         return renderingContext -> SelectRenderer.withSelectModel(selectModel)
