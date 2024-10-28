@@ -16,6 +16,6 @@
 package org.mybatis.dynamic.sql.render;
 
 @FunctionalInterface
-public interface Renderable<T, R> {
+public interface Renderer<T, R> {
     R render(T t);
 }

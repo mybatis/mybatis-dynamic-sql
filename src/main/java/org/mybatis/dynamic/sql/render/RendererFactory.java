@@ -44,8 +44,8 @@ import org.mybatis.dynamic.sql.update.render.UpdateRenderer;
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
 
 public interface RendererFactory {
-    static Renderable<RenderingStrategy, DeleteStatementProvider> createDeleteRenderer(DeleteModel deleteModel,
-            StatementConfiguration statementConfiguration) {
+    static Renderer<RenderingStrategy, DeleteStatementProvider> createDeleteRenderer(DeleteModel deleteModel,
+                                                                                     StatementConfiguration statementConfiguration) {
         return renderingStrategy -> DeleteRenderer.withDeleteModel(deleteModel)
                 .withStatementConfiguration(statementConfiguration)
                 .withRenderingStrategy(renderingStrategy)
@@ -53,7 +53,7 @@ public interface RendererFactory {
                 .render();
     }
 
-    static <T> Renderable<RenderingStrategy, BatchInsert<T>> createBatchInsertRenderer(
+    static <T> Renderer<RenderingStrategy, BatchInsert<T>> createBatchInsertRenderer(
             BatchInsertModel<T> batchInsertModel) {
         return renderingStrategy -> BatchInsertRenderer.withBatchInsertModel(batchInsertModel)
                 .withRenderingStrategy(renderingStrategy)
@@ -61,7 +61,7 @@ public interface RendererFactory {
                 .render();
     }
 
-    static Renderable<RenderingStrategy, GeneralInsertStatementProvider> createGeneralInsertRenderer(
+    static Renderer<RenderingStrategy, GeneralInsertStatementProvider> createGeneralInsertRenderer(
             GeneralInsertModel generalInsertModel, StatementConfiguration statementConfiguration) {
         return renderingStrategy -> GeneralInsertRenderer.withInsertModel(generalInsertModel)
                 .withStatementConfiguration(statementConfiguration)
@@ -70,7 +70,7 @@ public interface RendererFactory {
                 .render();
     }
 
-    static <T> Renderable<RenderingStrategy, InsertStatementProvider<T>> createInsertRenderer(
+    static <T> Renderer<RenderingStrategy, InsertStatementProvider<T>> createInsertRenderer(
             InsertModel<T> insertModel) {
         return renderingStrategy -> InsertRenderer.withInsertModel(insertModel)
                 .withRenderingStrategy(renderingStrategy)
@@ -78,7 +78,7 @@ public interface RendererFactory {
                 .render();
     }
 
-    static Renderable<RenderingStrategy, InsertSelectStatementProvider> createInsertSelectRenderer(
+    static Renderer<RenderingStrategy, InsertSelectStatementProvider> createInsertSelectRenderer(
             InsertSelectModel insertSelectModel, StatementConfiguration statementConfiguration) {
         return renderingStrategy -> InsertSelectRenderer.withInsertSelectModel(insertSelectModel)
                 .withStatementConfiguration(statementConfiguration)
@@ -87,7 +87,7 @@ public interface RendererFactory {
                 .render();
     }
 
-    static <T> Renderable<RenderingStrategy, MultiRowInsertStatementProvider<T>> createMultiRowInsertRenderer(
+    static <T> Renderer<RenderingStrategy, MultiRowInsertStatementProvider<T>> createMultiRowInsertRenderer(
             MultiRowInsertModel<T> multiRowInsertModel) {
         return renderingStrategy -> MultiRowInsertRenderer.withMultiRowInsertModel(multiRowInsertModel)
                 .withRenderingStrategy(renderingStrategy)
@@ -95,7 +95,7 @@ public interface RendererFactory {
                 .render();
     }
 
-    static Renderable<RenderingStrategy, SelectStatementProvider> createMultiSelectRenderer(
+    static Renderer<RenderingStrategy, SelectStatementProvider> createMultiSelectRenderer(
             MultiSelectModel multiSelectModel, StatementConfiguration statementConfiguration) {
         return renderingStrategy -> new MultiSelectRenderer.Builder()
                 .withMultiSelectModel(multiSelectModel)
@@ -105,7 +105,7 @@ public interface RendererFactory {
                 .render();
     }
 
-    static Renderable<RenderingContext, SelectStatementProvider> createSelectRenderer(
+    static Renderer<RenderingContext, SelectStatementProvider> createSelectRenderer(
             SelectModel selectModel) {
         return renderingContext -> SelectRenderer.withSelectModel(selectModel)
                 .withRenderingContext(renderingContext)
@@ -113,7 +113,7 @@ public interface RendererFactory {
                 .render();
     }
 
-    static Renderable<RenderingStrategy, UpdateStatementProvider> createUpdateRenderer(
+    static Renderer<RenderingStrategy, UpdateStatementProvider> createUpdateRenderer(
             UpdateModel updateModel, StatementConfiguration statementConfiguration) {
         return renderingStrategy -> UpdateRenderer.withUpdateModel(updateModel)
                 .withStatementConfiguration(statementConfiguration)
