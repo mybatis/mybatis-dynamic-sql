@@ -36,11 +36,8 @@ public class Length extends AbstractTypeConvertingFunction<Object, Integer, Leng
 
     @Override
     public FragmentAndParameters render(RenderingContext renderingContext) {
-        FragmentAndParameters renderedColumn = column.render(renderingContext);
-
-        return FragmentAndParameters.withFragment("length(" + renderedColumn.fragment() + ")") //$NON-NLS-1$ //$NON-NLS-2$
-                .withParameters(renderedColumn.parameters())
-                .build();
+        return column.render(renderingContext)
+                .mapFragment(f -> "length(" + f + ")"); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     @Override

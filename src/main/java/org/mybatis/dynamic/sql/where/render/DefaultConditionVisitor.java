@@ -109,12 +109,8 @@ public class DefaultConditionVisitor<T> implements ConditionVisitor<T, FragmentA
 
     @Override
     public FragmentAndParameters visit(AbstractColumnComparisonCondition<T> condition) {
-        FragmentAndParameters renderedRightColumn = condition.rightColumn().render(renderingContext);
-        String finalFragment = condition.operator()
-                + spaceBefore(renderedRightColumn.fragment());
-        return FragmentAndParameters.withFragment(finalFragment)
-                .withParameters(renderedRightColumn.parameters())
-                .build();
+        return condition.rightColumn().render(renderingContext)
+                .mapFragment(f -> condition.operator() + spaceBefore(f));
     }
 
     private Object convertValue(T value) {
