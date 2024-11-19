@@ -42,6 +42,7 @@ import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.update.UpdateModel;
 import org.mybatis.dynamic.sql.update.render.UpdateRenderer;
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
+import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 
 public interface RendererFactory {
     static Renderer<RenderingStrategy, DeleteStatementProvider> createDeleteRenderer(DeleteModel deleteModel,
@@ -105,7 +106,7 @@ public interface RendererFactory {
                 .render();
     }
 
-    static Renderer<RenderingContext, SelectStatementProvider> createSelectRenderer(
+    static Renderer<RenderingContext, FragmentAndParameters> createSelectRenderer(
             SelectModel selectModel) {
         return renderingContext -> SelectRenderer.withSelectModel(selectModel)
                 .withRenderingContext(renderingContext)

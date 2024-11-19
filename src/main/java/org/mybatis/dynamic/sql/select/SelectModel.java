@@ -24,7 +24,9 @@ import org.jetbrains.annotations.NotNull;
 import org.mybatis.dynamic.sql.render.RendererFactory;
 import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
+import org.mybatis.dynamic.sql.select.render.DefaultSelectStatementProvider;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
+import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 import org.mybatis.dynamic.sql.util.Validator;
 
 public class SelectModel extends AbstractSelectModel {
@@ -45,7 +47,10 @@ public class SelectModel extends AbstractSelectModel {
         RenderingContext renderingContext = RenderingContext.withRenderingStrategy(renderingStrategy)
                 .withStatementConfiguration(statementConfiguration)
                 .build();
-        return render(renderingContext);
+        FragmentAndParameters fragmentAndParameters = render(renderingContext);
+        return DefaultSelectStatementProvider.withSelectStatement(fragmentAndParameters.fragment())
+                .withParameters(fragmentAndParameters.parameters())
+                .build();
     }
 
     /**
@@ -55,7 +60,7 @@ public class SelectModel extends AbstractSelectModel {
      * @return a rendered select statement and parameters
      */
     @NotNull
-    public SelectStatementProvider render(RenderingContext renderingContext) {
+    public FragmentAndParameters render(RenderingContext renderingContext) {
         return RendererFactory.createSelectRenderer(this).render(renderingContext);
     }
 

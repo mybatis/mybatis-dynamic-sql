@@ -37,7 +37,7 @@ public class SelectRenderer {
         renderingContext = Objects.requireNonNull(builder.renderingContext);
     }
 
-    public SelectStatementProvider render() {
+    public FragmentAndParameters render() {
         FragmentCollector fragmentCollector = selectModel
                 .queryExpressions()
                 .map(this::renderQueryExpression)
@@ -46,14 +46,7 @@ public class SelectRenderer {
         renderOrderBy().ifPresent(fragmentCollector::add);
         renderPagingModel().ifPresent(fragmentCollector::add);
 
-        return toSelectStatementProvider(fragmentCollector);
-    }
-
-    private SelectStatementProvider toSelectStatementProvider(FragmentCollector fragmentCollector) {
-        return DefaultSelectStatementProvider
-                .withSelectStatement(fragmentCollector.collectFragments(Collectors.joining(" "))) //$NON-NLS-1$
-                .withParameters(fragmentCollector.parameters())
-                .build();
+        return fragmentCollector.toFragmentAndParameters(Collectors.joining(" ")); //$NON-NLS-1$
     }
 
     private FragmentAndParameters renderQueryExpression(QueryExpressionModel queryExpressionModel) {

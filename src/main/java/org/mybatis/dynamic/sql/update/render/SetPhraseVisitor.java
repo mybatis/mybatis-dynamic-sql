@@ -20,7 +20,6 @@ import java.util.Optional;
 
 import org.mybatis.dynamic.sql.render.RenderedParameterInfo;
 import org.mybatis.dynamic.sql.render.RenderingContext;
-import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.util.AbstractColumnMapping;
 import org.mybatis.dynamic.sql.util.ColumnToColumnMapping;
 import org.mybatis.dynamic.sql.util.ConstantMapping;
@@ -84,28 +83,15 @@ public class SetPhraseVisitor extends UpdateMappingVisitor<Optional<FragmentAndP
 
     @Override
     public Optional<FragmentAndParameters> visit(SelectMapping mapping) {
-        SelectStatementProvider selectStatement = mapping.selectModel().render(renderingContext);
-        String fragment = renderingContext.aliasedColumnName(mapping.column())
-                + " = (" //$NON-NLS-1$
-                + selectStatement.getSelectStatement()
-                + ")"; //$NON-NLS-1$
-
-        return FragmentAndParameters.withFragment(fragment)
-                .withParameters(selectStatement.getParameters())
-                .buildOptional();
+        return Optional.of(mapping.selectModel().render(renderingContext)
+                .mapFragment(f -> renderingContext.aliasedColumnName(mapping.column())
+                        + " = (" + f + ")")); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     @Override
     public Optional<FragmentAndParameters> visit(ColumnToColumnMapping mapping) {
-        FragmentAndParameters renderedColumn = mapping.rightColumn().render(renderingContext);
-
-        String setPhrase = renderingContext.aliasedColumnName(mapping.column())
-                + " = "  //$NON-NLS-1$
-                + renderedColumn.fragment();
-
-        return FragmentAndParameters.withFragment(setPhrase)
-                .withParameters(renderedColumn.parameters())
-                .buildOptional();
+        return Optional.of(mapping.rightColumn().render(renderingContext)
+                .mapFragment(f -> renderingContext.aliasedColumnName(mapping.column()) + " = " + f)); //$NON-NLS-1$
     }
 
     private <T> Optional<FragmentAndParameters> buildValueFragment(AbstractColumnMapping mapping, T value) {
