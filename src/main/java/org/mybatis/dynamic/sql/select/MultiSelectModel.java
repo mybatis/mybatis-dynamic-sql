@@ -47,7 +47,7 @@ public class MultiSelectModel extends AbstractSelectModel {
 
     @NotNull
     public SelectStatementProvider render(RenderingStrategy renderingStrategy) {
-        return RendererFactory.createMultiSelectRenderer(this, statementConfiguration)
+        return RendererFactory.createMultiSelectRenderer(this)
                 .render(renderingStrategy);
     }
 

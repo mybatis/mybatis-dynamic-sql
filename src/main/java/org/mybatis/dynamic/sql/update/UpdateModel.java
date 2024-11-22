@@ -77,9 +77,13 @@ public class UpdateModel {
         return Optional.ofNullable(orderByModel);
     }
 
+    public StatementConfiguration statementConfiguration() {
+        return statementConfiguration;
+    }
+
     @NotNull
     public UpdateStatementProvider render(RenderingStrategy renderingStrategy) {
-        return RendererFactory.createUpdateRenderer(this, statementConfiguration)
+        return RendererFactory.createUpdateRenderer(this)
                 .render(renderingStrategy);
     }
 

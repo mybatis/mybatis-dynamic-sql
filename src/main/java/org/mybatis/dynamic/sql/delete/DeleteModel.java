@@ -65,9 +65,13 @@ public class DeleteModel {
         return Optional.ofNullable(orderByModel);
     }
 
+    public StatementConfiguration statementConfiguration() {
+        return statementConfiguration;
+    }
+
     @NotNull
     public DeleteStatementProvider render(RenderingStrategy renderingStrategy) {
-        return RendererFactory.createDeleteRenderer(this, statementConfiguration)
+        return RendererFactory.createDeleteRenderer(this)
                 .render(renderingStrategy);
     }
 

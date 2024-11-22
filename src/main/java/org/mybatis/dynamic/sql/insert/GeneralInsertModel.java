@@ -50,9 +50,13 @@ public class GeneralInsertModel {
         return table;
     }
 
+    public StatementConfiguration statementConfiguration() {
+        return statementConfiguration;
+    }
+
     @NotNull
     public GeneralInsertStatementProvider render(RenderingStrategy renderingStrategy) {
-        return RendererFactory.createGeneralInsertRenderer(this, statementConfiguration)
+        return RendererFactory.createGeneralInsertRenderer(this)
                 .render(renderingStrategy);
     }
 

@@ -21,7 +21,6 @@ import java.util.stream.Collectors;
 
 import org.mybatis.dynamic.sql.common.OrderByModel;
 import org.mybatis.dynamic.sql.common.OrderByRenderer;
-import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
 import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.select.MultiSelectModel;
@@ -36,11 +35,11 @@ public class MultiSelectRenderer {
     private final RenderingContext renderingContext;
 
     private MultiSelectRenderer(Builder builder) {
+        multiSelectModel = Objects.requireNonNull(builder.multiSelectModel);
         renderingContext = RenderingContext
                 .withRenderingStrategy(builder.renderingStrategy)
-                .withStatementConfiguration(builder.statementConfiguration)
+                .withStatementConfiguration(multiSelectModel.statementConfiguration())
                 .build();
-        multiSelectModel = Objects.requireNonNull(builder.multiSelectModel);
     }
 
     public SelectStatementProvider render() {
@@ -97,7 +96,6 @@ public class MultiSelectRenderer {
     public static class Builder {
         private RenderingStrategy renderingStrategy;
         private MultiSelectModel multiSelectModel;
-        private StatementConfiguration statementConfiguration;
 
         public Builder withRenderingStrategy(RenderingStrategy renderingStrategy) {
             this.renderingStrategy = renderingStrategy;
@@ -106,11 +104,6 @@ public class MultiSelectRenderer {
 
         public Builder withMultiSelectModel(MultiSelectModel multiSelectModel) {
             this.multiSelectModel = multiSelectModel;
-            return this;
-        }
-
-        public Builder withStatementConfiguration(StatementConfiguration statementConfiguration) {
-            this.statementConfiguration = statementConfiguration;
             return this;
         }
 

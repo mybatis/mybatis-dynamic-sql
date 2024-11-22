@@ -15,7 +15,6 @@
  */
 package org.mybatis.dynamic.sql.render;
 
-import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
 import org.mybatis.dynamic.sql.delete.DeleteModel;
 import org.mybatis.dynamic.sql.delete.render.DeleteRenderer;
 import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider;
@@ -45,10 +44,8 @@ import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 
 public interface RendererFactory {
-    static Renderer<RenderingStrategy, DeleteStatementProvider> createDeleteRenderer(DeleteModel deleteModel,
-                                                                                     StatementConfiguration statementConfiguration) {
+    static Renderer<RenderingStrategy, DeleteStatementProvider> createDeleteRenderer(DeleteModel deleteModel) {
         return renderingStrategy -> DeleteRenderer.withDeleteModel(deleteModel)
-                .withStatementConfiguration(statementConfiguration)
                 .withRenderingStrategy(renderingStrategy)
                 .build()
                 .render();
@@ -63,9 +60,8 @@ public interface RendererFactory {
     }
 
     static Renderer<RenderingStrategy, GeneralInsertStatementProvider> createGeneralInsertRenderer(
-            GeneralInsertModel generalInsertModel, StatementConfiguration statementConfiguration) {
+            GeneralInsertModel generalInsertModel) {
         return renderingStrategy -> GeneralInsertRenderer.withInsertModel(generalInsertModel)
-                .withStatementConfiguration(statementConfiguration)
                 .withRenderingStrategy(renderingStrategy)
                 .build()
                 .render();
@@ -80,9 +76,8 @@ public interface RendererFactory {
     }
 
     static Renderer<RenderingStrategy, InsertSelectStatementProvider> createInsertSelectRenderer(
-            InsertSelectModel insertSelectModel, StatementConfiguration statementConfiguration) {
+            InsertSelectModel insertSelectModel) {
         return renderingStrategy -> InsertSelectRenderer.withInsertSelectModel(insertSelectModel)
-                .withStatementConfiguration(statementConfiguration)
                 .withRenderingStrategy(renderingStrategy)
                 .build()
                 .render();
@@ -97,27 +92,23 @@ public interface RendererFactory {
     }
 
     static Renderer<RenderingStrategy, SelectStatementProvider> createMultiSelectRenderer(
-            MultiSelectModel multiSelectModel, StatementConfiguration statementConfiguration) {
+            MultiSelectModel multiSelectModel) {
         return renderingStrategy -> new MultiSelectRenderer.Builder()
                 .withMultiSelectModel(multiSelectModel)
-                .withStatementConfiguration(statementConfiguration)
                 .withRenderingStrategy(renderingStrategy)
                 .build()
                 .render();
     }
 
-    static Renderer<RenderingContext, FragmentAndParameters> createSelectRenderer(
-            SelectModel selectModel) {
+    static Renderer<RenderingContext, FragmentAndParameters> createSelectRenderer(SelectModel selectModel) {
         return renderingContext -> SelectRenderer.withSelectModel(selectModel)
                 .withRenderingContext(renderingContext)
                 .build()
                 .render();
     }
 
-    static Renderer<RenderingStrategy, UpdateStatementProvider> createUpdateRenderer(
-            UpdateModel updateModel, StatementConfiguration statementConfiguration) {
+    static Renderer<RenderingStrategy, UpdateStatementProvider> createUpdateRenderer(UpdateModel updateModel) {
         return renderingStrategy -> UpdateRenderer.withUpdateModel(updateModel)
-                .withStatementConfiguration(statementConfiguration)
                 .withRenderingStrategy(renderingStrategy)
                 .build()
                 .render();

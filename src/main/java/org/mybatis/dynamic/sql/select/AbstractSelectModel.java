@@ -40,6 +40,10 @@ public abstract class AbstractSelectModel {
         return Optional.ofNullable(pagingModel);
     }
 
+    public StatementConfiguration statementConfiguration() {
+        return statementConfiguration;
+    }
+
     public abstract static class AbstractBuilder<T extends AbstractBuilder<T>> {
         private OrderByModel orderByModel;
         private PagingModel pagingModel;

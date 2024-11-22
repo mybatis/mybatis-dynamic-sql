@@ -51,9 +51,13 @@ public class InsertSelectModel {
         return Optional.ofNullable(columnList);
     }
 
+    public StatementConfiguration statementConfiguration() {
+        return statementConfiguration;
+    }
+
     @NotNull
     public InsertSelectStatementProvider render(RenderingStrategy renderingStrategy) {
-        return RendererFactory.createInsertSelectRenderer(this, statementConfiguration)
+        return RendererFactory.createInsertSelectRenderer(this)
                 .render(renderingStrategy);
     }
 

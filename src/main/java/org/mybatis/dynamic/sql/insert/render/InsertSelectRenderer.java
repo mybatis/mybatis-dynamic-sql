@@ -22,7 +22,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.mybatis.dynamic.sql.SqlColumn;
-import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
 import org.mybatis.dynamic.sql.insert.InsertColumnListModel;
 import org.mybatis.dynamic.sql.insert.InsertSelectModel;
 import org.mybatis.dynamic.sql.render.RenderingContext;
@@ -38,7 +37,7 @@ public class InsertSelectRenderer {
     private InsertSelectRenderer(Builder builder) {
         model = Objects.requireNonNull(builder.model);
         renderingContext = RenderingContext.withRenderingStrategy(builder.renderingStrategy)
-                .withStatementConfiguration(builder.statementConfiguration)
+                .withStatementConfiguration(model.statementConfiguration())
                 .build();
     }
 
@@ -75,7 +74,6 @@ public class InsertSelectRenderer {
     public static class Builder {
         private InsertSelectModel model;
         private RenderingStrategy renderingStrategy;
-        private StatementConfiguration statementConfiguration;
 
         public Builder withInsertSelectModel(InsertSelectModel model) {
             this.model = model;
@@ -84,11 +82,6 @@ public class InsertSelectRenderer {
 
         public Builder withRenderingStrategy(RenderingStrategy renderingStrategy) {
             this.renderingStrategy = renderingStrategy;
-            return this;
-        }
-
-        public Builder withStatementConfiguration(StatementConfiguration statementConfiguration) {
-            this.statementConfiguration = statementConfiguration;
             return this;
         }
 
