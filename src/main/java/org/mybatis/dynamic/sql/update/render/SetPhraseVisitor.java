@@ -88,14 +88,14 @@ public class SetPhraseVisitor extends UpdateMappingVisitor<Optional<FragmentAndP
                         renderingContext.aliasedColumnName(mapping.column()) + " = (", //$NON-NLS-1$
                         ")") //$NON-NLS-1$
                 .render(renderingContext);
-
         return Optional.of(fragmentAndParameters);
     }
 
     @Override
     public Optional<FragmentAndParameters> visit(ColumnToColumnMapping mapping) {
-        return Optional.of(mapping.rightColumn().render(renderingContext)
-                .mapFragment(f -> renderingContext.aliasedColumnName(mapping.column()) + " = " + f)); //$NON-NLS-1$
+        FragmentAndParameters fragmentAndParameters = mapping.rightColumn().render(renderingContext)
+                .mapFragment(f -> renderingContext.aliasedColumnName(mapping.column()) + " = " + f); //$NON-NLS-1$
+        return Optional.of(fragmentAndParameters);
     }
 
     private <T> Optional<FragmentAndParameters> buildValueFragment(AbstractColumnMapping mapping, T value) {
