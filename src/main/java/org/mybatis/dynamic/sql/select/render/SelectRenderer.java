@@ -15,6 +15,10 @@
  */
 package org.mybatis.dynamic.sql.select.render;
 
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 import org.mybatis.dynamic.sql.common.OrderByModel;
 import org.mybatis.dynamic.sql.common.OrderByRenderer;
 import org.mybatis.dynamic.sql.render.RenderingContext;
@@ -23,10 +27,6 @@ import org.mybatis.dynamic.sql.select.QueryExpressionModel;
 import org.mybatis.dynamic.sql.select.SelectModel;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 import org.mybatis.dynamic.sql.util.FragmentCollector;
-
-import java.util.Objects;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 public class SelectRenderer {
     private final SelectModel selectModel;
