@@ -15,13 +15,18 @@
  */
 package org.mybatis.dynamic.sql.select.render;
 
-import java.util.Objects;
-
-import org.mybatis.dynamic.sql.render.RendererFactory;
+import org.mybatis.dynamic.sql.common.OrderByModel;
+import org.mybatis.dynamic.sql.common.OrderByRenderer;
 import org.mybatis.dynamic.sql.render.RenderingContext;
-import org.mybatis.dynamic.sql.render.RenderingStrategy;
+import org.mybatis.dynamic.sql.select.PagingModel;
+import org.mybatis.dynamic.sql.select.QueryExpressionModel;
 import org.mybatis.dynamic.sql.select.SelectModel;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
+import org.mybatis.dynamic.sql.util.FragmentCollector;
+
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class SelectRenderer {
     private final SelectModel selectModel;
@@ -29,17 +34,46 @@ public class SelectRenderer {
 
     private SelectRenderer(Builder builder) {
         selectModel = Objects.requireNonNull(builder.selectModel);
-        renderingContext = RenderingContext.withRenderingStrategy(builder.renderingStrategy)
-                .withStatementConfiguration(selectModel.statementConfiguration())
-                .build();
+        renderingContext = Objects.requireNonNull(builder.renderingContext);
     }
 
-    public SelectStatementProvider render() {
-        FragmentAndParameters fragmentAndParameters = RendererFactory.createSubQueryRenderer(selectModel)
-                .render(renderingContext);
-        return DefaultSelectStatementProvider.withSelectStatement(fragmentAndParameters.fragment())
-                .withParameters(fragmentAndParameters.parameters())
-                .build();
+    public FragmentAndParameters render(String prefix, String suffix) {
+        FragmentCollector fragmentCollector = selectModel
+                .queryExpressions()
+                .map(this::renderQueryExpression)
+                .collect(FragmentCollector.collect());
+
+        renderOrderBy().ifPresent(fragmentCollector::add);
+        renderPagingModel().ifPresent(fragmentCollector::add);
+
+        return fragmentCollector.toFragmentAndParameters(Collectors.joining(" ", prefix, suffix)); //$NON-NLS-1$
+    }
+
+    private FragmentAndParameters renderQueryExpression(QueryExpressionModel queryExpressionModel) {
+        return QueryExpressionRenderer.withQueryExpression(queryExpressionModel)
+                .withRenderingContext(renderingContext)
+                .build()
+                .render();
+    }
+
+    private Optional<FragmentAndParameters> renderOrderBy() {
+        return selectModel.orderByModel().map(this::renderOrderBy);
+    }
+
+    private FragmentAndParameters renderOrderBy(OrderByModel orderByModel) {
+        return new OrderByRenderer(renderingContext).render(orderByModel);
+    }
+
+    private Optional<FragmentAndParameters> renderPagingModel() {
+        return selectModel.pagingModel().map(this::renderPagingModel);
+    }
+
+    private FragmentAndParameters renderPagingModel(PagingModel pagingModel) {
+        return new PagingModelRenderer.Builder()
+                .withPagingModel(pagingModel)
+                .withRenderingContext(renderingContext)
+                .build()
+                .render();
     }
 
     public static Builder withSelectModel(SelectModel selectModel) {
@@ -48,10 +82,10 @@ public class SelectRenderer {
 
     public static class Builder {
         private SelectModel selectModel;
-        private RenderingStrategy renderingStrategy;
+        private RenderingContext renderingContext;
 
-        public Builder withRenderingStrategy(RenderingStrategy renderingStrategy) {
-            this.renderingStrategy = renderingStrategy;
+        public Builder withRenderingContext(RenderingContext renderingContext) {
+            this.renderingContext = renderingContext;
             return this;
         }
 

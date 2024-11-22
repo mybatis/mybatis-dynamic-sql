@@ -35,10 +35,10 @@ import org.mybatis.dynamic.sql.insert.render.MultiRowInsertRenderer;
 import org.mybatis.dynamic.sql.insert.render.MultiRowInsertStatementProvider;
 import org.mybatis.dynamic.sql.select.MultiSelectModel;
 import org.mybatis.dynamic.sql.select.SelectModel;
+import org.mybatis.dynamic.sql.select.render.DefaultSelectStatementProvider;
 import org.mybatis.dynamic.sql.select.render.MultiSelectRenderer;
 import org.mybatis.dynamic.sql.select.render.SelectRenderer;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
-import org.mybatis.dynamic.sql.select.render.SubQueryRenderer;
 import org.mybatis.dynamic.sql.update.UpdateModel;
 import org.mybatis.dynamic.sql.update.render.UpdateRenderer;
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
@@ -102,22 +102,24 @@ public interface RendererFactory {
     }
 
     static Renderer<RenderingStrategy, SelectStatementProvider> createSelectRenderer(SelectModel selectModel) {
-        return renderingStrategy -> SelectRenderer.withSelectModel(selectModel)
-                .withRenderingStrategy(renderingStrategy)
-                .build()
-                .render();
-    }
+        return renderingStrategy -> {
+            RenderingContext renderingContext = RenderingContext.withRenderingStrategy(renderingStrategy)
+                    .withStatementConfiguration(selectModel.statementConfiguration())
+                    .build();
 
-    static Renderer<RenderingContext, FragmentAndParameters> createSubQueryRenderer(SelectModel selectModel) {
-        return renderingContext -> SubQueryRenderer.withSelectModel(selectModel)
-                .withRenderingContext(renderingContext)
-                .build()
-                .render();
+            FragmentAndParameters fragmentAndParameters = createSubQueryRenderer(selectModel,
+                    "", "") //$NON-NLS-1$ //$NON-NLS-2$
+                    .render(renderingContext);
+
+            return DefaultSelectStatementProvider.withSelectStatement(fragmentAndParameters.fragment())
+                    .withParameters(fragmentAndParameters.parameters())
+                    .build();
+        };
     }
 
     static Renderer<RenderingContext, FragmentAndParameters> createSubQueryRenderer(SelectModel selectModel,
                                                                                     String prefix, String suffix) {
-        return renderingContext -> SubQueryRenderer.withSelectModel(selectModel)
+        return renderingContext -> SelectRenderer.withSelectModel(selectModel)
                 .withRenderingContext(renderingContext)
                 .build()
                 .render(prefix, suffix);
