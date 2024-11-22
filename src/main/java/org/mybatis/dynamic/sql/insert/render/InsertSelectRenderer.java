@@ -42,7 +42,7 @@ public class InsertSelectRenderer {
     }
 
     public InsertSelectStatementProvider render() {
-        FragmentAndParameters selectStatement = model.selectModel().render(renderingContext);
+        FragmentAndParameters selectStatement = model.selectModel().renderSubQuery(renderingContext);
 
         String statementStart = InsertRenderingUtilities.calculateInsertStatementStart(model.table());
         Optional<String> columnsPhrase = calculateColumnsPhrase();

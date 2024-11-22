@@ -119,7 +119,7 @@ public class CriterionRenderer implements SqlCriterionVisitor<Optional<RenderedC
     private FragmentAndParameters renderExists(ExistsCriterion criterion) {
         ExistsPredicate existsPredicate = criterion.existsPredicate();
 
-        return existsPredicate.selectModelBuilder().build().render(renderingContext)
+        return existsPredicate.selectModelBuilder().build().renderSubQuery(renderingContext)
                 .mapFragment(f -> existsPredicate.operator() + " (" + f + ")"); //$NON-NLS-1$ //$NON-NLS-2$
     }
 

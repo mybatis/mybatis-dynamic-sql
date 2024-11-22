@@ -64,12 +64,12 @@ public class MultiSelectRenderer {
     }
 
     private FragmentAndParameters renderSelect(SelectModel selectModel) {
-        return selectModel.render(renderingContext)
+        return selectModel.renderSubQuery(renderingContext)
                 .mapFragment(f -> "(" + f + ")"); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     private FragmentAndParameters renderSelect(UnionQuery unionQuery) {
-        return unionQuery.selectModel().render(renderingContext)
+        return unionQuery.selectModel().renderSubQuery(renderingContext)
                 .mapFragment(f -> unionQuery.connector() + " (" + f + ")"); //$NON-NLS-1$ //$NON-NLS-2$
     }
 

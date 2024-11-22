@@ -24,7 +24,6 @@ import org.jetbrains.annotations.NotNull;
 import org.mybatis.dynamic.sql.render.RendererFactory;
 import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
-import org.mybatis.dynamic.sql.select.render.DefaultSelectStatementProvider;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 import org.mybatis.dynamic.sql.util.Validator;
@@ -44,13 +43,7 @@ public class SelectModel extends AbstractSelectModel {
 
     @NotNull
     public SelectStatementProvider render(RenderingStrategy renderingStrategy) {
-        RenderingContext renderingContext = RenderingContext.withRenderingStrategy(renderingStrategy)
-                .withStatementConfiguration(statementConfiguration)
-                .build();
-        FragmentAndParameters fragmentAndParameters = render(renderingContext);
-        return DefaultSelectStatementProvider.withSelectStatement(fragmentAndParameters.fragment())
-                .withParameters(fragmentAndParameters.parameters())
-                .build();
+        return RendererFactory.createSelectRenderer(this).render(renderingStrategy);
     }
 
     /**
@@ -60,8 +53,8 @@ public class SelectModel extends AbstractSelectModel {
      * @return a rendered select statement and parameters
      */
     @NotNull
-    public FragmentAndParameters render(RenderingContext renderingContext) {
-        return RendererFactory.createSelectRenderer(this).render(renderingContext);
+    public FragmentAndParameters renderSubQuery(RenderingContext renderingContext) {
+        return RendererFactory.createSubQueryRenderer(this).render(renderingContext);
     }
 
     public static Builder withQueryExpressions(List<QueryExpressionModel> queryExpressions) {

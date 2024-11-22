@@ -94,7 +94,7 @@ public class DefaultConditionVisitor<T> implements ConditionVisitor<T, FragmentA
 
     @Override
     public FragmentAndParameters visit(AbstractSubselectCondition<T> condition) {
-        return condition.selectModel().render(renderingContext)
+        return condition.selectModel().renderSubQuery(renderingContext)
                 .mapFragment(f -> condition.operator() + " (" + f + ")"); //$NON-NLS-1$ //$NON-NLS-2$
     }
 

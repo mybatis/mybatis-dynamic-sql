@@ -38,6 +38,7 @@ import org.mybatis.dynamic.sql.select.SelectModel;
 import org.mybatis.dynamic.sql.select.render.MultiSelectRenderer;
 import org.mybatis.dynamic.sql.select.render.SelectRenderer;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
+import org.mybatis.dynamic.sql.select.render.SubQueryRenderer;
 import org.mybatis.dynamic.sql.update.UpdateModel;
 import org.mybatis.dynamic.sql.update.render.UpdateRenderer;
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
@@ -100,8 +101,15 @@ public interface RendererFactory {
                 .render();
     }
 
-    static Renderer<RenderingContext, FragmentAndParameters> createSelectRenderer(SelectModel selectModel) {
-        return renderingContext -> SelectRenderer.withSelectModel(selectModel)
+    static Renderer<RenderingStrategy, SelectStatementProvider> createSelectRenderer(SelectModel selectModel) {
+        return renderingStrategy -> SelectRenderer.withSelectModel(selectModel)
+                .withRenderingStrategy(renderingStrategy)
+                .build()
+                .render();
+    }
+
+    static Renderer<RenderingContext, FragmentAndParameters> createSubQueryRenderer(SelectModel selectModel) {
+        return renderingContext -> SubQueryRenderer.withSelectModel(selectModel)
                 .withRenderingContext(renderingContext)
                 .build()
                 .render();

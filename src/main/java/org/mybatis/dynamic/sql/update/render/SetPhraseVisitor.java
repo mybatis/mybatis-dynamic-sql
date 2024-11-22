@@ -83,7 +83,7 @@ public class SetPhraseVisitor extends UpdateMappingVisitor<Optional<FragmentAndP
 
     @Override
     public Optional<FragmentAndParameters> visit(SelectMapping mapping) {
-        return Optional.of(mapping.selectModel().render(renderingContext)
+        return Optional.of(mapping.selectModel().renderSubQuery(renderingContext)
                 .mapFragment(f -> renderingContext.aliasedColumnName(mapping.column())
                         + " = (" + f + ")")); //$NON-NLS-1$ //$NON-NLS-2$
     }
