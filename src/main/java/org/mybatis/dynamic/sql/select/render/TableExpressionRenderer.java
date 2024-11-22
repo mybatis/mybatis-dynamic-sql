@@ -15,12 +15,11 @@
  */
 package org.mybatis.dynamic.sql.select.render;
 
-import static org.mybatis.dynamic.sql.util.StringUtilities.spaceBefore;
-
 import java.util.Objects;
 
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.TableExpressionVisitor;
+import org.mybatis.dynamic.sql.render.RendererFactory;
 import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.select.SubQuery;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
@@ -39,14 +38,11 @@ public class TableExpressionRenderer implements TableExpressionVisitor<FragmentA
 
     @Override
     public FragmentAndParameters visit(SubQuery subQuery) {
-        return subQuery.selectModel().renderSubQuery(renderingContext)
-                .mapFragment(f -> applyAlias("(" + f + ")", subQuery)); //$NON-NLS-1$ //$NON-NLS-2$
-    }
+        String suffix = subQuery.alias().map(a -> ") " + a) //$NON-NLS-1$
+                .orElse(")"); //$NON-NLS-1$
 
-    private String applyAlias(String fragment, SubQuery subQuery) {
-        return subQuery.alias()
-                .map(a -> fragment + spaceBefore(a))
-                .orElse(fragment);
+        return RendererFactory.createSubQueryRenderer(subQuery.selectModel(), "(", suffix) //$NON-NLS-1$
+                .render(renderingContext);
     }
 
     public static class Builder {

@@ -15,19 +15,18 @@
  */
 package org.mybatis.dynamic.sql.insert.render;
 
-import static org.mybatis.dynamic.sql.util.StringUtilities.spaceBefore;
+import static org.mybatis.dynamic.sql.util.StringUtilities.spaceAfter;
 
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.insert.InsertColumnListModel;
 import org.mybatis.dynamic.sql.insert.InsertSelectModel;
+import org.mybatis.dynamic.sql.render.RendererFactory;
 import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
-import org.mybatis.dynamic.sql.util.StringUtilities;
 
 public class InsertSelectRenderer {
 
@@ -42,29 +41,27 @@ public class InsertSelectRenderer {
     }
 
     public InsertSelectStatementProvider render() {
-        FragmentAndParameters selectStatement = model.selectModel().renderSubQuery(renderingContext);
-
         String statementStart = InsertRenderingUtilities.calculateInsertStatementStart(model.table());
-        Optional<String> columnsPhrase = calculateColumnsPhrase();
-        String renderedSelectStatement = selectStatement.fragment();
+        String columnsPhrase = calculateColumnsPhrase();
+        String prefix = statementStart + spaceAfter(columnsPhrase);
 
-        String insertStatement = statementStart
-                + columnsPhrase.map(StringUtilities::spaceBefore).orElse("") //$NON-NLS-1$
-                + spaceBefore(renderedSelectStatement);
+        FragmentAndParameters fragmentAndParameters = RendererFactory.createSubQueryRenderer(model.selectModel(),
+                        prefix, "") //$NON-NLS-1$
+                .render(renderingContext);
 
-        return DefaultGeneralInsertStatementProvider.withInsertStatement(insertStatement)
-                .withParameters(selectStatement.parameters())
+        return DefaultGeneralInsertStatementProvider.withInsertStatement(fragmentAndParameters.fragment())
+                .withParameters(fragmentAndParameters.parameters())
                 .build();
     }
 
-    private Optional<String> calculateColumnsPhrase() {
-        return model.columnList().map(this::calculateColumnsPhrase);
+    private String calculateColumnsPhrase() {
+        return model.columnList().map(this::calculateColumnsPhrase).orElse(""); //$NON-NLS-1$
     }
 
     private String calculateColumnsPhrase(InsertColumnListModel columnList) {
         return columnList.columns()
                 .map(SqlColumn::name)
-                .collect(Collectors.joining(", ", "(", ")")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                .collect(Collectors.joining(", ", " (", ")")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
 
     public static Builder withInsertSelectModel(InsertSelectModel model) {

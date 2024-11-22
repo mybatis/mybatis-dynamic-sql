@@ -115,6 +115,14 @@ public interface RendererFactory {
                 .render();
     }
 
+    static Renderer<RenderingContext, FragmentAndParameters> createSubQueryRenderer(SelectModel selectModel,
+                                                                                    String prefix, String suffix) {
+        return renderingContext -> SubQueryRenderer.withSelectModel(selectModel)
+                .withRenderingContext(renderingContext)
+                .build()
+                .render(prefix, suffix);
+    }
+
     static Renderer<RenderingStrategy, UpdateStatementProvider> createUpdateRenderer(UpdateModel updateModel) {
         return renderingStrategy -> UpdateRenderer.withUpdateModel(updateModel)
                 .withRenderingStrategy(renderingStrategy)

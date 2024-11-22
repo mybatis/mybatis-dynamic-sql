@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
 
 import org.mybatis.dynamic.sql.common.OrderByModel;
 import org.mybatis.dynamic.sql.common.OrderByRenderer;
+import org.mybatis.dynamic.sql.render.RendererFactory;
 import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.select.MultiSelectModel;
@@ -64,13 +65,17 @@ public class MultiSelectRenderer {
     }
 
     private FragmentAndParameters renderSelect(SelectModel selectModel) {
-        return selectModel.renderSubQuery(renderingContext)
-                .mapFragment(f -> "(" + f + ")"); //$NON-NLS-1$ //$NON-NLS-2$
+        return RendererFactory.createSubQueryRenderer(selectModel,
+                "(", //$NON-NLS-1$
+                ")") //$NON-NLS-1$
+                .render(renderingContext);
     }
 
     private FragmentAndParameters renderSelect(UnionQuery unionQuery) {
-        return unionQuery.selectModel().renderSubQuery(renderingContext)
-                .mapFragment(f -> unionQuery.connector() + " (" + f + ")"); //$NON-NLS-1$ //$NON-NLS-2$
+        return RendererFactory.createSubQueryRenderer(unionQuery.selectModel(),
+                        unionQuery.connector() + " (", //$NON-NLS-1$
+                        ")") //$NON-NLS-1$
+                .render(renderingContext);
     }
 
     private Optional<FragmentAndParameters> renderOrderBy() {

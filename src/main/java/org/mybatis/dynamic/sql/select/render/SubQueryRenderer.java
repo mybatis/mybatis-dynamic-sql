@@ -26,6 +26,7 @@ import org.mybatis.dynamic.sql.util.FragmentCollector;
 
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 public class SubQueryRenderer {
@@ -38,6 +39,16 @@ public class SubQueryRenderer {
     }
 
     public FragmentAndParameters render() {
+        var collector = Collectors.joining(" "); //$NON-NLS-1$
+        return render(collector);
+    }
+
+    public FragmentAndParameters render(String prefix, String suffix) {
+        var collector = Collectors.joining(" ", prefix, suffix); //$NON-NLS-1$
+        return render(collector);
+    }
+
+    private FragmentAndParameters render(Collector<CharSequence, ?, String> collector) {
         FragmentCollector fragmentCollector = selectModel
                 .queryExpressions()
                 .map(this::renderQueryExpression)
@@ -46,7 +57,7 @@ public class SubQueryRenderer {
         renderOrderBy().ifPresent(fragmentCollector::add);
         renderPagingModel().ifPresent(fragmentCollector::add);
 
-        return fragmentCollector.toFragmentAndParameters(Collectors.joining(" ")); //$NON-NLS-1$
+        return fragmentCollector.toFragmentAndParameters(collector);
     }
 
     private FragmentAndParameters renderQueryExpression(QueryExpressionModel queryExpressionModel) {

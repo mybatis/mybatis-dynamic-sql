@@ -29,6 +29,7 @@ import org.mybatis.dynamic.sql.ExistsPredicate;
 import org.mybatis.dynamic.sql.NotCriterion;
 import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.SqlCriterionVisitor;
+import org.mybatis.dynamic.sql.render.RendererFactory;
 import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 import org.mybatis.dynamic.sql.util.FragmentCollector;
@@ -118,9 +119,10 @@ public class CriterionRenderer implements SqlCriterionVisitor<Optional<RenderedC
 
     private FragmentAndParameters renderExists(ExistsCriterion criterion) {
         ExistsPredicate existsPredicate = criterion.existsPredicate();
-
-        return existsPredicate.selectModelBuilder().build().renderSubQuery(renderingContext)
-                .mapFragment(f -> existsPredicate.operator() + " (" + f + ")"); //$NON-NLS-1$ //$NON-NLS-2$
+        return RendererFactory.createSubQueryRenderer(existsPredicate.selectModelBuilder().build(),
+                existsPredicate.operator() + " (", //$NON-NLS-1$
+                ")") //$NON-NLS-1$
+                .render(renderingContext);
     }
 
     private List<RenderedCriterion> renderSubCriteria(List<AndOrCriteriaGroup> subCriteria) {
