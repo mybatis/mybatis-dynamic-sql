@@ -17,7 +17,6 @@ package org.mybatis.dynamic.sql.select.render;
 
 import java.util.Objects;
 
-import org.mybatis.dynamic.sql.render.RendererFactory;
 import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.select.SelectModel;
@@ -25,19 +24,22 @@ import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 
 public class SelectRenderer {
     private final SelectModel selectModel;
-    private final RenderingContext renderingContext;
+    private final RenderingStrategy renderingStrategy;
 
     private SelectRenderer(Builder builder) {
         selectModel = Objects.requireNonNull(builder.selectModel);
-        renderingContext = RenderingContext.withRenderingStrategy(builder.renderingStrategy)
-                .withStatementConfiguration(selectModel.statementConfiguration())
-                .build();
+        renderingStrategy = Objects.requireNonNull(builder.renderingStrategy);
     }
 
     public SelectStatementProvider render() {
-        FragmentAndParameters fragmentAndParameters = RendererFactory.createSubQueryRenderer(selectModel,
-                "", "") //$NON-NLS-1$ //$NON-NLS-2$
-                .render(renderingContext);
+        RenderingContext renderingContext = RenderingContext.withRenderingStrategy(renderingStrategy)
+                .withStatementConfiguration(selectModel.statementConfiguration())
+                .build();
+
+        FragmentAndParameters fragmentAndParameters = SubQueryRenderer.withSelectModel(selectModel)
+                .withRenderingContext(renderingContext)
+                .build()
+                .render();
 
         return DefaultSelectStatementProvider.withSelectStatement(fragmentAndParameters.fragment())
                 .withParameters(fragmentAndParameters.parameters())

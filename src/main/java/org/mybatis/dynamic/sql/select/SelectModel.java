@@ -21,8 +21,8 @@ import java.util.Objects;
 import java.util.stream.Stream;
 
 import org.jetbrains.annotations.NotNull;
-import org.mybatis.dynamic.sql.render.RendererFactory;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
+import org.mybatis.dynamic.sql.select.render.SelectRenderer;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.util.Validator;
 
@@ -41,7 +41,10 @@ public class SelectModel extends AbstractSelectModel {
 
     @NotNull
     public SelectStatementProvider render(RenderingStrategy renderingStrategy) {
-        return RendererFactory.createSelectRenderer(this).render(renderingStrategy);
+        return SelectRenderer.withSelectModel(this)
+                .withRenderingStrategy(renderingStrategy)
+                .build()
+                .render();
     }
 
     public static Builder withQueryExpressions(List<QueryExpressionModel> queryExpressions) {

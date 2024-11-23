@@ -19,7 +19,7 @@ import java.util.Collection;
 
 import org.jetbrains.annotations.NotNull;
 import org.mybatis.dynamic.sql.insert.render.BatchInsert;
-import org.mybatis.dynamic.sql.render.RendererFactory;
+import org.mybatis.dynamic.sql.insert.render.BatchInsertRenderer;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.util.Validator;
 
@@ -33,8 +33,10 @@ public class BatchInsertModel<T> extends AbstractMultiRowInsertModel<T> {
 
     @NotNull
     public BatchInsert<T> render(RenderingStrategy renderingStrategy) {
-        return RendererFactory.createBatchInsertRenderer(this)
-                .render(renderingStrategy);
+        return BatchInsertRenderer.withBatchInsertModel(this)
+                .withRenderingStrategy(renderingStrategy)
+                .build()
+                .render();
     }
 
     public static <T> Builder<T> withRecords(Collection<T> records) {

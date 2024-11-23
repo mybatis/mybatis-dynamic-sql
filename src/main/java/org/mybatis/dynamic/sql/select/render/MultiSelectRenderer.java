@@ -21,7 +21,6 @@ import java.util.stream.Collectors;
 
 import org.mybatis.dynamic.sql.common.OrderByModel;
 import org.mybatis.dynamic.sql.common.OrderByRenderer;
-import org.mybatis.dynamic.sql.render.RendererFactory;
 import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.select.MultiSelectModel;
@@ -65,17 +64,21 @@ public class MultiSelectRenderer {
     }
 
     private FragmentAndParameters renderSelect(SelectModel selectModel) {
-        return RendererFactory.createSubQueryRenderer(selectModel,
-                "(", //$NON-NLS-1$
-                ")") //$NON-NLS-1$
-                .render(renderingContext);
+        return SubQueryRenderer.withSelectModel(selectModel)
+                .withRenderingContext(renderingContext)
+                .withPrefix("(") //$NON-NLS-1$
+                .withSuffix(")") //$NON-NLS-1$
+                .build()
+                .render();
     }
 
     private FragmentAndParameters renderSelect(UnionQuery unionQuery) {
-        return RendererFactory.createSubQueryRenderer(unionQuery.selectModel(),
-                        unionQuery.connector() + " (", //$NON-NLS-1$
-                        ")") //$NON-NLS-1$
-                .render(renderingContext);
+        return SubQueryRenderer.withSelectModel(unionQuery.selectModel())
+                .withRenderingContext(renderingContext)
+                .withPrefix(unionQuery.connector() + " (") //$NON-NLS-1$
+                .withSuffix(")") //$NON-NLS-1$
+                .build()
+                .render();
     }
 
     private Optional<FragmentAndParameters> renderOrderBy() {
@@ -96,6 +99,10 @@ public class MultiSelectRenderer {
                 .withRenderingContext(renderingContext)
                 .build()
                 .render();
+    }
+
+    public static Builder withMultiSelectModel(MultiSelectModel multiSelectModel) {
+        return new Builder().withMultiSelectModel(multiSelectModel);
     }
 
     public static class Builder {

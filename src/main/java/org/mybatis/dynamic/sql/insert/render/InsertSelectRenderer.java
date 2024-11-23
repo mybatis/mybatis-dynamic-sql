@@ -23,9 +23,9 @@ import java.util.stream.Collectors;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.insert.InsertColumnListModel;
 import org.mybatis.dynamic.sql.insert.InsertSelectModel;
-import org.mybatis.dynamic.sql.render.RendererFactory;
 import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
+import org.mybatis.dynamic.sql.select.render.SubQueryRenderer;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 
 public class InsertSelectRenderer {
@@ -45,9 +45,11 @@ public class InsertSelectRenderer {
         String columnsPhrase = calculateColumnsPhrase();
         String prefix = statementStart + spaceAfter(columnsPhrase);
 
-        FragmentAndParameters fragmentAndParameters = RendererFactory.createSubQueryRenderer(model.selectModel(),
-                        prefix, "") //$NON-NLS-1$
-                .render(renderingContext);
+        FragmentAndParameters fragmentAndParameters = SubQueryRenderer.withSelectModel(model.selectModel())
+                .withRenderingContext(renderingContext)
+                .withPrefix(prefix)
+                .build()
+                .render();
 
         return DefaultGeneralInsertStatementProvider.withInsertStatement(fragmentAndParameters.fragment())
                 .withParameters(fragmentAndParameters.parameters())

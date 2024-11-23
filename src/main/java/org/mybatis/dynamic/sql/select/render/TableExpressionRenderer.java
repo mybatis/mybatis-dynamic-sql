@@ -19,7 +19,6 @@ import java.util.Objects;
 
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.TableExpressionVisitor;
-import org.mybatis.dynamic.sql.render.RendererFactory;
 import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.select.SubQuery;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
@@ -41,8 +40,12 @@ public class TableExpressionRenderer implements TableExpressionVisitor<FragmentA
         String suffix = subQuery.alias().map(a -> ") " + a) //$NON-NLS-1$
                 .orElse(")"); //$NON-NLS-1$
 
-        return RendererFactory.createSubQueryRenderer(subQuery.selectModel(), "(", suffix) //$NON-NLS-1$
-                .render(renderingContext);
+        return SubQueryRenderer.withSelectModel(subQuery.selectModel())
+                .withRenderingContext(renderingContext)
+                .withPrefix("(")//$NON-NLS-1$
+                .withSuffix(suffix)
+                .build()
+                .render();
     }
 
     public static class Builder {

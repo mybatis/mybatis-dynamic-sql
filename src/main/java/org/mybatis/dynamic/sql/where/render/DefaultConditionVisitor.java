@@ -29,8 +29,8 @@ import org.mybatis.dynamic.sql.AbstractTwoValueCondition;
 import org.mybatis.dynamic.sql.BindableColumn;
 import org.mybatis.dynamic.sql.ConditionVisitor;
 import org.mybatis.dynamic.sql.render.RenderedParameterInfo;
-import org.mybatis.dynamic.sql.render.RendererFactory;
 import org.mybatis.dynamic.sql.render.RenderingContext;
+import org.mybatis.dynamic.sql.select.render.SubQueryRenderer;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 import org.mybatis.dynamic.sql.util.FragmentCollector;
 
@@ -95,10 +95,12 @@ public class DefaultConditionVisitor<T> implements ConditionVisitor<T, FragmentA
 
     @Override
     public FragmentAndParameters visit(AbstractSubselectCondition<T> condition) {
-        return RendererFactory.createSubQueryRenderer(condition.selectModel(),
-                condition.operator() + " (", //$NON-NLS-1$
-                ")") //$NON-NLS-1$
-                .render(renderingContext);
+        return SubQueryRenderer.withSelectModel(condition.selectModel())
+                .withRenderingContext(renderingContext)
+                .withPrefix(condition.operator() + " (") //$NON-NLS-1$
+                .withSuffix(")") //$NON-NLS-1$
+                .build()
+                .render();
     }
 
     @Override

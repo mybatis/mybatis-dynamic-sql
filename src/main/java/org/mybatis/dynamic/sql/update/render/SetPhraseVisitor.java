@@ -19,8 +19,8 @@ import java.util.Objects;
 import java.util.Optional;
 
 import org.mybatis.dynamic.sql.render.RenderedParameterInfo;
-import org.mybatis.dynamic.sql.render.RendererFactory;
 import org.mybatis.dynamic.sql.render.RenderingContext;
+import org.mybatis.dynamic.sql.select.render.SubQueryRenderer;
 import org.mybatis.dynamic.sql.util.AbstractColumnMapping;
 import org.mybatis.dynamic.sql.util.ColumnToColumnMapping;
 import org.mybatis.dynamic.sql.util.ConstantMapping;
@@ -84,10 +84,15 @@ public class SetPhraseVisitor extends UpdateMappingVisitor<Optional<FragmentAndP
 
     @Override
     public Optional<FragmentAndParameters> visit(SelectMapping mapping) {
-        FragmentAndParameters fragmentAndParameters = RendererFactory.createSubQueryRenderer(mapping.selectModel(),
-                        renderingContext.aliasedColumnName(mapping.column()) + " = (", //$NON-NLS-1$
-                        ")") //$NON-NLS-1$
-                .render(renderingContext);
+        String prefix = renderingContext.aliasedColumnName(mapping.column()) + " = ("; //$NON-NLS-1$
+
+        FragmentAndParameters fragmentAndParameters = SubQueryRenderer.withSelectModel(mapping.selectModel())
+                .withRenderingContext(renderingContext)
+                .withPrefix(prefix)
+                .withSuffix(")") //$NON-NLS-1$
+                .build()
+                .render();
+
         return Optional.of(fragmentAndParameters);
     }
 

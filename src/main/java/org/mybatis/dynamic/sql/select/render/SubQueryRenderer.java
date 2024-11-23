@@ -31,13 +31,17 @@ import org.mybatis.dynamic.sql.util.FragmentCollector;
 public class SubQueryRenderer {
     private final SelectModel selectModel;
     private final RenderingContext renderingContext;
+    private final String prefix;
+    private final String suffix;
 
     private SubQueryRenderer(Builder builder) {
         selectModel = Objects.requireNonNull(builder.selectModel);
         renderingContext = Objects.requireNonNull(builder.renderingContext);
+        prefix = builder.prefix == null ? "" : builder.prefix; //$NON-NLS-1$
+        suffix = builder.suffix == null ? "" : builder.suffix; //$NON-NLS-1$
     }
 
-    public FragmentAndParameters render(String prefix, String suffix) {
+    public FragmentAndParameters render() {
         FragmentCollector fragmentCollector = selectModel
                 .queryExpressions()
                 .map(this::renderQueryExpression)
@@ -83,6 +87,8 @@ public class SubQueryRenderer {
     public static class Builder {
         private SelectModel selectModel;
         private RenderingContext renderingContext;
+        private String prefix;
+        private String suffix;
 
         public Builder withRenderingContext(RenderingContext renderingContext) {
             this.renderingContext = renderingContext;
@@ -91,6 +97,16 @@ public class SubQueryRenderer {
 
         public Builder withSelectModel(SelectModel selectModel) {
             this.selectModel = selectModel;
+            return this;
+        }
+
+        public Builder withPrefix(String prefix) {
+            this.prefix = prefix;
+            return this;
+        }
+
+        public Builder withSuffix(String suffix) {
+            this.suffix = suffix;
             return this;
         }
 
