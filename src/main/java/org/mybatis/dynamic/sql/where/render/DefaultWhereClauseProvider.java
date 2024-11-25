@@ -13,19 +13,18 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.mybatis.dynamic.sql.insert.render;
+package org.mybatis.dynamic.sql.where.render;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-public class DefaultGeneralInsertStatementProvider
-        implements GeneralInsertStatementProvider, InsertSelectStatementProvider {
-    private final String insertStatement;
+public class DefaultWhereClauseProvider implements WhereClauseProvider {
+    private final String whereClause;
     private final Map<String, Object> parameters;
 
-    private DefaultGeneralInsertStatementProvider(Builder builder) {
-        insertStatement = Objects.requireNonNull(builder.insertStatement);
+    private DefaultWhereClauseProvider(Builder builder) {
+        whereClause = Objects.requireNonNull(builder.whereClause);
         parameters = builder.parameters;
     }
 
@@ -35,20 +34,20 @@ public class DefaultGeneralInsertStatementProvider
     }
 
     @Override
-    public String getInsertStatement() {
-        return insertStatement;
+    public String getWhereClause() {
+        return whereClause;
     }
 
-    public static Builder withInsertStatement(String insertStatement) {
-        return new Builder().withInsertStatement(insertStatement);
+    public static Builder withWhereClause(String whereClause) {
+        return new Builder().withWhereClause(whereClause);
     }
 
     public static class Builder {
-        private String insertStatement;
+        private String whereClause;
         private final Map<String, Object> parameters = new HashMap<>();
 
-        public Builder withInsertStatement(String insertStatement) {
-            this.insertStatement = insertStatement;
+        public Builder withWhereClause(String whereClause) {
+            this.whereClause = whereClause;
             return this;
         }
 
@@ -57,8 +56,8 @@ public class DefaultGeneralInsertStatementProvider
             return this;
         }
 
-        public DefaultGeneralInsertStatementProvider build() {
-            return new DefaultGeneralInsertStatementProvider(this);
+        public DefaultWhereClauseProvider build() {
+            return new DefaultWhereClauseProvider(this);
         }
     }
 }

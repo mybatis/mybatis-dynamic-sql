@@ -21,11 +21,11 @@ import java.util.Objects;
 
 public class DefaultUpdateStatementProvider implements UpdateStatementProvider {
     private final String updateStatement;
-    private final Map<String, Object> parameters = new HashMap<>();
+    private final Map<String, Object> parameters;
 
     private DefaultUpdateStatementProvider(Builder builder) {
         updateStatement = Objects.requireNonNull(builder.updateStatement);
-        parameters.putAll(builder.parameters);
+        parameters = builder.parameters;
     }
 
     @Override
