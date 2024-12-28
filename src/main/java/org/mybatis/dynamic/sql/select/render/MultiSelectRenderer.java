@@ -21,7 +21,6 @@ import java.util.stream.Collectors;
 
 import org.mybatis.dynamic.sql.common.OrderByModel;
 import org.mybatis.dynamic.sql.common.OrderByRenderer;
-import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
 import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.select.MultiSelectModel;
@@ -36,11 +35,11 @@ public class MultiSelectRenderer {
     private final RenderingContext renderingContext;
 
     private MultiSelectRenderer(Builder builder) {
+        multiSelectModel = Objects.requireNonNull(builder.multiSelectModel);
         renderingContext = RenderingContext
                 .withRenderingStrategy(builder.renderingStrategy)
-                .withStatementConfiguration(builder.statementConfiguration)
+                .withStatementConfiguration(multiSelectModel.statementConfiguration())
                 .build();
-        multiSelectModel = Objects.requireNonNull(builder.multiSelectModel);
     }
 
     public SelectStatementProvider render() {
@@ -65,21 +64,21 @@ public class MultiSelectRenderer {
     }
 
     private FragmentAndParameters renderSelect(SelectModel selectModel) {
-        SelectStatementProvider selectStatement = selectModel.render(renderingContext);
-
-        return FragmentAndParameters
-                .withFragment("(" + selectStatement.getSelectStatement() + ")") //$NON-NLS-1$ //$NON-NLS-2$
-                .withParameters(selectStatement.getParameters())
-                .build();
+        return SubQueryRenderer.withSelectModel(selectModel)
+                .withRenderingContext(renderingContext)
+                .withPrefix("(") //$NON-NLS-1$
+                .withSuffix(")") //$NON-NLS-1$
+                .build()
+                .render();
     }
 
     private FragmentAndParameters renderSelect(UnionQuery unionQuery) {
-        SelectStatementProvider selectStatement = unionQuery.selectModel().render(renderingContext);
-
-        return FragmentAndParameters.withFragment(
-                unionQuery.connector() + " (" + selectStatement.getSelectStatement() + ")") //$NON-NLS-1$ //$NON-NLS-2$
-                .withParameters(selectStatement.getParameters())
-                .build();
+        return SubQueryRenderer.withSelectModel(unionQuery.selectModel())
+                .withRenderingContext(renderingContext)
+                .withPrefix(unionQuery.connector() + " (") //$NON-NLS-1$
+                .withSuffix(")") //$NON-NLS-1$
+                .build()
+                .render();
     }
 
     private Optional<FragmentAndParameters> renderOrderBy() {
@@ -102,10 +101,13 @@ public class MultiSelectRenderer {
                 .render();
     }
 
+    public static Builder withMultiSelectModel(MultiSelectModel multiSelectModel) {
+        return new Builder().withMultiSelectModel(multiSelectModel);
+    }
+
     public static class Builder {
         private RenderingStrategy renderingStrategy;
         private MultiSelectModel multiSelectModel;
-        private StatementConfiguration statementConfiguration;
 
         public Builder withRenderingStrategy(RenderingStrategy renderingStrategy) {
             this.renderingStrategy = renderingStrategy;
@@ -114,11 +116,6 @@ public class MultiSelectRenderer {
 
         public Builder withMultiSelectModel(MultiSelectModel multiSelectModel) {
             this.multiSelectModel = multiSelectModel;
-            return this;
-        }
-
-        public Builder withStatementConfiguration(StatementConfiguration statementConfiguration) {
-            this.statementConfiguration = statementConfiguration;
             return this;
         }
 

@@ -23,8 +23,8 @@ import java.util.stream.Stream;
 import org.jetbrains.annotations.NotNull;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
+import org.mybatis.dynamic.sql.insert.render.GeneralInsertRenderer;
 import org.mybatis.dynamic.sql.insert.render.GeneralInsertStatementProvider;
-import org.mybatis.dynamic.sql.render.RendererFactory;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.util.AbstractColumnMapping;
 import org.mybatis.dynamic.sql.util.Validator;
@@ -50,10 +50,16 @@ public class GeneralInsertModel {
         return table;
     }
 
+    public StatementConfiguration statementConfiguration() {
+        return statementConfiguration;
+    }
+
     @NotNull
     public GeneralInsertStatementProvider render(RenderingStrategy renderingStrategy) {
-        return RendererFactory.createGeneralInsertRenderer(this, statementConfiguration)
-                .render(renderingStrategy);
+        return GeneralInsertRenderer.withInsertModel(this)
+                .withRenderingStrategy(renderingStrategy)
+                .build()
+                .render();
     }
 
     public static class Builder {

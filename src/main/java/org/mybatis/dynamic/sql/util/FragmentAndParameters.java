@@ -15,6 +15,7 @@
  */
 package org.mybatis.dynamic.sql.util;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -28,7 +29,7 @@ public class FragmentAndParameters {
 
     private FragmentAndParameters(Builder builder) {
         fragment = Objects.requireNonNull(builder.fragment);
-        parameters = Objects.requireNonNull(builder.parameters);
+        parameters = Collections.unmodifiableMap(builder.parameters);
     }
 
     public String fragment() {

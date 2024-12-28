@@ -18,8 +18,8 @@ package org.mybatis.dynamic.sql.insert;
 import java.util.Collection;
 
 import org.jetbrains.annotations.NotNull;
+import org.mybatis.dynamic.sql.insert.render.MultiRowInsertRenderer;
 import org.mybatis.dynamic.sql.insert.render.MultiRowInsertStatementProvider;
-import org.mybatis.dynamic.sql.render.RendererFactory;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.util.Validator;
 
@@ -33,8 +33,10 @@ public class MultiRowInsertModel<T> extends AbstractMultiRowInsertModel<T> {
 
     @NotNull
     public MultiRowInsertStatementProvider<T> render(RenderingStrategy renderingStrategy) {
-        return RendererFactory.createMultiRowInsertRenderer(this)
-                .render(renderingStrategy);
+        return MultiRowInsertRenderer.withMultiRowInsertModel(this)
+                .withRenderingStrategy(renderingStrategy)
+                .build()
+                .render();
     }
 
     public static <T> Builder<T> withRecords(Collection<T> records) {

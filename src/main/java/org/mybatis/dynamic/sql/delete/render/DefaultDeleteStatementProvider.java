@@ -25,7 +25,7 @@ public class DefaultDeleteStatementProvider implements DeleteStatementProvider {
 
     private DefaultDeleteStatementProvider(Builder builder) {
         deleteStatement = Objects.requireNonNull(builder.deleteStatement);
-        parameters = Objects.requireNonNull(builder.parameters);
+        parameters = builder.parameters;
     }
 
     @Override

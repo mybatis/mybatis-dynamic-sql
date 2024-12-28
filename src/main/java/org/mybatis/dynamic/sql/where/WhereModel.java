@@ -24,6 +24,7 @@ import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
+import org.mybatis.dynamic.sql.where.render.DefaultWhereClauseProvider;
 import org.mybatis.dynamic.sql.where.render.WhereClauseProvider;
 import org.mybatis.dynamic.sql.where.render.WhereRenderer;
 
@@ -92,7 +93,7 @@ public class WhereModel extends AbstractBooleanExpressionModel {
     }
 
     private WhereClauseProvider toWhereClauseProvider(FragmentAndParameters fragmentAndParameters) {
-        return WhereClauseProvider.withWhereClause(fragmentAndParameters.fragment())
+        return DefaultWhereClauseProvider.withWhereClause(fragmentAndParameters.fragment())
                 .withParameters(fragmentAndParameters.parameters())
                 .build();
     }

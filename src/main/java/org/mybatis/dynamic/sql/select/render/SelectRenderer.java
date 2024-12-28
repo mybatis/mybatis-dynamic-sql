@@ -16,71 +16,34 @@
 package org.mybatis.dynamic.sql.select.render;
 
 import java.util.Objects;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
-import org.mybatis.dynamic.sql.common.OrderByModel;
-import org.mybatis.dynamic.sql.common.OrderByRenderer;
 import org.mybatis.dynamic.sql.render.RenderingContext;
-import org.mybatis.dynamic.sql.select.PagingModel;
-import org.mybatis.dynamic.sql.select.QueryExpressionModel;
+import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.select.SelectModel;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
-import org.mybatis.dynamic.sql.util.FragmentCollector;
 
 public class SelectRenderer {
     private final SelectModel selectModel;
-    private final RenderingContext renderingContext;
+    private final RenderingStrategy renderingStrategy;
 
     private SelectRenderer(Builder builder) {
         selectModel = Objects.requireNonNull(builder.selectModel);
-        renderingContext = Objects.requireNonNull(builder.renderingContext);
+        renderingStrategy = Objects.requireNonNull(builder.renderingStrategy);
     }
 
     public SelectStatementProvider render() {
-        FragmentCollector fragmentCollector = selectModel
-                .queryExpressions()
-                .map(this::renderQueryExpression)
-                .collect(FragmentCollector.collect());
-
-        renderOrderBy().ifPresent(fragmentCollector::add);
-        renderPagingModel().ifPresent(fragmentCollector::add);
-
-        return toSelectStatementProvider(fragmentCollector);
-    }
-
-    private SelectStatementProvider toSelectStatementProvider(FragmentCollector fragmentCollector) {
-        return DefaultSelectStatementProvider
-                .withSelectStatement(fragmentCollector.collectFragments(Collectors.joining(" "))) //$NON-NLS-1$
-                .withParameters(fragmentCollector.parameters())
+        RenderingContext renderingContext = RenderingContext.withRenderingStrategy(renderingStrategy)
+                .withStatementConfiguration(selectModel.statementConfiguration())
                 .build();
-    }
 
-    private FragmentAndParameters renderQueryExpression(QueryExpressionModel queryExpressionModel) {
-        return QueryExpressionRenderer.withQueryExpression(queryExpressionModel)
+        FragmentAndParameters fragmentAndParameters = SubQueryRenderer.withSelectModel(selectModel)
                 .withRenderingContext(renderingContext)
                 .build()
                 .render();
-    }
 
-    private Optional<FragmentAndParameters> renderOrderBy() {
-        return selectModel.orderByModel().map(this::renderOrderBy);
-    }
-
-    private FragmentAndParameters renderOrderBy(OrderByModel orderByModel) {
-        return new OrderByRenderer(renderingContext).render(orderByModel);
-    }
-
-    private Optional<FragmentAndParameters> renderPagingModel() {
-        return selectModel.pagingModel().map(this::renderPagingModel);
-    }
-
-    private FragmentAndParameters renderPagingModel(PagingModel pagingModel) {
-        return new PagingModelRenderer.Builder()
-                .withPagingModel(pagingModel)
-                .withRenderingContext(renderingContext)
-                .build()
-                .render();
+        return DefaultSelectStatementProvider.withSelectStatement(fragmentAndParameters.fragment())
+                .withParameters(fragmentAndParameters.parameters())
+                .build();
     }
 
     public static Builder withSelectModel(SelectModel selectModel) {
@@ -89,10 +52,10 @@ public class SelectRenderer {
 
     public static class Builder {
         private SelectModel selectModel;
-        private RenderingContext renderingContext;
+        private RenderingStrategy renderingStrategy;
 
-        public Builder withRenderingContext(RenderingContext renderingContext) {
-            this.renderingContext = renderingContext;
+        public Builder withRenderingStrategy(RenderingStrategy renderingStrategy) {
+            this.renderingStrategy = renderingStrategy;
             return this;
         }
 

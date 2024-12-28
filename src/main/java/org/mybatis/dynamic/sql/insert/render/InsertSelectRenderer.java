@@ -15,20 +15,18 @@
  */
 package org.mybatis.dynamic.sql.insert.render;
 
-import static org.mybatis.dynamic.sql.util.StringUtilities.spaceBefore;
+import static org.mybatis.dynamic.sql.util.StringUtilities.spaceAfter;
 
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.mybatis.dynamic.sql.SqlColumn;
-import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
 import org.mybatis.dynamic.sql.insert.InsertColumnListModel;
 import org.mybatis.dynamic.sql.insert.InsertSelectModel;
 import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
-import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
-import org.mybatis.dynamic.sql.util.StringUtilities;
+import org.mybatis.dynamic.sql.select.render.SubQueryRenderer;
+import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 
 public class InsertSelectRenderer {
 
@@ -38,34 +36,34 @@ public class InsertSelectRenderer {
     private InsertSelectRenderer(Builder builder) {
         model = Objects.requireNonNull(builder.model);
         renderingContext = RenderingContext.withRenderingStrategy(builder.renderingStrategy)
-                .withStatementConfiguration(builder.statementConfiguration)
+                .withStatementConfiguration(model.statementConfiguration())
                 .build();
     }
 
     public InsertSelectStatementProvider render() {
-        SelectStatementProvider selectStatement = model.selectModel().render(renderingContext);
-
         String statementStart = InsertRenderingUtilities.calculateInsertStatementStart(model.table());
-        Optional<String> columnsPhrase = calculateColumnsPhrase();
-        String renderedSelectStatement = selectStatement.getSelectStatement();
+        String columnsPhrase = calculateColumnsPhrase();
+        String prefix = statementStart + spaceAfter(columnsPhrase);
 
-        String insertStatement = statementStart
-                + columnsPhrase.map(StringUtilities::spaceBefore).orElse("") //$NON-NLS-1$
-                + spaceBefore(renderedSelectStatement);
+        FragmentAndParameters fragmentAndParameters = SubQueryRenderer.withSelectModel(model.selectModel())
+                .withRenderingContext(renderingContext)
+                .withPrefix(prefix)
+                .build()
+                .render();
 
-        return DefaultGeneralInsertStatementProvider.withInsertStatement(insertStatement)
-                .withParameters(selectStatement.getParameters())
+        return DefaultGeneralInsertStatementProvider.withInsertStatement(fragmentAndParameters.fragment())
+                .withParameters(fragmentAndParameters.parameters())
                 .build();
     }
 
-    private Optional<String> calculateColumnsPhrase() {
-        return model.columnList().map(this::calculateColumnsPhrase);
+    private String calculateColumnsPhrase() {
+        return model.columnList().map(this::calculateColumnsPhrase).orElse(""); //$NON-NLS-1$
     }
 
     private String calculateColumnsPhrase(InsertColumnListModel columnList) {
         return columnList.columns()
                 .map(SqlColumn::name)
-                .collect(Collectors.joining(", ", "(", ")")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                .collect(Collectors.joining(", ", " (", ")")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
 
     public static Builder withInsertSelectModel(InsertSelectModel model) {
@@ -75,7 +73,6 @@ public class InsertSelectRenderer {
     public static class Builder {
         private InsertSelectModel model;
         private RenderingStrategy renderingStrategy;
-        private StatementConfiguration statementConfiguration;
 
         public Builder withInsertSelectModel(InsertSelectModel model) {
             this.model = model;
@@ -84,11 +81,6 @@ public class InsertSelectRenderer {
 
         public Builder withRenderingStrategy(RenderingStrategy renderingStrategy) {
             this.renderingStrategy = renderingStrategy;
-            return this;
-        }
-
-        public Builder withStatementConfiguration(StatementConfiguration statementConfiguration) {
-            this.statementConfiguration = statementConfiguration;
             return this;
         }
 

@@ -37,11 +37,8 @@ public class ToBase64 extends AbstractTypeConvertingFunction<byte[], String, ToB
 
     @Override
     public FragmentAndParameters render(RenderingContext renderingContext) {
-        FragmentAndParameters renderedColumn = column.render(renderingContext);
-
-        return FragmentAndParameters.withFragment("TO_BASE64(" + renderedColumn.fragment() + ")") //$NON-NLS-1$ //$NON-NLS-2$
-                .withParameters(renderedColumn.parameters())
-                .build();
+        return column.render(renderingContext)
+                .mapFragment(f -> "TO_BASE64(" + f + ")"); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     @Override

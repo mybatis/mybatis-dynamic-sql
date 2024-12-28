@@ -18,7 +18,6 @@ package org.mybatis.dynamic.sql.insert.render;
 import java.util.Objects;
 import java.util.Optional;
 
-import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
 import org.mybatis.dynamic.sql.insert.GeneralInsertModel;
 import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
@@ -32,7 +31,7 @@ public class GeneralInsertRenderer {
     private GeneralInsertRenderer(Builder builder) {
         model = Objects.requireNonNull(builder.model);
         RenderingContext renderingContext = RenderingContext.withRenderingStrategy(builder.renderingStrategy)
-                .withStatementConfiguration(builder.statementConfiguration)
+                .withStatementConfiguration(model.statementConfiguration())
                 .build();
         visitor = new GeneralInsertValuePhraseVisitor(renderingContext);
     }
@@ -59,7 +58,6 @@ public class GeneralInsertRenderer {
     public static class Builder {
         private GeneralInsertModel model;
         private RenderingStrategy renderingStrategy;
-        private StatementConfiguration statementConfiguration;
 
         public Builder withInsertModel(GeneralInsertModel model) {
             this.model = model;
@@ -68,11 +66,6 @@ public class GeneralInsertRenderer {
 
         public Builder withRenderingStrategy(RenderingStrategy renderingStrategy) {
             this.renderingStrategy = renderingStrategy;
-            return this;
-        }
-
-        public Builder withStatementConfiguration(StatementConfiguration statementConfiguration) {
-            this.statementConfiguration = statementConfiguration;
             return this;
         }
 

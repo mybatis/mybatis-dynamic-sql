@@ -139,12 +139,8 @@ public class QueryExpressionRenderer {
     private FragmentAndParameters renderColumnAndAlias(BasicColumn selectListItem) {
         FragmentAndParameters renderedColumn = selectListItem.render(renderingContext);
 
-        String nameAndTableAlias = selectListItem.alias().map(a -> renderedColumn.fragment() + " as " + a) //$NON-NLS-1$
-                .orElse(renderedColumn.fragment());
-
-        return FragmentAndParameters.withFragment(nameAndTableAlias)
-                .withParameters(renderedColumn.parameters())
-                .build();
+        return selectListItem.alias().map(a -> renderedColumn.mapFragment(f -> f + " as " + a)) //$NON-NLS-1$
+                .orElse(renderedColumn);
     }
 
     private FragmentAndParameters renderTableExpression(TableExpression table) {
