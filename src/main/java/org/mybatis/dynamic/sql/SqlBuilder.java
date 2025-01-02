@@ -622,7 +622,7 @@ public interface SqlBuilder {
         return IsEqualTo.of(value);
     }
 
-    static <T> IsEqualTo<T> isEqualTo(Supplier<T> valueSupplier) {
+    static <T> IsEqualTo<T> isEqualTo(Supplier<@Nullable T> valueSupplier) {
         return isEqualTo(valueSupplier.get());
     }
 
@@ -638,7 +638,7 @@ public interface SqlBuilder {
         return IsEqualTo.of(value).filter(Objects::nonNull);
     }
 
-    static <T> IsEqualTo<T> isEqualToWhenPresent(Supplier<T> valueSupplier) {
+    static <T> IsEqualTo<T> isEqualToWhenPresent(Supplier<@Nullable T> valueSupplier) {
         return isEqualToWhenPresent(valueSupplier.get());
     }
 
@@ -646,7 +646,7 @@ public interface SqlBuilder {
         return IsNotEqualTo.of(value);
     }
 
-    static <T> IsNotEqualTo<T> isNotEqualTo(Supplier<T> valueSupplier) {
+    static <T> IsNotEqualTo<T> isNotEqualTo(Supplier<@Nullable T> valueSupplier) {
         return isNotEqualTo(valueSupplier.get());
     }
 
@@ -662,7 +662,7 @@ public interface SqlBuilder {
         return IsNotEqualTo.of(value).filter(Objects::nonNull);
     }
 
-    static <T> IsNotEqualTo<T> isNotEqualToWhenPresent(Supplier<T> valueSupplier) {
+    static <T> IsNotEqualTo<T> isNotEqualToWhenPresent(Supplier<@Nullable T> valueSupplier) {
         return isNotEqualToWhenPresent(valueSupplier.get());
     }
 
@@ -670,7 +670,7 @@ public interface SqlBuilder {
         return IsGreaterThan.of(value);
     }
 
-    static <T> IsGreaterThan<T> isGreaterThan(Supplier<T> valueSupplier) {
+    static <T> IsGreaterThan<T> isGreaterThan(Supplier<@Nullable T> valueSupplier) {
         return isGreaterThan(valueSupplier.get());
     }
 
@@ -686,7 +686,7 @@ public interface SqlBuilder {
         return IsGreaterThan.of(value).filter(Objects::nonNull);
     }
 
-    static <T> IsGreaterThan<T> isGreaterThanWhenPresent(Supplier<T> valueSupplier) {
+    static <T> IsGreaterThan<T> isGreaterThanWhenPresent(Supplier<@Nullable T> valueSupplier) {
         return isGreaterThanWhenPresent(valueSupplier.get());
     }
 
@@ -694,7 +694,7 @@ public interface SqlBuilder {
         return IsGreaterThanOrEqualTo.of(value);
     }
 
-    static <T> IsGreaterThanOrEqualTo<T> isGreaterThanOrEqualTo(Supplier<T> valueSupplier) {
+    static <T> IsGreaterThanOrEqualTo<T> isGreaterThanOrEqualTo(Supplier<@Nullable T> valueSupplier) {
         return isGreaterThanOrEqualTo(valueSupplier.get());
     }
 
@@ -711,7 +711,7 @@ public interface SqlBuilder {
         return IsGreaterThanOrEqualTo.of(value).filter(Objects::nonNull);
     }
 
-    static <T> IsGreaterThanOrEqualTo<T> isGreaterThanOrEqualToWhenPresent(Supplier<T> valueSupplier) {
+    static <T> IsGreaterThanOrEqualTo<T> isGreaterThanOrEqualToWhenPresent(Supplier<@Nullable T> valueSupplier) {
         return isGreaterThanOrEqualToWhenPresent(valueSupplier.get());
     }
 
@@ -719,7 +719,7 @@ public interface SqlBuilder {
         return IsLessThan.of(value);
     }
 
-    static <T> IsLessThan<T> isLessThan(Supplier<T> valueSupplier) {
+    static <T> IsLessThan<T> isLessThan(Supplier<@Nullable T> valueSupplier) {
         return isLessThan(valueSupplier.get());
     }
 
@@ -735,7 +735,7 @@ public interface SqlBuilder {
         return IsLessThan.of(value).filter(Objects::nonNull);
     }
 
-    static <T> IsLessThan<T> isLessThanWhenPresent(Supplier<T> valueSupplier) {
+    static <T> IsLessThan<T> isLessThanWhenPresent(Supplier<@Nullable T> valueSupplier) {
         return isLessThanWhenPresent(valueSupplier.get());
     }
 
@@ -743,7 +743,7 @@ public interface SqlBuilder {
         return IsLessThanOrEqualTo.of(value);
     }
 
-    static <T> IsLessThanOrEqualTo<T> isLessThanOrEqualTo(Supplier<T> valueSupplier) {
+    static <T> IsLessThanOrEqualTo<T> isLessThanOrEqualTo(Supplier<@Nullable T> valueSupplier) {
         return isLessThanOrEqualTo(valueSupplier.get());
     }
 
@@ -759,7 +759,7 @@ public interface SqlBuilder {
         return IsLessThanOrEqualTo.of(value).filter(Objects::nonNull);
     }
 
-    static <T> IsLessThanOrEqualTo<T> isLessThanOrEqualToWhenPresent(Supplier<T> valueSupplier) {
+    static <T> IsLessThanOrEqualTo<T> isLessThanOrEqualToWhenPresent(Supplier<@Nullable T> valueSupplier) {
         return isLessThanOrEqualToWhenPresent(valueSupplier.get());
     }
 
@@ -807,11 +807,11 @@ public interface SqlBuilder {
         return values == null ? IsNotInWhenPresent.empty() : IsNotInWhenPresent.of(values);
     }
 
-    static <T> IsBetween.Builder<T> isBetween(T value1) {
+    static <T> IsBetween.Builder<T> isBetween(@Nullable T value1) {
         return IsBetween.isBetween(value1);
     }
 
-    static <T> IsBetween.Builder<T> isBetween(Supplier<T> valueSupplier1) {
+    static <T> IsBetween.Builder<T> isBetween(Supplier<@Nullable T> valueSupplier1) {
         return isBetween(valueSupplier1.get());
     }
 
@@ -819,15 +819,15 @@ public interface SqlBuilder {
         return IsBetween.isBetweenWhenPresent(value1);
     }
 
-    static <T> IsBetween.WhenPresentBuilder<T> isBetweenWhenPresent(Supplier<T> valueSupplier1) {
+    static <T> IsBetween.WhenPresentBuilder<T> isBetweenWhenPresent(Supplier<@Nullable T> valueSupplier1) {
         return isBetweenWhenPresent(valueSupplier1.get());
     }
 
-    static <T> IsNotBetween.Builder<T> isNotBetween(T value1) {
+    static <T> IsNotBetween.Builder<T> isNotBetween(@Nullable T value1) {
         return IsNotBetween.isNotBetween(value1);
     }
 
-    static <T> IsNotBetween.Builder<T> isNotBetween(Supplier<T> valueSupplier1) {
+    static <T> IsNotBetween.Builder<T> isNotBetween(Supplier<@Nullable T> valueSupplier1) {
         return isNotBetween(valueSupplier1.get());
     }
 
@@ -835,16 +835,16 @@ public interface SqlBuilder {
         return IsNotBetween.isNotBetweenWhenPresent(value1);
     }
 
-    static <T> IsNotBetween.WhenPresentBuilder<T> isNotBetweenWhenPresent(Supplier<T> valueSupplier1) {
+    static <T> IsNotBetween.WhenPresentBuilder<T> isNotBetweenWhenPresent(Supplier<@Nullable T> valueSupplier1) {
         return isNotBetweenWhenPresent(valueSupplier1.get());
     }
 
     // for string columns, but generic for columns with type handlers
-    static <T> IsLike<T> isLike(T value) {
+    static <T> IsLike<T> isLike(@Nullable T value) {
         return IsLike.of(value);
     }
 
-    static <T> IsLike<T> isLike(Supplier<T> valueSupplier) {
+    static <T> IsLike<T> isLike(Supplier<@Nullable T> valueSupplier) {
         return isLike(valueSupplier.get());
     }
 
@@ -852,15 +852,15 @@ public interface SqlBuilder {
         return IsLike.of(value).filter(Objects::nonNull);
     }
 
-    static <T> IsLike<T> isLikeWhenPresent(Supplier<T> valueSupplier) {
+    static <T> IsLike<T> isLikeWhenPresent(Supplier<@Nullable T> valueSupplier) {
         return isLikeWhenPresent(valueSupplier.get());
     }
 
-    static <T> IsNotLike<T> isNotLike(T value) {
+    static <T> IsNotLike<T> isNotLike(@Nullable T value) {
         return IsNotLike.of(value);
     }
 
-    static <T> IsNotLike<T> isNotLike(Supplier<T> valueSupplier) {
+    static <T> IsNotLike<T> isNotLike(Supplier<@Nullable T> valueSupplier) {
         return isNotLike(valueSupplier.get());
     }
 
@@ -868,7 +868,7 @@ public interface SqlBuilder {
         return IsNotLike.of(value).filter(Objects::nonNull);
     }
 
-    static <T> IsNotLike<T> isNotLikeWhenPresent(Supplier<T> valueSupplier) {
+    static <T> IsNotLike<T> isNotLikeWhenPresent(Supplier<@Nullable T> valueSupplier) {
         return isNotLikeWhenPresent(valueSupplier.get());
     }
 
@@ -882,11 +882,11 @@ public interface SqlBuilder {
     }
 
     // conditions for strings only
-    static IsLikeCaseInsensitive isLikeCaseInsensitive(String value) {
+    static IsLikeCaseInsensitive isLikeCaseInsensitive(@Nullable String value) {
         return IsLikeCaseInsensitive.of(value);
     }
 
-    static IsLikeCaseInsensitive isLikeCaseInsensitive(Supplier<String> valueSupplier) {
+    static IsLikeCaseInsensitive isLikeCaseInsensitive(Supplier<@Nullable String> valueSupplier) {
         return isLikeCaseInsensitive(valueSupplier.get());
     }
 
@@ -894,15 +894,15 @@ public interface SqlBuilder {
         return IsLikeCaseInsensitive.of(value).filter(Objects::nonNull);
     }
 
-    static IsLikeCaseInsensitive isLikeCaseInsensitiveWhenPresent(Supplier<String> valueSupplier) {
+    static IsLikeCaseInsensitive isLikeCaseInsensitiveWhenPresent(Supplier<@Nullable String> valueSupplier) {
         return isLikeCaseInsensitiveWhenPresent(valueSupplier.get());
     }
 
-    static IsNotLikeCaseInsensitive isNotLikeCaseInsensitive(String value) {
+    static IsNotLikeCaseInsensitive isNotLikeCaseInsensitive(@Nullable String value) {
         return IsNotLikeCaseInsensitive.of(value);
     }
 
-    static IsNotLikeCaseInsensitive isNotLikeCaseInsensitive(Supplier<String> valueSupplier) {
+    static IsNotLikeCaseInsensitive isNotLikeCaseInsensitive(Supplier<@Nullable String> valueSupplier) {
         return isNotLikeCaseInsensitive(valueSupplier.get());
     }
 
@@ -910,7 +910,7 @@ public interface SqlBuilder {
         return IsNotLikeCaseInsensitive.of(value).filter(Objects::nonNull);
     }
 
-    static IsNotLikeCaseInsensitive isNotLikeCaseInsensitiveWhenPresent(Supplier<String> valueSupplier) {
+    static IsNotLikeCaseInsensitive isNotLikeCaseInsensitiveWhenPresent(Supplier<@Nullable String> valueSupplier) {
         return isNotLikeCaseInsensitiveWhenPresent(valueSupplier.get());
     }
 

@@ -89,7 +89,7 @@ public class IsNotBetween<T> extends AbstractTwoValueCondition<T> {
         return map(mapper, mapper);
     }
 
-    public static <T> Builder<T> isNotBetween(T value1) {
+    public static <T> Builder<T> isNotBetween(@Nullable T value1) {
         return new Builder<>(value1);
     }
 
@@ -99,7 +99,7 @@ public class IsNotBetween<T> extends AbstractTwoValueCondition<T> {
 
     public static class Builder<T> extends AndGatherer<T, IsNotBetween<T>> {
 
-        private Builder(T value1) {
+        private Builder(@Nullable T value1) {
             super(value1);
         }
 
