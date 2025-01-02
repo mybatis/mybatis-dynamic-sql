@@ -92,20 +92,20 @@ public class GeneralInsertDSL implements Buildable<GeneralInsertModel> {
             return GeneralInsertDSL.this;
         }
 
-        public GeneralInsertDSL toValueOrNull(T value) {
+        public GeneralInsertDSL toValueOrNull(@Nullable T value) {
             return toValueOrNull(() -> value);
         }
 
-        public GeneralInsertDSL toValueOrNull(Supplier<T> valueSupplier) {
+        public GeneralInsertDSL toValueOrNull(Supplier<@Nullable T> valueSupplier) {
             columnMappings.add(ValueOrNullMapping.of(column, valueSupplier));
             return GeneralInsertDSL.this;
         }
 
-        public GeneralInsertDSL toValueWhenPresent(T value) {
+        public GeneralInsertDSL toValueWhenPresent(@Nullable T value) {
             return toValueWhenPresent(() -> value);
         }
 
-        public GeneralInsertDSL toValueWhenPresent(Supplier<T> valueSupplier) {
+        public GeneralInsertDSL toValueWhenPresent(Supplier<@Nullable T> valueSupplier) {
             columnMappings.add(ValueWhenPresentMapping.of(column, valueSupplier));
             return GeneralInsertDSL.this;
         }

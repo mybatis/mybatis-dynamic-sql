@@ -174,20 +174,20 @@ public class UpdateDSL<R> implements AbstractWhereStarter<UpdateDSL<R>.UpdateWhe
             return UpdateDSL.this;
         }
 
-        public UpdateDSL<R> equalToOrNull(T value) {
+        public UpdateDSL<R> equalToOrNull(@Nullable T value) {
             return equalToOrNull(() -> value);
         }
 
-        public UpdateDSL<R> equalToOrNull(Supplier<T> valueSupplier) {
+        public UpdateDSL<R> equalToOrNull(Supplier<@Nullable T> valueSupplier) {
             columnMappings.add(ValueOrNullMapping.of(column, valueSupplier));
             return UpdateDSL.this;
         }
 
-        public UpdateDSL<R> equalToWhenPresent(T value) {
+        public UpdateDSL<R> equalToWhenPresent(@Nullable T value) {
             return equalToWhenPresent(() -> value);
         }
 
-        public UpdateDSL<R> equalToWhenPresent(Supplier<T> valueSupplier) {
+        public UpdateDSL<R> equalToWhenPresent(Supplier<@Nullable T> valueSupplier) {
             columnMappings.add(ValueWhenPresentMapping.of(column, valueSupplier));
             return UpdateDSL.this;
         }

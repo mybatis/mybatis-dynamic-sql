@@ -764,11 +764,11 @@ public interface SqlBuilder {
     }
 
     @SafeVarargs
-    static <T> IsIn<T> isIn(T... values) {
+    static <T> IsIn<T> isIn(@Nullable T... values) {
         return IsIn.of(values);
     }
 
-    static <T> IsIn<T> isIn(Collection<T> values) {
+    static <T> IsIn<T> isIn(Collection<@Nullable T> values) {
         return IsIn.of(values);
     }
 
@@ -786,11 +786,11 @@ public interface SqlBuilder {
     }
 
     @SafeVarargs
-    static <T> IsNotIn<T> isNotIn(T... values) {
+    static <T> IsNotIn<T> isNotIn(@Nullable T... values) {
         return IsNotIn.of(values);
     }
 
-    static <T> IsNotIn<T> isNotIn(Collection<T> values) {
+    static <T> IsNotIn<T> isNotIn(Collection<@Nullable T> values) {
         return IsNotIn.of(values);
     }
 
@@ -914,11 +914,11 @@ public interface SqlBuilder {
         return isNotLikeCaseInsensitiveWhenPresent(valueSupplier.get());
     }
 
-    static IsInCaseInsensitive isInCaseInsensitive(String... values) {
+    static IsInCaseInsensitive isInCaseInsensitive(@Nullable String... values) {
         return IsInCaseInsensitive.of(values);
     }
 
-    static IsInCaseInsensitive isInCaseInsensitive(Collection<String> values) {
+    static IsInCaseInsensitive isInCaseInsensitive(Collection<@Nullable String> values) {
         return IsInCaseInsensitive.of(values);
     }
 
@@ -931,11 +931,11 @@ public interface SqlBuilder {
         return values == null ? IsInCaseInsensitiveWhenPresent.empty() : IsInCaseInsensitiveWhenPresent.of(values);
     }
 
-    static IsNotInCaseInsensitive isNotInCaseInsensitive(String... values) {
+    static IsNotInCaseInsensitive isNotInCaseInsensitive(@Nullable String... values) {
         return IsNotInCaseInsensitive.of(values);
     }
 
-    static IsNotInCaseInsensitive isNotInCaseInsensitive(Collection<String> values) {
+    static IsNotInCaseInsensitive isNotInCaseInsensitive(Collection<@Nullable String> values) {
         return IsNotInCaseInsensitive.of(values);
     }
 

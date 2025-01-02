@@ -42,7 +42,7 @@ public abstract class AndGatherer<T, R> {
         return build();
     }
 
-    public R and(Supplier<T> valueSupplier2) {
+    public R and(Supplier<@Nullable T> valueSupplier2) {
         return and(valueSupplier2.get());
     }
 

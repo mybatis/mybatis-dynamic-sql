@@ -35,7 +35,7 @@ public class IsInCaseInsensitive extends AbstractListValueCondition<String>
         return EMPTY;
     }
 
-    protected IsInCaseInsensitive(Collection<String> values) {
+    protected IsInCaseInsensitive(Collection<@Nullable String> values) {
         super(values);
     }
 
@@ -66,11 +66,11 @@ public class IsInCaseInsensitive extends AbstractListValueCondition<String>
         return mapSupport(mapper, IsInCaseInsensitive::new, IsInCaseInsensitive::empty);
     }
 
-    public static IsInCaseInsensitive of(String... values) {
+    public static IsInCaseInsensitive of(@Nullable String... values) {
         return of(Arrays.asList(values));
     }
 
-    public static IsInCaseInsensitive of(Collection<String> values) {
+    public static IsInCaseInsensitive of(Collection<@Nullable String> values) {
         return new IsInCaseInsensitive(values).map(StringUtilities::safelyUpperCase);
     }
 }

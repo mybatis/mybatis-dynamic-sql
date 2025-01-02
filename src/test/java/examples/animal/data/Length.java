@@ -18,12 +18,14 @@ package examples.animal.data;
 import java.sql.JDBCType;
 import java.util.Optional;
 
+import org.jspecify.annotations.NullMarked;
 import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.BindableColumn;
 import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.select.function.AbstractTypeConvertingFunction;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 
+@NullMarked
 public class Length extends AbstractTypeConvertingFunction<Object, Integer, Length> {
     private Length(BasicColumn column) {
         super(column);

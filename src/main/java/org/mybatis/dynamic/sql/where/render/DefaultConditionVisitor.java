@@ -114,7 +114,7 @@ public class DefaultConditionVisitor<T> implements ConditionVisitor<T, FragmentA
         return column.convertParameterType(value);
     }
 
-    private FragmentAndParameters toFragmentAndParameters(T value) {
+    private FragmentAndParameters toFragmentAndParameters(@Nullable T value) {
         RenderedParameterInfo parameterInfo = renderingContext.calculateParameterInfo(column);
         return FragmentAndParameters.withFragment(parameterInfo.renderedPlaceHolder())
                 .withParameter(parameterInfo.parameterMapKey(), convertValue(value))
