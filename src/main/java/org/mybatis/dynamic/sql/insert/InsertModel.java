@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.Nullable;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.insert.render.InsertRenderer;
 import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider;
@@ -52,7 +52,6 @@ public class InsertModel<T> {
         return table;
     }
 
-    @NotNull
     public InsertStatementProvider<T> render(RenderingStrategy renderingStrategy) {
         return InsertRenderer.withInsertModel(this)
                 .withRenderingStrategy(renderingStrategy)
@@ -65,8 +64,8 @@ public class InsertModel<T> {
     }
 
     public static class Builder<T> {
-        private SqlTable table;
-        private T row;
+        private @Nullable SqlTable table;
+        private @Nullable T row;
         private final List<AbstractColumnMapping> columnMappings = new ArrayList<>();
 
         public Builder<T> withTable(SqlTable table) {

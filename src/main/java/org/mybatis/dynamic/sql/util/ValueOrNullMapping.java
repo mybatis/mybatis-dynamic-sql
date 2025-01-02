@@ -19,11 +19,12 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Supplier;
 
+import org.jspecify.annotations.Nullable;
 import org.mybatis.dynamic.sql.SqlColumn;
 
 public class ValueOrNullMapping<T> extends AbstractColumnMapping {
 
-    private final Supplier<T> valueSupplier;
+    private final Supplier<@Nullable T> valueSupplier;
     // keep a reference to the column so we don't lose the type
     private final SqlColumn<T> localColumn;
 

@@ -17,11 +17,13 @@ package org.mybatis.dynamic.sql.select;
 
 import java.util.Optional;
 
+import org.jspecify.annotations.Nullable;
+
 public class PagingModel {
 
-    private final Long limit;
-    private final Long offset;
-    private final Long fetchFirstRows;
+    private final @Nullable Long limit;
+    private final @Nullable Long offset;
+    private final @Nullable Long fetchFirstRows;
 
     private PagingModel(Builder builder) {
         super();
@@ -43,21 +45,21 @@ public class PagingModel {
     }
 
     public static class Builder {
-        private Long limit;
-        private Long offset;
-        private Long fetchFirstRows;
+        private @Nullable Long limit;
+        private @Nullable Long offset;
+        private @Nullable Long fetchFirstRows;
 
-        public Builder withLimit(Long limit) {
+        public Builder withLimit(@Nullable Long limit) {
             this.limit = limit;
             return this;
         }
 
-        public Builder withOffset(Long offset) {
+        public Builder withOffset(@Nullable Long offset) {
             this.offset = offset;
             return this;
         }
 
-        public Builder withFetchFirstRows(Long fetchFirstRows) {
+        public Builder withFetchFirstRows(@Nullable Long fetchFirstRows) {
             this.fetchFirstRows = fetchFirstRows;
             return this;
         }

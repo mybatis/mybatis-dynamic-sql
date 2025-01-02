@@ -18,10 +18,11 @@ package org.mybatis.dynamic.sql.where.condition;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+import org.jspecify.annotations.Nullable;
 import org.mybatis.dynamic.sql.AbstractSingleValueCondition;
 
 public class IsNotLike<T> extends AbstractSingleValueCondition<T> {
-    private static final IsNotLike<?> EMPTY = new IsNotLike<Object>(null) {
+    private static final IsNotLike<?> EMPTY = new IsNotLike<>(null) {
         @Override
         public boolean isEmpty() {
             return true;
@@ -34,7 +35,7 @@ public class IsNotLike<T> extends AbstractSingleValueCondition<T> {
         return t;
     }
 
-    protected IsNotLike(T value) {
+    protected IsNotLike(@Nullable T value) {
         super(value);
     }
 
@@ -43,7 +44,7 @@ public class IsNotLike<T> extends AbstractSingleValueCondition<T> {
         return "not like"; //$NON-NLS-1$
     }
 
-    public static <T> IsNotLike<T> of(T value) {
+    public static <T> IsNotLike<T> of(@Nullable T value) {
         return new IsNotLike<>(value);
     }
 

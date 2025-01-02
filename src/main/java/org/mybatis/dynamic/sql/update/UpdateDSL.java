@@ -24,7 +24,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.Nullable;
 import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.SortSpecification;
 import org.mybatis.dynamic.sql.SqlColumn;
@@ -53,13 +53,13 @@ public class UpdateDSL<R> implements AbstractWhereStarter<UpdateDSL<R>.UpdateWhe
     private final Function<UpdateModel, R> adapterFunction;
     private final List<AbstractColumnMapping> columnMappings = new ArrayList<>();
     private final SqlTable table;
-    private final String tableAlias;
-    private UpdateWhereBuilder whereBuilder;
+    private final @Nullable String tableAlias;
+    private @Nullable UpdateWhereBuilder whereBuilder;
     private final StatementConfiguration statementConfiguration = new StatementConfiguration();
-    private Long limit;
-    private OrderByModel orderByModel;
+    private @Nullable Long limit;
+    private @Nullable OrderByModel orderByModel;
 
-    private UpdateDSL(SqlTable table, String tableAlias, Function<UpdateModel, R> adapterFunction) {
+    private UpdateDSL(SqlTable table, @Nullable String tableAlias, Function<UpdateModel, R> adapterFunction) {
         this.table = Objects.requireNonNull(table);
         this.tableAlias = tableAlias;
         this.adapterFunction = Objects.requireNonNull(adapterFunction);
@@ -79,7 +79,7 @@ public class UpdateDSL<R> implements AbstractWhereStarter<UpdateDSL<R>.UpdateWhe
         return limitWhenPresent(limit);
     }
 
-    public UpdateDSL<R> limitWhenPresent(Long limit) {
+    public UpdateDSL<R> limitWhenPresent(@Nullable Long limit) {
         this.limit = limit;
         return this;
     }
@@ -99,7 +99,6 @@ public class UpdateDSL<R> implements AbstractWhereStarter<UpdateDSL<R>.UpdateWhe
      *
      * @return the update model
      */
-    @NotNull
     @Override
     public R build() {
         UpdateModel updateModel = UpdateModel.withTable(table)
@@ -120,7 +119,8 @@ public class UpdateDSL<R> implements AbstractWhereStarter<UpdateDSL<R>.UpdateWhe
         return this;
     }
 
-    public static <R> UpdateDSL<R> update(Function<UpdateModel, R> adapterFunction, SqlTable table, String tableAlias) {
+    public static <R> UpdateDSL<R> update(Function<UpdateModel, R> adapterFunction, SqlTable table,
+                                          @Nullable String tableAlias) {
         return new UpdateDSL<>(table, tableAlias, adapterFunction);
     }
 
@@ -216,7 +216,6 @@ public class UpdateDSL<R> implements AbstractWhereStarter<UpdateDSL<R>.UpdateWhe
             return UpdateDSL.this;
         }
 
-        @NotNull
         @Override
         public R build() {
             return UpdateDSL.this.build();

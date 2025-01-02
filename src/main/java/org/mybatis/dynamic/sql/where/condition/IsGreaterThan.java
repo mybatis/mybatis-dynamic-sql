@@ -18,10 +18,11 @@ package org.mybatis.dynamic.sql.where.condition;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+import org.jspecify.annotations.Nullable;
 import org.mybatis.dynamic.sql.AbstractSingleValueCondition;
 
 public class IsGreaterThan<T> extends AbstractSingleValueCondition<T> {
-    private static final IsGreaterThan<?> EMPTY = new IsGreaterThan<Object>(null) {
+    private static final IsGreaterThan<?> EMPTY = new IsGreaterThan<>(null) {
         @Override
         public boolean isEmpty() {
             return true;
@@ -34,7 +35,7 @@ public class IsGreaterThan<T> extends AbstractSingleValueCondition<T> {
         return t;
     }
 
-    protected IsGreaterThan(T value) {
+    protected IsGreaterThan(@Nullable T value) {
         super(value);
     }
 
@@ -43,7 +44,7 @@ public class IsGreaterThan<T> extends AbstractSingleValueCondition<T> {
         return ">"; //$NON-NLS-1$
     }
 
-    public static <T> IsGreaterThan<T> of(T value) {
+    public static <T> IsGreaterThan<T> of(@Nullable T value) {
         return new IsGreaterThan<>(value);
     }
 

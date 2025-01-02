@@ -19,7 +19,7 @@ import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.Nullable;
 import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.SqlBuilder;
 import org.mybatis.dynamic.sql.SqlTable;
@@ -42,7 +42,7 @@ public class CountDSL<R> extends AbstractQueryExpressionDSL<CountDSL<R>.CountWhe
         implements Buildable<R> {
 
     private final Function<SelectModel, R> adapterFunction;
-    private CountWhereBuilder whereBuilder;
+    private @Nullable CountWhereBuilder whereBuilder;
     private final BasicColumn countColumn;
     private final StatementConfiguration statementConfiguration = new StatementConfiguration();
 
@@ -58,7 +58,6 @@ public class CountDSL<R> extends AbstractQueryExpressionDSL<CountDSL<R>.CountWhe
         return whereBuilder;
     }
 
-    @NotNull
     @Override
     public R build() {
         return adapterFunction.apply(buildModel());
@@ -134,7 +133,6 @@ public class CountDSL<R> extends AbstractQueryExpressionDSL<CountDSL<R>.CountWhe
             super(CountDSL.this);
         }
 
-        @NotNull
         @Override
         public R build() {
             return CountDSL.this.build();

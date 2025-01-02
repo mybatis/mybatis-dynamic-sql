@@ -20,6 +20,7 @@ import static org.mybatis.dynamic.sql.util.StringUtilities.spaceBefore;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import org.jspecify.annotations.Nullable;
 import org.mybatis.dynamic.sql.AbstractColumnComparisonCondition;
 import org.mybatis.dynamic.sql.AbstractListValueCondition;
 import org.mybatis.dynamic.sql.AbstractNoValueCondition;
@@ -109,7 +110,7 @@ public class DefaultConditionVisitor<T> implements ConditionVisitor<T, FragmentA
                 .mapFragment(f -> condition.operator() + spaceBefore(f));
     }
 
-    private Object convertValue(T value) {
+    private @Nullable Object convertValue(@Nullable T value) {
         return column.convertParameterType(value);
     }
 
@@ -125,8 +126,8 @@ public class DefaultConditionVisitor<T> implements ConditionVisitor<T, FragmentA
     }
 
     public static class Builder<T> {
-        private BindableColumn<T> column;
-        private RenderingContext renderingContext;
+        private @Nullable BindableColumn<T> column;
+        private @Nullable RenderingContext renderingContext;
 
         public Builder<T> withColumn(BindableColumn<T> column) {
             this.column = column;

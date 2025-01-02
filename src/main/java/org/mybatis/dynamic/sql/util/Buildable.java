@@ -15,10 +15,7 @@
  */
 package org.mybatis.dynamic.sql.util;
 
-import org.jetbrains.annotations.NotNull;
-
 @FunctionalInterface
 public interface Buildable<T> {
-    @NotNull
     T build();
 }

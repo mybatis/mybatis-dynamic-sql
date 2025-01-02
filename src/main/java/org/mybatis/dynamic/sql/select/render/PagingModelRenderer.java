@@ -17,6 +17,7 @@ package org.mybatis.dynamic.sql.select.render;
 
 import java.util.Objects;
 
+import org.jspecify.annotations.Nullable;
 import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.select.PagingModel;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
@@ -44,8 +45,8 @@ public class PagingModelRenderer {
     }
 
     public static class Builder {
-        private PagingModel pagingModel;
-        private RenderingContext renderingContext;
+        private @Nullable PagingModel pagingModel;
+        private @Nullable RenderingContext renderingContext;
 
         public Builder withRenderingContext(RenderingContext renderingContext) {
             this.renderingContext = renderingContext;

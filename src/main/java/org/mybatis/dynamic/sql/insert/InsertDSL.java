@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Supplier;
 
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.Nullable;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.util.AbstractColumnMapping;
@@ -49,7 +49,6 @@ public class InsertDSL<T> implements Buildable<InsertModel<T>> {
         return new ColumnMappingFinisher<>(column);
     }
 
-    @NotNull
     @Override
     public InsertModel<T> build() {
         return InsertModel.withRow(row)
@@ -113,8 +112,8 @@ public class InsertDSL<T> implements Buildable<InsertModel<T>> {
     }
 
     public static class Builder<T> {
-        private T row;
-        private SqlTable table;
+        private @Nullable T row;
+        private @Nullable SqlTable table;
         private final List<AbstractColumnMapping> columnMappings = new ArrayList<>();
 
         public Builder<T> withRow(T row) {

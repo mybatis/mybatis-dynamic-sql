@@ -65,7 +65,7 @@ fun NamedParameterJdbcTemplate.deleteFrom(table: SqlTable, completer: DeleteComp
     delete(org.mybatis.dynamic.sql.util.kotlin.spring.deleteFrom(table, completer))
 
 // batch insert
-fun <T> NamedParameterJdbcTemplate.insertBatch(insertStatement: BatchInsert<T>): IntArray =
+fun <T : Any> NamedParameterJdbcTemplate.insertBatch(insertStatement: BatchInsert<T>): IntArray =
     batchUpdate(insertStatement.insertStatementSQL, BatchInsertUtility.createBatch(insertStatement.records))
 
 fun <T : Any> NamedParameterJdbcTemplate.insertBatch(
@@ -81,10 +81,10 @@ fun <T : Any> NamedParameterJdbcTemplate.insertBatch(
     insertBatch(org.mybatis.dynamic.sql.util.kotlin.spring.insertBatch(records, completer))
 
 // single row insert
-fun <T> NamedParameterJdbcTemplate.insert(insertStatement: InsertStatementProvider<T>): Int =
+fun <T : Any> NamedParameterJdbcTemplate.insert(insertStatement: InsertStatementProvider<T>): Int =
     update(insertStatement.insertStatement, BeanPropertySqlParameterSource(insertStatement))
 
-fun <T> NamedParameterJdbcTemplate.insert(
+fun <T : Any> NamedParameterJdbcTemplate.insert(
     insertStatement: InsertStatementProvider<T>,
     keyHolder: KeyHolder
 ): Int =
@@ -119,10 +119,10 @@ fun <T : Any> NamedParameterJdbcTemplate.insertMultiple(
 ): Int =
     insertMultiple(org.mybatis.dynamic.sql.util.kotlin.spring.insertMultiple(records, completer))
 
-fun <T> NamedParameterJdbcTemplate.insertMultiple(insertStatement: MultiRowInsertStatementProvider<T>): Int =
+fun <T : Any> NamedParameterJdbcTemplate.insertMultiple(insertStatement: MultiRowInsertStatementProvider<T>): Int =
     update(insertStatement.insertStatement, BeanPropertySqlParameterSource(insertStatement))
 
-fun <T> NamedParameterJdbcTemplate.insertMultiple(
+fun <T : Any> NamedParameterJdbcTemplate.insertMultiple(
     insertStatement: MultiRowInsertStatementProvider<T>,
     keyHolder: KeyHolder
 ): Int =

@@ -20,6 +20,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import org.jspecify.annotations.Nullable;
+
 public class DefaultSelectStatementProvider implements SelectStatementProvider {
     private final String selectStatement;
     private final Map<String, Object> parameters;
@@ -44,7 +46,7 @@ public class DefaultSelectStatementProvider implements SelectStatementProvider {
     }
 
     public static class Builder {
-        private String selectStatement;
+        private @Nullable String selectStatement;
         private final Map<String, Object> parameters = new HashMap<>();
 
         public Builder withSelectStatement(String selectStatement) {

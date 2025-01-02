@@ -18,6 +18,7 @@ package org.mybatis.dynamic.sql.where.condition;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 
+import org.jspecify.annotations.Nullable;
 import org.mybatis.dynamic.sql.AbstractSingleValueCondition;
 import org.mybatis.dynamic.sql.util.StringUtilities;
 
@@ -34,7 +35,7 @@ public class IsLikeCaseInsensitive extends AbstractSingleValueCondition<String>
         return EMPTY;
     }
 
-    protected IsLikeCaseInsensitive(String value) {
+    protected IsLikeCaseInsensitive(@Nullable String value) {
         super(value);
     }
 
@@ -44,7 +45,7 @@ public class IsLikeCaseInsensitive extends AbstractSingleValueCondition<String>
     }
 
     @Override
-    public IsLikeCaseInsensitive filter(Predicate<? super String> predicate) {
+    public IsLikeCaseInsensitive filter(Predicate<? super @Nullable String> predicate) {
         return filterSupport(predicate, IsLikeCaseInsensitive::empty, this);
     }
 
@@ -56,11 +57,11 @@ public class IsLikeCaseInsensitive extends AbstractSingleValueCondition<String>
      * @return a new condition with the result of applying the mapper to the value of this condition,
      *     if renderable, otherwise a condition that will not render.
      */
-    public IsLikeCaseInsensitive map(UnaryOperator<String> mapper) {
+    public IsLikeCaseInsensitive map(UnaryOperator<@Nullable String> mapper) {
         return mapSupport(mapper, IsLikeCaseInsensitive::new, IsLikeCaseInsensitive::empty);
     }
 
-    public static IsLikeCaseInsensitive of(String value) {
+    public static IsLikeCaseInsensitive of(@Nullable String value) {
         return new IsLikeCaseInsensitive(value).map(StringUtilities::safelyUpperCase);
     }
 }

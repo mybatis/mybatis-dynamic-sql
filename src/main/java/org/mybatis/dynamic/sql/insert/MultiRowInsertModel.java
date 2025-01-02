@@ -17,7 +17,6 @@ package org.mybatis.dynamic.sql.insert;
 
 import java.util.Collection;
 
-import org.jetbrains.annotations.NotNull;
 import org.mybatis.dynamic.sql.insert.render.MultiRowInsertRenderer;
 import org.mybatis.dynamic.sql.insert.render.MultiRowInsertStatementProvider;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
@@ -31,7 +30,6 @@ public class MultiRowInsertModel<T> extends AbstractMultiRowInsertModel<T> {
         Validator.assertNotEmpty(columnMappings, "ERROR.8"); //$NON-NLS-1$
     }
 
-    @NotNull
     public MultiRowInsertStatementProvider<T> render(RenderingStrategy renderingStrategy) {
         return MultiRowInsertRenderer.withMultiRowInsertModel(this)
                 .withRenderingStrategy(renderingStrategy)

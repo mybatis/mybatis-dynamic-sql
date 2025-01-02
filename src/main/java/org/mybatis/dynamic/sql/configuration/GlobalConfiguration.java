@@ -17,6 +17,7 @@ package org.mybatis.dynamic.sql.configuration;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Objects;
 import java.util.Properties;
 
 import org.mybatis.dynamic.sql.exception.DynamicSqlException;
@@ -47,11 +48,7 @@ public class GlobalConfiguration {
 
     private String getConfigurationFileName() {
         String property = System.getProperty(CONFIGURATION_FILE_PROPERTY);
-        if (property == null) {
-            return DEFAULT_PROPERTY_FILE;
-        } else {
-            return property;
-        }
+        return Objects.requireNonNullElse(property, DEFAULT_PROPERTY_FILE);
     }
 
     void loadProperties(InputStream inputStream, String propertyFile) {

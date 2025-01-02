@@ -18,12 +18,13 @@ package org.mybatis.dynamic.sql.select;
 import java.util.Objects;
 import java.util.Optional;
 
+import org.jspecify.annotations.Nullable;
 import org.mybatis.dynamic.sql.common.OrderByModel;
 import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
 
 public abstract class AbstractSelectModel {
-    private final OrderByModel orderByModel;
-    private final PagingModel pagingModel;
+    private final @Nullable OrderByModel orderByModel;
+    private final @Nullable PagingModel pagingModel;
     protected final StatementConfiguration statementConfiguration;
 
     protected AbstractSelectModel(AbstractBuilder<?> builder) {
@@ -45,16 +46,16 @@ public abstract class AbstractSelectModel {
     }
 
     public abstract static class AbstractBuilder<T extends AbstractBuilder<T>> {
-        private OrderByModel orderByModel;
-        private PagingModel pagingModel;
-        private StatementConfiguration statementConfiguration;
+        private @Nullable OrderByModel orderByModel;
+        private @Nullable PagingModel pagingModel;
+        private @Nullable StatementConfiguration statementConfiguration;
 
-        public T withOrderByModel(OrderByModel orderByModel) {
+        public T withOrderByModel(@Nullable OrderByModel orderByModel) {
             this.orderByModel = orderByModel;
             return getThis();
         }
 
-        public T withPagingModel(PagingModel pagingModel) {
+        public T withPagingModel(@Nullable PagingModel pagingModel) {
             this.pagingModel = pagingModel;
             return getThis();
         }

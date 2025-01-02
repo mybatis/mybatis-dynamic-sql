@@ -18,12 +18,13 @@ package org.mybatis.dynamic.sql.where.condition;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 
+import org.jspecify.annotations.Nullable;
 import org.mybatis.dynamic.sql.AbstractListValueCondition;
 import org.mybatis.dynamic.sql.util.StringUtilities;
+import org.mybatis.dynamic.sql.util.Utilities;
 
 public class IsNotInCaseInsensitiveWhenPresent extends AbstractListValueCondition<String>
         implements CaseInsensitiveVisitableCondition {
@@ -34,8 +35,8 @@ public class IsNotInCaseInsensitiveWhenPresent extends AbstractListValueConditio
         return EMPTY;
     }
 
-    protected IsNotInCaseInsensitiveWhenPresent(Collection<String> values) {
-        super(values.stream().filter(Objects::nonNull).toList());
+    protected IsNotInCaseInsensitiveWhenPresent(Collection<@Nullable String> values) {
+        super(Utilities.removeNullElements(values));
     }
 
     @Override
@@ -56,15 +57,15 @@ public class IsNotInCaseInsensitiveWhenPresent extends AbstractListValueConditio
      * @param mapper a mapping function to apply to the values, if not empty
      * @return a new condition with mapped values if renderable, otherwise an empty condition
      */
-    public IsNotInCaseInsensitiveWhenPresent map(UnaryOperator<String> mapper) {
+    public IsNotInCaseInsensitiveWhenPresent map(UnaryOperator<@Nullable String> mapper) {
         return mapSupport(mapper, IsNotInCaseInsensitiveWhenPresent::new, IsNotInCaseInsensitiveWhenPresent::empty);
     }
 
-    public static IsNotInCaseInsensitiveWhenPresent of(String... values) {
+    public static IsNotInCaseInsensitiveWhenPresent of(@Nullable String... values) {
         return of(Arrays.asList(values));
     }
 
-    public static IsNotInCaseInsensitiveWhenPresent of(Collection<String> values) {
+    public static IsNotInCaseInsensitiveWhenPresent of(Collection<@Nullable String> values) {
         return new IsNotInCaseInsensitiveWhenPresent(values).map(StringUtilities::safelyUpperCase);
     }
 }

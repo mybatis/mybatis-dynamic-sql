@@ -15,7 +15,6 @@
  */
 package org.mybatis.dynamic.sql.where.condition;
 
-import org.jetbrains.annotations.NotNull;
 import org.mybatis.dynamic.sql.AbstractSubselectCondition;
 import org.mybatis.dynamic.sql.select.SelectModel;
 import org.mybatis.dynamic.sql.util.Buildable;
@@ -26,7 +25,6 @@ public class IsNotEqualToWithSubselect<T> extends AbstractSubselectCondition<T> 
         super(selectModelBuilder);
     }
 
-    @NotNull
     public static <T> IsNotEqualToWithSubselect<T> of(Buildable<SelectModel> selectModelBuilder) {
         return new IsNotEqualToWithSubselect<>(selectModelBuilder);
     }

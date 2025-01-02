@@ -21,20 +21,22 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-public abstract class AbstractTwoValueCondition<T> implements VisitableCondition<T> {
-    protected final T value1;
-    protected final T value2;
+import org.jspecify.annotations.Nullable;
 
-    protected AbstractTwoValueCondition(T value1, T value2) {
+public abstract class AbstractTwoValueCondition<T> implements VisitableCondition<T> {
+    protected final @Nullable T value1;
+    protected final @Nullable T value2;
+
+    protected AbstractTwoValueCondition(@Nullable T value1, @Nullable T value2) {
         this.value1 = value1;
         this.value2 = value2;
     }
 
-    public T value1() {
+    public @Nullable T value1() {
         return value1;
     }
 
-    public T value2() {
+    public @Nullable T value2() {
         return value2;
     }
 

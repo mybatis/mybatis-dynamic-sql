@@ -24,7 +24,7 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.Nullable;
 import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.SortSpecification;
 import org.mybatis.dynamic.sql.common.OrderByModel;
@@ -45,10 +45,10 @@ public class SelectDSL<R> implements Buildable<R>, ConfigurableStatement<SelectD
 
     private final Function<SelectModel, R> adapterFunction;
     private final List<QueryExpressionDSL<R>> queryExpressions = new ArrayList<>();
-    private OrderByModel orderByModel;
-    private Long limit;
-    private Long offset;
-    private Long fetchFirstRows;
+    private @Nullable OrderByModel orderByModel;
+    private @Nullable Long limit;
+    private @Nullable Long offset;
+    private @Nullable Long fetchFirstRows;
     final StatementConfiguration statementConfiguration = new StatementConfiguration();
 
     private SelectDSL(Function<SelectModel, R> adapterFunction) {
@@ -107,17 +107,17 @@ public class SelectDSL<R> implements Buildable<R>, ConfigurableStatement<SelectD
         orderByModel = OrderByModel.of(columns);
     }
 
-    public LimitFinisher<R> limitWhenPresent(Long limit) {
+    public LimitFinisher<R> limitWhenPresent(@Nullable Long limit) {
         this.limit = limit;
         return new LocalLimitFinisher();
     }
 
-    public OffsetFirstFinisher<R> offsetWhenPresent(Long offset) {
+    public OffsetFirstFinisher<R> offsetWhenPresent(@Nullable Long offset) {
         this.offset = offset;
         return new LocalOffsetFirstFinisher();
     }
 
-    public FetchFirstFinisher<R> fetchFirstWhenPresent(Long fetchFirstRows) {
+    public FetchFirstFinisher<R> fetchFirstWhenPresent(@Nullable Long fetchFirstRows) {
         this.fetchFirstRows = fetchFirstRows;
         return () -> this;
     }
@@ -128,7 +128,6 @@ public class SelectDSL<R> implements Buildable<R>, ConfigurableStatement<SelectD
         return this;
     }
 
-    @NotNull
     @Override
     public R build() {
         SelectModel selectModel = SelectModel.withQueryExpressions(buildModels())
@@ -154,7 +153,6 @@ public class SelectDSL<R> implements Buildable<R>, ConfigurableStatement<SelectD
     }
 
     abstract class BaseBuildable implements Buildable<R> {
-        @NotNull
         @Override
         public R build() {
             return SelectDSL.this.build();

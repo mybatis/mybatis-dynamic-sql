@@ -17,7 +17,7 @@ package org.mybatis.dynamic.sql.insert.render;
 
 import java.util.Objects;
 
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.Nullable;
 
 public class DefaultInsertStatementProvider<T> implements InsertStatementProvider<T> {
     private final String insertStatement;
@@ -29,7 +29,6 @@ public class DefaultInsertStatementProvider<T> implements InsertStatementProvide
     }
 
     @Override
-    @NotNull
     public T getRow() {
         return row;
     }
@@ -44,8 +43,8 @@ public class DefaultInsertStatementProvider<T> implements InsertStatementProvide
     }
 
     public static class Builder<T> {
-        private String insertStatement;
-        private T row;
+        private @Nullable String insertStatement;
+        private @Nullable T row;
 
         public Builder<T> withInsertStatement(String insertStatement) {
             this.insertStatement = insertStatement;

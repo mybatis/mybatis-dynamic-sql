@@ -19,14 +19,16 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-public abstract class AbstractSingleValueCondition<T> implements VisitableCondition<T> {
-    protected final T value;
+import org.jspecify.annotations.Nullable;
 
-    protected AbstractSingleValueCondition(T value) {
+public abstract class AbstractSingleValueCondition<T> implements VisitableCondition<T> {
+    protected final @Nullable T value;
+
+    protected AbstractSingleValueCondition(@Nullable T value) {
         this.value = value;
     }
 
-    public T value() {
+    public @Nullable T value() {
         return value;
     }
 

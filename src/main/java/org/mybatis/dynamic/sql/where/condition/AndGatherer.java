@@ -17,6 +17,8 @@ package org.mybatis.dynamic.sql.where.condition;
 
 import java.util.function.Supplier;
 
+import org.jspecify.annotations.Nullable;
+
 /**
  * Utility class supporting the "and" part of a between condition. This class supports builders, so it is mutable.
  *
@@ -28,14 +30,14 @@ import java.util.function.Supplier;
  *            the type of condition being built
  */
 public abstract class AndGatherer<T, R> {
-    protected final T value1;
-    protected T value2;
+    protected final @Nullable T value1;
+    protected @Nullable T value2;
 
-    protected AndGatherer(T value1) {
+    protected AndGatherer(@Nullable T value1) {
         this.value1 = value1;
     }
 
-    public R and(T value2) {
+    public R and(@Nullable T value2) {
         this.value2 = value2;
         return build();
     }

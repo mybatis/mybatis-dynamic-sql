@@ -18,6 +18,7 @@ package org.mybatis.dynamic.sql.select.function;
 import java.util.Objects;
 import java.util.Optional;
 
+import org.jspecify.annotations.Nullable;
 import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
@@ -25,7 +26,7 @@ import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 public class Cast implements BasicColumn {
     private final BasicColumn column;
     private final String targetType;
-    private final String alias;
+    private final @Nullable String alias;
 
     private Cast(Builder builder) {
         column = Objects.requireNonNull(builder.column);
@@ -56,9 +57,9 @@ public class Cast implements BasicColumn {
     }
 
     public static class Builder {
-        private BasicColumn column;
-        private String targetType;
-        private String alias;
+        private @Nullable BasicColumn column;
+        private @Nullable String targetType;
+        private @Nullable String alias;
 
         public Builder withColumn(BasicColumn column) {
             this.column = column;

@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Supplier;
 
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.Nullable;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
@@ -47,7 +47,6 @@ public class GeneralInsertDSL implements Buildable<GeneralInsertModel> {
         return new SetClauseFinisher<>(column);
     }
 
-    @NotNull
     @Override
     public GeneralInsertModel build() {
         return new GeneralInsertModel.Builder()
@@ -114,7 +113,7 @@ public class GeneralInsertDSL implements Buildable<GeneralInsertModel> {
 
     public static class Builder {
         private final List<AbstractColumnMapping> columnMappings = new ArrayList<>();
-        private SqlTable table;
+        private @Nullable SqlTable table;
 
         public Builder withTable(SqlTable table) {
             this.table = table;
