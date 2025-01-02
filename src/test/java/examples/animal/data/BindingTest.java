@@ -66,8 +66,7 @@ class BindingTest {
 
     @Test
     void testBindInSelectList() {
-        SqlSession sqlSession = sqlSessionFactory.openSession();
-        try {
+        try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             Connection connection = sqlSession.getConnection();
 
             PreparedStatement ps = connection.prepareStatement("select brain_weight + ? as calc from AnimalData where id = ?");
@@ -86,15 +85,12 @@ class BindingTest {
             assertThat(calculatedWeight).isEqualTo(1.005);
         } catch (SQLException e) {
             fail("SQL Exception", e);
-        } finally {
-            sqlSession.close();
         }
     }
 
     @Test
     void testBindInWeirdWhere() {
-        SqlSession sqlSession = sqlSessionFactory.openSession();
-        try {
+        try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             Connection connection = sqlSession.getConnection();
 
             PreparedStatement ps = connection.prepareStatement("select brain_weight from AnimalData where brain_weight + ? > ? and id = ?");
@@ -114,8 +110,6 @@ class BindingTest {
             assertThat(calculatedWeight).isEqualTo(.005);
         } catch (SQLException e) {
             fail("SQL Exception", e);
-        } finally {
-            sqlSession.close();
         }
     }
 }
