@@ -15,7 +15,7 @@
  */
 package org.mybatis.dynamic.sql.where.condition;
 
-import java.util.Objects;
+import java.util.NoSuchElementException;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -24,7 +24,17 @@ import org.jspecify.annotations.Nullable;
 import org.mybatis.dynamic.sql.AbstractTwoValueCondition;
 
 public class IsNotBetween<T> extends AbstractTwoValueCondition<T> {
-    private static final IsNotBetween<?> EMPTY = new IsNotBetween<>(null, null) {
+    private static final IsNotBetween<?> EMPTY = new IsNotBetween<Object>(-1, -1) {
+        @Override
+        public Object value1() {
+            throw new NoSuchElementException("No value present"); //$NON-NLS-1$
+        }
+
+        @Override
+        public Object value2() {
+            throw new NoSuchElementException("No value present"); //$NON-NLS-1$
+        }
+
         @Override
         public boolean isEmpty() {
             return true;
@@ -37,7 +47,7 @@ public class IsNotBetween<T> extends AbstractTwoValueCondition<T> {
         return t;
     }
 
-    protected IsNotBetween(@Nullable T value1, @Nullable T value2) {
+    protected IsNotBetween(T value1, T value2) {
         super(value1, value2);
     }
 
@@ -89,7 +99,7 @@ public class IsNotBetween<T> extends AbstractTwoValueCondition<T> {
         return map(mapper, mapper);
     }
 
-    public static <T> Builder<T> isNotBetween(@Nullable T value1) {
+    public static <T> Builder<T> isNotBetween(T value1) {
         return new Builder<>(value1);
     }
 
@@ -99,25 +109,29 @@ public class IsNotBetween<T> extends AbstractTwoValueCondition<T> {
 
     public static class Builder<T> extends AndGatherer<T, IsNotBetween<T>> {
 
-        private Builder(@Nullable T value1) {
+        private Builder(T value1) {
             super(value1);
         }
 
         @Override
-        protected IsNotBetween<T> build() {
+        protected IsNotBetween<T> build(T value2) {
             return new IsNotBetween<>(value1, value2);
         }
     }
 
-    public static class WhenPresentBuilder<T> extends AndGatherer<T, IsNotBetween<T>> {
+    public static class WhenPresentBuilder<T> extends AndWhenPresentGatherer<T, IsNotBetween<T>> {
 
         private WhenPresentBuilder(@Nullable T value1) {
             super(value1);
         }
 
         @Override
-        protected IsNotBetween<T> build() {
-            return new IsNotBetween<>(value1, value2).filter(Objects::nonNull);
+        protected IsNotBetween<T> build(@Nullable T value2) {
+            if (value1 == null || value2 == null) {
+                return IsNotBetween.empty();
+            } else {
+                return new IsNotBetween<>(value1, value2);
+            }
         }
     }
 }

@@ -527,7 +527,7 @@ class Issue105Test {
 
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
-                .where(age, isBetween(1).and((Integer) null).filter(Predicates.bothPresent()).map(i1 -> i1 + 1,  i2 -> i2 + 2))
+                .where(age, isBetweenWhenPresent(1).and((Integer) null).filter(Predicates.bothPresent()).map(i1 -> i1 + 1,  i2 -> i2 + 2))
                 .configureStatement(c -> c.setNonRenderingWhereClauseAllowed(true))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);

@@ -764,11 +764,11 @@ public interface SqlBuilder {
     }
 
     @SafeVarargs
-    static <T> IsIn<T> isIn(@Nullable T... values) {
+    static <T> IsIn<T> isIn(T... values) {
         return IsIn.of(values);
     }
 
-    static <T> IsIn<T> isIn(Collection<@Nullable T> values) {
+    static <T> IsIn<T> isIn(Collection<T> values) {
         return IsIn.of(values);
     }
 
@@ -786,11 +786,11 @@ public interface SqlBuilder {
     }
 
     @SafeVarargs
-    static <T> IsNotIn<T> isNotIn(@Nullable T... values) {
+    static <T> IsNotIn<T> isNotIn(T... values) {
         return IsNotIn.of(values);
     }
 
-    static <T> IsNotIn<T> isNotIn(Collection<@Nullable T> values) {
+    static <T> IsNotIn<T> isNotIn(Collection<T> values) {
         return IsNotIn.of(values);
     }
 
@@ -807,11 +807,11 @@ public interface SqlBuilder {
         return values == null ? IsNotInWhenPresent.empty() : IsNotInWhenPresent.of(values);
     }
 
-    static <T> IsBetween.Builder<T> isBetween(@Nullable T value1) {
+    static <T> IsBetween.Builder<T> isBetween(T value1) {
         return IsBetween.isBetween(value1);
     }
 
-    static <T> IsBetween.Builder<T> isBetween(Supplier<@Nullable T> valueSupplier1) {
+    static <T> IsBetween.Builder<T> isBetween(Supplier<T> valueSupplier1) {
         return isBetween(valueSupplier1.get());
     }
 
@@ -823,11 +823,11 @@ public interface SqlBuilder {
         return isBetweenWhenPresent(valueSupplier1.get());
     }
 
-    static <T> IsNotBetween.Builder<T> isNotBetween(@Nullable T value1) {
+    static <T> IsNotBetween.Builder<T> isNotBetween(T value1) {
         return IsNotBetween.isNotBetween(value1);
     }
 
-    static <T> IsNotBetween.Builder<T> isNotBetween(Supplier<@Nullable T> valueSupplier1) {
+    static <T> IsNotBetween.Builder<T> isNotBetween(Supplier<T> valueSupplier1) {
         return isNotBetween(valueSupplier1.get());
     }
 

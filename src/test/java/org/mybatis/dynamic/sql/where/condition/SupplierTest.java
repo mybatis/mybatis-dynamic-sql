@@ -53,8 +53,8 @@ class SupplierTest {
     @Test
     void testIsBetweenWhenPresentNull() {
         IsBetween<Integer> cond = SqlBuilder.isBetweenWhenPresent(() -> (Integer) null).and(() -> null);
-        assertThat(cond.value1()).isNull();
-        assertThat(cond.value2()).isNull();
+        assertThatExceptionOfType(NoSuchElementException.class).isThrownBy(cond::value1);
+        assertThatExceptionOfType(NoSuchElementException.class).isThrownBy(cond::value2);
         assertThat(cond.isEmpty()).isTrue();
     }
 
@@ -85,8 +85,8 @@ class SupplierTest {
     @Test
     void testIsNotBetweenWhenPresentNull() {
         IsNotBetween<Integer> cond = SqlBuilder.isNotBetweenWhenPresent(() -> (Integer) null).and(() -> null);
-        assertThat(cond.value1()).isNull();
-        assertThat(cond.value2()).isNull();
+        assertThatExceptionOfType(NoSuchElementException.class).isThrownBy(cond::value1);
+        assertThatExceptionOfType(NoSuchElementException.class).isThrownBy(cond::value2);
         assertThat(cond.isEmpty()).isTrue();
     }
 
