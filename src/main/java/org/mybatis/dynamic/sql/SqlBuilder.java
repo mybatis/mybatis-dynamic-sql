@@ -914,11 +914,11 @@ public interface SqlBuilder {
         return isNotLikeCaseInsensitiveWhenPresent(valueSupplier.get());
     }
 
-    static IsInCaseInsensitive isInCaseInsensitive(@Nullable String... values) {
+    static IsInCaseInsensitive isInCaseInsensitive(String... values) {
         return IsInCaseInsensitive.of(values);
     }
 
-    static IsInCaseInsensitive isInCaseInsensitive(Collection<@Nullable String> values) {
+    static IsInCaseInsensitive isInCaseInsensitive(Collection<String> values) {
         return IsInCaseInsensitive.of(values);
     }
 
@@ -931,11 +931,11 @@ public interface SqlBuilder {
         return values == null ? IsInCaseInsensitiveWhenPresent.empty() : IsInCaseInsensitiveWhenPresent.of(values);
     }
 
-    static IsNotInCaseInsensitive isNotInCaseInsensitive(@Nullable String... values) {
+    static IsNotInCaseInsensitive isNotInCaseInsensitive(String... values) {
         return IsNotInCaseInsensitive.of(values);
     }
 
-    static IsNotInCaseInsensitive isNotInCaseInsensitive(Collection<@Nullable String> values) {
+    static IsNotInCaseInsensitive isNotInCaseInsensitive(Collection<String> values) {
         return IsNotInCaseInsensitive.of(values);
     }
 

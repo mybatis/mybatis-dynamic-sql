@@ -744,7 +744,7 @@ class AnimalDataTest {
 
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
-                    .where(animalName, isInCaseInsensitive("yellow-bellied marmot", "verbet", null))
+                    .where(animalName, isInCaseInsensitive("yellow-bellied marmot", "verbet"))
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
 
@@ -782,22 +782,6 @@ class AnimalDataTest {
 
             List<AnimalData> animals = mapper.selectMany(selectStatement);
             assertThat(animals).hasSize(63);
-        }
-    }
-
-    @Test
-    void testNotInCaseSensitiveConditionWithNull() {
-        try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
-            AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
-
-            SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
-                    .from(animalData)
-                    .where(animalName, isNotInCaseInsensitive((String)null))
-                    .build()
-                    .render(RenderingStrategies.MYBATIS3);
-
-            List<AnimalData> animals = mapper.selectMany(selectStatement);
-            assertThat(animals).isEmpty();
         }
     }
 

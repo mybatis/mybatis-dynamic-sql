@@ -23,16 +23,14 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.jspecify.annotations.Nullable;
-
 public abstract class AbstractListValueCondition<T> implements VisitableCondition<T> {
-    protected final Collection<@Nullable T> values;
+    protected final Collection<T> values;
 
-    protected AbstractListValueCondition(Collection<@Nullable T> values) {
+    protected AbstractListValueCondition(Collection<T> values) {
         this.values = Objects.requireNonNull(values);
     }
 
-    public final Stream<@Nullable T> values() {
+    public final Stream<T> values() {
         return values.stream();
     }
 
@@ -46,18 +44,18 @@ public abstract class AbstractListValueCondition<T> implements VisitableConditio
         return visitor.visit(this);
     }
 
-    private <R> Collection<R> applyMapper(Function<? super @Nullable T, ? extends @Nullable R> mapper) {
+    private <R> Collection<R> applyMapper(Function<? super T, ? extends R> mapper) {
         Objects.requireNonNull(mapper);
         return values.stream().map(mapper).collect(Collectors.toList());
     }
 
-    private Collection<T> applyFilter(Predicate<? super @Nullable T> predicate) {
+    private Collection<T> applyFilter(Predicate<? super T> predicate) {
         Objects.requireNonNull(predicate);
         return values.stream().filter(predicate).toList();
     }
 
-    protected <S extends AbstractListValueCondition<T>> S filterSupport(Predicate<? super @Nullable T> predicate,
-            Function<Collection<@Nullable T>, S> constructor, S self, Supplier<S> emptySupplier) {
+    protected <S extends AbstractListValueCondition<T>> S filterSupport(Predicate<? super T> predicate,
+            Function<Collection<T>, S> constructor, S self, Supplier<S> emptySupplier) {
         if (isEmpty()) {
             return self;
         } else {
@@ -66,9 +64,8 @@ public abstract class AbstractListValueCondition<T> implements VisitableConditio
         }
     }
 
-    protected <R, S extends AbstractListValueCondition<R>> S mapSupport(
-            Function<? super @Nullable T, ? extends @Nullable R> mapper,
-            Function<Collection<@Nullable R>, S> constructor, Supplier<S> emptySupplier) {
+    protected <R, S extends AbstractListValueCondition<R>> S mapSupport(Function<? super T, ? extends R> mapper,
+            Function<Collection<R>, S> constructor, Supplier<S> emptySupplier) {
         if (isEmpty()) {
             return emptySupplier.get();
         } else {
@@ -84,7 +81,7 @@ public abstract class AbstractListValueCondition<T> implements VisitableConditio
      *
      * @return a new condition with filtered values if renderable, otherwise an empty condition
      */
-    public abstract AbstractListValueCondition<T> filter(Predicate<? super @Nullable T> predicate);
+    public abstract AbstractListValueCondition<T> filter(Predicate<? super T> predicate);
 
     public abstract String operator();
 }

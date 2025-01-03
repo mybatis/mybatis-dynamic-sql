@@ -21,10 +21,8 @@ import java.util.Collections;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 
-import org.jspecify.annotations.Nullable;
 import org.mybatis.dynamic.sql.AbstractListValueCondition;
 import org.mybatis.dynamic.sql.render.RenderingContext;
-import org.mybatis.dynamic.sql.util.StringUtilities;
 import org.mybatis.dynamic.sql.util.Validator;
 
 public class IsNotInCaseInsensitive extends AbstractListValueCondition<String>
@@ -35,7 +33,7 @@ public class IsNotInCaseInsensitive extends AbstractListValueCondition<String>
         return EMPTY;
     }
 
-    protected IsNotInCaseInsensitive(Collection<@Nullable String> values) {
+    protected IsNotInCaseInsensitive(Collection<String> values) {
         super(values);
     }
 
@@ -62,15 +60,15 @@ public class IsNotInCaseInsensitive extends AbstractListValueCondition<String>
      * @param mapper a mapping function to apply to the values, if not empty
      * @return a new condition with mapped values if renderable, otherwise an empty condition
      */
-    public IsNotInCaseInsensitive map(UnaryOperator<@Nullable String> mapper) {
+    public IsNotInCaseInsensitive map(UnaryOperator<String> mapper) {
         return mapSupport(mapper, IsNotInCaseInsensitive::new, IsNotInCaseInsensitive::empty);
     }
 
-    public static IsNotInCaseInsensitive of(@Nullable String... values) {
+    public static IsNotInCaseInsensitive of(String... values) {
         return of(Arrays.asList(values));
     }
 
-    public static IsNotInCaseInsensitive of(Collection<@Nullable String> values) {
-        return new IsNotInCaseInsensitive(values).map(StringUtilities::safelyUpperCase);
+    public static IsNotInCaseInsensitive of(Collection<String> values) {
+        return new IsNotInCaseInsensitive(values).map(String::toUpperCase);
     }
 }

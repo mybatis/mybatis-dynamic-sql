@@ -110,11 +110,11 @@ public class DefaultConditionVisitor<T> implements ConditionVisitor<T, FragmentA
                 .mapFragment(f -> condition.operator() + spaceBefore(f));
     }
 
-    private @Nullable Object convertValue(@Nullable T value) {
+    private @Nullable Object convertValue(T value) {
         return column.convertParameterType(value);
     }
 
-    private FragmentAndParameters toFragmentAndParameters(@Nullable T value) {
+    private FragmentAndParameters toFragmentAndParameters(T value) {
         RenderedParameterInfo parameterInfo = renderingContext.calculateParameterInfo(column);
         return FragmentAndParameters.withFragment(parameterInfo.renderedPlaceHolder())
                 .withParameter(parameterInfo.parameterMapKey(), convertValue(value))

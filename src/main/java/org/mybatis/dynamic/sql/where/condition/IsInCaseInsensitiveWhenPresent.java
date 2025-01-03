@@ -23,7 +23,6 @@ import java.util.function.UnaryOperator;
 
 import org.jspecify.annotations.Nullable;
 import org.mybatis.dynamic.sql.AbstractListValueCondition;
-import org.mybatis.dynamic.sql.util.StringUtilities;
 import org.mybatis.dynamic.sql.util.Utilities;
 
 public class IsInCaseInsensitiveWhenPresent extends AbstractListValueCondition<String>
@@ -57,7 +56,7 @@ public class IsInCaseInsensitiveWhenPresent extends AbstractListValueCondition<S
      * @param mapper a mapping function to apply to the values, if not empty
      * @return a new condition with mapped values if renderable, otherwise an empty condition
      */
-    public IsInCaseInsensitiveWhenPresent map(UnaryOperator<@Nullable String> mapper) {
+    public IsInCaseInsensitiveWhenPresent map(UnaryOperator<String> mapper) {
         return mapSupport(mapper, IsInCaseInsensitiveWhenPresent::new, IsInCaseInsensitiveWhenPresent::empty);
     }
 
@@ -66,6 +65,6 @@ public class IsInCaseInsensitiveWhenPresent extends AbstractListValueCondition<S
     }
 
     public static IsInCaseInsensitiveWhenPresent of(Collection<@Nullable String> values) {
-        return new IsInCaseInsensitiveWhenPresent(values).map(StringUtilities::safelyUpperCase);
+        return new IsInCaseInsensitiveWhenPresent(values).map(String::toUpperCase);
     }
 }
