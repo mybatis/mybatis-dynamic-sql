@@ -15,16 +15,20 @@
  */
 package org.mybatis.dynamic.sql.where.condition;
 
+import java.util.NoSuchElementException;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 
-import org.jspecify.annotations.Nullable;
 import org.mybatis.dynamic.sql.AbstractSingleValueCondition;
-import org.mybatis.dynamic.sql.util.StringUtilities;
 
 public class IsLikeCaseInsensitive extends AbstractSingleValueCondition<String>
         implements CaseInsensitiveVisitableCondition {
-    private static final IsLikeCaseInsensitive EMPTY = new IsLikeCaseInsensitive(null) {
+    private static final IsLikeCaseInsensitive EMPTY = new IsLikeCaseInsensitive("") { //$NON-NLS-1$
+        @Override
+        public String value() {
+            throw new NoSuchElementException("No value present"); //$NON-NLS-1$
+        }
+
         @Override
         public boolean isEmpty() {
             return true;
@@ -35,7 +39,7 @@ public class IsLikeCaseInsensitive extends AbstractSingleValueCondition<String>
         return EMPTY;
     }
 
-    protected IsLikeCaseInsensitive(@Nullable String value) {
+    protected IsLikeCaseInsensitive(String value) {
         super(value);
     }
 
@@ -45,7 +49,7 @@ public class IsLikeCaseInsensitive extends AbstractSingleValueCondition<String>
     }
 
     @Override
-    public IsLikeCaseInsensitive filter(Predicate<? super @Nullable String> predicate) {
+    public IsLikeCaseInsensitive filter(Predicate<? super String> predicate) {
         return filterSupport(predicate, IsLikeCaseInsensitive::empty, this);
     }
 
@@ -57,11 +61,11 @@ public class IsLikeCaseInsensitive extends AbstractSingleValueCondition<String>
      * @return a new condition with the result of applying the mapper to the value of this condition,
      *     if renderable, otherwise a condition that will not render.
      */
-    public IsLikeCaseInsensitive map(UnaryOperator<@Nullable String> mapper) {
+    public IsLikeCaseInsensitive map(UnaryOperator<String> mapper) {
         return mapSupport(mapper, IsLikeCaseInsensitive::new, IsLikeCaseInsensitive::empty);
     }
 
-    public static IsLikeCaseInsensitive of(@Nullable String value) {
-        return new IsLikeCaseInsensitive(value).map(StringUtilities::safelyUpperCase);
+    public static IsLikeCaseInsensitive of(String value) {
+        return new IsLikeCaseInsensitive(value).map(String::toUpperCase);
     }
 }

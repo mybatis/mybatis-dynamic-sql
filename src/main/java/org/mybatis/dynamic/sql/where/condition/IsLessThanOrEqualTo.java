@@ -15,14 +15,19 @@
  */
 package org.mybatis.dynamic.sql.where.condition;
 
+import java.util.NoSuchElementException;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import org.jspecify.annotations.Nullable;
 import org.mybatis.dynamic.sql.AbstractSingleValueCondition;
 
 public class IsLessThanOrEqualTo<T> extends AbstractSingleValueCondition<T> {
-    private static final IsLessThanOrEqualTo<?> EMPTY = new IsLessThanOrEqualTo<>(null) {
+    private static final IsLessThanOrEqualTo<?> EMPTY = new IsLessThanOrEqualTo<Object>(-1) {
+        @Override
+        public Object value() {
+            throw new NoSuchElementException("No value present"); //$NON-NLS-1$
+        }
+
         @Override
         public boolean isEmpty() {
             return true;
@@ -35,7 +40,7 @@ public class IsLessThanOrEqualTo<T> extends AbstractSingleValueCondition<T> {
         return t;
     }
 
-    protected IsLessThanOrEqualTo(@Nullable T value) {
+    protected IsLessThanOrEqualTo(T value) {
         super(value);
     }
 
@@ -44,7 +49,7 @@ public class IsLessThanOrEqualTo<T> extends AbstractSingleValueCondition<T> {
         return "<="; //$NON-NLS-1$
     }
 
-    public static <T> IsLessThanOrEqualTo<T> of(@Nullable T value) {
+    public static <T> IsLessThanOrEqualTo<T> of(T value) {
         return new IsLessThanOrEqualTo<>(value);
     }
 

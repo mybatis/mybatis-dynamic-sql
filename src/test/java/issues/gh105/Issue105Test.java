@@ -57,7 +57,7 @@ class Issue105Test {
 
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
-                .where(firstName, isLike(fName).filter(Objects::nonNull).map(SearchUtils::addWildcards))
+                .where(firstName, isLikeWhenPresent(fName).filter(Objects::nonNull).map(SearchUtils::addWildcards))
                 .and(lastName, isLike(lName).filter(Objects::nonNull).map(SearchUtils::addWildcards))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
@@ -735,7 +735,7 @@ class Issue105Test {
 
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
-                .where(firstName, isLikeCaseInsensitive((String) null).filter(Objects::nonNull).map(SearchUtils::addWildcards))
+                .where(firstName, isLikeCaseInsensitiveWhenPresent((String) null).filter(Objects::nonNull).map(SearchUtils::addWildcards))
                 .configureStatement(c -> c.setNonRenderingWhereClauseAllowed(true))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
@@ -863,7 +863,7 @@ class Issue105Test {
 
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
-                .where(firstName, isNotLikeCaseInsensitive((String) null).filter(Objects::nonNull).map(SearchUtils::addWildcards))
+                .where(firstName, isNotLikeCaseInsensitiveWhenPresent((String) null).filter(Objects::nonNull).map(SearchUtils::addWildcards))
                 .configureStatement(c -> c.setNonRenderingWhereClauseAllowed(true))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);

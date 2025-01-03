@@ -78,7 +78,7 @@ class OptionalConditionsWithPredicatesAnimalDataTest {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
-                    .where(id, isGreaterThan(NULL_INTEGER).filter(Objects::nonNull))  // the where clause should not render
+                    .where(id, isGreaterThanWhenPresent(NULL_INTEGER).filter(Objects::nonNull))  // the where clause should not render
                     .orderBy(id)
                     .configureStatement(c -> c.setNonRenderingWhereClauseAllowed(true))
                     .build()
@@ -94,13 +94,33 @@ class OptionalConditionsWithPredicatesAnimalDataTest {
     }
 
     @Test
+    void testSelectByNull() {
+        // this method demonstrates that ignoring the null value warning will still work
+        try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
+            AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
+            SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
+                    .from(animalData)
+                    .where(id, isGreaterThan(NULL_INTEGER))  // should be an IDE warning about passing null to a nonnull method
+                    .orderBy(id)
+                    .build()
+                    .render(RenderingStrategies.MYBATIS3);
+            List<AnimalData> animals = mapper.selectMany(selectStatement);
+            assertAll(
+                    () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id > #{parameters.p1,jdbcType=INTEGER} order by id"),
+                    () -> assertThat(selectStatement.getParameters()).containsEntry("p1", null),
+                    () -> assertThat(animals).hasSize(0)
+            );
+        }
+    }
+
+    @Test
     void testIgnoredBetweenRendered() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
                     .where(id, isEqualTo(3))
-                    .and(id, isNotEqualTo(NULL_INTEGER).filter(Objects::nonNull))
+                    .and(id, isNotEqualToWhenPresent(NULL_INTEGER).filter(Objects::nonNull))
                     .or(id, isEqualTo(4).filter(Objects::nonNull))
                     .orderBy(id)
                     .build()
@@ -121,7 +141,7 @@ class OptionalConditionsWithPredicatesAnimalDataTest {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
-                    .where(id, isLessThan(NULL_INTEGER).filter(Objects::nonNull))
+                    .where(id, isLessThanWhenPresent(NULL_INTEGER).filter(Objects::nonNull))
                     .and(id, isEqualTo(3).filter(Objects::nonNull))
                     .or(id, isEqualTo(4).filter(Objects::nonNull))
                     .orderBy(id)
@@ -143,10 +163,10 @@ class OptionalConditionsWithPredicatesAnimalDataTest {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
-                    .where(id, isLessThan(NULL_INTEGER).filter(Objects::nonNull), and(id, isGreaterThanOrEqualTo(NULL_INTEGER).filter(Objects::nonNull)))
-                    .and(id, isEqualTo(NULL_INTEGER).filter(Objects::nonNull), or(id, isEqualTo(3), and(id, isLessThan(NULL_INTEGER).filter(Objects::nonNull))))
-                    .or(id, isEqualTo(4).filter(Objects::nonNull), and(id, isGreaterThanOrEqualTo(NULL_INTEGER).filter(Objects::nonNull)))
-                    .and(id, isNotEqualTo(NULL_INTEGER).filter(Objects::nonNull))
+                    .where(id, isLessThanWhenPresent(NULL_INTEGER).filter(Objects::nonNull), and(id, isGreaterThanOrEqualToWhenPresent(NULL_INTEGER).filter(Objects::nonNull)))
+                    .and(id, isEqualToWhenPresent(NULL_INTEGER).filter(Objects::nonNull), or(id, isEqualTo(3), and(id, isLessThanWhenPresent(NULL_INTEGER).filter(Objects::nonNull))))
+                    .or(id, isEqualTo(4).filter(Objects::nonNull), and(id, isGreaterThanOrEqualToWhenPresent(NULL_INTEGER).filter(Objects::nonNull)))
+                    .and(id, isNotEqualToWhenPresent(NULL_INTEGER).filter(Objects::nonNull))
                     .orderBy(id)
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
@@ -166,7 +186,7 @@ class OptionalConditionsWithPredicatesAnimalDataTest {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
-                    .where(id, isLessThan(NULL_INTEGER).filter(Objects::nonNull), and(id, isEqualTo(3).filter(Objects::nonNull)))
+                    .where(id, isLessThanWhenPresent(NULL_INTEGER).filter(Objects::nonNull), and(id, isEqualTo(3).filter(Objects::nonNull)))
                     .or(id, isEqualTo(4).filter(Objects::nonNull))
                     .orderBy(id)
                     .build()
@@ -206,7 +226,7 @@ class OptionalConditionsWithPredicatesAnimalDataTest {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
-                    .where(id, isEqualTo(NULL_INTEGER).filter(Objects::nonNull))
+                    .where(id, isEqualToWhenPresent(NULL_INTEGER).filter(Objects::nonNull))
                     .and(id, isLessThanOrEqualTo(10))
                     .orderBy(id)
                     .build()
@@ -246,7 +266,7 @@ class OptionalConditionsWithPredicatesAnimalDataTest {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
-                    .where(id, isNotEqualTo(NULL_INTEGER).filter(Objects::nonNull))
+                    .where(id, isNotEqualToWhenPresent(NULL_INTEGER).filter(Objects::nonNull))
                     .and(id, isLessThanOrEqualTo(10))
                     .orderBy(id)
                     .build()
@@ -286,7 +306,7 @@ class OptionalConditionsWithPredicatesAnimalDataTest {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
-                    .where(id, isGreaterThan(NULL_INTEGER).filter(Objects::nonNull))
+                    .where(id, isGreaterThanWhenPresent(NULL_INTEGER).filter(Objects::nonNull))
                     .and(id, isLessThanOrEqualTo(10))
                     .orderBy(id)
                     .build()
@@ -326,7 +346,7 @@ class OptionalConditionsWithPredicatesAnimalDataTest {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
-                    .where(id, isGreaterThanOrEqualTo(NULL_INTEGER).filter(Objects::nonNull))
+                    .where(id, isGreaterThanOrEqualToWhenPresent(NULL_INTEGER).filter(Objects::nonNull))
                     .and(id, isLessThanOrEqualTo(10))
                     .orderBy(id)
                     .build()
@@ -365,7 +385,7 @@ class OptionalConditionsWithPredicatesAnimalDataTest {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
-                    .where(id, isLessThan(NULL_INTEGER).filter(Objects::nonNull))
+                    .where(id, isLessThanWhenPresent(NULL_INTEGER).filter(Objects::nonNull))
                     .and(id, isLessThanOrEqualTo(10))
                     .orderBy(id)
                     .build()
@@ -404,7 +424,7 @@ class OptionalConditionsWithPredicatesAnimalDataTest {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
-                    .where(id, isLessThanOrEqualTo(NULL_INTEGER).filter(Objects::nonNull))
+                    .where(id, isLessThanOrEqualToWhenPresent(NULL_INTEGER).filter(Objects::nonNull))
                     .and(id, isLessThanOrEqualTo(10))
                     .orderBy(id)
                     .build()
@@ -842,7 +862,7 @@ class OptionalConditionsWithPredicatesAnimalDataTest {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
-                    .where(animalName, isLikeCaseInsensitive((String) null).filter(Objects::nonNull))
+                    .where(animalName, isLikeCaseInsensitiveWhenPresent((String) null).filter(Objects::nonNull))
                     .and(id, isLessThanOrEqualTo(10))
                     .orderBy(id)
                     .build()
@@ -882,7 +902,7 @@ class OptionalConditionsWithPredicatesAnimalDataTest {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
-                    .where(animalName, isNotLike((String) null).filter(Objects::nonNull))
+                    .where(animalName, isNotLikeWhenPresent((String) null).filter(Objects::nonNull))
                     .and(id, isLessThanOrEqualTo(10))
                     .orderBy(id)
                     .build()
@@ -922,7 +942,7 @@ class OptionalConditionsWithPredicatesAnimalDataTest {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
-                    .where(animalName, isNotLikeCaseInsensitive((String) null).filter(Objects::nonNull))
+                    .where(animalName, isNotLikeCaseInsensitiveWhenPresent((String) null).filter(Objects::nonNull))
                     .and(id, isLessThanOrEqualTo(10))
                     .orderBy(id)
                     .build()

@@ -15,14 +15,19 @@
  */
 package org.mybatis.dynamic.sql.where.condition;
 
+import java.util.NoSuchElementException;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import org.jspecify.annotations.Nullable;
 import org.mybatis.dynamic.sql.AbstractSingleValueCondition;
 
 public class IsNotLike<T> extends AbstractSingleValueCondition<T> {
-    private static final IsNotLike<?> EMPTY = new IsNotLike<>(null) {
+    private static final IsNotLike<?> EMPTY = new IsNotLike<Object>(-1) {
+        @Override
+        public Object value() {
+            throw new NoSuchElementException("No value present"); //$NON-NLS-1$
+        }
+
         @Override
         public boolean isEmpty() {
             return true;
@@ -35,7 +40,7 @@ public class IsNotLike<T> extends AbstractSingleValueCondition<T> {
         return t;
     }
 
-    protected IsNotLike(@Nullable T value) {
+    protected IsNotLike(T value) {
         super(value);
     }
 
@@ -44,7 +49,7 @@ public class IsNotLike<T> extends AbstractSingleValueCondition<T> {
         return "not like"; //$NON-NLS-1$
     }
 
-    public static <T> IsNotLike<T> of(@Nullable T value) {
+    public static <T> IsNotLike<T> of(T value) {
         return new IsNotLike<>(value);
     }
 

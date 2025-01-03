@@ -10,7 +10,7 @@ you are unable to move to this version of Java then the releases in the 1.x line
 In addition, we have taken the opportunity to make changes to the library that may break existing code. We have
 worked to make these changes as minimal as possible.
 
-**Potentially Breaking Changes:**
+### Potentially Breaking Changes:
 
 - If you use this library with MyBatis' Spring Batch integration, you will need to make changes as we have
   refactored that support to be more flexible. Please see the
@@ -25,7 +25,27 @@ worked to make these changes as minimal as possible.
   [Extending the Library](https://mybatis.org/mybatis-dynamic-sql/docs/extending.html) page, the change should be
   limited to changing the private constructor to accept `BasicColumn` rather than `BindableColumn`.
 
-Other important changes:
+### Adoption of JSpecify (https://jspecify.dev/)
+
+Following the lead of many other projects (including The Spring Framework), we have adopted JSpecify to fully
+specify the null handling properties of this library. In general, the library does not expect that you will pass a null
+value into any method. There are two exceptions to this rule:
+
+1. Some builder methods will accept a null value if the target object will properly handle null values through the
+   use of java.util.Optional
+2. Methods with names that include "WhenPresent" will properly handle null parameters
+   (for example, "isEqualToWhenPresent")
+
+As you might expect, standardizing null handling revealed some issues in the library that may impact you:
+
+Case-insensitive conditions like "isLikeCaseInsensitive" will now throw a NullPointerException if you pass in null
+values.
+
+The where conditions (isEqualTo, isLessThan, etc.) can be filtered and result in an "empty" condition -
+similar to java.util.Optional. Previously, calling a "value" method of the condition would return null. Now
+those methods will throw "NoSuchElementException". This should not impact you in normal usage.
+
+### Other important changes:
 
 - The library now requires Java 17
 - Deprecated code from prior releases is removed
