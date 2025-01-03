@@ -304,7 +304,7 @@ class KCustomRenderingTest {
         }
     }
 
-    private fun <T : Any> dereference(column: SqlColumn<T>, attribute: String) =
+    private fun <T> dereference(column: SqlColumn<T>, attribute: String) =
         SqlColumn.of<String>(column.name() + "->>'" + attribute + "'", column.table(), JDBCType.VARCHAR)
 
     companion object {

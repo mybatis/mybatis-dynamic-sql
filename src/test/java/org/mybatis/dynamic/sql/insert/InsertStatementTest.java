@@ -20,7 +20,6 @@ import static org.mybatis.dynamic.sql.SqlBuilder.insert;
 
 import java.sql.JDBCType;
 
-import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
@@ -117,12 +116,12 @@ class InsertStatementTest {
     }
 
     static class TestRecord {
-        private @Nullable Integer id;
-        private @Nullable String firstName;
-        private @Nullable String lastName;
-        private @Nullable String occupation;
+        private Integer id;
+        private String firstName;
+        private String lastName;
+        private String occupation;
 
-        @Nullable Integer getId() {
+        Integer getId() {
             return id;
         }
 
@@ -130,7 +129,7 @@ class InsertStatementTest {
             this.id = id;
         }
 
-        @Nullable String getFirstName() {
+        String getFirstName() {
             return firstName;
         }
 
@@ -138,7 +137,7 @@ class InsertStatementTest {
             this.firstName = firstName;
         }
 
-        @Nullable String getLastName() {
+        String getLastName() {
             return lastName;
         }
 
@@ -146,7 +145,7 @@ class InsertStatementTest {
             this.lastName = lastName;
         }
 
-        @Nullable String getOccupation() {
+        String getOccupation() {
             return occupation;
         }
 

@@ -20,7 +20,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
 
-import org.jspecify.annotations.NullMarked;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.SelectModel;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
@@ -41,7 +40,6 @@ import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
  *
  * @author Jeff Butler
  */
-@NullMarked
 public class LimitAndOffsetAdapter<R> {
     private final SelectModel selectModel;
     private final Function<SelectStatementProvider, R> mapperMethod;

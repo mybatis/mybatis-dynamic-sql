@@ -17,11 +17,9 @@ package examples.joins;
 
 import java.sql.JDBCType;
 
-import org.jspecify.annotations.NullMarked;
 import org.mybatis.dynamic.sql.AliasableSqlTable;
 import org.mybatis.dynamic.sql.SqlColumn;
 
-@NullMarked
 public final class ItemMasterDynamicSQLSupport {
     public static final ItemMaster itemMaster = new ItemMaster();
     public static final SqlColumn<Integer> itemId = itemMaster.itemId;

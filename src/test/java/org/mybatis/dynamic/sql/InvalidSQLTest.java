@@ -27,7 +27,6 @@ import java.util.List;
 import java.util.MissingResourceException;
 import java.util.Optional;
 
-import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.common.OrderByModel;
 import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
@@ -262,9 +261,9 @@ class InvalidSQLTest {
     }
 
     static class TestRow {
-        private @Nullable Integer id;
+        private Integer id;
 
-        public @Nullable Integer getId() {
+        public Integer getId() {
             return id;
         }
 

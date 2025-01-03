@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 
-import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.SqlBuilder;
 
@@ -35,14 +34,16 @@ class FilterAndMapTest {
     }
 
     @Test
-    void testTypeConversionWithEmptyDoesNotThrowException() {
-        SqlBuilder.isEqualToWhenPresent((String) null).map(Integer::parseInt);
-        assertThat(true).isTrue();
+    void testTypeConversionWithNullThrowsException() {
+        IsEqualTo<String> cond = SqlBuilder.isEqualTo((String) null);
+        assertThatExceptionOfType(NumberFormatException.class).isThrownBy(() ->
+                cond.map(Integer::parseInt)
+        );
     }
 
     @Test
     void testTypeConversionWithNullAndFilterDoesNotThrowException() {
-        IsEqualTo<Integer> cond = SqlBuilder.isEqualToWhenPresent((String) null).filter(Objects::nonNull).map(Integer::parseInt);
+        IsEqualTo<Integer> cond = SqlBuilder.isEqualTo((String) null).filter(Objects::nonNull).map(Integer::parseInt);
         assertThat(cond.isEmpty()).isTrue();
     }
 
@@ -431,7 +432,7 @@ class FilterAndMapTest {
         IsIn<String> cond = SqlBuilder.isIn("Fred", "Wilma");
         assertThat(cond.isEmpty()).isFalse();
         IsIn<String> mapped = cond.map(String::toUpperCase);
-        List<@Nullable String> mappedValues = mapped.values().toList();
+        List<String> mappedValues = mapped.values().toList();
         assertThat(mappedValues).containsExactly("FRED", "WILMA");
     }
 
@@ -440,31 +441,31 @@ class FilterAndMapTest {
         IsNotIn<String> cond = SqlBuilder.isNotIn("Fred", "Wilma");
         assertThat(cond.isEmpty()).isFalse();
         IsNotIn<String> mapped = cond.map(String::toUpperCase);
-        List<@Nullable String> mappedValues = mapped.values().toList();
+        List<String> mappedValues = mapped.values().toList();
         assertThat(mappedValues).containsExactly("FRED", "WILMA");
     }
 
     @Test
     void testIsNotInCaseInsensitiveRenderableMapShouldReturnMappedObject() {
         IsNotInCaseInsensitive cond = SqlBuilder.isNotInCaseInsensitive("Fred  ", "Wilma  ");
-        List<@Nullable String> values = cond.values().toList();
+        List<String> values = cond.values().toList();
         assertThat(values).containsExactly("FRED  ", "WILMA  ");
         assertThat(cond.isEmpty()).isFalse();
 
         IsNotInCaseInsensitive mapped = cond.map(String::trim);
-        List<@Nullable String> mappedValues = mapped.values().toList();
+        List<String> mappedValues = mapped.values().toList();
         assertThat(mappedValues).containsExactly("FRED", "WILMA");
     }
 
     @Test
     void testIsInCaseInsensitiveRenderableMapShouldReturnMappedObject() {
         IsInCaseInsensitive cond = SqlBuilder.isInCaseInsensitive("Fred  ", "Wilma  ");
-        List<@Nullable String> values = cond.values().toList();
+        List<String> values = cond.values().toList();
         assertThat(values).containsExactly("FRED  ", "WILMA  ");
         assertThat(cond.isEmpty()).isFalse();
 
         IsInCaseInsensitive mapped = cond.map(String::trim);
-        List<@Nullable String> mappedValues = mapped.values().toList();
+        List<String> mappedValues = mapped.values().toList();
         assertThat(mappedValues).containsExactly("FRED", "WILMA");
     }
 

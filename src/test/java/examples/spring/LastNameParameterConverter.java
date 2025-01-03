@@ -15,14 +15,13 @@
  */
 package examples.spring;
 
-import org.jspecify.annotations.Nullable;
 import org.mybatis.dynamic.sql.ParameterTypeConverter;
 import org.springframework.core.convert.converter.Converter;
 
 public class LastNameParameterConverter implements ParameterTypeConverter<LastName, String>,
         Converter<LastName, String> {
     @Override
-    public @Nullable String convert(LastName source) {
-        return source.getName();
+    public String convert(LastName source) {
+        return source == null ? null : source.getName();
     }
 }

@@ -57,7 +57,7 @@ class Issue105Test {
 
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
-                .where(firstName, isLikeWhenPresent(fName).filter(Objects::nonNull).map(SearchUtils::addWildcards))
+                .where(firstName, isLike(fName).filter(Objects::nonNull).map(SearchUtils::addWildcards))
                 .and(lastName, isLike(lName).filter(Objects::nonNull).map(SearchUtils::addWildcards))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
@@ -527,7 +527,7 @@ class Issue105Test {
 
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
-                .where(age, isBetweenWhenPresent(1).and((Integer) null).filter(Predicates.bothPresent()).map(i1 -> i1 + 1,  i2 -> i2 + 2))
+                .where(age, isBetween(1).and((Integer) null).filter(Predicates.bothPresent()).map(i1 -> i1 + 1,  i2 -> i2 + 2))
                 .configureStatement(c -> c.setNonRenderingWhereClauseAllowed(true))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
@@ -735,7 +735,7 @@ class Issue105Test {
 
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
-                .where(firstName, isLikeCaseInsensitiveWhenPresent((String) null).filter(Objects::nonNull).map(SearchUtils::addWildcards))
+                .where(firstName, isLikeCaseInsensitive((String) null).filter(Objects::nonNull).map(SearchUtils::addWildcards))
                 .configureStatement(c -> c.setNonRenderingWhereClauseAllowed(true))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
@@ -863,7 +863,7 @@ class Issue105Test {
 
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
-                .where(firstName, isNotLikeCaseInsensitiveWhenPresent((String) null).filter(Objects::nonNull).map(SearchUtils::addWildcards))
+                .where(firstName, isNotLikeCaseInsensitive((String) null).filter(Objects::nonNull).map(SearchUtils::addWildcards))
                 .configureStatement(c -> c.setNonRenderingWhereClauseAllowed(true))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);

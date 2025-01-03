@@ -15,11 +15,9 @@
  */
 package examples.custom_render;
 
-import org.jspecify.annotations.NullMarked;
 import org.mybatis.dynamic.sql.BindableColumn;
 import org.mybatis.dynamic.sql.render.MyBatis3RenderingStrategy;
 
-@NullMarked
 public class JsonRenderingStrategy extends MyBatis3RenderingStrategy {
 
     @Override
