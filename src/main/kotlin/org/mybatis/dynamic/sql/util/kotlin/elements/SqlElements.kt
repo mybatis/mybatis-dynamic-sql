@@ -129,45 +129,45 @@ fun count(column: BasicColumn): Count = SqlBuilder.count(column)
 
 fun countDistinct(column: BasicColumn): CountDistinct = SqlBuilder.countDistinct(column)
 
-fun <T> max(column: BindableColumn<T>): Max<T> = SqlBuilder.max(column)
+fun <T : Any> max(column: BindableColumn<T>): Max<T> = SqlBuilder.max(column)
 
-fun <T> min(column: BindableColumn<T>): Min<T> = SqlBuilder.min(column)
+fun <T : Any> min(column: BindableColumn<T>): Min<T> = SqlBuilder.min(column)
 
-fun <T> avg(column: BindableColumn<T>): Avg<T> = SqlBuilder.avg(column)
+fun <T : Any> avg(column: BindableColumn<T>): Avg<T> = SqlBuilder.avg(column)
 
-fun <T> sum(column: BindableColumn<T>): Sum<T> = SqlBuilder.sum(column)
+fun <T : Any> sum(column: BindableColumn<T>): Sum<T> = SqlBuilder.sum(column)
 
 fun sum(column: BasicColumn): Sum<*> = SqlBuilder.sum(column)
 
-fun <T> sum(column: BindableColumn<T>, condition: VisitableCondition<T>): Sum<T> = SqlBuilder.sum(column, condition)
+fun <T : Any> sum(column: BindableColumn<T>, condition: VisitableCondition<T>): Sum<T> = SqlBuilder.sum(column, condition)
 
 // constants
-fun <T> constant(constant: String): Constant<T> = SqlBuilder.constant(constant)
+fun <T : Any> constant(constant: String): Constant<T> = SqlBuilder.constant(constant)
 
 fun stringConstant(constant: String): StringConstant = SqlBuilder.stringConstant(constant)
 
-fun <T> value(value: T): BoundValue<T> = SqlBuilder.value(value)
+fun <T : Any> value(value: T): BoundValue<T> = SqlBuilder.value(value)
 
 // functions
-fun <T> add(
+fun <T : Any> add(
     firstColumn: BindableColumn<T>,
     secondColumn: BasicColumn,
     vararg subsequentColumns: BasicColumn
 ): Add<T> = Add.of(firstColumn, secondColumn, subsequentColumns.asList())
 
-fun <T> divide(
+fun <T : Any> divide(
     firstColumn: BindableColumn<T>,
     secondColumn: BasicColumn,
     vararg subsequentColumns: BasicColumn
 ): Divide<T> = Divide.of(firstColumn, secondColumn, subsequentColumns.asList())
 
-fun <T> multiply(
+fun <T : Any> multiply(
     firstColumn: BindableColumn<T>,
     secondColumn: BasicColumn,
     vararg subsequentColumns: BasicColumn
 ): Multiply<T> = Multiply.of(firstColumn, secondColumn, subsequentColumns.asList())
 
-fun <T> subtract(
+fun <T : Any> subtract(
     firstColumn: BindableColumn<T>,
     secondColumn: BasicColumn,
     vararg subsequentColumns: BasicColumn
@@ -176,147 +176,147 @@ fun <T> subtract(
 fun cast(receiver: CastDSL.() -> Unit): Cast =
     invalidIfNull(CastDSL().apply(receiver).cast, "ERROR.43")
 
-fun <T> concat(
+fun <T : Any> concat(
     firstColumn: BindableColumn<T>,
     vararg subsequentColumns: BasicColumn
 ): Concat<T> = Concat.of(firstColumn, subsequentColumns.asList())
 
-fun <T> concatenate(
+fun <T : Any> concatenate(
     firstColumn: BindableColumn<T>,
     secondColumn: BasicColumn,
     vararg subsequentColumns: BasicColumn
 ): Concatenate<T> = Concatenate.of(firstColumn, secondColumn, subsequentColumns.asList())
 
-fun <T> applyOperator(
+fun <T : Any> applyOperator(
     operator: String,
     firstColumn: BindableColumn<T>,
     secondColumn: BasicColumn,
     vararg subsequentColumns: BasicColumn
 ): OperatorFunction<T> = OperatorFunction.of(operator, firstColumn, secondColumn, subsequentColumns.asList())
 
-fun <T> lower(column: BindableColumn<T>): Lower<T> = SqlBuilder.lower(column)
+fun <T : Any> lower(column: BindableColumn<T>): Lower<T> = SqlBuilder.lower(column)
 
-fun <T> substring(
+fun <T : Any> substring(
     column: BindableColumn<T>,
     offset: Int,
     length: Int
 ): Substring<T> = SqlBuilder.substring(column, offset, length)
 
-fun <T> upper(column: BindableColumn<T>): Upper<T> = SqlBuilder.upper(column)
+fun <T : Any> upper(column: BindableColumn<T>): Upper<T> = SqlBuilder.upper(column)
 
 // conditions for all data types
-fun <T> isNull(): IsNull<T> = SqlBuilder.isNull()
+fun <T : Any> isNull(): IsNull<T> = SqlBuilder.isNull()
 
-fun <T> isNotNull(): IsNotNull<T> = SqlBuilder.isNotNull()
+fun <T : Any> isNotNull(): IsNotNull<T> = SqlBuilder.isNotNull()
 
-fun <T> isEqualTo(value: T & Any): IsEqualTo<T> = SqlBuilder.isEqualTo(value)
+fun <T : Any> isEqualTo(value: T): IsEqualTo<T> = SqlBuilder.isEqualTo(value)
 
-fun <T> isEqualTo(subQuery: KotlinSubQueryBuilder.() -> Unit): IsEqualToWithSubselect<T> =
+fun <T : Any> isEqualTo(subQuery: KotlinSubQueryBuilder.() -> Unit): IsEqualToWithSubselect<T> =
     SqlBuilder.isEqualTo(KotlinSubQueryBuilder().apply(subQuery))
 
-fun <T> isEqualTo(column: BasicColumn): IsEqualToColumn<T> = SqlBuilder.isEqualTo(column)
+fun <T : Any> isEqualTo(column: BasicColumn): IsEqualToColumn<T> = SqlBuilder.isEqualTo(column)
 
-fun <T> isEqualToWhenPresent(value: T?): IsEqualTo<T> = SqlBuilder.isEqualToWhenPresent(value)
+fun <T : Any> isEqualToWhenPresent(value: T?): IsEqualTo<T> = SqlBuilder.isEqualToWhenPresent(value)
 
-fun <T> isNotEqualTo(value: T & Any): IsNotEqualTo<T> = SqlBuilder.isNotEqualTo(value)
+fun <T : Any> isNotEqualTo(value: T): IsNotEqualTo<T> = SqlBuilder.isNotEqualTo(value)
 
-fun <T> isNotEqualTo(subQuery: KotlinSubQueryBuilder.() -> Unit): IsNotEqualToWithSubselect<T> =
+fun <T : Any> isNotEqualTo(subQuery: KotlinSubQueryBuilder.() -> Unit): IsNotEqualToWithSubselect<T> =
     SqlBuilder.isNotEqualTo(KotlinSubQueryBuilder().apply(subQuery))
 
-fun <T> isNotEqualTo(column: BasicColumn): IsNotEqualToColumn<T> = SqlBuilder.isNotEqualTo(column)
+fun <T : Any> isNotEqualTo(column: BasicColumn): IsNotEqualToColumn<T> = SqlBuilder.isNotEqualTo(column)
 
-fun <T> isNotEqualToWhenPresent(value: T?): IsNotEqualTo<T> = SqlBuilder.isNotEqualToWhenPresent(value)
+fun <T : Any> isNotEqualToWhenPresent(value: T?): IsNotEqualTo<T> = SqlBuilder.isNotEqualToWhenPresent(value)
 
-fun <T> isGreaterThan(value: T & Any): IsGreaterThan<T> = SqlBuilder.isGreaterThan(value)
+fun <T : Any> isGreaterThan(value: T): IsGreaterThan<T> = SqlBuilder.isGreaterThan(value)
 
-fun <T> isGreaterThan(subQuery: KotlinSubQueryBuilder.() -> Unit): IsGreaterThanWithSubselect<T> =
+fun <T : Any> isGreaterThan(subQuery: KotlinSubQueryBuilder.() -> Unit): IsGreaterThanWithSubselect<T> =
     SqlBuilder.isGreaterThan(KotlinSubQueryBuilder().apply(subQuery))
 
-fun <T> isGreaterThan(column: BasicColumn): IsGreaterThanColumn<T> = SqlBuilder.isGreaterThan(column)
+fun <T : Any> isGreaterThan(column: BasicColumn): IsGreaterThanColumn<T> = SqlBuilder.isGreaterThan(column)
 
-fun <T> isGreaterThanWhenPresent(value: T?): IsGreaterThan<T> = SqlBuilder.isGreaterThanWhenPresent(value)
+fun <T : Any> isGreaterThanWhenPresent(value: T?): IsGreaterThan<T> = SqlBuilder.isGreaterThanWhenPresent(value)
 
-fun <T> isGreaterThanOrEqualTo(value: T & Any): IsGreaterThanOrEqualTo<T> = SqlBuilder.isGreaterThanOrEqualTo(value)
+fun <T : Any> isGreaterThanOrEqualTo(value: T): IsGreaterThanOrEqualTo<T> = SqlBuilder.isGreaterThanOrEqualTo(value)
 
-fun <T> isGreaterThanOrEqualTo(subQuery: KotlinSubQueryBuilder.() -> Unit): IsGreaterThanOrEqualToWithSubselect<T> =
+fun <T : Any> isGreaterThanOrEqualTo(subQuery: KotlinSubQueryBuilder.() -> Unit): IsGreaterThanOrEqualToWithSubselect<T> =
     SqlBuilder.isGreaterThanOrEqualTo(KotlinSubQueryBuilder().apply(subQuery))
 
-fun <T> isGreaterThanOrEqualTo(column: BasicColumn): IsGreaterThanOrEqualToColumn<T> =
+fun <T : Any> isGreaterThanOrEqualTo(column: BasicColumn): IsGreaterThanOrEqualToColumn<T> =
     SqlBuilder.isGreaterThanOrEqualTo(column)
 
-fun <T> isGreaterThanOrEqualToWhenPresent(value: T?): IsGreaterThanOrEqualTo<T> =
+fun <T : Any> isGreaterThanOrEqualToWhenPresent(value: T?): IsGreaterThanOrEqualTo<T> =
     SqlBuilder.isGreaterThanOrEqualToWhenPresent(value)
 
-fun <T> isLessThan(value: T & Any): IsLessThan<T> = SqlBuilder.isLessThan(value)
+fun <T : Any> isLessThan(value: T): IsLessThan<T> = SqlBuilder.isLessThan(value)
 
-fun <T> isLessThan(subQuery: KotlinSubQueryBuilder.() -> Unit): IsLessThanWithSubselect<T> =
+fun <T : Any> isLessThan(subQuery: KotlinSubQueryBuilder.() -> Unit): IsLessThanWithSubselect<T> =
     SqlBuilder.isLessThan(KotlinSubQueryBuilder().apply(subQuery))
 
-fun <T> isLessThan(column: BasicColumn): IsLessThanColumn<T> = SqlBuilder.isLessThan(column)
+fun <T : Any> isLessThan(column: BasicColumn): IsLessThanColumn<T> = SqlBuilder.isLessThan(column)
 
-fun <T> isLessThanWhenPresent(value: T?): IsLessThan<T> = SqlBuilder.isLessThanWhenPresent(value)
+fun <T : Any> isLessThanWhenPresent(value: T?): IsLessThan<T> = SqlBuilder.isLessThanWhenPresent(value)
 
-fun <T> isLessThanOrEqualTo(value: T & Any): IsLessThanOrEqualTo<T> = SqlBuilder.isLessThanOrEqualTo(value)
+fun <T : Any> isLessThanOrEqualTo(value: T): IsLessThanOrEqualTo<T> = SqlBuilder.isLessThanOrEqualTo(value)
 
-fun <T> isLessThanOrEqualTo(subQuery: KotlinSubQueryBuilder.() -> Unit): IsLessThanOrEqualToWithSubselect<T> =
+fun <T : Any> isLessThanOrEqualTo(subQuery: KotlinSubQueryBuilder.() -> Unit): IsLessThanOrEqualToWithSubselect<T> =
     SqlBuilder.isLessThanOrEqualTo(KotlinSubQueryBuilder().apply(subQuery))
 
-fun <T> isLessThanOrEqualTo(column: BasicColumn): IsLessThanOrEqualToColumn<T> = SqlBuilder.isLessThanOrEqualTo(column)
+fun <T : Any> isLessThanOrEqualTo(column: BasicColumn): IsLessThanOrEqualToColumn<T> = SqlBuilder.isLessThanOrEqualTo(column)
 
-fun <T> isLessThanOrEqualToWhenPresent(value: T?): IsLessThanOrEqualTo<T> =
+fun <T : Any> isLessThanOrEqualToWhenPresent(value: T?): IsLessThanOrEqualTo<T> =
     SqlBuilder.isLessThanOrEqualToWhenPresent(value)
 
-fun <T> isIn(vararg values: T & Any): IsIn<T> = isIn(values.asList())
+fun <T : Any> isIn(vararg values: T): IsIn<T> = isIn(values.asList())
 
 @JvmName("isInArray")
-fun <T> isIn(values: Array<out T & Any>): IsIn<T> = SqlBuilder.isIn(values.asList())
+fun <T : Any> isIn(values: Array<out T>): IsIn<T> = SqlBuilder.isIn(values.asList())
 
-fun <T> isIn(values: Collection<T & Any>): IsIn<T> = SqlBuilder.isIn(values)
+fun <T : Any> isIn(values: Collection<T>): IsIn<T> = SqlBuilder.isIn(values)
 
-fun <T> isIn(subQuery: KotlinSubQueryBuilder.() -> Unit): IsInWithSubselect<T> =
+fun <T : Any> isIn(subQuery: KotlinSubQueryBuilder.() -> Unit): IsInWithSubselect<T> =
     SqlBuilder.isIn(KotlinSubQueryBuilder().apply(subQuery))
 
-fun <T> isInWhenPresent(vararg values: T?): IsInWhenPresent<T> = isInWhenPresent(values.asList())
+fun <T : Any> isInWhenPresent(vararg values: T?): IsInWhenPresent<T> = isInWhenPresent(values.asList())
 
 @JvmName("isInArrayWhenPresent")
-fun <T> isInWhenPresent(values: Array<out T?>?): IsInWhenPresent<T> = SqlBuilder.isInWhenPresent(values?.asList())
+fun <T : Any> isInWhenPresent(values: Array<out T?>?): IsInWhenPresent<T> = SqlBuilder.isInWhenPresent(values?.asList())
 
-fun <T> isInWhenPresent(values: Collection<T?>?): IsInWhenPresent<T> = SqlBuilder.isInWhenPresent(values)
+fun <T : Any> isInWhenPresent(values: Collection<T?>?): IsInWhenPresent<T> = SqlBuilder.isInWhenPresent(values)
 
-fun <T> isNotIn(vararg values: T & Any): IsNotIn<T> = isNotIn(values.asList())
+fun <T : Any> isNotIn(vararg values: T): IsNotIn<T> = isNotIn(values.asList())
 
 @JvmName("isNotInArray")
-fun <T> isNotIn(values: Array<out T & Any>): IsNotIn<T> = SqlBuilder.isNotIn(values.asList())
+fun <T : Any> isNotIn(values: Array<out T>): IsNotIn<T> = SqlBuilder.isNotIn(values.asList())
 
-fun <T> isNotIn(values: Collection<T & Any>): IsNotIn<T> = SqlBuilder.isNotIn(values)
+fun <T : Any> isNotIn(values: Collection<T>): IsNotIn<T> = SqlBuilder.isNotIn(values)
 
-fun <T> isNotIn(subQuery: KotlinSubQueryBuilder.() -> Unit): IsNotInWithSubselect<T> =
+fun <T : Any> isNotIn(subQuery: KotlinSubQueryBuilder.() -> Unit): IsNotInWithSubselect<T> =
     SqlBuilder.isNotIn(KotlinSubQueryBuilder().apply(subQuery))
 
-fun <T> isNotInWhenPresent(vararg values: T?): IsNotInWhenPresent<T> = isNotInWhenPresent(values.asList())
+fun <T : Any> isNotInWhenPresent(vararg values: T?): IsNotInWhenPresent<T> = isNotInWhenPresent(values.asList())
 
 @JvmName("isNotInArrayWhenPresent")
-fun <T> isNotInWhenPresent(values: Array<out T?>?): IsNotInWhenPresent<T> = SqlBuilder.isNotInWhenPresent(values?.asList())
+fun <T : Any> isNotInWhenPresent(values: Array<out T?>?): IsNotInWhenPresent<T> = SqlBuilder.isNotInWhenPresent(values?.asList())
 
-fun <T> isNotInWhenPresent(values: Collection<T?>?): IsNotInWhenPresent<T> = SqlBuilder.isNotInWhenPresent(values)
+fun <T : Any> isNotInWhenPresent(values: Collection<T?>?): IsNotInWhenPresent<T> = SqlBuilder.isNotInWhenPresent(values)
 
-fun <T> isBetween(value1: T & Any): BetweenBuilder<T & Any> = BetweenBuilder(value1)
+fun <T : Any> isBetween(value1: T): BetweenBuilder<T> = BetweenBuilder(value1)
 
-fun <T> isBetweenWhenPresent(value1: T?): BetweenWhenPresentBuilder<T> = BetweenWhenPresentBuilder(value1)
+fun <T : Any> isBetweenWhenPresent(value1: T?): BetweenWhenPresentBuilder<T> = BetweenWhenPresentBuilder(value1)
 
-fun <T> isNotBetween(value1: T & Any): NotBetweenBuilder<T & Any> = NotBetweenBuilder(value1)
+fun <T : Any> isNotBetween(value1: T): NotBetweenBuilder<T> = NotBetweenBuilder(value1)
 
-fun <T> isNotBetweenWhenPresent(value1: T?): NotBetweenWhenPresentBuilder<T> =
+fun <T : Any> isNotBetweenWhenPresent(value1: T?): NotBetweenWhenPresentBuilder<T> =
     NotBetweenWhenPresentBuilder(value1)
 
 // for string columns, but generic for columns with type handlers
-fun <T> isLike(value: T & Any): IsLike<T> = SqlBuilder.isLike(value)
+fun <T : Any> isLike(value: T): IsLike<T> = SqlBuilder.isLike(value)
 
-fun <T> isLikeWhenPresent(value: T?): IsLike<T> = SqlBuilder.isLikeWhenPresent(value)
+fun <T : Any> isLikeWhenPresent(value: T?): IsLike<T> = SqlBuilder.isLikeWhenPresent(value)
 
-fun <T> isNotLike(value: T & Any): IsNotLike<T> = SqlBuilder.isNotLike(value)
+fun <T : Any> isNotLike(value: T): IsNotLike<T> = SqlBuilder.isNotLike(value)
 
-fun <T> isNotLikeWhenPresent(value: T?): IsNotLike<T> = SqlBuilder.isNotLikeWhenPresent(value)
+fun <T : Any> isNotLikeWhenPresent(value: T?): IsNotLike<T> = SqlBuilder.isNotLikeWhenPresent(value)
 
 // shortcuts for booleans
 fun isTrue(): IsEqualTo<Boolean> = isEqualTo(true)
@@ -392,21 +392,21 @@ fun sortColumn(name: String): SortSpecification = SqlBuilder.sortColumn(name)
 fun sortColumn(tableAlias: String, column: SqlColumn<*>): SortSpecification = SqlBuilder.sortColumn(tableAlias, column)
 
 // DSL Support Classes
-class BetweenBuilder<T>(private val value1: T) {
+class BetweenBuilder<T : Any>(private val value1: T) {
     fun and(value2: T): IsBetween<T> = SqlBuilder.isBetween(value1).and(value2)
 }
 
-class BetweenWhenPresentBuilder<T>(private val value1: T?) {
+class BetweenWhenPresentBuilder<T : Any>(private val value1: T?) {
     fun and(value2: T?): IsBetween<T> {
         return SqlBuilder.isBetweenWhenPresent<T>(value1).and(value2)
     }
 }
 
-class NotBetweenBuilder<T>(private val value1: T) {
+class NotBetweenBuilder<T : Any>(private val value1: T) {
     fun and(value2: T): IsNotBetween<T> = SqlBuilder.isNotBetween(value1).and(value2)
 }
 
-class NotBetweenWhenPresentBuilder<T>(private val value1: T?) {
+class NotBetweenWhenPresentBuilder<T : Any>(private val value1: T?) {
     fun and(value2: T?): IsNotBetween<T> {
         return SqlBuilder.isNotBetweenWhenPresent<T>(value1).and(value2)
     }

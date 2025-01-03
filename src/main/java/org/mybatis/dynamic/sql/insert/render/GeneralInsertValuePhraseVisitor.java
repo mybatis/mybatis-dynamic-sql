@@ -18,6 +18,7 @@ package org.mybatis.dynamic.sql.insert.render;
 import java.util.Objects;
 import java.util.Optional;
 
+import org.jspecify.annotations.Nullable;
 import org.mybatis.dynamic.sql.render.RenderedParameterInfo;
 import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.util.AbstractColumnMapping;
@@ -74,7 +75,7 @@ public class GeneralInsertValuePhraseVisitor extends GeneralInsertMappingVisitor
     }
 
     private Optional<FieldAndValueAndParameters> buildValueFragment(AbstractColumnMapping mapping,
-            Object value) {
+            @Nullable Object value) {
         return buildFragment(mapping, value);
     }
 
@@ -84,7 +85,7 @@ public class GeneralInsertValuePhraseVisitor extends GeneralInsertMappingVisitor
                 .buildOptional();
     }
 
-    private Optional<FieldAndValueAndParameters> buildFragment(AbstractColumnMapping mapping, Object value) {
+    private Optional<FieldAndValueAndParameters> buildFragment(AbstractColumnMapping mapping, @Nullable Object value) {
         RenderedParameterInfo parameterInfo = renderingContext.calculateParameterInfo(mapping.column());
 
         return FieldAndValueAndParameters.withFieldName(mapping.columnName())

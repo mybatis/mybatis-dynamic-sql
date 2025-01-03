@@ -15,6 +15,7 @@
  */
 package org.mybatis.dynamic.sql.where.condition;
 
+import java.util.NoSuchElementException;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 
@@ -23,7 +24,12 @@ import org.mybatis.dynamic.sql.util.StringUtilities;
 
 public class IsLikeCaseInsensitive extends AbstractSingleValueCondition<String>
         implements CaseInsensitiveVisitableCondition {
-    private static final IsLikeCaseInsensitive EMPTY = new IsLikeCaseInsensitive(null) {
+    private static final IsLikeCaseInsensitive EMPTY = new IsLikeCaseInsensitive("") { //$NON-NLS-1$
+        @Override
+        public String value() {
+            throw new NoSuchElementException("No value present"); //$NON-NLS-1$
+        }
+
         @Override
         public boolean isEmpty() {
             return true;
@@ -61,6 +67,8 @@ public class IsLikeCaseInsensitive extends AbstractSingleValueCondition<String>
     }
 
     public static IsLikeCaseInsensitive of(String value) {
+        // Keep the null safe upper case utility for backwards compatibility
+        //noinspection DataFlowIssue
         return new IsLikeCaseInsensitive(value).map(StringUtilities::safelyUpperCase);
     }
 }

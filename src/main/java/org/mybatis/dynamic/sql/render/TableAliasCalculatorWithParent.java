@@ -18,6 +18,7 @@ package org.mybatis.dynamic.sql.render;
 import java.util.Objects;
 import java.util.Optional;
 
+import org.jspecify.annotations.Nullable;
 import org.mybatis.dynamic.sql.SqlTable;
 
 public class TableAliasCalculatorWithParent implements TableAliasCalculator {
@@ -48,8 +49,8 @@ public class TableAliasCalculatorWithParent implements TableAliasCalculator {
     }
 
     public static class Builder {
-        private TableAliasCalculator parent;
-        private TableAliasCalculator child;
+        private @Nullable TableAliasCalculator parent;
+        private @Nullable TableAliasCalculator child;
 
         public Builder withParent(TableAliasCalculator parent) {
             this.parent = parent;

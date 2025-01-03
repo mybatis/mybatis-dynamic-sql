@@ -84,11 +84,11 @@ class KotlinInsertSelectSubQueryBuilder : KotlinBaseSubQueryBuilder(), Buildable
         assertNotNull(table, "ERROR.29") //$NON-NLS-1$
 
         val dsl = if (columnList == null) {
-            SqlBuilder.insertInto(table)
+            SqlBuilder.insertInto(table!!)
                 .withSelectStatement { buildSelectModel() }
         } else {
-            SqlBuilder.insertInto(table)
-                .withColumnList(columnList)
+            SqlBuilder.insertInto(table!!)
+                .withColumnList(columnList!!)
                 .withSelectStatement { buildSelectModel() }
         }
 

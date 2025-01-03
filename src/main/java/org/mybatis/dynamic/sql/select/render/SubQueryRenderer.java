@@ -19,6 +19,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.jspecify.annotations.Nullable;
 import org.mybatis.dynamic.sql.common.OrderByModel;
 import org.mybatis.dynamic.sql.common.OrderByRenderer;
 import org.mybatis.dynamic.sql.render.RenderingContext;
@@ -85,10 +86,10 @@ public class SubQueryRenderer {
     }
 
     public static class Builder {
-        private SelectModel selectModel;
-        private RenderingContext renderingContext;
-        private String prefix;
-        private String suffix;
+        private @Nullable SelectModel selectModel;
+        private @Nullable RenderingContext renderingContext;
+        private @Nullable String prefix;
+        private @Nullable String suffix;
 
         public Builder withRenderingContext(RenderingContext renderingContext) {
             this.renderingContext = renderingContext;

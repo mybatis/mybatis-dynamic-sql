@@ -17,6 +17,7 @@ package org.mybatis.dynamic.sql.select.render;
 
 import java.util.Objects;
 
+import org.jspecify.annotations.Nullable;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.TableExpressionVisitor;
 import org.mybatis.dynamic.sql.render.RenderingContext;
@@ -49,7 +50,7 @@ public class TableExpressionRenderer implements TableExpressionVisitor<FragmentA
     }
 
     public static class Builder {
-        private RenderingContext renderingContext;
+        private @Nullable RenderingContext renderingContext;
 
         public Builder withRenderingContext(RenderingContext renderingContext) {
             this.renderingContext = renderingContext;

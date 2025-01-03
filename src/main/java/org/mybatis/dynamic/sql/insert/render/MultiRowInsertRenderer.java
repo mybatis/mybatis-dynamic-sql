@@ -19,6 +19,7 @@ import static org.mybatis.dynamic.sql.util.StringUtilities.spaceBefore;
 
 import java.util.Objects;
 
+import org.jspecify.annotations.Nullable;
 import org.mybatis.dynamic.sql.insert.MultiRowInsertModel;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 
@@ -30,7 +31,8 @@ public class MultiRowInsertRenderer<T> {
     private MultiRowInsertRenderer(Builder<T> builder) {
         model = Objects.requireNonNull(builder.model);
         // the prefix is a generic format that will be resolved below with String.format(...)
-        visitor = new MultiRowValuePhraseVisitor(builder.renderingStrategy, "records[%s]"); //$NON-NLS-1$
+        visitor = new MultiRowValuePhraseVisitor(Objects.requireNonNull(builder.renderingStrategy),
+                "records[%s]"); //$NON-NLS-1$
     }
 
     public MultiRowInsertStatementProvider<T> render() {
@@ -58,8 +60,8 @@ public class MultiRowInsertRenderer<T> {
     }
 
     public static class Builder<T> {
-        private MultiRowInsertModel<T> model;
-        private RenderingStrategy renderingStrategy;
+        private @Nullable MultiRowInsertModel<T> model;
+        private @Nullable RenderingStrategy renderingStrategy;
 
         public Builder<T> withMultiRowInsertModel(MultiRowInsertModel<T> model) {
             this.model = model;

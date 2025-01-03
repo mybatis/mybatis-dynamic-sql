@@ -22,6 +22,7 @@ import org.mybatis.dynamic.sql.select.caseexpression.ConditionBasedWhenCondition
 import org.mybatis.dynamic.sql.select.caseexpression.SearchedCaseWhenCondition
 import org.mybatis.dynamic.sql.select.caseexpression.SimpleCaseWhenCondition
 import org.mybatis.dynamic.sql.util.kotlin.GroupingCriteriaCollector
+import org.mybatis.dynamic.sql.util.kotlin.assertNotNull
 import org.mybatis.dynamic.sql.util.kotlin.assertNull
 
 class KSearchedCaseDSL : KElseDSL {
@@ -34,9 +35,10 @@ class KSearchedCaseDSL : KElseDSL {
 
     fun `when`(dslCompleter: SearchedCaseCriteriaCollector.() -> Unit) =
         SearchedCaseCriteriaCollector().apply(dslCompleter).run {
+            assertNotNull(thenValue, "ERROR.47") //$NON-NLS-1$
             whenConditions.add(SearchedCaseWhenCondition.Builder().withInitialCriterion(initialCriterion)
                 .withSubCriteria(subCriteria)
-                .withThenValue(thenValue)
+                .withThenValue(thenValue!!)
                 .build())
         }
 

@@ -19,9 +19,11 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Supplier;
 
+import org.jspecify.annotations.Nullable;
+
 public abstract class AliasableSqlTable<T extends AliasableSqlTable<T>> extends SqlTable {
 
-    private String tableAlias;
+    private @Nullable String tableAlias;
     private final Supplier<T> constructor;
 
     protected AliasableSqlTable(String tableName, Supplier<T> constructor) {

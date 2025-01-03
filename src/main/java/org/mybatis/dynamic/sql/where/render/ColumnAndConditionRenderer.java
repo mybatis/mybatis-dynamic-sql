@@ -19,6 +19,7 @@ import static org.mybatis.dynamic.sql.util.StringUtilities.spaceBefore;
 
 import java.util.Objects;
 
+import org.jspecify.annotations.Nullable;
 import org.mybatis.dynamic.sql.BindableColumn;
 import org.mybatis.dynamic.sql.VisitableCondition;
 import org.mybatis.dynamic.sql.render.RenderingContext;
@@ -56,9 +57,9 @@ public class ColumnAndConditionRenderer<T> {
     }
 
     public static class Builder<T> {
-        private BindableColumn<T> column;
-        private VisitableCondition<T> condition;
-        private RenderingContext renderingContext;
+        private @Nullable BindableColumn<T> column;
+        private @Nullable VisitableCondition<T> condition;
+        private @Nullable RenderingContext renderingContext;
 
         public Builder<T> withColumn(BindableColumn<T> column) {
             this.column = column;

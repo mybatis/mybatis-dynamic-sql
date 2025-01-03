@@ -20,6 +20,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+import org.jspecify.annotations.Nullable;
+
 public class DefaultMultiRowInsertStatementProvider<T> implements MultiRowInsertStatementProvider<T> {
 
     private final List<T> records;
@@ -42,7 +44,7 @@ public class DefaultMultiRowInsertStatementProvider<T> implements MultiRowInsert
 
     public static class Builder<T> {
         private final List<T> records = new ArrayList<>();
-        private String insertStatement;
+        private @Nullable String insertStatement;
 
         public Builder<T> withRecords(List<T> records) {
             this.records.addAll(records);

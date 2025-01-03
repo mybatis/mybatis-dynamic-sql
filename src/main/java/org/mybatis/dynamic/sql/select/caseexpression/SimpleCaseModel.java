@@ -21,6 +21,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import org.jspecify.annotations.Nullable;
 import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.BindableColumn;
 import org.mybatis.dynamic.sql.SortSpecification;
@@ -32,8 +33,8 @@ import org.mybatis.dynamic.sql.util.Validator;
 public class SimpleCaseModel<T> implements BasicColumn, SortSpecification {
     private final BindableColumn<T> column;
     private final List<SimpleCaseWhenCondition<T>> whenConditions;
-    private final BasicColumn elseValue;
-    private final String alias;
+    private final @Nullable BasicColumn elseValue;
+    private final @Nullable String alias;
     private final String descendingPhrase;
 
     private SimpleCaseModel(Builder<T> builder) {
@@ -95,10 +96,10 @@ public class SimpleCaseModel<T> implements BasicColumn, SortSpecification {
     }
 
     public static class Builder<T> {
-        private BindableColumn<T> column;
+        private @Nullable BindableColumn<T> column;
         private final List<SimpleCaseWhenCondition<T>> whenConditions = new ArrayList<>();
-        private BasicColumn elseValue;
-        private String alias;
+        private @Nullable BasicColumn elseValue;
+        private @Nullable String alias;
         private String descendingPhrase = ""; //$NON-NLS-1$
 
         public Builder<T> withColumn(BindableColumn<T> column) {
@@ -111,12 +112,12 @@ public class SimpleCaseModel<T> implements BasicColumn, SortSpecification {
             return this;
         }
 
-        public Builder<T> withElseValue(BasicColumn elseValue) {
+        public Builder<T> withElseValue(@Nullable BasicColumn elseValue) {
             this.elseValue = elseValue;
             return this;
         }
 
-        public Builder<T> withAlias(String alias) {
+        public Builder<T> withAlias(@Nullable String alias) {
             this.alias = alias;
             return this;
         }

@@ -20,13 +20,14 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 
+import org.jspecify.annotations.Nullable;
 import org.mybatis.dynamic.sql.TableExpression;
 import org.mybatis.dynamic.sql.util.Validator;
 
 public class JoinModel {
     private final List<JoinSpecification> joinSpecifications = new ArrayList<>();
 
-    private JoinModel(List<JoinSpecification> joinSpecifications) {
+    private JoinModel(@Nullable List<JoinSpecification> joinSpecifications) {
         Objects.requireNonNull(joinSpecifications);
         Validator.assertNotEmpty(joinSpecifications, "ERROR.15"); //$NON-NLS-1$
         this.joinSpecifications.addAll(joinSpecifications);
@@ -36,7 +37,7 @@ public class JoinModel {
         return joinSpecifications.stream();
     }
 
-    public static JoinModel of(List<JoinSpecification> joinSpecifications) {
+    public static JoinModel of(@Nullable List<JoinSpecification> joinSpecifications) {
         return new JoinModel(joinSpecifications);
     }
 

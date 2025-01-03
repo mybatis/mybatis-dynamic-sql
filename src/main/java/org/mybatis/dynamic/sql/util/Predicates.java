@@ -17,10 +17,12 @@ package org.mybatis.dynamic.sql.util;
 
 import java.util.function.BiPredicate;
 
+import org.jspecify.annotations.Nullable;
+
 public class Predicates {
     private Predicates() {}
 
-    public static <T> BiPredicate<T, T> bothPresent() {
+    public static <T> BiPredicate<@Nullable T, @Nullable T> bothPresent() {
         return (v1, v2) -> v1 != null && v2 != null;
     }
 }

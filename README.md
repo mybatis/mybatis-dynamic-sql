@@ -78,6 +78,10 @@ The library test cases provide several complete examples of using the library in
 | Kotlin   | Spring JDBC                              | Example using Kotlin utility classes for Spring JDBC Template                      | [../examples/kotlin/spring/canonical](src/test/kotlin/examples/kotlin/spring/canonical)                     |
 
 
-## Requirements
+## Requirements and Dependencies
 
-The library has no dependencies.  Version 2.x requires Java 17. Version 1.x requires Java 8.
+Version 2.x requires Java 17 and has a required runtime dependency on JSpecify (https://jspecify.dev/). Version 1.x
+requires Java 8 and has no required runtime dependencies.
+
+All versions have support for MyBatis3, Spring Framework, and Kotlin - all those dependencies are optional. The library
+should work in those environments as the dependencies will be made available at runtime.

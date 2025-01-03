@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
+import org.jspecify.annotations.Nullable;
 import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.BindableColumn;
 import org.mybatis.dynamic.sql.VisitableCondition;
@@ -27,7 +28,7 @@ import org.mybatis.dynamic.sql.VisitableCondition;
 public class SimpleCaseDSL<T> implements ElseDSL<SimpleCaseDSL<T>.SimpleCaseEnder> {
     private final BindableColumn<T> column;
     private final List<SimpleCaseWhenCondition<T>> whenConditions = new ArrayList<>();
-    private BasicColumn elseValue;
+    private @Nullable BasicColumn elseValue;
 
     private SimpleCaseDSL(BindableColumn<T> column) {
         this.column = Objects.requireNonNull(column);

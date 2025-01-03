@@ -19,6 +19,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import org.jspecify.annotations.Nullable;
+
 public class DefaultGeneralInsertStatementProvider
         implements GeneralInsertStatementProvider, InsertSelectStatementProvider {
     private final String insertStatement;
@@ -44,7 +46,7 @@ public class DefaultGeneralInsertStatementProvider
     }
 
     public static class Builder {
-        private String insertStatement;
+        private @Nullable String insertStatement;
         private final Map<String, Object> parameters = new HashMap<>();
 
         public Builder withInsertStatement(String insertStatement) {

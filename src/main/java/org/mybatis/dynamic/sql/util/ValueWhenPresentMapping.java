@@ -19,15 +19,16 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Supplier;
 
+import org.jspecify.annotations.Nullable;
 import org.mybatis.dynamic.sql.SqlColumn;
 
 public class ValueWhenPresentMapping<T> extends AbstractColumnMapping {
 
-    private final Supplier<T> valueSupplier;
+    private final Supplier<@Nullable T> valueSupplier;
     // keep a reference to the column so we don't lose the type
     private final SqlColumn<T> localColumn;
 
-    private ValueWhenPresentMapping(SqlColumn<T> column, Supplier<T> valueSupplier) {
+    private ValueWhenPresentMapping(SqlColumn<T> column, Supplier<@Nullable T> valueSupplier) {
         super(column);
         this.valueSupplier = Objects.requireNonNull(valueSupplier);
         localColumn = Objects.requireNonNull(column);
@@ -37,7 +38,7 @@ public class ValueWhenPresentMapping<T> extends AbstractColumnMapping {
         return Optional.ofNullable(valueSupplier.get()).map(this::convert);
     }
 
-    private Object convert(T value) {
+    private @Nullable Object convert(@Nullable T value) {
         return localColumn.convertParameterType(value);
     }
 
@@ -46,7 +47,7 @@ public class ValueWhenPresentMapping<T> extends AbstractColumnMapping {
         return visitor.visit(this);
     }
 
-    public static <T> ValueWhenPresentMapping<T> of(SqlColumn<T> column, Supplier<T> valueSupplier) {
+    public static <T> ValueWhenPresentMapping<T> of(SqlColumn<T> column, Supplier<@Nullable T> valueSupplier) {
         return new ValueWhenPresentMapping<>(column, valueSupplier);
     }
 }

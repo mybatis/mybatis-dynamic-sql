@@ -18,7 +18,7 @@ package org.mybatis.dynamic.sql.insert;
 import java.util.Objects;
 import java.util.Optional;
 
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.Nullable;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
 import org.mybatis.dynamic.sql.insert.render.InsertSelectRenderer;
@@ -28,7 +28,7 @@ import org.mybatis.dynamic.sql.select.SelectModel;
 
 public class InsertSelectModel {
     private final SqlTable table;
-    private final InsertColumnListModel columnList;
+    private final @Nullable InsertColumnListModel columnList;
     private final SelectModel selectModel;
     private final StatementConfiguration statementConfiguration;
 
@@ -55,7 +55,6 @@ public class InsertSelectModel {
         return statementConfiguration;
     }
 
-    @NotNull
     public InsertSelectStatementProvider render(RenderingStrategy renderingStrategy) {
         return InsertSelectRenderer.withInsertSelectModel(this)
                 .withRenderingStrategy(renderingStrategy)
@@ -68,17 +67,17 @@ public class InsertSelectModel {
     }
 
     public static class Builder {
-        private SqlTable table;
-        private InsertColumnListModel columnList;
-        private SelectModel selectModel;
-        private StatementConfiguration statementConfiguration;
+        private @Nullable SqlTable table;
+        private @Nullable InsertColumnListModel columnList;
+        private @Nullable SelectModel selectModel;
+        private @Nullable StatementConfiguration statementConfiguration;
 
         public Builder withTable(SqlTable table) {
             this.table = table;
             return this;
         }
 
-        public Builder withColumnList(InsertColumnListModel columnList) {
+        public Builder withColumnList(@Nullable InsertColumnListModel columnList) {
             this.columnList = columnList;
             return this;
         }

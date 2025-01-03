@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Supplier;
 
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.Nullable;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
@@ -47,7 +47,6 @@ public class GeneralInsertDSL implements Buildable<GeneralInsertModel> {
         return new SetClauseFinisher<>(column);
     }
 
-    @NotNull
     @Override
     public GeneralInsertModel build() {
         return new GeneralInsertModel.Builder()
@@ -93,20 +92,20 @@ public class GeneralInsertDSL implements Buildable<GeneralInsertModel> {
             return GeneralInsertDSL.this;
         }
 
-        public GeneralInsertDSL toValueOrNull(T value) {
+        public GeneralInsertDSL toValueOrNull(@Nullable T value) {
             return toValueOrNull(() -> value);
         }
 
-        public GeneralInsertDSL toValueOrNull(Supplier<T> valueSupplier) {
+        public GeneralInsertDSL toValueOrNull(Supplier<@Nullable T> valueSupplier) {
             columnMappings.add(ValueOrNullMapping.of(column, valueSupplier));
             return GeneralInsertDSL.this;
         }
 
-        public GeneralInsertDSL toValueWhenPresent(T value) {
+        public GeneralInsertDSL toValueWhenPresent(@Nullable T value) {
             return toValueWhenPresent(() -> value);
         }
 
-        public GeneralInsertDSL toValueWhenPresent(Supplier<T> valueSupplier) {
+        public GeneralInsertDSL toValueWhenPresent(Supplier<@Nullable T> valueSupplier) {
             columnMappings.add(ValueWhenPresentMapping.of(column, valueSupplier));
             return GeneralInsertDSL.this;
         }
@@ -114,7 +113,7 @@ public class GeneralInsertDSL implements Buildable<GeneralInsertModel> {
 
     public static class Builder {
         private final List<AbstractColumnMapping> columnMappings = new ArrayList<>();
-        private SqlTable table;
+        private @Nullable SqlTable table;
 
         public Builder withTable(SqlTable table) {
             this.table = table;

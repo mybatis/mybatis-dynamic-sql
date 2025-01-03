@@ -17,6 +17,8 @@ package org.mybatis.dynamic.sql;
 
 import java.util.Objects;
 
+import org.jspecify.annotations.Nullable;
+
 public class ExistsCriterion extends SqlCriterion {
     private final ExistsPredicate existsPredicate;
 
@@ -35,7 +37,7 @@ public class ExistsCriterion extends SqlCriterion {
     }
 
     public static class Builder extends AbstractBuilder<Builder> {
-        private ExistsPredicate existsPredicate;
+        private @Nullable ExistsPredicate existsPredicate;
 
         public Builder withExistsPredicate(ExistsPredicate existsPredicate) {
             this.existsPredicate = existsPredicate;

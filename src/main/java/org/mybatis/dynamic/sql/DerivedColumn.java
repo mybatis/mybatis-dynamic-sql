@@ -19,6 +19,7 @@ import java.sql.JDBCType;
 import java.util.Objects;
 import java.util.Optional;
 
+import org.jspecify.annotations.Nullable;
 import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 
@@ -34,10 +35,10 @@ import org.mybatis.dynamic.sql.util.FragmentAndParameters;
  */
 public class DerivedColumn<T> implements BindableColumn<T> {
     private final String name;
-    private final String tableQualifier;
-    private final String columnAlias;
-    private final JDBCType jdbcType;
-    private final String typeHandler;
+    private final @Nullable String tableQualifier;
+    private final @Nullable String columnAlias;
+    private final @Nullable JDBCType jdbcType;
+    private final @Nullable String typeHandler;
 
     protected DerivedColumn(Builder<T> builder) {
         this.name = Objects.requireNonNull(builder.name);
@@ -93,18 +94,18 @@ public class DerivedColumn<T> implements BindableColumn<T> {
     }
 
     public static class Builder<T> {
-        private String name;
-        private String tableQualifier;
-        private String columnAlias;
-        private JDBCType jdbcType;
-        private String typeHandler;
+        private @Nullable String name;
+        private @Nullable String tableQualifier;
+        private @Nullable String columnAlias;
+        private @Nullable JDBCType jdbcType;
+        private @Nullable String typeHandler;
 
         public Builder<T> withName(String name) {
             this.name = name;
             return this;
         }
 
-        public Builder<T> withTableQualifier(String tableQualifier) {
+        public Builder<T> withTableQualifier(@Nullable String tableQualifier) {
             this.tableQualifier = tableQualifier;
             return this;
         }
@@ -114,12 +115,12 @@ public class DerivedColumn<T> implements BindableColumn<T> {
             return this;
         }
 
-        public Builder<T> withJdbcType(JDBCType jdbcType) {
+        public Builder<T> withJdbcType(@Nullable JDBCType jdbcType) {
             this.jdbcType = jdbcType;
             return this;
         }
 
-        public Builder<T> withTypeHandler(String typeHandler) {
+        public Builder<T> withTypeHandler(@Nullable String typeHandler) {
             this.typeHandler = typeHandler;
             return this;
         }

@@ -19,6 +19,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.jspecify.annotations.Nullable;
 import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.TableExpression;
 import org.mybatis.dynamic.sql.render.ExplicitTableAliasCalculator;
@@ -43,7 +44,8 @@ public class QueryExpressionRenderer {
         queryExpression = Objects.requireNonNull(builder.queryExpression);
         TableAliasCalculator childTableAliasCalculator = calculateChildTableAliasCalculator(queryExpression);
 
-        renderingContext = builder.renderingContext.withChildTableAliasCalculator(childTableAliasCalculator);
+        renderingContext = Objects.requireNonNull(builder.renderingContext)
+                .withChildTableAliasCalculator(childTableAliasCalculator);
 
         tableExpressionRenderer = new TableExpressionRenderer.Builder()
                 .withRenderingContext(renderingContext)
@@ -199,8 +201,8 @@ public class QueryExpressionRenderer {
     }
 
     public static class Builder {
-        private QueryExpressionModel queryExpression;
-        private RenderingContext renderingContext;
+        private @Nullable QueryExpressionModel queryExpression;
+        private @Nullable RenderingContext renderingContext;
 
         public Builder withRenderingContext(RenderingContext renderingContext) {
             this.renderingContext = renderingContext;

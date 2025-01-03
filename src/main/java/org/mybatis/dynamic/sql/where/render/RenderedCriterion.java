@@ -19,10 +19,11 @@ import static org.mybatis.dynamic.sql.util.StringUtilities.spaceBefore;
 
 import java.util.Objects;
 
+import org.jspecify.annotations.Nullable;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 
 public class RenderedCriterion {
-    private final String connector;
+    private final @Nullable String connector;
     private final FragmentAndParameters fragmentAndParameters;
 
     private RenderedCriterion(Builder builder) {
@@ -54,8 +55,8 @@ public class RenderedCriterion {
     }
 
     public static class Builder {
-        private String connector;
-        private FragmentAndParameters fragmentAndParameters;
+        private @Nullable String connector;
+        private @Nullable FragmentAndParameters fragmentAndParameters;
 
         public Builder withConnector(String connector) {
             this.connector = connector;

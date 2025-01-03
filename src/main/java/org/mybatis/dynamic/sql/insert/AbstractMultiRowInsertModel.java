@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 
+import org.jspecify.annotations.Nullable;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.util.AbstractColumnMapping;
 
@@ -53,7 +54,7 @@ public abstract class AbstractMultiRowInsertModel<T> {
     }
 
     public abstract static class AbstractBuilder<T, S extends AbstractBuilder<T, S>> {
-        private SqlTable table;
+        private @Nullable SqlTable table;
         private final List<T> records = new ArrayList<>();
         private final List<AbstractColumnMapping> columnMappings = new ArrayList<>();
 

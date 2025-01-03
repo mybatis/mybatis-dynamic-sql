@@ -15,15 +15,12 @@
  */
 package org.mybatis.dynamic.sql.insert.render;
 
-import org.jetbrains.annotations.NotNull;
-
 public interface InsertStatementProvider<T> {
     /**
      * Return the row associated with this insert statement.
      *
      * @return the row associated with this insert statement.
      */
-    @NotNull
     T getRow();
 
     /**

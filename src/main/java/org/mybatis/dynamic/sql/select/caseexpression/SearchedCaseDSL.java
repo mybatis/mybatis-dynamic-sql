@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.jspecify.annotations.Nullable;
 import org.mybatis.dynamic.sql.AndOrCriteriaGroup;
 import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.BindableColumn;
@@ -30,7 +31,7 @@ import org.mybatis.dynamic.sql.common.AbstractBooleanExpressionDSL;
 
 public class SearchedCaseDSL implements ElseDSL<SearchedCaseDSL.SearchedCaseEnder> {
     private final List<SearchedCaseWhenCondition> whenConditions = new ArrayList<>();
-    private BasicColumn elseValue;
+    private @Nullable BasicColumn elseValue;
 
     public <T> WhenDSL when(BindableColumn<T> column, VisitableCondition<T> condition,
                             AndOrCriteriaGroup... subCriteria) {

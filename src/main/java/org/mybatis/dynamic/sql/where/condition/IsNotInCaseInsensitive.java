@@ -70,6 +70,8 @@ public class IsNotInCaseInsensitive extends AbstractListValueCondition<String>
     }
 
     public static IsNotInCaseInsensitive of(Collection<String> values) {
+        // Keep the null safe upper case utility for backwards compatibility
+        //noinspection DataFlowIssue
         return new IsNotInCaseInsensitive(values).map(StringUtilities::safelyUpperCase);
     }
 }

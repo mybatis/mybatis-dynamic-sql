@@ -19,6 +19,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import org.jspecify.annotations.Nullable;
+
 public class DefaultUpdateStatementProvider implements UpdateStatementProvider {
     private final String updateStatement;
     private final Map<String, Object> parameters;
@@ -43,7 +45,7 @@ public class DefaultUpdateStatementProvider implements UpdateStatementProvider {
     }
 
     public static class Builder {
-        private String updateStatement;
+        private @Nullable String updateStatement;
         private final Map<String, Object> parameters = new HashMap<>();
 
         public Builder withUpdateStatement(String updateStatement) {

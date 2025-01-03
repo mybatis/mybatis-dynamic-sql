@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import org.jspecify.annotations.Nullable;
 import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.SortSpecification;
 import org.mybatis.dynamic.sql.render.RenderingContext;
@@ -29,8 +30,8 @@ import org.mybatis.dynamic.sql.util.Validator;
 
 public class SearchedCaseModel implements BasicColumn, SortSpecification {
     private final List<SearchedCaseWhenCondition> whenConditions;
-    private final BasicColumn elseValue;
-    private final String alias;
+    private final @Nullable BasicColumn elseValue;
+    private final @Nullable String alias;
     private final String descendingPhrase;
 
     private SearchedCaseModel(Builder builder) {
@@ -84,8 +85,8 @@ public class SearchedCaseModel implements BasicColumn, SortSpecification {
 
     public static class Builder {
         private final List<SearchedCaseWhenCondition> whenConditions = new ArrayList<>();
-        private BasicColumn elseValue;
-        private String alias;
+        private @Nullable BasicColumn elseValue;
+        private @Nullable String alias;
         private String descendingPhrase = ""; //$NON-NLS-1$
 
         public Builder withWhenConditions(List<SearchedCaseWhenCondition> whenConditions) {
@@ -93,12 +94,12 @@ public class SearchedCaseModel implements BasicColumn, SortSpecification {
             return this;
         }
 
-        public Builder withElseValue(BasicColumn elseValue) {
+        public Builder withElseValue(@Nullable BasicColumn elseValue) {
             this.elseValue = elseValue;
             return this;
         }
 
-        public Builder withAlias(String alias) {
+        public Builder withAlias(@Nullable String alias) {
             this.alias = alias;
             return this;
         }

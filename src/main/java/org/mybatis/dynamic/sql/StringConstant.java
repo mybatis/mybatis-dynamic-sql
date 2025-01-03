@@ -18,20 +18,21 @@ package org.mybatis.dynamic.sql;
 import java.util.Objects;
 import java.util.Optional;
 
+import org.jspecify.annotations.Nullable;
 import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 import org.mybatis.dynamic.sql.util.StringUtilities;
 
 public class StringConstant implements BindableColumn<String> {
 
-    private final String alias;
+    private final @Nullable String alias;
     private final String value;
 
     private StringConstant(String value) {
         this(value, null);
     }
 
-    private StringConstant(String value, String alias) {
+    private StringConstant(String value, @Nullable String alias) {
         this.value = Objects.requireNonNull(value);
         this.alias = alias;
     }

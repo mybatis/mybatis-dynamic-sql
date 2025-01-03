@@ -19,6 +19,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import org.jspecify.annotations.Nullable;
+
 public class DefaultWhereClauseProvider implements WhereClauseProvider {
     private final String whereClause;
     private final Map<String, Object> parameters;
@@ -43,7 +45,7 @@ public class DefaultWhereClauseProvider implements WhereClauseProvider {
     }
 
     public static class Builder {
-        private String whereClause;
+        private @Nullable String whereClause;
         private final Map<String, Object> parameters = new HashMap<>();
 
         public Builder withWhereClause(String whereClause) {

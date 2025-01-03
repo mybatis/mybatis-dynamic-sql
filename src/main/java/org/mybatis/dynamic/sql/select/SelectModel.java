@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 
-import org.jetbrains.annotations.NotNull;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.select.render.SelectRenderer;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
@@ -39,7 +38,6 @@ public class SelectModel extends AbstractSelectModel {
         return queryExpressions.stream();
     }
 
-    @NotNull
     public SelectStatementProvider render(RenderingStrategy renderingStrategy) {
         return SelectRenderer.withSelectModel(this)
                 .withRenderingStrategy(renderingStrategy)

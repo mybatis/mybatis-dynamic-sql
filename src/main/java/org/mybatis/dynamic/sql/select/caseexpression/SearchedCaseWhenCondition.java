@@ -17,6 +17,7 @@ package org.mybatis.dynamic.sql.select.caseexpression;
 
 import java.util.Objects;
 
+import org.jspecify.annotations.Nullable;
 import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.common.AbstractBooleanExpressionModel;
 
@@ -33,7 +34,7 @@ public class SearchedCaseWhenCondition extends AbstractBooleanExpressionModel {
     }
 
     public static class Builder extends AbstractBuilder<Builder> {
-        private BasicColumn thenValue;
+        private @Nullable BasicColumn thenValue;
 
         public Builder withThenValue(BasicColumn thenValue) {
             this.thenValue = thenValue;

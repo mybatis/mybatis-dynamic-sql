@@ -20,6 +20,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.jspecify.annotations.Nullable;
 import org.mybatis.dynamic.sql.common.OrderByModel;
 import org.mybatis.dynamic.sql.common.OrderByRenderer;
 import org.mybatis.dynamic.sql.render.ExplicitTableAliasCalculator;
@@ -128,8 +129,8 @@ public class UpdateRenderer {
     }
 
     public static class Builder {
-        private UpdateModel updateModel;
-        private RenderingStrategy renderingStrategy;
+        private @Nullable UpdateModel updateModel;
+        private @Nullable RenderingStrategy renderingStrategy;
 
         public Builder withUpdateModel(UpdateModel updateModel) {
             this.updateModel = updateModel;

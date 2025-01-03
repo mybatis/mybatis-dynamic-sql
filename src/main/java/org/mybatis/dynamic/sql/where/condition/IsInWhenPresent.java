@@ -22,6 +22,7 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+import org.jspecify.annotations.Nullable;
 import org.mybatis.dynamic.sql.AbstractListValueCondition;
 
 public class IsInWhenPresent<T> extends AbstractListValueCondition<T> {
@@ -61,11 +62,11 @@ public class IsInWhenPresent<T> extends AbstractListValueCondition<T> {
     }
 
     @SafeVarargs
-    public static <T> IsInWhenPresent<T> of(T... values) {
+    public static <T> IsInWhenPresent<T> of(@Nullable T... values) {
         return of(Arrays.asList(values));
     }
 
-    public static <T> IsInWhenPresent<T> of(Collection<T> values) {
+    public static <T> IsInWhenPresent<T> of(Collection<@Nullable T> values) {
         return new IsInWhenPresent<>(values);
     }
 }

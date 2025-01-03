@@ -17,6 +17,7 @@ package org.mybatis.dynamic.sql.select.render;
 
 import java.util.Objects;
 
+import org.jspecify.annotations.Nullable;
 import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.select.SelectModel;
@@ -51,8 +52,8 @@ public class SelectRenderer {
     }
 
     public static class Builder {
-        private SelectModel selectModel;
-        private RenderingStrategy renderingStrategy;
+        private @Nullable SelectModel selectModel;
+        private @Nullable RenderingStrategy renderingStrategy;
 
         public Builder withRenderingStrategy(RenderingStrategy renderingStrategy) {
             this.renderingStrategy = renderingStrategy;

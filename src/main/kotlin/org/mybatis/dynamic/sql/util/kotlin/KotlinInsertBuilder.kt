@@ -33,7 +33,7 @@ class KotlinInsertBuilder<T : Any> (private val row: T): Buildable<InsertModel<T
         this.table = table
     }
 
-    fun <C> map(column: SqlColumn<C>) = SingleRowInsertColumnMapCompleter(column) {
+    fun <C : Any> map(column: SqlColumn<C>) = SingleRowInsertColumnMapCompleter(column) {
         columnMappings.add(it)
     }
 
@@ -41,7 +41,7 @@ class KotlinInsertBuilder<T : Any> (private val row: T): Buildable<InsertModel<T
         assertNotNull(table, "ERROR.25") //$NON-NLS-1$
         return with(InsertDSL.Builder<T>()) {
             withRow(row)
-            withTable(table)
+            withTable(table!!)
             withColumnMappings(columnMappings)
             build()
         }.build()

@@ -33,7 +33,7 @@ class KotlinMultiRowInsertBuilder<T : Any> (private val rows: Collection<T>): Bu
         this.table = table
     }
 
-    fun <C> map(column: SqlColumn<C>) = MultiRowInsertColumnMapCompleter(column) {
+    fun <C : Any> map(column: SqlColumn<C>) = MultiRowInsertColumnMapCompleter(column) {
         columnMappings.add(it)
     }
 
@@ -41,7 +41,7 @@ class KotlinMultiRowInsertBuilder<T : Any> (private val rows: Collection<T>): Bu
         assertNotNull(table, "ERROR.26") //$NON-NLS-1$
         return with(MultiRowInsertDSL.Builder<T>()) {
             withRecords(rows)
-            withTable(table)
+            withTable(table!!)
             withColumnMappings(columnMappings)
             build()
         }.build()

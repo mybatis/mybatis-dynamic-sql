@@ -19,6 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 
 import org.junit.jupiter.api.Test;
@@ -36,7 +37,7 @@ class FilterAndMapTest {
     void testTypeConversionWithNullThrowsException() {
         IsEqualTo<String> cond = SqlBuilder.isEqualTo((String) null);
         assertThatExceptionOfType(NumberFormatException.class).isThrownBy(() ->
-            cond.map(Integer::parseInt)
+                cond.map(Integer::parseInt)
         );
     }
 
@@ -123,7 +124,7 @@ class FilterAndMapTest {
         IsEqualTo<String> cond = SqlBuilder.isEqualTo("Fred").filter(s -> false);
         IsEqualTo<String> mapped = cond.map(String::toUpperCase);
         assertThat(cond.isEmpty()).isTrue();
-        assertThat(cond.value()).isNull();
+        assertThatExceptionOfType(NoSuchElementException.class).isThrownBy(cond::value);
         assertThat(cond).isSameAs(mapped);
     }
 
@@ -156,7 +157,7 @@ class FilterAndMapTest {
         IsNotEqualTo<String> cond = SqlBuilder.isNotEqualTo("Fred").filter(s -> false);
         IsNotEqualTo<String> mapped = cond.map(String::toUpperCase);
         assertThat(cond.isEmpty()).isTrue();
-        assertThat(cond.value()).isNull();
+        assertThatExceptionOfType(NoSuchElementException.class).isThrownBy(cond::value);
         assertThat(cond).isSameAs(mapped);
     }
 
@@ -189,7 +190,7 @@ class FilterAndMapTest {
         IsLessThan<String> cond = SqlBuilder.isLessThan("Fred").filter(s -> false);
         IsLessThan<String> mapped = cond.map(String::toUpperCase);
         assertThat(cond.isEmpty()).isTrue();
-        assertThat(cond.value()).isNull();
+        assertThatExceptionOfType(NoSuchElementException.class).isThrownBy(cond::value);
         assertThat(cond).isSameAs(mapped);
     }
 
@@ -222,7 +223,7 @@ class FilterAndMapTest {
         IsLessThanOrEqualTo<String> cond = SqlBuilder.isLessThanOrEqualTo("Fred").filter(s -> false);
         IsLessThanOrEqualTo<String> mapped = cond.map(String::toUpperCase);
         assertThat(cond.isEmpty()).isTrue();
-        assertThat(cond.value()).isNull();
+        assertThatExceptionOfType(NoSuchElementException.class).isThrownBy(cond::value);
         assertThat(cond).isSameAs(mapped);
     }
 
@@ -255,7 +256,7 @@ class FilterAndMapTest {
         IsGreaterThan<String> cond = SqlBuilder.isGreaterThan("Fred").filter(s -> false);
         IsGreaterThan<String> mapped = cond.map(String::toUpperCase);
         assertThat(cond.isEmpty()).isTrue();
-        assertThat(cond.value()).isNull();
+        assertThatExceptionOfType(NoSuchElementException.class).isThrownBy(cond::value);
         assertThat(cond).isSameAs(mapped);
     }
 
@@ -288,7 +289,7 @@ class FilterAndMapTest {
         IsGreaterThanOrEqualTo<String> cond = SqlBuilder.isGreaterThanOrEqualTo("Fred").filter(s -> false);
         IsGreaterThanOrEqualTo<String> mapped = cond.map(String::toUpperCase);
         assertThat(cond.isEmpty()).isTrue();
-        assertThat(cond.value()).isNull();
+        assertThatExceptionOfType(NoSuchElementException.class).isThrownBy(cond::value);
         assertThat(cond).isSameAs(mapped);
     }
 
@@ -321,7 +322,7 @@ class FilterAndMapTest {
         IsLike<String> cond = SqlBuilder.isLike("Fred").filter(s -> false);
         IsLike<String> mapped = cond.map(String::toUpperCase);
         assertThat(cond.isEmpty()).isTrue();
-        assertThat(cond.value()).isNull();
+        assertThatExceptionOfType(NoSuchElementException.class).isThrownBy(cond::value);
         assertThat(cond).isSameAs(mapped);
     }
 
@@ -355,7 +356,7 @@ class FilterAndMapTest {
         IsLikeCaseInsensitive cond = SqlBuilder.isLikeCaseInsensitive("Fred").filter(s -> false);
         IsLikeCaseInsensitive mapped = cond.map(String::toUpperCase);
         assertThat(cond.isEmpty()).isTrue();
-        assertThat(cond.value()).isNull();
+        assertThatExceptionOfType(NoSuchElementException.class).isThrownBy(cond::value);
         assertThat(cond).isSameAs(mapped);
     }
 
@@ -388,7 +389,7 @@ class FilterAndMapTest {
         IsNotLike<String> cond = SqlBuilder.isNotLike("Fred").filter(s -> false);
         IsNotLike<String> mapped = cond.map(String::toUpperCase);
         assertThat(cond.isEmpty()).isTrue();
-        assertThat(cond.value()).isNull();
+        assertThatExceptionOfType(NoSuchElementException.class).isThrownBy(cond::value);
         assertThat(cond).isSameAs(mapped);
     }
 
@@ -422,7 +423,7 @@ class FilterAndMapTest {
         IsNotLikeCaseInsensitive cond = SqlBuilder.isNotLikeCaseInsensitive("Fred").filter(s -> false);
         IsNotLikeCaseInsensitive mapped = cond.map(String::toUpperCase);
         assertThat(cond.isEmpty()).isTrue();
-        assertThat(cond.value()).isNull();
+        assertThatExceptionOfType(NoSuchElementException.class).isThrownBy(cond::value);
         assertThat(cond).isSameAs(mapped);
     }
 

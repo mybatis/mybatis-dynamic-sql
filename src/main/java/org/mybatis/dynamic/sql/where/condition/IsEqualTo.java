@@ -15,6 +15,7 @@
  */
 package org.mybatis.dynamic.sql.where.condition;
 
+import java.util.NoSuchElementException;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -22,7 +23,12 @@ import org.mybatis.dynamic.sql.AbstractSingleValueCondition;
 
 public class IsEqualTo<T> extends AbstractSingleValueCondition<T> {
 
-    private static final IsEqualTo<?> EMPTY = new IsEqualTo<Object>(null) {
+    private static final IsEqualTo<?> EMPTY = new IsEqualTo<Object>(-1) {
+        @Override
+        public Object value() {
+            throw new NoSuchElementException("No value present"); //$NON-NLS-1$
+        }
+
         @Override
         public boolean isEmpty() {
             return true;

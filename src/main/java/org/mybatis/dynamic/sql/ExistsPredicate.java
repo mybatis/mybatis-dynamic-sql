@@ -17,7 +17,6 @@ package org.mybatis.dynamic.sql;
 
 import java.util.Objects;
 
-import org.jetbrains.annotations.NotNull;
 import org.mybatis.dynamic.sql.select.SelectModel;
 import org.mybatis.dynamic.sql.util.Buildable;
 
@@ -38,12 +37,10 @@ public class ExistsPredicate {
         return selectModelBuilder;
     }
 
-    @NotNull
     public static ExistsPredicate exists(Buildable<SelectModel> selectModelBuilder) {
         return new ExistsPredicate("exists", selectModelBuilder); //$NON-NLS-1$
     }
 
-    @NotNull
     public static ExistsPredicate notExists(Buildable<SelectModel> selectModelBuilder) {
         return new ExistsPredicate("not exists", selectModelBuilder); //$NON-NLS-1$
     }

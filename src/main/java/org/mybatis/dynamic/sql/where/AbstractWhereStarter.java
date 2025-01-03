@@ -18,6 +18,7 @@ package org.mybatis.dynamic.sql.where;
 import java.util.Arrays;
 import java.util.List;
 
+import org.jspecify.annotations.Nullable;
 import org.mybatis.dynamic.sql.AndOrCriteriaGroup;
 import org.mybatis.dynamic.sql.BindableColumn;
 import org.mybatis.dynamic.sql.ColumnAndConditionCriterion;
@@ -69,7 +70,7 @@ public interface AbstractWhereStarter<F extends AbstractWhereFinisher<?>, D exte
         return where(initialCriterion, Arrays.asList(subCriteria));
     }
 
-    default F where(SqlCriterion initialCriterion, List<AndOrCriteriaGroup> subCriteria) {
+    default F where(@Nullable SqlCriterion initialCriterion, List<AndOrCriteriaGroup> subCriteria) {
         SqlCriterion sqlCriterion = new CriteriaGroup.Builder()
                 .withInitialCriterion(initialCriterion)
                 .withSubCriteria(subCriteria)
