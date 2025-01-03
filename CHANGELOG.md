@@ -28,8 +28,15 @@ worked to make these changes as minimal as possible.
 ### Adoption of JSpecify (https://jspecify.dev/)
 
 Following the lead of many other projects (including The Spring Framework), we have adopted JSpecify to fully
-specify the null handling properties of this library. In general, the library does not expect that you will pass a null
-value into any method. There are two exceptions to this rule:
+document the null handling properties of this library. JSpecify is now a runtime dependency of this library - as is
+recommended practice with JSpecify.
+
+This change should not impact the running of any existing code, but depending on your usage you may see new IDE or
+tooling warnings based on the declared nullability of methods in the library. You may choose to ignore the
+warnings and things should continue to function. Of course, we recommend that you do not ignore these warnings!
+
+In general, the library does not expect that you will pass a null value into any method. There are two exceptions to
+this rule:
 
 1. Some builder methods will accept a null value if the target object will properly handle null values through the
    use of java.util.Optional
@@ -38,12 +45,20 @@ value into any method. There are two exceptions to this rule:
 
 As you might expect, standardizing null handling revealed some issues in the library that may impact you:
 
-Case-insensitive conditions like "isLikeCaseInsensitive" will now throw a NullPointerException if you pass in null
-values.
+Fixing compiler warnings and errors:
 
-The where conditions (isEqualTo, isLessThan, etc.) can be filtered and result in an "empty" condition -
-similar to java.util.Optional. Previously, calling a "value" method of the condition would return null. Now
-those methods will throw "NoSuchElementException". This should not impact you in normal usage.
+1. We expect that most of the warnings you encounter will be related to passing null values into a where condition.
+   These warnings should be resolved by changing your code to use the "WhenPresent" versions of methods as those
+   methods handle null values in a predictable way.
+2. Java Classes that extend "AliasableSqlTable" will likely see IDE warnings about non-null type arguments. This can be
+   resolved by adding a "@NullMarked" annotation to the class or package. This issue does not affect Kotlin classes
+   that extend "AliasableSqlTable".
+
+Runtime behavior changes:
+
+1. The where conditions (isEqualTo, isLessThan, etc.) can be filtered and result in an "empty" condition -
+   similar to java.util.Optional. Previously, calling a "value" method of the condition would return null. Now
+   those methods will throw "NoSuchElementException". This should not impact you in normal usage.
 
 ### Other important changes:
 
