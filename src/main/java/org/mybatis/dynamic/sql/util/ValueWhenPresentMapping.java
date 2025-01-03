@@ -38,7 +38,7 @@ public class ValueWhenPresentMapping<T> extends AbstractColumnMapping {
         return Optional.ofNullable(valueSupplier.get()).map(this::convert);
     }
 
-    private @Nullable Object convert(T value) {
+    private @Nullable Object convert(@Nullable T value) {
         return localColumn.convertParameterType(value);
     }
 

@@ -22,7 +22,7 @@ import org.springframework.core.convert.converter.Converter;
 public class LastNameParameterConverter implements ParameterTypeConverter<LastName, String>,
         Converter<LastName, String> {
     @Override
-    public @Nullable String convert(@Nullable LastName source) {
-        return source == null ? null : source.getName();
+    public @Nullable String convert(LastName source) {
+        return source.getName();
     }
 }

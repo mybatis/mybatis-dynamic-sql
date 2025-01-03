@@ -36,7 +36,7 @@ public interface BindableColumn<T> extends BasicColumn {
     @Override
     BindableColumn<T> as(String alias);
 
-    default @Nullable Object convertParameterType(@Nullable T value) {
+    default @Nullable Object convertParameterType(T value) {
         return value;
     }
 

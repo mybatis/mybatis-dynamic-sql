@@ -81,7 +81,7 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
 
     @Override
     public @Nullable Object convertParameterType(@Nullable T value) {
-        return parameterTypeConverter.convert(value);
+        return value == null ? null : parameterTypeConverter.convert(value);
     }
 
     @Override

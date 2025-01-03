@@ -52,5 +52,5 @@ import org.jspecify.annotations.Nullable;
  */
 @FunctionalInterface
 public interface ParameterTypeConverter<S, T> {
-    @Nullable T convert(@Nullable S source);
+    @Nullable T convert(S source);
 }
