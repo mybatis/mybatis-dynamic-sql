@@ -108,7 +108,7 @@ class OptionalConditionsWithPredicatesAnimalDataTest {
             assertAll(
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where id > #{parameters.p1,jdbcType=INTEGER} order by id"),
                     () -> assertThat(selectStatement.getParameters()).containsEntry("p1", null),
-                    () -> assertThat(animals).hasSize(0)
+                    () -> assertThat(animals).isEmpty()
             );
         }
     }

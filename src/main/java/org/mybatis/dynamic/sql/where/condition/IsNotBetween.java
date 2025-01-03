@@ -128,7 +128,7 @@ public class IsNotBetween<T> extends AbstractTwoValueCondition<T> {
         @Override
         protected IsNotBetween<T> build(@Nullable T value2) {
             if (value1 == null || value2 == null) {
-                return IsNotBetween.empty();
+                return empty();
             } else {
                 return new IsNotBetween<>(value1, value2);
             }
