@@ -52,5 +52,13 @@ import org.jspecify.annotations.Nullable;
  */
 @FunctionalInterface
 public interface ParameterTypeConverter<S, T> {
+    /**
+     * Convert the value from one value to another.
+     *
+     * <p>The input value will never be null - the framework will automatically handle nulls.
+     *
+     * @param source value as specified in the condition, or after a map operation. Never null.
+     * @return Possibly null converted value.
+     */
     @Nullable T convert(S source);
 }

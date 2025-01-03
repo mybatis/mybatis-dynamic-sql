@@ -28,7 +28,7 @@ worked to make these changes as minimal as possible.
 ### Adoption of JSpecify (https://jspecify.dev/)
 
 Following the lead of many other projects (including The Spring Framework), we have adopted JSpecify to fully
-document the null handling properties of this library. JSpecify is now a runtime dependency of this library - as is
+document the null handling properties of this library. JSpecify is now a runtime dependency - as is
 recommended practice with JSpecify.
 
 This change should not impact the running of any existing code, but depending on your usage you may see new IDE or
@@ -43,7 +43,7 @@ this rule:
 2. Methods with names that include "WhenPresent" will properly handle null parameters
    (for example, "isEqualToWhenPresent")
 
-As you might expect, standardizing null handling revealed some issues in the library that may impact you:
+As you might expect, standardizing null handling revealed some issues in the library that may impact you.
 
 Fixing compiler warnings and errors:
 
@@ -53,12 +53,35 @@ Fixing compiler warnings and errors:
 2. Java Classes that extend "AliasableSqlTable" will likely see IDE warnings about non-null type arguments. This can be
    resolved by adding a "@NullMarked" annotation to the class or package. This issue does not affect Kotlin classes
    that extend "AliasableSqlTable".
+3. Similarly, if you have coded any functions for use with your queries, you can resolve most IDE warnings by adding
+   the "@NullMarked" annotation.
+4. If you have coded any Kotlin functions that operate on a generic Java class from the library, then you should
+   change the type parameter definition to specify a non-nullable type. For example...
+
+   ```kotlin
+   import org.mybatis.dynamic.sql.SqlColumn
+
+   fun <T> foo(column: SqlColumn<T>) {
+   }
+   ```
+   
+   Should change to:
+
+   ```kotlin
+   import org.mybatis.dynamic.sql.SqlColumn
+
+   fun <T : Any> foo(column: SqlColumn<T>) {
+   }
+   ```
 
 Runtime behavior changes:
 
 1. The where conditions (isEqualTo, isLessThan, etc.) can be filtered and result in an "empty" condition -
    similar to java.util.Optional. Previously, calling a "value" method of the condition would return null. Now
    those methods will throw "NoSuchElementException". This should not impact you in normal usage.
+2. We have updated the "ParameterTypeConverter" used in Spring applications to maintain compatibility with Spring's
+   "Converter" interface. The primary change is that the framework will no longer call a type converter if the
+   input value is null. This should simplify the coding of converters and foster reuse with existing Spring converters.
 
 ### Other important changes:
 
