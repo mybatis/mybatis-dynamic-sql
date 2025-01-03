@@ -72,6 +72,8 @@ public class FragmentAndParameters {
         }
 
         public Builder withParameter(String key, @Nullable Object value) {
+            // the value can be null because a parameter type converter may return null
+
             //noinspection DataFlowIssue
             parameters.put(key, value);
             return this;

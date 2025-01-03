@@ -28,7 +28,7 @@ public class ValueWhenPresentMapping<T> extends AbstractColumnMapping {
     // keep a reference to the column so we don't lose the type
     private final SqlColumn<T> localColumn;
 
-    private ValueWhenPresentMapping(SqlColumn<T> column, Supplier<T> valueSupplier) {
+    private ValueWhenPresentMapping(SqlColumn<T> column, Supplier<@Nullable T> valueSupplier) {
         super(column);
         this.valueSupplier = Objects.requireNonNull(valueSupplier);
         localColumn = Objects.requireNonNull(column);
@@ -47,7 +47,7 @@ public class ValueWhenPresentMapping<T> extends AbstractColumnMapping {
         return visitor.visit(this);
     }
 
-    public static <T> ValueWhenPresentMapping<T> of(SqlColumn<T> column, Supplier<T> valueSupplier) {
+    public static <T> ValueWhenPresentMapping<T> of(SqlColumn<T> column, Supplier<@Nullable T> valueSupplier) {
         return new ValueWhenPresentMapping<>(column, valueSupplier);
     }
 }

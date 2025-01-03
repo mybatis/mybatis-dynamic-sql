@@ -23,6 +23,7 @@ import java.util.function.UnaryOperator;
 
 import org.mybatis.dynamic.sql.AbstractListValueCondition;
 import org.mybatis.dynamic.sql.render.RenderingContext;
+import org.mybatis.dynamic.sql.util.StringUtilities;
 import org.mybatis.dynamic.sql.util.Validator;
 
 public class IsNotInCaseInsensitive extends AbstractListValueCondition<String>
@@ -69,6 +70,8 @@ public class IsNotInCaseInsensitive extends AbstractListValueCondition<String>
     }
 
     public static IsNotInCaseInsensitive of(Collection<String> values) {
-        return new IsNotInCaseInsensitive(values).map(String::toUpperCase);
+        // Keep the null safe upper case utility for backwards compatibility
+        //noinspection DataFlowIssue
+        return new IsNotInCaseInsensitive(values).map(StringUtilities::safelyUpperCase);
     }
 }

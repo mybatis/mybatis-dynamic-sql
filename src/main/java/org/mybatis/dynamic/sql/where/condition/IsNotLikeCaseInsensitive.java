@@ -20,6 +20,7 @@ import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 
 import org.mybatis.dynamic.sql.AbstractSingleValueCondition;
+import org.mybatis.dynamic.sql.util.StringUtilities;
 
 public class IsNotLikeCaseInsensitive extends AbstractSingleValueCondition<String>
         implements CaseInsensitiveVisitableCondition {
@@ -68,6 +69,8 @@ public class IsNotLikeCaseInsensitive extends AbstractSingleValueCondition<Strin
     }
 
     public static IsNotLikeCaseInsensitive of(String value) {
-        return new IsNotLikeCaseInsensitive(value).map(String::toUpperCase);
+        // Keep the null safe upper case utility for backwards compatibility
+        //noinspection DataFlowIssue
+        return new IsNotLikeCaseInsensitive(value).map(StringUtilities::safelyUpperCase);
     }
 }
