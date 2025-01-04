@@ -15,12 +15,14 @@
  */
 package examples.spring;
 
+import org.jspecify.annotations.NullMarked;
 import org.mybatis.dynamic.sql.ParameterTypeConverter;
 
+@NullMarked
 public class YesNoParameterConverter implements ParameterTypeConverter<Boolean, String> {
 
     @Override
     public String convert(Boolean source) {
-        return source == null ? null : source ? "Yes" : "No";
+        return source ? "Yes" : "No";
     }
 }
