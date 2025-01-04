@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.Nullable;
 import org.mybatis.dynamic.sql.AndOrCriteriaGroup;
 import org.mybatis.dynamic.sql.BindableColumn;
 import org.mybatis.dynamic.sql.ColumnAndConditionCriterion;
@@ -31,86 +31,72 @@ import org.mybatis.dynamic.sql.VisitableCondition;
 import org.mybatis.dynamic.sql.util.Validator;
 
 public abstract class AbstractBooleanExpressionDSL<T extends AbstractBooleanExpressionDSL<T>> {
-    private SqlCriterion initialCriterion; // WARNING - may be null!
+    private @Nullable SqlCriterion initialCriterion;
     protected final List<AndOrCriteriaGroup> subCriteria = new ArrayList<>();
 
-    @NotNull
     public <S> T and(BindableColumn<S> column, VisitableCondition<S> condition,
                      AndOrCriteriaGroup... subCriteria) {
         return and(column, condition, Arrays.asList(subCriteria));
     }
 
-    @NotNull
     public <S> T and(BindableColumn<S> column, VisitableCondition<S> condition,
                      List<AndOrCriteriaGroup> subCriteria) {
         addSubCriteria("and", buildCriterion(column, condition), subCriteria); //$NON-NLS-1$
         return getThis();
     }
 
-    @NotNull
     public T and(ExistsPredicate existsPredicate, AndOrCriteriaGroup... subCriteria) {
         return and(existsPredicate, Arrays.asList(subCriteria));
     }
 
-    @NotNull
     public T and(ExistsPredicate existsPredicate, List<AndOrCriteriaGroup> subCriteria) {
         addSubCriteria("and", buildCriterion(existsPredicate), subCriteria); //$NON-NLS-1$
         return getThis();
     }
 
-    @NotNull
     public T and(SqlCriterion initialCriterion, AndOrCriteriaGroup... subCriteria) {
         return and(initialCriterion, Arrays.asList(subCriteria));
     }
 
-    @NotNull
     public T and(SqlCriterion initialCriterion, List<AndOrCriteriaGroup> subCriteria) {
         addSubCriteria("and", buildCriterion(initialCriterion), subCriteria); //$NON-NLS-1$
         return getThis();
     }
 
-    @NotNull
     public T and(List<AndOrCriteriaGroup> criteria) {
         addSubCriteria("and", criteria); //$NON-NLS-1$
         return getThis();
     }
 
-    @NotNull
     public <S> T or(BindableColumn<S> column, VisitableCondition<S> condition,
                     AndOrCriteriaGroup... subCriteria) {
         return or(column, condition, Arrays.asList(subCriteria));
     }
 
-    @NotNull
     public <S> T or(BindableColumn<S> column, VisitableCondition<S> condition,
                     List<AndOrCriteriaGroup> subCriteria) {
         addSubCriteria("or", buildCriterion(column, condition), subCriteria); //$NON-NLS-1$
         return getThis();
     }
 
-    @NotNull
     public T or(ExistsPredicate existsPredicate, AndOrCriteriaGroup... subCriteria) {
         return or(existsPredicate, Arrays.asList(subCriteria));
     }
 
-    @NotNull
     public T or(ExistsPredicate existsPredicate, List<AndOrCriteriaGroup> subCriteria) {
         addSubCriteria("or", buildCriterion(existsPredicate), subCriteria); //$NON-NLS-1$
         return getThis();
     }
 
-    @NotNull
     public T or(SqlCriterion initialCriterion, AndOrCriteriaGroup... subCriteria) {
         return or(initialCriterion, Arrays.asList(subCriteria));
     }
 
-    @NotNull
     public T or(SqlCriterion initialCriterion, List<AndOrCriteriaGroup> subCriteria) {
         addSubCriteria("or", buildCriterion(initialCriterion), subCriteria); //$NON-NLS-1$
         return getThis();
     }
 
-    @NotNull
     public T or(List<AndOrCriteriaGroup> criteria) {
         addSubCriteria("or", criteria); //$NON-NLS-1$
         return getThis();
@@ -144,17 +130,16 @@ public abstract class AbstractBooleanExpressionDSL<T extends AbstractBooleanExpr
                 .build());
     }
 
-    protected void setInitialCriterion(SqlCriterion initialCriterion) {
+    protected void setInitialCriterion(@Nullable SqlCriterion initialCriterion) {
         this.initialCriterion = initialCriterion;
     }
 
-    protected void setInitialCriterion(SqlCriterion initialCriterion, StatementType statementType) {
+    protected void setInitialCriterion(@Nullable SqlCriterion initialCriterion, StatementType statementType) {
         Validator.assertTrue(this.initialCriterion == null, statementType.messageNumber());
         setInitialCriterion(initialCriterion);
     }
 
-    // may be null!
-    protected SqlCriterion getInitialCriterion() {
+    protected @Nullable SqlCriterion getInitialCriterion() {
         return initialCriterion;
     }
 

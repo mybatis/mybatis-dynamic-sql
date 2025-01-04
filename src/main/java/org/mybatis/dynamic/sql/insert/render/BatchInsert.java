@@ -20,6 +20,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+import org.jspecify.annotations.Nullable;
+
 public class BatchInsert<T> {
     private final String insertStatement;
     private final List<T> records;
@@ -64,7 +66,7 @@ public class BatchInsert<T> {
     }
 
     public static class Builder<T> {
-        private String insertStatement;
+        private @Nullable String insertStatement;
         private final List<T> records = new ArrayList<>();
 
         public Builder<T> withInsertStatement(String insertStatement) {

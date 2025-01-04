@@ -17,6 +17,8 @@ package org.mybatis.dynamic.sql;
 
 import java.util.Optional;
 
+import org.jspecify.annotations.Nullable;
+
 /**
  * Describes a column with a known data type. The type is only used by the compiler to assure type safety
  * when building clauses with conditions.
@@ -34,7 +36,7 @@ public interface BindableColumn<T> extends BasicColumn {
     @Override
     BindableColumn<T> as(String alias);
 
-    default Object convertParameterType(T value) {
+    default @Nullable Object convertParameterType(T value) {
         return value;
     }
 

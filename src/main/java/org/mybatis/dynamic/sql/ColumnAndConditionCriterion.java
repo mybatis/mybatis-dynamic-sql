@@ -17,6 +17,8 @@ package org.mybatis.dynamic.sql;
 
 import java.util.Objects;
 
+import org.jspecify.annotations.Nullable;
+
 public class ColumnAndConditionCriterion<T> extends SqlCriterion {
     private final BindableColumn<T> column;
     private final VisitableCondition<T> condition;
@@ -45,8 +47,8 @@ public class ColumnAndConditionCriterion<T> extends SqlCriterion {
     }
 
     public static class Builder<T> extends AbstractBuilder<Builder<T>> {
-        private BindableColumn<T> column;
-        private VisitableCondition<T> condition;
+        private @Nullable BindableColumn<T> column;
+        private @Nullable VisitableCondition<T> condition;
 
         public Builder<T> withColumn(BindableColumn<T> column) {
             this.column = column;

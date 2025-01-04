@@ -18,12 +18,13 @@ package org.mybatis.dynamic.sql.select;
 import java.util.Objects;
 import java.util.Optional;
 
+import org.jspecify.annotations.Nullable;
 import org.mybatis.dynamic.sql.TableExpression;
 import org.mybatis.dynamic.sql.TableExpressionVisitor;
 
 public class SubQuery implements TableExpression {
     private final SelectModel selectModel;
-    private final String alias;
+    private final @Nullable String alias;
 
     private SubQuery(Builder builder) {
         selectModel = Objects.requireNonNull(builder.selectModel);
@@ -49,15 +50,15 @@ public class SubQuery implements TableExpression {
     }
 
     public static class Builder {
-        private SelectModel selectModel;
-        private String alias;
+        private @Nullable SelectModel selectModel;
+        private @Nullable String alias;
 
         public Builder withSelectModel(SelectModel selectModel) {
             this.selectModel = selectModel;
             return this;
         }
 
-        public Builder withAlias(String alias) {
+        public Builder withAlias(@Nullable String alias) {
             this.alias = alias;
             return this;
         }

@@ -18,12 +18,13 @@ package org.mybatis.dynamic.sql.where.condition;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 
+import org.jspecify.annotations.Nullable;
 import org.mybatis.dynamic.sql.AbstractListValueCondition;
 import org.mybatis.dynamic.sql.util.StringUtilities;
+import org.mybatis.dynamic.sql.util.Utilities;
 
 public class IsInCaseInsensitiveWhenPresent extends AbstractListValueCondition<String>
         implements CaseInsensitiveVisitableCondition {
@@ -34,8 +35,8 @@ public class IsInCaseInsensitiveWhenPresent extends AbstractListValueCondition<S
         return EMPTY;
     }
 
-    protected IsInCaseInsensitiveWhenPresent(Collection<String> values) {
-        super(values.stream().filter(Objects::nonNull).toList());
+    protected IsInCaseInsensitiveWhenPresent(Collection<@Nullable String> values) {
+        super(Utilities.removeNullElements(values));
     }
 
     @Override
@@ -60,11 +61,13 @@ public class IsInCaseInsensitiveWhenPresent extends AbstractListValueCondition<S
         return mapSupport(mapper, IsInCaseInsensitiveWhenPresent::new, IsInCaseInsensitiveWhenPresent::empty);
     }
 
-    public static IsInCaseInsensitiveWhenPresent of(String... values) {
+    public static IsInCaseInsensitiveWhenPresent of(@Nullable String... values) {
         return of(Arrays.asList(values));
     }
 
-    public static IsInCaseInsensitiveWhenPresent of(Collection<String> values) {
+    public static IsInCaseInsensitiveWhenPresent of(Collection<@Nullable String> values) {
+        // Keep the null safe upper case utility for backwards compatibility
+        //noinspection DataFlowIssue
         return new IsInCaseInsensitiveWhenPresent(values).map(StringUtilities::safelyUpperCase);
     }
 }

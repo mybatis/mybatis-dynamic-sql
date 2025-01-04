@@ -18,7 +18,7 @@ package org.mybatis.dynamic.sql.delete;
 import java.util.Objects;
 import java.util.Optional;
 
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.Nullable;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.common.CommonBuilder;
 import org.mybatis.dynamic.sql.common.OrderByModel;
@@ -30,10 +30,10 @@ import org.mybatis.dynamic.sql.where.EmbeddedWhereModel;
 
 public class DeleteModel {
     private final SqlTable table;
-    private final String tableAlias;
-    private final EmbeddedWhereModel whereModel;
-    private final Long limit;
-    private final OrderByModel orderByModel;
+    private final @Nullable String tableAlias;
+    private final @Nullable EmbeddedWhereModel whereModel;
+    private final @Nullable Long limit;
+    private final @Nullable OrderByModel orderByModel;
     private final StatementConfiguration statementConfiguration;
 
     private DeleteModel(Builder builder) {
@@ -69,7 +69,6 @@ public class DeleteModel {
         return statementConfiguration;
     }
 
-    @NotNull
     public DeleteStatementProvider render(RenderingStrategy renderingStrategy) {
         return DeleteRenderer.withDeleteModel(this)
                 .withRenderingStrategy(renderingStrategy)

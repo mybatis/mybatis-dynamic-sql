@@ -29,7 +29,7 @@ class KotlinGeneralInsertBuilder(private val table: SqlTable) : Buildable<Genera
 
     private val columnMappings = mutableListOf<AbstractColumnMapping>()
 
-    fun <T> set(column: SqlColumn<T>) = GeneralInsertColumnSetCompleter(column) {
+    fun <T : Any> set(column: SqlColumn<T>) = GeneralInsertColumnSetCompleter(column) {
         columnMappings.add(it)
     }
 

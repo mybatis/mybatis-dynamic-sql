@@ -18,6 +18,7 @@ package org.mybatis.dynamic.sql.util;
 import java.util.Objects;
 import java.util.function.Supplier;
 
+import org.jspecify.annotations.Nullable;
 import org.mybatis.dynamic.sql.SqlColumn;
 
 public class ValueMapping<T> extends AbstractColumnMapping {
@@ -32,7 +33,7 @@ public class ValueMapping<T> extends AbstractColumnMapping {
         localColumn = Objects.requireNonNull(column);
     }
 
-    public Object value() {
+    public @Nullable Object value() {
         return localColumn.convertParameterType(valueSupplier.get());
     }
 

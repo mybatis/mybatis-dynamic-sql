@@ -19,7 +19,7 @@ import java.sql.JDBCType;
 import java.util.Objects;
 import java.util.Optional;
 
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.Nullable;
 import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
@@ -29,14 +29,14 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
 
     protected final String name;
     protected final SqlTable table;
-    protected final JDBCType jdbcType;
+    protected final @Nullable JDBCType jdbcType;
     protected final String descendingPhrase;
-    protected final String alias;
-    protected final String typeHandler;
-    protected final RenderingStrategy renderingStrategy;
+    protected final @Nullable String alias;
+    protected final @Nullable String typeHandler;
+    protected final @Nullable RenderingStrategy renderingStrategy;
     protected final ParameterTypeConverter<T, ?> parameterTypeConverter;
-    protected final String tableQualifier;
-    protected final Class<T> javaType;
+    protected final @Nullable String tableQualifier;
+    protected final @Nullable Class<T> javaType;
 
     private SqlColumn(Builder<T> builder) {
         name = Objects.requireNonNull(builder.name);
@@ -80,8 +80,8 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
     }
 
     @Override
-    public Object convertParameterType(T value) {
-        return parameterTypeConverter.convert(value);
+    public @Nullable Object convertParameterType(@Nullable T value) {
+        return value == null ? null : parameterTypeConverter.convert(value);
     }
 
     @Override
@@ -144,25 +144,21 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
         return Optional.ofNullable(renderingStrategy);
     }
 
-    @NotNull
     public <S> SqlColumn<S> withTypeHandler(String typeHandler) {
         Builder<S> b = copy();
         return b.withTypeHandler(typeHandler).build();
     }
 
-    @NotNull
     public <S> SqlColumn<S> withRenderingStrategy(RenderingStrategy renderingStrategy) {
         Builder<S> b = copy();
         return b.withRenderingStrategy(renderingStrategy).build();
     }
 
-    @NotNull
     public <S> SqlColumn<S> withParameterTypeConverter(ParameterTypeConverter<S, ?> parameterTypeConverter) {
         Builder<S> b = copy();
         return b.withParameterTypeConverter(parameterTypeConverter).build();
     }
 
-    @NotNull
     public <S> SqlColumn<S> withJavaType(Class<S> javaType) {
         Builder<S> b = copy();
         return b.withJavaType(javaType).build();
@@ -206,16 +202,16 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
     }
 
     public static class Builder<T> {
-        protected String name;
-        protected SqlTable table;
-        protected JDBCType jdbcType;
+        protected @Nullable String name;
+        protected @Nullable SqlTable table;
+        protected @Nullable JDBCType jdbcType;
         protected String descendingPhrase = ""; //$NON-NLS-1$
-        protected String alias;
-        protected String typeHandler;
-        protected RenderingStrategy renderingStrategy;
+        protected @Nullable String alias;
+        protected @Nullable String typeHandler;
+        protected @Nullable RenderingStrategy renderingStrategy;
         protected ParameterTypeConverter<T, ?> parameterTypeConverter = v -> v;
-        protected String tableQualifier;
-        protected Class<T> javaType;
+        protected @Nullable String tableQualifier;
+        protected @Nullable Class<T> javaType;
 
         public Builder<T> withName(String name) {
             this.name = name;
@@ -227,7 +223,7 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
             return this;
         }
 
-        public Builder<T> withJdbcType(JDBCType jdbcType) {
+        public Builder<T> withJdbcType(@Nullable JDBCType jdbcType) {
             this.jdbcType = jdbcType;
             return this;
         }
@@ -237,17 +233,17 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
             return this;
         }
 
-        public Builder<T> withAlias(String alias) {
+        public Builder<T> withAlias(@Nullable String alias) {
             this.alias = alias;
             return this;
         }
 
-        public Builder<T> withTypeHandler(String typeHandler) {
+        public Builder<T> withTypeHandler(@Nullable String typeHandler) {
             this.typeHandler = typeHandler;
             return this;
         }
 
-        public Builder<T> withRenderingStrategy(RenderingStrategy renderingStrategy) {
+        public Builder<T> withRenderingStrategy(@Nullable RenderingStrategy renderingStrategy) {
             this.renderingStrategy = renderingStrategy;
             return this;
         }
@@ -257,12 +253,12 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
             return this;
         }
 
-        private Builder<T> withTableQualifier(String tableQualifier) {
+        private Builder<T> withTableQualifier(@Nullable String tableQualifier) {
             this.tableQualifier = tableQualifier;
             return this;
         }
 
-        public Builder<T> withJavaType(Class<T> javaType) {
+        public Builder<T> withJavaType(@Nullable Class<T> javaType) {
             this.javaType = javaType;
             return this;
         }

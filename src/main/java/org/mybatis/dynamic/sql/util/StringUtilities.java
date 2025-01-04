@@ -15,6 +15,8 @@
  */
 package org.mybatis.dynamic.sql.util;
 
+import org.jspecify.annotations.Nullable;
+
 public interface StringUtilities {
 
     static String spaceAfter(String in) {
@@ -25,7 +27,7 @@ public interface StringUtilities {
         return " " + in; //$NON-NLS-1$
     }
 
-    static String safelyUpperCase(String s) {
+    static @Nullable String safelyUpperCase(@Nullable String s) {
         return s == null ? null : s.toUpperCase();
     }
 
@@ -44,7 +46,7 @@ public interface StringUtilities {
                     sb.append(Character.toLowerCase(c));
                 }
             } else {
-                if (sb.length() > 0) {
+                if (!sb.isEmpty()) {
                     nextUpperCase = true;
                 }
             }

@@ -33,7 +33,7 @@ class KotlinBatchInsertBuilder<T : Any> (private val rows: Collection<T>): Build
         this.table = table
     }
 
-    fun <C> map(column: SqlColumn<C>) = MultiRowInsertColumnMapCompleter(column) {
+    fun <C : Any> map(column: SqlColumn<C>) = MultiRowInsertColumnMapCompleter(column) {
         columnMappings.add(it)
     }
 
@@ -41,7 +41,7 @@ class KotlinBatchInsertBuilder<T : Any> (private val rows: Collection<T>): Build
         assertNotNull(table, "ERROR.23") //$NON-NLS-1$
         return with(BatchInsertDSL.Builder<T>()) {
             withRecords(rows)
-            withTable(table)
+            withTable(table!!)
             withColumnMappings(columnMappings)
             build()
         }.build()

@@ -21,7 +21,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.Nullable;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.util.AbstractColumnMapping;
@@ -48,7 +48,6 @@ public class BatchInsertDSL<T> implements Buildable<BatchInsertModel<T>> {
         return new ColumnMappingFinisher<>(column);
     }
 
-    @NotNull
     @Override
     public BatchInsertModel<T> build() {
         return BatchInsertModel.withRecords(records)
@@ -113,7 +112,7 @@ public class BatchInsertDSL<T> implements Buildable<BatchInsertModel<T>> {
 
     public abstract static class AbstractBuilder<T, B extends AbstractBuilder<T, B>> {
         final Collection<T> records = new ArrayList<>();
-        SqlTable table;
+        @Nullable SqlTable table;
         final List<AbstractColumnMapping> columnMappings = new ArrayList<>();
 
         public B withRecords(Collection<T> records) {

@@ -17,6 +17,7 @@ package org.mybatis.dynamic.sql.select;
 
 import java.util.List;
 
+import org.jspecify.annotations.Nullable;
 import org.mybatis.dynamic.sql.AndOrCriteriaGroup;
 import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.common.AbstractBooleanExpressionDSL;
@@ -27,7 +28,7 @@ public abstract class AbstractHavingFinisher<T extends AbstractHavingFinisher<T>
         setInitialCriterion(sqlCriterion, StatementType.HAVING);
     }
 
-    void initialize(SqlCriterion sqlCriterion, List<AndOrCriteriaGroup> subCriteria) {
+    void initialize(@Nullable SqlCriterion sqlCriterion, List<AndOrCriteriaGroup> subCriteria) {
         setInitialCriterion(sqlCriterion, StatementType.HAVING);
         super.subCriteria.addAll(subCriteria);
     }

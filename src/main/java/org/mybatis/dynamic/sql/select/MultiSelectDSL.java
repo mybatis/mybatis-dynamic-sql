@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.Nullable;
 import org.mybatis.dynamic.sql.SortSpecification;
 import org.mybatis.dynamic.sql.common.OrderByModel;
 import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
@@ -33,10 +33,10 @@ public class MultiSelectDSL implements Buildable<MultiSelectModel>, Configurable
         PagingDSL<MultiSelectModel> {
     private final List<UnionQuery> unionQueries = new ArrayList<>();
     private final SelectModel initialSelect;
-    private OrderByModel orderByModel;
-    private Long limit;
-    private Long offset;
-    private Long fetchFirstRows;
+    private @Nullable OrderByModel orderByModel;
+    private @Nullable Long limit;
+    private @Nullable Long offset;
+    private @Nullable Long fetchFirstRows;
     private final StatementConfiguration statementConfiguration = new StatementConfiguration();
 
     public MultiSelectDSL(Buildable<SelectModel> builder) {
@@ -63,24 +63,23 @@ public class MultiSelectDSL implements Buildable<MultiSelectModel>, Configurable
     }
 
     @Override
-    public LimitFinisher<MultiSelectModel> limitWhenPresent(Long limit) {
+    public LimitFinisher<MultiSelectModel> limitWhenPresent(@Nullable Long limit) {
         this.limit = limit;
         return new LocalLimitFinisher();
     }
 
     @Override
-    public OffsetFirstFinisher<MultiSelectModel> offsetWhenPresent(Long offset) {
+    public OffsetFirstFinisher<MultiSelectModel> offsetWhenPresent(@Nullable Long offset) {
         this.offset = offset;
         return new LocalOffsetFirstFinisher();
     }
 
     @Override
-    public FetchFirstFinisher<MultiSelectModel> fetchFirstWhenPresent(Long fetchFirstRows) {
+    public FetchFirstFinisher<MultiSelectModel> fetchFirstWhenPresent(@Nullable Long fetchFirstRows) {
         this.fetchFirstRows = fetchFirstRows;
         return () -> this;
     }
 
-    @NotNull
     @Override
     public MultiSelectModel build() {
         return new MultiSelectModel.Builder()
@@ -107,7 +106,6 @@ public class MultiSelectDSL implements Buildable<MultiSelectModel>, Configurable
     }
 
     abstract class BaseBuildable implements Buildable<MultiSelectModel> {
-        @NotNull
         @Override
         public MultiSelectModel build() {
             return MultiSelectDSL.this.build();

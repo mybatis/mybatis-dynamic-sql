@@ -28,7 +28,7 @@ import org.mybatis.dynamic.sql.util.ValueOrNullMapping
 import org.mybatis.dynamic.sql.util.ValueWhenPresentMapping
 
 @MyBatisDslMarker
-sealed class AbstractInsertColumnMapCompleter<T>(
+sealed class AbstractInsertColumnMapCompleter<T : Any>(
     internal val column: SqlColumn<T>,
     internal val mappingConsumer: (AbstractColumnMapping) -> Unit) {
 
@@ -39,7 +39,7 @@ sealed class AbstractInsertColumnMapCompleter<T>(
     infix fun toStringConstant(constant: String) = mappingConsumer.invoke(StringConstantMapping.of(column, constant))
 }
 
-class MultiRowInsertColumnMapCompleter<T>(
+class MultiRowInsertColumnMapCompleter<T : Any>(
     column: SqlColumn<T>,
     mappingConsumer: (AbstractColumnMapping) -> Unit)
     : AbstractInsertColumnMapCompleter<T>(column, mappingConsumer) {
@@ -49,7 +49,7 @@ class MultiRowInsertColumnMapCompleter<T>(
     fun toRow() = mappingConsumer.invoke(RowMapping.of(column))
 }
 
-class SingleRowInsertColumnMapCompleter<T>(
+class SingleRowInsertColumnMapCompleter<T : Any>(
     column: SqlColumn<T>,
     mappingConsumer: (AbstractColumnMapping) -> Unit)
     : AbstractInsertColumnMapCompleter<T>(column, mappingConsumer) {
@@ -62,14 +62,14 @@ class SingleRowInsertColumnMapCompleter<T>(
     fun toRow() = mappingConsumer.invoke(RowMapping.of(column))
 }
 
-class GeneralInsertColumnSetCompleter<T>(
+class GeneralInsertColumnSetCompleter<T : Any>(
     column: SqlColumn<T>,
     mappingConsumer: (AbstractColumnMapping) -> Unit)
     : AbstractInsertColumnMapCompleter<T>(column, mappingConsumer) {
 
-    infix fun toValue(value: T & Any) = toValue { value }
+    infix fun toValue(value: T) = toValue { value }
 
-    infix fun toValue(value: () -> T & Any) = mappingConsumer.invoke(ValueMapping.of(column, value))
+    infix fun toValue(value: () -> T) = mappingConsumer.invoke(ValueMapping.of(column, value))
 
     infix fun toValueOrNull(value: T?) = toValueOrNull { value }
 

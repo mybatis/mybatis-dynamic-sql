@@ -21,6 +21,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.jspecify.annotations.Nullable;
 import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
@@ -84,7 +85,7 @@ public abstract class AbstractBooleanExpressionRenderer {
 
     public abstract static class AbstractBuilder<B extends AbstractBuilder<B>> {
         private final AbstractBooleanExpressionModel model;
-        private RenderingContext renderingContext;
+        private @Nullable RenderingContext renderingContext;
 
         protected AbstractBuilder(AbstractBooleanExpressionModel model) {
             this.model = model;

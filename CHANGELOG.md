@@ -10,7 +10,7 @@ you are unable to move to this version of Java then the releases in the 1.x line
 In addition, we have taken the opportunity to make changes to the library that may break existing code. We have
 worked to make these changes as minimal as possible.
 
-**Potentially Breaking Changes:**
+### Potentially Breaking Changes:
 
 - If you use this library with MyBatis' Spring Batch integration, you will need to make changes as we have
   refactored that support to be more flexible. Please see the
@@ -25,7 +25,65 @@ worked to make these changes as minimal as possible.
   [Extending the Library](https://mybatis.org/mybatis-dynamic-sql/docs/extending.html) page, the change should be
   limited to changing the private constructor to accept `BasicColumn` rather than `BindableColumn`.
 
-Other important changes:
+### Adoption of JSpecify (https://jspecify.dev/)
+
+Following the lead of many other projects (including The Spring Framework), we have adopted JSpecify to fully
+document the null handling properties of this library. JSpecify is now a runtime dependency - as is
+recommended practice with JSpecify.
+
+This change should not impact the running of any existing code, but depending on your usage you may see new IDE or
+tooling warnings based on the declared nullability of methods in the library. You may choose to ignore the
+warnings and things should continue to function. Of course, we recommend that you do not ignore these warnings!
+
+In general, the library does not expect that you will pass a null value into any method. There are two exceptions to
+this rule:
+
+1. Some builder methods will accept a null value if the target object will properly handle null values through the
+   use of java.util.Optional
+2. Methods with names that include "WhenPresent" will properly handle null parameters
+   (for example, "isEqualToWhenPresent")
+
+As you might expect, standardizing null handling revealed some issues in the library that may impact you.
+
+Fixing compiler warnings and errors:
+
+1. We expect that most of the warnings you encounter will be related to passing null values into a where condition.
+   These warnings should be resolved by changing your code to use the "WhenPresent" versions of methods as those
+   methods handle null values in a predictable way.
+2. Java Classes that extend "AliasableSqlTable" will likely see IDE warnings about non-null type arguments. This can be
+   resolved by adding a "@NullMarked" annotation to the class or package. This issue does not affect Kotlin classes
+   that extend "AliasableSqlTable".
+3. Similarly, if you have coded any functions for use with your queries, you can resolve most IDE warnings by adding
+   the "@NullMarked" annotation.
+4. If you have coded any Kotlin functions that operate on a generic Java class from the library, then you should
+   change the type parameter definition to specify a non-nullable type. For example...
+
+   ```kotlin
+   import org.mybatis.dynamic.sql.SqlColumn
+
+   fun <T> foo(column: SqlColumn<T>) {
+   }
+   ```
+   
+   Should change to:
+
+   ```kotlin
+   import org.mybatis.dynamic.sql.SqlColumn
+
+   fun <T : Any> foo(column: SqlColumn<T>) {
+   }
+   ```
+
+Runtime behavior changes:
+
+1. The where conditions (isEqualTo, isLessThan, etc.) can be filtered and result in an "empty" condition -
+   similar to java.util.Optional. Previously, calling a "value" method of the condition would return null. Now
+   those methods will throw "NoSuchElementException". This should not impact you in normal usage.
+2. We have updated the "ParameterTypeConverter" used in Spring applications to maintain compatibility with Spring's
+   "Converter" interface. The primary change is that the framework will no longer call a type converter if the
+   input value is null. This should simplify the coding of converters and foster reuse with existing Spring converters.
+
+### Other important changes:
 
 - The library now requires Java 17
 - Deprecated code from prior releases is removed

@@ -28,17 +28,17 @@ class JoinCollector {
     internal fun initialCriterion() = invalidIfNull(criteriaCollector.initialCriterion, "ERROR.22") //$NON-NLS-1$
     internal fun subCriteria() = criteriaCollector.subCriteria
 
-    fun <T> on(leftColumn: BindableColumn<T>): RightColumnCollector<T> = RightColumnCollector {
+    fun <T : Any> on(leftColumn: BindableColumn<T>): RightColumnCollector<T> = RightColumnCollector {
         assertNull(criteriaCollector.initialCriterion, "ERROR.45") //$NON-NLS-1$
         criteriaCollector.apply { leftColumn.invoke(it) }
     }
 
-    fun <T> and(leftColumn: BindableColumn<T>): RightColumnCollector<T> = RightColumnCollector {
+    fun <T : Any> and(leftColumn: BindableColumn<T>): RightColumnCollector<T> = RightColumnCollector {
         criteriaCollector.and { leftColumn.invoke(it) }
     }
 }
 
-class RightColumnCollector<T>(private val joinConditionConsumer: (VisitableCondition<T>) -> Unit) {
+class RightColumnCollector<T : Any>(private val joinConditionConsumer: (VisitableCondition<T>) -> Unit) {
     infix fun equalTo(rightColumn: BindableColumn<T>) = joinConditionConsumer.invoke(SqlBuilder.isEqualTo(rightColumn))
 
     infix fun equalTo(value: T) = joinConditionConsumer.invoke(SqlBuilder.isEqualTo(value))

@@ -923,6 +923,17 @@ class KCaseExpressionTest {
     }
 
     @Test
+    fun testInvalidMissingThen() {
+        assertThatExceptionOfType(KInvalidSQLException::class.java).isThrownBy {
+            case {
+                `when` {
+                    id isEqualTo 22
+                }
+            }
+        }.withMessage(Messages.getString("ERROR.47"))
+    }
+
+    @Test
     fun testInvalidSearchedMissingWhen() {
         assertThatExceptionOfType(InvalidSqlException::class.java).isThrownBy {
             select(case { `else`("Fred") }) { from(animalData) }

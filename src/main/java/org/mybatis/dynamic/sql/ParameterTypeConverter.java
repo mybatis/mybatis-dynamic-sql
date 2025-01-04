@@ -15,6 +15,8 @@
  */
 package org.mybatis.dynamic.sql;
 
+import org.jspecify.annotations.Nullable;
+
 /**
  * A parameter type converter is used to change a parameter value from one type to another
  * during statement rendering and before the parameter is placed into the parameter map. This can be used
@@ -50,5 +52,13 @@ package org.mybatis.dynamic.sql;
  */
 @FunctionalInterface
 public interface ParameterTypeConverter<S, T> {
-    T convert(S source);
+    /**
+     * Convert the value from one value to another.
+     *
+     * <p>The input value will never be null - the framework will automatically handle nulls.
+     *
+     * @param source value as specified in the condition, or after a map operation. Never null.
+     * @return Possibly null converted value.
+     */
+    @Nullable T convert(S source);
 }

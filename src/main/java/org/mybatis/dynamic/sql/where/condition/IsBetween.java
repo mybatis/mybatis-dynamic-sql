@@ -15,15 +15,26 @@
  */
 package org.mybatis.dynamic.sql.where.condition;
 
-import java.util.Objects;
+import java.util.NoSuchElementException;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+import org.jspecify.annotations.Nullable;
 import org.mybatis.dynamic.sql.AbstractTwoValueCondition;
 
 public class IsBetween<T> extends AbstractTwoValueCondition<T> {
-    private static final IsBetween<?> EMPTY = new IsBetween<Object>(null, null) {
+    private static final IsBetween<?> EMPTY = new IsBetween<Object>(-1, -1) {
+        @Override
+        public Object value1() {
+            throw new NoSuchElementException("No value present"); //$NON-NLS-1$
+        }
+
+        @Override
+        public Object value2() {
+            throw new NoSuchElementException("No value present"); //$NON-NLS-1$
+        }
+
         @Override
         public boolean isEmpty() {
             return true;
@@ -91,7 +102,7 @@ public class IsBetween<T> extends AbstractTwoValueCondition<T> {
         return new Builder<>(value1);
     }
 
-    public static <T> WhenPresentBuilder<T> isBetweenWhenPresent(T value1) {
+    public static <T> WhenPresentBuilder<T> isBetweenWhenPresent(@Nullable T value1) {
         return new WhenPresentBuilder<>(value1);
     }
 
@@ -101,19 +112,23 @@ public class IsBetween<T> extends AbstractTwoValueCondition<T> {
         }
 
         @Override
-        protected IsBetween<T> build() {
+        protected IsBetween<T> build(T value2) {
             return new IsBetween<>(value1, value2);
         }
     }
 
-    public static class WhenPresentBuilder<T> extends AndGatherer<T, IsBetween<T>> {
-        private WhenPresentBuilder(T value1) {
+    public static class WhenPresentBuilder<T> extends AndWhenPresentGatherer<T, IsBetween<T>> {
+        private WhenPresentBuilder(@Nullable T value1) {
             super(value1);
         }
 
         @Override
-        protected IsBetween<T> build() {
-            return new IsBetween<>(value1, value2).filter(Objects::nonNull);
+        protected IsBetween<T> build(@Nullable T value2) {
+            if (value1 == null || value2 == null) {
+                return empty();
+            } else {
+                return new IsBetween<>(value1, value2);
+            }
         }
     }
 }

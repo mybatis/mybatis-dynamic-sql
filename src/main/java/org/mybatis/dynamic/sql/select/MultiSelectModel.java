@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.Nullable;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.select.render.MultiSelectRenderer;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
@@ -45,7 +45,6 @@ public class MultiSelectModel extends AbstractSelectModel {
         return unionQueries.stream();
     }
 
-    @NotNull
     public SelectStatementProvider render(RenderingStrategy renderingStrategy) {
         return MultiSelectRenderer.withMultiSelectModel(this)
                 .withRenderingStrategy(renderingStrategy)
@@ -54,7 +53,7 @@ public class MultiSelectModel extends AbstractSelectModel {
     }
 
     public static class Builder extends AbstractBuilder<Builder> {
-        private SelectModel initialSelect;
+        private @Nullable SelectModel initialSelect;
         private final List<UnionQuery> unionQueries = new ArrayList<>();
 
         public Builder withInitialSelect(SelectModel initialSelect) {
