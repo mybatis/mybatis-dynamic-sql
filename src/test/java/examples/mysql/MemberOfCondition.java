@@ -13,15 +13,27 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package config;
+package examples.mysql;
 
-import org.testcontainers.utility.DockerImageName;
+import java.util.Objects;
 
-/**
- * Utility interface to hold Docker image tags for the test containers we use
- */
-public interface TestContainersConfiguration {
-    DockerImageName POSTGRES_LATEST = DockerImageName.parse("postgres:17.2");
-    DockerImageName MARIADB_LATEST = DockerImageName.parse("mariadb:11.6.2");
-    DockerImageName MYSQL_LATEST = DockerImageName.parse("mysql:9.1.0");
+import org.jspecify.annotations.NullMarked;
+import org.mybatis.dynamic.sql.AbstractNoValueCondition;
+
+@NullMarked
+public class MemberOfCondition<T> extends AbstractNoValueCondition<T> {
+    private final String jsonArray;
+
+    protected MemberOfCondition(String jsonArray) {
+        this.jsonArray = Objects.requireNonNull(jsonArray);
+    }
+
+    @Override
+    public String operator() {
+        return "member of(" + jsonArray + ")";
+    }
+
+    public static <T> MemberOfCondition<T> memberOf(String jsonArray) {
+        return new MemberOfCondition<>(jsonArray);
+    }
 }

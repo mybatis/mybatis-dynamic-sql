@@ -175,13 +175,13 @@
     </dependency>
     <dependency>
       <groupId>org.testcontainers</groupId>
-      <artifactId>postgresql</artifactId>
+      <artifactId>junit-jupiter</artifactId>
       <version>${test.containers.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.testcontainers</groupId>
-      <artifactId>junit-jupiter</artifactId>
+      <artifactId>postgresql</artifactId>
       <version>${test.containers.version}</version>
       <scope>test</scope>
     </dependency>
@@ -201,6 +201,18 @@
       <groupId>org.mariadb.jdbc</groupId>
       <artifactId>mariadb-java-client</artifactId>
       <version>3.5.1</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.testcontainers</groupId>
+      <artifactId>mysql</artifactId>
+      <version>${test.containers.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.mysql</groupId>
+      <artifactId>mysql-connector-j</artifactId>
+      <version>9.1.0</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
