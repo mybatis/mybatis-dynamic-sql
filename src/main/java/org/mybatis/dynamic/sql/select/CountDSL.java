@@ -25,7 +25,6 @@ import org.mybatis.dynamic.sql.SqlBuilder;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
 import org.mybatis.dynamic.sql.util.Buildable;
-import org.mybatis.dynamic.sql.util.Utilities;
 import org.mybatis.dynamic.sql.where.AbstractWhereFinisher;
 import org.mybatis.dynamic.sql.where.EmbeddedWhereModel;
 
@@ -54,7 +53,7 @@ public class CountDSL<R> extends AbstractQueryExpressionDSL<CountDSL<R>.CountWhe
 
     @Override
     public CountWhereBuilder where() {
-        whereBuilder = Utilities.buildIfNecessary(whereBuilder, CountWhereBuilder::new);
+        whereBuilder = Objects.requireNonNullElseGet(whereBuilder, CountWhereBuilder::new);
         return whereBuilder;
     }
 
