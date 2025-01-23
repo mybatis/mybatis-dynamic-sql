@@ -18,8 +18,10 @@ package org.mybatis.dynamic.sql.select;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Stream;
 
+import org.jspecify.annotations.Nullable;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.select.render.SelectRenderer;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
@@ -27,15 +29,27 @@ import org.mybatis.dynamic.sql.util.Validator;
 
 public class SelectModel extends AbstractSelectModel {
     private final List<QueryExpressionModel> queryExpressions;
+    private @Nullable final String forClause;
+    private @Nullable final String waitClause;
 
     private SelectModel(Builder builder) {
         super(builder);
         queryExpressions = Objects.requireNonNull(builder.queryExpressions);
         Validator.assertNotEmpty(queryExpressions, "ERROR.14"); //$NON-NLS-1$
+        forClause = builder.forClause;
+        waitClause = builder.waitClause;
     }
 
     public Stream<QueryExpressionModel> queryExpressions() {
         return queryExpressions.stream();
+    }
+
+    public Optional<String> forClause() {
+        return Optional.ofNullable(forClause);
+    }
+
+    public Optional<String> waitClause() {
+        return Optional.ofNullable(waitClause);
     }
 
     public SelectStatementProvider render(RenderingStrategy renderingStrategy) {
@@ -51,6 +65,8 @@ public class SelectModel extends AbstractSelectModel {
 
     public static class Builder extends AbstractBuilder<Builder> {
         private final List<QueryExpressionModel> queryExpressions = new ArrayList<>();
+        private @Nullable String forClause;
+        private @Nullable String waitClause;
 
         public Builder withQueryExpression(QueryExpressionModel queryExpression) {
             this.queryExpressions.add(queryExpression);
@@ -59,6 +75,16 @@ public class SelectModel extends AbstractSelectModel {
 
         public Builder withQueryExpressions(List<QueryExpressionModel> queryExpressions) {
             this.queryExpressions.addAll(queryExpressions);
+            return this;
+        }
+
+        public Builder withForClause(@Nullable String forClause) {
+            this.forClause = forClause;
+            return this;
+        }
+
+        public Builder withWaitClause(@Nullable String waitClause) {
+            this.waitClause = waitClause;
             return this;
         }
 

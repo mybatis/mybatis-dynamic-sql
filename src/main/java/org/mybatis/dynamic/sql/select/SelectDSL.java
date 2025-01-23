@@ -32,6 +32,7 @@ import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
 import org.mybatis.dynamic.sql.select.QueryExpressionDSL.FromGatherer;
 import org.mybatis.dynamic.sql.util.Buildable;
 import org.mybatis.dynamic.sql.util.ConfigurableStatement;
+import org.mybatis.dynamic.sql.util.Validator;
 
 /**
  * Implements a SQL DSL for building select statements.
@@ -50,6 +51,8 @@ public class SelectDSL<R> implements Buildable<R>, ConfigurableStatement<SelectD
     private @Nullable Long offset;
     private @Nullable Long fetchFirstRows;
     final StatementConfiguration statementConfiguration = new StatementConfiguration();
+    private @Nullable String forClause;
+    private @Nullable String waitClause;
 
     private SelectDSL(Function<SelectModel, R> adapterFunction) {
         this.adapterFunction = Objects.requireNonNull(adapterFunction);
@@ -122,6 +125,42 @@ public class SelectDSL<R> implements Buildable<R>, ConfigurableStatement<SelectD
         return () -> this;
     }
 
+    public SelectDSL<R> forUpdate() {
+        Validator.assertNull(forClause, "ERROR.48"); //$NON-NLS-1$
+        forClause = "for update"; //$NON-NLS-1$
+        return this;
+    }
+
+    public SelectDSL<R> forNoKeyUpdate() {
+        Validator.assertNull(forClause, "ERROR.48"); //$NON-NLS-1$
+        forClause = "for no key update"; //$NON-NLS-1$
+        return this;
+    }
+
+    public SelectDSL<R> forShare() {
+        Validator.assertNull(forClause, "ERROR.48"); //$NON-NLS-1$
+        forClause = "for share"; //$NON-NLS-1$
+        return this;
+    }
+
+    public SelectDSL<R> forKeyShare() {
+        Validator.assertNull(forClause, "ERROR.48"); //$NON-NLS-1$
+        forClause = "for key share"; //$NON-NLS-1$
+        return this;
+    }
+
+    public SelectDSL<R> skipLocked() {
+        Validator.assertNull(waitClause, "ERROR.49"); //$NON-NLS-1$
+        waitClause = "skip locked"; //$NON-NLS-1$
+        return this;
+    }
+
+    public SelectDSL<R> nowait() {
+        Validator.assertNull(waitClause, "ERROR.49"); //$NON-NLS-1$
+        waitClause = "nowait"; //$NON-NLS-1$
+        return this;
+    }
+
     @Override
     public SelectDSL<R> configureStatement(Consumer<StatementConfiguration> consumer) {
         consumer.accept(statementConfiguration);
@@ -134,6 +173,8 @@ public class SelectDSL<R> implements Buildable<R>, ConfigurableStatement<SelectD
                 .withOrderByModel(orderByModel)
                 .withPagingModel(buildPagingModel().orElse(null))
                 .withStatementConfiguration(statementConfiguration)
+                .withForClause(forClause)
+                .withWaitClause(waitClause)
                 .build();
         return adapterFunction.apply(selectModel);
     }
