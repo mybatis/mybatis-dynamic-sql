@@ -47,19 +47,10 @@ public class DefaultConditionVisitor<T> implements ConditionVisitor<T, FragmentA
 
     @Override
     public FragmentAndParameters visit(AbstractListValueCondition<T> condition) {
-        FragmentCollector fc = condition.values()
-                .map(this::toFragmentAndParameters)
-                .collect(FragmentCollector.collect());
-
-        String joinedFragments =
-                fc.collectFragments(Collectors.joining(",", "(", ")")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        String finalFragment = condition.operator()
-                + spaceBefore(joinedFragments);
-
-        return FragmentAndParameters
-                .withFragment(finalFragment)
-                .withParameters(fc.parameters())
-                .build();
+        return condition.values().map(this::toFragmentAndParameters)
+                .collect(FragmentCollector.collect())
+                .toFragmentAndParameters(Collectors.joining(",", //$NON-NLS-1$
+                        condition.operator() + " (", ")")); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     @Override
