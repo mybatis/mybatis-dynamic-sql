@@ -29,8 +29,8 @@ import org.mybatis.dynamic.sql.util.Validator;
 
 public class SelectModel extends AbstractSelectModel {
     private final List<QueryExpressionModel> queryExpressions;
-    private @Nullable final String forClause;
-    private @Nullable final String waitClause;
+    private final @Nullable String forClause;
+    private final @Nullable String waitClause;
 
     private SelectModel(Builder builder) {
         super(builder);
