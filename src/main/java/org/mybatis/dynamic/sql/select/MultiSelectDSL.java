@@ -29,8 +29,7 @@ import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
 import org.mybatis.dynamic.sql.util.Buildable;
 import org.mybatis.dynamic.sql.util.ConfigurableStatement;
 
-public class MultiSelectDSL implements Buildable<MultiSelectModel>, ConfigurableStatement<MultiSelectDSL>,
-        PagingDSL<MultiSelectModel> {
+public class MultiSelectDSL implements Buildable<MultiSelectModel>, ConfigurableStatement<MultiSelectDSL> {
     private final List<UnionQuery> unionQueries = new ArrayList<>();
     private final SelectModel initialSelect;
     private @Nullable OrderByModel orderByModel;
@@ -62,22 +61,31 @@ public class MultiSelectDSL implements Buildable<MultiSelectModel>, Configurable
         return this;
     }
 
-    @Override
-    public LimitFinisher<MultiSelectModel> limitWhenPresent(@Nullable Long limit) {
+    public LimitFinisher limit(long limit) {
+        return limitWhenPresent(limit);
+    }
+
+    public LimitFinisher limitWhenPresent(@Nullable Long limit) {
         this.limit = limit;
-        return new LocalLimitFinisher();
+        return new LimitFinisher();
     }
 
-    @Override
-    public OffsetFirstFinisher<MultiSelectModel> offsetWhenPresent(@Nullable Long offset) {
+    public OffsetFirstFinisher offset(long offset) {
+        return offsetWhenPresent(offset);
+    }
+
+    public OffsetFirstFinisher offsetWhenPresent(@Nullable Long offset) {
         this.offset = offset;
-        return new LocalOffsetFirstFinisher();
+        return new OffsetFirstFinisher();
     }
 
-    @Override
-    public FetchFirstFinisher<MultiSelectModel> fetchFirstWhenPresent(@Nullable Long fetchFirstRows) {
+    public FetchFirstFinisher fetchFirst(long fetchFirstRows) {
+        return fetchFirstWhenPresent(fetchFirstRows);
+    }
+
+    public FetchFirstFinisher fetchFirstWhenPresent(@Nullable Long fetchFirstRows) {
         this.fetchFirstRows = fetchFirstRows;
-        return () -> this;
+        return new FetchFirstFinisher();
     }
 
     @Override
@@ -105,25 +113,40 @@ public class MultiSelectDSL implements Buildable<MultiSelectModel>, Configurable
         return this;
     }
 
-    abstract class BaseBuildable implements Buildable<MultiSelectModel> {
+    public class OffsetFirstFinisher implements Buildable<MultiSelectModel> {
+        public FetchFirstFinisher fetchFirst(long fetchFirstRows) {
+            return fetchFirstWhenPresent(fetchFirstRows);
+        }
+
+        public FetchFirstFinisher fetchFirstWhenPresent(@Nullable Long fetchFirstRows) {
+            MultiSelectDSL.this.fetchFirstRows = fetchFirstRows;
+            return new FetchFirstFinisher();
+        }
+
         @Override
         public MultiSelectModel build() {
             return MultiSelectDSL.this.build();
         }
     }
 
-    class LocalOffsetFirstFinisher extends BaseBuildable implements OffsetFirstFinisher<MultiSelectModel> {
+    public class LimitFinisher implements Buildable<MultiSelectModel> {
+        public MultiSelectDSL offset(long offset) {
+            return offsetWhenPresent(offset);
+        }
+
+        public MultiSelectDSL offsetWhenPresent(@Nullable Long offset) {
+            MultiSelectDSL.this.offset = offset;
+            return MultiSelectDSL.this;
+        }
+
         @Override
-        public FetchFirstFinisher<MultiSelectModel> fetchFirstWhenPresent(Long fetchFirstRows) {
-            MultiSelectDSL.this.fetchFirstRows = fetchFirstRows;
-            return () -> MultiSelectDSL.this;
+        public MultiSelectModel build() {
+            return MultiSelectDSL.this.build();
         }
     }
 
-    class LocalLimitFinisher extends BaseBuildable implements LimitFinisher<MultiSelectModel> {
-        @Override
-        public Buildable<MultiSelectModel> offsetWhenPresent(Long offset) {
-            MultiSelectDSL.this.offset = offset;
+    public class FetchFirstFinisher {
+        public MultiSelectDSL rowsOnly() {
             return MultiSelectDSL.this;
         }
     }
