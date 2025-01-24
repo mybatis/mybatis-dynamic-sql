@@ -25,14 +25,14 @@ import org.mybatis.dynamic.sql.CriteriaGroup;
 import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.VisitableCondition;
 
-public abstract class AbstractHavingStarter<F extends AbstractHavingFinisher<?>> {
+public interface AbstractHavingStarter<F extends AbstractHavingFinisher<?>> {
 
-    public <T> F having(BindableColumn<T> column, VisitableCondition<T> condition,
+    default <T> F having(BindableColumn<T> column, VisitableCondition<T> condition,
                         AndOrCriteriaGroup... subCriteria) {
         return having(column, condition, Arrays.asList(subCriteria));
     }
 
-    public <T> F having(BindableColumn<T> column, VisitableCondition<T> condition,
+    default <T> F having(BindableColumn<T> column, VisitableCondition<T> condition,
                         List<AndOrCriteriaGroup> subCriteria) {
         SqlCriterion sqlCriterion = ColumnAndConditionCriterion.withColumn(column)
                 .withCondition(condition)
@@ -42,11 +42,11 @@ public abstract class AbstractHavingStarter<F extends AbstractHavingFinisher<?>>
         return initialize(sqlCriterion);
     }
 
-    public F having(SqlCriterion initialCriterion, AndOrCriteriaGroup... subCriteria) {
+    default F having(SqlCriterion initialCriterion, AndOrCriteriaGroup... subCriteria) {
         return having(initialCriterion, Arrays.asList(subCriteria));
     }
 
-    public F having(SqlCriterion initialCriterion, List<AndOrCriteriaGroup> subCriteria) {
+    default F having(SqlCriterion initialCriterion, List<AndOrCriteriaGroup> subCriteria) {
         SqlCriterion sqlCriterion = new CriteriaGroup.Builder()
                 .withInitialCriterion(initialCriterion)
                 .withSubCriteria(subCriteria)
@@ -55,9 +55,9 @@ public abstract class AbstractHavingStarter<F extends AbstractHavingFinisher<?>>
         return initialize(sqlCriterion);
     }
 
-    protected abstract F having();
+    F having();
 
-    public F applyHaving(HavingApplier havingApplier) {
+    default F applyHaving(HavingApplier havingApplier) {
         F finisher = having();
         havingApplier.accept(finisher);
         return finisher;

@@ -17,16 +17,14 @@ package org.mybatis.dynamic.sql;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.mybatis.dynamic.sql.SqlBuilder.insert;
-import static org.mybatis.dynamic.sql.SqlBuilder.insertInto;
-import static org.mybatis.dynamic.sql.SqlBuilder.update;
-import static org.mybatis.dynamic.sql.SqlBuilder.value;
+import static org.mybatis.dynamic.sql.SqlBuilder.*;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.MissingResourceException;
 import java.util.Optional;
 
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.common.OrderByModel;
 import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
@@ -260,10 +258,59 @@ class InvalidSQLTest {
                 .withMessage(Messages.getString("ERROR.38"));
     }
 
-    static class TestRow {
-        private Integer id;
+    @Test
+    void testInvalidDoubleForUpdate() {
+        var dsl = select(id).from(person).limit(2).forUpdate();
+        assertThatExceptionOfType(InvalidSqlException.class).isThrownBy(dsl::forUpdate)
+        .withMessage(Messages.getString("ERROR.48"));
+    }
 
-        public Integer getId() {
+    @Test
+    void testInvalidDoubleForShare() {
+        var dsl = select(id).from(person).offset(2).forShare();
+        assertThatExceptionOfType(InvalidSqlException.class).isThrownBy(dsl::forShare)
+                .withMessage(Messages.getString("ERROR.48"));
+    }
+
+    @Test
+    void testInvalidDoubleForKeyShare() {
+        var dsl = select(id).from(person).forKeyShare();
+        assertThatExceptionOfType(InvalidSqlException.class).isThrownBy(dsl::forKeyShare)
+                .withMessage(Messages.getString("ERROR.48"));
+    }
+
+    @Test
+    void testInvalidDoubleForNoKeyUpdate() {
+        var dsl = select(id).from(person).where(id, isEqualTo(1)).forNoKeyUpdate();
+        assertThatExceptionOfType(InvalidSqlException.class).isThrownBy(dsl::forNoKeyUpdate)
+                .withMessage(Messages.getString("ERROR.48"));
+    }
+
+    @Test
+    void testInvalidDoubleForNoKeyUpdateAfterJoin() {
+        var dsl = select(id).from(person).join(person).on(id, isEqualTo(id)).skipLocked();
+        assertThatExceptionOfType(InvalidSqlException.class).isThrownBy(dsl::skipLocked)
+                .withMessage(Messages.getString("ERROR.49"));
+    }
+
+    @Test
+    void testInvalidDoubleForNoKeyUpdateAfterGroupBy() {
+        var dsl = select(id).from(person).groupBy(id).nowait();
+        assertThatExceptionOfType(InvalidSqlException.class).isThrownBy(dsl::nowait)
+                .withMessage(Messages.getString("ERROR.49"));
+    }
+
+    @Test
+    void testInvalidDoubleForNoKeyUpdateAfterHaving() {
+        var dsl = select(id).from(person).groupBy(id).having(id, isEqualTo(2)).nowait();
+        assertThatExceptionOfType(InvalidSqlException.class).isThrownBy(dsl::nowait)
+                .withMessage(Messages.getString("ERROR.49"));
+    }
+
+    static class TestRow {
+        private @Nullable Integer id;
+
+        public @Nullable Integer getId() {
             return id;
         }
 

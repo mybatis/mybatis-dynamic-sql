@@ -76,6 +76,30 @@ class KotlinSelectBuilder(private val fromGatherer: QueryExpressionDSL.FromGathe
     fun unionAll(unionAll: KotlinUnionBuilder.() -> Unit): Unit =
         unionAll(KotlinUnionBuilder(getDsl().unionAll()))
 
+    fun forUpdate() {
+        getDsl().forUpdate()
+    }
+
+    fun forNoKeyUpdate() {
+        getDsl().forNoKeyUpdate()
+    }
+
+    fun forShare() {
+        getDsl().forShare()
+    }
+
+    fun forKeyShare() {
+        getDsl().forKeyShare()
+    }
+
+    fun skipLocked() {
+        getDsl().skipLocked()
+    }
+
+    fun nowait() {
+        getDsl().nowait()
+    }
+
     override fun build(): SelectModel = getDsl().build()
 
     override fun getDsl(): KQueryExpressionDSL = invalidIfNull(dsl, "ERROR.27") //$NON-NLS-1$
