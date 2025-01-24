@@ -477,8 +477,8 @@ public class QueryExpressionDSL<R>
         }
     }
 
-    public class GroupByFinisher extends AbstractHavingStarter<QueryExpressionHavingBuilder>
-            implements Buildable<R>, SelectDSLOperations<R> {
+    public class GroupByFinisher implements AbstractHavingStarter<QueryExpressionHavingBuilder>,
+            Buildable<R>, SelectDSLOperations<R> {
         public SelectDSL<R> orderBy(SortSpecification... columns) {
             return orderBy(Arrays.asList(columns));
         }
