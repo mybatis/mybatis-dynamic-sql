@@ -20,7 +20,6 @@ import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Result;
-import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.SelectProvider;
 import org.mybatis.dynamic.sql.util.mybatis3.CommonCountMapper;
 import org.mybatis.dynamic.sql.util.mybatis3.CommonInsertMapper;
@@ -33,10 +32,8 @@ import examples.springbatch.common.PersonRecord;
 public interface PersonMapper extends CommonCountMapper, CommonInsertMapper<PersonRecord>, CommonUpdateMapper {
 
     @SelectProvider(type=SpringBatchProviderAdapter.class, method="select")
-    @Results({
-        @Result(column="id", property="id", id=true),
-        @Result(column="first_name", property="firstName"),
-        @Result(column="last_name", property="lastName")
-    })
+    @Result(column="id", property="id", id=true)
+    @Result(column="first_name", property="firstName")
+    @Result(column="last_name", property="lastName")
     List<PersonRecord> selectMany(Map<String, Object> parameterValues);
 }

@@ -17,11 +17,11 @@ package org.mybatis.dynamic.sql.select;
 
 import org.mybatis.dynamic.sql.util.Buildable;
 
-public class HavingDSL extends AbstractHavingStarter<HavingDSL.StandaloneHavingFinisher> {
+public class HavingDSL implements AbstractHavingStarter<HavingDSL.StandaloneHavingFinisher> {
     private final StandaloneHavingFinisher havingFinisher = new StandaloneHavingFinisher();
 
     @Override
-    protected StandaloneHavingFinisher having() {
+    public StandaloneHavingFinisher having() {
         return havingFinisher;
     }
 

@@ -16,7 +16,6 @@
 package org.mybatis.dynamic.sql.select.render;
 
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.jspecify.annotations.Nullable;
@@ -48,8 +47,21 @@ public class SubQueryRenderer {
                 .map(this::renderQueryExpression)
                 .collect(FragmentCollector.collect());
 
-        renderOrderBy().ifPresent(fragmentCollector::add);
-        renderPagingModel().ifPresent(fragmentCollector::add);
+        selectModel.orderByModel()
+                .map(this::renderOrderBy)
+                .ifPresent(fragmentCollector::add);
+
+        selectModel.pagingModel()
+                .map(this::renderPagingModel)
+                .ifPresent(fragmentCollector::add);
+
+        selectModel.forClause()
+                .map(FragmentAndParameters::fromFragment)
+                .ifPresent(fragmentCollector::add);
+
+        selectModel.waitClause()
+                .map(FragmentAndParameters::fromFragment)
+                .ifPresent(fragmentCollector::add);
 
         return fragmentCollector.toFragmentAndParameters(Collectors.joining(" ", prefix, suffix)); //$NON-NLS-1$
     }
@@ -61,16 +73,8 @@ public class SubQueryRenderer {
                 .render();
     }
 
-    private Optional<FragmentAndParameters> renderOrderBy() {
-        return selectModel.orderByModel().map(this::renderOrderBy);
-    }
-
     private FragmentAndParameters renderOrderBy(OrderByModel orderByModel) {
         return new OrderByRenderer(renderingContext).render(orderByModel);
-    }
-
-    private Optional<FragmentAndParameters> renderPagingModel() {
-        return selectModel.pagingModel().map(this::renderPagingModel);
     }
 
     private FragmentAndParameters renderPagingModel(PagingModel pagingModel) {

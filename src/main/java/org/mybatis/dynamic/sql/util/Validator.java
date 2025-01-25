@@ -17,6 +17,7 @@ package org.mybatis.dynamic.sql.util;
 
 import java.util.Collection;
 
+import org.jspecify.annotations.Nullable;
 import org.mybatis.dynamic.sql.exception.InvalidSqlException;
 
 public class Validator {
@@ -48,5 +49,11 @@ public class Validator {
 
     public static void assertTrue(boolean condition, String messageNumber, String p1) {
         assertFalse(!condition, messageNumber, p1);
+    }
+
+    public static void assertNull(@Nullable Object object, String messageNumber) {
+        if (object != null) {
+            throw new InvalidSqlException(Messages.getString(messageNumber));
+        }
     }
 }

@@ -96,6 +96,10 @@ Runtime behavior changes:
   rendering if a null value is passed in
 - The JOIN syntax is updated and now allows full boolean expressions like a WHERE clause. The prior JOIN syntax
   is deprecated and will be removed in a future release.
+- Add support for locking options in select statements (for update, for share, etc.) This is not an abstraction of
+  these concepts for different databases it simply adds known clauses to a generated SQL statement. You should always
+  test to make sure these functions work in your target database. Currently, we support, and test, the options
+  supported by PostgreSQL.
 
 ## Release 1.5.2 - June 3, 2024
 
