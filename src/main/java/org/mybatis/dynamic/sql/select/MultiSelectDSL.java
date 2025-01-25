@@ -61,29 +61,29 @@ public class MultiSelectDSL implements Buildable<MultiSelectModel>, Configurable
         return this;
     }
 
-    public LimitFinisher limit(long limit) {
+    public MultiSelectDSL.LimitFinisher limit(long limit) {
         return limitWhenPresent(limit);
     }
 
-    public LimitFinisher limitWhenPresent(@Nullable Long limit) {
+    public MultiSelectDSL.LimitFinisher limitWhenPresent(@Nullable Long limit) {
         this.limit = limit;
         return new LimitFinisher();
     }
 
-    public OffsetFirstFinisher offset(long offset) {
+    public MultiSelectDSL.OffsetFirstFinisher offset(long offset) {
         return offsetWhenPresent(offset);
     }
 
-    public OffsetFirstFinisher offsetWhenPresent(@Nullable Long offset) {
+    public MultiSelectDSL.OffsetFirstFinisher offsetWhenPresent(@Nullable Long offset) {
         this.offset = offset;
         return new OffsetFirstFinisher();
     }
 
-    public FetchFirstFinisher fetchFirst(long fetchFirstRows) {
+    public MultiSelectDSL.FetchFirstFinisher fetchFirst(long fetchFirstRows) {
         return fetchFirstWhenPresent(fetchFirstRows);
     }
 
-    public FetchFirstFinisher fetchFirstWhenPresent(@Nullable Long fetchFirstRows) {
+    public MultiSelectDSL.FetchFirstFinisher fetchFirstWhenPresent(@Nullable Long fetchFirstRows) {
         this.fetchFirstRows = fetchFirstRows;
         return new FetchFirstFinisher();
     }

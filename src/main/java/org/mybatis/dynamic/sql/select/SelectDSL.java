@@ -110,29 +110,29 @@ public class SelectDSL<R> implements Buildable<R>, ConfigurableStatement<SelectD
         orderByModel = OrderByModel.of(columns);
     }
 
-    public LimitFinisher limit(long limit) {
+    public SelectDSL<R>.LimitFinisher limit(long limit) {
         return limitWhenPresent(limit);
     }
 
-    public LimitFinisher limitWhenPresent(@Nullable Long limit) {
+    public SelectDSL<R>.LimitFinisher limitWhenPresent(@Nullable Long limit) {
         this.limit = limit;
         return new LimitFinisher();
     }
 
-    public OffsetFirstFinisher offset(long offset) {
+    public SelectDSL<R>.OffsetFirstFinisher offset(long offset) {
         return offsetWhenPresent(offset);
     }
 
-    public OffsetFirstFinisher offsetWhenPresent(@Nullable Long offset) {
+    public SelectDSL<R>.OffsetFirstFinisher offsetWhenPresent(@Nullable Long offset) {
         this.offset = offset;
         return new OffsetFirstFinisher();
     }
 
-    public FetchFirstFinisher fetchFirst(long fetchFirstRows) {
+    public SelectDSL<R>.FetchFirstFinisher fetchFirst(long fetchFirstRows) {
         return fetchFirstWhenPresent(fetchFirstRows);
     }
 
-    public FetchFirstFinisher fetchFirstWhenPresent(@Nullable Long fetchFirstRows) {
+    public SelectDSL<R>.FetchFirstFinisher fetchFirstWhenPresent(@Nullable Long fetchFirstRows) {
         this.fetchFirstRows = fetchFirstRows;
         return new FetchFirstFinisher();
     }
