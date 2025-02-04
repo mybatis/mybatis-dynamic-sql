@@ -15,7 +15,6 @@
  */
 package org.mybatis.dynamic.sql.update.render;
 
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -77,23 +76,15 @@ public class UpdateRenderer {
     }
 
     private FragmentAndParameters calculateSetPhrase() {
-        List<Optional<FragmentAndParameters>> fragmentsAndParameters = updateModel.columnMappings()
+        FragmentCollector fragmentsCollector = updateModel.columnMappings()
                 .map(m -> m.accept(visitor))
-                .toList();
-
-        Validator.assertFalse(fragmentsAndParameters.stream().noneMatch(Optional::isPresent),
-                "ERROR.18"); //$NON-NLS-1$
-
-        FragmentCollector fragmentCollector = fragmentsAndParameters.stream()
                 .flatMap(Optional::stream)
                 .collect(FragmentCollector.collect());
 
-        return toSetPhrase(fragmentCollector);
-    }
+        Validator.assertFalse(fragmentsCollector.isEmpty(), "ERROR.18"); //$NON-NLS-1$
 
-    private FragmentAndParameters toSetPhrase(FragmentCollector fragmentCollector) {
-        return fragmentCollector.toFragmentAndParameters(
-                Collectors.joining(", ", "set ", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        return fragmentsCollector.toFragmentAndParameters(
+                        Collectors.joining(", ", "set ", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
 
     private Optional<FragmentAndParameters> calculateWhereClause() {
