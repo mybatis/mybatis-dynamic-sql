@@ -76,14 +76,14 @@ public class UpdateRenderer {
     }
 
     private FragmentAndParameters calculateSetPhrase() {
-        FragmentCollector fragmentsCollector = updateModel.columnMappings()
+        FragmentCollector fragmentCollector = updateModel.columnMappings()
                 .map(m -> m.accept(visitor))
                 .flatMap(Optional::stream)
                 .collect(FragmentCollector.collect());
 
-        Validator.assertFalse(fragmentsCollector.isEmpty(), "ERROR.18"); //$NON-NLS-1$
+        Validator.assertFalse(fragmentCollector.isEmpty(), "ERROR.18"); //$NON-NLS-1$
 
-        return fragmentsCollector.toFragmentAndParameters(
+        return fragmentCollector.toFragmentAndParameters(
                         Collectors.joining(", ", "set ", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
 
