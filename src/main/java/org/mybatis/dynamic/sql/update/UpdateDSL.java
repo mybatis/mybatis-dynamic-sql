@@ -39,7 +39,6 @@ import org.mybatis.dynamic.sql.util.ConstantMapping;
 import org.mybatis.dynamic.sql.util.NullMapping;
 import org.mybatis.dynamic.sql.util.SelectMapping;
 import org.mybatis.dynamic.sql.util.StringConstantMapping;
-import org.mybatis.dynamic.sql.util.Utilities;
 import org.mybatis.dynamic.sql.util.ValueMapping;
 import org.mybatis.dynamic.sql.util.ValueOrNullMapping;
 import org.mybatis.dynamic.sql.util.ValueWhenPresentMapping;
@@ -71,7 +70,7 @@ public class UpdateDSL<R> implements AbstractWhereStarter<UpdateDSL<R>.UpdateWhe
 
     @Override
     public UpdateWhereBuilder where() {
-        whereBuilder = Utilities.buildIfNecessary(whereBuilder, UpdateWhereBuilder::new);
+        whereBuilder = Objects.requireNonNullElseGet(whereBuilder, UpdateWhereBuilder::new);
         return whereBuilder;
     }
 

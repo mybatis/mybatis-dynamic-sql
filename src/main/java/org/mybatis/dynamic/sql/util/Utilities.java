@@ -17,17 +17,12 @@ package org.mybatis.dynamic.sql.util;
 
 import java.util.Collection;
 import java.util.Objects;
-import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 public interface Utilities {
-    static <T> T buildIfNecessary(@Nullable T current, @NonNull Supplier<T> builder) {
-        return current == null ? builder.get() : current;
-    }
-
     static long safelyUnbox(@Nullable Long l) {
         return l == null ? 0 : l;
     }
