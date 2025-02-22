@@ -35,11 +35,11 @@ public class ValueWhenPresentMapping<T> extends AbstractColumnMapping {
     }
 
     public Optional<Object> value() {
-        return Optional.ofNullable(valueSupplier.get()).map(this::convert);
+        return Optional.ofNullable(valueSupplier.get()).flatMap(this::convert);
     }
 
-    private @Nullable Object convert(@Nullable T value) {
-        return localColumn.convertParameterType(value);
+    private Optional<Object> convert(T value) {
+        return Optional.ofNullable(localColumn.convertParameterType(value));
     }
 
     @Override

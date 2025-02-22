@@ -31,6 +31,8 @@ import org.mybatis.dynamic.sql.insert.BatchInsertModel;
 import org.mybatis.dynamic.sql.insert.GeneralInsertModel;
 import org.mybatis.dynamic.sql.insert.InsertModel;
 import org.mybatis.dynamic.sql.insert.MultiRowInsertModel;
+import org.mybatis.dynamic.sql.insert.render.GeneralInsertStatementProvider;
+import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.SelectModel;
 import org.mybatis.dynamic.sql.update.UpdateModel;
 import org.mybatis.dynamic.sql.util.Buildable;
@@ -377,6 +379,32 @@ class PersonTemplateTest {
         int rows = template.insert(insertStatement);
 
         assertThat(rows).isEqualTo(1);
+    }
+
+    @Test
+    void testGeneralInsertWhenTypeConverterReturnsNull() {
+
+        GeneralInsertStatementProvider insertStatement = insertInto(person)
+                .set(id).toValue(100)
+                .set(firstName).toValue("Joe")
+                .set(lastName).toValueWhenPresent(LastName.of("Slate"))
+                .set(birthDate).toValue(new Date())
+                .set(employed).toValue(true)
+                .set(occupation).toValue("Quarry Owner")
+                .set(addressId).toValue(1)
+                .build()
+                .render(RenderingStrategies.SPRING_NAMED_PARAMETER);
+
+        assertThat(insertStatement.getInsertStatement())
+                .isEqualTo("insert into Person (id, first_name, birth_date, employed, occupation, address_id) values (:p1, :p2, :p3, :p4, :p5, :p6)");
+        int rows = template.generalInsert(insertStatement);
+        assertThat(rows).isEqualTo(1);
+
+        Buildable<SelectModel> selectStatement = select(id, firstName, lastName, birthDate, employed, occupation, addressId)
+                .from(person)
+                .where(id, isEqualTo(100));
+        Optional<PersonRecord> newRecord = template.selectOne(selectStatement, personRowMapper);
+        assertThat(newRecord).hasValueSatisfying(r -> assertThat(r.getLastName().getName()).isNull());
     }
 
     @Test
