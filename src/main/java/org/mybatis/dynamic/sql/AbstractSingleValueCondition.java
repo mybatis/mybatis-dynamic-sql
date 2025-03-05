@@ -15,9 +15,15 @@
  */
 package org.mybatis.dynamic.sql;
 
+import static org.mybatis.dynamic.sql.util.StringUtilities.spaceBefore;
+
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+
+import org.mybatis.dynamic.sql.render.RenderedParameterInfo;
+import org.mybatis.dynamic.sql.render.RenderingContext;
+import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 
 public abstract class AbstractSingleValueCondition<T> implements VisitableCondition<T> {
     protected final T value;
@@ -28,11 +34,6 @@ public abstract class AbstractSingleValueCondition<T> implements VisitableCondit
 
     public T value() {
         return value;
-    }
-
-    @Override
-    public <R> R accept(ConditionVisitor<T, R> visitor) {
-        return visitor.visit(this);
     }
 
     protected <S extends AbstractSingleValueCondition<T>> S filterSupport(Predicate<? super T> predicate,
@@ -64,4 +65,14 @@ public abstract class AbstractSingleValueCondition<T> implements VisitableCondit
     public abstract AbstractSingleValueCondition<T> filter(Predicate<? super T> predicate);
 
     public abstract String operator();
+
+    @Override
+    public FragmentAndParameters renderCondition(RenderingContext renderingContext, BindableColumn<T> leftColumn) {
+        RenderedParameterInfo parameterInfo = renderingContext.calculateParameterInfo(leftColumn);
+        String finalFragment = operator() + spaceBefore(parameterInfo.renderedPlaceHolder());
+
+        return FragmentAndParameters.withFragment(finalFragment)
+                .withParameter(parameterInfo.parameterMapKey(), leftColumn.convertParameterType(value()))
+                .build();
+    }
 }

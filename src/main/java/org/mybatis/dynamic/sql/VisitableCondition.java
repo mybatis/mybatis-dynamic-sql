@@ -16,10 +16,17 @@
 package org.mybatis.dynamic.sql;
 
 import org.mybatis.dynamic.sql.render.RenderingContext;
+import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 
 @FunctionalInterface
 public interface VisitableCondition<T> {
-    <R> R accept(ConditionVisitor<T, R> visitor);
+    FragmentAndParameters renderCondition(RenderingContext renderingContext, BindableColumn<T> leftColumn);
+
+    default FragmentAndParameters renderLeftColumn(RenderingContext renderingContext, BindableColumn<T> leftColumn) {
+        return leftColumn.alias()
+                .map(FragmentAndParameters::fromFragment)
+                .orElseGet(() -> leftColumn.render(renderingContext));
+    }
 
     /**
      * Subclasses can override this to inform the renderer if the condition should not be included
@@ -46,16 +53,4 @@ public interface VisitableCondition<T> {
      * returns false.
      */
     default void renderingSkipped() {}
-
-    /**
-     * This method is called during rendering. Its purpose is to allow conditions to change
-     * the value of the rendered left column. This is primarily used in the case-insensitive conditions
-     * where we surround the rendered column with "upper(" and ")".
-     *
-     * @param renderedLeftColumn the rendered left column
-     * @return the altered column - by default no change is applied
-     */
-    default String overrideRenderedLeftColumn(String renderedLeftColumn) {
-        return renderedLeftColumn;
-    }
 }

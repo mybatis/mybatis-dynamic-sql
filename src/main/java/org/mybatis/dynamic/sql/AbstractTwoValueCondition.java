@@ -15,11 +15,17 @@
  */
 package org.mybatis.dynamic.sql;
 
+import static org.mybatis.dynamic.sql.util.StringUtilities.spaceBefore;
+
 import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+
+import org.mybatis.dynamic.sql.render.RenderedParameterInfo;
+import org.mybatis.dynamic.sql.render.RenderingContext;
+import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 
 public abstract class AbstractTwoValueCondition<T> implements VisitableCondition<T> {
     protected final T value1;
@@ -36,11 +42,6 @@ public abstract class AbstractTwoValueCondition<T> implements VisitableCondition
 
     public T value2() {
         return value2;
-    }
-
-    @Override
-    public <R> R accept(ConditionVisitor<T, R> visitor) {
-        return visitor.visit(this);
     }
 
     protected <S extends AbstractTwoValueCondition<T>> S filterSupport(BiPredicate<? super T, ? super T> predicate,
@@ -90,4 +91,20 @@ public abstract class AbstractTwoValueCondition<T> implements VisitableCondition
     public abstract String operator1();
 
     public abstract String operator2();
+
+    @Override
+    public FragmentAndParameters renderCondition(RenderingContext renderingContext, BindableColumn<T> leftColumn) {
+        RenderedParameterInfo parameterInfo1 = renderingContext.calculateParameterInfo(leftColumn);
+        RenderedParameterInfo parameterInfo2 = renderingContext.calculateParameterInfo(leftColumn);
+
+        String finalFragment = operator1()
+                + spaceBefore(parameterInfo1.renderedPlaceHolder())
+                + spaceBefore(operator2())
+                + spaceBefore(parameterInfo2.renderedPlaceHolder());
+
+        return FragmentAndParameters.withFragment(finalFragment)
+                .withParameter(parameterInfo1.parameterMapKey(), leftColumn.convertParameterType(value1()))
+                .withParameter(parameterInfo2.parameterMapKey(), leftColumn.convertParameterType(value2()))
+                .build();
+    }
 }

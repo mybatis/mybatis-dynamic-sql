@@ -29,29 +29,18 @@ public class ColumnAndConditionRenderer<T> {
     private final BindableColumn<T> column;
     private final VisitableCondition<T> condition;
     private final RenderingContext renderingContext;
-    private final DefaultConditionVisitor<T> visitor;
 
     private ColumnAndConditionRenderer(Builder<T> builder) {
         column = Objects.requireNonNull(builder.column);
         condition = Objects.requireNonNull(builder.condition);
         renderingContext = Objects.requireNonNull(builder.renderingContext);
-        visitor = DefaultConditionVisitor.withColumn(column)
-                .withRenderingContext(renderingContext)
-                .build();
     }
 
     public FragmentAndParameters render() {
         FragmentCollector fc = new FragmentCollector();
-        fc.add(renderLeftColumn());
-        fc.add(condition.accept(visitor));
+        fc.add(condition.renderLeftColumn(renderingContext, column));
+        fc.add(condition.renderCondition(renderingContext, column));
         return fc.toFragmentAndParameters(Collectors.joining(" ")); //$NON-NLS-1$
-    }
-
-    private FragmentAndParameters renderLeftColumn() {
-        return column.alias()
-                .map(FragmentAndParameters::fromFragment)
-                .orElseGet(() -> column.render(renderingContext))
-                .mapFragment(condition::overrideRenderedLeftColumn);
     }
 
     public static class Builder<T> {
