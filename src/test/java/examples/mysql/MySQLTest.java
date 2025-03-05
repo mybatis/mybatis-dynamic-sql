@@ -127,7 +127,7 @@ class MySQLTest {
 
             SelectStatementProvider selectStatement = select(id, description)
                     .from(items)
-                    .where(description, IsLikeEscape.isLike("Item 1%", "#").map(s -> s))
+                    .where(description, IsLikeEscape.isLike("Item 1%", '#').map(s -> s))
                     .orderBy(id)
                     .build()
                     .render(RenderingStrategies.MYBATIS3);

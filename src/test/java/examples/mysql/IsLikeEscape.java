@@ -17,16 +17,18 @@ package examples.mysql;
 
 import java.util.NoSuchElementException;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
+import org.mybatis.dynamic.sql.AbstractSingleValueCondition;
 import org.mybatis.dynamic.sql.BindableColumn;
 import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
-import org.mybatis.dynamic.sql.where.condition.IsLike;
 
 @NullMarked
-public class IsLikeEscape<T> extends IsLike<T> {
-    private static final IsLikeEscape<?> EMPTY = new IsLikeEscape<Object>(-1, "") {
+public class IsLikeEscape<T> extends AbstractSingleValueCondition<T> {
+    private static final IsLikeEscape<?> EMPTY = new IsLikeEscape<Object>(-1, null) {
         @Override
         public Object value() {
             throw new NoSuchElementException("No value present"); //$NON-NLS-1$
@@ -44,28 +46,46 @@ public class IsLikeEscape<T> extends IsLike<T> {
         return t;
     }
 
-    private final String escapeString;
+    private final @Nullable Character escapeCharacter;
 
-    protected IsLikeEscape(T value, String escapeString) {
+    protected IsLikeEscape(T value, @Nullable Character escapeCharacter) {
         super(value);
-        this.escapeString = escapeString;
+        this.escapeCharacter = escapeCharacter;
+    }
+
+    @Override
+    public String operator() {
+        return "like";
     }
 
     @Override
     public FragmentAndParameters renderCondition(RenderingContext renderingContext, BindableColumn<T> leftColumn) {
-        return super.renderCondition(renderingContext, leftColumn).mapFragment(this::addEscape);
+        var fragment = super.renderCondition(renderingContext, leftColumn);
+        if (escapeCharacter != null) {
+            fragment = fragment.mapFragment(this::addEscape);
+        }
+
+        return fragment;
     }
 
     private String addEscape(String s) {
-        return s + " ESCAPE '" + escapeString + "'";
+        return s + " ESCAPE '" + escapeCharacter + "'";
     }
 
     @Override
-    public <R> IsLike<R> map(Function<? super T, ? extends R> mapper) {
-        return mapSupport(mapper, v -> new IsLikeEscape<>(v, escapeString), IsLikeEscape::empty);
+    public IsLikeEscape<T> filter(Predicate<? super T> predicate) {
+        return filterSupport(predicate, IsLikeEscape::empty, this);
     }
 
-    public static <T> IsLikeEscape<T> isLike(T value, String escapeString) {
-        return new IsLikeEscape<>(value, escapeString);
+    public <R> IsLikeEscape<R> map(Function<? super T, ? extends R> mapper) {
+        return mapSupport(mapper, v -> new IsLikeEscape<>(v, escapeCharacter), IsLikeEscape::empty);
+    }
+
+    public static <T> IsLikeEscape<T> isLike(T value) {
+        return new IsLikeEscape<>(value, null);
+    }
+
+    public static <T> IsLikeEscape<T> isLike(T value, Character escapeCharacter) {
+        return new IsLikeEscape<>(value, escapeCharacter);
     }
 }

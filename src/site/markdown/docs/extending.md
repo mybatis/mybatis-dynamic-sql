@@ -292,3 +292,86 @@ it.  You can write your own rendering support if you are dissatisfied with the S
 Writing a custom renderer is quite complex.  If you want to undertake that task, we suggest that you take the time to
 understand how the default renderers work first.  Feel free to ask questions about this topic on the MyBatis mailing
 list.
+
+## Writing Custom Conditions
+
+The library supplies a full range of conditions for all the common SQL operators (=, !=, like, between, etc.) Some
+databases support extensions to the standard operators. For example, MySQL supports an extension to the "LIKE"
+condition - the "ESCAPE" clause. If you need to implement a condition like that, then you will need to code a
+custom condition.
+
+Here's an example of implementing a LIKE condition that supports ESCAPE:
+
+```java
+@NullMarked
+public class IsLikeEscape<T> extends AbstractSingleValueCondition<T> {
+    private static final IsLikeEscape<?> EMPTY = new IsLikeEscape<Object>(-1, null) {
+        @Override
+        public Object value() {
+            throw new NoSuchElementException("No value present"); //$NON-NLS-1$
+        }
+
+        @Override
+        public boolean isEmpty() {
+            return true;
+        }
+    };
+
+    public static <T> IsLikeEscape<T> empty() {
+        @SuppressWarnings("unchecked")
+        IsLikeEscape<T> t = (IsLikeEscape<T>) EMPTY;
+        return t;
+    }
+
+    private final @Nullable Character escapeCharacter;
+
+    protected IsLikeEscape(T value, @Nullable Character escapeCharacter) {
+        super(value);
+        this.escapeCharacter = escapeCharacter;
+    }
+
+    @Override
+    public String operator() {
+        return "like";
+    }
+
+    @Override
+    public FragmentAndParameters renderCondition(RenderingContext renderingContext, BindableColumn<T> leftColumn) {
+        var fragment = super.renderCondition(renderingContext, leftColumn);
+        if (escapeCharacter != null) {
+            fragment = fragment.mapFragment(this::addEscape);
+        }
+
+        return fragment;
+    }
+
+    private String addEscape(String s) {
+        return s + " ESCAPE '" + escapeCharacter + "'";
+    }
+
+    @Override
+    public IsLikeEscape<T> filter(Predicate<? super T> predicate) {
+        return filterSupport(predicate, IsLikeEscape::empty, this);
+    }
+
+    public <R> IsLikeEscape<R> map(Function<? super T, ? extends R> mapper) {
+        return mapSupport(mapper, v -> new IsLikeEscape<>(v, escapeCharacter), IsLikeEscape::empty);
+    }
+
+    public static <T> IsLikeEscape<T> isLike(T value) {
+        return new IsLikeEscape<>(value, null);
+    }
+
+    public static <T> IsLikeEscape<T> isLike(T value, Character escapeCharacter) {
+        return new IsLikeEscape<>(value, escapeCharacter);
+    }
+}
+```
+
+Important notes:
+
+1. The class extends `AbstractSingleValueCondition` - which is appropriate for like conditions
+2. The class constructor accepts an escape character that will be rendered into an ESCAPE phrase
+3. The class overrides `renderCondition` and changes the library generated `FragmentAndParameters` to add the ESCAPE
+   phrase. **This is the key to what's needed to implement a custom condition.**
+4. The class provides `map` and `filter` functions as is expected for any condition in the library
