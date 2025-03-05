@@ -21,11 +21,11 @@ import org.mybatis.dynamic.sql.BasicColumn
 import org.mybatis.dynamic.sql.BindableColumn
 import org.mybatis.dynamic.sql.BoundValue
 import org.mybatis.dynamic.sql.Constant
+import org.mybatis.dynamic.sql.RenderableCondition
 import org.mybatis.dynamic.sql.SortSpecification
 import org.mybatis.dynamic.sql.SqlBuilder
 import org.mybatis.dynamic.sql.SqlColumn
 import org.mybatis.dynamic.sql.StringConstant
-import org.mybatis.dynamic.sql.VisitableCondition
 import org.mybatis.dynamic.sql.select.caseexpression.SearchedCaseModel
 import org.mybatis.dynamic.sql.select.caseexpression.SimpleCaseModel
 import org.mybatis.dynamic.sql.select.aggregate.Avg
@@ -139,7 +139,7 @@ fun <T : Any> sum(column: BindableColumn<T>): Sum<T> = SqlBuilder.sum(column)
 
 fun sum(column: BasicColumn): Sum<*> = SqlBuilder.sum(column)
 
-fun <T : Any> sum(column: BindableColumn<T>, condition: VisitableCondition<T>): Sum<T> = SqlBuilder.sum(column, condition)
+fun <T : Any> sum(column: BindableColumn<T>, condition: RenderableCondition<T>): Sum<T> = SqlBuilder.sum(column, condition)
 
 // constants
 fun <T : Any> constant(constant: String): Constant<T> = SqlBuilder.constant(constant)

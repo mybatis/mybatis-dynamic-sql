@@ -21,7 +21,7 @@ import org.mybatis.dynamic.sql.select.render.SubQueryRenderer;
 import org.mybatis.dynamic.sql.util.Buildable;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 
-public abstract class AbstractSubselectCondition<T> implements VisitableCondition<T> {
+public abstract class AbstractSubselectCondition<T> implements RenderableCondition<T> {
     private final SelectModel selectModel;
 
     protected AbstractSubselectCondition(Buildable<SelectModel> selectModelBuilder) {

@@ -21,7 +21,7 @@ import java.util.function.Supplier;
 import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 
-public abstract class AbstractNoValueCondition<T> implements VisitableCondition<T> {
+public abstract class AbstractNoValueCondition<T> implements RenderableCondition<T> {
 
     protected <S extends AbstractNoValueCondition<?>> S filterSupport(BooleanSupplier booleanSupplier,
             Supplier<S> emptySupplier, S self) {

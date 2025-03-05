@@ -16,41 +16,21 @@
 package org.mybatis.dynamic.sql;
 
 import org.mybatis.dynamic.sql.render.RenderingContext;
-import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 
-@FunctionalInterface
-public interface VisitableCondition<T> {
-    FragmentAndParameters renderCondition(RenderingContext renderingContext, BindableColumn<T> leftColumn);
-
-    default FragmentAndParameters renderLeftColumn(RenderingContext renderingContext, BindableColumn<T> leftColumn) {
-        return leftColumn.alias()
-                .map(FragmentAndParameters::fromFragment)
-                .orElseGet(() -> leftColumn.render(renderingContext));
-    }
-
-    /**
-     * Subclasses can override this to inform the renderer if the condition should not be included
-     * in the rendered SQL.  Typically, conditions will not render if they are empty.
-     *
-     * @return true if the condition should render.
-     */
-    default boolean shouldRender(RenderingContext renderingContext) {
-        return !isEmpty();
-    }
-
-    /**
-     * Subclasses can override this to indicate whether the condition is considered empty. This is primarily used in
-     * map and filter operations - the map and filter functions will not be applied if the condition is empty.
-     *
-     * @return true if the condition is empty.
-     */
-    default boolean isEmpty() {
-        return false;
-    }
-
-    /**
-     * This method will be called during rendering when {@link VisitableCondition#shouldRender(RenderingContext)}
-     * returns false.
-     */
-    default void renderingSkipped() {}
-}
+/**
+ * Deprecated interface.
+ *
+ * <p>Conditions are no longer rendered with a visitor, so the name is misleading. This change makes it far easier
+ * to implement custom conditions for functionality not supplied out of the box by the library.
+ *
+ * <p>If you created any direct implementations of this interface, you will need to change the rendering functions.
+ * The library now calls {@link RenderableCondition#renderCondition(RenderingContext, BindableColumn)} and
+ * {@link RenderableCondition#renderLeftColumn(RenderingContext, BindableColumn)} instead of the previous methods
+ * like <code>operator</code>, <code>value</code>, etc. Subclasses of the supplied abstract conditions should continue
+ * to function as before.
+ *
+ * @param <T> the Java type related to the column this condition relates to. Used primarily for compiler type checking
+ * @deprecated since 2.0.0. Please use {@link RenderableCondition} instead.
+ */
+@Deprecated(since = "2.0.0", forRemoval = true)
+public interface VisitableCondition<T> extends RenderableCondition<T> { }

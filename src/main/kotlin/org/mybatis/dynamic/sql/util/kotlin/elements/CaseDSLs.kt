@@ -16,7 +16,7 @@
 package org.mybatis.dynamic.sql.util.kotlin.elements
 
 import org.mybatis.dynamic.sql.BasicColumn
-import org.mybatis.dynamic.sql.VisitableCondition
+import org.mybatis.dynamic.sql.RenderableCondition
 import org.mybatis.dynamic.sql.select.caseexpression.BasicWhenCondition
 import org.mybatis.dynamic.sql.select.caseexpression.ConditionBasedWhenCondition
 import org.mybatis.dynamic.sql.select.caseexpression.SearchedCaseWhenCondition
@@ -67,7 +67,7 @@ class KSimpleCaseDSL<T : Any> : KElseDSL {
         }
     internal val whenConditions = mutableListOf<SimpleCaseWhenCondition<T>>()
 
-    fun `when`(vararg conditions: VisitableCondition<T>) =
+    fun `when`(vararg conditions: RenderableCondition<T>) =
         SimpleCaseThenGatherer { whenConditions.add(ConditionBasedWhenCondition(conditions.asList(), it)) }
 
     fun `when`(vararg values: T) =

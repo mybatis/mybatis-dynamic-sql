@@ -23,7 +23,7 @@ import java.util.Objects;
 import org.jspecify.annotations.Nullable;
 import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.BindableColumn;
-import org.mybatis.dynamic.sql.VisitableCondition;
+import org.mybatis.dynamic.sql.RenderableCondition;
 
 public class SimpleCaseDSL<T> implements ElseDSL<SimpleCaseDSL<T>.SimpleCaseEnder> {
     private final BindableColumn<T> column;
@@ -35,13 +35,13 @@ public class SimpleCaseDSL<T> implements ElseDSL<SimpleCaseDSL<T>.SimpleCaseEnde
     }
 
     @SafeVarargs
-    public final ConditionBasedWhenFinisher when(VisitableCondition<T> condition,
-                                                 VisitableCondition<T>... subsequentConditions) {
+    public final ConditionBasedWhenFinisher when(RenderableCondition<T> condition,
+                                                 RenderableCondition<T>... subsequentConditions) {
         return when(condition, Arrays.asList(subsequentConditions));
     }
 
-    public ConditionBasedWhenFinisher when(VisitableCondition<T> condition,
-                                           List<VisitableCondition<T>> subsequentConditions) {
+    public ConditionBasedWhenFinisher when(RenderableCondition<T> condition,
+                                           List<RenderableCondition<T>> subsequentConditions) {
         return new ConditionBasedWhenFinisher(condition, subsequentConditions);
     }
 
@@ -70,10 +70,10 @@ public class SimpleCaseDSL<T> implements ElseDSL<SimpleCaseDSL<T>.SimpleCaseEnde
     }
 
     public class ConditionBasedWhenFinisher implements ThenDSL<SimpleCaseDSL<T>> {
-        private final List<VisitableCondition<T>> conditions = new ArrayList<>();
+        private final List<RenderableCondition<T>> conditions = new ArrayList<>();
 
-        private ConditionBasedWhenFinisher(VisitableCondition<T> condition,
-                                           List<VisitableCondition<T>> subsequentConditions) {
+        private ConditionBasedWhenFinisher(RenderableCondition<T> condition,
+                                           List<RenderableCondition<T>> subsequentConditions) {
             conditions.add(condition);
             conditions.addAll(subsequentConditions);
         }

@@ -20,14 +20,14 @@ import java.util.stream.Collectors;
 
 import org.jspecify.annotations.Nullable;
 import org.mybatis.dynamic.sql.BindableColumn;
-import org.mybatis.dynamic.sql.VisitableCondition;
+import org.mybatis.dynamic.sql.RenderableCondition;
 import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 import org.mybatis.dynamic.sql.util.FragmentCollector;
 
 public class ColumnAndConditionRenderer<T> {
     private final BindableColumn<T> column;
-    private final VisitableCondition<T> condition;
+    private final RenderableCondition<T> condition;
     private final RenderingContext renderingContext;
 
     private ColumnAndConditionRenderer(Builder<T> builder) {
@@ -45,7 +45,7 @@ public class ColumnAndConditionRenderer<T> {
 
     public static class Builder<T> {
         private @Nullable BindableColumn<T> column;
-        private @Nullable VisitableCondition<T> condition;
+        private @Nullable RenderableCondition<T> condition;
         private @Nullable RenderingContext renderingContext;
 
         public Builder<T> withColumn(BindableColumn<T> column) {
@@ -53,7 +53,7 @@ public class ColumnAndConditionRenderer<T> {
             return this;
         }
 
-        public Builder<T> withCondition(VisitableCondition<T> condition) {
+        public Builder<T> withCondition(RenderableCondition<T> condition) {
             this.condition = condition;
             return this;
         }

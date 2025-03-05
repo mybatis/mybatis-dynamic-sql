@@ -20,17 +20,17 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import org.mybatis.dynamic.sql.BasicColumn;
-import org.mybatis.dynamic.sql.VisitableCondition;
+import org.mybatis.dynamic.sql.RenderableCondition;
 
 public class ConditionBasedWhenCondition<T> extends SimpleCaseWhenCondition<T> {
-    private final List<VisitableCondition<T>> conditions = new ArrayList<>();
+    private final List<RenderableCondition<T>> conditions = new ArrayList<>();
 
-    public ConditionBasedWhenCondition(List<VisitableCondition<T>> conditions, BasicColumn thenValue) {
+    public ConditionBasedWhenCondition(List<RenderableCondition<T>> conditions, BasicColumn thenValue) {
         super(thenValue);
         this.conditions.addAll(conditions);
     }
 
-    public Stream<VisitableCondition<T>> conditions() {
+    public Stream<RenderableCondition<T>> conditions() {
         return conditions.stream();
     }
 

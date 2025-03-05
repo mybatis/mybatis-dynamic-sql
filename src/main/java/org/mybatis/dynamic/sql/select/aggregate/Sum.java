@@ -19,7 +19,7 @@ import java.util.function.Function;
 
 import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.BindableColumn;
-import org.mybatis.dynamic.sql.VisitableCondition;
+import org.mybatis.dynamic.sql.RenderableCondition;
 import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.select.function.AbstractUniTypeFunction;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
@@ -34,7 +34,7 @@ public class Sum<T> extends AbstractUniTypeFunction<T, Sum<T>> {
         renderer = rc -> column.render(rc).mapFragment(this::applyAggregate);
     }
 
-    private Sum(BindableColumn<T> column, VisitableCondition<T> condition) {
+    private Sum(BindableColumn<T> column, RenderableCondition<T> condition) {
         super(column);
         renderer = rc -> {
             Validator.assertTrue(condition.shouldRender(rc), "ERROR.37", "sum"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -76,7 +76,7 @@ public class Sum<T> extends AbstractUniTypeFunction<T, Sum<T>> {
         return new Sum<>(column);
     }
 
-    public static <T> Sum<T> of(BindableColumn<T> column, VisitableCondition<T> condition) {
+    public static <T> Sum<T> of(BindableColumn<T> column, RenderableCondition<T> condition) {
         return new Sum<>(column, condition);
     }
 }

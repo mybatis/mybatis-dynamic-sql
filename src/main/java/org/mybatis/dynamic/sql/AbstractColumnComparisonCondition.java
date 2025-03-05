@@ -20,7 +20,7 @@ import static org.mybatis.dynamic.sql.util.StringUtilities.spaceBefore;
 import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 
-public abstract class AbstractColumnComparisonCondition<T> implements VisitableCondition<T> {
+public abstract class AbstractColumnComparisonCondition<T> implements RenderableCondition<T> {
 
     protected final BasicColumn rightColumn;
 

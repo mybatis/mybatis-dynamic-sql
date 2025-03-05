@@ -25,7 +25,7 @@ import org.mybatis.dynamic.sql.render.RenderedParameterInfo;
 import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 
-public abstract class AbstractSingleValueCondition<T> implements VisitableCondition<T> {
+public abstract class AbstractSingleValueCondition<T> implements RenderableCondition<T> {
     protected final T value;
 
     protected AbstractSingleValueCondition(T value) {

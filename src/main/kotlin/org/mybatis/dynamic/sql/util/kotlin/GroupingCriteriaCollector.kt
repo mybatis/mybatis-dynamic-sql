@@ -22,9 +22,9 @@ import org.mybatis.dynamic.sql.ColumnAndConditionCriterion
 import org.mybatis.dynamic.sql.CriteriaGroup
 import org.mybatis.dynamic.sql.ExistsCriterion
 import org.mybatis.dynamic.sql.NotCriterion
+import org.mybatis.dynamic.sql.RenderableCondition
 import org.mybatis.dynamic.sql.SqlBuilder
 import org.mybatis.dynamic.sql.SqlCriterion
-import org.mybatis.dynamic.sql.VisitableCondition
 
 typealias GroupingCriteriaReceiver = GroupingCriteriaCollector.() -> Unit
 
@@ -229,7 +229,7 @@ open class GroupingCriteriaCollector : SubCriteriaCollector() {
      *
      * @param condition the condition to be applied to this column, in this scope
      */
-    operator fun <T : Any> BindableColumn<T>.invoke(condition: VisitableCondition<T>) {
+    operator fun <T : Any> BindableColumn<T>.invoke(condition: RenderableCondition<T>) {
         initialCriterion = ColumnAndConditionCriterion.withColumn(this)
             .withCondition(condition)
             .build()

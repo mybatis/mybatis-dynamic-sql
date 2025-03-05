@@ -28,7 +28,7 @@ import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 import org.mybatis.dynamic.sql.util.FragmentCollector;
 
-public abstract class AbstractListValueCondition<T> implements VisitableCondition<T> {
+public abstract class AbstractListValueCondition<T> implements RenderableCondition<T> {
     protected final Collection<T> values;
 
     protected AbstractListValueCondition(Collection<T> values) {

@@ -19,7 +19,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.mybatis.dynamic.sql.BindableColumn;
-import org.mybatis.dynamic.sql.VisitableCondition;
+import org.mybatis.dynamic.sql.RenderableCondition;
 import org.mybatis.dynamic.sql.render.RenderedParameterInfo;
 import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.select.caseexpression.BasicWhenCondition;
@@ -57,11 +57,11 @@ public class SimpleCaseWhenConditionRenderer<T> implements SimpleCaseWhenConditi
                 .toFragmentAndParameters(Collectors.joining(", ")); //$NON-NLS-1$
     }
 
-    private boolean shouldRender(VisitableCondition<T> condition) {
+    private boolean shouldRender(RenderableCondition<T> condition) {
         return condition.shouldRender(renderingContext);
     }
 
-    private FragmentAndParameters renderCondition(VisitableCondition<T> condition) {
+    private FragmentAndParameters renderCondition(RenderableCondition<T> condition) {
         return condition.renderCondition(renderingContext, column);
     }
 
