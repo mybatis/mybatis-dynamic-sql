@@ -15,12 +15,17 @@
  */
 package org.mybatis.dynamic.sql.where.condition;
 
-import org.mybatis.dynamic.sql.VisitableCondition;
+import org.mybatis.dynamic.sql.BindableColumn;
+import org.mybatis.dynamic.sql.RenderableCondition;
+import org.mybatis.dynamic.sql.render.RenderingContext;
+import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 
-public interface CaseInsensitiveVisitableCondition extends VisitableCondition<String> {
+public interface CaseInsensitiveVisitableCondition extends RenderableCondition<String> {
 
     @Override
-    default String overrideRenderedLeftColumn(String renderedLeftColumn) {
-        return "upper(" + renderedLeftColumn + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+    default FragmentAndParameters renderLeftColumn(RenderingContext renderingContext,
+                                                   BindableColumn<String> leftColumn) {
+        return RenderableCondition.super.renderLeftColumn(renderingContext, leftColumn)
+                .mapFragment(s -> "upper(" + s + ")"); //$NON-NLS-1$ //$NON-NLS-2$
     }
 }

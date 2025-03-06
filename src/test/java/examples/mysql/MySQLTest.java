@@ -119,4 +119,25 @@ class MySQLTest {
             assertThat(rows.get(2)).containsOnly(entry("id", 3), entry("inList", 1L));
         }
     }
+
+    @Test
+    void testIsLikeEscape() {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
+            CommonSelectMapper mapper = session.getMapper(CommonSelectMapper.class);
+
+            SelectStatementProvider selectStatement = select(id, description)
+                    .from(items)
+                    .where(description, IsLikeEscape.isLike("Item 1%", '#').map(s -> s))
+                    .orderBy(id)
+                    .build()
+                    .render(RenderingStrategies.MYBATIS3);
+
+            assertThat(selectStatement.getSelectStatement())
+                    .isEqualTo("select id, description from items where description like #{parameters.p1,jdbcType=VARCHAR} ESCAPE '#' order by id");
+
+            List<Map<String, Object>> rows = mapper.selectManyMappedRows(selectStatement);
+            assertThat(rows).hasSize(11);
+            assertThat(rows.get(2)).containsOnly(entry("id", 11), entry("description", "Item 11"));
+        }
+    }
 }

@@ -100,6 +100,10 @@ Runtime behavior changes:
   these concepts for different databases it simply adds known clauses to a generated SQL statement. You should always
   test to make sure these functions work in your target database. Currently, we support, and test, the options
   supported by PostgreSQL.
+- Rendering for all the conditions (isEqualTo, etc.) has changed. This should be transparent to most users unless you
+  have coded a direct implementation of `VisitableCondition`. The change makes it easier to code custom conditions that
+  are not supported by the library out of the box. The statement renderers now call methods `renderCondition` and
+  `renderLeftColumn` that you can override to implement any rendering you need.  
 
 ## Release 1.5.2 - June 3, 2024
 

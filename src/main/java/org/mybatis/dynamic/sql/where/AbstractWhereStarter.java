@@ -25,8 +25,8 @@ import org.mybatis.dynamic.sql.ColumnAndConditionCriterion;
 import org.mybatis.dynamic.sql.CriteriaGroup;
 import org.mybatis.dynamic.sql.ExistsCriterion;
 import org.mybatis.dynamic.sql.ExistsPredicate;
+import org.mybatis.dynamic.sql.RenderableCondition;
 import org.mybatis.dynamic.sql.SqlCriterion;
-import org.mybatis.dynamic.sql.VisitableCondition;
 import org.mybatis.dynamic.sql.util.ConfigurableStatement;
 
 /**
@@ -39,11 +39,11 @@ import org.mybatis.dynamic.sql.util.ConfigurableStatement;
 public interface AbstractWhereStarter<F extends AbstractWhereFinisher<?>, D extends AbstractWhereStarter<F, D>>
         extends ConfigurableStatement<D> {
 
-    default <T> F where(BindableColumn<T> column, VisitableCondition<T> condition, AndOrCriteriaGroup... subCriteria) {
+    default <T> F where(BindableColumn<T> column, RenderableCondition<T> condition, AndOrCriteriaGroup... subCriteria) {
         return where(column, condition, Arrays.asList(subCriteria));
     }
 
-    default <T> F where(BindableColumn<T> column, VisitableCondition<T> condition,
+    default <T> F where(BindableColumn<T> column, RenderableCondition<T> condition,
                        List<AndOrCriteriaGroup> subCriteria) {
         SqlCriterion sqlCriterion = ColumnAndConditionCriterion.withColumn(column)
                 .withCondition(condition)

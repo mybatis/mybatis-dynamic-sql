@@ -19,7 +19,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.mybatis.dynamic.sql.BindableColumn;
-import org.mybatis.dynamic.sql.VisitableCondition;
+import org.mybatis.dynamic.sql.RenderableCondition;
 import org.mybatis.dynamic.sql.render.RenderedParameterInfo;
 import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.select.caseexpression.BasicWhenCondition;
@@ -28,20 +28,14 @@ import org.mybatis.dynamic.sql.select.caseexpression.SimpleCaseWhenConditionVisi
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 import org.mybatis.dynamic.sql.util.FragmentCollector;
 import org.mybatis.dynamic.sql.util.Validator;
-import org.mybatis.dynamic.sql.where.render.DefaultConditionVisitor;
 
 public class SimpleCaseWhenConditionRenderer<T> implements SimpleCaseWhenConditionVisitor<T, FragmentAndParameters> {
     private final RenderingContext renderingContext;
     private final BindableColumn<T> column;
-    private final DefaultConditionVisitor<T> conditionVisitor;
 
     public SimpleCaseWhenConditionRenderer(RenderingContext renderingContext, BindableColumn<T> column) {
         this.renderingContext = Objects.requireNonNull(renderingContext);
         this.column = Objects.requireNonNull(column);
-        conditionVisitor = new DefaultConditionVisitor.Builder<T>()
-                .withColumn(column)
-                .withRenderingContext(renderingContext)
-                .build();
     }
 
     @Override
@@ -63,12 +57,12 @@ public class SimpleCaseWhenConditionRenderer<T> implements SimpleCaseWhenConditi
                 .toFragmentAndParameters(Collectors.joining(", ")); //$NON-NLS-1$
     }
 
-    private boolean shouldRender(VisitableCondition<T> condition) {
+    private boolean shouldRender(RenderableCondition<T> condition) {
         return condition.shouldRender(renderingContext);
     }
 
-    private FragmentAndParameters renderCondition(VisitableCondition<T> condition) {
-        return condition.accept(conditionVisitor);
+    private FragmentAndParameters renderCondition(RenderableCondition<T> condition) {
+        return condition.renderCondition(renderingContext, column);
     }
 
     private FragmentAndParameters renderBasicValue(T value) {

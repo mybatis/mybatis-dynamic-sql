@@ -22,17 +22,17 @@ import org.mybatis.dynamic.sql.AndOrCriteriaGroup;
 import org.mybatis.dynamic.sql.BindableColumn;
 import org.mybatis.dynamic.sql.ColumnAndConditionCriterion;
 import org.mybatis.dynamic.sql.CriteriaGroup;
+import org.mybatis.dynamic.sql.RenderableCondition;
 import org.mybatis.dynamic.sql.SqlCriterion;
-import org.mybatis.dynamic.sql.VisitableCondition;
 
 public interface AbstractHavingStarter<F extends AbstractHavingFinisher<?>> {
 
-    default <T> F having(BindableColumn<T> column, VisitableCondition<T> condition,
+    default <T> F having(BindableColumn<T> column, RenderableCondition<T> condition,
                         AndOrCriteriaGroup... subCriteria) {
         return having(column, condition, Arrays.asList(subCriteria));
     }
 
-    default <T> F having(BindableColumn<T> column, VisitableCondition<T> condition,
+    default <T> F having(BindableColumn<T> column, RenderableCondition<T> condition,
                         List<AndOrCriteriaGroup> subCriteria) {
         SqlCriterion sqlCriterion = ColumnAndConditionCriterion.withColumn(column)
                 .withCondition(condition)

@@ -18,12 +18,10 @@ package org.mybatis.dynamic.sql;
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
-public abstract class AbstractNoValueCondition<T> implements VisitableCondition<T> {
+import org.mybatis.dynamic.sql.render.RenderingContext;
+import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 
-    @Override
-    public <R> R accept(ConditionVisitor<T, R> visitor) {
-        return visitor.visit(this);
-    }
+public abstract class AbstractNoValueCondition<T> implements RenderableCondition<T> {
 
     protected <S extends AbstractNoValueCondition<?>> S filterSupport(BooleanSupplier booleanSupplier,
             Supplier<S> emptySupplier, S self) {
@@ -35,4 +33,9 @@ public abstract class AbstractNoValueCondition<T> implements VisitableCondition<
     }
 
     public abstract String operator();
+
+    @Override
+    public FragmentAndParameters renderCondition(RenderingContext renderingContext, BindableColumn<T> leftColumn) {
+        return FragmentAndParameters.fromFragment(operator());
+    }
 }

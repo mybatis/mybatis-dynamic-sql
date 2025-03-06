@@ -23,7 +23,12 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public abstract class AbstractListValueCondition<T> implements VisitableCondition<T> {
+import org.mybatis.dynamic.sql.render.RenderedParameterInfo;
+import org.mybatis.dynamic.sql.render.RenderingContext;
+import org.mybatis.dynamic.sql.util.FragmentAndParameters;
+import org.mybatis.dynamic.sql.util.FragmentCollector;
+
+public abstract class AbstractListValueCondition<T> implements RenderableCondition<T> {
     protected final Collection<T> values;
 
     protected AbstractListValueCondition(Collection<T> values) {
@@ -39,19 +44,14 @@ public abstract class AbstractListValueCondition<T> implements VisitableConditio
         return values.isEmpty();
     }
 
-    @Override
-    public <R> R accept(ConditionVisitor<T, R> visitor) {
-        return visitor.visit(this);
-    }
-
     private <R> Collection<R> applyMapper(Function<? super T, ? extends R> mapper) {
         Objects.requireNonNull(mapper);
-        return values.stream().map(mapper).collect(Collectors.toList());
+        return values().map(mapper).collect(Collectors.toList());
     }
 
     private Collection<T> applyFilter(Predicate<? super T> predicate) {
         Objects.requireNonNull(predicate);
-        return values.stream().filter(predicate).toList();
+        return values().filter(predicate).toList();
     }
 
     protected <S extends AbstractListValueCondition<T>> S filterSupport(Predicate<? super T> predicate,
@@ -84,4 +84,20 @@ public abstract class AbstractListValueCondition<T> implements VisitableConditio
     public abstract AbstractListValueCondition<T> filter(Predicate<? super T> predicate);
 
     public abstract String operator();
+
+    @Override
+    public FragmentAndParameters renderCondition(RenderingContext renderingContext, BindableColumn<T> leftColumn) {
+        return values().map(v -> toFragmentAndParameters(v, renderingContext, leftColumn))
+                .collect(FragmentCollector.collect())
+                .toFragmentAndParameters(Collectors.joining(",", //$NON-NLS-1$
+                        operator() + " (", ")")); //$NON-NLS-1$ //$NON-NLS-2$
+    }
+
+    private FragmentAndParameters toFragmentAndParameters(T value, RenderingContext renderingContext,
+                                                          BindableColumn<T> leftColumn) {
+        RenderedParameterInfo parameterInfo = renderingContext.calculateParameterInfo(leftColumn);
+        return FragmentAndParameters.withFragment(parameterInfo.renderedPlaceHolder())
+                .withParameter(parameterInfo.parameterMapKey(), leftColumn.convertParameterType(value))
+                .build();
+    }
 }

@@ -21,7 +21,7 @@ import org.jspecify.annotations.Nullable;
 
 public class ColumnAndConditionCriterion<T> extends SqlCriterion {
     private final BindableColumn<T> column;
-    private final VisitableCondition<T> condition;
+    private final RenderableCondition<T> condition;
 
     private ColumnAndConditionCriterion(Builder<T> builder) {
         super(builder);
@@ -33,7 +33,7 @@ public class ColumnAndConditionCriterion<T> extends SqlCriterion {
         return column;
     }
 
-    public VisitableCondition<T> condition() {
+    public RenderableCondition<T> condition() {
         return condition;
     }
 
@@ -48,14 +48,14 @@ public class ColumnAndConditionCriterion<T> extends SqlCriterion {
 
     public static class Builder<T> extends AbstractBuilder<Builder<T>> {
         private @Nullable BindableColumn<T> column;
-        private @Nullable VisitableCondition<T> condition;
+        private @Nullable RenderableCondition<T> condition;
 
         public Builder<T> withColumn(BindableColumn<T> column) {
             this.column = column;
             return this;
         }
 
-        public Builder<T> withCondition(VisitableCondition<T> condition) {
+        public Builder<T> withCondition(RenderableCondition<T> condition) {
             this.condition = condition;
             return this;
         }

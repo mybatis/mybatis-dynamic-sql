@@ -20,43 +20,32 @@ import java.util.stream.Collectors;
 
 import org.jspecify.annotations.Nullable;
 import org.mybatis.dynamic.sql.BindableColumn;
-import org.mybatis.dynamic.sql.VisitableCondition;
+import org.mybatis.dynamic.sql.RenderableCondition;
 import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 import org.mybatis.dynamic.sql.util.FragmentCollector;
 
 public class ColumnAndConditionRenderer<T> {
     private final BindableColumn<T> column;
-    private final VisitableCondition<T> condition;
+    private final RenderableCondition<T> condition;
     private final RenderingContext renderingContext;
-    private final DefaultConditionVisitor<T> visitor;
 
     private ColumnAndConditionRenderer(Builder<T> builder) {
         column = Objects.requireNonNull(builder.column);
         condition = Objects.requireNonNull(builder.condition);
         renderingContext = Objects.requireNonNull(builder.renderingContext);
-        visitor = DefaultConditionVisitor.withColumn(column)
-                .withRenderingContext(renderingContext)
-                .build();
     }
 
     public FragmentAndParameters render() {
         FragmentCollector fc = new FragmentCollector();
-        fc.add(renderLeftColumn());
-        fc.add(condition.accept(visitor));
+        fc.add(condition.renderLeftColumn(renderingContext, column));
+        fc.add(condition.renderCondition(renderingContext, column));
         return fc.toFragmentAndParameters(Collectors.joining(" ")); //$NON-NLS-1$
-    }
-
-    private FragmentAndParameters renderLeftColumn() {
-        return column.alias()
-                .map(FragmentAndParameters::fromFragment)
-                .orElseGet(() -> column.render(renderingContext))
-                .mapFragment(condition::overrideRenderedLeftColumn);
     }
 
     public static class Builder<T> {
         private @Nullable BindableColumn<T> column;
-        private @Nullable VisitableCondition<T> condition;
+        private @Nullable RenderableCondition<T> condition;
         private @Nullable RenderingContext renderingContext;
 
         public Builder<T> withColumn(BindableColumn<T> column) {
@@ -64,7 +53,7 @@ public class ColumnAndConditionRenderer<T> {
             return this;
         }
 
-        public Builder<T> withCondition(VisitableCondition<T> condition) {
+        public Builder<T> withCondition(RenderableCondition<T> condition) {
             this.condition = condition;
             return this;
         }

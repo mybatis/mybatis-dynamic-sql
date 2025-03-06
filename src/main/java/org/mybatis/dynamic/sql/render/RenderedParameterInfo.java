@@ -17,20 +17,9 @@ package org.mybatis.dynamic.sql.render;
 
 import java.util.Objects;
 
-public class RenderedParameterInfo {
-    private final String parameterMapKey;
-    private final String renderedPlaceHolder;
-
+public record RenderedParameterInfo(String parameterMapKey, String renderedPlaceHolder) {
     public RenderedParameterInfo(String parameterMapKey, String renderedPlaceHolder) {
         this.parameterMapKey = Objects.requireNonNull(parameterMapKey);
         this.renderedPlaceHolder = Objects.requireNonNull(renderedPlaceHolder);
-    }
-
-    public String parameterMapKey() {
-        return parameterMapKey;
-    }
-
-    public String renderedPlaceHolder() {
-        return renderedPlaceHolder;
     }
 }

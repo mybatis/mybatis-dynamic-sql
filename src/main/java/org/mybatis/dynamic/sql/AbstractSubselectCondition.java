@@ -15,24 +15,28 @@
  */
 package org.mybatis.dynamic.sql;
 
+import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.select.SelectModel;
+import org.mybatis.dynamic.sql.select.render.SubQueryRenderer;
 import org.mybatis.dynamic.sql.util.Buildable;
+import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 
-public abstract class AbstractSubselectCondition<T> implements VisitableCondition<T> {
+public abstract class AbstractSubselectCondition<T> implements RenderableCondition<T> {
     private final SelectModel selectModel;
 
     protected AbstractSubselectCondition(Buildable<SelectModel> selectModelBuilder) {
         this.selectModel = selectModelBuilder.build();
     }
 
-    public SelectModel selectModel() {
-        return selectModel;
-    }
+    public abstract String operator();
 
     @Override
-    public <R> R accept(ConditionVisitor<T, R> visitor) {
-        return visitor.visit(this);
+    public FragmentAndParameters renderCondition(RenderingContext renderingContext, BindableColumn<T> leftColumn) {
+        return SubQueryRenderer.withSelectModel(selectModel)
+                .withRenderingContext(renderingContext)
+                .withPrefix(operator() + " (") //$NON-NLS-1$
+                .withSuffix(")") //$NON-NLS-1$
+                .build()
+                .render();
     }
-
-    public abstract String operator();
 }

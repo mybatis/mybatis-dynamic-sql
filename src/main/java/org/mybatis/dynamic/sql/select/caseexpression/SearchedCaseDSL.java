@@ -25,20 +25,20 @@ import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.BindableColumn;
 import org.mybatis.dynamic.sql.ColumnAndConditionCriterion;
 import org.mybatis.dynamic.sql.CriteriaGroup;
+import org.mybatis.dynamic.sql.RenderableCondition;
 import org.mybatis.dynamic.sql.SqlCriterion;
-import org.mybatis.dynamic.sql.VisitableCondition;
 import org.mybatis.dynamic.sql.common.AbstractBooleanExpressionDSL;
 
 public class SearchedCaseDSL implements ElseDSL<SearchedCaseDSL.SearchedCaseEnder> {
     private final List<SearchedCaseWhenCondition> whenConditions = new ArrayList<>();
     private @Nullable BasicColumn elseValue;
 
-    public <T> WhenDSL when(BindableColumn<T> column, VisitableCondition<T> condition,
+    public <T> WhenDSL when(BindableColumn<T> column, RenderableCondition<T> condition,
                             AndOrCriteriaGroup... subCriteria) {
         return when(column, condition, Arrays.asList(subCriteria));
     }
 
-    public <T> WhenDSL when(BindableColumn<T> column, VisitableCondition<T> condition,
+    public <T> WhenDSL when(BindableColumn<T> column, RenderableCondition<T> condition,
                             List<AndOrCriteriaGroup> subCriteria) {
         SqlCriterion sqlCriterion = ColumnAndConditionCriterion.withColumn(column)
                 .withCondition(condition)

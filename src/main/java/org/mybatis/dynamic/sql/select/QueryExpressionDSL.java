@@ -28,10 +28,10 @@ import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.BindableColumn;
 import org.mybatis.dynamic.sql.ColumnAndConditionCriterion;
 import org.mybatis.dynamic.sql.CriteriaGroup;
+import org.mybatis.dynamic.sql.RenderableCondition;
 import org.mybatis.dynamic.sql.SortSpecification;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.TableExpression;
-import org.mybatis.dynamic.sql.VisitableCondition;
 import org.mybatis.dynamic.sql.common.AbstractBooleanExpressionDSL;
 import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
 import org.mybatis.dynamic.sql.select.join.JoinSpecification;
@@ -324,11 +324,11 @@ public class QueryExpressionDSL<R>
             this.joinType = joinType;
         }
 
-        public <T> JoinSpecificationFinisher on(BindableColumn<T> joinColumn, VisitableCondition<T> joinCondition) {
+        public <T> JoinSpecificationFinisher on(BindableColumn<T> joinColumn, RenderableCondition<T> joinCondition) {
             return new JoinSpecificationFinisher(joinTable, joinColumn, joinCondition, joinType);
         }
 
-        public <T> JoinSpecificationFinisher on(BindableColumn<T> joinColumn, VisitableCondition<T> onJoinCondition,
+        public <T> JoinSpecificationFinisher on(BindableColumn<T> joinColumn, RenderableCondition<T> onJoinCondition,
                                                 AndOrCriteriaGroup... subCriteria) {
             return new JoinSpecificationFinisher(joinTable, joinColumn, onJoinCondition, joinType, subCriteria);
         }
@@ -343,7 +343,7 @@ public class QueryExpressionDSL<R>
         private final JoinType joinType;
 
         public <T> JoinSpecificationFinisher(TableExpression table, BindableColumn<T> joinColumn,
-                VisitableCondition<T> joinCondition, JoinType joinType) {
+                                             RenderableCondition<T> joinCondition, JoinType joinType) {
             this.table = table;
             this.joinType = joinType;
             addJoinSpecificationSupplier(this::buildJoinSpecification);
@@ -356,7 +356,8 @@ public class QueryExpressionDSL<R>
         }
 
         public <T> JoinSpecificationFinisher(TableExpression table, BindableColumn<T> joinColumn,
-                VisitableCondition<T> joinCondition, JoinType joinType, AndOrCriteriaGroup... subCriteria) {
+                                             RenderableCondition<T> joinCondition, JoinType joinType,
+                                             AndOrCriteriaGroup... subCriteria) {
             this.table = table;
             this.joinType = joinType;
             addJoinSpecificationSupplier(this::buildJoinSpecification);

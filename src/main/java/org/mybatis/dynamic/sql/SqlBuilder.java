@@ -250,7 +250,7 @@ public interface SqlBuilder {
         return new WhereDSL().where();
     }
 
-    static <T> WhereDSL.StandaloneWhereFinisher where(BindableColumn<T> column, VisitableCondition<T> condition,
+    static <T> WhereDSL.StandaloneWhereFinisher where(BindableColumn<T> column, RenderableCondition<T> condition,
                                                       AndOrCriteriaGroup... subCriteria) {
         return new WhereDSL().where(column, condition, subCriteria);
     }
@@ -263,7 +263,7 @@ public interface SqlBuilder {
         return new WhereDSL().where(existsPredicate, subCriteria);
     }
 
-    static <T> HavingDSL.StandaloneHavingFinisher having(BindableColumn<T> column, VisitableCondition<T> condition,
+    static <T> HavingDSL.StandaloneHavingFinisher having(BindableColumn<T> column, RenderableCondition<T> condition,
                                               AndOrCriteriaGroup... subCriteria) {
         return new HavingDSL().having(column, condition, subCriteria);
     }
@@ -273,12 +273,12 @@ public interface SqlBuilder {
     }
 
     // where condition connectors
-    static <T> CriteriaGroup group(BindableColumn<T> column, VisitableCondition<T> condition,
+    static <T> CriteriaGroup group(BindableColumn<T> column, RenderableCondition<T> condition,
                                    AndOrCriteriaGroup... subCriteria) {
         return group(column, condition, Arrays.asList(subCriteria));
     }
 
-    static <T> CriteriaGroup group(BindableColumn<T> column, VisitableCondition<T> condition,
+    static <T> CriteriaGroup group(BindableColumn<T> column, RenderableCondition<T> condition,
                                    List<AndOrCriteriaGroup> subCriteria) {
         return new CriteriaGroup.Builder()
                 .withInitialCriterion(new ColumnAndConditionCriterion.Builder<T>().withColumn(column)
@@ -316,12 +316,12 @@ public interface SqlBuilder {
                 .build();
     }
 
-    static <T> NotCriterion not(BindableColumn<T> column, VisitableCondition<T> condition,
+    static <T> NotCriterion not(BindableColumn<T> column, RenderableCondition<T> condition,
                                 AndOrCriteriaGroup... subCriteria) {
         return not(column, condition, Arrays.asList(subCriteria));
     }
 
-    static <T> NotCriterion not(BindableColumn<T> column, VisitableCondition<T> condition,
+    static <T> NotCriterion not(BindableColumn<T> column, RenderableCondition<T> condition,
                                 List<AndOrCriteriaGroup> subCriteria) {
         return new NotCriterion.Builder()
                 .withInitialCriterion(new ColumnAndConditionCriterion.Builder<T>().withColumn(column)
@@ -359,7 +359,7 @@ public interface SqlBuilder {
                 .build();
     }
 
-    static <T> AndOrCriteriaGroup or(BindableColumn<T> column, VisitableCondition<T> condition,
+    static <T> AndOrCriteriaGroup or(BindableColumn<T> column, RenderableCondition<T> condition,
                                      AndOrCriteriaGroup... subCriteria) {
         return new AndOrCriteriaGroup.Builder()
                 .withInitialCriterion(ColumnAndConditionCriterion.withColumn(column)
@@ -394,7 +394,7 @@ public interface SqlBuilder {
                 .build();
     }
 
-    static <T> AndOrCriteriaGroup and(BindableColumn<T> column, VisitableCondition<T> condition,
+    static <T> AndOrCriteriaGroup and(BindableColumn<T> column, RenderableCondition<T> condition,
                                       AndOrCriteriaGroup... subCriteria) {
         return new AndOrCriteriaGroup.Builder()
                 .withInitialCriterion(ColumnAndConditionCriterion.withColumn(column)
@@ -430,7 +430,7 @@ public interface SqlBuilder {
     }
 
     // join support
-    static <T> ColumnAndConditionCriterion<T> on(BindableColumn<T> joinColumn, VisitableCondition<T> joinCondition) {
+    static <T> ColumnAndConditionCriterion<T> on(BindableColumn<T> joinColumn, RenderableCondition<T> joinCondition) {
         return ColumnAndConditionCriterion.withColumn(joinColumn)
                 .withCondition(joinCondition)
                 .build();
@@ -506,7 +506,7 @@ public interface SqlBuilder {
         return Sum.of(column);
     }
 
-    static <T> Sum<T> sum(BindableColumn<T> column, VisitableCondition<T> condition) {
+    static <T> Sum<T> sum(BindableColumn<T> column, RenderableCondition<T> condition) {
         return Sum.of(column, condition);
     }
 

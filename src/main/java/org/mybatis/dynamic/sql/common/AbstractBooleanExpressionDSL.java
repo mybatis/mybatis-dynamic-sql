@@ -26,20 +26,20 @@ import org.mybatis.dynamic.sql.ColumnAndConditionCriterion;
 import org.mybatis.dynamic.sql.CriteriaGroup;
 import org.mybatis.dynamic.sql.ExistsCriterion;
 import org.mybatis.dynamic.sql.ExistsPredicate;
+import org.mybatis.dynamic.sql.RenderableCondition;
 import org.mybatis.dynamic.sql.SqlCriterion;
-import org.mybatis.dynamic.sql.VisitableCondition;
 import org.mybatis.dynamic.sql.util.Validator;
 
 public abstract class AbstractBooleanExpressionDSL<T extends AbstractBooleanExpressionDSL<T>> {
     private @Nullable SqlCriterion initialCriterion;
     protected final List<AndOrCriteriaGroup> subCriteria = new ArrayList<>();
 
-    public <S> T and(BindableColumn<S> column, VisitableCondition<S> condition,
+    public <S> T and(BindableColumn<S> column, RenderableCondition<S> condition,
                      AndOrCriteriaGroup... subCriteria) {
         return and(column, condition, Arrays.asList(subCriteria));
     }
 
-    public <S> T and(BindableColumn<S> column, VisitableCondition<S> condition,
+    public <S> T and(BindableColumn<S> column, RenderableCondition<S> condition,
                      List<AndOrCriteriaGroup> subCriteria) {
         addSubCriteria("and", buildCriterion(column, condition), subCriteria); //$NON-NLS-1$
         return getThis();
@@ -68,12 +68,12 @@ public abstract class AbstractBooleanExpressionDSL<T extends AbstractBooleanExpr
         return getThis();
     }
 
-    public <S> T or(BindableColumn<S> column, VisitableCondition<S> condition,
+    public <S> T or(BindableColumn<S> column, RenderableCondition<S> condition,
                     AndOrCriteriaGroup... subCriteria) {
         return or(column, condition, Arrays.asList(subCriteria));
     }
 
-    public <S> T or(BindableColumn<S> column, VisitableCondition<S> condition,
+    public <S> T or(BindableColumn<S> column, RenderableCondition<S> condition,
                     List<AndOrCriteriaGroup> subCriteria) {
         addSubCriteria("or", buildCriterion(column, condition), subCriteria); //$NON-NLS-1$
         return getThis();
@@ -102,7 +102,7 @@ public abstract class AbstractBooleanExpressionDSL<T extends AbstractBooleanExpr
         return getThis();
     }
 
-    private <R> SqlCriterion buildCriterion(BindableColumn<R> column, VisitableCondition<R> condition) {
+    private <R> SqlCriterion buildCriterion(BindableColumn<R> column, RenderableCondition<R> condition) {
         return ColumnAndConditionCriterion.withColumn(column).withCondition(condition).build();
     }
 
