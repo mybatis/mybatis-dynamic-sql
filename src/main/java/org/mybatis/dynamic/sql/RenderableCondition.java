@@ -20,8 +20,33 @@ import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 
 @FunctionalInterface
 public interface RenderableCondition<T> {
+    /**
+     * Render a condition - typically a condition in a WHERE clause.
+     *
+     * <p>A rendered condition includes an SQL fragment, and any associated parameters. For example,
+     * the <code>isEqual</code> condition should be rendered as "= ?" where "?" is a properly formatted
+     * parameter marker (the parameter marker can be computed from the <code>RenderingContext</code>).
+     * Note that a rendered condition should NOT include the left side of the phrase - that is rendered
+     * by the {@link RenderableCondition#renderLeftColumn(RenderingContext, BindableColumn)} method.
+     *
+     * @param renderingContext the current rendering context
+     * @param leftColumn the column related to this condition in a where clause
+     * @return the rendered condition. Should NOT include the column.
+     */
     FragmentAndParameters renderCondition(RenderingContext renderingContext, BindableColumn<T> leftColumn);
 
+    /**
+     * Render the column in a column and condition phrase - typically in a WHERE clause.
+     *
+     * <p>By default, the column will be rendered as the column alias if it exists, or the column name.
+     * This can be complicated if the column has a table qualifier, or if the "column" is a function or
+     * part of a CASE expression. Columns know how to render themselves, so we just call their "render"
+     * methods.
+     *
+     * @param renderingContext the current rendering context
+     * @param leftColumn the column related to this condition in a where clause
+     * @return the rendered column
+     */
     default FragmentAndParameters renderLeftColumn(RenderingContext renderingContext, BindableColumn<T> leftColumn) {
         return leftColumn.alias()
                 .map(FragmentAndParameters::fromFragment)
