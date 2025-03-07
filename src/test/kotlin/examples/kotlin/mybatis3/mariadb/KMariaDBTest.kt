@@ -38,7 +38,7 @@ import org.mybatis.dynamic.sql.util.mybatis3.CommonUpdateMapper
 import org.testcontainers.containers.MariaDBContainer
 import org.testcontainers.junit.jupiter.Container
 import org.testcontainers.junit.jupiter.Testcontainers
-import java.util.*
+import java.util.Locale
 
 @Testcontainers
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
