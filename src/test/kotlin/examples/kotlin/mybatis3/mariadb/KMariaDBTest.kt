@@ -38,6 +38,7 @@ import org.mybatis.dynamic.sql.util.mybatis3.CommonUpdateMapper
 import org.testcontainers.containers.MariaDBContainer
 import org.testcontainers.junit.jupiter.Container
 import org.testcontainers.junit.jupiter.Testcontainers
+import java.util.Locale
 
 @Testcontainers
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -140,6 +141,92 @@ class KMariaDBTest {
             val rows = mapper.update(updateStatement)
             assertThat(rows).isEqualTo(20)
         }
+    }
+
+
+    /**
+     * Shortcut function for KIsLikeEscape
+     *
+     * Note that the following example uses of this function are a bit awkward and don't look as natural as the
+     * built-in conditions. We should be able to improve this once Kotlin implements the context parameters
+     * proposal (https://github.com/Kotlin/KEEP/issues/367)
+     */
+    fun <T : Any> isLike(value: T, escapeCharacter: Char? = null) = KIsLikeEscape.isLike(value, escapeCharacter)
+
+    @Test
+    fun testIsLikeEscape() {
+        sqlSessionFactory.openSession().use { session ->
+            val mapper = session.getMapper(CommonSelectMapper::class.java)
+            val selectStatement = select(id, description) {
+                from(items)
+                where {
+                    description(isLike("Item 1%", '#'))
+                }
+            }
+
+            assertThat(selectStatement.selectStatement).isEqualTo("select id, description from items where description like #{parameters.p1,jdbcType=VARCHAR} ESCAPE '#'")
+            assertThat(selectStatement.parameters).containsEntry("p1", "Item 1%")
+
+            val rows = mapper.selectManyMappedRows(selectStatement)
+            assertThat(rows).hasSize(11)
+        }
+    }
+
+    @Test
+    fun testIsLikeEscapeNoEscapeCharacter() {
+        val selectStatement = select(id, description) {
+            from(items)
+            where {
+                description(isLike("%fred%"))
+            }
+        }
+
+        assertThat(selectStatement.selectStatement).isEqualTo("select id, description from items where description like #{parameters.p1,jdbcType=VARCHAR}")
+        assertThat(selectStatement.parameters).containsEntry("p1", "%fred%")
+    }
+
+    @Test
+    fun testIsLikeEscapeMap() {
+        val selectStatement = select(id, description) {
+            from(items)
+            where {
+                description(isLike("%fred%", '#').map { s -> s.uppercase(Locale.getDefault()) })
+            }
+        }
+
+        assertThat(selectStatement.selectStatement).isEqualTo("select id, description from items where description like #{parameters.p1,jdbcType=VARCHAR} ESCAPE '#'")
+        assertThat(selectStatement.parameters).containsEntry("p1", "%FRED%")
+    }
+
+    @Test
+    fun testIsLikeEscapeFilter() {
+        val selectStatement = select(id, description) {
+            from(items)
+            where {
+                description(isLike("%fred%", '#').filter { _ -> false })
+            }
+            configureStatement { isNonRenderingWhereClauseAllowed = true }
+        }
+
+        assertThat(selectStatement.selectStatement).isEqualTo("select id, description from items")
+        assertThat(selectStatement.parameters).isEmpty()
+    }
+
+    @Test
+    fun testIsLikeEscapeFilterMapFilter() {
+        val selectStatement = select(id, description) {
+            from(items)
+            where {
+                description(isLike("%fred%", '#')
+                    .filter { _ -> true }
+                    .map { s -> s.uppercase(Locale.getDefault()) }
+                    .filter{_ -> false })
+            }
+            configureStatement { isNonRenderingWhereClauseAllowed = true }
+        }
+
+        assertThat(selectStatement.selectStatement).isEqualTo("select id, description from items")
+        assertThat(selectStatement.parameters).isEmpty()
     }
 
     companion object {

@@ -235,8 +235,8 @@ open class GroupingCriteriaCollector : SubCriteriaCollector() {
             .build()
     }
 
-    // infix functions...we may be able to rewrite these as extension functions once Kotlin solves the multiple
-    // receivers problem (https://youtrack.jetbrains.com/issue/KT-42435)
+    // infix functions...we may be able to rewrite these as extension functions once Kotlin implements the context
+    // parameters proposal (https://github.com/Kotlin/KEEP/issues/367)
 
     // conditions for all data types
     fun BindableColumn<*>.isNull() = invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isNull())
