@@ -143,9 +143,15 @@ class KMariaDBTest {
         }
     }
 
-    // Note that the following example uses of KIsLikeEscape are a bit awkward and don't look as natural as the
-    // built-in conditions. We should be able to improve this once Kotlin implements the context parameters
-    // proposal (https://github.com/Kotlin/KEEP/issues/367)
+
+    /**
+     * Shortcut function for KIsLikeEscape
+     *
+     * Note that the following example uses of this function are a bit awkward and don't look as natural as the
+     * built-in conditions. We should be able to improve this once Kotlin implements the context parameters
+     * proposal (https://github.com/Kotlin/KEEP/issues/367)
+     */
+    fun <T : Any> isLike(value: T, escapeCharacter: Char? = null) = KIsLikeEscape.isLike(value, escapeCharacter)
 
     @Test
     fun testIsLikeEscape() {
@@ -154,7 +160,7 @@ class KMariaDBTest {
             val selectStatement = select(id, description) {
                 from(items)
                 where {
-                    description(KIsLikeEscape.isLike("Item 1%", '#'))
+                    description(isLike("Item 1%", '#'))
                 }
             }
 
@@ -171,7 +177,7 @@ class KMariaDBTest {
         val selectStatement = select(id, description) {
             from(items)
             where {
-                description(KIsLikeEscape.isLike("%fred%"))
+                description(isLike("%fred%"))
             }
         }
 
@@ -184,7 +190,7 @@ class KMariaDBTest {
         val selectStatement = select(id, description) {
             from(items)
             where {
-                description(KIsLikeEscape.isLike("%fred%", '#').map { s -> s.uppercase(Locale.getDefault()) })
+                description(isLike("%fred%", '#').map { s -> s.uppercase(Locale.getDefault()) })
             }
         }
 
@@ -197,7 +203,7 @@ class KMariaDBTest {
         val selectStatement = select(id, description) {
             from(items)
             where {
-                description(KIsLikeEscape.isLike("%fred%", '#').filter { _ -> false })
+                description(isLike("%fred%", '#').filter { _ -> false })
             }
             configureStatement { isNonRenderingWhereClauseAllowed = true }
         }
@@ -211,7 +217,7 @@ class KMariaDBTest {
         val selectStatement = select(id, description) {
             from(items)
             where {
-                description(KIsLikeEscape.isLike("%fred%", '#')
+                description(isLike("%fred%", '#')
                     .filter { _ -> true }
                     .map { s -> s.uppercase(Locale.getDefault()) }
                     .filter{_ -> false })
