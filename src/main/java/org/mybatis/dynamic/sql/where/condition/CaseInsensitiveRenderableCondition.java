@@ -20,7 +20,7 @@ import org.mybatis.dynamic.sql.RenderableCondition;
 import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 
-public interface CaseInsensitiveVisitableCondition extends RenderableCondition<String> {
+public interface CaseInsensitiveRenderableCondition extends RenderableCondition<String> {
 
     @Override
     default FragmentAndParameters renderLeftColumn(RenderingContext renderingContext,
