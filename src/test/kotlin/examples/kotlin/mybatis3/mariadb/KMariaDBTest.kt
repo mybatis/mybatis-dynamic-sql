@@ -143,6 +143,10 @@ class KMariaDBTest {
         }
     }
 
+    // Note that the following example uses of KIsLikeEscape are a bit awkward and don't look as natural as the
+    // built-in conditions. We should be able to improve this once Kotlin implements the context parameters
+    // proposal (https://github.com/Kotlin/KEEP/issues/367)
+
     @Test
     fun testIsLikeEscape() {
         sqlSessionFactory.openSession().use { session ->
