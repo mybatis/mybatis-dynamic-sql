@@ -66,8 +66,7 @@ public class IsInCaseInsensitive<T> extends AbstractListValueCondition<T>
     }
 
     public static IsInCaseInsensitive<String> of(Collection<String> values) {
-        // Keep the null safe upper case utility for backwards compatibility
-        //noinspection DataFlowIssue
-        return new IsInCaseInsensitive<>(values).map(StringUtilities::safelyUpperCase);
+        // Keep the null safe upper case utility for backwards compatibility in case someone passes in a null
+        return new IsInCaseInsensitive<>(values.stream().map(StringUtilities::safelyUpperCase).toList());
     }
 }

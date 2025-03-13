@@ -15,23 +15,10 @@
  */
 package org.mybatis.dynamic.sql.util;
 
-import java.util.Collection;
-import java.util.Objects;
-import java.util.stream.Stream;
-
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 public interface Utilities {
     static long safelyUnbox(@Nullable Long l) {
         return l == null ? 0 : l;
-    }
-
-    static <T> Stream<@NonNull T> filterNullValues(Stream<@Nullable T> values) {
-        return values.filter(Objects::nonNull);
-    }
-
-    static <T> Collection<@NonNull T> removeNullElements(Collection<@Nullable T> values) {
-        return filterNullValues(values.stream()).toList();
     }
 }
