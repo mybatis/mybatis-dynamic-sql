@@ -36,7 +36,7 @@ public class IsNotInCaseInsensitiveWhenPresent<T> extends AbstractListValueCondi
         return t;
     }
 
-    protected IsNotInCaseInsensitiveWhenPresent(Collection<String> values) {
+    protected IsNotInCaseInsensitiveWhenPresent(Collection<T> values) {
         super(values);
     }
 
