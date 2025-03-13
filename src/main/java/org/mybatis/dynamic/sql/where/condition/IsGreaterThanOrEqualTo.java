@@ -58,15 +58,7 @@ public class IsGreaterThanOrEqualTo<T> extends AbstractSingleValueCondition<T> {
         return filterSupport(predicate, IsGreaterThanOrEqualTo::empty, this);
     }
 
-    /**
-     * If renderable, apply the mapping to the value and return a new condition with the new value. Else return a
-     * condition that will not render (this).
-     *
-     * @param mapper a mapping function to apply to the value, if renderable
-     * @param <R> type of the new condition
-     * @return a new condition with the result of applying the mapper to the value of this condition,
-     *     if renderable, otherwise a condition that will not render.
-     */
+    @Override
     public <R> IsGreaterThanOrEqualTo<R> map(Function<? super T, ? extends R> mapper) {
         return mapSupport(mapper, IsGreaterThanOrEqualTo::new, IsGreaterThanOrEqualTo::empty);
     }

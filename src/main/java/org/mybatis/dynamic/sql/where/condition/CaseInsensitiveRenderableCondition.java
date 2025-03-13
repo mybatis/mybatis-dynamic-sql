@@ -20,11 +20,11 @@ import org.mybatis.dynamic.sql.RenderableCondition;
 import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 
-public interface CaseInsensitiveRenderableCondition extends RenderableCondition<String> {
+public interface CaseInsensitiveRenderableCondition<T> extends RenderableCondition<T> {
 
     @Override
     default FragmentAndParameters renderLeftColumn(RenderingContext renderingContext,
-                                                   BindableColumn<String> leftColumn) {
+                                                   BindableColumn<T> leftColumn) {
         return RenderableCondition.super.renderLeftColumn(renderingContext, leftColumn)
                 .mapFragment(s -> "upper(" + s + ")"); //$NON-NLS-1$ //$NON-NLS-2$
     }

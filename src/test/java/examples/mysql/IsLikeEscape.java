@@ -77,6 +77,7 @@ public class IsLikeEscape<T> extends AbstractSingleValueCondition<T> {
         return filterSupport(predicate, IsLikeEscape::empty, this);
     }
 
+    @Override
     public <R> IsLikeEscape<R> map(Function<? super T, ? extends R> mapper) {
         return mapSupport(mapper, v -> new IsLikeEscape<>(v, escapeCharacter), IsLikeEscape::empty);
     }

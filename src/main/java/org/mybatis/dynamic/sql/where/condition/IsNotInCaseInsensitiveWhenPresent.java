@@ -27,7 +27,7 @@ import org.mybatis.dynamic.sql.util.StringUtilities;
 import org.mybatis.dynamic.sql.util.Utilities;
 
 public class IsNotInCaseInsensitiveWhenPresent extends AbstractListValueCondition<String>
-        implements CaseInsensitiveRenderableCondition {
+        implements CaseInsensitiveRenderableCondition<String> {
     private static final IsNotInCaseInsensitiveWhenPresent EMPTY =
             new IsNotInCaseInsensitiveWhenPresent(Collections.emptyList());
 

@@ -28,14 +28,14 @@ import org.mybatis.dynamic.sql.SqlBuilder;
 class FilterAndMapTest {
     @Test
     void testTypeConversion() {
-        IsEqualTo<Integer> cond = SqlBuilder.isEqualTo("1").map(Integer::parseInt);
+        var cond = SqlBuilder.isEqualTo("1").map(Integer::parseInt);
         assertThat(cond.isEmpty()).isFalse();
         assertThat(cond.value()).isEqualTo(1);
     }
 
     @Test
     void testTypeConversionWithNullThrowsException() {
-        IsEqualTo<String> cond = SqlBuilder.isEqualTo((String) null);
+        var cond = SqlBuilder.isEqualTo((String) null);
         assertThatExceptionOfType(NumberFormatException.class).isThrownBy(() ->
                 cond.map(Integer::parseInt)
         );
@@ -43,7 +43,7 @@ class FilterAndMapTest {
 
     @Test
     void testTypeConversionWithNullAndFilterDoesNotThrowException() {
-        IsEqualTo<Integer> cond = SqlBuilder.isEqualTo((String) null).filter(Objects::nonNull).map(Integer::parseInt);
+        var cond = SqlBuilder.isEqualTo((String) null).filter(Objects::nonNull).map(Integer::parseInt);
         assertThat(cond.isEmpty()).isTrue();
     }
 
@@ -328,8 +328,8 @@ class FilterAndMapTest {
 
     @Test
     void testIsLikeCaseInsensitiveRenderableTruePredicateShouldReturnSameObject() {
-        IsLikeCaseInsensitive cond = SqlBuilder.isLikeCaseInsensitive("Fred");
-        IsLikeCaseInsensitive filtered = cond.filter(s -> true);
+        var cond = SqlBuilder.isLikeCaseInsensitive("Fred");
+        var filtered = cond.filter(s -> true);
         assertThat(filtered.value()).isEqualTo("FRED");
         assertThat(filtered.isEmpty()).isFalse();
         assertThat(cond).isSameAs(filtered);
@@ -337,24 +337,24 @@ class FilterAndMapTest {
 
     @Test
     void testIsLikeCaseInsensitiveRenderableFalsePredicate() {
-        IsLikeCaseInsensitive cond = SqlBuilder.isLikeCaseInsensitive("Fred");
-        IsLikeCaseInsensitive filtered = cond.filter(s -> false);
+        var cond = SqlBuilder.isLikeCaseInsensitive("Fred");
+        var filtered = cond.filter(s -> false);
         assertThat(cond.isEmpty()).isFalse();
         assertThat(filtered.isEmpty()).isTrue();
     }
 
     @Test
     void testIsLikeCaseInsensitiveFilterUnRenderableShouldReturnSameObject() {
-        IsLikeCaseInsensitive cond = SqlBuilder.isLikeCaseInsensitive("Fred").filter(s -> false);
-        IsLikeCaseInsensitive filtered = cond.filter(s -> true);
+        var cond = SqlBuilder.isLikeCaseInsensitive("Fred").filter(s -> false);
+        var filtered = cond.filter(s -> true);
         assertThat(filtered.isEmpty()).isTrue();
         assertThat(cond).isSameAs(filtered);
     }
 
     @Test
     void testIsLikeCaseInsensitiveMapUnRenderableShouldNotThrowNullPointerException() {
-        IsLikeCaseInsensitive cond = SqlBuilder.isLikeCaseInsensitive("Fred").filter(s -> false);
-        IsLikeCaseInsensitive mapped = cond.map(String::toUpperCase);
+        IsLikeCaseInsensitive<String> cond = SqlBuilder.isLikeCaseInsensitive("Fred").filter(s -> false);
+        IsLikeCaseInsensitive<String> mapped = cond.map(String::toUpperCase);
         assertThat(cond.isEmpty()).isTrue();
         assertThatExceptionOfType(NoSuchElementException.class).isThrownBy(cond::value);
         assertThat(cond).isSameAs(mapped);
@@ -395,8 +395,8 @@ class FilterAndMapTest {
 
     @Test
     void testIsNotLikeCaseInsensitiveRenderableTruePredicateShouldReturnSameObject() {
-        IsNotLikeCaseInsensitive cond = SqlBuilder.isNotLikeCaseInsensitive("Fred");
-        IsNotLikeCaseInsensitive filtered = cond.filter(s -> true);
+        var cond = SqlBuilder.isNotLikeCaseInsensitive("Fred");
+        var filtered = cond.filter(s -> true);
         assertThat(filtered.value()).isEqualTo("FRED");
         assertThat(filtered.isEmpty()).isFalse();
         assertThat(cond).isSameAs(filtered);
@@ -404,24 +404,24 @@ class FilterAndMapTest {
 
     @Test
     void testIsNotLikeCaseInsensitiveRenderableFalsePredicate() {
-        IsNotLikeCaseInsensitive cond = SqlBuilder.isNotLikeCaseInsensitive("Fred");
-        IsNotLikeCaseInsensitive filtered = cond.filter(s -> false);
+        var cond = SqlBuilder.isNotLikeCaseInsensitive("Fred");
+        var filtered = cond.filter(s -> false);
         assertThat(cond.isEmpty()).isFalse();
         assertThat(filtered.isEmpty()).isTrue();
     }
 
     @Test
     void testIsNotLikeCaseInsensitiveFilterUnRenderableShouldReturnSameObject() {
-        IsNotLikeCaseInsensitive cond = SqlBuilder.isNotLikeCaseInsensitive("Fred").filter(s -> false);
-        IsNotLikeCaseInsensitive filtered = cond.filter(s -> true);
+        var cond = SqlBuilder.isNotLikeCaseInsensitive("Fred").filter(s -> false);
+        var filtered = cond.filter(s -> true);
         assertThat(filtered.isEmpty()).isTrue();
         assertThat(cond).isSameAs(filtered);
     }
 
     @Test
     void testIsNotLikeCaseInsensitiveMapUnRenderableShouldNotThrowNullPointerException() {
-        IsNotLikeCaseInsensitive cond = SqlBuilder.isNotLikeCaseInsensitive("Fred").filter(s -> false);
-        IsNotLikeCaseInsensitive mapped = cond.map(String::toUpperCase);
+        var cond = SqlBuilder.isNotLikeCaseInsensitive("Fred").filter(s -> false);
+        var mapped = cond.map(String::toUpperCase);
         assertThat(cond.isEmpty()).isTrue();
         assertThatExceptionOfType(NoSuchElementException.class).isThrownBy(cond::value);
         assertThat(cond).isSameAs(mapped);

@@ -882,35 +882,36 @@ public interface SqlBuilder {
     }
 
     // conditions for strings only
-    static IsLikeCaseInsensitive isLikeCaseInsensitive(String value) {
+    static IsLikeCaseInsensitive<String> isLikeCaseInsensitive(String value) {
         return IsLikeCaseInsensitive.of(value);
     }
 
-    static IsLikeCaseInsensitive isLikeCaseInsensitive(Supplier<String> valueSupplier) {
+    static IsLikeCaseInsensitive<String> isLikeCaseInsensitive(Supplier<String> valueSupplier) {
         return isLikeCaseInsensitive(valueSupplier.get());
     }
 
-    static IsLikeCaseInsensitive isLikeCaseInsensitiveWhenPresent(@Nullable String value) {
+    static IsLikeCaseInsensitive<String> isLikeCaseInsensitiveWhenPresent(@Nullable String value) {
         return value == null ? IsLikeCaseInsensitive.empty() : IsLikeCaseInsensitive.of(value);
     }
 
-    static IsLikeCaseInsensitive isLikeCaseInsensitiveWhenPresent(Supplier<@Nullable String> valueSupplier) {
+    static IsLikeCaseInsensitive<String> isLikeCaseInsensitiveWhenPresent(Supplier<@Nullable String> valueSupplier) {
         return isLikeCaseInsensitiveWhenPresent(valueSupplier.get());
     }
 
-    static IsNotLikeCaseInsensitive isNotLikeCaseInsensitive(String value) {
+    static IsNotLikeCaseInsensitive<String> isNotLikeCaseInsensitive(String value) {
         return IsNotLikeCaseInsensitive.of(value);
     }
 
-    static IsNotLikeCaseInsensitive isNotLikeCaseInsensitive(Supplier<String> valueSupplier) {
+    static IsNotLikeCaseInsensitive<String> isNotLikeCaseInsensitive(Supplier<String> valueSupplier) {
         return isNotLikeCaseInsensitive(valueSupplier.get());
     }
 
-    static IsNotLikeCaseInsensitive isNotLikeCaseInsensitiveWhenPresent(@Nullable String value) {
+    static IsNotLikeCaseInsensitive<String> isNotLikeCaseInsensitiveWhenPresent(@Nullable String value) {
         return value == null ? IsNotLikeCaseInsensitive.empty() : IsNotLikeCaseInsensitive.of(value);
     }
 
-    static IsNotLikeCaseInsensitive isNotLikeCaseInsensitiveWhenPresent(Supplier<@Nullable String> valueSupplier) {
+    static IsNotLikeCaseInsensitive<String> isNotLikeCaseInsensitiveWhenPresent(
+            Supplier<@Nullable String> valueSupplier) {
         return isNotLikeCaseInsensitiveWhenPresent(valueSupplier.get());
     }
 

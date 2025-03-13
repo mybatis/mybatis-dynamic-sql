@@ -324,14 +324,14 @@ fun isTrue(): IsEqualTo<Boolean> = isEqualTo(true)
 fun isFalse(): IsEqualTo<Boolean> = isEqualTo(false)
 
 // conditions for strings only
-fun isLikeCaseInsensitive(value: String): IsLikeCaseInsensitive = SqlBuilder.isLikeCaseInsensitive(value)
+fun isLikeCaseInsensitive(value: String): IsLikeCaseInsensitive<String> = SqlBuilder.isLikeCaseInsensitive(value)
 
-fun isLikeCaseInsensitiveWhenPresent(value: String?): IsLikeCaseInsensitive =
+fun isLikeCaseInsensitiveWhenPresent(value: String?): IsLikeCaseInsensitive<String> =
     SqlBuilder.isLikeCaseInsensitiveWhenPresent(value)
 
-fun isNotLikeCaseInsensitive(value: String): IsNotLikeCaseInsensitive = SqlBuilder.isNotLikeCaseInsensitive(value)
+fun isNotLikeCaseInsensitive(value: String): IsNotLikeCaseInsensitive<String> = SqlBuilder.isNotLikeCaseInsensitive(value)
 
-fun isNotLikeCaseInsensitiveWhenPresent(value: String?): IsNotLikeCaseInsensitive =
+fun isNotLikeCaseInsensitiveWhenPresent(value: String?): IsNotLikeCaseInsensitive<String> =
     SqlBuilder.isNotLikeCaseInsensitiveWhenPresent(value)
 
 fun isInCaseInsensitive(vararg values: String): IsInCaseInsensitive = isInCaseInsensitive(values.asList())

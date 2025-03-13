@@ -64,6 +64,17 @@ public abstract class AbstractSingleValueCondition<T> implements RenderableCondi
      */
     public abstract AbstractSingleValueCondition<T> filter(Predicate<? super T> predicate);
 
+    /**
+     * If renderable, apply the mapping to the value and return a new condition with the new value. Else return a
+     * condition that will not render (this).
+     *
+     * @param mapper a mapping function to apply to the value, if renderable
+     * @param <R> type of the new condition
+     * @return a new condition with the result of applying the mapper to the value of this condition,
+     *     if renderable, otherwise a condition that will not render.
+     */
+    public abstract <R> AbstractSingleValueCondition<R> map(Function<? super T, ? extends R> mapper);
+
     public abstract String operator();
 
     @Override
