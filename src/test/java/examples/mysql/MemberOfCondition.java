@@ -16,12 +16,26 @@
 package examples.mysql;
 
 import java.util.Objects;
+import java.util.function.BooleanSupplier;
 
 import org.jspecify.annotations.NullMarked;
 import org.mybatis.dynamic.sql.AbstractNoValueCondition;
 
 @NullMarked
 public class MemberOfCondition<T> extends AbstractNoValueCondition<T> {
+    private static final MemberOfCondition<?> EMPTY = new MemberOfCondition<>("") {
+        @Override
+        public boolean isEmpty() {
+            return true;
+        }
+    };
+
+    public static <T> MemberOfCondition<T> empty() {
+        @SuppressWarnings("unchecked")
+        MemberOfCondition<T> t = (MemberOfCondition<T>) EMPTY;
+        return t;
+    }
+
     private final String jsonArray;
 
     protected MemberOfCondition(String jsonArray) {
@@ -31,6 +45,13 @@ public class MemberOfCondition<T> extends AbstractNoValueCondition<T> {
     @Override
     public String operator() {
         return "member of(" + jsonArray + ")";
+    }
+
+    @Override
+    public <S> MemberOfCondition<S> filter(BooleanSupplier booleanSupplier) {
+        @SuppressWarnings("unchecked")
+        MemberOfCondition<S> self = (MemberOfCondition<S>) this;
+        return filterSupport(booleanSupplier, MemberOfCondition::empty, self);
     }
 
     public static <T> MemberOfCondition<T> memberOf(String jsonArray) {

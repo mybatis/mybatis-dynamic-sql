@@ -34,7 +34,21 @@ public abstract class AbstractNoValueCondition<T> implements RenderableCondition
 
     public abstract String operator();
 
-    @Override
+    /**
+     * If renderable and the supplier returns true, returns this condition. Else returns a condition that will not
+     * render.
+     *
+     * @param booleanSupplier
+     *            function that specifies whether the condition should render
+     * @param <S>
+     *            condition type - not used except for compilation compliance
+     *
+     * @return this condition if renderable and the supplier returns true, otherwise a condition that will not render.
+     */
+    public abstract <S> AbstractNoValueCondition<S> filter(BooleanSupplier booleanSupplier);
+
+
+        @Override
     public FragmentAndParameters renderCondition(RenderingContext renderingContext, BindableColumn<T> leftColumn) {
         return FragmentAndParameters.fromFragment(operator());
     }
