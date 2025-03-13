@@ -447,25 +447,25 @@ class FilterAndMapTest {
 
     @Test
     void testIsNotInCaseInsensitiveRenderableMapShouldReturnMappedObject() {
-        IsNotInCaseInsensitive cond = SqlBuilder.isNotInCaseInsensitive("Fred  ", "Wilma  ");
-        List<String> values = cond.values().toList();
+        var cond = SqlBuilder.isNotInCaseInsensitive("Fred  ", "Wilma  ");
+        var values = cond.values().toList();
         assertThat(values).containsExactly("FRED  ", "WILMA  ");
         assertThat(cond.isEmpty()).isFalse();
 
-        IsNotInCaseInsensitive mapped = cond.map(String::trim);
-        List<String> mappedValues = mapped.values().toList();
+        var mapped = cond.map(String::trim);
+        var mappedValues = mapped.values().toList();
         assertThat(mappedValues).containsExactly("FRED", "WILMA");
     }
 
     @Test
     void testIsInCaseInsensitiveRenderableMapShouldReturnMappedObject() {
-        IsInCaseInsensitive cond = SqlBuilder.isInCaseInsensitive("Fred  ", "Wilma  ");
-        List<String> values = cond.values().toList();
+        var cond = SqlBuilder.isInCaseInsensitive("Fred  ", "Wilma  ");
+        var values = cond.values().toList();
         assertThat(values).containsExactly("FRED  ", "WILMA  ");
         assertThat(cond.isEmpty()).isFalse();
 
-        IsInCaseInsensitive mapped = cond.map(String::trim);
-        List<String> mappedValues = mapped.values().toList();
+        var mapped = cond.map(String::trim);
+        var mappedValues = mapped.values().toList();
         assertThat(mappedValues).containsExactly("FRED", "WILMA");
     }
 

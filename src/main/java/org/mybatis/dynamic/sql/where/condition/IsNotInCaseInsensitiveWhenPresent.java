@@ -18,24 +18,26 @@ package org.mybatis.dynamic.sql.where.condition;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.function.UnaryOperator;
 
 import org.jspecify.annotations.Nullable;
 import org.mybatis.dynamic.sql.AbstractListValueCondition;
 import org.mybatis.dynamic.sql.util.StringUtilities;
 import org.mybatis.dynamic.sql.util.Utilities;
 
-public class IsNotInCaseInsensitiveWhenPresent extends AbstractListValueCondition<String>
-        implements CaseInsensitiveRenderableCondition<String> {
-    private static final IsNotInCaseInsensitiveWhenPresent EMPTY =
-            new IsNotInCaseInsensitiveWhenPresent(Collections.emptyList());
+public class IsNotInCaseInsensitiveWhenPresent<T> extends AbstractListValueCondition<T>
+        implements CaseInsensitiveRenderableCondition<T> {
+    private static final IsNotInCaseInsensitiveWhenPresent<?> EMPTY =
+            new IsNotInCaseInsensitiveWhenPresent<>(Collections.emptyList());
 
-    public static IsNotInCaseInsensitiveWhenPresent empty() {
-        return EMPTY;
+    public static <T> IsNotInCaseInsensitiveWhenPresent<T> empty() {
+        @SuppressWarnings("unchecked")
+        IsNotInCaseInsensitiveWhenPresent<T> t = (IsNotInCaseInsensitiveWhenPresent<T>) EMPTY;
+        return t;
     }
 
-    protected IsNotInCaseInsensitiveWhenPresent(Collection<@Nullable String> values) {
+    protected IsNotInCaseInsensitiveWhenPresent(Collection<@Nullable T> values) {
         super(Utilities.removeNullElements(values));
     }
 
@@ -45,29 +47,23 @@ public class IsNotInCaseInsensitiveWhenPresent extends AbstractListValueConditio
     }
 
     @Override
-    public IsNotInCaseInsensitiveWhenPresent filter(Predicate<? super String> predicate) {
+    public IsNotInCaseInsensitiveWhenPresent<T> filter(Predicate<? super T> predicate) {
         return filterSupport(predicate, IsNotInCaseInsensitiveWhenPresent::new,
                 this, IsNotInCaseInsensitiveWhenPresent::empty);
     }
 
-    /**
-     * If not empty, apply the mapping to each value in the list return a new condition with the mapped values.
-     *     Else return an empty condition (this).
-     *
-     * @param mapper a mapping function to apply to the values, if not empty
-     * @return a new condition with mapped values if renderable, otherwise an empty condition
-     */
-    public IsNotInCaseInsensitiveWhenPresent map(UnaryOperator<String> mapper) {
+    @Override
+    public <R> IsNotInCaseInsensitiveWhenPresent<R> map(Function<? super T, ? extends R> mapper) {
         return mapSupport(mapper, IsNotInCaseInsensitiveWhenPresent::new, IsNotInCaseInsensitiveWhenPresent::empty);
     }
 
-    public static IsNotInCaseInsensitiveWhenPresent of(@Nullable String... values) {
+    public static IsNotInCaseInsensitiveWhenPresent<String> of(@Nullable String... values) {
         return of(Arrays.asList(values));
     }
 
-    public static IsNotInCaseInsensitiveWhenPresent of(Collection<@Nullable String> values) {
+    public static IsNotInCaseInsensitiveWhenPresent<String> of(Collection<@Nullable String> values) {
         // Keep the null safe upper case utility for backwards compatibility
         //noinspection DataFlowIssue
-        return new IsNotInCaseInsensitiveWhenPresent(values).map(StringUtilities::safelyUpperCase);
+        return new IsNotInCaseInsensitiveWhenPresent<>(values).map(StringUtilities::safelyUpperCase);
     }
 }
