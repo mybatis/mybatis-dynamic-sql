@@ -88,6 +88,30 @@ public abstract class AbstractTwoValueCondition<T> implements RenderableConditio
      */
     public abstract AbstractTwoValueCondition<T> filter(Predicate<? super T> predicate);
 
+    /**
+     * If renderable, apply the mappings to the values and return a new condition with the new values. Else return a
+     * condition that will not render (this).
+     *
+     * @param mapper1 a mapping function to apply to the first value, if renderable
+     * @param mapper2 a mapping function to apply to the second value, if renderable
+     * @param <R> type of the new condition
+     * @return a new condition with the result of applying the mappers to the values of this condition,
+     *     if renderable, otherwise a condition that will not render.
+     */
+    public abstract <R> AbstractTwoValueCondition<R> map(Function<? super T, ? extends R> mapper1,
+                                                         Function<? super T, ? extends R> mapper2);
+
+    /**
+     * If renderable, apply the mapping to both values and return a new condition with the new values. Else return a
+     *     condition that will not render (this).
+     *
+     * @param mapper a mapping function to apply to both values, if renderable
+     * @param <R> type of the new condition
+     * @return a new condition with the result of applying the mappers to the values of this condition,
+     *     if renderable, otherwise a condition that will not render.
+     */
+    public abstract <R> AbstractTwoValueCondition<R> map(Function<? super T, ? extends R> mapper);
+
     public abstract String operator1();
 
     public abstract String operator2();
