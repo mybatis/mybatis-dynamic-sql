@@ -67,8 +67,7 @@ public class IsLikeCaseInsensitive extends AbstractSingleValueCondition<String>
     }
 
     public static IsLikeCaseInsensitive of(String value) {
-        // Keep the null safe upper case utility for backwards compatibility
-        //noinspection DataFlowIssue
-        return new IsLikeCaseInsensitive(value).map(StringUtilities::safelyUpperCase);
+        // Keep the null safe upper case utility for backwards compatibility in case someone passes in a null
+        return new IsLikeCaseInsensitive(StringUtilities.safelyUpperCase(value));
     }
 }
