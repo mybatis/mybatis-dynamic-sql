@@ -58,6 +58,5 @@ public interface StringUtilities {
     static String formatConstantForSQL(String in) {
         String escaped = in.replace("'", "''"); //$NON-NLS-1$ //$NON-NLS-2$
         return "'" + escaped + "'"; //$NON-NLS-1$ //$NON-NLS-2$
-
     }
 }
