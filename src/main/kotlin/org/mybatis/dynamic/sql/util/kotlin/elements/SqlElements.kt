@@ -324,50 +324,53 @@ fun isTrue(): IsEqualTo<Boolean> = isEqualTo(true)
 fun isFalse(): IsEqualTo<Boolean> = isEqualTo(false)
 
 // conditions for strings only
-fun isLikeCaseInsensitive(value: String): IsLikeCaseInsensitive = SqlBuilder.isLikeCaseInsensitive(value)
+fun isLikeCaseInsensitive(value: String): IsLikeCaseInsensitive<String> = SqlBuilder.isLikeCaseInsensitive(value)
 
-fun isLikeCaseInsensitiveWhenPresent(value: String?): IsLikeCaseInsensitive =
+fun isLikeCaseInsensitiveWhenPresent(value: String?): IsLikeCaseInsensitive<String> =
     SqlBuilder.isLikeCaseInsensitiveWhenPresent(value)
 
-fun isNotLikeCaseInsensitive(value: String): IsNotLikeCaseInsensitive = SqlBuilder.isNotLikeCaseInsensitive(value)
+fun isNotLikeCaseInsensitive(value: String): IsNotLikeCaseInsensitive<String> = SqlBuilder.isNotLikeCaseInsensitive(value)
 
-fun isNotLikeCaseInsensitiveWhenPresent(value: String?): IsNotLikeCaseInsensitive =
+fun isNotLikeCaseInsensitiveWhenPresent(value: String?): IsNotLikeCaseInsensitive<String> =
     SqlBuilder.isNotLikeCaseInsensitiveWhenPresent(value)
 
-fun isInCaseInsensitive(vararg values: String): IsInCaseInsensitive = isInCaseInsensitive(values.asList())
+fun isInCaseInsensitive(vararg values: String): IsInCaseInsensitive<String> = isInCaseInsensitive(values.asList())
 
 @JvmName("isInArrayCaseInsensitive")
-fun isInCaseInsensitive(values: Array<out String>): IsInCaseInsensitive = SqlBuilder.isInCaseInsensitive(values.asList())
+fun isInCaseInsensitive(values: Array<out String>): IsInCaseInsensitive<String> =
+    SqlBuilder.isInCaseInsensitive(values.asList())
 
-fun isInCaseInsensitive(values: Collection<String>): IsInCaseInsensitive = SqlBuilder.isInCaseInsensitive(values)
+fun isInCaseInsensitive(values: Collection<String>): IsInCaseInsensitive<String> =
+    SqlBuilder.isInCaseInsensitive(values)
 
-fun isInCaseInsensitiveWhenPresent(vararg values: String?): IsInCaseInsensitiveWhenPresent =
+fun isInCaseInsensitiveWhenPresent(vararg values: String?): IsInCaseInsensitiveWhenPresent<String> =
     isInCaseInsensitiveWhenPresent(values.asList())
 
 @JvmName("isInArrayCaseInsensitiveWhenPresent")
-fun isInCaseInsensitiveWhenPresent(values: Array<out String?>?): IsInCaseInsensitiveWhenPresent =
+fun isInCaseInsensitiveWhenPresent(values: Array<out String?>?): IsInCaseInsensitiveWhenPresent<String> =
     SqlBuilder.isInCaseInsensitiveWhenPresent(values?.asList())
 
-fun isInCaseInsensitiveWhenPresent(values: Collection<String?>?): IsInCaseInsensitiveWhenPresent =
+fun isInCaseInsensitiveWhenPresent(values: Collection<String?>?): IsInCaseInsensitiveWhenPresent<String> =
     SqlBuilder.isInCaseInsensitiveWhenPresent(values)
 
-fun isNotInCaseInsensitive(vararg values: String): IsNotInCaseInsensitive = isNotInCaseInsensitive(values.asList())
+fun isNotInCaseInsensitive(vararg values: String): IsNotInCaseInsensitive<String> =
+    isNotInCaseInsensitive(values.asList())
 
 @JvmName("isNotInArrayCaseInsensitive")
-fun isNotInCaseInsensitive(values: Array<out String>): IsNotInCaseInsensitive =
+fun isNotInCaseInsensitive(values: Array<out String>): IsNotInCaseInsensitive<String> =
     SqlBuilder.isNotInCaseInsensitive(values.asList())
 
-fun isNotInCaseInsensitive(values: Collection<String>): IsNotInCaseInsensitive =
+fun isNotInCaseInsensitive(values: Collection<String>): IsNotInCaseInsensitive<String> =
     SqlBuilder.isNotInCaseInsensitive(values)
 
-fun isNotInCaseInsensitiveWhenPresent(vararg values: String?): IsNotInCaseInsensitiveWhenPresent =
+fun isNotInCaseInsensitiveWhenPresent(vararg values: String?): IsNotInCaseInsensitiveWhenPresent<String> =
     isNotInCaseInsensitiveWhenPresent(values.asList())
 
 @JvmName("isNotInArrayCaseInsensitiveWhenPresent")
-fun isNotInCaseInsensitiveWhenPresent(values: Array<out String?>?): IsNotInCaseInsensitiveWhenPresent =
+fun isNotInCaseInsensitiveWhenPresent(values: Array<out String?>?): IsNotInCaseInsensitiveWhenPresent<String> =
     SqlBuilder.isNotInCaseInsensitiveWhenPresent(values?.asList())
 
-fun isNotInCaseInsensitiveWhenPresent(values: Collection<String?>?): IsNotInCaseInsensitiveWhenPresent =
+fun isNotInCaseInsensitiveWhenPresent(values: Collection<String?>?): IsNotInCaseInsensitiveWhenPresent<String> =
     SqlBuilder.isNotInCaseInsensitiveWhenPresent(values)
 
 // order by support

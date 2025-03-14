@@ -19,7 +19,7 @@ import java.util.function.BooleanSupplier;
 
 import org.mybatis.dynamic.sql.AbstractNoValueCondition;
 
-public class IsNull<T> extends AbstractNoValueCondition<T> {
+public class IsNull<T> extends AbstractNoValueCondition<T> implements AbstractNoValueCondition.Filterable {
     private static final IsNull<?> EMPTY = new IsNull<>() {
         @Override
         public boolean isEmpty() {
@@ -42,17 +42,7 @@ public class IsNull<T> extends AbstractNoValueCondition<T> {
         return "is null"; //$NON-NLS-1$
     }
 
-    /**
-     * If renderable and the supplier returns true, returns this condition. Else returns a condition that will not
-     * render.
-     *
-     * @param booleanSupplier
-     *            function that specifies whether the condition should render
-     * @param <S>
-     *            condition type - not used except for compilation compliance
-     *
-     * @return this condition if renderable and the supplier returns true, otherwise a condition that will not render.
-     */
+    @Override
     public <S> IsNull<S> filter(BooleanSupplier booleanSupplier) {
         @SuppressWarnings("unchecked")
         IsNull<S> self = (IsNull<S>) this;

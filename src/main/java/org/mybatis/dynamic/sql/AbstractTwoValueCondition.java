@@ -67,27 +67,6 @@ public abstract class AbstractTwoValueCondition<T> implements RenderableConditio
         }
     }
 
-    /**
-     * If renderable and the values match the predicate, returns this condition. Else returns a condition
-     *     that will not render.
-     *
-     * @param predicate predicate applied to the values, if renderable
-     * @return this condition if renderable and the values match the predicate, otherwise a condition
-     *     that will not render.
-     */
-    public abstract AbstractTwoValueCondition<T> filter(BiPredicate<? super T, ? super T> predicate);
-
-    /**
-     * If renderable and both values match the predicate, returns this condition. Else returns a condition
-     *     that will not render. This function implements a short-circuiting test. If the
-     *     first value does not match the predicate, then the second value will not be tested.
-     *
-     * @param predicate predicate applied to both values, if renderable
-     * @return this condition if renderable and the values match the predicate, otherwise a condition
-     *     that will not render.
-     */
-    public abstract AbstractTwoValueCondition<T> filter(Predicate<? super T> predicate);
-
     public abstract String operator1();
 
     public abstract String operator2();
@@ -106,5 +85,80 @@ public abstract class AbstractTwoValueCondition<T> implements RenderableConditio
                 .withParameter(parameterInfo1.parameterMapKey(), leftColumn.convertParameterType(value1()))
                 .withParameter(parameterInfo2.parameterMapKey(), leftColumn.convertParameterType(value2()))
                 .build();
+    }
+
+    /**
+     * Conditions may implement Filterable to add optionality to rendering.
+     *
+     * <p>If a condition is Filterable, then a user may add a filter to the usage of the condition that makes a decision
+     * whether to render the condition at runtime. Conditions that fail the filter will be dropped from the
+     * rendered SQL.
+     *
+     * <p>Implementations of Filterable may call
+     * {@link AbstractTwoValueCondition#filterSupport(Predicate, Supplier, AbstractTwoValueCondition)}
+     * or {@link AbstractTwoValueCondition#filterSupport(BiPredicate, Supplier, AbstractTwoValueCondition)} as
+     * a common implementation of the filtering algorithm.
+     *
+     * @param <T> the Java type related to the database column type
+     */
+    public interface Filterable<T> {
+        /**
+         * If renderable and the values match the predicate, returns this condition. Else returns a condition
+         *     that will not render.
+         *
+         * @param predicate predicate applied to the values, if renderable
+         * @return this condition if renderable and the values match the predicate, otherwise a condition
+         *     that will not render.
+         */
+        AbstractTwoValueCondition<T> filter(BiPredicate<? super T, ? super T> predicate);
+
+        /**
+         * If renderable and both values match the predicate, returns this condition. Else returns a condition
+         *     that will not render. This function implements a short-circuiting test. If the
+         *     first value does not match the predicate, then the second value will not be tested.
+         *
+         * @param predicate predicate applied to both values, if renderable
+         * @return this condition if renderable and the values match the predicate, otherwise a condition
+         *     that will not render.
+         */
+        AbstractTwoValueCondition<T> filter(Predicate<? super T> predicate);
+    }
+
+    /**
+     * Conditions may implement Mappable to alter condition values or types during rendering.
+     *
+     * <p>If a condition is Mappable, then a user may add a mapper to the usage of the condition that can alter the
+     * values of a condition, or change that datatype.
+     *
+     * <p>Implementations of Mappable may call
+     * {@link AbstractTwoValueCondition#mapSupport(Function, Function, BiFunction, Supplier)} as
+     * a common implementation of the mapping algorithm.
+     *
+     * @param <T> the Java type related to the database column type
+     */
+    public interface Mappable<T> {
+        /**
+         * If renderable, apply the mappings to the values and return a new condition with the new values. Else return a
+         * condition that will not render (this).
+         *
+         * @param mapper1 a mapping function to apply to the first value, if renderable
+         * @param mapper2 a mapping function to apply to the second value, if renderable
+         * @param <R> type of the new condition
+         * @return a new condition with the result of applying the mappers to the values of this condition,
+         *     if renderable, otherwise a condition that will not render.
+         */
+        <R> AbstractTwoValueCondition<R> map(Function<? super T, ? extends R> mapper1,
+                                             Function<? super T, ? extends R> mapper2);
+
+        /**
+         * If renderable, apply the mapping to both values and return a new condition with the new values. Else return a
+         *     condition that will not render (this).
+         *
+         * @param mapper a mapping function to apply to both values, if renderable
+         * @param <R> type of the new condition
+         * @return a new condition with the result of applying the mappers to the values of this condition,
+         *     if renderable, otherwise a condition that will not render.
+         */
+        <R> AbstractTwoValueCondition<R> map(Function<? super T, ? extends R> mapper);
     }
 }

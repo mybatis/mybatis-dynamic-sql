@@ -25,7 +25,8 @@ import org.mybatis.dynamic.sql.AbstractListValueCondition;
 import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.util.Validator;
 
-public class IsNotIn<T> extends AbstractListValueCondition<T> {
+public class IsNotIn<T> extends AbstractListValueCondition<T>
+        implements AbstractListValueCondition.Filterable<T>, AbstractListValueCondition.Mappable<T>{
     private static final IsNotIn<?> EMPTY = new IsNotIn<>(Collections.emptyList());
 
     public static <T> IsNotIn<T> empty() {
@@ -54,17 +55,9 @@ public class IsNotIn<T> extends AbstractListValueCondition<T> {
         return filterSupport(predicate, IsNotIn::new, this, IsNotIn::empty);
     }
 
-    /**
-     * If not empty, apply the mapping to each value in the list return a new condition with the mapped values.
-     *     Else return an empty condition (this).
-     *
-     * @param mapper a mapping function to apply to the values, if not empty
-     * @param <R> type of the new condition
-     * @return a new condition with mapped values if renderable, otherwise an empty condition
-     */
+    @Override
     public <R> IsNotIn<R> map(Function<? super T, ? extends R> mapper) {
-        Function<Collection<R>, IsNotIn<R>> constructor = IsNotIn::new;
-        return mapSupport(mapper, constructor, IsNotIn::empty);
+        return mapSupport(mapper, IsNotIn::new, IsNotIn::empty);
     }
 
     @SafeVarargs

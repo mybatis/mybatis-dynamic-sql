@@ -10,7 +10,8 @@ import org.mybatis.dynamic.sql.util.FragmentAndParameters
 sealed class KIsLikeEscape<T : Any>(
     value: T,
     private val escapeCharacter: Char? = null
-) : AbstractSingleValueCondition<T>(value) {
+) : AbstractSingleValueCondition<T>(value), AbstractSingleValueCondition.Filterable<T>,
+    AbstractSingleValueCondition.Mappable<T> {
 
     override fun operator(): String = "like"
 
@@ -24,7 +25,7 @@ sealed class KIsLikeEscape<T : Any>(
     override fun filter(predicate: Predicate<in T>): KIsLikeEscape<T> =
         filterSupport(predicate, EmptyIsLikeEscape::empty, this)
 
-    fun <R : Any> map(mapper : Function<in T, out R>): KIsLikeEscape<R> =
+    override fun <R : Any> map(mapper : Function<in T, out R>): KIsLikeEscape<R> =
         mapSupport(mapper, { r -> ConcreteIsLikeEscape(r, escapeCharacter) }, EmptyIsLikeEscape::empty)
 
     companion object {

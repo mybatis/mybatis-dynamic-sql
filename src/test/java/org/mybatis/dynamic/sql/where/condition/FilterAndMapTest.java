@@ -24,18 +24,19 @@ import java.util.Objects;
 
 import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.SqlBuilder;
+import org.mybatis.dynamic.sql.util.StringUtilities;
 
 class FilterAndMapTest {
     @Test
     void testTypeConversion() {
-        IsEqualTo<Integer> cond = SqlBuilder.isEqualTo("1").map(Integer::parseInt);
+        var cond = SqlBuilder.isEqualTo("1").map(Integer::parseInt);
         assertThat(cond.isEmpty()).isFalse();
         assertThat(cond.value()).isEqualTo(1);
     }
 
     @Test
     void testTypeConversionWithNullThrowsException() {
-        IsEqualTo<String> cond = SqlBuilder.isEqualTo((String) null);
+        var cond = SqlBuilder.isEqualTo((String) null);
         assertThatExceptionOfType(NumberFormatException.class).isThrownBy(() ->
                 cond.map(Integer::parseInt)
         );
@@ -43,7 +44,7 @@ class FilterAndMapTest {
 
     @Test
     void testTypeConversionWithNullAndFilterDoesNotThrowException() {
-        IsEqualTo<Integer> cond = SqlBuilder.isEqualTo((String) null).filter(Objects::nonNull).map(Integer::parseInt);
+        var cond = SqlBuilder.isEqualTo((String) null).filter(Objects::nonNull).map(Integer::parseInt);
         assertThat(cond.isEmpty()).isTrue();
     }
 
@@ -328,8 +329,8 @@ class FilterAndMapTest {
 
     @Test
     void testIsLikeCaseInsensitiveRenderableTruePredicateShouldReturnSameObject() {
-        IsLikeCaseInsensitive cond = SqlBuilder.isLikeCaseInsensitive("Fred");
-        IsLikeCaseInsensitive filtered = cond.filter(s -> true);
+        var cond = SqlBuilder.isLikeCaseInsensitive("Fred");
+        var filtered = cond.filter(s -> true);
         assertThat(filtered.value()).isEqualTo("FRED");
         assertThat(filtered.isEmpty()).isFalse();
         assertThat(cond).isSameAs(filtered);
@@ -337,24 +338,24 @@ class FilterAndMapTest {
 
     @Test
     void testIsLikeCaseInsensitiveRenderableFalsePredicate() {
-        IsLikeCaseInsensitive cond = SqlBuilder.isLikeCaseInsensitive("Fred");
-        IsLikeCaseInsensitive filtered = cond.filter(s -> false);
+        var cond = SqlBuilder.isLikeCaseInsensitive("Fred");
+        var filtered = cond.filter(s -> false);
         assertThat(cond.isEmpty()).isFalse();
         assertThat(filtered.isEmpty()).isTrue();
     }
 
     @Test
     void testIsLikeCaseInsensitiveFilterUnRenderableShouldReturnSameObject() {
-        IsLikeCaseInsensitive cond = SqlBuilder.isLikeCaseInsensitive("Fred").filter(s -> false);
-        IsLikeCaseInsensitive filtered = cond.filter(s -> true);
+        var cond = SqlBuilder.isLikeCaseInsensitive("Fred").filter(s -> false);
+        var filtered = cond.filter(s -> true);
         assertThat(filtered.isEmpty()).isTrue();
         assertThat(cond).isSameAs(filtered);
     }
 
     @Test
     void testIsLikeCaseInsensitiveMapUnRenderableShouldNotThrowNullPointerException() {
-        IsLikeCaseInsensitive cond = SqlBuilder.isLikeCaseInsensitive("Fred").filter(s -> false);
-        IsLikeCaseInsensitive mapped = cond.map(String::toUpperCase);
+        IsLikeCaseInsensitive<String> cond = SqlBuilder.isLikeCaseInsensitive("Fred").filter(s -> false);
+        IsLikeCaseInsensitive<String> mapped = cond.map(String::toUpperCase);
         assertThat(cond.isEmpty()).isTrue();
         assertThatExceptionOfType(NoSuchElementException.class).isThrownBy(cond::value);
         assertThat(cond).isSameAs(mapped);
@@ -395,8 +396,8 @@ class FilterAndMapTest {
 
     @Test
     void testIsNotLikeCaseInsensitiveRenderableTruePredicateShouldReturnSameObject() {
-        IsNotLikeCaseInsensitive cond = SqlBuilder.isNotLikeCaseInsensitive("Fred");
-        IsNotLikeCaseInsensitive filtered = cond.filter(s -> true);
+        var cond = SqlBuilder.isNotLikeCaseInsensitive("Fred");
+        var filtered = cond.filter(s -> true);
         assertThat(filtered.value()).isEqualTo("FRED");
         assertThat(filtered.isEmpty()).isFalse();
         assertThat(cond).isSameAs(filtered);
@@ -404,24 +405,24 @@ class FilterAndMapTest {
 
     @Test
     void testIsNotLikeCaseInsensitiveRenderableFalsePredicate() {
-        IsNotLikeCaseInsensitive cond = SqlBuilder.isNotLikeCaseInsensitive("Fred");
-        IsNotLikeCaseInsensitive filtered = cond.filter(s -> false);
+        var cond = SqlBuilder.isNotLikeCaseInsensitive("Fred");
+        var filtered = cond.filter(s -> false);
         assertThat(cond.isEmpty()).isFalse();
         assertThat(filtered.isEmpty()).isTrue();
     }
 
     @Test
     void testIsNotLikeCaseInsensitiveFilterUnRenderableShouldReturnSameObject() {
-        IsNotLikeCaseInsensitive cond = SqlBuilder.isNotLikeCaseInsensitive("Fred").filter(s -> false);
-        IsNotLikeCaseInsensitive filtered = cond.filter(s -> true);
+        var cond = SqlBuilder.isNotLikeCaseInsensitive("Fred").filter(s -> false);
+        var filtered = cond.filter(s -> true);
         assertThat(filtered.isEmpty()).isTrue();
         assertThat(cond).isSameAs(filtered);
     }
 
     @Test
     void testIsNotLikeCaseInsensitiveMapUnRenderableShouldNotThrowNullPointerException() {
-        IsNotLikeCaseInsensitive cond = SqlBuilder.isNotLikeCaseInsensitive("Fred").filter(s -> false);
-        IsNotLikeCaseInsensitive mapped = cond.map(String::toUpperCase);
+        var cond = SqlBuilder.isNotLikeCaseInsensitive("Fred").filter(s -> false);
+        var mapped = cond.map(String::toUpperCase);
         assertThat(cond.isEmpty()).isTrue();
         assertThatExceptionOfType(NoSuchElementException.class).isThrownBy(cond::value);
         assertThat(cond).isSameAs(mapped);
@@ -447,25 +448,25 @@ class FilterAndMapTest {
 
     @Test
     void testIsNotInCaseInsensitiveRenderableMapShouldReturnMappedObject() {
-        IsNotInCaseInsensitive cond = SqlBuilder.isNotInCaseInsensitive("Fred  ", "Wilma  ");
-        List<String> values = cond.values().toList();
+        var cond = SqlBuilder.isNotInCaseInsensitive("Fred  ", "Wilma  ");
+        var values = cond.values().toList();
         assertThat(values).containsExactly("FRED  ", "WILMA  ");
         assertThat(cond.isEmpty()).isFalse();
 
-        IsNotInCaseInsensitive mapped = cond.map(String::trim);
-        List<String> mappedValues = mapped.values().toList();
+        var mapped = cond.map(String::trim);
+        var mappedValues = mapped.values().toList();
         assertThat(mappedValues).containsExactly("FRED", "WILMA");
     }
 
     @Test
     void testIsInCaseInsensitiveRenderableMapShouldReturnMappedObject() {
-        IsInCaseInsensitive cond = SqlBuilder.isInCaseInsensitive("Fred  ", "Wilma  ");
-        List<String> values = cond.values().toList();
+        var cond = SqlBuilder.isInCaseInsensitive("Fred  ", "Wilma  ");
+        var values = cond.values().toList();
         assertThat(values).containsExactly("FRED  ", "WILMA  ");
         assertThat(cond.isEmpty()).isFalse();
 
-        IsInCaseInsensitive mapped = cond.map(String::trim);
-        List<String> mappedValues = mapped.values().toList();
+        var mapped = cond.map(String::trim);
+        var mappedValues = mapped.values().toList();
         assertThat(mappedValues).containsExactly("FRED", "WILMA");
     }
 
@@ -533,4 +534,40 @@ class FilterAndMapTest {
         assertThat(cond.value2()).isEqualTo(4);
     }
 
+    @Test
+    void testMappingAnEmptyListCondition() {
+        var cond = SqlBuilder.isNotIn("Fred", "Wilma");
+        var filtered = cond.filter(s -> false);
+        var mapped = filtered.map(s -> s);
+        assertThat(mapped.isEmpty()).isTrue();
+        assertThat(filtered).isSameAs(mapped);
+    }
+
+    @Test
+    void testIsInCaseInsensitiveWhenPresentMap() {
+        var cond = SqlBuilder.isInCaseInsensitiveWhenPresent("Fred", "Wilma");
+        var mapped = cond.map(s -> s + " Flintstone");
+        assertThat(mapped.values().toList()).containsExactly("FRED Flintstone", "WILMA Flintstone");
+    }
+
+    @Test
+    void testIsInCaseInsensitiveWhenPresentMapCaseInsensitive() {
+        var cond = SqlBuilder.isInCaseInsensitiveWhenPresent("Fred", "Wilma");
+        var mapped = cond.map(StringUtilities.mapToUpperCase(s -> s + " Flintstone"));
+        assertThat(mapped.values().toList()).containsExactly("FRED FLINTSTONE", "WILMA FLINTSTONE");
+    }
+
+    @Test
+    void testIsNotInCaseInsensitiveWhenPresentMap() {
+        var cond = SqlBuilder.isNotInCaseInsensitiveWhenPresent("Fred", "Wilma");
+        var mapped = cond.map(s -> s + " Flintstone");
+        assertThat(mapped.values().toList()).containsExactly("FRED Flintstone", "WILMA Flintstone");
+    }
+
+    @Test
+    void testIsNotInCaseInsensitiveWhenPresentMapCaseInsensitive() {
+        var cond = SqlBuilder.isNotInCaseInsensitiveWhenPresent("Fred", "Wilma");
+        var mapped = cond.map(StringUtilities.mapToUpperCase(s -> s + " Flintstone"));
+        assertThat(mapped.values().toList()).containsExactly("FRED FLINTSTONE", "WILMA FLINTSTONE");
+    }
 }

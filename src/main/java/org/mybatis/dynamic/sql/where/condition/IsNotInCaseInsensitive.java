@@ -18,23 +18,26 @@ package org.mybatis.dynamic.sql.where.condition;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.function.UnaryOperator;
 
 import org.mybatis.dynamic.sql.AbstractListValueCondition;
 import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.util.StringUtilities;
 import org.mybatis.dynamic.sql.util.Validator;
 
-public class IsNotInCaseInsensitive extends AbstractListValueCondition<String>
-        implements CaseInsensitiveRenderableCondition {
-    private static final IsNotInCaseInsensitive EMPTY = new IsNotInCaseInsensitive(Collections.emptyList());
+public class IsNotInCaseInsensitive<T> extends AbstractListValueCondition<T>
+        implements CaseInsensitiveRenderableCondition<T>, AbstractListValueCondition.Filterable<T>,
+        AbstractListValueCondition.Mappable<T> {
+    private static final IsNotInCaseInsensitive<?> EMPTY = new IsNotInCaseInsensitive<>(Collections.emptyList());
 
-    public static IsNotInCaseInsensitive empty() {
-        return EMPTY;
+    public static <T> IsNotInCaseInsensitive<T> empty() {
+        @SuppressWarnings("unchecked")
+        IsNotInCaseInsensitive<T> t = (IsNotInCaseInsensitive<T>) EMPTY;
+        return t;
     }
 
-    protected IsNotInCaseInsensitive(Collection<String> values) {
+    protected IsNotInCaseInsensitive(Collection<T> values) {
         super(values);
     }
 
@@ -50,27 +53,34 @@ public class IsNotInCaseInsensitive extends AbstractListValueCondition<String>
     }
 
     @Override
-    public IsNotInCaseInsensitive filter(Predicate<? super String> predicate) {
+    public IsNotInCaseInsensitive<T> filter(Predicate<? super T> predicate) {
         return filterSupport(predicate, IsNotInCaseInsensitive::new, this, IsNotInCaseInsensitive::empty);
     }
 
     /**
-     * If not empty, apply the mapping to each value in the list return a new condition with the mapped values.
-     *     Else return an empty condition (this).
+     * If renderable, apply the mapping to the value and return a new condition with the new value. Else return a
+     * condition that will not render (this).
      *
-     * @param mapper a mapping function to apply to the values, if not empty
-     * @return a new condition with mapped values if renderable, otherwise an empty condition
+     * <p>This function DOES NOT automatically transform values to uppercase, so it potentially creates a
+     * case-sensitive query. For String conditions you can use {@link StringUtilities#mapToUpperCase(Function)}
+     * to add an uppercase transform after your mapping function.
+     *
+     * @param mapper a mapping function to apply to the value, if renderable
+     * @param <R> type of the new condition
+     * @return a new condition with the result of applying the mapper to the value of this condition,
+     *     if renderable, otherwise a condition that will not render.
      */
-    public IsNotInCaseInsensitive map(UnaryOperator<String> mapper) {
+    @Override
+    public <R> IsNotInCaseInsensitive<R> map(Function<? super T, ? extends R> mapper) {
         return mapSupport(mapper, IsNotInCaseInsensitive::new, IsNotInCaseInsensitive::empty);
     }
 
-    public static IsNotInCaseInsensitive of(String... values) {
+    public static IsNotInCaseInsensitive<String> of(String... values) {
         return of(Arrays.asList(values));
     }
 
-    public static IsNotInCaseInsensitive of(Collection<String> values) {
+    public static IsNotInCaseInsensitive<String> of(Collection<String> values) {
         // Keep the null safe upper case utility for backwards compatibility in case someone passes in a null
-        return new IsNotInCaseInsensitive(values.stream().map(StringUtilities::safelyUpperCase).toList());
+        return new IsNotInCaseInsensitive<>(values.stream().map(StringUtilities::safelyUpperCase).toList());
     }
 }

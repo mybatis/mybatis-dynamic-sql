@@ -16,15 +16,16 @@
 package org.mybatis.dynamic.sql.where.condition;
 
 import java.util.NoSuchElementException;
+import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.function.UnaryOperator;
 
 import org.mybatis.dynamic.sql.AbstractSingleValueCondition;
 import org.mybatis.dynamic.sql.util.StringUtilities;
 
-public class IsNotLikeCaseInsensitive extends AbstractSingleValueCondition<String>
-        implements CaseInsensitiveRenderableCondition {
-    private static final IsNotLikeCaseInsensitive EMPTY = new IsNotLikeCaseInsensitive("") { //$NON-NLS-1$
+public class IsNotLikeCaseInsensitive<T> extends AbstractSingleValueCondition<T>
+        implements CaseInsensitiveRenderableCondition<T>, AbstractSingleValueCondition.Filterable<T>,
+        AbstractSingleValueCondition.Mappable<T> {
+    private static final IsNotLikeCaseInsensitive<?> EMPTY = new IsNotLikeCaseInsensitive<>("") { //$NON-NLS-1$
         @Override
         public String value() {
             throw new NoSuchElementException("No value present"); //$NON-NLS-1$
@@ -36,11 +37,13 @@ public class IsNotLikeCaseInsensitive extends AbstractSingleValueCondition<Strin
         }
     };
 
-    public static IsNotLikeCaseInsensitive empty() {
-        return EMPTY;
+    public static <T> IsNotLikeCaseInsensitive<T> empty() {
+        @SuppressWarnings("unchecked")
+        IsNotLikeCaseInsensitive<T> t = (IsNotLikeCaseInsensitive<T>) EMPTY;
+        return t;
     }
 
-    protected IsNotLikeCaseInsensitive(String value) {
+    protected IsNotLikeCaseInsensitive(T value) {
         super(value);
     }
 
@@ -50,7 +53,7 @@ public class IsNotLikeCaseInsensitive extends AbstractSingleValueCondition<Strin
     }
 
     @Override
-    public IsNotLikeCaseInsensitive filter(Predicate<? super String> predicate) {
+    public IsNotLikeCaseInsensitive<T> filter(Predicate<? super T> predicate) {
         return filterSupport(predicate, IsNotLikeCaseInsensitive::empty, this);
     }
 
@@ -58,18 +61,22 @@ public class IsNotLikeCaseInsensitive extends AbstractSingleValueCondition<Strin
      * If renderable, apply the mapping to the value and return a new condition with the new value. Else return a
      * condition that will not render (this).
      *
-     * @param mapper
-     *            a mapping function to apply to the value, if renderable
+     * <p>This function DOES NOT automatically transform values to uppercase, so it potentially creates a
+     * case-sensitive query. For String conditions you can use {@link StringUtilities#mapToUpperCase(Function)}
+     * to add an uppercase transform after your mapping function.
      *
-     * @return a new condition with the result of applying the mapper to the value of this condition, if renderable,
-     *         otherwise a condition that will not render.
+     * @param mapper a mapping function to apply to the value, if renderable
+     * @param <R> type of the new condition
+     * @return a new condition with the result of applying the mapper to the value of this condition,
+     *     if renderable, otherwise a condition that will not render.
      */
-    public IsNotLikeCaseInsensitive map(UnaryOperator<String> mapper) {
+    @Override
+    public <R> IsNotLikeCaseInsensitive<R> map(Function<? super T, ? extends R> mapper) {
         return mapSupport(mapper, IsNotLikeCaseInsensitive::new, IsNotLikeCaseInsensitive::empty);
     }
 
-    public static IsNotLikeCaseInsensitive of(String value) {
+    public static IsNotLikeCaseInsensitive<String> of(String value) {
         // Keep the null safe upper case utility for backwards compatibility in case someone passes in a null
-        return new IsNotLikeCaseInsensitive(StringUtilities.safelyUpperCase(value));
+        return new IsNotLikeCaseInsensitive<>(StringUtilities.safelyUpperCase(value));
     }
 }

@@ -23,7 +23,8 @@ import java.util.function.Predicate;
 import org.jspecify.annotations.Nullable;
 import org.mybatis.dynamic.sql.AbstractTwoValueCondition;
 
-public class IsNotBetween<T> extends AbstractTwoValueCondition<T> {
+public class IsNotBetween<T> extends AbstractTwoValueCondition<T>
+        implements AbstractTwoValueCondition.Filterable<T>, AbstractTwoValueCondition.Mappable<T> {
     private static final IsNotBetween<?> EMPTY = new IsNotBetween<Object>(-1, -1) {
         @Override
         public Object value1() {
@@ -71,30 +72,13 @@ public class IsNotBetween<T> extends AbstractTwoValueCondition<T> {
         return filterSupport(predicate, IsNotBetween::empty, this);
     }
 
-    /**
-     * If renderable, apply the mappings to the values and return a new condition with the new values. Else return a
-     * condition that will not render (this).
-     *
-     * @param mapper1 a mapping function to apply to the first value, if renderable
-     * @param mapper2 a mapping function to apply to the second value, if renderable
-     * @param <R> type of the new condition
-     * @return a new condition with the result of applying the mappers to the values of this condition,
-     *     if renderable, otherwise a condition that will not render.
-     */
+    @Override
     public <R> IsNotBetween<R> map(Function<? super T, ? extends R> mapper1,
             Function<? super T, ? extends R> mapper2) {
         return mapSupport(mapper1, mapper2, IsNotBetween::new, IsNotBetween::empty);
     }
 
-    /**
-     * If renderable, apply the mapping to both values and return a new condition with the new values. Else return a
-     *     condition that will not render (this).
-     *
-     * @param mapper a mapping function to apply to both values, if renderable
-     * @param <R> type of the new condition
-     * @return a new condition with the result of applying the mappers to the values of this condition,
-     *     if renderable, otherwise a condition that will not render.
-     */
+    @Override
     public <R> IsNotBetween<R> map(Function<? super T, ? extends R> mapper) {
         return map(mapper, mapper);
     }

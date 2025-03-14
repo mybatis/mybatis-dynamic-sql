@@ -21,7 +21,9 @@ import java.util.function.Predicate;
 
 import org.mybatis.dynamic.sql.AbstractSingleValueCondition;
 
-public class IsLessThan<T> extends AbstractSingleValueCondition<T> {
+public class IsLessThan<T> extends AbstractSingleValueCondition<T>
+        implements AbstractSingleValueCondition.Filterable<T>, AbstractSingleValueCondition.Mappable<T> {
+
     private static final IsLessThan<?> EMPTY = new IsLessThan<Object>(-1) {
         @Override
         public Object value() {
@@ -58,15 +60,7 @@ public class IsLessThan<T> extends AbstractSingleValueCondition<T> {
         return filterSupport(predicate, IsLessThan::empty, this);
     }
 
-    /**
-     * If renderable, apply the mapping to the value and return a new condition with the new value. Else return a
-     * condition that will not render (this).
-     *
-     * @param mapper a mapping function to apply to the value, if renderable
-     * @param <R> type of the new condition
-     * @return a new condition with the result of applying the mapper to the value of this condition,
-     *     if renderable, otherwise a condition that will not render.
-     */
+    @Override
     public <R> IsLessThan<R> map(Function<? super T, ? extends R> mapper) {
         return mapSupport(mapper, IsLessThan::new, IsLessThan::empty);
     }
