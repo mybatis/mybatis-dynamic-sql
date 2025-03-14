@@ -27,7 +27,8 @@ import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 
 @NullMarked
-public class IsLikeEscape<T> extends AbstractSingleValueCondition<T> {
+public class IsLikeEscape<T> extends AbstractSingleValueCondition<T>
+        implements AbstractSingleValueCondition.Filterable<T>, AbstractSingleValueCondition.Mappable<T> {
     private static final IsLikeEscape<?> EMPTY = new IsLikeEscape<Object>(-1, null) {
         @Override
         public Object value() {

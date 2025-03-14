@@ -21,7 +21,8 @@ import java.util.function.Predicate;
 
 import org.mybatis.dynamic.sql.AbstractSingleValueCondition;
 
-public class IsGreaterThanOrEqualTo<T> extends AbstractSingleValueCondition<T> {
+public class IsGreaterThanOrEqualTo<T> extends AbstractSingleValueCondition<T>
+        implements AbstractSingleValueCondition.Filterable<T>, AbstractSingleValueCondition.Mappable<T> {
     private static final IsGreaterThanOrEqualTo<?> EMPTY = new IsGreaterThanOrEqualTo<Object>(-1) {
         @Override
         public Object value() {

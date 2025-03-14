@@ -23,7 +23,8 @@ import org.mybatis.dynamic.sql.AbstractSingleValueCondition;
 import org.mybatis.dynamic.sql.util.StringUtilities;
 
 public class IsNotLikeCaseInsensitive<T> extends AbstractSingleValueCondition<T>
-        implements CaseInsensitiveRenderableCondition<T> {
+        implements CaseInsensitiveRenderableCondition<T>, AbstractSingleValueCondition.Filterable<T>,
+        AbstractSingleValueCondition.Mappable<T> {
     private static final IsNotLikeCaseInsensitive<?> EMPTY = new IsNotLikeCaseInsensitive<>("") { //$NON-NLS-1$
         @Override
         public String value() {
@@ -56,16 +57,7 @@ public class IsNotLikeCaseInsensitive<T> extends AbstractSingleValueCondition<T>
         return filterSupport(predicate, IsNotLikeCaseInsensitive::empty, this);
     }
 
-    /**
-     * If renderable, apply the mapping to the value and return a new condition with the new value. Else return a
-     * condition that will not render (this).
-     *
-     * @param mapper
-     *            a mapping function to apply to the value, if renderable
-     *
-     * @return a new condition with the result of applying the mapper to the value of this condition, if renderable,
-     *         otherwise a condition that will not render.
-     */
+    @Override
     public <R> IsNotLikeCaseInsensitive<R> map(Function<? super T, ? extends R> mapper) {
         return mapSupport(mapper, IsNotLikeCaseInsensitive::new, IsNotLikeCaseInsensitive::empty);
     }

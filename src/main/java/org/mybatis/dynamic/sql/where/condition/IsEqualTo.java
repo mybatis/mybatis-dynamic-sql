@@ -21,7 +21,8 @@ import java.util.function.Predicate;
 
 import org.mybatis.dynamic.sql.AbstractSingleValueCondition;
 
-public class IsEqualTo<T> extends AbstractSingleValueCondition<T> {
+public class IsEqualTo<T> extends AbstractSingleValueCondition<T>
+        implements AbstractSingleValueCondition.Filterable<T>, AbstractSingleValueCondition.Mappable<T> {
 
     private static final IsEqualTo<?> EMPTY = new IsEqualTo<Object>(-1) {
         @Override

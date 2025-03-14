@@ -23,7 +23,8 @@ import org.mybatis.dynamic.sql.AbstractSingleValueCondition;
 import org.mybatis.dynamic.sql.util.StringUtilities;
 
 public class IsLikeCaseInsensitive<T> extends AbstractSingleValueCondition<T>
-        implements CaseInsensitiveRenderableCondition<T> {
+        implements CaseInsensitiveRenderableCondition<T>, AbstractSingleValueCondition.Filterable<T>,
+        AbstractSingleValueCondition.Mappable<T> {
     private static final IsLikeCaseInsensitive<?> EMPTY = new IsLikeCaseInsensitive<>("") { //$NON-NLS-1$
         @Override
         public String value() {
