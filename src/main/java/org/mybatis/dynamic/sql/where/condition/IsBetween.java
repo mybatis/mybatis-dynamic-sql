@@ -23,7 +23,8 @@ import java.util.function.Predicate;
 import org.jspecify.annotations.Nullable;
 import org.mybatis.dynamic.sql.AbstractTwoValueCondition;
 
-public class IsBetween<T> extends AbstractTwoValueCondition<T> {
+public class IsBetween<T> extends AbstractTwoValueCondition<T>
+        implements AbstractTwoValueCondition.Filterable<T>, AbstractTwoValueCondition.Mappable<T> {
     private static final IsBetween<?> EMPTY = new IsBetween<Object>(-1, -1) {
         @Override
         public Object value1() {
