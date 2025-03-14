@@ -19,7 +19,7 @@ import java.util.function.BooleanSupplier;
 
 import org.mybatis.dynamic.sql.AbstractNoValueCondition;
 
-public class IsNotNull<T> extends AbstractNoValueCondition<T> {
+public class IsNotNull<T> extends AbstractNoValueCondition<T> implements AbstractNoValueCondition.Filterable {
     private static final IsNotNull<?> EMPTY = new IsNotNull<>() {
         @Override
         public boolean isEmpty() {
