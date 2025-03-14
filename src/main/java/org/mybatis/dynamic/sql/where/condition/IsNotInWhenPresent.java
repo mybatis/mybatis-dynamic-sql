@@ -24,7 +24,8 @@ import java.util.function.Predicate;
 
 import org.mybatis.dynamic.sql.AbstractListValueCondition;
 
-public class IsNotInWhenPresent<T> extends AbstractListValueCondition<T> {
+public class IsNotInWhenPresent<T> extends AbstractListValueCondition<T>
+        implements AbstractListValueCondition.Filterable<T>, AbstractListValueCondition.Mappable<T>{
     private static final IsNotInWhenPresent<?> EMPTY = new IsNotInWhenPresent<>(Collections.emptyList());
 
     public static <T> IsNotInWhenPresent<T> empty() {
@@ -47,17 +48,9 @@ public class IsNotInWhenPresent<T> extends AbstractListValueCondition<T> {
         return filterSupport(predicate, IsNotInWhenPresent::new, this, IsNotInWhenPresent::empty);
     }
 
-    /**
-     * If not empty, apply the mapping to each value in the list return a new condition with the mapped values.
-     *     Else return an empty condition (this).
-     *
-     * @param mapper a mapping function to apply to the values, if not empty
-     * @param <R> type of the new condition
-     * @return a new condition with mapped values if renderable, otherwise an empty condition
-     */
+    @Override
     public <R> IsNotInWhenPresent<R> map(Function<? super T, ? extends R> mapper) {
-        Function<Collection<R>, IsNotInWhenPresent<R>> constructor = IsNotInWhenPresent::new;
-        return mapSupport(mapper, constructor, IsNotInWhenPresent::empty);
+        return mapSupport(mapper, IsNotInWhenPresent::new, IsNotInWhenPresent::empty);
     }
 
     @SafeVarargs

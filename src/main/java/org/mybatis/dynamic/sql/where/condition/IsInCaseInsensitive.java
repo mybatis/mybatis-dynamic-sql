@@ -27,7 +27,8 @@ import org.mybatis.dynamic.sql.util.StringUtilities;
 import org.mybatis.dynamic.sql.util.Validator;
 
 public class IsInCaseInsensitive<T> extends AbstractListValueCondition<T>
-        implements CaseInsensitiveRenderableCondition<T> {
+        implements CaseInsensitiveRenderableCondition<T>, AbstractListValueCondition.Filterable<T>,
+        AbstractListValueCondition.Mappable<T> {
     private static final IsInCaseInsensitive<?> EMPTY = new IsInCaseInsensitive<>(Collections.emptyList());
 
     public static <T> IsInCaseInsensitive<T> empty() {

@@ -25,7 +25,8 @@ import org.mybatis.dynamic.sql.AbstractListValueCondition;
 import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.util.Validator;
 
-public class IsIn<T> extends AbstractListValueCondition<T> {
+public class IsIn<T> extends AbstractListValueCondition<T>
+        implements AbstractListValueCondition.Filterable<T>, AbstractListValueCondition.Mappable<T>{
     private static final IsIn<?> EMPTY = new IsIn<>(Collections.emptyList());
 
     public static <T> IsIn<T> empty() {
@@ -56,8 +57,7 @@ public class IsIn<T> extends AbstractListValueCondition<T> {
 
     @Override
     public <R> IsIn<R> map(Function<? super T, ? extends R> mapper) {
-        Function<Collection<R>, IsIn<R>> constructor = IsIn::new;
-        return mapSupport(mapper, constructor, IsIn::empty);
+        return mapSupport(mapper, IsIn::new, IsIn::empty);
     }
 
     @SafeVarargs

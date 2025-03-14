@@ -26,7 +26,8 @@ import org.jspecify.annotations.Nullable;
 import org.mybatis.dynamic.sql.AbstractListValueCondition;
 
 public class IsNotInCaseInsensitiveWhenPresent<T> extends AbstractListValueCondition<T>
-        implements CaseInsensitiveRenderableCondition<T> {
+        implements CaseInsensitiveRenderableCondition<T>, AbstractListValueCondition.Filterable<T>,
+        AbstractListValueCondition.Mappable<T> {
     private static final IsNotInCaseInsensitiveWhenPresent<?> EMPTY =
             new IsNotInCaseInsensitiveWhenPresent<>(Collections.emptyList());
 
