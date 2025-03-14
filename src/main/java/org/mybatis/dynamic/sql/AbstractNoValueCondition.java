@@ -39,6 +39,17 @@ public abstract class AbstractNoValueCondition<T> implements RenderableCondition
         return FragmentAndParameters.fromFragment(operator());
     }
 
+    /**
+     * Conditions may implement Filterable to add optionality to rendering.
+     *
+     * <p>If a condition is Filterable, then a user may add a filter to the usage of the condition that makes a decision
+     * whether to render the condition at runtime. Conditions that fail the filter will be dropped from the
+     * rendered SQL.
+     *
+     * <p>Implementations of Filterable may call
+     * {@link AbstractNoValueCondition#filterSupport(BooleanSupplier, Supplier, AbstractNoValueCondition)} as
+     * a common implementation of the filtering algorithm.
+     */
     public interface Filterable {
         /**
          * If renderable and the supplier returns true, returns this condition. Else returns a condition that will not
