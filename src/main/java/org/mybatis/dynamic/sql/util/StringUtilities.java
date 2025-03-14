@@ -15,6 +15,8 @@
  */
 package org.mybatis.dynamic.sql.util;
 
+import java.util.function.Function;
+
 import org.jspecify.annotations.Nullable;
 
 public interface StringUtilities {
@@ -58,5 +60,9 @@ public interface StringUtilities {
     static String formatConstantForSQL(String in) {
         String escaped = in.replace("'", "''"); //$NON-NLS-1$ //$NON-NLS-2$
         return "'" + escaped + "'"; //$NON-NLS-1$ //$NON-NLS-2$
+    }
+
+    static Function<String, String> mapToUpperCase(Function<String, String> f) {
+        return f.andThen(String::toUpperCase);
     }
 }

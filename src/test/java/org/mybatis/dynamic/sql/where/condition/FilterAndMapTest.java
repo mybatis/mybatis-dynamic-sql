@@ -24,6 +24,7 @@ import java.util.Objects;
 
 import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.SqlBuilder;
+import org.mybatis.dynamic.sql.util.StringUtilities;
 
 class FilterAndMapTest {
     @Test
@@ -533,4 +534,40 @@ class FilterAndMapTest {
         assertThat(cond.value2()).isEqualTo(4);
     }
 
+    @Test
+    void testMappingAnEmptyListCondition() {
+        var cond = SqlBuilder.isNotIn("Fred", "Wilma");
+        var filtered = cond.filter(s -> false);
+        var mapped = filtered.map(s -> s);
+        assertThat(mapped.isEmpty()).isTrue();
+        assertThat(filtered).isSameAs(mapped);
+    }
+
+    @Test
+    void testIsInCaseInsensitiveWhenPresentMap() {
+        var cond = SqlBuilder.isInCaseInsensitiveWhenPresent("Fred", "Wilma");
+        var mapped = cond.map(s -> s + " Flintstone");
+        assertThat(mapped.values().toList()).containsExactly("FRED Flintstone", "WILMA Flintstone");
+    }
+
+    @Test
+    void testIsInCaseInsensitiveWhenPresentMapCaseInsensitive() {
+        var cond = SqlBuilder.isInCaseInsensitiveWhenPresent("Fred", "Wilma");
+        var mapped = cond.map(StringUtilities.mapToUpperCase(s -> s + " Flintstone"));
+        assertThat(mapped.values().toList()).containsExactly("FRED FLINTSTONE", "WILMA FLINTSTONE");
+    }
+
+    @Test
+    void testIsNotInCaseInsensitiveWhenPresentMap() {
+        var cond = SqlBuilder.isNotInCaseInsensitiveWhenPresent("Fred", "Wilma");
+        var mapped = cond.map(s -> s + " Flintstone");
+        assertThat(mapped.values().toList()).containsExactly("FRED Flintstone", "WILMA Flintstone");
+    }
+
+    @Test
+    void testIsNotInCaseInsensitiveWhenPresentMapCaseInsensitive() {
+        var cond = SqlBuilder.isNotInCaseInsensitiveWhenPresent("Fred", "Wilma");
+        var mapped = cond.map(StringUtilities.mapToUpperCase(s -> s + " Flintstone"));
+        assertThat(mapped.values().toList()).containsExactly("FRED FLINTSTONE", "WILMA FLINTSTONE");
+    }
 }
