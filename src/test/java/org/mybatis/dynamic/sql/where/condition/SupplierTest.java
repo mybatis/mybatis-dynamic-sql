@@ -260,28 +260,28 @@ class SupplierTest {
 
     @Test
     void testIsLikeCaseInsensitive() {
-        IsLikeCaseInsensitive cond = SqlBuilder.isLikeCaseInsensitive(() -> "%f%");
+        IsLikeCaseInsensitive<String> cond = SqlBuilder.isLikeCaseInsensitive(() -> "%f%");
         assertThat(cond.value()).isEqualTo("%F%");
         assertThat(cond.isEmpty()).isFalse();
     }
 
     @Test
     void testIsLikeCaseInsensitiveNull() {
-        IsLikeCaseInsensitive cond = SqlBuilder.isLikeCaseInsensitive(() -> null);
+        IsLikeCaseInsensitive<String> cond = SqlBuilder.isLikeCaseInsensitive(() -> null);
         assertThat(cond.value()).isNull();
         assertThat(cond.isEmpty()).isFalse();
     }
 
     @Test
     void testIsLikeCaseInsensitiveWhenPresent() {
-        IsLikeCaseInsensitive cond = SqlBuilder.isLikeCaseInsensitiveWhenPresent(() -> "%f%");
+        IsLikeCaseInsensitive<String> cond = SqlBuilder.isLikeCaseInsensitiveWhenPresent(() -> "%f%");
         assertThat(cond.value()).isEqualTo("%F%");
         assertThat(cond.isEmpty()).isFalse();
     }
 
     @Test
     void testIsLikeCaseInsensitiveWhenPresentNull() {
-        IsLikeCaseInsensitive cond = SqlBuilder.isLikeCaseInsensitiveWhenPresent(() -> null);
+        IsLikeCaseInsensitive<String> cond = SqlBuilder.isLikeCaseInsensitiveWhenPresent(() -> null);
         assertThatExceptionOfType(NoSuchElementException.class).isThrownBy(cond::value);
         assertThat(cond.isEmpty()).isTrue();
     }
@@ -330,28 +330,28 @@ class SupplierTest {
 
     @Test
     void testIsNotLikeCaseInsensitive() {
-        IsNotLikeCaseInsensitive cond = SqlBuilder.isNotLikeCaseInsensitive(() -> "%f%");
+        IsNotLikeCaseInsensitive<String> cond = SqlBuilder.isNotLikeCaseInsensitive(() -> "%f%");
         assertThat(cond.value()).isEqualTo("%F%");
         assertThat(cond.isEmpty()).isFalse();
     }
 
     @Test
     void testIsNotLikeCaseInsensitiveNull() {
-        IsNotLikeCaseInsensitive cond = SqlBuilder.isNotLikeCaseInsensitive(() -> null);
+        IsNotLikeCaseInsensitive<String> cond = SqlBuilder.isNotLikeCaseInsensitive(() -> null);
         assertThat(cond.value()).isNull();
         assertThat(cond.isEmpty()).isFalse();
     }
 
     @Test
     void testIsNotLikeCaseInsensitiveWhenPresent() {
-        IsNotLikeCaseInsensitive cond = SqlBuilder.isNotLikeCaseInsensitiveWhenPresent(() -> "%f%");
+        IsNotLikeCaseInsensitive<String> cond = SqlBuilder.isNotLikeCaseInsensitiveWhenPresent(() -> "%f%");
         assertThat(cond.value()).isEqualTo("%F%");
         assertThat(cond.isEmpty()).isFalse();
     }
 
     @Test
     void testIsNotLikeCaseInsensitiveWhenPresentNull() {
-        IsNotLikeCaseInsensitive cond = SqlBuilder.isNotLikeCaseInsensitiveWhenPresent(() -> null);
+        IsNotLikeCaseInsensitive<String> cond = SqlBuilder.isNotLikeCaseInsensitiveWhenPresent(() -> null);
         assertThatExceptionOfType(NoSuchElementException.class).isThrownBy(cond::value);
         assertThat(cond.isEmpty()).isTrue();
     }
