@@ -304,7 +304,8 @@ Here's an example of implementing a LIKE condition that supports ESCAPE:
 
 ```java
 @NullMarked
-public class IsLikeEscape<T> extends AbstractSingleValueCondition<T> {
+public class IsLikeEscape<T> extends AbstractSingleValueCondition<T>
+        implements AbstractSingleValueCondition.Filterable<T>, AbstractSingleValueCondition.Mappable<T> {
     private static final IsLikeEscape<?> EMPTY = new IsLikeEscape<Object>(-1, null) {
         @Override
         public Object value() {
@@ -354,6 +355,7 @@ public class IsLikeEscape<T> extends AbstractSingleValueCondition<T> {
         return filterSupport(predicate, IsLikeEscape::empty, this);
     }
 
+    @Override
     public <R> IsLikeEscape<R> map(Function<? super T, ? extends R> mapper) {
         return mapSupport(mapper, v -> new IsLikeEscape<>(v, escapeCharacter), IsLikeEscape::empty);
     }
@@ -374,4 +376,5 @@ Important notes:
 2. The class constructor accepts an escape character that will be rendered into an ESCAPE phrase
 3. The class overrides `renderCondition` and changes the library generated `FragmentAndParameters` to add the ESCAPE
    phrase. **This is the key to what's needed to implement a custom condition.**
-4. The class provides `map` and `filter` functions as is expected for any condition in the library
+4. The class implements `Filterable` and `Mappable` to provide `filter` and `map` functions as is expected for most
+   conditions in the library
