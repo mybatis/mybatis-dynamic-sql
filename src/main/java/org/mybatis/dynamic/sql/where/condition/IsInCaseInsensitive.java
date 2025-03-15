@@ -20,7 +20,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 import org.mybatis.dynamic.sql.AbstractListValueCondition;
 import org.mybatis.dynamic.sql.render.RenderingContext;
@@ -39,7 +38,7 @@ public class IsInCaseInsensitive<T> extends AbstractListValueCondition<T>
     }
 
     protected IsInCaseInsensitive(Collection<T> values) {
-        super(values.stream().map(StringUtilities::upperCaseIfPossible).collect(Collectors.toList()));
+        super(values.stream().map(StringUtilities::upperCaseIfPossible).toList());
     }
 
     @Override
