@@ -38,7 +38,7 @@ public class IsInCaseInsensitive<T> extends AbstractListValueCondition<T>
     }
 
     protected IsInCaseInsensitive(Collection<T> values) {
-        super(values);
+        super(values.stream().map(StringUtilities::upperCaseIfPossible).toList());
     }
 
     @Override
@@ -57,19 +57,6 @@ public class IsInCaseInsensitive<T> extends AbstractListValueCondition<T>
         return filterSupport(predicate, IsInCaseInsensitive::new, this, IsInCaseInsensitive::empty);
     }
 
-    /**
-     * If renderable, apply the mapping to the value and return a new condition with the new value. Else return a
-     * condition that will not render (this).
-     *
-     * <p>This function DOES NOT automatically transform values to uppercase, so it potentially creates a
-     * case-sensitive query. For String conditions you can use {@link StringUtilities#mapToUpperCase(Function)}
-     * to add an uppercase transform after your mapping function.
-     *
-     * @param mapper a mapping function to apply to the value, if renderable
-     * @param <R> type of the new condition
-     * @return a new condition with the result of applying the mapper to the value of this condition,
-     *     if renderable, otherwise a condition that will not render.
-     */
     @Override
     public <R> IsInCaseInsensitive<R> map(Function<? super T, ? extends R> mapper) {
         return mapSupport(mapper, IsInCaseInsensitive::new, IsInCaseInsensitive::empty);
@@ -80,7 +67,6 @@ public class IsInCaseInsensitive<T> extends AbstractListValueCondition<T>
     }
 
     public static IsInCaseInsensitive<String> of(Collection<String> values) {
-        // Keep the null safe upper case utility for backwards compatibility in case someone passes in a null
-        return new IsInCaseInsensitive<>(values.stream().map(StringUtilities::safelyUpperCase).toList());
+        return new IsInCaseInsensitive<>(values);
     }
 }

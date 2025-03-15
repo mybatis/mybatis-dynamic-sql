@@ -39,7 +39,7 @@ public class IsNotInCaseInsensitiveWhenPresent<T> extends AbstractListValueCondi
     }
 
     protected IsNotInCaseInsensitiveWhenPresent(Collection<T> values) {
-        super(values);
+        super(values.stream().filter(Objects::nonNull).map(StringUtilities::upperCaseIfPossible).toList());
     }
 
     @Override
@@ -53,19 +53,6 @@ public class IsNotInCaseInsensitiveWhenPresent<T> extends AbstractListValueCondi
                 this, IsNotInCaseInsensitiveWhenPresent::empty);
     }
 
-    /**
-     * If renderable, apply the mapping to the value and return a new condition with the new value. Else return a
-     * condition that will not render (this).
-     *
-     * <p>This function DOES NOT automatically transform values to uppercase, so it potentially creates a
-     * case-sensitive query. For String conditions you can use {@link StringUtilities#mapToUpperCase(Function)}
-     * to add an uppercase transform after your mapping function.
-     *
-     * @param mapper a mapping function to apply to the value, if renderable
-     * @param <R> type of the new condition
-     * @return a new condition with the result of applying the mapper to the value of this condition,
-     *     if renderable, otherwise a condition that will not render.
-     */
     @Override
     public <R> IsNotInCaseInsensitiveWhenPresent<R> map(Function<? super T, ? extends R> mapper) {
         return mapSupport(mapper, IsNotInCaseInsensitiveWhenPresent::new, IsNotInCaseInsensitiveWhenPresent::empty);
@@ -76,7 +63,6 @@ public class IsNotInCaseInsensitiveWhenPresent<T> extends AbstractListValueCondi
     }
 
     public static IsNotInCaseInsensitiveWhenPresent<String> of(Collection<@Nullable String> values) {
-        return new IsNotInCaseInsensitiveWhenPresent<>(
-                values.stream().filter(Objects::nonNull).map(String::toUpperCase).toList());
+        return new IsNotInCaseInsensitiveWhenPresent<>(values);
     }
 }

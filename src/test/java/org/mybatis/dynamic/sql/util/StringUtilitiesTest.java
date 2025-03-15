@@ -38,4 +38,16 @@ class StringUtilitiesTest {
         String input = "USER%NAME%3";
         assertThat(StringUtilities.toCamelCase(input)).isEqualTo("userName3");
     }
+
+    @Test
+    void testUpperCaseInteger() {
+        Integer i = StringUtilities.upperCaseIfPossible(3);
+        assertThat(i).isEqualTo(3);
+    }
+
+    @Test
+    void testUpperCaseString() {
+        String i = StringUtilities.upperCaseIfPossible("fred");
+        assertThat(i).isEqualTo("FRED");
+    }
 }
