@@ -15,8 +15,6 @@
  */
 package org.mybatis.dynamic.sql.util;
 
-import java.util.function.Function;
-
 import org.jspecify.annotations.Nullable;
 
 public interface StringUtilities {
@@ -62,7 +60,13 @@ public interface StringUtilities {
         return "'" + escaped + "'"; //$NON-NLS-1$ //$NON-NLS-2$
     }
 
-    static Function<String, String> mapToUpperCase(Function<String, String> f) {
-        return f.andThen(String::toUpperCase);
+    static <T> T upperCaseIfPossible(T value) {
+        if (value instanceof String) {
+            @SuppressWarnings("unchecked")
+            T t = (T) safelyUpperCase((String) value);
+            return t;
+        }
+
+        return value;
     }
 }

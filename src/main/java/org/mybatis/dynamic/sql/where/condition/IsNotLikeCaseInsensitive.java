@@ -44,7 +44,7 @@ public class IsNotLikeCaseInsensitive<T> extends AbstractSingleValueCondition<T>
     }
 
     protected IsNotLikeCaseInsensitive(T value) {
-        super(value);
+        super(StringUtilities.upperCaseIfPossible(value));
     }
 
     @Override
@@ -57,26 +57,12 @@ public class IsNotLikeCaseInsensitive<T> extends AbstractSingleValueCondition<T>
         return filterSupport(predicate, IsNotLikeCaseInsensitive::empty, this);
     }
 
-    /**
-     * If renderable, apply the mapping to the value and return a new condition with the new value. Else return a
-     * condition that will not render (this).
-     *
-     * <p>This function DOES NOT automatically transform values to uppercase, so it potentially creates a
-     * case-sensitive query. For String conditions you can use {@link StringUtilities#mapToUpperCase(Function)}
-     * to add an uppercase transform after your mapping function.
-     *
-     * @param mapper a mapping function to apply to the value, if renderable
-     * @param <R> type of the new condition
-     * @return a new condition with the result of applying the mapper to the value of this condition,
-     *     if renderable, otherwise a condition that will not render.
-     */
     @Override
     public <R> IsNotLikeCaseInsensitive<R> map(Function<? super T, ? extends R> mapper) {
         return mapSupport(mapper, IsNotLikeCaseInsensitive::new, IsNotLikeCaseInsensitive::empty);
     }
 
     public static IsNotLikeCaseInsensitive<String> of(String value) {
-        // Keep the null safe upper case utility for backwards compatibility in case someone passes in a null
-        return new IsNotLikeCaseInsensitive<>(StringUtilities.safelyUpperCase(value));
+        return new IsNotLikeCaseInsensitive<>(value);
     }
 }

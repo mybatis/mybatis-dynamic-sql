@@ -24,7 +24,6 @@ import java.util.Objects;
 
 import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.SqlBuilder;
-import org.mybatis.dynamic.sql.util.StringUtilities;
 
 class FilterAndMapTest {
     @Test
@@ -544,30 +543,16 @@ class FilterAndMapTest {
     }
 
     @Test
-    void testIsInCaseInsensitiveWhenPresentMap() {
-        var cond = SqlBuilder.isInCaseInsensitiveWhenPresent("Fred", "Wilma");
-        var mapped = cond.map(s -> s + " Flintstone");
-        assertThat(mapped.values().toList()).containsExactly("FRED Flintstone", "WILMA Flintstone");
-    }
-
-    @Test
     void testIsInCaseInsensitiveWhenPresentMapCaseInsensitive() {
         var cond = SqlBuilder.isInCaseInsensitiveWhenPresent("Fred", "Wilma");
-        var mapped = cond.map(StringUtilities.mapToUpperCase(s -> s + " Flintstone"));
-        assertThat(mapped.values().toList()).containsExactly("FRED FLINTSTONE", "WILMA FLINTSTONE");
-    }
-
-    @Test
-    void testIsNotInCaseInsensitiveWhenPresentMap() {
-        var cond = SqlBuilder.isNotInCaseInsensitiveWhenPresent("Fred", "Wilma");
         var mapped = cond.map(s -> s + " Flintstone");
-        assertThat(mapped.values().toList()).containsExactly("FRED Flintstone", "WILMA Flintstone");
+        assertThat(mapped.values().toList()).containsExactly("FRED FLINTSTONE", "WILMA FLINTSTONE");
     }
 
     @Test
     void testIsNotInCaseInsensitiveWhenPresentMapCaseInsensitive() {
         var cond = SqlBuilder.isNotInCaseInsensitiveWhenPresent("Fred", "Wilma");
-        var mapped = cond.map(StringUtilities.mapToUpperCase(s -> s + " Flintstone"));
+        var mapped = cond.map(s -> s + " Flintstone");
         assertThat(mapped.values().toList()).containsExactly("FRED FLINTSTONE", "WILMA FLINTSTONE");
     }
 }
