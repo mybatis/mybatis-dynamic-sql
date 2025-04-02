@@ -166,13 +166,5 @@ class MapToRowTest {
         assertThat(batchInsert.getInsertStatementSQL()).isEqualTo(expected);
     }
 
-    static class Record {
-        public Record(Integer id1, Integer id2) {
-            this.id1 = id1;
-            this.id2 = id2;
-        }
-
-        public Integer id1;
-        public Integer id2;
-    }
+    record Record(Integer id1, Integer id2) { }
 }

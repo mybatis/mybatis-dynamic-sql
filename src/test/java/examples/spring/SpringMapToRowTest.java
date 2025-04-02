@@ -122,7 +122,7 @@ class SpringMapToRowTest {
         assertThat(records).hasSize(3);
     }
 
-    static RowMapper<CompoundKeyRow> rowMapper =
+    static final RowMapper<CompoundKeyRow> rowMapper =
             (rs, i) -> {
                 CompoundKeyRow answer = new CompoundKeyRow();
                 answer.setId1(rs.getInt("ID1"));

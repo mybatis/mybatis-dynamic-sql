@@ -779,7 +779,7 @@ class PersonTemplateTest {
             };
 
 
-    static RowMapper<PersonRecord> personRowMapper =
+    static final RowMapper<PersonRecord> personRowMapper =
             (rs, i) -> {
                 PersonRecord row = new PersonRecord();
                 row.setId(rs.getInt(1));

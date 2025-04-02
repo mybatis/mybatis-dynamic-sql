@@ -17,20 +17,9 @@ package org.mybatis.dynamic.sql.select;
 
 import java.util.Objects;
 
-public class UnionQuery {
-    private final String connector;
-    private final SelectModel selectModel;
-
+public record UnionQuery(String connector, SelectModel selectModel) {
     public UnionQuery(String connector, SelectModel selectModel) {
         this.connector = Objects.requireNonNull(connector);
         this.selectModel = Objects.requireNonNull(selectModel);
-    }
-
-    public String connector() {
-        return connector;
-    }
-
-    public SelectModel selectModel() {
-        return selectModel;
     }
 }

@@ -19,13 +19,14 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.mybatis.dynamic.sql.SqlTable
 import org.mybatis.dynamic.sql.render.RenderingStrategies
+import org.mybatis.dynamic.sql.util.kotlin.elements.column
 
 class ModelBuilderTest {
     class Table : SqlTable("Table")
 
     val table = Table()
-    val id = table.column<Int>("id")
-    val description = table.column<String>("description")
+    val id = table.column<Int>(name = "id")
+    val description = table.column<String>(name = "description")
 
     @Test
     fun testSelectBuilder() {
