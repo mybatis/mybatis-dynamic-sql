@@ -13,6 +13,7 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
+@NullMarked
 package examples.spring;
 
-public record AddressRecord (Integer id, String streetAddress, String city, String state) { }
+import org.jspecify.annotations.NullMarked;
