@@ -792,7 +792,7 @@ class AnimalDataTest {
 
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
-                    .where(animalName, isNotInCaseInsensitive((String)null))
+                    .where(animalName, isNotInCaseInsensitive((String) null))
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
 
