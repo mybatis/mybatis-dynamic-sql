@@ -19,14 +19,15 @@ import static java.util.function.Predicate.not;
 
 import java.util.Objects;
 
+import org.jspecify.annotations.Nullable;
 import org.mybatis.dynamic.sql.SqlBuilder;
 import org.mybatis.dynamic.sql.where.condition.IsIn;
 
 public class MyInCondition {
-    public static IsIn<String> isIn(String...values) {
+    public static IsIn<String> isIn(@Nullable String...values) {
         return SqlBuilder.isIn(values)
                 .filter(Objects::nonNull)
-                .map((String::trim))
+                .map(String::trim)
                 .filter(not(String::isEmpty));
     }
 }

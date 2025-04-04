@@ -69,14 +69,11 @@ class CommonSelectMapperTest {
         sqlSessionFactory = new SqlSessionFactoryBuilder().build(config);
     }
 
-    private final Function<Map<String, Object>, AnimalData> rowMapper = map -> {
-        AnimalData ad = new AnimalData();
-        ad.setId((Integer) map.get("ID"));
-        ad.setAnimalName((String) map.get("ANIMAL_NAME"));
-        ad.setBodyWeight((Double) map.get("BODY_WEIGHT"));
-        ad.setBrainWeight((Double) map.get("BRAIN_WEIGHT"));
-        return ad;
-    };
+    private final Function<Map<String, Object>, AnimalData> rowMapper = map -> new AnimalData(
+            (Integer) map.get("ID"),
+            (String) map.get("ANIMAL_NAME"),
+            (Double) map.get("BRAIN_WEIGHT"),
+            (Double) map.get("BODY_WEIGHT"));
 
     @Test
     void testGeneralSelectOne() {
@@ -106,10 +103,10 @@ class CommonSelectMapperTest {
 
             AnimalData animal = mapper.selectOne(selectStatement, rowMapper);
 
-            assertThat(animal.getId()).isEqualTo(1);
-            assertThat(animal.getAnimalName()).isEqualTo("Lesser short-tailed shrew");
-            assertThat(animal.getBodyWeight()).isEqualTo(0.14);
-            assertThat(animal.getBrainWeight()).isEqualTo(0.005);
+            assertThat(animal.id()).isEqualTo(1);
+            assertThat(animal.animalName()).isEqualTo("Lesser short-tailed shrew");
+            assertThat(animal.bodyWeight()).isEqualTo(0.14);
+            assertThat(animal.brainWeight()).isEqualTo(0.005);
         }
     }
 
@@ -148,14 +145,14 @@ class CommonSelectMapperTest {
 
             assertThat(rows).hasSize(2);
 
-            assertThat(rows.get(0).getId()).isEqualTo(1);
-            assertThat(rows.get(0).getAnimalName()).isEqualTo("Lesser short-tailed shrew");
-            assertThat(rows.get(0).getBodyWeight()).isEqualTo(0.14);
-            assertThat(rows.get(0).getBrainWeight()).isEqualTo(0.005);
-            assertThat(rows.get(1).getId()).isEqualTo(2);
-            assertThat(rows.get(1).getAnimalName()).isEqualTo("Little brown bat");
-            assertThat(rows.get(1).getBodyWeight()).isEqualTo(0.25);
-            assertThat(rows.get(1).getBrainWeight()).isEqualTo(0.01);
+            assertThat(rows.get(0).id()).isEqualTo(1);
+            assertThat(rows.get(0).animalName()).isEqualTo("Lesser short-tailed shrew");
+            assertThat(rows.get(0).bodyWeight()).isEqualTo(0.14);
+            assertThat(rows.get(0).brainWeight()).isEqualTo(0.005);
+            assertThat(rows.get(1).id()).isEqualTo(2);
+            assertThat(rows.get(1).animalName()).isEqualTo("Little brown bat");
+            assertThat(rows.get(1).bodyWeight()).isEqualTo(0.25);
+            assertThat(rows.get(1).brainWeight()).isEqualTo(0.01);
         }
     }
 

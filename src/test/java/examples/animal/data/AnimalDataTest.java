@@ -46,6 +46,7 @@ import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.BasicColumn;
@@ -103,7 +104,7 @@ class AnimalDataTest {
 
             assertAll(
                     () -> assertThat(animals).hasSize(65),
-                    () -> assertThat(animals).first().isNotNull().extracting(AnimalData::getId).isEqualTo(1)
+                    () -> assertThat(animals).first().isNotNull().extracting(AnimalData::id).isEqualTo(1)
             );
         }
     }
@@ -121,7 +122,7 @@ class AnimalDataTest {
 
             assertAll(
                     () -> assertThat(animals).hasSize(65),
-                    () -> assertThat(animals).first().isNotNull().extracting(AnimalData::getId).isEqualTo(1)
+                    () -> assertThat(animals).first().isNotNull().extracting(AnimalData::id).isEqualTo(1)
             );
         }
     }
@@ -140,7 +141,7 @@ class AnimalDataTest {
             List<AnimalData> animals = mapper.selectManyWithRowBounds(selectStatement, rowBounds);
             assertAll(
                     () -> assertThat(animals).hasSize(6),
-                    () -> assertThat(animals).first().isNotNull().extracting(AnimalData::getId).isEqualTo(5)
+                    () -> assertThat(animals).first().isNotNull().extracting(AnimalData::id).isEqualTo(5)
             );
         }
     }
@@ -157,7 +158,7 @@ class AnimalDataTest {
             List<AnimalData> animals = mapper.selectMany(selectStatement);
             assertAll(
                     () -> assertThat(animals).hasSize(65),
-                    () -> assertThat(animals).first().isNotNull().extracting(AnimalData::getId).isEqualTo(65)
+                    () -> assertThat(animals).first().isNotNull().extracting(AnimalData::id).isEqualTo(65)
             );
         }
     }
@@ -196,7 +197,7 @@ class AnimalDataTest {
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select * from AnimalData order by id DESC"),
                     () -> assertThat(animals).hasSize(65),
                     () -> assertThat(animals).first().isNotNull()
-                            .extracting(AnimalData::getId).isEqualTo(65)
+                            .extracting(AnimalData::id).isEqualTo(65)
             );
         }
     }
@@ -214,7 +215,7 @@ class AnimalDataTest {
             assertAll(
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select ad.* from AnimalData ad order by id DESC"),
                     () -> assertThat(animals).hasSize(65),
-                    () -> assertThat(animals).first().isNotNull().extracting(AnimalData::getId).isEqualTo(65)
+                    () -> assertThat(animals).first().isNotNull().extracting(AnimalData::id).isEqualTo(65)
             );
         }
     }
@@ -380,7 +381,7 @@ class AnimalDataTest {
             assertThat(whereClause).hasValueSatisfying(wc -> {
                 List<AnimalData> animals = mapper.selectWithWhereClauseLimitAndOffset(wc, 5, 15);
                 assertThat(animals).hasSize(5);
-                assertThat(animals.get(0).getId()).isEqualTo(16);
+                assertThat(animals.get(0).id()).isEqualTo(16);
             });
         }
     }
@@ -398,7 +399,7 @@ class AnimalDataTest {
             assertThat(whereClause).hasValueSatisfying(wc -> {
                 List<AnimalData> animals = mapper.selectWithWhereClauseAliasLimitAndOffset(wc, 3, 24);
                 assertThat(animals).hasSize(3);
-                assertThat(animals.get(0).getId()).isEqualTo(25);
+                assertThat(animals.get(0).id()).isEqualTo(25);
             });
 
         }
@@ -710,14 +711,14 @@ class AnimalDataTest {
 
     @Test
     void testInConditionWithEventuallyEmptyListForceRendering() {
-        List<Integer> inValues = new ArrayList<>();
+        List<@Nullable Integer> inValues = new ArrayList<>();
         inValues.add(null);
         inValues.add(22);
         inValues.add(null);
 
         SelectModel selectModel = select(id, animalName, bodyWeight, brainWeight)
                 .from(animalData)
-                .where(id, isInWhenPresent(inValues).filter(Objects::nonNull).filter(i -> i != 22))
+                .where(id, isInWhenPresent(inValues).filter(i -> i != 22))
                 .build();
 
         assertThatExceptionOfType(NonRenderingWhereClauseException.class).isThrownBy(() ->
@@ -864,8 +865,8 @@ class AnimalDataTest {
 
             assertAll(
                     () -> assertThat(animals).hasSize(2),
-                    () -> assertThat(animals).element(0).isNotNull().extracting(AnimalData::getAnimalName).isEqualTo("Ground squirrel"),
-                    () -> assertThat(animals).element(1).isNotNull().extracting(AnimalData::getAnimalName).isEqualTo("Artic ground squirrel")
+                    () -> assertThat(animals).element(0).isNotNull().extracting(AnimalData::animalName).isEqualTo("Ground squirrel"),
+                    () -> assertThat(animals).element(1).isNotNull().extracting(AnimalData::animalName).isEqualTo("Artic ground squirrel")
             );
         }
     }
@@ -1587,11 +1588,9 @@ class AnimalDataTest {
     void testUpdate() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
-            AnimalData row = new AnimalData();
-            row.setBodyWeight(2.6);
 
             UpdateStatementProvider updateStatement = update(animalData)
-                    .set(bodyWeight).equalTo(row.getBodyWeight())
+                    .set(bodyWeight).equalTo(2.6)
                     .set(animalName).equalToNull()
                     .where(id, isIn(1, 5, 7))
                     .or(id, isIn(2, 6, 8), and(animalName, isLike("%bat")))
@@ -1645,11 +1644,7 @@ class AnimalDataTest {
     void testInsert() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
-            AnimalData row = new AnimalData();
-            row.setId(100);
-            row.setAnimalName("Old Shep");
-            row.setBodyWeight(22.5);
-            row.setBrainWeight(1.2);
+            AnimalData row = new AnimalData(100, "Old Shep", 22.5, 1.2);
 
             InsertStatementProvider<AnimalData> insertStatement = insert(row)
                     .into(animalData)
@@ -1669,11 +1664,7 @@ class AnimalDataTest {
     void testInsertNull() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
-            AnimalData row = new AnimalData();
-            row.setId(100);
-            row.setAnimalName("Old Shep");
-            row.setBodyWeight(22.5);
-            row.setBrainWeight(1.2);
+            AnimalData row = new AnimalData(100, "Old Shep", 22.5, 1.2);
 
             InsertStatementProvider<AnimalData> insertStatement = insert(row)
                     .into(animalData)
@@ -1693,18 +1684,10 @@ class AnimalDataTest {
     void testBulkInsert() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession(ExecutorType.BATCH)) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
-            List<AnimalData> records = new ArrayList<>();
-            AnimalData row = new AnimalData();
-            row.setId(100);
-            row.setAnimalName("Old Shep");
-            row.setBodyWeight(22.5);
-            records.add(row);
-
-            row = new AnimalData();
-            row.setId(101);
-            row.setAnimalName("Old Dan");
-            row.setBodyWeight(22.5);
-            records.add(row);
+            List<AnimalData> records = List.of(
+                    new AnimalData(100, "Old Shep", 0.0, 22.5),
+                    new AnimalData(101, "Old Dan", 0.0, 22.5)
+            );
 
             BatchInsert<AnimalData> batchInsert = insertBatch(records)
                     .into(animalData)
@@ -1730,10 +1713,10 @@ class AnimalDataTest {
             assertAll(
                     () -> assertThat(animals).hasSize(2),
                     () -> assertThat(animals).element(0).isNotNull()
-                            .extracting(AnimalData::getId, AnimalData::getBrainWeight, AnimalData::getAnimalName)
+                            .extracting(AnimalData::id, AnimalData::brainWeight, AnimalData::animalName)
                             .containsExactly(100, 1.2, null),
                     () -> assertThat(animals).element(1).isNotNull()
-                            .extracting(AnimalData::getId, AnimalData::getBrainWeight, AnimalData::getAnimalName)
+                            .extracting(AnimalData::id, AnimalData::brainWeight, AnimalData::animalName)
                             .containsExactly(101, 1.2, null)
             );
         }
@@ -1743,18 +1726,10 @@ class AnimalDataTest {
     void testBulkInsert2() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession(ExecutorType.BATCH)) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
-            List<AnimalData> records = new ArrayList<>();
-            AnimalData row = new AnimalData();
-            row.setId(100);
-            row.setAnimalName("Old Shep");
-            row.setBodyWeight(22.5);
-            records.add(row);
-
-            row = new AnimalData();
-            row.setId(101);
-            row.setAnimalName("Old Dan");
-            row.setBodyWeight(22.5);
-            records.add(row);
+            List<AnimalData> records = List.of(
+                    new AnimalData(100, "Old Shep", 0.0, 22.5),
+                    new AnimalData(101, "Old Dan", 0.0, 22.5)
+            );
 
             BatchInsert<AnimalData> batchInsert = insertBatch(records)
                     .into(animalData)
@@ -1780,10 +1755,10 @@ class AnimalDataTest {
             assertAll(
                     () -> assertThat(animals).hasSize(2),
                     () -> assertThat(animals).element(0).isNotNull()
-                            .extracting(AnimalData::getId, AnimalData::getBrainWeight, AnimalData::getAnimalName)
+                            .extracting(AnimalData::id, AnimalData::brainWeight, AnimalData::animalName)
                             .containsExactly(100, 1.2, "Old Fred"),
                     () -> assertThat(animals).element(1).isNotNull()
-                            .extracting(AnimalData::getId, AnimalData::getBrainWeight, AnimalData::getAnimalName)
+                            .extracting(AnimalData::id, AnimalData::brainWeight, AnimalData::animalName)
                             .containsExactly(101, 1.2, "Old Fred")
             );
         }
@@ -1806,7 +1781,7 @@ class AnimalDataTest {
 
             assertAll(
                     () -> assertThat(rows).hasSize(14),
-                    () -> assertThat(rows).first().isNotNull().extracting(AnimalData::getId).isEqualTo(65)
+                    () -> assertThat(rows).first().isNotNull().extracting(AnimalData::id).isEqualTo(65)
             );
         }
     }
@@ -1828,7 +1803,7 @@ class AnimalDataTest {
 
             assertAll(
                     () -> assertThat(rows).hasSize(14),
-                    () -> assertThat(rows).first().isNotNull().extracting(AnimalData::getId).isEqualTo(65)
+                    () -> assertThat(rows).first().isNotNull().extracting(AnimalData::id).isEqualTo(65)
             );
         }
     }
@@ -1944,7 +1919,7 @@ class AnimalDataTest {
             assertAll(
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select a.id, a.animal_name, a.body_weight, a.brain_weight from AnimalData a where a.brain_weight = (select max(b.brain_weight) from AnimalData b)"),
                     () -> assertThat(records).hasSize(1),
-                    () -> assertThat(records).first().isNotNull().extracting(AnimalData::getAnimalName).isEqualTo("Brachiosaurus")
+                    () -> assertThat(records).first().isNotNull().extracting(AnimalData::animalName).isEqualTo("Brachiosaurus")
             );
         }
     }
@@ -2004,7 +1979,7 @@ class AnimalDataTest {
             assertAll(
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select a.id, a.animal_name, a.body_weight, a.brain_weight from AnimalData a where a.brain_weight <> (select min(b.brain_weight) from AnimalData b) order by animal_name"),
                     () -> assertThat(records).hasSize(64),
-                    () -> assertThat(records).first().isNotNull().extracting(AnimalData::getAnimalName).isEqualTo("African elephant")
+                    () -> assertThat(records).first().isNotNull().extracting(AnimalData::animalName).isEqualTo("African elephant")
             );
         }
     }
@@ -2026,7 +2001,7 @@ class AnimalDataTest {
             assertAll(
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select id, animal_name, body_weight, brain_weight from AnimalData where brain_weight <> (select min(brain_weight) from AnimalData) order by animal_name"),
                     () -> assertThat(records).hasSize(64),
-                    () -> assertThat(records).first().isNotNull().extracting(AnimalData::getAnimalName).isEqualTo("African elephant")
+                    () -> assertThat(records).first().isNotNull().extracting(AnimalData::animalName).isEqualTo("African elephant")
             );
         }
     }
@@ -2335,13 +2310,13 @@ class AnimalDataTest {
             assertThat(rows).isEqualTo(1);
 
             AnimalData row = MyBatis3Utils.selectOne(mapper::selectOne,
-                    BasicColumn.columnList(id, bodyWeight, brainWeight),
+                    BasicColumn.columnList(id, animalName, bodyWeight, brainWeight),
                     animalData,
                     c -> c.where(id, isEqualTo(1))
             );
 
-            assertThat(row.getBodyWeight()).isEqualTo(-2.86);
-            assertThat(row.getBrainWeight()).isEqualTo(2.005);
+            assertThat(row.bodyWeight()).isEqualTo(-2.86);
+            assertThat(row.brainWeight()).isEqualTo(2.005);
         }
     }
 
@@ -2368,13 +2343,13 @@ class AnimalDataTest {
             assertThat(rows).isEqualTo(1);
 
             AnimalData row = MyBatis3Utils.selectOne(mapper::selectOne,
-                    BasicColumn.columnList(id, bodyWeight, brainWeight),
+                    BasicColumn.columnList(id, animalName, bodyWeight, brainWeight),
                     animalData,
                     c -> c.where(id, isEqualTo(1))
             );
 
-            assertThat(row.getBodyWeight()).isEqualTo(0.42, within(.001));
-            assertThat(row.getBrainWeight()).isEqualTo(.0025);
+            assertThat(row.bodyWeight()).isEqualTo(0.42, within(.001));
+            assertThat(row.brainWeight()).isEqualTo(.0025);
         }
     }
 }
