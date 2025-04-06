@@ -20,7 +20,6 @@ import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import org.jspecify.annotations.Nullable;
 import org.mybatis.dynamic.sql.AbstractTwoValueCondition;
 
 public class IsBetween<T> extends AbstractTwoValueCondition<T>
@@ -86,10 +85,6 @@ public class IsBetween<T> extends AbstractTwoValueCondition<T>
         return new Builder<>(value1);
     }
 
-    public static <T> WhenPresentBuilder<T> isBetweenWhenPresent(@Nullable T value1) {
-        return new WhenPresentBuilder<>(value1);
-    }
-
     public static class Builder<T> extends AndGatherer<T, IsBetween<T>> {
         private Builder(T value1) {
             super(value1);
@@ -98,21 +93,6 @@ public class IsBetween<T> extends AbstractTwoValueCondition<T>
         @Override
         protected IsBetween<T> build(T value2) {
             return new IsBetween<>(value1, value2);
-        }
-    }
-
-    public static class WhenPresentBuilder<T> extends AndWhenPresentGatherer<T, IsBetween<T>> {
-        private WhenPresentBuilder(@Nullable T value1) {
-            super(value1);
-        }
-
-        @Override
-        protected IsBetween<T> build(@Nullable T value2) {
-            if (value1 == null || value2 == null) {
-                return empty();
-            } else {
-                return new IsBetween<>(value1, value2);
-            }
         }
     }
 }

@@ -51,14 +51,18 @@ import org.mybatis.dynamic.sql.util.kotlin.GroupingCriteriaReceiver
 import org.mybatis.dynamic.sql.util.kotlin.KotlinSubQueryBuilder
 import org.mybatis.dynamic.sql.util.kotlin.invalidIfNull
 import org.mybatis.dynamic.sql.where.condition.IsBetween
+import org.mybatis.dynamic.sql.where.condition.IsBetweenWhenPresent
 import org.mybatis.dynamic.sql.where.condition.IsEqualTo
 import org.mybatis.dynamic.sql.where.condition.IsEqualToColumn
+import org.mybatis.dynamic.sql.where.condition.IsEqualToWhenPresent
 import org.mybatis.dynamic.sql.where.condition.IsEqualToWithSubselect
 import org.mybatis.dynamic.sql.where.condition.IsGreaterThan
 import org.mybatis.dynamic.sql.where.condition.IsGreaterThanColumn
 import org.mybatis.dynamic.sql.where.condition.IsGreaterThanOrEqualTo
 import org.mybatis.dynamic.sql.where.condition.IsGreaterThanOrEqualToColumn
+import org.mybatis.dynamic.sql.where.condition.IsGreaterThanOrEqualToWhenPresent
 import org.mybatis.dynamic.sql.where.condition.IsGreaterThanOrEqualToWithSubselect
+import org.mybatis.dynamic.sql.where.condition.IsGreaterThanWhenPresent
 import org.mybatis.dynamic.sql.where.condition.IsGreaterThanWithSubselect
 import org.mybatis.dynamic.sql.where.condition.IsIn
 import org.mybatis.dynamic.sql.where.condition.IsInCaseInsensitive
@@ -69,13 +73,19 @@ import org.mybatis.dynamic.sql.where.condition.IsLessThan
 import org.mybatis.dynamic.sql.where.condition.IsLessThanColumn
 import org.mybatis.dynamic.sql.where.condition.IsLessThanOrEqualTo
 import org.mybatis.dynamic.sql.where.condition.IsLessThanOrEqualToColumn
+import org.mybatis.dynamic.sql.where.condition.IsLessThanOrEqualToWhenPresent
 import org.mybatis.dynamic.sql.where.condition.IsLessThanOrEqualToWithSubselect
+import org.mybatis.dynamic.sql.where.condition.IsLessThanWhenPresent
 import org.mybatis.dynamic.sql.where.condition.IsLessThanWithSubselect
 import org.mybatis.dynamic.sql.where.condition.IsLike
 import org.mybatis.dynamic.sql.where.condition.IsLikeCaseInsensitive
+import org.mybatis.dynamic.sql.where.condition.IsLikeCaseInsensitiveWhenPresent
+import org.mybatis.dynamic.sql.where.condition.IsLikeWhenPresent
 import org.mybatis.dynamic.sql.where.condition.IsNotBetween
+import org.mybatis.dynamic.sql.where.condition.IsNotBetweenWhenPresent
 import org.mybatis.dynamic.sql.where.condition.IsNotEqualTo
 import org.mybatis.dynamic.sql.where.condition.IsNotEqualToColumn
+import org.mybatis.dynamic.sql.where.condition.IsNotEqualToWhenPresent
 import org.mybatis.dynamic.sql.where.condition.IsNotEqualToWithSubselect
 import org.mybatis.dynamic.sql.where.condition.IsNotIn
 import org.mybatis.dynamic.sql.where.condition.IsNotInCaseInsensitive
@@ -84,6 +94,8 @@ import org.mybatis.dynamic.sql.where.condition.IsNotInWhenPresent
 import org.mybatis.dynamic.sql.where.condition.IsNotInWithSubselect
 import org.mybatis.dynamic.sql.where.condition.IsNotLike
 import org.mybatis.dynamic.sql.where.condition.IsNotLikeCaseInsensitive
+import org.mybatis.dynamic.sql.where.condition.IsNotLikeCaseInsensitiveWhenPresent
+import org.mybatis.dynamic.sql.where.condition.IsNotLikeWhenPresent
 import org.mybatis.dynamic.sql.where.condition.IsNotNull
 import org.mybatis.dynamic.sql.where.condition.IsNull
 
@@ -216,7 +228,7 @@ fun <T : Any> isEqualTo(subQuery: KotlinSubQueryBuilder.() -> Unit): IsEqualToWi
 
 fun <T : Any> isEqualTo(column: BasicColumn): IsEqualToColumn<T> = SqlBuilder.isEqualTo(column)
 
-fun <T : Any> isEqualToWhenPresent(value: T?): IsEqualTo<T> = SqlBuilder.isEqualToWhenPresent(value)
+fun <T : Any> isEqualToWhenPresent(value: T?): IsEqualToWhenPresent<T> = SqlBuilder.isEqualToWhenPresent(value)
 
 fun <T : Any> isNotEqualTo(value: T): IsNotEqualTo<T> = SqlBuilder.isNotEqualTo(value)
 
@@ -225,7 +237,8 @@ fun <T : Any> isNotEqualTo(subQuery: KotlinSubQueryBuilder.() -> Unit): IsNotEqu
 
 fun <T : Any> isNotEqualTo(column: BasicColumn): IsNotEqualToColumn<T> = SqlBuilder.isNotEqualTo(column)
 
-fun <T : Any> isNotEqualToWhenPresent(value: T?): IsNotEqualTo<T> = SqlBuilder.isNotEqualToWhenPresent(value)
+fun <T : Any> isNotEqualToWhenPresent(value: T?): IsNotEqualToWhenPresent<T> =
+    SqlBuilder.isNotEqualToWhenPresent(value)
 
 fun <T : Any> isGreaterThan(value: T): IsGreaterThan<T> = SqlBuilder.isGreaterThan(value)
 
@@ -234,7 +247,8 @@ fun <T : Any> isGreaterThan(subQuery: KotlinSubQueryBuilder.() -> Unit): IsGreat
 
 fun <T : Any> isGreaterThan(column: BasicColumn): IsGreaterThanColumn<T> = SqlBuilder.isGreaterThan(column)
 
-fun <T : Any> isGreaterThanWhenPresent(value: T?): IsGreaterThan<T> = SqlBuilder.isGreaterThanWhenPresent(value)
+fun <T : Any> isGreaterThanWhenPresent(value: T?): IsGreaterThanWhenPresent<T> =
+    SqlBuilder.isGreaterThanWhenPresent(value)
 
 fun <T : Any> isGreaterThanOrEqualTo(value: T): IsGreaterThanOrEqualTo<T> = SqlBuilder.isGreaterThanOrEqualTo(value)
 
@@ -244,7 +258,7 @@ fun <T : Any> isGreaterThanOrEqualTo(subQuery: KotlinSubQueryBuilder.() -> Unit)
 fun <T : Any> isGreaterThanOrEqualTo(column: BasicColumn): IsGreaterThanOrEqualToColumn<T> =
     SqlBuilder.isGreaterThanOrEqualTo(column)
 
-fun <T : Any> isGreaterThanOrEqualToWhenPresent(value: T?): IsGreaterThanOrEqualTo<T> =
+fun <T : Any> isGreaterThanOrEqualToWhenPresent(value: T?): IsGreaterThanOrEqualToWhenPresent<T> =
     SqlBuilder.isGreaterThanOrEqualToWhenPresent(value)
 
 fun <T : Any> isLessThan(value: T): IsLessThan<T> = SqlBuilder.isLessThan(value)
@@ -254,7 +268,7 @@ fun <T : Any> isLessThan(subQuery: KotlinSubQueryBuilder.() -> Unit): IsLessThan
 
 fun <T : Any> isLessThan(column: BasicColumn): IsLessThanColumn<T> = SqlBuilder.isLessThan(column)
 
-fun <T : Any> isLessThanWhenPresent(value: T?): IsLessThan<T> = SqlBuilder.isLessThanWhenPresent(value)
+fun <T : Any> isLessThanWhenPresent(value: T?): IsLessThanWhenPresent<T> = SqlBuilder.isLessThanWhenPresent(value)
 
 fun <T : Any> isLessThanOrEqualTo(value: T): IsLessThanOrEqualTo<T> = SqlBuilder.isLessThanOrEqualTo(value)
 
@@ -263,7 +277,7 @@ fun <T : Any> isLessThanOrEqualTo(subQuery: KotlinSubQueryBuilder.() -> Unit): I
 
 fun <T : Any> isLessThanOrEqualTo(column: BasicColumn): IsLessThanOrEqualToColumn<T> = SqlBuilder.isLessThanOrEqualTo(column)
 
-fun <T : Any> isLessThanOrEqualToWhenPresent(value: T?): IsLessThanOrEqualTo<T> =
+fun <T : Any> isLessThanOrEqualToWhenPresent(value: T?): IsLessThanOrEqualToWhenPresent<T> =
     SqlBuilder.isLessThanOrEqualToWhenPresent(value)
 
 fun <T : Any> isIn(vararg values: T): IsIn<T> = isIn(values.asList())
@@ -312,11 +326,11 @@ fun <T : Any> isNotBetweenWhenPresent(value1: T?): NotBetweenWhenPresentBuilder<
 // for string columns, but generic for columns with type handlers
 fun <T : Any> isLike(value: T): IsLike<T> = SqlBuilder.isLike(value)
 
-fun <T : Any> isLikeWhenPresent(value: T?): IsLike<T> = SqlBuilder.isLikeWhenPresent(value)
+fun <T : Any> isLikeWhenPresent(value: T?): IsLikeWhenPresent<T> = SqlBuilder.isLikeWhenPresent(value)
 
 fun <T : Any> isNotLike(value: T): IsNotLike<T> = SqlBuilder.isNotLike(value)
 
-fun <T : Any> isNotLikeWhenPresent(value: T?): IsNotLike<T> = SqlBuilder.isNotLikeWhenPresent(value)
+fun <T : Any> isNotLikeWhenPresent(value: T?): IsNotLikeWhenPresent<T> = SqlBuilder.isNotLikeWhenPresent(value)
 
 // shortcuts for booleans
 fun isTrue(): IsEqualTo<Boolean> = isEqualTo(true)
@@ -326,12 +340,12 @@ fun isFalse(): IsEqualTo<Boolean> = isEqualTo(false)
 // conditions for strings only
 fun isLikeCaseInsensitive(value: String): IsLikeCaseInsensitive<String> = SqlBuilder.isLikeCaseInsensitive(value)
 
-fun isLikeCaseInsensitiveWhenPresent(value: String?): IsLikeCaseInsensitive<String> =
+fun isLikeCaseInsensitiveWhenPresent(value: String?): IsLikeCaseInsensitiveWhenPresent<String> =
     SqlBuilder.isLikeCaseInsensitiveWhenPresent(value)
 
 fun isNotLikeCaseInsensitive(value: String): IsNotLikeCaseInsensitive<String> = SqlBuilder.isNotLikeCaseInsensitive(value)
 
-fun isNotLikeCaseInsensitiveWhenPresent(value: String?): IsNotLikeCaseInsensitive<String> =
+fun isNotLikeCaseInsensitiveWhenPresent(value: String?): IsNotLikeCaseInsensitiveWhenPresent<String> =
     SqlBuilder.isNotLikeCaseInsensitiveWhenPresent(value)
 
 fun isInCaseInsensitive(vararg values: String): IsInCaseInsensitive<String> = isInCaseInsensitive(values.asList())
@@ -400,7 +414,7 @@ class BetweenBuilder<T : Any>(private val value1: T) {
 }
 
 class BetweenWhenPresentBuilder<T : Any>(private val value1: T?) {
-    fun and(value2: T?): IsBetween<T> {
+    fun and(value2: T?): IsBetweenWhenPresent<T> {
         return SqlBuilder.isBetweenWhenPresent<T>(value1).and(value2)
     }
 }
@@ -410,7 +424,7 @@ class NotBetweenBuilder<T : Any>(private val value1: T) {
 }
 
 class NotBetweenWhenPresentBuilder<T : Any>(private val value1: T?) {
-    fun and(value2: T?): IsNotBetween<T> {
+    fun and(value2: T?): IsNotBetweenWhenPresent<T> {
         return SqlBuilder.isNotBetweenWhenPresent<T>(value1).and(value2)
     }
 }

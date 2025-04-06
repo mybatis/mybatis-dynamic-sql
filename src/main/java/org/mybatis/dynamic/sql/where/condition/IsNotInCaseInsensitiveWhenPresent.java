@@ -54,15 +54,20 @@ public class IsNotInCaseInsensitiveWhenPresent<T> extends AbstractListValueCondi
     }
 
     @Override
-    public <R> IsNotInCaseInsensitiveWhenPresent<R> map(Function<? super T, ? extends R> mapper) {
+    public <R> IsNotInCaseInsensitiveWhenPresent<R> map(Function<? super T, ? extends @Nullable R> mapper) {
         return mapSupport(mapper, IsNotInCaseInsensitiveWhenPresent::new, IsNotInCaseInsensitiveWhenPresent::empty);
     }
 
-    public static IsNotInCaseInsensitiveWhenPresent<String> of(@Nullable String... values) {
+    @SafeVarargs
+    public static <T> IsNotInCaseInsensitiveWhenPresent<T> of(@Nullable T... values) {
         return of(Arrays.asList(values));
     }
 
-    public static IsNotInCaseInsensitiveWhenPresent<String> of(Collection<@Nullable String> values) {
-        return new IsNotInCaseInsensitiveWhenPresent<>(values);
+    public static <T> IsNotInCaseInsensitiveWhenPresent<T> of(@Nullable Collection<@Nullable T> values) {
+        if (values == null || values.isEmpty()) {
+            return empty();
+        } else {
+            return new IsNotInCaseInsensitiveWhenPresent<>(values);
+        }
     }
 }

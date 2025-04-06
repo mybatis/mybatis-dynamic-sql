@@ -50,8 +50,8 @@ public class IsInWhenPresent<T> extends AbstractListValueCondition<T>
     }
 
     @Override
-    public <R> IsInWhenPresent<R> map(Function<? super T, ? extends R> mapper) {
-        return mapSupport(mapper, IsInWhenPresent::new, IsInWhenPresent::empty);
+    public <R> IsInWhenPresent<R> map(Function<? super T, ? extends @Nullable R> mapper) {
+        return mapSupport(mapper, IsInWhenPresent::of, IsInWhenPresent::empty);
     }
 
     @SafeVarargs
@@ -59,7 +59,11 @@ public class IsInWhenPresent<T> extends AbstractListValueCondition<T>
         return of(Arrays.asList(values));
     }
 
-    public static <T> IsInWhenPresent<T> of(Collection<@Nullable T> values) {
-        return new IsInWhenPresent<>(values);
+    public static <T> IsInWhenPresent<T> of(@Nullable Collection<@Nullable T> values) {
+        if (values == null || values.isEmpty()) {
+            return empty();
+        } else {
+            return new IsInWhenPresent<>(values);
+        }
     }
 }

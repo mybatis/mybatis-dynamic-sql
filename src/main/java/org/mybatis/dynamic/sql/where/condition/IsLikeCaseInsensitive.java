@@ -62,7 +62,7 @@ public class IsLikeCaseInsensitive<T> extends AbstractSingleValueCondition<T>
         return mapSupport(mapper, IsLikeCaseInsensitive::new, IsLikeCaseInsensitive::empty);
     }
 
-    public static IsLikeCaseInsensitive<String> of(String value) {
+    public static <T> IsLikeCaseInsensitive<T> of(T value) {
         return new IsLikeCaseInsensitive<>(value);
     }
 }

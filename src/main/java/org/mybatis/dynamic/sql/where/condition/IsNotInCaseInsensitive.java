@@ -62,11 +62,12 @@ public class IsNotInCaseInsensitive<T> extends AbstractListValueCondition<T>
         return mapSupport(mapper, IsNotInCaseInsensitive::new, IsNotInCaseInsensitive::empty);
     }
 
-    public static IsNotInCaseInsensitive<String> of(String... values) {
+    @SafeVarargs
+    public static <T> IsNotInCaseInsensitive<T> of(T... values) {
         return of(Arrays.asList(values));
     }
 
-    public static IsNotInCaseInsensitive<String> of(Collection<String> values) {
+    public static <T> IsNotInCaseInsensitive<T> of(Collection<T> values) {
         return new IsNotInCaseInsensitive<>(values);
     }
 }
