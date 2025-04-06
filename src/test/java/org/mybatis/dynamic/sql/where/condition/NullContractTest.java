@@ -361,7 +361,7 @@ public class NullContractTest {
         IsInWhenPresent<Integer> filtered = cond.filter(i -> i == 1);
         IsInWhenPresent<Integer> mapped = filtered.map(i -> null);
         assertThat(mapped.isEmpty()).isTrue();
-        assertThat(mapped.values().toList()).isEmpty();;
+        assertThat(mapped.values().toList()).isEmpty();
     }
 
     @SuppressWarnings("DataFlowIssue") // we are deliberately passing nulls into non-null methods for testing
@@ -386,7 +386,7 @@ public class NullContractTest {
         IsInCaseInsensitiveWhenPresent<String> filtered = cond.filter(i -> i.equals("FRED"));
         IsInCaseInsensitiveWhenPresent<String> mapped = filtered.map(i -> null);
         assertThat(mapped.isEmpty()).isTrue();
-        assertThat(mapped.values().toList()).isEmpty();;
+        assertThat(mapped.values().toList()).isEmpty();
     }
 
     @SuppressWarnings("DataFlowIssue") // we are deliberately passing nulls into non-null methods for testing
@@ -411,7 +411,7 @@ public class NullContractTest {
         IsNotInWhenPresent<Integer> filtered = cond.filter(i -> i == 1);
         IsNotInWhenPresent<Integer> mapped = filtered.map(i -> null);
         assertThat(mapped.isEmpty()).isTrue();
-        assertThat(mapped.values().toList()).isEmpty();;
+        assertThat(mapped.values().toList()).isEmpty();
     }
 
     @SuppressWarnings("DataFlowIssue") // we are deliberately passing nulls into non-null methods for testing
@@ -436,6 +436,6 @@ public class NullContractTest {
         IsNotInCaseInsensitiveWhenPresent<String> filtered = cond.filter(i -> i.equals("FRED"));
         IsNotInCaseInsensitiveWhenPresent<String> mapped = filtered.map(i -> null);
         assertThat(mapped.isEmpty()).isTrue();
-        assertThat(mapped.values().toList()).isEmpty();;
+        assertThat(mapped.values().toList()).isEmpty();
     }
 }
