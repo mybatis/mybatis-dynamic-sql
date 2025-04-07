@@ -520,22 +520,6 @@ class Issue105Test {
     }
 
     @Test
-    void testBetweenTransformWithNull() {
-
-        SelectStatementProvider selectStatement = select(id, firstName, lastName)
-                .from(person)
-                .where(age, isBetweenWhenPresent(1).and((Integer) null).map(i1 -> i1 + 1,  i2 -> i2 + 2))
-                .configureStatement(c -> c.setNonRenderingWhereClauseAllowed(true))
-                .build()
-                .render(RenderingStrategies.MYBATIS3);
-
-        String expected = "select person_id, first_name, last_name"
-                + " from Person";
-
-        assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
-    }
-
-    @Test
     void testBetweenWhenPresentTransformWithNull() {
 
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
@@ -552,59 +536,11 @@ class Issue105Test {
     }
 
     @Test
-    void testEqualTransformWithNull() {
-
-        SelectStatementProvider selectStatement = select(id, firstName, lastName)
-                .from(person)
-                .where(age, isEqualToWhenPresent((Integer) null).map(i -> i + 1))
-                .configureStatement(c -> c.setNonRenderingWhereClauseAllowed(true))
-                .build()
-                .render(RenderingStrategies.MYBATIS3);
-
-        String expected = "select person_id, first_name, last_name"
-                + " from Person";
-
-        assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
-    }
-
-    @Test
     void testEqualWhenPresentTransformWithNull() {
 
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
                 .where(age, isEqualToWhenPresent((Integer) null).map(i -> i + 1))
-                .configureStatement(c -> c.setNonRenderingWhereClauseAllowed(true))
-                .build()
-                .render(RenderingStrategies.MYBATIS3);
-
-        String expected = "select person_id, first_name, last_name"
-                + " from Person";
-
-        assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
-    }
-
-    @Test
-    void testGreaterThanTransformWithNull() {
-
-        SelectStatementProvider selectStatement = select(id, firstName, lastName)
-                .from(person)
-                .where(age, isGreaterThanWhenPresent((Integer) null).map(i -> i + 1))
-                .configureStatement(c -> c.setNonRenderingWhereClauseAllowed(true))
-                .build()
-                .render(RenderingStrategies.MYBATIS3);
-
-        String expected = "select person_id, first_name, last_name"
-                + " from Person";
-
-        assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
-    }
-
-    @Test
-    void testGreaterThanOrEqualTransformWithNull() {
-
-        SelectStatementProvider selectStatement = select(id, firstName, lastName)
-                .from(person)
-                .where(age, isGreaterThanOrEqualToWhenPresent((Integer) null).map(i -> i + 1))
                 .configureStatement(c -> c.setNonRenderingWhereClauseAllowed(true))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
@@ -648,38 +584,6 @@ class Issue105Test {
     }
 
     @Test
-    void testLessThanTransformWithNull() {
-
-        SelectStatementProvider selectStatement = select(id, firstName, lastName)
-                .from(person)
-                .where(age, isLessThanWhenPresent((Integer) null).map(i -> i + 1))
-                .configureStatement(c -> c.setNonRenderingWhereClauseAllowed(true))
-                .build()
-                .render(RenderingStrategies.MYBATIS3);
-
-        String expected = "select person_id, first_name, last_name"
-                + " from Person";
-
-        assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
-    }
-
-    @Test
-    void testLessThanOrEqualTransformWithNull() {
-
-        SelectStatementProvider selectStatement = select(id, firstName, lastName)
-                .from(person)
-                .where(age, isLessThanOrEqualToWhenPresent((Integer) null).map(i -> i + 1))
-                .configureStatement(c -> c.setNonRenderingWhereClauseAllowed(true))
-                .build()
-                .render(RenderingStrategies.MYBATIS3);
-
-        String expected = "select person_id, first_name, last_name"
-                + " from Person";
-
-        assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
-    }
-
-    @Test
     void testLessThanOrEqualWhenPresentTransformWithNull() {
 
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
@@ -701,38 +605,6 @@ class Issue105Test {
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
                 .where(age, isLessThanWhenPresent((Integer) null).map(i -> i + 1))
-                .configureStatement(c -> c.setNonRenderingWhereClauseAllowed(true))
-                .build()
-                .render(RenderingStrategies.MYBATIS3);
-
-        String expected = "select person_id, first_name, last_name"
-                + " from Person";
-
-        assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
-    }
-
-    @Test
-    void testLikeTransformWithNull() {
-
-        SelectStatementProvider selectStatement = select(id, firstName, lastName)
-                .from(person)
-                .where(firstName, isLikeWhenPresent((String) null).map(SearchUtils::addWildcards))
-                .configureStatement(c -> c.setNonRenderingWhereClauseAllowed(true))
-                .build()
-                .render(RenderingStrategies.MYBATIS3);
-
-        String expected = "select person_id, first_name, last_name"
-                + " from Person";
-
-        assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
-    }
-
-    @Test
-    void testLikeCaseInsensitiveTransformWithNull() {
-
-        SelectStatementProvider selectStatement = select(id, firstName, lastName)
-                .from(person)
-                .where(firstName, isLikeCaseInsensitiveWhenPresent((String) null).map(SearchUtils::addWildcards))
                 .configureStatement(c -> c.setNonRenderingWhereClauseAllowed(true))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
@@ -808,59 +680,11 @@ class Issue105Test {
     }
 
     @Test
-    void testNotEqualTransformWithNull() {
-
-        SelectStatementProvider selectStatement = select(id, firstName, lastName)
-                .from(person)
-                .where(age, isNotEqualToWhenPresent((Integer) null).map(i -> i + 1))
-                .configureStatement(c -> c.setNonRenderingWhereClauseAllowed(true))
-                .build()
-                .render(RenderingStrategies.MYBATIS3);
-
-        String expected = "select person_id, first_name, last_name"
-                + " from Person";
-
-        assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
-    }
-
-    @Test
     void testNotEqualWhenPresentTransformWithNull() {
 
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
                 .where(age, isNotEqualToWhenPresent((Integer) null).map(i -> i + 1))
-                .configureStatement(c -> c.setNonRenderingWhereClauseAllowed(true))
-                .build()
-                .render(RenderingStrategies.MYBATIS3);
-
-        String expected = "select person_id, first_name, last_name"
-                + " from Person";
-
-        assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
-    }
-
-    @Test
-    void testNotLikeTransformWithNull() {
-
-        SelectStatementProvider selectStatement = select(id, firstName, lastName)
-                .from(person)
-                .where(firstName, isNotLikeWhenPresent((String) null).map(SearchUtils::addWildcards))
-                .configureStatement(c -> c.setNonRenderingWhereClauseAllowed(true))
-                .build()
-                .render(RenderingStrategies.MYBATIS3);
-
-        String expected = "select person_id, first_name, last_name"
-                + " from Person";
-
-        assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
-    }
-
-    @Test
-    void testNotLikeCaseInsensitiveTransformWithNull() {
-
-        SelectStatementProvider selectStatement = select(id, firstName, lastName)
-                .from(person)
-                .where(firstName, isNotLikeCaseInsensitiveWhenPresent((String) null).map(SearchUtils::addWildcards))
                 .configureStatement(c -> c.setNonRenderingWhereClauseAllowed(true))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);

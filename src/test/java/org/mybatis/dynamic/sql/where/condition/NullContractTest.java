@@ -37,7 +37,7 @@ import org.mybatis.dynamic.sql.SqlBuilder;
  * <p>This set of tests should be the only tests in the library that verify this behavior. All other tests
  * should use the library properly.
  */
-public class NullContractTest {
+class NullContractTest {
     @SuppressWarnings("DataFlowIssue") // we are deliberately passing nulls into non-null methods for testing
     @Test
     void testIsBetween() {

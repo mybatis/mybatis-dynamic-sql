@@ -104,7 +104,7 @@ public class IsNotBetweenWhenPresent<T> extends AbstractTwoValueCondition<T>
 
         @Override
         protected IsNotBetweenWhenPresent<T> build(@Nullable T value2) {
-            return IsNotBetweenWhenPresent.of(value1, value2);
+            return of(value1, value2);
         }
     }
 }

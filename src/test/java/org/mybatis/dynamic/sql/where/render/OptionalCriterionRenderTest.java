@@ -34,21 +34,7 @@ class OptionalCriterionRenderTest {
 
     @Test
     void testNoRenderableCriteria() {
-        Integer nullId = null;
-
-        Optional<WhereClauseProvider> whereClause = where(id, isEqualToWhenPresent(nullId))
-                .configureStatement(c -> c.setNonRenderingWhereClauseAllowed(true))
-                .build()
-                .render(RenderingStrategies.SPRING_NAMED_PARAMETER);
-
-        assertThat(whereClause).isEmpty();
-    }
-
-    @Test
-    void testNoRenderableCriteriaWithIf() {
-        Integer nullId = null;
-
-        Optional<WhereClauseProvider> whereClause = where(id, isEqualToWhenPresent(nullId))
+        Optional<WhereClauseProvider> whereClause = where(id, isEqualToWhenPresent((Integer) null))
                 .configureStatement(c -> c.setNonRenderingWhereClauseAllowed(true))
                 .build()
                 .render(RenderingStrategies.SPRING_NAMED_PARAMETER);
@@ -102,10 +88,8 @@ class OptionalCriterionRenderTest {
 
     @Test
     void testOneRenderableCriteriaBeforeNull() {
-        String nullFirstName = null;
-
         Optional<WhereClauseProvider> whereClause = where(id, isEqualToWhenPresent(22))
-                .and(firstName, isEqualToWhenPresent(nullFirstName))
+                .and(firstName, isEqualToWhenPresent((String) null))
                 .build()
                 .render(RenderingStrategies.SPRING_NAMED_PARAMETER);
 
@@ -117,9 +101,7 @@ class OptionalCriterionRenderTest {
 
     @Test
     void testOneRenderableCriteriaBeforeNull2() {
-        String nullFirstName = null;
-
-        Optional<WhereClauseProvider> whereClause = where(id, isEqualToWhenPresent(22), and(firstName, isEqualToWhenPresent(nullFirstName)))
+        Optional<WhereClauseProvider> whereClause = where(id, isEqualToWhenPresent(22), and(firstName, isEqualToWhenPresent((String) null)))
                 .build()
                 .render(RenderingStrategies.SPRING_NAMED_PARAMETER);
 
@@ -131,9 +113,7 @@ class OptionalCriterionRenderTest {
 
     @Test
     void testOneRenderableCriteriaAfterNull() {
-        Integer nullId = null;
-
-        Optional<WhereClauseProvider> whereClause = where(id, isEqualToWhenPresent(nullId))
+        Optional<WhereClauseProvider> whereClause = where(id, isEqualToWhenPresent((Integer) null))
                 .and(firstName, isEqualToWhenPresent("fred"))
                 .build()
                 .render(RenderingStrategies.SPRING_NAMED_PARAMETER);
@@ -146,9 +126,7 @@ class OptionalCriterionRenderTest {
 
     @Test
     void testOneRenderableCriteriaAfterNull2() {
-        Integer nullId = null;
-
-        Optional<WhereClauseProvider> whereClause = where(id, isEqualToWhenPresent(nullId), and(firstName, isEqualToWhenPresent("fred")))
+        Optional<WhereClauseProvider> whereClause = where(id, isEqualToWhenPresent((Integer) null), and(firstName, isEqualToWhenPresent("fred")))
                 .build()
                 .render(RenderingStrategies.SPRING_NAMED_PARAMETER);
 
@@ -160,9 +138,7 @@ class OptionalCriterionRenderTest {
 
     @Test
     void testOverrideFirstConnector() {
-        Integer nullId = null;
-
-        Optional<WhereClauseProvider> whereClause = where(id, isEqualToWhenPresent(nullId), and(firstName, isEqualToWhenPresent("fred")), or(lastName, isEqualTo("flintstone")))
+        Optional<WhereClauseProvider> whereClause = where(id, isEqualToWhenPresent((Integer) null), and(firstName, isEqualToWhenPresent("fred")), or(lastName, isEqualTo("flintstone")))
                 .build()
                 .render(RenderingStrategies.SPRING_NAMED_PARAMETER);
 
@@ -305,10 +281,8 @@ class OptionalCriterionRenderTest {
 
     @Test
     void testCollapsingCriteriaGroup1() {
-        String name1 = null;
-
         Optional<WhereClauseProvider> whereClause = where(
-                group(firstName, isEqualToWhenPresent(name1)), or(lastName, isEqualToWhenPresent(name1)))
+                group(firstName, isEqualToWhenPresent((String) null)), or(lastName, isEqualToWhenPresent((String) null)))
                 .configureStatement(c -> c.setNonRenderingWhereClauseAllowed(true))
                 .build()
                 .render(RenderingStrategies.SPRING_NAMED_PARAMETER);
@@ -318,10 +292,8 @@ class OptionalCriterionRenderTest {
 
     @Test
     void testCollapsingCriteriaGroup2() {
-        String name1 = null;
-
         Optional<WhereClauseProvider> whereClause = where(
-                group(firstName, isEqualTo("Fred")), or(lastName, isEqualToWhenPresent(name1)))
+                group(firstName, isEqualTo("Fred")), or(lastName, isEqualToWhenPresent((String) null)))
                 .build()
                 .render(RenderingStrategies.SPRING_NAMED_PARAMETER);
 
@@ -335,10 +307,8 @@ class OptionalCriterionRenderTest {
 
     @Test
     void testCollapsingCriteriaGroup3() {
-        String name1 = null;
-
         Optional<WhereClauseProvider> whereClause = where(
-                group(firstName, isEqualTo("Fred")), or(lastName, isEqualToWhenPresent(name1)), or(firstName, isEqualTo("Betty")))
+                group(firstName, isEqualTo("Fred")), or(lastName, isEqualToWhenPresent((String) null)), or(firstName, isEqualTo("Betty")))
                 .build()
                 .render(RenderingStrategies.SPRING_NAMED_PARAMETER);
 
