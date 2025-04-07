@@ -123,10 +123,5 @@ class SpringMapToRowTest {
     }
 
     static final RowMapper<CompoundKeyRow> rowMapper =
-            (rs, i) -> {
-                CompoundKeyRow answer = new CompoundKeyRow();
-                answer.setId1(rs.getInt("ID1"));
-                answer.setId2(rs.getInt("ID2"));
-                return answer;
-            };
+            (rs, i) -> new CompoundKeyRow(rs.getInt("ID1"), rs.getInt("ID2"));
 }
