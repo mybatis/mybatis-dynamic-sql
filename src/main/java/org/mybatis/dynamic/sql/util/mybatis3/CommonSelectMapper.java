@@ -50,7 +50,7 @@ public interface CommonSelectMapper {
     /**
      * Select a single row as a Map of values. The row may have any number of columns.
      * The Map key will be the column name as returned from the
-     * database (may be aliased if an alias is specified in the select statement). Map entries will be
+     * database (the key will be aliased if an alias is specified in the select statement). Map entries will be
      * of data types determined by the JDBC driver. MyBatis will call ResultSet.getObject() to retrieve
      * values from the ResultSet. Reference your JDBC driver documentation to learn about type mappings
      * for your specific database.
@@ -85,7 +85,7 @@ public interface CommonSelectMapper {
      * Select any number of rows and return a List of Maps containing row values (one Map for each row returned).
      * The rows may have any number of columns.
      * The Map key will be the column name as returned from the
-     * database (may be aliased if an alias is specified in the select statement). Map entries will be
+     * database (the key will be aliased if an alias is specified in the select statement). Map entries will be
      * of data types determined by the JDBC driver. MyBatis will call ResultSet.getObject() to retrieve
      * values from the ResultSet. Reference your JDBC driver documentation to learn about type mappings
      * for your specific database.
