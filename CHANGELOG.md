@@ -82,6 +82,8 @@ Runtime behavior changes:
 2. We have updated the "ParameterTypeConverter" used in Spring applications to maintain compatibility with Spring's
    "Converter" interface. The primary change is that the framework will no longer call a type converter if the
    input value is null. This should simplify the coding of converters and foster reuse with existing Spring converters.
+3. The "map" method on the "WhenPresent" conditions will accept a mapper function that may return a null value. The
+   conditions will now properly handle this outcome 
 
 ### Other important changes:
 
