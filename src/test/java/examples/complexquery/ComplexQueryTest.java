@@ -117,7 +117,7 @@ class ComplexQueryTest {
         } else {
             builder
                 .and(firstName, isLikeWhenPresent(fName).map(s -> "%" + s + "%"))
-                .and(lastName, isLikeWhenPresent(lName).map(this::addWildcards));
+                .and(lastName, isLikeWhenPresent(lName).map(SearchUtils::addWildcards));
         }
 
         builder
@@ -125,9 +125,5 @@ class ComplexQueryTest {
             .fetchFirst(50).rowsOnly();
 
         return builder.build().render(RenderingStrategies.MYBATIS3);
-    }
-
-    String addWildcards(String s) {
-        return "%" + s + "%";
     }
 }
