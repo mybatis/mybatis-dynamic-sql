@@ -20,7 +20,8 @@ import static examples.emptywhere.PersonDynamicSqlSupport.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
 
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
@@ -93,8 +94,8 @@ class EmptyWhereTest {
         DeleteDSL<DeleteModel>.DeleteWhereBuilder builder = deleteFrom(person)
                 .where(id, isEqualTo(3));
 
-        builder.and(firstName, isEqualTo(fName).filter(Objects::nonNull));
-        builder.and(PersonDynamicSqlSupport.lastName, isEqualTo(lName).filter(Objects::nonNull));
+        builder.and(firstName, isEqualTo(fName));
+        builder.and(PersonDynamicSqlSupport.lastName, isEqualTo(lName));
 
         DeleteStatementProvider deleteStatement = builder.build().render(RenderingStrategies.MYBATIS3);
 
@@ -112,8 +113,8 @@ class EmptyWhereTest {
         DeleteDSL<DeleteModel>.DeleteWhereBuilder builder = deleteFrom(person)
                 .where();
 
-        builder.and(firstName, isEqualTo(variation.firstName).filter(Objects::nonNull));
-        builder.or(PersonDynamicSqlSupport.lastName, isEqualTo(variation.lastName).filter(Objects::nonNull));
+        builder.and(firstName, isEqualToWhenPresent(variation.firstName));
+        builder.or(PersonDynamicSqlSupport.lastName, isEqualToWhenPresent(variation.lastName));
         builder.configureStatement(c -> c.setNonRenderingWhereClauseAllowed(true));
 
         DeleteStatementProvider deleteStatement = builder.build().render(RenderingStrategies.MYBATIS3);
@@ -132,8 +133,8 @@ class EmptyWhereTest {
                 .from(person)
                 .where(id, isEqualTo(3));
 
-        builder.and(firstName, isEqualTo(fName).filter(Objects::nonNull));
-        builder.and(PersonDynamicSqlSupport.lastName, isEqualTo(lName).filter(Objects::nonNull));
+        builder.and(firstName, isEqualTo(fName));
+        builder.and(PersonDynamicSqlSupport.lastName, isEqualTo(lName));
 
         SelectStatementProvider selectStatement = builder.build().render(RenderingStrategies.MYBATIS3);
 
@@ -153,8 +154,8 @@ class EmptyWhereTest {
                 .from(person)
                 .where();
 
-        builder.and(firstName, isEqualTo(variation.firstName).filter(Objects::nonNull));
-        builder.or(PersonDynamicSqlSupport.lastName, isEqualTo(variation.lastName).filter(Objects::nonNull));
+        builder.and(firstName, isEqualToWhenPresent(variation.firstName));
+        builder.or(PersonDynamicSqlSupport.lastName, isEqualToWhenPresent(variation.lastName));
         builder.configureStatement(c -> c.setNonRenderingWhereClauseAllowed(true));
 
         SelectStatementProvider selectStatement = builder.build().render(RenderingStrategies.MYBATIS3);
@@ -173,8 +174,8 @@ class EmptyWhereTest {
                 .from(person).join(order).on(person.id, isEqualTo(order.personId))
                 .where(id, isEqualTo(3));
 
-        builder.and(firstName, isEqualTo(fName).filter(Objects::nonNull));
-        builder.and(PersonDynamicSqlSupport.lastName, isEqualTo(lName).filter(Objects::nonNull));
+        builder.and(firstName, isEqualTo(fName));
+        builder.and(PersonDynamicSqlSupport.lastName, isEqualTo(lName));
 
         SelectStatementProvider selectStatement = builder.build().render(RenderingStrategies.MYBATIS3);
 
@@ -195,8 +196,8 @@ class EmptyWhereTest {
                 .from(person).join(order).on(person.id, isEqualTo(order.personId))
                 .where();
 
-        builder.and(firstName, isEqualTo(variation.firstName).filter(Objects::nonNull));
-        builder.or(PersonDynamicSqlSupport.lastName, isEqualTo(variation.lastName).filter(Objects::nonNull));
+        builder.and(firstName, isEqualToWhenPresent(variation.firstName));
+        builder.or(PersonDynamicSqlSupport.lastName, isEqualToWhenPresent(variation.lastName));
         builder.configureStatement(c -> c.setNonRenderingWhereClauseAllowed(true));
 
         SelectStatementProvider selectStatement = builder.build().render(RenderingStrategies.MYBATIS3);
@@ -218,8 +219,8 @@ class EmptyWhereTest {
                 .set(id).equalTo(3)
                 .where(id, isEqualTo(3));
 
-        builder.and(firstName, isEqualTo(fName).filter(Objects::nonNull));
-        builder.and(PersonDynamicSqlSupport.lastName, isEqualTo(lName).filter(Objects::nonNull));
+        builder.and(firstName, isEqualTo(fName));
+        builder.and(PersonDynamicSqlSupport.lastName, isEqualTo(lName));
 
         UpdateStatementProvider updateStatement = builder.build().render(RenderingStrategies.MYBATIS3);
 
@@ -239,8 +240,8 @@ class EmptyWhereTest {
                 .set(id).equalTo(3)
                 .where();
 
-        builder.and(firstName, isEqualTo(variation.firstName).filter(Objects::nonNull));
-        builder.or(PersonDynamicSqlSupport.lastName, isEqualTo(variation.lastName).filter(Objects::nonNull));
+        builder.and(firstName, isEqualToWhenPresent(variation.firstName));
+        builder.or(PersonDynamicSqlSupport.lastName, isEqualToWhenPresent(variation.lastName));
         builder.configureStatement(c -> c.setNonRenderingWhereClauseAllowed(true));
 
         UpdateStatementProvider updateStatement = builder.build().render(RenderingStrategies.MYBATIS3);
@@ -259,8 +260,8 @@ class EmptyWhereTest {
 
         WhereDSL.StandaloneWhereFinisher builder = where(id, isEqualTo(3));
 
-        builder.and(firstName, isEqualTo(fName).filter(Objects::nonNull));
-        builder.and(PersonDynamicSqlSupport.lastName, isEqualTo(lName).filter(Objects::nonNull));
+        builder.and(firstName, isEqualTo(fName));
+        builder.and(PersonDynamicSqlSupport.lastName, isEqualTo(lName));
 
         Optional<WhereClauseProvider> whereClause = builder.build().render(RenderingStrategies.MYBATIS3);
 
@@ -278,8 +279,8 @@ class EmptyWhereTest {
     void testWhereVariations(Variation variation) {
         WhereDSL.StandaloneWhereFinisher builder = where();
 
-        builder.and(firstName, isEqualTo(variation.firstName).filter(Objects::nonNull));
-        builder.or(PersonDynamicSqlSupport.lastName, isEqualTo(variation.lastName).filter(Objects::nonNull));
+        builder.and(firstName, isEqualToWhenPresent(variation.firstName));
+        builder.or(PersonDynamicSqlSupport.lastName, isEqualToWhenPresent(variation.lastName));
         builder.configureStatement(c -> c.setNonRenderingWhereClauseAllowed(true));
 
         Optional<WhereClauseProvider> whereClause = builder.build().render(RenderingStrategies.MYBATIS3);

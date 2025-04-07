@@ -60,7 +60,8 @@ public abstract class AbstractNoValueCondition<T> implements RenderableCondition
          * @param <S>
          *            condition type - not used except for compilation compliance
          *
-         * @return this condition if renderable and the supplier returns true, otherwise a condition that will not render.
+         * @return this condition if renderable and the supplier returns true, otherwise a condition that will not
+         *     render.
          */
         <S> AbstractNoValueCondition<S> filter(BooleanSupplier booleanSupplier);
     }

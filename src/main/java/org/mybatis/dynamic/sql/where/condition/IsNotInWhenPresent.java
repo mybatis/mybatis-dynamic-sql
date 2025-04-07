@@ -22,10 +22,12 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import org.mybatis.dynamic.sql.AbstractListValueCondition;
 
 public class IsNotInWhenPresent<T> extends AbstractListValueCondition<T>
-        implements AbstractListValueCondition.Filterable<T>, AbstractListValueCondition.Mappable<T>{
+        implements AbstractListValueCondition.Filterable<T>, AbstractListValueCondition.Mappable<T> {
     private static final IsNotInWhenPresent<?> EMPTY = new IsNotInWhenPresent<>(Collections.emptyList());
 
     public static <T> IsNotInWhenPresent<T> empty() {
@@ -44,21 +46,25 @@ public class IsNotInWhenPresent<T> extends AbstractListValueCondition<T>
     }
 
     @Override
-    public IsNotInWhenPresent<T> filter(Predicate<? super T> predicate) {
+    public IsNotInWhenPresent<T> filter(Predicate<? super @NonNull T> predicate) {
         return filterSupport(predicate, IsNotInWhenPresent::new, this, IsNotInWhenPresent::empty);
     }
 
     @Override
-    public <R> IsNotInWhenPresent<R> map(Function<? super T, ? extends R> mapper) {
+    public <R> IsNotInWhenPresent<R> map(Function<? super @NonNull T, ? extends @Nullable R> mapper) {
         return mapSupport(mapper, IsNotInWhenPresent::new, IsNotInWhenPresent::empty);
     }
 
     @SafeVarargs
-    public static <T> IsNotInWhenPresent<T> of(T... values) {
+    public static <T> IsNotInWhenPresent<T> of(@Nullable T... values) {
         return of(Arrays.asList(values));
     }
 
-    public static <T> IsNotInWhenPresent<T> of(Collection<T> values) {
-        return new IsNotInWhenPresent<>(values);
+    public static <T> IsNotInWhenPresent<T> of(@Nullable Collection<@Nullable T> values) {
+        if (values == null) {
+            return empty();
+        } else {
+            return new IsNotInWhenPresent<>(values);
+        }
     }
 }

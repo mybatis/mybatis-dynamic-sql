@@ -20,13 +20,15 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import org.mybatis.dynamic.sql.AbstractSingleValueCondition;
 import org.mybatis.dynamic.sql.util.StringUtilities;
 
-public class IsNotLikeCaseInsensitive<T> extends AbstractSingleValueCondition<T>
+public class IsNotLikeCaseInsensitiveWhenPresent<T> extends AbstractSingleValueCondition<T>
         implements CaseInsensitiveRenderableCondition<T>, AbstractSingleValueCondition.Filterable<T>,
         AbstractSingleValueCondition.Mappable<T> {
-    private static final IsNotLikeCaseInsensitive<?> EMPTY = new IsNotLikeCaseInsensitive<>("") { //$NON-NLS-1$
+    private static final IsNotLikeCaseInsensitiveWhenPresent<?> EMPTY =
+            new IsNotLikeCaseInsensitiveWhenPresent<>("") { //$NON-NLS-1$
         @Override
         public String value() {
             throw new NoSuchElementException("No value present"); //$NON-NLS-1$
@@ -38,13 +40,13 @@ public class IsNotLikeCaseInsensitive<T> extends AbstractSingleValueCondition<T>
         }
     };
 
-    public static <T> IsNotLikeCaseInsensitive<T> empty() {
+    public static <T> IsNotLikeCaseInsensitiveWhenPresent<T> empty() {
         @SuppressWarnings("unchecked")
-        IsNotLikeCaseInsensitive<T> t = (IsNotLikeCaseInsensitive<T>) EMPTY;
+        IsNotLikeCaseInsensitiveWhenPresent<T> t = (IsNotLikeCaseInsensitiveWhenPresent<T>) EMPTY;
         return t;
     }
 
-    protected IsNotLikeCaseInsensitive(T value) {
+    protected IsNotLikeCaseInsensitiveWhenPresent(T value) {
         super(StringUtilities.upperCaseIfPossible(value));
     }
 
@@ -54,16 +56,20 @@ public class IsNotLikeCaseInsensitive<T> extends AbstractSingleValueCondition<T>
     }
 
     @Override
-    public IsNotLikeCaseInsensitive<T> filter(Predicate<? super @NonNull T> predicate) {
-        return filterSupport(predicate, IsNotLikeCaseInsensitive::empty, this);
+    public IsNotLikeCaseInsensitiveWhenPresent<T> filter(Predicate<? super @NonNull T> predicate) {
+        return filterSupport(predicate, IsNotLikeCaseInsensitiveWhenPresent::empty, this);
     }
 
     @Override
-    public <R> IsNotLikeCaseInsensitive<R> map(Function<? super @NonNull T, ? extends @NonNull R> mapper) {
-        return mapSupport(mapper, IsNotLikeCaseInsensitive::new, IsNotLikeCaseInsensitive::empty);
+    public <R> IsNotLikeCaseInsensitiveWhenPresent<R> map(Function<? super @NonNull T, ? extends @Nullable R> mapper) {
+        return mapSupport(mapper, IsNotLikeCaseInsensitiveWhenPresent::of, IsNotLikeCaseInsensitiveWhenPresent::empty);
     }
 
-    public static <T> IsNotLikeCaseInsensitive<T> of(T value) {
-        return new IsNotLikeCaseInsensitive<>(value);
+    public static <T> IsNotLikeCaseInsensitiveWhenPresent<T> of(@Nullable T value) {
+        if (value == null) {
+            return empty();
+        } else {
+            return new IsNotLikeCaseInsensitiveWhenPresent<>(value);
+        }
     }
 }

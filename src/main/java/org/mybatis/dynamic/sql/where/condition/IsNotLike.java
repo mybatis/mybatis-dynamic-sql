@@ -19,6 +19,7 @@ import java.util.NoSuchElementException;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+import org.jspecify.annotations.NonNull;
 import org.mybatis.dynamic.sql.AbstractSingleValueCondition;
 
 public class IsNotLike<T> extends AbstractSingleValueCondition<T>
@@ -55,12 +56,12 @@ public class IsNotLike<T> extends AbstractSingleValueCondition<T>
     }
 
     @Override
-    public IsNotLike<T> filter(Predicate<? super T> predicate) {
+    public IsNotLike<T> filter(Predicate<? super @NonNull T> predicate) {
         return filterSupport(predicate, IsNotLike::empty, this);
     }
 
     @Override
-    public <R> IsNotLike<R> map(Function<? super T, ? extends R> mapper) {
+    public <R> IsNotLike<R> map(Function<? super @NonNull T, ? extends @NonNull R> mapper) {
         return mapSupport(mapper, IsNotLike::new, IsNotLike::empty);
     }
 }

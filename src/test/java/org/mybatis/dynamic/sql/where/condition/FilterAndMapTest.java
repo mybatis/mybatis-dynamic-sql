@@ -20,9 +20,12 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Objects;
+import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mybatis.dynamic.sql.SqlBuilder;
 
 class FilterAndMapTest {
@@ -34,16 +37,8 @@ class FilterAndMapTest {
     }
 
     @Test
-    void testTypeConversionWithNullThrowsException() {
-        var cond = SqlBuilder.isEqualTo((String) null);
-        assertThatExceptionOfType(NumberFormatException.class).isThrownBy(() ->
-                cond.map(Integer::parseInt)
-        );
-    }
-
-    @Test
     void testTypeConversionWithNullAndFilterDoesNotThrowException() {
-        var cond = SqlBuilder.isEqualTo((String) null).filter(Objects::nonNull).map(Integer::parseInt);
+        var cond = SqlBuilder.isEqualToWhenPresent((String) null).map(Integer::parseInt);
         assertThat(cond.isEmpty()).isTrue();
     }
 
@@ -479,17 +474,17 @@ class FilterAndMapTest {
 
     @Test
     void testBetweenUnRenderableFirstNullFilterShouldReturnSameObject() {
-        IsBetween<Integer> cond = SqlBuilder.isBetween((Integer) null).and(4).filter(Objects::nonNull);
+        IsBetweenWhenPresent<Integer> cond = SqlBuilder.isBetweenWhenPresent((Integer) null).and(4);
         assertThat(cond.isEmpty()).isTrue();
-        IsBetween<Integer> filtered = cond.filter(v -> true);
+        IsBetweenWhenPresent<Integer> filtered = cond.filter(v -> true);
         assertThat(cond).isSameAs(filtered);
     }
 
     @Test
     void testBetweenUnRenderableSecondNullFilterShouldReturnSameObject() {
-        IsBetween<Integer> cond = SqlBuilder.isBetween(3).and((Integer) null).filter(Objects::nonNull);
+        IsBetweenWhenPresent<Integer> cond = SqlBuilder.isBetweenWhenPresent(3).and((Integer) null);
         assertThat(cond.isEmpty()).isTrue();
-        IsBetween<Integer> filtered = cond.filter(v -> true);
+        IsBetweenWhenPresent<Integer> filtered = cond.filter(v -> true);
         assertThat(cond).isSameAs(filtered);
     }
 
@@ -502,6 +497,46 @@ class FilterAndMapTest {
     }
 
     @Test
+    void testBetweenWhenPresentFilterWithBiPredicate() {
+        IsBetweenWhenPresent<Integer> cond = SqlBuilder.isBetweenWhenPresent("3").and("4")
+                .map(Integer::parseInt)
+                .filter((v1, v2) -> true);
+        assertThat(cond.isEmpty()).isFalse();
+        assertThat(cond.value1()).isEqualTo(3);
+        assertThat(cond.value2()).isEqualTo(4);
+    }
+
+    @Test
+    void testNotBetweenWhenPresentFilterWithBiPredicate() {
+        IsNotBetweenWhenPresent<Integer> cond = SqlBuilder.isNotBetweenWhenPresent("3").and("4")
+                .map(Integer::parseInt)
+                .filter((v1, v2) -> true);
+        assertThat(cond.isEmpty()).isFalse();
+        assertThat(cond.value1()).isEqualTo(3);
+        assertThat(cond.value2()).isEqualTo(4);
+    }
+
+    @ParameterizedTest
+    @MethodSource("testBetweenFilterVariations")
+    void testBetweenFilterVariations(FilterVariation variation) {
+        IsBetween<Integer> cond = SqlBuilder.isBetween("4").and("6")
+                .map(Integer::parseInt)
+                .filter(variation.predicate);
+        assertThat(cond.isEmpty()).isEqualTo(variation.empty);
+    }
+
+    private record FilterVariation(Predicate<Integer> predicate, boolean empty) {}
+
+    private static Stream<FilterVariation> testBetweenFilterVariations() {
+        return Stream.of(
+                new FilterVariation(v -> v == 4, true),
+                new FilterVariation(v -> v == 6, true),
+                new FilterVariation(v -> v == 1, true),
+                new FilterVariation(v -> v % 2 == 0, false)
+        );
+    }
+
+    @Test
     void testNotBetweenUnRenderableFilterShouldReturnSameObject() {
         IsNotBetween<Integer> cond = SqlBuilder.isNotBetween(3).and(4).filter((i1, i2) -> false);
         assertThat(cond.isEmpty()).isTrue();
@@ -511,17 +546,17 @@ class FilterAndMapTest {
 
     @Test
     void testNotBetweenUnRenderableFirstNullFilterShouldReturnSameObject() {
-        IsNotBetween<Integer> cond = SqlBuilder.isNotBetween((Integer) null).and(4).filter(Objects::nonNull);
+        IsNotBetweenWhenPresent<Integer> cond = SqlBuilder.isNotBetweenWhenPresent((Integer) null).and(4);
         assertThat(cond.isEmpty()).isTrue();
-        IsNotBetween<Integer> filtered = cond.filter(v -> true);
+        IsNotBetweenWhenPresent<Integer> filtered = cond.filter(v -> true);
         assertThat(cond).isSameAs(filtered);
     }
 
     @Test
     void testNotBetweenUnRenderableSecondNullFilterShouldReturnSameObject() {
-        IsNotBetween<Integer> cond = SqlBuilder.isNotBetween(3).and((Integer) null).filter(Objects::nonNull);
+        IsNotBetweenWhenPresent<Integer> cond = SqlBuilder.isNotBetweenWhenPresent(3).and((Integer) null);
         assertThat(cond.isEmpty()).isTrue();
-        IsNotBetween<Integer> filtered = cond.filter(v -> true);
+        IsNotBetweenWhenPresent<Integer> filtered = cond.filter(v -> true);
         assertThat(cond).isSameAs(filtered);
     }
 
@@ -531,6 +566,24 @@ class FilterAndMapTest {
         assertThat(cond.isEmpty()).isFalse();
         assertThat(cond.value1()).isEqualTo(3);
         assertThat(cond.value2()).isEqualTo(4);
+    }
+
+    @Test
+    void testBetweenFilterToEmpty() {
+        var cond = SqlBuilder.isBetween("3").and("4").map(Integer::parseInt)
+                .filter((i1, i2) -> false);
+        assertThat(cond.isEmpty()).isTrue();
+        assertThatExceptionOfType(NoSuchElementException.class).isThrownBy(cond::value1);
+        assertThatExceptionOfType(NoSuchElementException.class).isThrownBy(cond::value2);
+    }
+
+    @Test
+    void testNotBetweenFilterToEmpty() {
+        var cond = SqlBuilder.isNotBetween("3").and("4").map(Integer::parseInt)
+                .filter((i1, i2) -> false);
+        assertThat(cond.isEmpty()).isTrue();
+        assertThatExceptionOfType(NoSuchElementException.class).isThrownBy(cond::value1);
+        assertThatExceptionOfType(NoSuchElementException.class).isThrownBy(cond::value2);
     }
 
     @Test
