@@ -51,8 +51,8 @@ class ColumnComparisonTest {
 
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
         assertThat(records).hasSize(5);
-        assertThat(records.get(0).getNumber1()).isEqualTo(1);
-        assertThat(records.get(4).getNumber1()).isEqualTo(5);
+        assertThat(records.get(0).number1()).isEqualTo(1);
+        assertThat(records.get(4).number1()).isEqualTo(5);
     }
 
     @Test
@@ -73,8 +73,8 @@ class ColumnComparisonTest {
 
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
         assertThat(records).hasSize(6);
-        assertThat(records.get(0).getNumber1()).isEqualTo(1);
-        assertThat(records.get(5).getNumber1()).isEqualTo(6);
+        assertThat(records.get(0).number1()).isEqualTo(1);
+        assertThat(records.get(5).number2()).isEqualTo(6);
     }
 
     @Test
@@ -95,8 +95,8 @@ class ColumnComparisonTest {
 
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
         assertThat(records).hasSize(5);
-        assertThat(records.get(0).getNumber1()).isEqualTo(7);
-        assertThat(records.get(4).getNumber1()).isEqualTo(11);
+        assertThat(records.get(0).number1()).isEqualTo(7);
+        assertThat(records.get(4).number1()).isEqualTo(11);
     }
 
     @Test
@@ -117,8 +117,8 @@ class ColumnComparisonTest {
 
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
         assertThat(records).hasSize(6);
-        assertThat(records.get(0).getNumber1()).isEqualTo(6);
-        assertThat(records.get(5).getNumber1()).isEqualTo(11);
+        assertThat(records.get(0).number1()).isEqualTo(6);
+        assertThat(records.get(5).number1()).isEqualTo(11);
     }
 
     @Test
@@ -139,7 +139,7 @@ class ColumnComparisonTest {
 
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
         assertThat(records).hasSize(1);
-        assertThat(records.get(0).getNumber1()).isEqualTo(6);
+        assertThat(records.get(0).number1()).isEqualTo(6);
     }
 
     @Test
@@ -160,8 +160,8 @@ class ColumnComparisonTest {
 
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
         assertThat(records).hasSize(10);
-        assertThat(records.get(0).getNumber1()).isEqualTo(1);
-        assertThat(records.get(9).getNumber1()).isEqualTo(11);
+        assertThat(records.get(0).number1()).isEqualTo(1);
+        assertThat(records.get(9).number1()).isEqualTo(11);
     }
 
     @Test
@@ -172,7 +172,7 @@ class ColumnComparisonTest {
         );
 
         assertThat(records).hasSize(10);
-        assertThat(records.get(0).getNumber1()).isEqualTo(1);
-        assertThat(records.get(9).getNumber1()).isEqualTo(11);
+        assertThat(records.get(0).number1()).isEqualTo(1);
+        assertThat(records.get(9).number1()).isEqualTo(11);
     }
 }

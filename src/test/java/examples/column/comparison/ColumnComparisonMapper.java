@@ -17,7 +17,7 @@ package examples.column.comparison;
 
 import java.util.List;
 
-import org.apache.ibatis.annotations.Result;
+import org.apache.ibatis.annotations.Arg;
 import org.apache.ibatis.annotations.SelectProvider;
 import org.mybatis.dynamic.sql.select.SelectDSLCompleter;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
@@ -27,8 +27,8 @@ import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
 public interface ColumnComparisonMapper {
 
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
-    @Result(column="number1", property="number1", id=true)
-    @Result(column="number2", property="number2", id=true)
+    @Arg(column="number1", javaType = int.class, id=true)
+    @Arg(column="number2", javaType = int.class, id=true)
     List<ColumnComparisonRecord> selectMany(SelectStatementProvider selectStatement);
 
     default List<ColumnComparisonRecord> select(SelectDSLCompleter completer) {
