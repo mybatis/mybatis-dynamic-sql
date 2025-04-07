@@ -27,7 +27,7 @@ import org.jspecify.annotations.Nullable;
 import org.mybatis.dynamic.sql.AbstractListValueCondition;
 
 public class IsInWhenPresent<T> extends AbstractListValueCondition<T>
-        implements AbstractListValueCondition.Filterable<T>, AbstractListValueCondition.Mappable<T>{
+        implements AbstractListValueCondition.Filterable<T>, AbstractListValueCondition.Mappable<T> {
     private static final IsInWhenPresent<?> EMPTY = new IsInWhenPresent<>(Collections.emptyList());
 
     public static <T> IsInWhenPresent<T> empty() {

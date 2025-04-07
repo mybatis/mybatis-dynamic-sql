@@ -27,7 +27,7 @@ import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.util.Validator;
 
 public class IsNotIn<T> extends AbstractListValueCondition<T>
-        implements AbstractListValueCondition.Filterable<T>, AbstractListValueCondition.Mappable<T>{
+        implements AbstractListValueCondition.Filterable<T>, AbstractListValueCondition.Mappable<T> {
     private static final IsNotIn<?> EMPTY = new IsNotIn<>(Collections.emptyList());
 
     public static <T> IsNotIn<T> empty() {

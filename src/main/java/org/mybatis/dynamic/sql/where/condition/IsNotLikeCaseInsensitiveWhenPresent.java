@@ -27,7 +27,8 @@ import org.mybatis.dynamic.sql.util.StringUtilities;
 public class IsNotLikeCaseInsensitiveWhenPresent<T> extends AbstractSingleValueCondition<T>
         implements CaseInsensitiveRenderableCondition<T>, AbstractSingleValueCondition.Filterable<T>,
         AbstractSingleValueCondition.Mappable<T> {
-    private static final IsNotLikeCaseInsensitiveWhenPresent<?> EMPTY = new IsNotLikeCaseInsensitiveWhenPresent<>("") { //$NON-NLS-1$
+    private static final IsNotLikeCaseInsensitiveWhenPresent<?> EMPTY =
+            new IsNotLikeCaseInsensitiveWhenPresent<>("") { //$NON-NLS-1$
         @Override
         public String value() {
             throw new NoSuchElementException("No value present"); //$NON-NLS-1$

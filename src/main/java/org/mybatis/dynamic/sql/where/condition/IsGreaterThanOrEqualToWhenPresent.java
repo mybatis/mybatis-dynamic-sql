@@ -25,7 +25,8 @@ import org.mybatis.dynamic.sql.AbstractSingleValueCondition;
 
 public class IsGreaterThanOrEqualToWhenPresent<T> extends AbstractSingleValueCondition<T>
         implements AbstractSingleValueCondition.Filterable<T>, AbstractSingleValueCondition.Mappable<T> {
-    private static final IsGreaterThanOrEqualToWhenPresent<?> EMPTY = new IsGreaterThanOrEqualToWhenPresent<Object>(-1) {
+    private static final IsGreaterThanOrEqualToWhenPresent<?> EMPTY =
+            new IsGreaterThanOrEqualToWhenPresent<Object>(-1) {
         @Override
         public Object value() {
             throw new NoSuchElementException("No value present"); //$NON-NLS-1$
