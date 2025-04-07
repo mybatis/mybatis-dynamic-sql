@@ -17,11 +17,8 @@ package examples.animal.data;
 
 import static java.util.function.Predicate.not;
 
-import java.util.Objects;
-
 import org.jspecify.annotations.Nullable;
 import org.mybatis.dynamic.sql.SqlBuilder;
-import org.mybatis.dynamic.sql.where.condition.IsIn;
 import org.mybatis.dynamic.sql.where.condition.IsInWhenPresent;
 
 public class MyInCondition {
