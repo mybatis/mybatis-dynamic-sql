@@ -120,7 +120,7 @@ public class DeleteDSL<R> implements AbstractWhereStarter<DeleteDSL<R>.DeleteWhe
             return limitWhenPresent(limit);
         }
 
-        public DeleteDSL<R> limitWhenPresent(Long limit) {
+        public DeleteDSL<R> limitWhenPresent(@Nullable Long limit) {
             return DeleteDSL.this.limitWhenPresent(limit);
         }
 
