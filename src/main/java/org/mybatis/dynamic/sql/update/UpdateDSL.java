@@ -202,7 +202,7 @@ public class UpdateDSL<R> implements AbstractWhereStarter<UpdateDSL<R>.UpdateWhe
             return limitWhenPresent(limit);
         }
 
-        public UpdateDSL<R> limitWhenPresent(Long limit) {
+        public UpdateDSL<R> limitWhenPresent(@Nullable Long limit) {
             return UpdateDSL.this.limitWhenPresent(limit);
         }
 

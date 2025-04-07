@@ -20,11 +20,13 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import org.mybatis.dynamic.sql.AbstractSingleValueCondition;
 
-public class IsGreaterThan<T> extends AbstractSingleValueCondition<T>
+public class IsGreaterThanOrEqualToWhenPresent<T> extends AbstractSingleValueCondition<T>
         implements AbstractSingleValueCondition.Filterable<T>, AbstractSingleValueCondition.Mappable<T> {
-    private static final IsGreaterThan<?> EMPTY = new IsGreaterThan<Object>(-1) {
+    private static final IsGreaterThanOrEqualToWhenPresent<?> EMPTY =
+            new IsGreaterThanOrEqualToWhenPresent<Object>(-1) {
         @Override
         public Object value() {
             throw new NoSuchElementException("No value present"); //$NON-NLS-1$
@@ -36,32 +38,36 @@ public class IsGreaterThan<T> extends AbstractSingleValueCondition<T>
         }
     };
 
-    public static <T> IsGreaterThan<T> empty() {
+    public static <T> IsGreaterThanOrEqualToWhenPresent<T> empty() {
         @SuppressWarnings("unchecked")
-        IsGreaterThan<T> t = (IsGreaterThan<T>) EMPTY;
+        IsGreaterThanOrEqualToWhenPresent<T> t = (IsGreaterThanOrEqualToWhenPresent<T>) EMPTY;
         return t;
     }
 
-    protected IsGreaterThan(T value) {
+    protected IsGreaterThanOrEqualToWhenPresent(T value) {
         super(value);
     }
 
     @Override
     public String operator() {
-        return ">"; //$NON-NLS-1$
+        return ">="; //$NON-NLS-1$
     }
 
-    public static <T> IsGreaterThan<T> of(T value) {
-        return new IsGreaterThan<>(value);
+    public static <T> IsGreaterThanOrEqualToWhenPresent<T> of(@Nullable T value) {
+        if (value == null) {
+            return empty();
+        } else {
+            return new IsGreaterThanOrEqualToWhenPresent<>(value);
+        }
     }
 
     @Override
-    public IsGreaterThan<T> filter(Predicate<? super @NonNull T> predicate) {
-        return filterSupport(predicate, IsGreaterThan::empty, this);
+    public IsGreaterThanOrEqualToWhenPresent<T> filter(Predicate<? super @NonNull T> predicate) {
+        return filterSupport(predicate, IsGreaterThanOrEqualToWhenPresent::empty, this);
     }
 
     @Override
-    public <R> IsGreaterThan<R> map(Function<? super @NonNull T, ? extends @NonNull R> mapper) {
-        return mapSupport(mapper, IsGreaterThan::new, IsGreaterThan::empty);
+    public <R> IsGreaterThanOrEqualToWhenPresent<R> map(Function<? super @NonNull T, ? extends @Nullable R> mapper) {
+        return mapSupport(mapper, IsGreaterThanOrEqualToWhenPresent::of, IsGreaterThanOrEqualToWhenPresent::empty);
     }
 }

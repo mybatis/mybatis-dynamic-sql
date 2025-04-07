@@ -20,7 +20,7 @@ import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import org.jspecify.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
 import org.mybatis.dynamic.sql.AbstractTwoValueCondition;
 
 public class IsNotBetween<T> extends AbstractTwoValueCondition<T>
@@ -63,32 +63,28 @@ public class IsNotBetween<T> extends AbstractTwoValueCondition<T>
     }
 
     @Override
-    public IsNotBetween<T> filter(BiPredicate<? super T, ? super T> predicate) {
+    public IsNotBetween<T> filter(BiPredicate<? super @NonNull T, ? super @NonNull T> predicate) {
         return filterSupport(predicate, IsNotBetween::empty, this);
     }
 
     @Override
-    public IsNotBetween<T> filter(Predicate<? super T> predicate) {
+    public IsNotBetween<T> filter(Predicate<? super @NonNull T> predicate) {
         return filterSupport(predicate, IsNotBetween::empty, this);
     }
 
     @Override
-    public <R> IsNotBetween<R> map(Function<? super T, ? extends R> mapper1,
-            Function<? super T, ? extends R> mapper2) {
+    public <R> IsNotBetween<R> map(Function<? super @NonNull T, ? extends @NonNull R> mapper1,
+            Function<? super @NonNull T, ? extends @NonNull R> mapper2) {
         return mapSupport(mapper1, mapper2, IsNotBetween::new, IsNotBetween::empty);
     }
 
     @Override
-    public <R> IsNotBetween<R> map(Function<? super T, ? extends R> mapper) {
+    public <R> IsNotBetween<R> map(Function<? super @NonNull T, ? extends @NonNull R> mapper) {
         return map(mapper, mapper);
     }
 
     public static <T> Builder<T> isNotBetween(T value1) {
         return new Builder<>(value1);
-    }
-
-    public static <T> WhenPresentBuilder<T> isNotBetweenWhenPresent(@Nullable T value1) {
-        return new WhenPresentBuilder<>(value1);
     }
 
     public static class Builder<T> extends AndGatherer<T, IsNotBetween<T>> {
@@ -100,22 +96,6 @@ public class IsNotBetween<T> extends AbstractTwoValueCondition<T>
         @Override
         protected IsNotBetween<T> build(T value2) {
             return new IsNotBetween<>(value1, value2);
-        }
-    }
-
-    public static class WhenPresentBuilder<T> extends AndWhenPresentGatherer<T, IsNotBetween<T>> {
-
-        private WhenPresentBuilder(@Nullable T value1) {
-            super(value1);
-        }
-
-        @Override
-        protected IsNotBetween<T> build(@Nullable T value2) {
-            if (value1 == null || value2 == null) {
-                return empty();
-            } else {
-                return new IsNotBetween<>(value1, value2);
-            }
         }
     }
 }

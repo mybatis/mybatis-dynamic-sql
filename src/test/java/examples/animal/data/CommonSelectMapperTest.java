@@ -103,10 +103,26 @@ class CommonSelectMapperTest {
 
             AnimalData animal = mapper.selectOne(selectStatement, rowMapper);
 
+            assertThat(animal).isNotNull();
             assertThat(animal.id()).isEqualTo(1);
             assertThat(animal.animalName()).isEqualTo("Lesser short-tailed shrew");
             assertThat(animal.bodyWeight()).isEqualTo(0.14);
             assertThat(animal.brainWeight()).isEqualTo(0.005);
+        }
+    }
+
+    @Test
+    void testGeneralSelectOneWithRowMapperAndNullRow() {
+        try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
+            CommonSelectMapper mapper = sqlSession.getMapper(CommonSelectMapper.class);
+            SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
+                    .from(animalData)
+                    .where(id, isEqualTo(-237))
+                    .build()
+                    .render(RenderingStrategies.MYBATIS3);
+
+            AnimalData animal = mapper.selectOne(selectStatement, rowMapper);
+            assertThat(animal).isNull();
         }
     }
 

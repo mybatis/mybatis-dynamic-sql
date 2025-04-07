@@ -166,8 +166,8 @@ table lists the optional conditions and shows how to use them:
 | Null                      | where(id, isNull().filter(BooleanSupplier)                             | The condition will render if BooleanSupplier.getAsBoolean() returns true                                                                           |
 
 ### "When Present" Condition Builders
-The library supplies several methods that supply conditions to be used in the common case of checking for null
-values. The table below lists the rendering rules for each of these "when present" condition builder methods.
+The library supplies conditions for use in the common case of checking for null
+values. The table below lists the rendering rules for each of these "when present" conditions.
 
 | Condition                 | Example                                           | Rendering Rules                                               |
 |---------------------------|---------------------------------------------------|---------------------------------------------------------------|
@@ -184,12 +184,18 @@ values. The table below lists the rendering rules for each of these "when presen
 | Not Like                  | where(id, isNotLikeWhenPresent(x))                | The condition will render if x is non-null                    |
 | Not Like Case Insensitive | where(id, isNotLikeCaseInsensitiveWhenPresent(x)) | The condition will render if x is non-null                    |
 
-Note that these methods simply apply a "NotNull" filter to a  condition. For example:
+With our adoption of JSpecify, it is now considered a misuse of the library to pass a null value into a condition
+unless the condition is one of the "when present" conditions. If you previously wrote code like this:
 
 ```java
-// the following two lines are functionally equivalent
-... where (id, isEqualToWhenPresent(x)) ...
 ... where (id, isEqualTo(x).filter(Objects::nonNull)) ...
+```
+
+Starting in version 2.0.0 of the library, you will now see IDE warnings related to nullability. You should change it
+to this:
+
+```java
+... where (id, isEqualToWhenPresent(x)) ...
 ```
 
 ### Optionality with the "In" Conditions

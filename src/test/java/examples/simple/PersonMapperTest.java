@@ -36,7 +36,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 import org.apache.ibatis.datasource.unpooled.UnpooledDataSource;
@@ -146,7 +145,7 @@ class PersonMapperTest {
             PersonMapper mapper = session.getMapper(PersonMapper.class);
 
             List<PersonRecord> rows = mapper.select(c ->
-                    c.where(id, isEqualTo((String) null).filter(Objects::nonNull).map(Integer::parseInt))
+                    c.where(id, isEqualToWhenPresent((String) null).map(Integer::parseInt))
                             .or(occupation, isNull()));
 
             assertThat(rows).hasSize(2);

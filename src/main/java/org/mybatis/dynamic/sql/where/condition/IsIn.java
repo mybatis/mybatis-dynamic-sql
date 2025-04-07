@@ -21,12 +21,13 @@ import java.util.Collections;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+import org.jspecify.annotations.NonNull;
 import org.mybatis.dynamic.sql.AbstractListValueCondition;
 import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.util.Validator;
 
 public class IsIn<T> extends AbstractListValueCondition<T>
-        implements AbstractListValueCondition.Filterable<T>, AbstractListValueCondition.Mappable<T>{
+        implements AbstractListValueCondition.Filterable<T>, AbstractListValueCondition.Mappable<T> {
     private static final IsIn<?> EMPTY = new IsIn<>(Collections.emptyList());
 
     public static <T> IsIn<T> empty() {
@@ -51,12 +52,12 @@ public class IsIn<T> extends AbstractListValueCondition<T>
     }
 
     @Override
-    public IsIn<T> filter(Predicate<? super T> predicate) {
+    public IsIn<T> filter(Predicate<? super @NonNull T> predicate) {
         return filterSupport(predicate, IsIn::new, this, IsIn::empty);
     }
 
     @Override
-    public <R> IsIn<R> map(Function<? super T, ? extends R> mapper) {
+    public <R> IsIn<R> map(Function<? super @NonNull T, ? extends @NonNull R> mapper) {
         return mapSupport(mapper, IsIn::new, IsIn::empty);
     }
 

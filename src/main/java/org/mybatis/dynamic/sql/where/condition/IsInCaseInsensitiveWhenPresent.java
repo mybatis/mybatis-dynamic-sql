@@ -18,10 +18,11 @@ package org.mybatis.dynamic.sql.where.condition;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.function.Function;
 import java.util.Objects;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
+import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import org.mybatis.dynamic.sql.AbstractListValueCondition;
 import org.mybatis.dynamic.sql.util.StringUtilities;
@@ -48,21 +49,26 @@ public class IsInCaseInsensitiveWhenPresent<T> extends AbstractListValueConditio
     }
 
     @Override
-    public IsInCaseInsensitiveWhenPresent<T> filter(Predicate<? super T> predicate) {
+    public IsInCaseInsensitiveWhenPresent<T> filter(Predicate<? super @NonNull T> predicate) {
         return filterSupport(predicate, IsInCaseInsensitiveWhenPresent::new, this,
                 IsInCaseInsensitiveWhenPresent::empty);
     }
 
     @Override
-    public <R> IsInCaseInsensitiveWhenPresent<R> map(Function<? super T, ? extends R> mapper) {
+    public <R> IsInCaseInsensitiveWhenPresent<R> map(Function<? super @NonNull T, ? extends @Nullable R> mapper) {
         return mapSupport(mapper, IsInCaseInsensitiveWhenPresent::new, IsInCaseInsensitiveWhenPresent::empty);
     }
 
-    public static IsInCaseInsensitiveWhenPresent<String> of(@Nullable String... values) {
+    @SafeVarargs
+    public static <T> IsInCaseInsensitiveWhenPresent<T> of(@Nullable T... values) {
         return of(Arrays.asList(values));
     }
 
-    public static IsInCaseInsensitiveWhenPresent<String> of(Collection<@Nullable String> values) {
-        return new IsInCaseInsensitiveWhenPresent<>(values);
+    public static <T> IsInCaseInsensitiveWhenPresent<T> of(@Nullable Collection<@Nullable T> values) {
+        if (values == null) {
+            return empty();
+        } else {
+            return new IsInCaseInsensitiveWhenPresent<>(values);
+        }
     }
 }

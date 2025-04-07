@@ -745,7 +745,7 @@ class AnimalDataTest {
 
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
-                    .where(animalName, isInCaseInsensitive("yellow-bellied marmot", "verbet", null))
+                    .where(animalName, isInCaseInsensitiveWhenPresent("yellow-bellied marmot", "verbet", null))
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
 
@@ -793,12 +793,12 @@ class AnimalDataTest {
 
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
-                    .where(animalName, isNotInCaseInsensitive((String) null))
-                    .build()
+                    .where(animalName, isNotInCaseInsensitiveWhenPresent((String) null))
+                    .configureStatement(c -> c.setNonRenderingWhereClauseAllowed(true))                    .build()
                     .render(RenderingStrategies.MYBATIS3);
 
             List<AnimalData> animals = mapper.selectMany(selectStatement);
-            assertThat(animals).isEmpty();
+            assertThat(animals).hasSize(65);
         }
     }
 
@@ -826,7 +826,7 @@ class AnimalDataTest {
         SelectModel selectModel = select(id, animalName, bodyWeight, brainWeight)
                 .from(animalData)
                 .where(id, isNotInWhenPresent(null, 22, null)
-                        .filter(Objects::nonNull).filter(i -> i != 22))
+                        .filter(i -> i != 22))
                 .build();
 
         assertThatExceptionOfType(NonRenderingWhereClauseException.class).isThrownBy(() ->
