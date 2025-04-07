@@ -34,6 +34,7 @@ import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
@@ -43,7 +44,7 @@ class OptionalConditionsAnimalDataTest {
 
     private static final String JDBC_URL = "jdbc:hsqldb:mem:aname";
     private static final String JDBC_DRIVER = "org.hsqldb.jdbcDriver";
-    private static final Integer NULL_INTEGER = null;
+    private static final @Nullable Integer NULL_INTEGER = null;
 
     private SqlSessionFactory sqlSessionFactory;
 

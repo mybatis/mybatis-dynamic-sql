@@ -22,11 +22,11 @@ import java.util.Objects;
 import org.jspecify.annotations.Nullable;
 import org.mybatis.dynamic.sql.SqlBuilder;
 import org.mybatis.dynamic.sql.where.condition.IsIn;
+import org.mybatis.dynamic.sql.where.condition.IsInWhenPresent;
 
 public class MyInCondition {
-    public static IsIn<String> isIn(@Nullable String...values) {
-        return SqlBuilder.isIn(values)
-                .filter(Objects::nonNull)
+    public static IsInWhenPresent<String> isIn(@Nullable String...values) {
+        return SqlBuilder.isInWhenPresent(values)
                 .map(String::trim)
                 .filter(not(String::isEmpty));
     }
