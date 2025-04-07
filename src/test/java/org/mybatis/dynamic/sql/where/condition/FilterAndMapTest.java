@@ -20,7 +20,6 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Objects;
 
 import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.SqlBuilder;
@@ -34,16 +33,8 @@ class FilterAndMapTest {
     }
 
     @Test
-    void testTypeConversionWithNullThrowsException() {
-        var cond = SqlBuilder.isEqualTo((String) null);
-        assertThatExceptionOfType(NumberFormatException.class).isThrownBy(() ->
-                cond.map(Integer::parseInt)
-        );
-    }
-
-    @Test
     void testTypeConversionWithNullAndFilterDoesNotThrowException() {
-        var cond = SqlBuilder.isEqualTo((String) null).filter(Objects::nonNull).map(Integer::parseInt);
+        var cond = SqlBuilder.isEqualToWhenPresent((String) null).map(Integer::parseInt);
         assertThat(cond.isEmpty()).isTrue();
     }
 
@@ -479,17 +470,17 @@ class FilterAndMapTest {
 
     @Test
     void testBetweenUnRenderableFirstNullFilterShouldReturnSameObject() {
-        IsBetween<Integer> cond = SqlBuilder.isBetween((Integer) null).and(4).filter(Objects::nonNull);
+        IsBetweenWhenPresent<Integer> cond = SqlBuilder.isBetweenWhenPresent((Integer) null).and(4);
         assertThat(cond.isEmpty()).isTrue();
-        IsBetween<Integer> filtered = cond.filter(v -> true);
+        IsBetweenWhenPresent<Integer> filtered = cond.filter(v -> true);
         assertThat(cond).isSameAs(filtered);
     }
 
     @Test
     void testBetweenUnRenderableSecondNullFilterShouldReturnSameObject() {
-        IsBetween<Integer> cond = SqlBuilder.isBetween(3).and((Integer) null).filter(Objects::nonNull);
+        IsBetweenWhenPresent<Integer> cond = SqlBuilder.isBetweenWhenPresent(3).and((Integer) null);
         assertThat(cond.isEmpty()).isTrue();
-        IsBetween<Integer> filtered = cond.filter(v -> true);
+        IsBetweenWhenPresent<Integer> filtered = cond.filter(v -> true);
         assertThat(cond).isSameAs(filtered);
     }
 
@@ -511,17 +502,17 @@ class FilterAndMapTest {
 
     @Test
     void testNotBetweenUnRenderableFirstNullFilterShouldReturnSameObject() {
-        IsNotBetween<Integer> cond = SqlBuilder.isNotBetween((Integer) null).and(4).filter(Objects::nonNull);
+        IsNotBetweenWhenPresent<Integer> cond = SqlBuilder.isNotBetweenWhenPresent((Integer) null).and(4);
         assertThat(cond.isEmpty()).isTrue();
-        IsNotBetween<Integer> filtered = cond.filter(v -> true);
+        IsNotBetweenWhenPresent<Integer> filtered = cond.filter(v -> true);
         assertThat(cond).isSameAs(filtered);
     }
 
     @Test
     void testNotBetweenUnRenderableSecondNullFilterShouldReturnSameObject() {
-        IsNotBetween<Integer> cond = SqlBuilder.isNotBetween(3).and((Integer) null).filter(Objects::nonNull);
+        IsNotBetweenWhenPresent<Integer> cond = SqlBuilder.isNotBetweenWhenPresent(3).and((Integer) null);
         assertThat(cond.isEmpty()).isTrue();
-        IsNotBetween<Integer> filtered = cond.filter(v -> true);
+        IsNotBetweenWhenPresent<Integer> filtered = cond.filter(v -> true);
         assertThat(cond).isSameAs(filtered);
     }
 

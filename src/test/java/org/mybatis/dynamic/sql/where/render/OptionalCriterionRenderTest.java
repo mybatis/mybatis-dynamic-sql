@@ -19,7 +19,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.entry;
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
 
-import java.util.Objects;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
@@ -49,7 +48,7 @@ class OptionalCriterionRenderTest {
     void testNoRenderableCriteriaWithIf() {
         Integer nullId = null;
 
-        Optional<WhereClauseProvider> whereClause = where(id, isEqualTo(nullId).filter(Objects::nonNull))
+        Optional<WhereClauseProvider> whereClause = where(id, isEqualToWhenPresent(nullId))
                 .configureStatement(c -> c.setNonRenderingWhereClauseAllowed(true))
                 .build()
                 .render(RenderingStrategies.SPRING_NAMED_PARAMETER);

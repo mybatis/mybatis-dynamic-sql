@@ -438,4 +438,94 @@ public class NullContractTest {
         assertThat(mapped.isEmpty()).isTrue();
         assertThat(mapped.values().toList()).isEmpty();
     }
+
+    @SuppressWarnings("DataFlowIssue") // we are deliberately passing nulls into non-null methods for testing
+    @Test
+    void testIsBetweenNull() {
+        IsBetween<Integer> cond = SqlBuilder.isBetween(() -> (Integer) null).and(() -> null);
+        assertThat(cond.value1()).isNull();
+        assertThat(cond.value2()).isNull();
+        assertThat(cond.isEmpty()).isFalse();
+    }
+
+    @SuppressWarnings("DataFlowIssue") // we are deliberately passing nulls into non-null methods for testing
+    @Test
+    void testIsNotBetweenNull() {
+        IsNotBetween<Integer> cond = SqlBuilder.isNotBetween(() -> (Integer) null).and(() -> null);
+        assertThat(cond.value1()).isNull();
+        assertThat(cond.value2()).isNull();
+        assertThat(cond.isEmpty()).isFalse();
+    }
+
+    @SuppressWarnings("DataFlowIssue") // we are deliberately passing nulls into non-null methods for testing
+    @Test
+    void testIsNotEqualToNull() {
+        IsNotEqualTo<Integer> cond = SqlBuilder.isNotEqualTo(() -> (Integer) null);
+        assertThat(cond.value()).isNull();
+        assertThat(cond.isEmpty()).isFalse();
+    }
+
+    @SuppressWarnings("DataFlowIssue") // we are deliberately passing nulls into non-null methods for testing
+    @Test
+    void testIsGreaterThanNull() {
+        IsGreaterThan<Integer> cond = SqlBuilder.isGreaterThan(() -> (Integer) null);
+        assertThat(cond.value()).isNull();
+        assertThat(cond.isEmpty()).isFalse();
+    }
+
+    @SuppressWarnings("DataFlowIssue") // we are deliberately passing nulls into non-null methods for testing
+    @Test
+    void testIsGreaterThanOrEqualToNull() {
+        IsGreaterThanOrEqualTo<Integer> cond = SqlBuilder.isGreaterThanOrEqualTo(() -> (Integer) null);
+        assertThat(cond.value()).isNull();
+        assertThat(cond.isEmpty()).isFalse();
+    }
+
+    @SuppressWarnings("DataFlowIssue") // we are deliberately passing nulls into non-null methods for testing
+    @Test
+    void testIsLessThanNull() {
+        IsLessThan<Integer> cond = SqlBuilder.isLessThan(() -> (Integer) null);
+        assertThat(cond.value()).isNull();
+        assertThat(cond.isEmpty()).isFalse();
+    }
+
+    @SuppressWarnings("DataFlowIssue") // we are deliberately passing nulls into non-null methods for testing
+    @Test
+    void testIsLessThanOrEqualToNull() {
+        IsLessThanOrEqualTo<Integer> cond = SqlBuilder.isLessThanOrEqualTo(() -> (Integer) null);
+        assertThat(cond.value()).isNull();
+        assertThat(cond.isEmpty()).isFalse();
+    }
+
+    @SuppressWarnings("DataFlowIssue") // we are deliberately passing nulls into non-null methods for testing
+    @Test
+    void testIsLikeNull() {
+        IsLike<String> cond = SqlBuilder.isLike(() -> null);
+        assertThat(cond.value()).isNull();
+        assertThat(cond.isEmpty()).isFalse();
+    }
+
+    @SuppressWarnings("DataFlowIssue") // we are deliberately passing nulls into non-null methods for testing
+    @Test
+    void testIsLikeCaseInsensitiveNull() {
+        IsLikeCaseInsensitive<String> cond = SqlBuilder.isLikeCaseInsensitive(() -> null);
+        assertThat(cond.value()).isNull();
+        assertThat(cond.isEmpty()).isFalse();
+    }
+
+    @SuppressWarnings("DataFlowIssue") // we are deliberately passing nulls into non-null methods for testing
+    @Test
+    void testIsNotLikeNull() {
+        IsNotLike<String> cond = SqlBuilder.isNotLike(() -> null);
+        assertThat(cond.value()).isNull();
+        assertThat(cond.isEmpty()).isFalse();
+    }
+
+    @SuppressWarnings("DataFlowIssue") // we are deliberately passing nulls into non-null methods for testing
+    @Test
+    void testIsNotLikeCaseInsensitiveNull() {
+        IsNotLikeCaseInsensitive<String> cond = SqlBuilder.isNotLikeCaseInsensitive(() -> null);
+        assertThat(cond.value()).isNull();
+        assertThat(cond.isEmpty()).isFalse();
+    }
 }

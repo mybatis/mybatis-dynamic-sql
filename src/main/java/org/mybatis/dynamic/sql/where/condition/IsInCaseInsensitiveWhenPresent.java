@@ -22,6 +22,7 @@ import java.util.function.Function;
 import java.util.Objects;
 import java.util.function.Predicate;
 
+import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import org.mybatis.dynamic.sql.AbstractListValueCondition;
 import org.mybatis.dynamic.sql.util.StringUtilities;
@@ -48,13 +49,13 @@ public class IsInCaseInsensitiveWhenPresent<T> extends AbstractListValueConditio
     }
 
     @Override
-    public IsInCaseInsensitiveWhenPresent<T> filter(Predicate<? super T> predicate) {
+    public IsInCaseInsensitiveWhenPresent<T> filter(Predicate<? super @NonNull T> predicate) {
         return filterSupport(predicate, IsInCaseInsensitiveWhenPresent::new, this,
                 IsInCaseInsensitiveWhenPresent::empty);
     }
 
     @Override
-    public <R> IsInCaseInsensitiveWhenPresent<R> map(Function<? super T, ? extends @Nullable R> mapper) {
+    public <R> IsInCaseInsensitiveWhenPresent<R> map(Function<? super @NonNull T, ? extends @Nullable R> mapper) {
         return mapSupport(mapper, IsInCaseInsensitiveWhenPresent::new, IsInCaseInsensitiveWhenPresent::empty);
     }
 
@@ -64,7 +65,7 @@ public class IsInCaseInsensitiveWhenPresent<T> extends AbstractListValueConditio
     }
 
     public static <T> IsInCaseInsensitiveWhenPresent<T> of(@Nullable Collection<@Nullable T> values) {
-        if (values == null || values.isEmpty()) {
+        if (values == null) {
             return empty();
         } else {
             return new IsInCaseInsensitiveWhenPresent<>(values);

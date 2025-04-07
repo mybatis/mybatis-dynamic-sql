@@ -21,6 +21,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
+import org.jspecify.annotations.NonNull;
 import org.mybatis.dynamic.sql.render.RenderedParameterInfo;
 import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
@@ -88,7 +89,7 @@ public abstract class AbstractSingleValueCondition<T> implements RenderableCondi
          * @return this condition if renderable and the value matches the predicate, otherwise a condition
          *     that will not render.
          */
-        AbstractSingleValueCondition<T> filter(Predicate<? super T> predicate);
+        AbstractSingleValueCondition<T> filter(Predicate<? super @NonNull T> predicate);
     }
 
     /**
@@ -113,6 +114,6 @@ public abstract class AbstractSingleValueCondition<T> implements RenderableCondi
          * @return a new condition with the result of applying the mapper to the value of this condition,
          *     if renderable, otherwise a condition that will not render.
          */
-        <R> AbstractSingleValueCondition<R> map(Function<? super T, ? extends R> mapper);
+        <R> AbstractSingleValueCondition<R> map(Function<? super @NonNull T, ? extends R> mapper);
     }
 }

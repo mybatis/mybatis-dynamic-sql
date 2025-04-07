@@ -19,6 +19,7 @@ import java.util.NoSuchElementException;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+import org.jspecify.annotations.NonNull;
 import org.mybatis.dynamic.sql.AbstractSingleValueCondition;
 
 public class IsGreaterThan<T> extends AbstractSingleValueCondition<T>
@@ -55,12 +56,12 @@ public class IsGreaterThan<T> extends AbstractSingleValueCondition<T>
     }
 
     @Override
-    public IsGreaterThan<T> filter(Predicate<? super T> predicate) {
+    public IsGreaterThan<T> filter(Predicate<? super @NonNull T> predicate) {
         return filterSupport(predicate, IsGreaterThan::empty, this);
     }
 
     @Override
-    public <R> IsGreaterThan<R> map(Function<? super T, ? extends R> mapper) {
+    public <R> IsGreaterThan<R> map(Function<? super @NonNull T, ? extends @NonNull R> mapper) {
         return mapSupport(mapper, IsGreaterThan::new, IsGreaterThan::empty);
     }
 }

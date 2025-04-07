@@ -22,6 +22,7 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import org.mybatis.dynamic.sql.AbstractListValueCondition;
 
@@ -45,12 +46,12 @@ public class IsInWhenPresent<T> extends AbstractListValueCondition<T>
     }
 
     @Override
-    public IsInWhenPresent<T> filter(Predicate<? super T> predicate) {
+    public IsInWhenPresent<T> filter(Predicate<? super @NonNull T> predicate) {
         return filterSupport(predicate, IsInWhenPresent::new, this, IsInWhenPresent::empty);
     }
 
     @Override
-    public <R> IsInWhenPresent<R> map(Function<? super T, ? extends @Nullable R> mapper) {
+    public <R> IsInWhenPresent<R> map(Function<? super @NonNull T, ? extends @Nullable R> mapper) {
         return mapSupport(mapper, IsInWhenPresent::of, IsInWhenPresent::empty);
     }
 
@@ -60,7 +61,7 @@ public class IsInWhenPresent<T> extends AbstractListValueCondition<T>
     }
 
     public static <T> IsInWhenPresent<T> of(@Nullable Collection<@Nullable T> values) {
-        if (values == null || values.isEmpty()) {
+        if (values == null) {
             return empty();
         } else {
             return new IsInWhenPresent<>(values);

@@ -35,14 +35,6 @@ class SupplierTest {
     }
 
     @Test
-    void testIsBetweenNull() {
-        IsBetween<Integer> cond = SqlBuilder.isBetween(() -> (Integer) null).and(() -> null);
-        assertThat(cond.value1()).isNull();
-        assertThat(cond.value2()).isNull();
-        assertThat(cond.isEmpty()).isFalse();
-    }
-
-    @Test
     void testIsBetweenWhenPresent() {
         IsBetweenWhenPresent<Integer> cond = SqlBuilder.isBetweenWhenPresent(() -> 3).and(() -> 4);
         assertThat(cond.value1()).isEqualTo(3);
@@ -63,14 +55,6 @@ class SupplierTest {
         IsNotBetween<Integer> cond = SqlBuilder.isNotBetween(() -> 3).and(() -> 4);
         assertThat(cond.value1()).isEqualTo(3);
         assertThat(cond.value2()).isEqualTo(4);
-        assertThat(cond.isEmpty()).isFalse();
-    }
-
-    @Test
-    void testIsNotBetweenNull() {
-        IsNotBetween<Integer> cond = SqlBuilder.isNotBetween(() -> (Integer) null).and(() -> null);
-        assertThat(cond.value1()).isNull();
-        assertThat(cond.value2()).isNull();
         assertThat(cond.isEmpty()).isFalse();
     }
 
@@ -112,13 +96,6 @@ class SupplierTest {
     }
 
     @Test
-    void testIsNotEqualToNull() {
-        IsNotEqualTo<Integer> cond = SqlBuilder.isNotEqualTo(() -> (Integer) null);
-        assertThat(cond.value()).isNull();
-        assertThat(cond.isEmpty()).isFalse();
-    }
-
-    @Test
     void testIsNotEqualToWhenPresent() {
         IsNotEqualToWhenPresent<Integer> cond = SqlBuilder.isNotEqualToWhenPresent(() -> 3);
         assertThat(cond.value()).isEqualTo(3);
@@ -136,13 +113,6 @@ class SupplierTest {
     void testIsGreaterThan() {
         IsGreaterThan<Integer> cond = SqlBuilder.isGreaterThan(() -> 3);
         assertThat(cond.value()).isEqualTo(3);
-        assertThat(cond.isEmpty()).isFalse();
-    }
-
-    @Test
-    void testIsGreaterThanNull() {
-        IsGreaterThan<Integer> cond = SqlBuilder.isGreaterThan(() -> (Integer) null);
-        assertThat(cond.value()).isNull();
         assertThat(cond.isEmpty()).isFalse();
     }
 
@@ -168,13 +138,6 @@ class SupplierTest {
     }
 
     @Test
-    void testIsGreaterThanOrEqualToNull() {
-        IsGreaterThanOrEqualTo<Integer> cond = SqlBuilder.isGreaterThanOrEqualTo(() -> (Integer) null);
-        assertThat(cond.value()).isNull();
-        assertThat(cond.isEmpty()).isFalse();
-    }
-
-    @Test
     void testIsGreaterThanOrEqualToWhenPresent() {
         IsGreaterThanOrEqualToWhenPresent<Integer> cond = SqlBuilder.isGreaterThanOrEqualToWhenPresent(() -> 3);
         assertThat(cond.value()).isEqualTo(3);
@@ -192,13 +155,6 @@ class SupplierTest {
     void testIsLessThan() {
         IsLessThan<Integer> cond = SqlBuilder.isLessThan(() -> 3);
         assertThat(cond.value()).isEqualTo(3);
-        assertThat(cond.isEmpty()).isFalse();
-    }
-
-    @Test
-    void testIsLessThanNull() {
-        IsLessThan<Integer> cond = SqlBuilder.isLessThan(() -> (Integer) null);
-        assertThat(cond.value()).isNull();
         assertThat(cond.isEmpty()).isFalse();
     }
 
@@ -224,13 +180,6 @@ class SupplierTest {
     }
 
     @Test
-    void testIsLessThanOrEqualToNull() {
-        IsLessThanOrEqualTo<Integer> cond = SqlBuilder.isLessThanOrEqualTo(() -> (Integer) null);
-        assertThat(cond.value()).isNull();
-        assertThat(cond.isEmpty()).isFalse();
-    }
-
-    @Test
     void testIsLessThanOrEqualToWhenPresent() {
         IsLessThanOrEqualToWhenPresent<Integer> cond = SqlBuilder.isLessThanOrEqualToWhenPresent(() -> 3);
         assertThat(cond.value()).isEqualTo(3);
@@ -252,23 +201,9 @@ class SupplierTest {
     }
 
     @Test
-    void testIsLikeNull() {
-        IsLike<String> cond = SqlBuilder.isLike(() -> null);
-        assertThat(cond.value()).isNull();
-        assertThat(cond.isEmpty()).isFalse();
-    }
-
-    @Test
     void testIsLikeCaseInsensitive() {
         IsLikeCaseInsensitive<String> cond = SqlBuilder.isLikeCaseInsensitive(() -> "%f%");
         assertThat(cond.value()).isEqualTo("%F%");
-        assertThat(cond.isEmpty()).isFalse();
-    }
-
-    @Test
-    void testIsLikeCaseInsensitiveNull() {
-        IsLikeCaseInsensitive<String> cond = SqlBuilder.isLikeCaseInsensitive(() -> null);
-        assertThat(cond.value()).isNull();
         assertThat(cond.isEmpty()).isFalse();
     }
 
@@ -308,13 +243,6 @@ class SupplierTest {
     }
 
     @Test
-    void testIsNotLikeNull() {
-        IsNotLike<String> cond = SqlBuilder.isNotLike(() -> null);
-        assertThat(cond.value()).isNull();
-        assertThat(cond.isEmpty()).isFalse();
-    }
-
-    @Test
     void testIsNotLikeWhenPresent() {
         IsNotLikeWhenPresent<String> cond = SqlBuilder.isNotLikeWhenPresent(() -> "%F%");
         assertThat(cond.value()).isEqualTo("%F%");
@@ -332,13 +260,6 @@ class SupplierTest {
     void testIsNotLikeCaseInsensitive() {
         IsNotLikeCaseInsensitive<String> cond = SqlBuilder.isNotLikeCaseInsensitive(() -> "%f%");
         assertThat(cond.value()).isEqualTo("%F%");
-        assertThat(cond.isEmpty()).isFalse();
-    }
-
-    @Test
-    void testIsNotLikeCaseInsensitiveNull() {
-        IsNotLikeCaseInsensitive<String> cond = SqlBuilder.isNotLikeCaseInsensitive(() -> null);
-        assertThat(cond.value()).isNull();
         assertThat(cond.isEmpty()).isFalse();
     }
 

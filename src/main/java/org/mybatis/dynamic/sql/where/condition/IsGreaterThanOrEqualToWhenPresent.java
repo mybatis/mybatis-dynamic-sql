@@ -19,6 +19,7 @@ import java.util.NoSuchElementException;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import org.mybatis.dynamic.sql.AbstractSingleValueCondition;
 
@@ -60,12 +61,12 @@ public class IsGreaterThanOrEqualToWhenPresent<T> extends AbstractSingleValueCon
     }
 
     @Override
-    public IsGreaterThanOrEqualToWhenPresent<T> filter(Predicate<? super T> predicate) {
+    public IsGreaterThanOrEqualToWhenPresent<T> filter(Predicate<? super @NonNull T> predicate) {
         return filterSupport(predicate, IsGreaterThanOrEqualToWhenPresent::empty, this);
     }
 
     @Override
-    public <R> IsGreaterThanOrEqualToWhenPresent<R> map(Function<? super T, ? extends @Nullable R> mapper) {
+    public <R> IsGreaterThanOrEqualToWhenPresent<R> map(Function<? super @NonNull T, ? extends @Nullable R> mapper) {
         return mapSupport(mapper, IsGreaterThanOrEqualToWhenPresent::of, IsGreaterThanOrEqualToWhenPresent::empty);
     }
 }
