@@ -76,6 +76,8 @@
 
     <sonar.sources>pom.xml,src/main/java,src/main/kotlin</sonar.sources>
     <sonar.tests>src/test/java,src/test/kotlin</sonar.tests>
+    <!-- setup sonar to run locally by default -->
+    <sonar.host.url>http://localhost:9000</sonar.host.url>
 
     <kotlin.code.style>official</kotlin.code.style>
     <test.containers.version>1.20.6</test.containers.version>
