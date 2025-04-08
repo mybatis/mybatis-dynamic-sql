@@ -13,8 +13,7 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package examples.joins;
+@NullMarked
+package examples.type_conversion;
 
-import org.jspecify.annotations.Nullable;
-
-public record User (Integer userId, String userName, @Nullable Integer parentId) {}
+import org.jspecify.annotations.NullMarked;

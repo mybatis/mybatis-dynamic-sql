@@ -17,7 +17,7 @@ package examples.joins;
 
 import java.util.List;
 
-import org.apache.ibatis.annotations.Result;
+import org.apache.ibatis.annotations.Arg;
 import org.apache.ibatis.annotations.ResultMap;
 import org.apache.ibatis.annotations.SelectProvider;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
@@ -29,8 +29,8 @@ public interface JoinMapper {
     List<OrderMaster> selectMany(SelectStatementProvider selectStatement);
 
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
-    @Result(column="user_id", property="userId")
-    @Result(column="user_name", property="userName")
-    @Result(column="parent_id", property="parentId")
+    @Arg(column="user_id", javaType = Integer.class)
+    @Arg(column="user_name", javaType = String.class)
+    @Arg(column="parent_id", javaType = Integer.class)
     List<User> selectUsers(SelectStatementProvider selectStatement);
 }

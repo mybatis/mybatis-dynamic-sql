@@ -945,9 +945,9 @@ class JoinMapperTest {
 
             assertThat(rows).hasSize(1);
             User row = rows.get(0);
-            assertThat(row.getUserId()).isEqualTo(2);
-            assertThat(row.getUserName()).isEqualTo("Barney");
-            assertThat(row.getParentId()).isNull();
+            assertThat(row.userId()).isEqualTo(2);
+            assertThat(row.userName()).isEqualTo("Barney");
+            assertThat(row.parentId()).isNull();
         }
     }
 
@@ -985,9 +985,9 @@ class JoinMapperTest {
 
             assertThat(rows).hasSize(1);
             User row = rows.get(0);
-            assertThat(row.getUserId()).isEqualTo(2);
-            assertThat(row.getUserName()).isEqualTo("Barney");
-            assertThat(row.getParentId()).isNull();
+            assertThat(row.userId()).isEqualTo(2);
+            assertThat(row.userName()).isEqualTo("Barney");
+            assertThat(row.parentId()).isNull();
         }
     }
 
@@ -1016,9 +1016,9 @@ class JoinMapperTest {
 
             assertThat(rows).hasSize(1);
             User row = rows.get(0);
-            assertThat(row.getUserId()).isEqualTo(2);
-            assertThat(row.getUserName()).isEqualTo("Barney");
-            assertThat(row.getParentId()).isNull();
+            assertThat(row.userId()).isEqualTo(2);
+            assertThat(row.userName()).isEqualTo("Barney");
+            assertThat(row.parentId()).isNull();
         }
     }
 
