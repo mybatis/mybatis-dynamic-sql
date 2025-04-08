@@ -97,15 +97,15 @@ class JoinSubQueryTest {
             assertThat(orderMaster.getId()).isEqualTo(1);
             assertThat(orderMaster.getDetails()).hasSize(2);
             OrderDetail orderDetail = orderMaster.getDetails().get(0);
-            assertThat(orderDetail.getLineNumber()).isEqualTo(1);
+            assertThat(orderDetail.lineNumber()).isEqualTo(1);
             orderDetail = orderMaster.getDetails().get(1);
-            assertThat(orderDetail.getLineNumber()).isEqualTo(2);
+            assertThat(orderDetail.lineNumber()).isEqualTo(2);
 
             orderMaster = rows.get(1);
             assertThat(orderMaster.getId()).isEqualTo(2);
             assertThat(orderMaster.getDetails()).hasSize(1);
             orderDetail = orderMaster.getDetails().get(0);
-            assertThat(orderDetail.getLineNumber()).isEqualTo(1);
+            assertThat(orderDetail.lineNumber()).isEqualTo(1);
         }
     }
 
@@ -143,9 +143,9 @@ class JoinSubQueryTest {
             assertThat(orderMaster.getId()).isEqualTo(2);
             assertThat(orderMaster.getDetails()).hasSize(2);
             OrderDetail orderDetail = orderMaster.getDetails().get(0);
-            assertThat(orderDetail.getLineNumber()).isEqualTo(1);
+            assertThat(orderDetail.lineNumber()).isEqualTo(1);
             orderDetail = orderMaster.getDetails().get(1);
-            assertThat(orderDetail.getLineNumber()).isEqualTo(2);
+            assertThat(orderDetail.lineNumber()).isEqualTo(2);
         }
     }
 
@@ -180,10 +180,10 @@ class JoinSubQueryTest {
             assertThat(orderMaster.getDetails()).hasSize(2);
 
             OrderDetail orderDetail = orderMaster.getDetails().get(0);
-            assertThat(orderDetail.getLineNumber()).isEqualTo(1);
+            assertThat(orderDetail.lineNumber()).isEqualTo(1);
 
             orderDetail = orderMaster.getDetails().get(1);
-            assertThat(orderDetail.getLineNumber()).isEqualTo(2);
+            assertThat(orderDetail.lineNumber()).isEqualTo(2);
         }
     }
 

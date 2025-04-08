@@ -22,10 +22,12 @@
     <id column="order_id" jdbcType="INTEGER" property="id" />
     <result column="order_date" jdbcType="DATE" property="orderDate" />
     <collection property="details" ofType="examples.joins.OrderDetail">
-      <id column="order_id" jdbcType="INTEGER" property="orderId"/>
-      <id column="line_number" jdbcType="INTEGER" property="lineNumber"/>
-      <result column="description" jdbcType="VARCHAR" property="description"/>
-      <result column="quantity" jdbcType="INTEGER" property="quantity"/>
+      <constructor>
+        <idArg column="order_id" jdbcType="INTEGER" javaType="Integer" />
+        <idArg column="line_number" jdbcType="INTEGER" javaType="Integer" />
+        <arg column="description" jdbcType="VARCHAR" javaType="String" />
+        <arg column="quantity" jdbcType="INTEGER" javaType="Integer" />
+      </constructor>
     </collection>
   </resultMap>
 </mapper>
