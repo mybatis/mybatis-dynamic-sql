@@ -13,25 +13,7 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
+@NullMarked
 package examples.mysql;
 
-import java.util.Objects;
-
-import org.mybatis.dynamic.sql.AbstractNoValueCondition;
-
-public class MemberOfCondition<T> extends AbstractNoValueCondition<T> {
-    private final String jsonArray;
-
-    protected MemberOfCondition(String jsonArray) {
-        this.jsonArray = Objects.requireNonNull(jsonArray);
-    }
-
-    @Override
-    public String operator() {
-        return "member of(" + jsonArray + ")";
-    }
-
-    public static <T> MemberOfCondition<T> memberOf(String jsonArray) {
-        return new MemberOfCondition<>(jsonArray);
-    }
-}
+import org.jspecify.annotations.NullMarked;

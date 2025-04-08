@@ -17,14 +17,12 @@ package examples.mysql;
 
 import java.util.Objects;
 
-import org.jspecify.annotations.NullMarked;
 import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.BindableColumn;
 import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.select.function.AbstractTypeConvertingFunction;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 
-@NullMarked
 public class MemberOfFunction<T> extends AbstractTypeConvertingFunction<T, Long, MemberOfFunction<T>> {
 
     private final String jsonArray;

@@ -34,6 +34,7 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
@@ -51,10 +52,10 @@ class MySQLTest {
             new MySQLContainer<>(TestContainersConfiguration.MYSQL_LATEST)
                     .withInitScript("examples/mariadb/CreateDB.sql");
 
-    private static SqlSessionFactory sqlSessionFactory;
+    private SqlSessionFactory sqlSessionFactory;
 
-    @BeforeAll
-    static void setup() {
+    @BeforeEach
+    void setup() {
         UnpooledDataSource ds = new UnpooledDataSource(mysql.getDriverClassName(), mysql.getJdbcUrl(),
                 mysql.getUsername(), mysql.getPassword());
         Environment environment = new Environment("test", new JdbcTransactionFactory(), ds);
