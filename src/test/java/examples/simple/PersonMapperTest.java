@@ -245,8 +245,8 @@ class PersonMapperTest {
                     c.where(firstName, isIn("Fred", "Barney")));
 
             assertThat(rows).hasSize(2);
-            assertThat(rows.get(0).getLastName().getName()).isEqualTo("Flintstone");
-            assertThat(rows.get(1).getLastName().getName()).isEqualTo("Rubble");
+            assertThat(rows.get(0).getLastName().name()).isEqualTo("Flintstone");
+            assertThat(rows.get(1).getLastName().name()).isEqualTo("Rubble");
         }
     }
 
@@ -263,8 +263,8 @@ class PersonMapperTest {
             );
 
             assertThat(rows).hasSize(2);
-            assertThat(rows.get(0).getLastName().getName()).isEqualTo("Rubble");
-            assertThat(rows.get(1).getLastName().getName()).isEqualTo("Flintstone");
+            assertThat(rows.get(0).getLastName().name()).isEqualTo("Rubble");
+            assertThat(rows.get(1).getLastName().name()).isEqualTo("Flintstone");
         }
     }
 
@@ -321,7 +321,7 @@ class PersonMapperTest {
             PersonRecord row = new PersonRecord();
             row.setId(100);
             row.setFirstName("Joe");
-            row.setLastName(LastName.of("Jones"));
+            row.setLastName(new LastName("Jones"));
             row.setBirthDate(new Date());
             row.setEmployed(true);
             row.setOccupation("Developer");
@@ -339,7 +339,7 @@ class PersonMapperTest {
             int rows = mapper.generalInsert(c ->
                 c.set(id).toValue(100)
                 .set(firstName).toValue("Joe")
-                .set(lastName).toValue(LastName.of("Jones"))
+                .set(lastName).toValue(new LastName("Jones"))
                 .set(birthDate).toValue(new Date())
                 .set(employed).toValue(true)
                 .set(occupation).toValue("Developer")
@@ -360,7 +360,7 @@ class PersonMapperTest {
             PersonRecord row = new PersonRecord();
             row.setId(100);
             row.setFirstName("Joe");
-            row.setLastName(LastName.of("Jones"));
+            row.setLastName(new LastName("Jones"));
             row.setBirthDate(new Date());
             row.setEmployed(true);
             row.setOccupation("Developer");
@@ -370,7 +370,7 @@ class PersonMapperTest {
             row = new PersonRecord();
             row.setId(101);
             row.setFirstName("Sarah");
-            row.setLastName(LastName.of("Smith"));
+            row.setLastName(new LastName("Smith"));
             row.setBirthDate(new Date());
             row.setEmployed(true);
             row.setOccupation("Architect");
@@ -389,7 +389,7 @@ class PersonMapperTest {
             PersonRecord row = new PersonRecord();
             row.setId(100);
             row.setFirstName("Joe");
-            row.setLastName(LastName.of("Jones"));
+            row.setLastName(new LastName("Jones"));
             row.setBirthDate(new Date());
             row.setEmployed(false);
             row.setAddressId(1);
@@ -406,7 +406,7 @@ class PersonMapperTest {
             PersonRecord row = new PersonRecord();
             row.setId(100);
             row.setFirstName("Joe");
-            row.setLastName(LastName.of("Jones"));
+            row.setLastName(new LastName("Jones"));
             row.setBirthDate(new Date());
             row.setEmployed(true);
             row.setOccupation("Developer");
@@ -432,7 +432,7 @@ class PersonMapperTest {
             PersonRecord row = new PersonRecord();
             row.setId(100);
             row.setFirstName("Joe");
-            row.setLastName(LastName.of("Jones"));
+            row.setLastName(new LastName("Jones"));
             row.setBirthDate(new Date());
             row.setEmployed(true);
             row.setOccupation("Developer");
@@ -462,7 +462,7 @@ class PersonMapperTest {
             PersonRecord row = new PersonRecord();
             row.setId(100);
             row.setFirstName("Joe");
-            row.setLastName(LastName.of("Jones"));
+            row.setLastName(new LastName("Jones"));
             row.setBirthDate(new Date());
             row.setEmployed(true);
             row.setOccupation("Developer");
@@ -493,7 +493,7 @@ class PersonMapperTest {
             PersonRecord row = new PersonRecord();
             row.setId(100);
             row.setFirstName("Joe");
-            row.setLastName(LastName.of("Jones"));
+            row.setLastName(new LastName("Jones"));
             row.setBirthDate(new Date());
             row.setEmployed(true);
             row.setOccupation("Developer");
@@ -521,7 +521,7 @@ class PersonMapperTest {
             PersonRecord row = new PersonRecord();
             row.setId(100);
             row.setFirstName("Joe");
-            row.setLastName(LastName.of("Jones"));
+            row.setLastName(new LastName("Jones"));
             row.setBirthDate(new Date());
             row.setEmployed(true);
             row.setOccupation("Developer");
@@ -550,7 +550,7 @@ class PersonMapperTest {
             PersonRecord row = new PersonRecord();
             row.setId(100);
             row.setFirstName("Joe");
-            row.setLastName(LastName.of("Jones"));
+            row.setLastName(new LastName("Jones"));
             row.setBirthDate(new Date());
             row.setEmployed(true);
             row.setOccupation("Developer");
@@ -620,7 +620,7 @@ class PersonMapperTest {
             PersonMapper mapper = session.getMapper(PersonMapper.class);
 
             List<PersonRecord> rows = mapper.select(c ->
-                    c.where(lastName, isLike(LastName.of("Fl%")))
+                    c.where(lastName, isLike(new LastName("Fl%")))
                     .orderBy(id));
 
             assertThat(rows).hasSize(3);
@@ -634,7 +634,7 @@ class PersonMapperTest {
             PersonMapper mapper = session.getMapper(PersonMapper.class);
 
             List<PersonRecord> rows = mapper.select(c ->
-                    c.where(lastName, isNotLike(LastName.of("Fl%")))
+                    c.where(lastName, isNotLike(new LastName("Fl%")))
                     .orderBy(id));
 
             assertThat(rows).hasSize(3);
@@ -654,7 +654,7 @@ class PersonMapperTest {
             assertThat(records.get(0).getId()).isEqualTo(1);
             assertThat(records.get(0).getEmployed()).isTrue();
             assertThat(records.get(0).getFirstName()).isEqualTo("Fred");
-            assertThat(records.get(0).getLastName()).isEqualTo(LastName.of("Flintstone"));
+            assertThat(records.get(0).getLastName()).isEqualTo(new LastName("Flintstone"));
             assertThat(records.get(0).getOccupation()).isEqualTo("Brontosaurus Operator");
             assertThat(records.get(0).getBirthDate()).isNotNull();
             assertThat(records.get(0).getAddress().getId()).isEqualTo(1);
@@ -677,7 +677,7 @@ class PersonMapperTest {
             assertThat(records.get(0).getId()).isEqualTo(1);
             assertThat(records.get(0).getEmployed()).isTrue();
             assertThat(records.get(0).getFirstName()).isEqualTo("Fred");
-            assertThat(records.get(0).getLastName()).isEqualTo(LastName.of("Flintstone"));
+            assertThat(records.get(0).getLastName()).isEqualTo(new LastName("Flintstone"));
             assertThat(records.get(0).getOccupation()).isEqualTo("Brontosaurus Operator");
             assertThat(records.get(0).getBirthDate()).isNotNull();
             assertThat(records.get(0).getAddress().getId()).isEqualTo(1);
@@ -697,7 +697,7 @@ class PersonMapperTest {
                 assertThat(r.getId()).isEqualTo(1);
                 assertThat(r.getEmployed()).isTrue();
                 assertThat(r.getFirstName()).isEqualTo("Fred");
-                assertThat(r.getLastName()).isEqualTo(LastName.of("Flintstone"));
+                assertThat(r.getLastName()).isEqualTo(new LastName("Flintstone"));
                 assertThat(r.getOccupation()).isEqualTo("Brontosaurus Operator");
                 assertThat(r.getBirthDate()).isNotNull();
                 assertThat(r.getAddress().getId()).isEqualTo(1);
