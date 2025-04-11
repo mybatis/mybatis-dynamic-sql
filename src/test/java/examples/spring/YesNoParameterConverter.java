@@ -15,10 +15,8 @@
  */
 package examples.spring;
 
-import org.jspecify.annotations.NullMarked;
 import org.mybatis.dynamic.sql.ParameterTypeConverter;
 
-@NullMarked
 public class YesNoParameterConverter implements ParameterTypeConverter<Boolean, String> {
 
     @Override

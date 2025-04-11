@@ -17,10 +17,8 @@ package examples.animal.data;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Arg;
 import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Result;
-import org.apache.ibatis.annotations.ResultMap;
-import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.SelectProvider;
 import org.apache.ibatis.session.RowBounds;
@@ -34,20 +32,24 @@ import org.mybatis.dynamic.sql.where.render.WhereClauseProvider;
 public interface AnimalDataMapper extends CommonDeleteMapper, CommonInsertMapper<AnimalData>, CommonUpdateMapper {
 
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
-    @Results(id="AnimalDataResult", value={
-        @Result(column="id", property="id", id=true),
-        @Result(column="animal_name", property="animalName"),
-        @Result(column="brain_weight", property="brainWeight"),
-        @Result(column="body_weight", property="bodyWeight")
-    })
+    @Arg(column = "id", javaType = int.class, id = true)
+    @Arg(column = "animal_name", javaType = String.class)
+    @Arg(column = "brain_weight", javaType = double.class)
+    @Arg(column = "body_weight", javaType = double.class)
     List<AnimalData> selectMany(SelectStatementProvider selectStatement);
 
     @SelectProvider(type = SqlProviderAdapter.class, method = "select")
-    @ResultMap("AnimalDataResult")
+    @Arg(column = "id", javaType = int.class, id = true)
+    @Arg(column = "animal_name", javaType = String.class)
+    @Arg(column = "brain_weight", javaType = double.class)
+    @Arg(column = "body_weight", javaType = double.class)
     List<AnimalData> selectManyWithRowBounds(SelectStatementProvider selectStatement, RowBounds rowBounds);
 
     @SelectProvider(type = SqlProviderAdapter.class, method = "select")
-    @ResultMap("AnimalDataResult")
+    @Arg(column = "id", javaType = int.class, id = true)
+    @Arg(column = "animal_name", javaType = String.class)
+    @Arg(column = "brain_weight", javaType = double.class)
+    @Arg(column = "body_weight", javaType = double.class)
     AnimalData selectOne(SelectStatementProvider selectStatement);
 
     @Select({
@@ -55,7 +57,10 @@ public interface AnimalDataMapper extends CommonDeleteMapper, CommonInsertMapper
         "from AnimalData",
         "${whereClause}"
     })
-    @ResultMap("AnimalDataResult")
+    @Arg(column = "id", javaType = int.class, id = true)
+    @Arg(column = "animal_name", javaType = String.class)
+    @Arg(column = "brain_weight", javaType = double.class)
+    @Arg(column = "body_weight", javaType = double.class)
     List<AnimalData> selectWithWhereClause(WhereClauseProvider whereClause);
 
     @Select({
@@ -63,7 +68,10 @@ public interface AnimalDataMapper extends CommonDeleteMapper, CommonInsertMapper
         "from AnimalData a",
         "${whereClause}"
     })
-    @ResultMap("AnimalDataResult")
+    @Arg(column = "id", javaType = int.class, id = true)
+    @Arg(column = "animal_name", javaType = String.class)
+    @Arg(column = "brain_weight", javaType = double.class)
+    @Arg(column = "body_weight", javaType = double.class)
     List<AnimalData> selectWithWhereClauseAndAlias(WhereClauseProvider whereClause);
 
     @Select({
@@ -73,7 +81,10 @@ public interface AnimalDataMapper extends CommonDeleteMapper, CommonInsertMapper
         "order by id",
         "OFFSET #{offset,jdbcType=INTEGER} LIMIT #{limit,jdbcType=INTEGER}"
     })
-    @ResultMap("AnimalDataResult")
+    @Arg(column = "id", javaType = int.class, id = true)
+    @Arg(column = "animal_name", javaType = String.class)
+    @Arg(column = "brain_weight", javaType = double.class)
+    @Arg(column = "body_weight", javaType = double.class)
     List<AnimalData> selectWithWhereClauseLimitAndOffset(@Param("whereClauseProvider") WhereClauseProvider whereClause,
             @Param("limit") int limit, @Param("offset") int offset);
 
@@ -84,7 +95,10 @@ public interface AnimalDataMapper extends CommonDeleteMapper, CommonInsertMapper
         "order by id",
         "OFFSET #{offset,jdbcType=INTEGER} LIMIT #{limit,jdbcType=INTEGER}"
     })
-    @ResultMap("AnimalDataResult")
+    @Arg(column = "id", javaType = int.class, id = true)
+    @Arg(column = "animal_name", javaType = String.class)
+    @Arg(column = "brain_weight", javaType = double.class)
+    @Arg(column = "body_weight", javaType = double.class)
     List<AnimalData> selectWithWhereClauseAliasLimitAndOffset(@Param("whereClauseProvider") WhereClauseProvider whereClause,
                                                               @Param("limit") int limit, @Param("offset") int offset);
 }

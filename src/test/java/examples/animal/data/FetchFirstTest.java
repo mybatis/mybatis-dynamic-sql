@@ -80,7 +80,7 @@ class FetchFirstTest {
 
             assertAll(
                     () -> assertThat(records).hasSize(3),
-                    () -> assertThat(records).first().isNotNull().extracting(AnimalData::getId).isEqualTo(23),
+                    () -> assertThat(records).first().isNotNull().extracting(AnimalData::id).isEqualTo(23),
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select * from AnimalData offset #{parameters.p1} rows fetch first #{parameters.p2} rows only"),
                     () -> assertThat(selectStatement.getParameters()).containsEntry("p2", 3L),
                     () -> assertThat(selectStatement.getParameters()).containsEntry("p1", 22L)
@@ -102,7 +102,7 @@ class FetchFirstTest {
 
             assertAll(
                     () -> assertThat(records).hasSize(3),
-                    () -> assertThat(records).first().isNotNull().extracting(AnimalData::getId).isEqualTo(1),
+                    () -> assertThat(records).first().isNotNull().extracting(AnimalData::id).isEqualTo(1),
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select * from AnimalData fetch first #{parameters.p1} rows only"),
                     () -> assertThat(selectStatement.getParameters()).containsEntry("p1", 3L)
             );
@@ -126,7 +126,7 @@ class FetchFirstTest {
 
             assertAll(
                     () -> assertThat(records).hasSize(3),
-                    () -> assertThat(records).first().isNotNull().extracting(AnimalData::getId).isEqualTo(45),
+                    () -> assertThat(records).first().isNotNull().extracting(AnimalData::id).isEqualTo(45),
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select * from AnimalData where id < #{parameters.p1,jdbcType=INTEGER} and id > #{parameters.p2,jdbcType=INTEGER} offset #{parameters.p3} rows fetch first #{parameters.p4} rows only"),
                     () -> assertThat(selectStatement.getParameters()).contains(entry("p4", 3L), entry("p3", 22L))
             );
@@ -148,7 +148,7 @@ class FetchFirstTest {
 
             assertAll(
                     () -> assertThat(records).hasSize(3),
-                    () -> assertThat(records).first().isNotNull().extracting(AnimalData::getId).isEqualTo(1),
+                    () -> assertThat(records).first().isNotNull().extracting(AnimalData::id).isEqualTo(1),
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select * from AnimalData where id < #{parameters.p1,jdbcType=INTEGER} fetch first #{parameters.p2} rows only"),
                     () -> assertThat(selectStatement.getParameters()).containsEntry("p2", 3L)
             );
@@ -171,7 +171,7 @@ class FetchFirstTest {
 
             assertAll(
                     () -> assertThat(records).hasSize(3),
-                    () -> assertThat(records).first().isNotNull().extracting(AnimalData::getId).isEqualTo(23),
+                    () -> assertThat(records).first().isNotNull().extracting(AnimalData::id).isEqualTo(23),
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select * from AnimalData order by id offset #{parameters.p1} rows fetch first #{parameters.p2} rows only"),
                     () -> assertThat(selectStatement)
                             .extracting(SelectStatementProvider::getParameters)
@@ -196,7 +196,7 @@ class FetchFirstTest {
 
             assertAll(
                     () -> assertThat(records).hasSize(3),
-                    () -> assertThat(records).first().isNotNull().extracting(AnimalData::getId).isEqualTo(1),
+                    () -> assertThat(records).first().isNotNull().extracting(AnimalData::id).isEqualTo(1),
                     () -> assertThat(selectStatement.getSelectStatement()).isEqualTo("select * from AnimalData order by id fetch first #{parameters.p1} rows only"),
                     () -> assertThat(selectStatement.getParameters()).containsEntry("p1", 3L)
             );

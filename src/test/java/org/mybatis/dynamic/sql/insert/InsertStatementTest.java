@@ -20,6 +20,7 @@ import static org.mybatis.dynamic.sql.SqlBuilder.insert;
 
 import java.sql.JDBCType;
 
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
@@ -37,9 +38,7 @@ class InsertStatementTest {
     @Test
     void testFullInsertStatementBuilder() {
 
-        TestRecord row = new TestRecord();
-        row.setLastName("jones");
-        row.setOccupation("dino driver");
+        TestRecord row = new TestRecord(null, null, "jones", "dino driver");
 
         InsertStatementProvider<TestRecord> insertStatement = insert(row)
                 .into(foo)
@@ -97,16 +96,14 @@ class InsertStatementTest {
 
     @Test
     void testSelectiveInsertStatementBuilder() {
-        TestRecord row = new TestRecord();
-        row.setLastName("jones");
-        row.setOccupation("dino driver");
+        TestRecord row = new TestRecord(null, null, "jones", "dino driver");
 
         InsertStatementProvider<TestRecord> insertStatement = insert(row)
                 .into(foo)
-                .map(id).toPropertyWhenPresent("id", row::getId)
-                .map(firstName).toPropertyWhenPresent("firstName", row::getFirstName)
-                .map(lastName).toPropertyWhenPresent("lastName", row::getLastName)
-                .map(occupation).toPropertyWhenPresent("occupation", row::getOccupation)
+                .map(id).toPropertyWhenPresent("id", row::id)
+                .map(firstName).toPropertyWhenPresent("firstName", row::firstName)
+                .map(lastName).toPropertyWhenPresent("lastName", row::lastName)
+                .map(occupation).toPropertyWhenPresent("occupation", row::occupation)
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
@@ -115,42 +112,9 @@ class InsertStatementTest {
         assertThat(insertStatement.getInsertStatement()).isEqualTo(expected);
     }
 
-    static class TestRecord {
-        private Integer id;
-        private String firstName;
-        private String lastName;
-        private String occupation;
-
-        Integer getId() {
-            return id;
-        }
-
-        void setId(Integer id) {
-            this.id = id;
-        }
-
-        String getFirstName() {
-            return firstName;
-        }
-
-        void setFirstName(String firstName) {
-            this.firstName = firstName;
-        }
-
-        String getLastName() {
-            return lastName;
-        }
-
-        void setLastName(String lastName) {
-            this.lastName = lastName;
-        }
-
-        String getOccupation() {
-            return occupation;
-        }
-
-        void setOccupation(String occupation) {
-            this.occupation = occupation;
+    record TestRecord (@Nullable Integer id, @Nullable String firstName, @Nullable String lastName, @Nullable String occupation) {
+        TestRecord() {
+            this(null, null, null, null);
         }
     }
 }

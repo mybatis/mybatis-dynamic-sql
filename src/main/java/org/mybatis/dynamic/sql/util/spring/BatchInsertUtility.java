@@ -39,15 +39,5 @@ public class BatchInsertUtility {
         return SqlParameterSourceUtils.createBatch(tt);
     }
 
-    public static class RowHolder<T> {
-        private final T row;
-
-        public RowHolder(T row) {
-            this.row = row;
-        }
-
-        public T getRow() {
-            return row;
-        }
-    }
+    public record RowHolder<T> (T row) {}
 }

@@ -477,14 +477,12 @@ class JoinMapperNewSyntaxTest {
                 join(orderLine, "ol") on {
                     orderMaster.orderId isEqualTo orderLine.orderId
                 }
-                leftJoin(
-                    {
-                        select(itemMaster.allColumns()) {
-                            from(itemMaster)
-                        }
-                        + "im"
+                leftJoin {
+                    select(itemMaster.allColumns()) {
+                        from(itemMaster)
                     }
-                ) on {
+                    +"im"
+                } on {
                     orderLine.itemId isEqualTo "im"(itemMaster.itemId)
                 }
                 orderBy(orderLine.orderId, itemMaster.itemId)
@@ -614,14 +612,12 @@ class JoinMapperNewSyntaxTest {
                 join(orderLine, "ol") on {
                     orderMaster.orderId isEqualTo orderLine.orderId
                 }
-                rightJoin(
-                    {
-                        select(itemMaster.allColumns()) {
-                            from(itemMaster)
-                        }
-                        + "im"
+                rightJoin {
+                    select(itemMaster.allColumns()) {
+                        from(itemMaster)
                     }
-                ) on {
+                    +"im"
+                } on {
                     orderLine.itemId isEqualTo "im"(itemMaster.itemId)
                 }
                 orderBy(orderLine.orderId, itemMaster.itemId)

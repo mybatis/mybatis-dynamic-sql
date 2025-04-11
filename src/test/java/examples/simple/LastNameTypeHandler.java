@@ -22,12 +22,17 @@ import java.sql.SQLException;
 
 import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.TypeHandler;
+import org.jspecify.annotations.Nullable;
 
 public class LastNameTypeHandler implements TypeHandler<LastName> {
 
     @Override
-    public void setParameter(PreparedStatement ps, int i, LastName parameter, JdbcType jdbcType) throws SQLException {
-        ps.setString(i, parameter == null ? null : parameter.getName());
+    public void setParameter(PreparedStatement ps, int i, @Nullable LastName parameter, JdbcType jdbcType) throws SQLException {
+        if (parameter == null) {
+            ps.setNull(i, jdbcType.TYPE_CODE);
+        } else {
+            ps.setString(i, parameter.name());
+        }
     }
 
     @Override
@@ -45,7 +50,7 @@ public class LastNameTypeHandler implements TypeHandler<LastName> {
         return toLastName(cs.getString(columnIndex));
     }
 
-    private LastName toLastName(String s) {
-        return s == null ? null : LastName.of(s);
+    private @Nullable LastName toLastName(@Nullable String s) {
+        return s == null ? null : new LastName(s);
     }
 }

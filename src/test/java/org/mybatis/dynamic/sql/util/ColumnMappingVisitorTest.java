@@ -205,8 +205,8 @@ class ColumnMappingVisitorTest {
     }
 
     private static class TestTable extends SqlTable {
-        public SqlColumn<Integer> id;
-        public SqlColumn<String> description;
+        public final SqlColumn<Integer> id;
+        public final SqlColumn<String> description;
 
         public TestTable() {
             super("Test");

@@ -86,19 +86,18 @@ class VariousListConditionsTest {
 
             SelectStatementProvider selectStatement = select(id, animalName)
                     .from(animalData)
-                    .where(id, isIn(2, 3, null))
+                    .where(id, isInWhenPresent(2, 3, null))
                     .orderBy(id)
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
 
             assertThat(selectStatement.getSelectStatement()).isEqualTo(
                     "select id, animal_name from AnimalData where id " +
-                            "in (#{parameters.p1,jdbcType=INTEGER},#{parameters.p2,jdbcType=INTEGER},#{parameters.p3,jdbcType=INTEGER}) " +
+                            "in (#{parameters.p1,jdbcType=INTEGER},#{parameters.p2,jdbcType=INTEGER}) " +
                             "order by id"
             );
             assertThat(selectStatement.getParameters()).containsEntry("p1", 2);
             assertThat(selectStatement.getParameters()).containsEntry("p2", 3);
-            assertThat(selectStatement.getParameters()).containsEntry("p3", null);
 
             List<Map<String, Object>> rows = mapper.selectManyMappedRows(selectStatement);
             assertThat(rows).hasSize(2);
@@ -169,13 +168,6 @@ class VariousListConditionsTest {
 
             assertThat(rows.get(0)).containsEntry("ID", 1);
         }
-    }
-
-    @Test
-    void testInWithNullList() {
-        assertThatExceptionOfType(NullPointerException.class).isThrownBy(() ->
-                isIn((Collection<Integer>) null)
-        );
     }
 
     @Test

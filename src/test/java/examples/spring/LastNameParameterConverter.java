@@ -15,20 +15,18 @@
  */
 package examples.spring;
 
-import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import org.mybatis.dynamic.sql.ParameterTypeConverter;
 import org.springframework.core.convert.converter.Converter;
 
-@NullMarked
 public class LastNameParameterConverter implements ParameterTypeConverter<LastName, String>,
         Converter<LastName, String> {
     @Override
     public @Nullable String convert(LastName source) {
-        if ("Slate".equals(source.getName())) {
+        if ("Slate".equals(source.name())) {
             return null;
         } else {
-            return source.getName();
+            return source.name();
         }
     }
 }

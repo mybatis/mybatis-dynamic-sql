@@ -33,9 +33,9 @@ import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 
 class GroupingTest {
     private static class Foo extends SqlTable {
-        public SqlColumn<Integer> columnA = column("A");
-        public SqlColumn<Integer> columnB = column("B");
-        public SqlColumn<Integer> columnC = column("C");
+        public final SqlColumn<Integer> columnA = column("A");
+        public final SqlColumn<Integer> columnB = column("B");
+        public final SqlColumn<Integer> columnC = column("C");
 
         public Foo() {
             super("Foo");

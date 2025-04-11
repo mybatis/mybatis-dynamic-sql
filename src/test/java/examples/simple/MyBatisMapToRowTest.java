@@ -30,6 +30,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.IntStream;
 
 import org.apache.ibatis.datasource.unpooled.UnpooledDataSource;
@@ -98,7 +99,7 @@ class MyBatisMapToRowTest {
                     .orderBy(id1, id2)
                     .build().render(RenderingStrategies.MYBATIS3);
 
-            List<CompoundKeyRow> records = mapper.selectMany(selectStatement, this::mapRow);
+            List<CompoundKeyRow> records = mapper.selectMany(selectStatement, rowMapper);
             assertThat(records).hasSize(1);
         }
     }
@@ -128,7 +129,7 @@ class MyBatisMapToRowTest {
                     .orderBy(id1, id2)
                     .build().render(RenderingStrategies.MYBATIS3);
 
-            List<CompoundKeyRow> records = mapper.selectMany(selectStatement, this::mapRow);
+            List<CompoundKeyRow> records = mapper.selectMany(selectStatement, rowMapper);
             assertThat(records).hasSize(3);
         }
     }
@@ -165,15 +166,11 @@ class MyBatisMapToRowTest {
                     .orderBy(id1, id2)
                     .build().render(RenderingStrategies.MYBATIS3);
 
-            List<CompoundKeyRow> records = mapper.selectMany(selectStatement, this::mapRow);
+            List<CompoundKeyRow> records = mapper.selectMany(selectStatement, rowMapper);
             assertThat(records).hasSize(3);
         }
     }
 
-    private CompoundKeyRow mapRow(Map<String, Object> map) {
-        CompoundKeyRow answer = new CompoundKeyRow();
-        answer.setId1((Integer) map.get("ID1"));
-        answer.setId2((Integer) map.get("ID2"));
-        return answer;
-    }
+    private final Function<Map<String, Object>, CompoundKeyRow> rowMapper =
+            m -> new CompoundKeyRow((Integer) m.get("ID1"), (Integer) m.get("ID2"));
 }

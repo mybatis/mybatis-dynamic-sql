@@ -17,10 +17,8 @@ package examples.mysql;
 
 import java.util.Objects;
 
-import org.jspecify.annotations.NullMarked;
 import org.mybatis.dynamic.sql.AbstractNoValueCondition;
 
-@NullMarked
 public class MemberOfCondition<T> extends AbstractNoValueCondition<T> {
     private final String jsonArray;
 

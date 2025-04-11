@@ -49,12 +49,11 @@ class Issue105Test {
 
     @Test
     void testFuzzyLikeFirstNameNull() {
-        String fName = null;
         String lName = "Flintstone";
 
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
-                .where(firstName, isLikeWhenPresent(fName).map(SearchUtils::addWildcards))
+                .where(firstName, isLikeWhenPresent((String) null).map(SearchUtils::addWildcards))
                 .and(lastName, isLike(lName).map(SearchUtils::addWildcards))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
@@ -70,12 +69,11 @@ class Issue105Test {
     @Test
     void testFuzzyLikeLastNameNull() {
         String fName = "Fred";
-        String lName = null;
 
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
                 .where(firstName, isLike(fName).map(SearchUtils::addWildcards))
-                .and(lastName, isLikeWhenPresent(lName).map(SearchUtils::addWildcards))
+                .and(lastName, isLikeWhenPresent((String) null).map(SearchUtils::addWildcards))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
@@ -89,13 +87,10 @@ class Issue105Test {
 
     @Test
     void testFuzzyLikeBothNull() {
-        String fName = null;
-        String lName = null;
-
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
-                .where(firstName, isLikeWhenPresent(fName).map(SearchUtils::addWildcards))
-                .and(lastName, isLikeWhenPresent(lName).map(SearchUtils::addWildcards))
+                .where(firstName, isLikeWhenPresent((String) null).map(SearchUtils::addWildcards))
+                .and(lastName, isLikeWhenPresent((String) null).map(SearchUtils::addWildcards))
                 .configureStatement(c -> c.setNonRenderingWhereClauseAllowed(true))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);

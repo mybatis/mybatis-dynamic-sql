@@ -13,6 +13,7 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package examples.animal.data;
+@NullMarked
+package examples.joins;
 
-public record AnimalData(int id, String animalName, double brainWeight, double bodyWeight) {}
+import org.jspecify.annotations.NullMarked;

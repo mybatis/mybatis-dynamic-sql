@@ -26,7 +26,7 @@ object GeneratedAlwaysDynamicSqlSupport {
     val fullName = generatedAlways.fullName
 
     class GeneratedAlways : SqlTable("GeneratedAlways") {
-        val id = column<Int>("id")
+        val id = column<Int>(name = "id")
         val firstName = column<String>(name = "first_name")
         val lastName = column<String>(name = "last_name")
         val fullName = column<String>(name = "full_name")

@@ -85,14 +85,12 @@ class GeneralInsertStatementTest {
 
     @Test
     void testSelectiveInsertStatementBuilder() {
-        Integer myId = null;
-        String myFirstName = null;
         String myLastName = "jones";
         String myOccupation = "dino driver";
 
         GeneralInsertStatementProvider insertStatement = insertInto(foo)
-                .set(id).toValueWhenPresent(() -> myId)
-                .set(firstName).toValueWhenPresent(myFirstName)
+                .set(id).toValueWhenPresent(() -> null)
+                .set(firstName).toValueWhenPresent((String) null)
                 .set(lastName).toValueWhenPresent(() -> myLastName)
                 .set(occupation).toValueWhenPresent(myOccupation)
                 .build()

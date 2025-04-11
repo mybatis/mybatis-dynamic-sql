@@ -73,7 +73,7 @@ class LimitAndOffsetTest {
                     .execute();
 
             assertThat(rows).hasSize(5);
-            assertThat(rows.get(0).getId()).isEqualTo(4);
+            assertThat(rows.get(0).id()).isEqualTo(4);
         }
     }
 }

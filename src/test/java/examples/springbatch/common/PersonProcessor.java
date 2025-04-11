@@ -29,7 +29,7 @@ public class PersonProcessor implements ItemProcessor<PersonRecord, PersonRecord
     private ExecutionContext executionContext;
 
     @Override
-    public PersonRecord process(PersonRecord person) throws Exception {
+    public PersonRecord process(PersonRecord person) {
         incrementRowCount();
 
         PersonRecord transformed = new PersonRecord();
