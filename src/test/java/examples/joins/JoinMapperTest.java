@@ -16,13 +16,14 @@
 package examples.joins;
 
 import static examples.joins.ItemMasterDynamicSQLSupport.itemMaster;
-import static examples.joins.OrderDetailDynamicSQLSupport.*;
+import static examples.joins.OrderDetailDynamicSQLSupport.orderDetail;
 import static examples.joins.OrderLineDynamicSQLSupport.orderLine;
 import static examples.joins.OrderMasterDynamicSQLSupport.orderDate;
 import static examples.joins.OrderMasterDynamicSQLSupport.orderMaster;
-import static examples.joins.UserDynamicSQLSupport.*;
+import static examples.joins.UserDynamicSQLSupport.user;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.entry;
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
 
 import java.io.InputStream;
@@ -1259,6 +1260,56 @@ class JoinMapperTest {
             assertThat(row).containsEntry("QUANTITY", 1);
             assertThat(row).containsEntry("DESCRIPTION", "First Base Glove");
             assertThat(row).containsEntry("ITEM_ID", 33);
+        }
+    }
+
+    @Test
+    void testJoinWithGroupBy() {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
+            CommonSelectMapper mapper = session.getMapper(CommonSelectMapper.class);
+
+            SelectStatementProvider selectStatement = select(orderMaster.orderId, count().as("linecount"))
+                    .from(orderMaster, "om")
+                    .join(orderDetail, "od").on(orderMaster.orderId, isEqualTo(orderDetail.orderId))
+                    .groupBy(orderMaster.orderId)
+                    .orderBy(orderDetail.orderId)
+                    .build()
+                    .render(RenderingStrategies.MYBATIS3);
+
+            String expectedStatement = "select om.order_id, count(*) as linecount from OrderMaster om join OrderDetail od on om.order_id = od.order_id group by om.order_id order by order_id";
+            assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedStatement);
+
+            List<Map<String, Object>> rows = mapper.selectManyMappedRows(selectStatement);
+
+            assertThat(rows).hasSize(2);
+            assertThat(rows.get(0)).containsOnly(entry("ORDER_ID", 1), entry("LINECOUNT", 2L));
+            assertThat(rows.get(1)).containsOnly(entry("ORDER_ID", 2), entry("LINECOUNT", 1L));
+        }
+    }
+
+    @Test
+    void testSubQuery() {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
+            CommonSelectMapper mapper = session.getMapper(CommonSelectMapper.class);
+
+            SelectStatementProvider selectStatement = select(orderMaster.orderId,
+                    subQuery(select(count())
+                            .from(orderDetail, "od")
+                            .where(orderMaster.orderId, isEqualTo(orderDetail.orderId))
+                    ).as("linecount"))
+                    .from(orderMaster, "om")
+                    .orderBy(orderMaster.orderId)
+                    .build()
+                    .render(RenderingStrategies.MYBATIS3);
+
+            String expectedStatement = "select om.order_id, (select count(*) from OrderDetail od where om.order_id = od.order_id) as linecount from OrderMaster om order by order_id";
+            assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedStatement);
+
+            List<Map<String, Object>> rows = mapper.selectManyMappedRows(selectStatement);
+
+            assertThat(rows).hasSize(2);
+            assertThat(rows.get(0)).containsOnly(entry("ORDER_ID", 1), entry("LINECOUNT", 2L));
+            assertThat(rows.get(1)).containsOnly(entry("ORDER_ID", 2), entry("LINECOUNT", 1L));
         }
     }
 }

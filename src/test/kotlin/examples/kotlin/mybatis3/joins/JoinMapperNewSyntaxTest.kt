@@ -30,9 +30,13 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import org.mybatis.dynamic.sql.util.Messages
 import org.mybatis.dynamic.sql.util.kotlin.KInvalidSQLException
+import org.mybatis.dynamic.sql.util.kotlin.elements.`as`
 import org.mybatis.dynamic.sql.util.kotlin.elements.constant
+import org.mybatis.dynamic.sql.util.kotlin.elements.count
 import org.mybatis.dynamic.sql.util.kotlin.elements.invoke
+import org.mybatis.dynamic.sql.util.kotlin.elements.subQuery
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.select
+import org.mybatis.dynamic.sql.util.mybatis3.CommonSelectMapper
 
 @Suppress("LargeClass")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -44,6 +48,7 @@ class JoinMapperNewSyntaxTest {
         sqlSessionFactory = TestUtils.buildSqlSessionFactory {
             withInitializationScript("/examples/kotlin/mybatis3/joins/CreateJoinDB.sql")
             withMapper(JoinMapper::class)
+            withMapper(CommonSelectMapper::class)
         }
     }
 
@@ -828,5 +833,36 @@ class JoinMapperNewSyntaxTest {
                 where { user2.userId isEqualTo 4 }
             }
         }.withMessage(Messages.getString("ERROR.22")) //$NON-NLS-1$
+    }
+
+    @Test
+    fun testSubQuery() {
+        sqlSessionFactory.openSession().use { session ->
+            val mapper = session.getMapper(CommonSelectMapper::class.java)
+
+            val selectStatement = select(
+                orderMaster.orderId, subQuery {
+                    select(count()) {
+                        from(orderDetail, "od")
+                        where {
+                            orderMaster.orderId isEqualTo orderDetail.orderId
+                        }
+                    }
+                } `as` "linecount"
+            ) {
+                from(orderMaster, "om")
+                orderBy(orderMaster.orderId)
+            }
+
+            val expectedStatement = "select om.order_id, (select count(*) from OrderDetail od where om.order_id = od.order_id) as linecount from OrderMaster om order by order_id"
+
+            assertThat(selectStatement.selectStatement).isEqualTo(expectedStatement)
+
+            val rows = mapper.selectManyMappedRows(selectStatement)
+
+            assertThat(rows).hasSize(2)
+            assertThat(rows[0]).containsOnly(entry("ORDER_ID", 1), entry("LINECOUNT", 2L))
+            assertThat(rows[1]).containsOnly(entry("ORDER_ID", 2), entry("LINECOUNT", 1L))
+        }
     }
 }
