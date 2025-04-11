@@ -23,7 +23,6 @@ import static org.mybatis.dynamic.sql.SqlBuilder.*;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -41,7 +40,6 @@ import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
 import org.mybatis.dynamic.sql.where.WhereDSL;
 import org.mybatis.dynamic.sql.where.render.WhereClauseProvider;
 
-@NullMarked
 class EmptyWhereTest {
     private static final String FIRST_NAME = "Fred";
     private static final String LAST_NAME = "Flintstone";
