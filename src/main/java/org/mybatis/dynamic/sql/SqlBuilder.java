@@ -499,6 +499,10 @@ public interface SqlBuilder {
         return CountDistinct.of(column);
     }
 
+    static SubQueryColumn subQuery(Buildable<SelectModel> subQuery) {
+        return SubQueryColumn.of(subQuery.build());
+    }
+
     static <T> Max<T> max(BindableColumn<T> column) {
         return Max.of(column);
     }

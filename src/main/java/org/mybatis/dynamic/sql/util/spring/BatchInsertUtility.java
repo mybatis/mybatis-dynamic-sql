@@ -39,5 +39,5 @@ public class BatchInsertUtility {
         return SqlParameterSourceUtils.createBatch(tt);
     }
 
-    public record RowHolder<T> (T row) {}
+    public record RowHolder<T>(T row) {}
 }

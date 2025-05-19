@@ -26,6 +26,7 @@ import org.mybatis.dynamic.sql.SortSpecification
 import org.mybatis.dynamic.sql.SqlBuilder
 import org.mybatis.dynamic.sql.SqlColumn
 import org.mybatis.dynamic.sql.StringConstant
+import org.mybatis.dynamic.sql.SubQueryColumn
 import org.mybatis.dynamic.sql.select.caseexpression.SearchedCaseModel
 import org.mybatis.dynamic.sql.select.caseexpression.SimpleCaseModel
 import org.mybatis.dynamic.sql.select.aggregate.Avg
@@ -140,6 +141,9 @@ fun count(): CountAll = SqlBuilder.count()
 fun count(column: BasicColumn): Count = SqlBuilder.count(column)
 
 fun countDistinct(column: BasicColumn): CountDistinct = SqlBuilder.countDistinct(column)
+
+fun subQuery(subQuery: KotlinSubQueryBuilder.() -> Unit): SubQueryColumn =
+    SubQueryColumn.of(KotlinSubQueryBuilder().apply(subQuery).build())
 
 fun <T : Any> max(column: BindableColumn<T>): Max<T> = SqlBuilder.max(column)
 

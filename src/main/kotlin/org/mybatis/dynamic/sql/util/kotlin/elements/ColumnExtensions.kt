@@ -17,6 +17,7 @@ package org.mybatis.dynamic.sql.util.kotlin.elements
 
 import org.mybatis.dynamic.sql.DerivedColumn
 import org.mybatis.dynamic.sql.SqlColumn
+import org.mybatis.dynamic.sql.SubQueryColumn
 import org.mybatis.dynamic.sql.select.caseexpression.SearchedCaseModel
 import org.mybatis.dynamic.sql.select.caseexpression.SimpleCaseModel
 
@@ -27,6 +28,8 @@ infix fun <T : Any> SqlColumn<T>.`as`(alias: String): SqlColumn<T> = this.`as`(a
 infix fun SearchedCaseModel.`as`(alias: String): SearchedCaseModel = this.`as`(alias)
 
 infix fun <T : Any> SimpleCaseModel<T>.`as`(alias: String): SimpleCaseModel<T> = this.`as`(alias)
+
+infix fun SubQueryColumn.`as`(alias: String): SubQueryColumn = this.`as`(alias)
 
 /**
  * Adds a qualifier to a column for use with table aliases (typically in joins or sub queries).
