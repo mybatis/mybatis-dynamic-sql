@@ -15,21 +15,21 @@
  */
 package org.mybatis.dynamic.sql;
 
+import java.util.Objects;
 import java.util.Optional;
 
 import org.jspecify.annotations.Nullable;
 import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.select.SelectModel;
 import org.mybatis.dynamic.sql.select.render.SubQueryRenderer;
-import org.mybatis.dynamic.sql.util.Buildable;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 
 public class SubQueryColumn implements BasicColumn {
-    private final Buildable<SelectModel> subQuery;
+    private final SelectModel selectModel;
     private @Nullable String alias;
 
-    private SubQueryColumn(Buildable<SelectModel> subQuery) {
-        this.subQuery = subQuery;
+    private SubQueryColumn(SelectModel selectModel) {
+        this.selectModel = Objects.requireNonNull(selectModel);
     }
 
     @Override
@@ -39,14 +39,14 @@ public class SubQueryColumn implements BasicColumn {
 
     @Override
     public SubQueryColumn as(String alias) {
-        SubQueryColumn answer = new SubQueryColumn(subQuery);
+        SubQueryColumn answer = new SubQueryColumn(selectModel);
         answer.alias = alias;
         return answer;
     }
 
     @Override
     public FragmentAndParameters render(RenderingContext renderingContext) {
-        return SubQueryRenderer.withSelectModel(subQuery.build())
+        return SubQueryRenderer.withSelectModel(selectModel)
                 .withRenderingContext(renderingContext)
                 .withPrefix("(") //$NON-NLS-1$
                 .withSuffix(")") //$NON-NLS-1$
@@ -54,7 +54,7 @@ public class SubQueryColumn implements BasicColumn {
                 .render();
     }
 
-    public static SubQueryColumn of(Buildable<SelectModel> subQuery) {
-        return new SubQueryColumn(subQuery);
+    public static SubQueryColumn of(SelectModel selectModel) {
+        return new SubQueryColumn(selectModel);
     }
 }

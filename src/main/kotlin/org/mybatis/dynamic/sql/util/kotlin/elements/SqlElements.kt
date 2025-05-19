@@ -143,7 +143,7 @@ fun count(column: BasicColumn): Count = SqlBuilder.count(column)
 fun countDistinct(column: BasicColumn): CountDistinct = SqlBuilder.countDistinct(column)
 
 fun subQuery(subQuery: KotlinSubQueryBuilder.() -> Unit): SubQueryColumn =
-    SubQueryColumn.of(KotlinSubQueryBuilder().apply(subQuery))
+    SubQueryColumn.of(KotlinSubQueryBuilder().apply(subQuery).build())
 
 fun <T : Any> max(column: BindableColumn<T>): Max<T> = SqlBuilder.max(column)
 

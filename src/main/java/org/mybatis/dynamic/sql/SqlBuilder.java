@@ -500,7 +500,7 @@ public interface SqlBuilder {
     }
 
     static SubQueryColumn subQuery(Buildable<SelectModel> subQuery) {
-        return SubQueryColumn.of(subQuery);
+        return SubQueryColumn.of(subQuery.build());
     }
 
     static <T> Max<T> max(BindableColumn<T> column) {
