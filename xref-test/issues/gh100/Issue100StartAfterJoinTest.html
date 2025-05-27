@@ -7,7 +7,7 @@
 <body>
 <div id="overview"><a href="../../../testapidocs/issues/gh100/Issue100StartAfterJoinTest.html">View Javadoc</a></div><pre>
 <a class="jxr_linenumber" name="L1" href="#L1">1</a>   <em class="jxr_comment">/*</em>
-<a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_comment"> *    Copyright 2016-2024 the original author or authors.</em>
+<a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_comment"> *    Copyright 2016-2025 the original author or authors.</em>
 <a class="jxr_linenumber" name="L3" href="#L3">3</a>   <em class="jxr_comment"> *</em>
 <a class="jxr_linenumber" name="L4" href="#L4">4</a>   <em class="jxr_comment"> *    Licensed under the Apache License, Version 2.0 (the "License");</em>
 <a class="jxr_linenumber" name="L5" href="#L5">5</a>   <em class="jxr_comment"> *    you may not use this file except in compliance with the License.</em>
@@ -40,7 +40,7 @@
 <a class="jxr_linenumber" name="L32" href="#L32">32</a>          QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
 <a class="jxr_linenumber" name="L33" href="#L33">33</a>                  .from(StudentDynamicSqlSupport.student)
 <a class="jxr_linenumber" name="L34" href="#L34">34</a>                  .join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L35" href="#L35">35</a>                  .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L35" href="#L35">35</a>                  .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L36" href="#L36">36</a>  
 <a class="jxr_linenumber" name="L37" href="#L37">37</a>          builder.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L38" href="#L38">38</a>  
@@ -58,7 +58,7 @@
 <a class="jxr_linenumber" name="L50" href="#L50">50</a>          QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
 <a class="jxr_linenumber" name="L51" href="#L51">51</a>                  .from(StudentDynamicSqlSupport.student)
 <a class="jxr_linenumber" name="L52" href="#L52">52</a>                  .join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L53" href="#L53">53</a>                  .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L53" href="#L53">53</a>                  .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L54" href="#L54">54</a>  
 <a class="jxr_linenumber" name="L55" href="#L55">55</a>          SelectDSL&lt;SelectModel&gt; selectModel = builder.orderBy(StudentDynamicSqlSupport.id);
 <a class="jxr_linenumber" name="L56" href="#L56">56</a>  
@@ -79,7 +79,7 @@
 <a class="jxr_linenumber" name="L71" href="#L71">71</a>          QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
 <a class="jxr_linenumber" name="L72" href="#L72">72</a>                  .from(StudentDynamicSqlSupport.student)
 <a class="jxr_linenumber" name="L73" href="#L73">73</a>                  .join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L74" href="#L74">74</a>                  .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L74" href="#L74">74</a>                  .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L75" href="#L75">75</a>  
 <a class="jxr_linenumber" name="L76" href="#L76">76</a>          builder.limit(3);
 <a class="jxr_linenumber" name="L77" href="#L77">77</a>  
@@ -97,7 +97,7 @@
 <a class="jxr_linenumber" name="L89" href="#L89">89</a>          QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
 <a class="jxr_linenumber" name="L90" href="#L90">90</a>                  .from(StudentDynamicSqlSupport.student)
 <a class="jxr_linenumber" name="L91" href="#L91">91</a>                  .join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L92" href="#L92">92</a>                  .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L92" href="#L92">92</a>                  .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L93" href="#L93">93</a>  
 <a class="jxr_linenumber" name="L94" href="#L94">94</a>          builder.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>))
 <a class="jxr_linenumber" name="L95" href="#L95">95</a>          .orderBy(StudentDynamicSqlSupport.id)
@@ -121,7 +121,7 @@
 <a class="jxr_linenumber" name="L113" href="#L113">113</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
 <a class="jxr_linenumber" name="L114" href="#L114">114</a>                 .from(StudentDynamicSqlSupport.student)
 <a class="jxr_linenumber" name="L115" href="#L115">115</a>                 .join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L116" href="#L116">116</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L116" href="#L116">116</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L117" href="#L117">117</a> 
 <a class="jxr_linenumber" name="L118" href="#L118">118</a>         builder.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>))
 <a class="jxr_linenumber" name="L119" href="#L119">119</a>         .orderBy(StudentDynamicSqlSupport.id)
@@ -143,7 +143,7 @@
 <a class="jxr_linenumber" name="L135" href="#L135">135</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
 <a class="jxr_linenumber" name="L136" href="#L136">136</a>                 .from(StudentDynamicSqlSupport.student)
 <a class="jxr_linenumber" name="L137" href="#L137">137</a>                 .join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L138" href="#L138">138</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L138" href="#L138">138</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L139" href="#L139">139</a> 
 <a class="jxr_linenumber" name="L140" href="#L140">140</a>         builder.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>))
 <a class="jxr_linenumber" name="L141" href="#L141">141</a>         .orderBy(StudentDynamicSqlSupport.id)
@@ -167,7 +167,7 @@
 <a class="jxr_linenumber" name="L159" href="#L159">159</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
 <a class="jxr_linenumber" name="L160" href="#L160">160</a>                 .from(StudentDynamicSqlSupport.student)
 <a class="jxr_linenumber" name="L161" href="#L161">161</a>                 .join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L162" href="#L162">162</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L162" href="#L162">162</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L163" href="#L163">163</a> 
 <a class="jxr_linenumber" name="L164" href="#L164">164</a>         builder.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>))
 <a class="jxr_linenumber" name="L165" href="#L165">165</a>         .orderBy(StudentDynamicSqlSupport.id)
@@ -186,6 +186,6 @@
 <a class="jxr_linenumber" name="L178" href="#L178">178</a> }
 </pre>
 <hr/>
-<div id="footer">Copyright &#169; 2016&#x2013;2024 <a href="https://www.mybatis.org/">MyBatis.org</a>. All rights reserved.</div>
+<div id="footer">© 2016–2025 <a href="https://www.mybatis.org/">MyBatis.org</a></div>
 </body>
 </html>

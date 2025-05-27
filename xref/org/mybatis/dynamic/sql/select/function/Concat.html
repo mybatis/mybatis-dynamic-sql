@@ -7,7 +7,7 @@
 <body>
 <div id="overview"><a href="../../../../../../../apidocs/org/mybatis/dynamic/sql/select/function/Concat.html">View Javadoc</a></div><pre>
 <a class="jxr_linenumber" name="L1" href="#L1">1</a>   <em class="jxr_comment">/*</em>
-<a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_comment"> *    Copyright 2016-2024 the original author or authors.</em>
+<a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_comment"> *    Copyright 2016-2025 the original author or authors.</em>
 <a class="jxr_linenumber" name="L3" href="#L3">3</a>   <em class="jxr_comment"> *</em>
 <a class="jxr_linenumber" name="L4" href="#L4">4</a>   <em class="jxr_comment"> *    Licensed under the Apache License, Version 2.0 (the "License");</em>
 <a class="jxr_linenumber" name="L5" href="#L5">5</a>   <em class="jxr_comment"> *    you may not use this file except in compliance with the License.</em>
@@ -37,7 +37,7 @@
 <a class="jxr_linenumber" name="L29" href="#L29">29</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> Concat&lt;T&gt; <strong class="jxr_keyword">extends</strong> AbstractUniTypeFunction&lt;T, Concat&lt;T&gt;&gt; {
 <a class="jxr_linenumber" name="L30" href="#L30">30</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> List&lt;BasicColumn&gt; allColumns = <strong class="jxr_keyword">new</strong> ArrayList&lt;&gt;();
 <a class="jxr_linenumber" name="L31" href="#L31">31</a>  
-<a class="jxr_linenumber" name="L32" href="#L32">32</a>      <strong class="jxr_keyword">protected</strong> <a name="Concat" href="../../../../../../org/mybatis/dynamic/sql/select/function/Concat.html#Concat">Concat</a>(BindableColumn&lt;T&gt; firstColumn, List&lt;BasicColumn&gt; subsequentColumns) {
+<a class="jxr_linenumber" name="L32" href="#L32">32</a>      <strong class="jxr_keyword">protected</strong> <a name="Concat" href="../../../../../../org/mybatis/dynamic/sql/select/function/Concat.html#Concat">Concat</a>(<a name="BasicColumn" href="../../../../../../org/mybatis/dynamic/sql/BasicColumn.html#BasicColumn">BasicColumn</a> firstColumn, List&lt;BasicColumn&gt; subsequentColumns) {
 <a class="jxr_linenumber" name="L33" href="#L33">33</a>          <strong class="jxr_keyword">super</strong>(firstColumn);
 <a class="jxr_linenumber" name="L34" href="#L34">34</a>          allColumns.add(firstColumn);
 <a class="jxr_linenumber" name="L35" href="#L35">35</a>          <strong class="jxr_keyword">this</strong>.allColumns.addAll(subsequentColumns);
@@ -67,6 +67,6 @@
 <a class="jxr_linenumber" name="L59" href="#L59">59</a>  }
 </pre>
 <hr/>
-<div id="footer">Copyright &#169; 2016&#x2013;2024 <a href="https://www.mybatis.org/">MyBatis.org</a>. All rights reserved.</div>
+<div id="footer">© 2016–2025 <a href="https://www.mybatis.org/">MyBatis.org</a></div>
 </body>
 </html>

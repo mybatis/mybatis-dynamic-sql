@@ -7,7 +7,7 @@
 <body>
 <div id="overview"><a href="../../../testapidocs/issues/gh100/FromJoinWhereTest.html">View Javadoc</a></div><pre>
 <a class="jxr_linenumber" name="L1" href="#L1">1</a>   <em class="jxr_comment">/*</em>
-<a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_comment"> *    Copyright 2016-2024 the original author or authors.</em>
+<a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_comment"> *    Copyright 2016-2025 the original author or authors.</em>
 <a class="jxr_linenumber" name="L3" href="#L3">3</a>   <em class="jxr_comment"> *</em>
 <a class="jxr_linenumber" name="L4" href="#L4">4</a>   <em class="jxr_comment"> *    Licensed under the Apache License, Version 2.0 (the "License");</em>
 <a class="jxr_linenumber" name="L5" href="#L5">5</a>   <em class="jxr_comment"> *    you may not use this file except in compliance with the License.</em>
@@ -40,7 +40,7 @@
 <a class="jxr_linenumber" name="L32" href="#L32">32</a>          SelectStatementProvider selectStatement = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
 <a class="jxr_linenumber" name="L33" href="#L33">33</a>                  .from(StudentDynamicSqlSupport.student)
 <a class="jxr_linenumber" name="L34" href="#L34">34</a>                  .join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L35" href="#L35">35</a>                  .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid))
+<a class="jxr_linenumber" name="L35" href="#L35">35</a>                  .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid))
 <a class="jxr_linenumber" name="L36" href="#L36">36</a>                  .where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>))
 <a class="jxr_linenumber" name="L37" href="#L37">37</a>                  .union()
 <a class="jxr_linenumber" name="L38" href="#L38">38</a>                  .select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
@@ -84,7 +84,7 @@
 <a class="jxr_linenumber" name="L76" href="#L76">76</a>                  .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L77" href="#L77">77</a>  
 <a class="jxr_linenumber" name="L78" href="#L78">78</a>          builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L79" href="#L79">79</a>                  .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L79" href="#L79">79</a>                  .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L80" href="#L80">80</a>  
 <a class="jxr_linenumber" name="L81" href="#L81">81</a>          String expected = <span class="jxr_string">"select student.id, student.name, student.idcard"</span>
 <a class="jxr_linenumber" name="L82" href="#L82">82</a>                  + <span class="jxr_string">" from student"</span>
@@ -101,7 +101,7 @@
 <a class="jxr_linenumber" name="L93" href="#L93">93</a>                  .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L94" href="#L94">94</a>  
 <a class="jxr_linenumber" name="L95" href="#L95">95</a>          QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L96" href="#L96">96</a>                  .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L96" href="#L96">96</a>                  .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L97" href="#L97">97</a>  
 <a class="jxr_linenumber" name="L98" href="#L98">98</a>          String expected = <span class="jxr_string">"select student.id, student.name, student.idcard"</span>
 <a class="jxr_linenumber" name="L99" href="#L99">99</a>                  + <span class="jxr_string">" from student"</span>
@@ -118,7 +118,7 @@
 <a class="jxr_linenumber" name="L110" href="#L110">110</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L111" href="#L111">111</a> 
 <a class="jxr_linenumber" name="L112" href="#L112">112</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L113" href="#L113">113</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L113" href="#L113">113</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L114" href="#L114">114</a> 
 <a class="jxr_linenumber" name="L115" href="#L115">115</a>         builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L116" href="#L116">116</a> 
@@ -138,7 +138,7 @@
 <a class="jxr_linenumber" name="L130" href="#L130">130</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L131" href="#L131">131</a> 
 <a class="jxr_linenumber" name="L132" href="#L132">132</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L133" href="#L133">133</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L133" href="#L133">133</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L134" href="#L134">134</a> 
 <a class="jxr_linenumber" name="L135" href="#L135">135</a>         builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L136" href="#L136">136</a> 
@@ -158,7 +158,7 @@
 <a class="jxr_linenumber" name="L150" href="#L150">150</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L151" href="#L151">151</a> 
 <a class="jxr_linenumber" name="L152" href="#L152">152</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L153" href="#L153">153</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L153" href="#L153">153</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L154" href="#L154">154</a> 
 <a class="jxr_linenumber" name="L155" href="#L155">155</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L156" href="#L156">156</a> 
@@ -178,7 +178,7 @@
 <a class="jxr_linenumber" name="L170" href="#L170">170</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L171" href="#L171">171</a> 
 <a class="jxr_linenumber" name="L172" href="#L172">172</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L173" href="#L173">173</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L173" href="#L173">173</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L174" href="#L174">174</a> 
 <a class="jxr_linenumber" name="L175" href="#L175">175</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L176" href="#L176">176</a> 
@@ -205,7 +205,7 @@
 <a class="jxr_linenumber" name="L197" href="#L197">197</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L198" href="#L198">198</a> 
 <a class="jxr_linenumber" name="L199" href="#L199">199</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L200" href="#L200">200</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L200" href="#L200">200</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L201" href="#L201">201</a> 
 <a class="jxr_linenumber" name="L202" href="#L202">202</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L203" href="#L203">203</a> 
@@ -232,7 +232,7 @@
 <a class="jxr_linenumber" name="L224" href="#L224">224</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L225" href="#L225">225</a> 
 <a class="jxr_linenumber" name="L226" href="#L226">226</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L227" href="#L227">227</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L227" href="#L227">227</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L228" href="#L228">228</a> 
 <a class="jxr_linenumber" name="L229" href="#L229">229</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L230" href="#L230">230</a> 
@@ -259,7 +259,7 @@
 <a class="jxr_linenumber" name="L251" href="#L251">251</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L252" href="#L252">252</a> 
 <a class="jxr_linenumber" name="L253" href="#L253">253</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L254" href="#L254">254</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L254" href="#L254">254</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L255" href="#L255">255</a> 
 <a class="jxr_linenumber" name="L256" href="#L256">256</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L257" href="#L257">257</a> 
@@ -286,7 +286,7 @@
 <a class="jxr_linenumber" name="L278" href="#L278">278</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L279" href="#L279">279</a> 
 <a class="jxr_linenumber" name="L280" href="#L280">280</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L281" href="#L281">281</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L281" href="#L281">281</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L282" href="#L282">282</a> 
 <a class="jxr_linenumber" name="L283" href="#L283">283</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L284" href="#L284">284</a> 
@@ -324,7 +324,7 @@
 <a class="jxr_linenumber" name="L316" href="#L316">316</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L317" href="#L317">317</a> 
 <a class="jxr_linenumber" name="L318" href="#L318">318</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L319" href="#L319">319</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L319" href="#L319">319</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L320" href="#L320">320</a> 
 <a class="jxr_linenumber" name="L321" href="#L321">321</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L322" href="#L322">322</a> 
@@ -362,7 +362,7 @@
 <a class="jxr_linenumber" name="L354" href="#L354">354</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L355" href="#L355">355</a> 
 <a class="jxr_linenumber" name="L356" href="#L356">356</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L357" href="#L357">357</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L357" href="#L357">357</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L358" href="#L358">358</a> 
 <a class="jxr_linenumber" name="L359" href="#L359">359</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L360" href="#L360">360</a> 
@@ -400,7 +400,7 @@
 <a class="jxr_linenumber" name="L392" href="#L392">392</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L393" href="#L393">393</a> 
 <a class="jxr_linenumber" name="L394" href="#L394">394</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L395" href="#L395">395</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L395" href="#L395">395</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L396" href="#L396">396</a> 
 <a class="jxr_linenumber" name="L397" href="#L397">397</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L398" href="#L398">398</a> 
@@ -438,7 +438,7 @@
 <a class="jxr_linenumber" name="L430" href="#L430">430</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L431" href="#L431">431</a> 
 <a class="jxr_linenumber" name="L432" href="#L432">432</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L433" href="#L433">433</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L433" href="#L433">433</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L434" href="#L434">434</a> 
 <a class="jxr_linenumber" name="L435" href="#L435">435</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L436" href="#L436">436</a> 
@@ -476,7 +476,7 @@
 <a class="jxr_linenumber" name="L468" href="#L468">468</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L469" href="#L469">469</a> 
 <a class="jxr_linenumber" name="L470" href="#L470">470</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L471" href="#L471">471</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L471" href="#L471">471</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L472" href="#L472">472</a> 
 <a class="jxr_linenumber" name="L473" href="#L473">473</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L474" href="#L474">474</a> 
@@ -506,7 +506,7 @@
 <a class="jxr_linenumber" name="L498" href="#L498">498</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L499" href="#L499">499</a> 
 <a class="jxr_linenumber" name="L500" href="#L500">500</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L501" href="#L501">501</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L501" href="#L501">501</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L502" href="#L502">502</a> 
 <a class="jxr_linenumber" name="L503" href="#L503">503</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L504" href="#L504">504</a> 
@@ -536,7 +536,7 @@
 <a class="jxr_linenumber" name="L528" href="#L528">528</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L529" href="#L529">529</a> 
 <a class="jxr_linenumber" name="L530" href="#L530">530</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L531" href="#L531">531</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L531" href="#L531">531</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L532" href="#L532">532</a> 
 <a class="jxr_linenumber" name="L533" href="#L533">533</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L534" href="#L534">534</a> 
@@ -566,7 +566,7 @@
 <a class="jxr_linenumber" name="L558" href="#L558">558</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L559" href="#L559">559</a> 
 <a class="jxr_linenumber" name="L560" href="#L560">560</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L561" href="#L561">561</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L561" href="#L561">561</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L562" href="#L562">562</a> 
 <a class="jxr_linenumber" name="L563" href="#L563">563</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L564" href="#L564">564</a> 
@@ -596,7 +596,7 @@
 <a class="jxr_linenumber" name="L588" href="#L588">588</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L589" href="#L589">589</a> 
 <a class="jxr_linenumber" name="L590" href="#L590">590</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L591" href="#L591">591</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L591" href="#L591">591</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L592" href="#L592">592</a> 
 <a class="jxr_linenumber" name="L593" href="#L593">593</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L594" href="#L594">594</a> 
@@ -626,7 +626,7 @@
 <a class="jxr_linenumber" name="L618" href="#L618">618</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L619" href="#L619">619</a> 
 <a class="jxr_linenumber" name="L620" href="#L620">620</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L621" href="#L621">621</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L621" href="#L621">621</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L622" href="#L622">622</a> 
 <a class="jxr_linenumber" name="L623" href="#L623">623</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L624" href="#L624">624</a> 
@@ -659,7 +659,7 @@
 <a class="jxr_linenumber" name="L651" href="#L651">651</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L652" href="#L652">652</a> 
 <a class="jxr_linenumber" name="L653" href="#L653">653</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L654" href="#L654">654</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L654" href="#L654">654</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L655" href="#L655">655</a> 
 <a class="jxr_linenumber" name="L656" href="#L656">656</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L657" href="#L657">657</a> 
@@ -692,7 +692,7 @@
 <a class="jxr_linenumber" name="L684" href="#L684">684</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L685" href="#L685">685</a> 
 <a class="jxr_linenumber" name="L686" href="#L686">686</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L687" href="#L687">687</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L687" href="#L687">687</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L688" href="#L688">688</a> 
 <a class="jxr_linenumber" name="L689" href="#L689">689</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L690" href="#L690">690</a> 
@@ -725,7 +725,7 @@
 <a class="jxr_linenumber" name="L717" href="#L717">717</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L718" href="#L718">718</a> 
 <a class="jxr_linenumber" name="L719" href="#L719">719</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L720" href="#L720">720</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L720" href="#L720">720</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L721" href="#L721">721</a> 
 <a class="jxr_linenumber" name="L722" href="#L722">722</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L723" href="#L723">723</a> 
@@ -758,7 +758,7 @@
 <a class="jxr_linenumber" name="L750" href="#L750">750</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L751" href="#L751">751</a> 
 <a class="jxr_linenumber" name="L752" href="#L752">752</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L753" href="#L753">753</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L753" href="#L753">753</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L754" href="#L754">754</a> 
 <a class="jxr_linenumber" name="L755" href="#L755">755</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L756" href="#L756">756</a> 
@@ -791,7 +791,7 @@
 <a class="jxr_linenumber" name="L783" href="#L783">783</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L784" href="#L784">784</a> 
 <a class="jxr_linenumber" name="L785" href="#L785">785</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L786" href="#L786">786</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L786" href="#L786">786</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L787" href="#L787">787</a> 
 <a class="jxr_linenumber" name="L788" href="#L788">788</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L789" href="#L789">789</a> 
@@ -801,7 +801,7 @@
 <a class="jxr_linenumber" name="L793" href="#L793">793</a> 
 <a class="jxr_linenumber" name="L794" href="#L794">794</a>         SelectDSL&lt;SelectModel&gt; builder5 = builder4.orderBy(StudentDynamicSqlSupport.id);
 <a class="jxr_linenumber" name="L795" href="#L795">795</a> 
-<a class="jxr_linenumber" name="L796" href="#L796">796</a>         SelectDSL&lt;SelectModel&gt;.LimitFinisher builder6 = builder5.limit(3);
+<a class="jxr_linenumber" name="L796" href="#L796">796</a>         <strong class="jxr_keyword">var</strong> builder6 = builder5.limit(3);
 <a class="jxr_linenumber" name="L797" href="#L797">797</a> 
 <a class="jxr_linenumber" name="L798" href="#L798">798</a>         String expected = <span class="jxr_string">"select student.id, student.name, student.idcard"</span>
 <a class="jxr_linenumber" name="L799" href="#L799">799</a>                 + <span class="jxr_string">" from student"</span>
@@ -824,7 +824,7 @@
 <a class="jxr_linenumber" name="L816" href="#L816">816</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L817" href="#L817">817</a> 
 <a class="jxr_linenumber" name="L818" href="#L818">818</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L819" href="#L819">819</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L819" href="#L819">819</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L820" href="#L820">820</a> 
 <a class="jxr_linenumber" name="L821" href="#L821">821</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L822" href="#L822">822</a> 
@@ -834,7 +834,7 @@
 <a class="jxr_linenumber" name="L826" href="#L826">826</a> 
 <a class="jxr_linenumber" name="L827" href="#L827">827</a>         SelectDSL&lt;SelectModel&gt; builder5 = builder4.orderBy(StudentDynamicSqlSupport.id);
 <a class="jxr_linenumber" name="L828" href="#L828">828</a> 
-<a class="jxr_linenumber" name="L829" href="#L829">829</a>         SelectDSL&lt;SelectModel&gt;.LimitFinisher builder6 = builder5.limit(3);
+<a class="jxr_linenumber" name="L829" href="#L829">829</a>         <strong class="jxr_keyword">var</strong> builder6 = builder5.limit(3);
 <a class="jxr_linenumber" name="L830" href="#L830">830</a> 
 <a class="jxr_linenumber" name="L831" href="#L831">831</a>         builder6.offset(2);
 <a class="jxr_linenumber" name="L832" href="#L832">832</a> 
@@ -860,7 +860,7 @@
 <a class="jxr_linenumber" name="L852" href="#L852">852</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L853" href="#L853">853</a> 
 <a class="jxr_linenumber" name="L854" href="#L854">854</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L855" href="#L855">855</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L855" href="#L855">855</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L856" href="#L856">856</a> 
 <a class="jxr_linenumber" name="L857" href="#L857">857</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L858" href="#L858">858</a> 
@@ -870,7 +870,7 @@
 <a class="jxr_linenumber" name="L862" href="#L862">862</a> 
 <a class="jxr_linenumber" name="L863" href="#L863">863</a>         SelectDSL&lt;SelectModel&gt; builder5 = builder4.orderBy(StudentDynamicSqlSupport.id);
 <a class="jxr_linenumber" name="L864" href="#L864">864</a> 
-<a class="jxr_linenumber" name="L865" href="#L865">865</a>         SelectDSL&lt;SelectModel&gt;.LimitFinisher builder6 = builder5.limit(3);
+<a class="jxr_linenumber" name="L865" href="#L865">865</a>         <strong class="jxr_keyword">var</strong> builder6 = builder5.limit(3);
 <a class="jxr_linenumber" name="L866" href="#L866">866</a> 
 <a class="jxr_linenumber" name="L867" href="#L867">867</a>         builder6.offset(2);
 <a class="jxr_linenumber" name="L868" href="#L868">868</a> 
@@ -896,7 +896,7 @@
 <a class="jxr_linenumber" name="L888" href="#L888">888</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L889" href="#L889">889</a> 
 <a class="jxr_linenumber" name="L890" href="#L890">890</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L891" href="#L891">891</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L891" href="#L891">891</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L892" href="#L892">892</a> 
 <a class="jxr_linenumber" name="L893" href="#L893">893</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L894" href="#L894">894</a> 
@@ -906,7 +906,7 @@
 <a class="jxr_linenumber" name="L898" href="#L898">898</a> 
 <a class="jxr_linenumber" name="L899" href="#L899">899</a>         SelectDSL&lt;SelectModel&gt; builder5 = builder4.orderBy(StudentDynamicSqlSupport.id);
 <a class="jxr_linenumber" name="L900" href="#L900">900</a> 
-<a class="jxr_linenumber" name="L901" href="#L901">901</a>         SelectDSL&lt;SelectModel&gt;.LimitFinisher builder6 = builder5.limit(3);
+<a class="jxr_linenumber" name="L901" href="#L901">901</a>         <strong class="jxr_keyword">var</strong> builder6 = builder5.limit(3);
 <a class="jxr_linenumber" name="L902" href="#L902">902</a> 
 <a class="jxr_linenumber" name="L903" href="#L903">903</a>         builder6.offset(2);
 <a class="jxr_linenumber" name="L904" href="#L904">904</a> 
@@ -932,7 +932,7 @@
 <a class="jxr_linenumber" name="L924" href="#L924">924</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L925" href="#L925">925</a> 
 <a class="jxr_linenumber" name="L926" href="#L926">926</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L927" href="#L927">927</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L927" href="#L927">927</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L928" href="#L928">928</a> 
 <a class="jxr_linenumber" name="L929" href="#L929">929</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L930" href="#L930">930</a> 
@@ -942,7 +942,7 @@
 <a class="jxr_linenumber" name="L934" href="#L934">934</a> 
 <a class="jxr_linenumber" name="L935" href="#L935">935</a>         SelectDSL&lt;SelectModel&gt; builder5 = builder4.orderBy(StudentDynamicSqlSupport.id);
 <a class="jxr_linenumber" name="L936" href="#L936">936</a> 
-<a class="jxr_linenumber" name="L937" href="#L937">937</a>         SelectDSL&lt;SelectModel&gt;.LimitFinisher builder6 = builder5.limit(3);
+<a class="jxr_linenumber" name="L937" href="#L937">937</a>         <strong class="jxr_keyword">var</strong> builder6 = builder5.limit(3);
 <a class="jxr_linenumber" name="L938" href="#L938">938</a> 
 <a class="jxr_linenumber" name="L939" href="#L939">939</a>         builder6.offset(2);
 <a class="jxr_linenumber" name="L940" href="#L940">940</a> 
@@ -968,7 +968,7 @@
 <a class="jxr_linenumber" name="L960" href="#L960">960</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L961" href="#L961">961</a> 
 <a class="jxr_linenumber" name="L962" href="#L962">962</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L963" href="#L963">963</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L963" href="#L963">963</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L964" href="#L964">964</a> 
 <a class="jxr_linenumber" name="L965" href="#L965">965</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L966" href="#L966">966</a> 
@@ -978,7 +978,7 @@
 <a class="jxr_linenumber" name="L970" href="#L970">970</a> 
 <a class="jxr_linenumber" name="L971" href="#L971">971</a>         SelectDSL&lt;SelectModel&gt; builder5 = builder4.orderBy(StudentDynamicSqlSupport.id);
 <a class="jxr_linenumber" name="L972" href="#L972">972</a> 
-<a class="jxr_linenumber" name="L973" href="#L973">973</a>         SelectDSL&lt;SelectModel&gt;.LimitFinisher builder6 = builder5.limit(3);
+<a class="jxr_linenumber" name="L973" href="#L973">973</a>         <strong class="jxr_keyword">var</strong> builder6 = builder5.limit(3);
 <a class="jxr_linenumber" name="L974" href="#L974">974</a> 
 <a class="jxr_linenumber" name="L975" href="#L975">975</a>         builder6.offset(2);
 <a class="jxr_linenumber" name="L976" href="#L976">976</a> 
@@ -1004,7 +1004,7 @@
 <a class="jxr_linenumber" name="L996" href="#L996">996</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L997" href="#L997">997</a> 
 <a class="jxr_linenumber" name="L998" href="#L998">998</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L999" href="#L999">999</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L999" href="#L999">999</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L1000" href="#L1000">1000</a> 
 <a class="jxr_linenumber" name="L1001" href="#L1001">1001</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L1002" href="#L1002">1002</a> 
@@ -1014,7 +1014,7 @@
 <a class="jxr_linenumber" name="L1006" href="#L1006">1006</a> 
 <a class="jxr_linenumber" name="L1007" href="#L1007">1007</a>         SelectDSL&lt;SelectModel&gt; builder5 = builder4.orderBy(StudentDynamicSqlSupport.id);
 <a class="jxr_linenumber" name="L1008" href="#L1008">1008</a> 
-<a class="jxr_linenumber" name="L1009" href="#L1009">1009</a>         SelectDSL&lt;SelectModel&gt;.LimitFinisher builder6 = builder5.limit(3);
+<a class="jxr_linenumber" name="L1009" href="#L1009">1009</a>         <strong class="jxr_keyword">var</strong> builder6 = builder5.limit(3);
 <a class="jxr_linenumber" name="L1010" href="#L1010">1010</a> 
 <a class="jxr_linenumber" name="L1011" href="#L1011">1011</a>         builder6.offset(2);
 <a class="jxr_linenumber" name="L1012" href="#L1012">1012</a> 
@@ -1040,7 +1040,7 @@
 <a class="jxr_linenumber" name="L1032" href="#L1032">1032</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L1033" href="#L1033">1033</a> 
 <a class="jxr_linenumber" name="L1034" href="#L1034">1034</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L1035" href="#L1035">1035</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L1035" href="#L1035">1035</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L1036" href="#L1036">1036</a> 
 <a class="jxr_linenumber" name="L1037" href="#L1037">1037</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L1038" href="#L1038">1038</a> 
@@ -1050,9 +1050,9 @@
 <a class="jxr_linenumber" name="L1042" href="#L1042">1042</a> 
 <a class="jxr_linenumber" name="L1043" href="#L1043">1043</a>         SelectDSL&lt;SelectModel&gt; builder5 = builder4.orderBy(StudentDynamicSqlSupport.id);
 <a class="jxr_linenumber" name="L1044" href="#L1044">1044</a> 
-<a class="jxr_linenumber" name="L1045" href="#L1045">1045</a>         SelectDSL&lt;SelectModel&gt;.LimitFinisher builder6 = builder5.limit(3);
+<a class="jxr_linenumber" name="L1045" href="#L1045">1045</a>         <strong class="jxr_keyword">var</strong> builder6 = builder5.limit(3);
 <a class="jxr_linenumber" name="L1046" href="#L1046">1046</a> 
-<a class="jxr_linenumber" name="L1047" href="#L1047">1047</a>         SelectDSL&lt;SelectModel&gt;.OffsetFinisher builder7 = builder6.offset(2);
+<a class="jxr_linenumber" name="L1047" href="#L1047">1047</a>         <strong class="jxr_keyword">var</strong> builder7 = builder6.offset(2);
 <a class="jxr_linenumber" name="L1048" href="#L1048">1048</a> 
 <a class="jxr_linenumber" name="L1049" href="#L1049">1049</a>         String expected = <span class="jxr_string">"select student.id, student.name, student.idcard"</span>
 <a class="jxr_linenumber" name="L1050" href="#L1050">1050</a>                 + <span class="jxr_string">" from student"</span>
@@ -1076,7 +1076,7 @@
 <a class="jxr_linenumber" name="L1068" href="#L1068">1068</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L1069" href="#L1069">1069</a> 
 <a class="jxr_linenumber" name="L1070" href="#L1070">1070</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L1071" href="#L1071">1071</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L1071" href="#L1071">1071</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L1072" href="#L1072">1072</a> 
 <a class="jxr_linenumber" name="L1073" href="#L1073">1073</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L1074" href="#L1074">1074</a> 
@@ -1110,7 +1110,7 @@
 <a class="jxr_linenumber" name="L1102" href="#L1102">1102</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L1103" href="#L1103">1103</a> 
 <a class="jxr_linenumber" name="L1104" href="#L1104">1104</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L1105" href="#L1105">1105</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L1105" href="#L1105">1105</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L1106" href="#L1106">1106</a> 
 <a class="jxr_linenumber" name="L1107" href="#L1107">1107</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L1108" href="#L1108">1108</a> 
@@ -1144,7 +1144,7 @@
 <a class="jxr_linenumber" name="L1136" href="#L1136">1136</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L1137" href="#L1137">1137</a> 
 <a class="jxr_linenumber" name="L1138" href="#L1138">1138</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L1139" href="#L1139">1139</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L1139" href="#L1139">1139</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L1140" href="#L1140">1140</a> 
 <a class="jxr_linenumber" name="L1141" href="#L1141">1141</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L1142" href="#L1142">1142</a> 
@@ -1178,7 +1178,7 @@
 <a class="jxr_linenumber" name="L1170" href="#L1170">1170</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L1171" href="#L1171">1171</a> 
 <a class="jxr_linenumber" name="L1172" href="#L1172">1172</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L1173" href="#L1173">1173</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L1173" href="#L1173">1173</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L1174" href="#L1174">1174</a> 
 <a class="jxr_linenumber" name="L1175" href="#L1175">1175</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L1176" href="#L1176">1176</a> 
@@ -1212,7 +1212,7 @@
 <a class="jxr_linenumber" name="L1204" href="#L1204">1204</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L1205" href="#L1205">1205</a> 
 <a class="jxr_linenumber" name="L1206" href="#L1206">1206</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L1207" href="#L1207">1207</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L1207" href="#L1207">1207</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L1208" href="#L1208">1208</a> 
 <a class="jxr_linenumber" name="L1209" href="#L1209">1209</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L1210" href="#L1210">1210</a> 
@@ -1246,7 +1246,7 @@
 <a class="jxr_linenumber" name="L1238" href="#L1238">1238</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L1239" href="#L1239">1239</a> 
 <a class="jxr_linenumber" name="L1240" href="#L1240">1240</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L1241" href="#L1241">1241</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L1241" href="#L1241">1241</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L1242" href="#L1242">1242</a> 
 <a class="jxr_linenumber" name="L1243" href="#L1243">1243</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L1244" href="#L1244">1244</a> 
@@ -1256,7 +1256,7 @@
 <a class="jxr_linenumber" name="L1248" href="#L1248">1248</a> 
 <a class="jxr_linenumber" name="L1249" href="#L1249">1249</a>         SelectDSL&lt;SelectModel&gt; builder5 = builder4.orderBy(StudentDynamicSqlSupport.id);
 <a class="jxr_linenumber" name="L1250" href="#L1250">1250</a> 
-<a class="jxr_linenumber" name="L1251" href="#L1251">1251</a>         SelectDSL&lt;SelectModel&gt;.OffsetFirstFinisher builder6 = builder5.offset(2);
+<a class="jxr_linenumber" name="L1251" href="#L1251">1251</a>         <strong class="jxr_keyword">var</strong> builder6 = builder5.offset(2);
 <a class="jxr_linenumber" name="L1252" href="#L1252">1252</a> 
 <a class="jxr_linenumber" name="L1253" href="#L1253">1253</a>         String expected = <span class="jxr_string">"select student.id, student.name, student.idcard"</span>
 <a class="jxr_linenumber" name="L1254" href="#L1254">1254</a>                 + <span class="jxr_string">" from student"</span>
@@ -1280,7 +1280,7 @@
 <a class="jxr_linenumber" name="L1272" href="#L1272">1272</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L1273" href="#L1273">1273</a> 
 <a class="jxr_linenumber" name="L1274" href="#L1274">1274</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L1275" href="#L1275">1275</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L1275" href="#L1275">1275</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L1276" href="#L1276">1276</a> 
 <a class="jxr_linenumber" name="L1277" href="#L1277">1277</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L1278" href="#L1278">1278</a> 
@@ -1290,7 +1290,7 @@
 <a class="jxr_linenumber" name="L1282" href="#L1282">1282</a> 
 <a class="jxr_linenumber" name="L1283" href="#L1283">1283</a>         SelectDSL&lt;SelectModel&gt; builder5 = builder4.orderBy(StudentDynamicSqlSupport.id);
 <a class="jxr_linenumber" name="L1284" href="#L1284">1284</a> 
-<a class="jxr_linenumber" name="L1285" href="#L1285">1285</a>         SelectDSL&lt;SelectModel&gt;.OffsetFirstFinisher builder6 = builder5.offset(2);
+<a class="jxr_linenumber" name="L1285" href="#L1285">1285</a>         <strong class="jxr_keyword">var</strong> builder6 = builder5.offset(2);
 <a class="jxr_linenumber" name="L1286" href="#L1286">1286</a> 
 <a class="jxr_linenumber" name="L1287" href="#L1287">1287</a>         builder6.fetchFirst(3).rowsOnly();
 <a class="jxr_linenumber" name="L1288" href="#L1288">1288</a> 
@@ -1316,7 +1316,7 @@
 <a class="jxr_linenumber" name="L1308" href="#L1308">1308</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L1309" href="#L1309">1309</a> 
 <a class="jxr_linenumber" name="L1310" href="#L1310">1310</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L1311" href="#L1311">1311</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L1311" href="#L1311">1311</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L1312" href="#L1312">1312</a> 
 <a class="jxr_linenumber" name="L1313" href="#L1313">1313</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L1314" href="#L1314">1314</a> 
@@ -1326,7 +1326,7 @@
 <a class="jxr_linenumber" name="L1318" href="#L1318">1318</a> 
 <a class="jxr_linenumber" name="L1319" href="#L1319">1319</a>         SelectDSL&lt;SelectModel&gt; builder5 = builder4.orderBy(StudentDynamicSqlSupport.id);
 <a class="jxr_linenumber" name="L1320" href="#L1320">1320</a> 
-<a class="jxr_linenumber" name="L1321" href="#L1321">1321</a>         SelectDSL&lt;SelectModel&gt;.OffsetFirstFinisher builder6 = builder5.offset(2);
+<a class="jxr_linenumber" name="L1321" href="#L1321">1321</a>         <strong class="jxr_keyword">var</strong> builder6 = builder5.offset(2);
 <a class="jxr_linenumber" name="L1322" href="#L1322">1322</a> 
 <a class="jxr_linenumber" name="L1323" href="#L1323">1323</a>         builder6.fetchFirst(3).rowsOnly();
 <a class="jxr_linenumber" name="L1324" href="#L1324">1324</a> 
@@ -1352,7 +1352,7 @@
 <a class="jxr_linenumber" name="L1344" href="#L1344">1344</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L1345" href="#L1345">1345</a> 
 <a class="jxr_linenumber" name="L1346" href="#L1346">1346</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L1347" href="#L1347">1347</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L1347" href="#L1347">1347</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L1348" href="#L1348">1348</a> 
 <a class="jxr_linenumber" name="L1349" href="#L1349">1349</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L1350" href="#L1350">1350</a> 
@@ -1362,7 +1362,7 @@
 <a class="jxr_linenumber" name="L1354" href="#L1354">1354</a> 
 <a class="jxr_linenumber" name="L1355" href="#L1355">1355</a>         SelectDSL&lt;SelectModel&gt; builder5 = builder4.orderBy(StudentDynamicSqlSupport.id);
 <a class="jxr_linenumber" name="L1356" href="#L1356">1356</a> 
-<a class="jxr_linenumber" name="L1357" href="#L1357">1357</a>         SelectDSL&lt;SelectModel&gt;.OffsetFirstFinisher builder6 = builder5.offset(2);
+<a class="jxr_linenumber" name="L1357" href="#L1357">1357</a>         <strong class="jxr_keyword">var</strong> builder6 = builder5.offset(2);
 <a class="jxr_linenumber" name="L1358" href="#L1358">1358</a> 
 <a class="jxr_linenumber" name="L1359" href="#L1359">1359</a>         builder6.fetchFirst(3).rowsOnly();
 <a class="jxr_linenumber" name="L1360" href="#L1360">1360</a> 
@@ -1388,7 +1388,7 @@
 <a class="jxr_linenumber" name="L1380" href="#L1380">1380</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L1381" href="#L1381">1381</a> 
 <a class="jxr_linenumber" name="L1382" href="#L1382">1382</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L1383" href="#L1383">1383</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L1383" href="#L1383">1383</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L1384" href="#L1384">1384</a> 
 <a class="jxr_linenumber" name="L1385" href="#L1385">1385</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L1386" href="#L1386">1386</a> 
@@ -1398,7 +1398,7 @@
 <a class="jxr_linenumber" name="L1390" href="#L1390">1390</a> 
 <a class="jxr_linenumber" name="L1391" href="#L1391">1391</a>         SelectDSL&lt;SelectModel&gt; builder5 = builder4.orderBy(StudentDynamicSqlSupport.id);
 <a class="jxr_linenumber" name="L1392" href="#L1392">1392</a> 
-<a class="jxr_linenumber" name="L1393" href="#L1393">1393</a>         SelectDSL&lt;SelectModel&gt;.OffsetFirstFinisher builder6 = builder5.offset(2);
+<a class="jxr_linenumber" name="L1393" href="#L1393">1393</a>         <strong class="jxr_keyword">var</strong> builder6 = builder5.offset(2);
 <a class="jxr_linenumber" name="L1394" href="#L1394">1394</a> 
 <a class="jxr_linenumber" name="L1395" href="#L1395">1395</a>         builder6.fetchFirst(3).rowsOnly();
 <a class="jxr_linenumber" name="L1396" href="#L1396">1396</a> 
@@ -1424,7 +1424,7 @@
 <a class="jxr_linenumber" name="L1416" href="#L1416">1416</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L1417" href="#L1417">1417</a> 
 <a class="jxr_linenumber" name="L1418" href="#L1418">1418</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L1419" href="#L1419">1419</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L1419" href="#L1419">1419</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L1420" href="#L1420">1420</a> 
 <a class="jxr_linenumber" name="L1421" href="#L1421">1421</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L1422" href="#L1422">1422</a> 
@@ -1434,7 +1434,7 @@
 <a class="jxr_linenumber" name="L1426" href="#L1426">1426</a> 
 <a class="jxr_linenumber" name="L1427" href="#L1427">1427</a>         SelectDSL&lt;SelectModel&gt; builder5 = builder4.orderBy(StudentDynamicSqlSupport.id);
 <a class="jxr_linenumber" name="L1428" href="#L1428">1428</a> 
-<a class="jxr_linenumber" name="L1429" href="#L1429">1429</a>         SelectDSL&lt;SelectModel&gt;.OffsetFirstFinisher builder6 = builder5.offset(2);
+<a class="jxr_linenumber" name="L1429" href="#L1429">1429</a>         <strong class="jxr_keyword">var</strong> builder6 = builder5.offset(2);
 <a class="jxr_linenumber" name="L1430" href="#L1430">1430</a> 
 <a class="jxr_linenumber" name="L1431" href="#L1431">1431</a>         builder6.fetchFirst(3).rowsOnly();
 <a class="jxr_linenumber" name="L1432" href="#L1432">1432</a> 
@@ -1460,7 +1460,7 @@
 <a class="jxr_linenumber" name="L1452" href="#L1452">1452</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L1453" href="#L1453">1453</a> 
 <a class="jxr_linenumber" name="L1454" href="#L1454">1454</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L1455" href="#L1455">1455</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L1455" href="#L1455">1455</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L1456" href="#L1456">1456</a> 
 <a class="jxr_linenumber" name="L1457" href="#L1457">1457</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L1458" href="#L1458">1458</a> 
@@ -1470,7 +1470,7 @@
 <a class="jxr_linenumber" name="L1462" href="#L1462">1462</a> 
 <a class="jxr_linenumber" name="L1463" href="#L1463">1463</a>         SelectDSL&lt;SelectModel&gt; builder5 = builder4.orderBy(StudentDynamicSqlSupport.id);
 <a class="jxr_linenumber" name="L1464" href="#L1464">1464</a> 
-<a class="jxr_linenumber" name="L1465" href="#L1465">1465</a>         SelectDSL&lt;SelectModel&gt;.OffsetFirstFinisher builder6 = builder5.offset(2);
+<a class="jxr_linenumber" name="L1465" href="#L1465">1465</a>         <strong class="jxr_keyword">var</strong> builder6 = builder5.offset(2);
 <a class="jxr_linenumber" name="L1466" href="#L1466">1466</a> 
 <a class="jxr_linenumber" name="L1467" href="#L1467">1467</a>         builder6.fetchFirst(3).rowsOnly();
 <a class="jxr_linenumber" name="L1468" href="#L1468">1468</a> 
@@ -1496,7 +1496,7 @@
 <a class="jxr_linenumber" name="L1488" href="#L1488">1488</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L1489" href="#L1489">1489</a> 
 <a class="jxr_linenumber" name="L1490" href="#L1490">1490</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L1491" href="#L1491">1491</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L1491" href="#L1491">1491</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L1492" href="#L1492">1492</a> 
 <a class="jxr_linenumber" name="L1493" href="#L1493">1493</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L1494" href="#L1494">1494</a> 
@@ -1506,9 +1506,9 @@
 <a class="jxr_linenumber" name="L1498" href="#L1498">1498</a> 
 <a class="jxr_linenumber" name="L1499" href="#L1499">1499</a>         SelectDSL&lt;SelectModel&gt; builder5 = builder4.orderBy(StudentDynamicSqlSupport.id);
 <a class="jxr_linenumber" name="L1500" href="#L1500">1500</a> 
-<a class="jxr_linenumber" name="L1501" href="#L1501">1501</a>         SelectDSL&lt;SelectModel&gt;.OffsetFirstFinisher builder6 = builder5.offset(2);
+<a class="jxr_linenumber" name="L1501" href="#L1501">1501</a>         <strong class="jxr_keyword">var</strong> builder6 = builder5.offset(2);
 <a class="jxr_linenumber" name="L1502" href="#L1502">1502</a> 
-<a class="jxr_linenumber" name="L1503" href="#L1503">1503</a>         SelectDSL&lt;SelectModel&gt;.RowsOnlyFinisher builder7 = builder6.fetchFirst(3).rowsOnly();
+<a class="jxr_linenumber" name="L1503" href="#L1503">1503</a>         <strong class="jxr_keyword">var</strong> builder7 = builder6.fetchFirst(3).rowsOnly();
 <a class="jxr_linenumber" name="L1504" href="#L1504">1504</a> 
 <a class="jxr_linenumber" name="L1505" href="#L1505">1505</a>         String expected = <span class="jxr_string">"select student.id, student.name, student.idcard"</span>
 <a class="jxr_linenumber" name="L1506" href="#L1506">1506</a>                 + <span class="jxr_string">" from student"</span>
@@ -1532,7 +1532,7 @@
 <a class="jxr_linenumber" name="L1524" href="#L1524">1524</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L1525" href="#L1525">1525</a> 
 <a class="jxr_linenumber" name="L1526" href="#L1526">1526</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L1527" href="#L1527">1527</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L1527" href="#L1527">1527</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L1528" href="#L1528">1528</a> 
 <a class="jxr_linenumber" name="L1529" href="#L1529">1529</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L1530" href="#L1530">1530</a> 
@@ -1565,7 +1565,7 @@
 <a class="jxr_linenumber" name="L1557" href="#L1557">1557</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L1558" href="#L1558">1558</a> 
 <a class="jxr_linenumber" name="L1559" href="#L1559">1559</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L1560" href="#L1560">1560</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L1560" href="#L1560">1560</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L1561" href="#L1561">1561</a> 
 <a class="jxr_linenumber" name="L1562" href="#L1562">1562</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L1563" href="#L1563">1563</a> 
@@ -1598,7 +1598,7 @@
 <a class="jxr_linenumber" name="L1590" href="#L1590">1590</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L1591" href="#L1591">1591</a> 
 <a class="jxr_linenumber" name="L1592" href="#L1592">1592</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L1593" href="#L1593">1593</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L1593" href="#L1593">1593</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L1594" href="#L1594">1594</a> 
 <a class="jxr_linenumber" name="L1595" href="#L1595">1595</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L1596" href="#L1596">1596</a> 
@@ -1631,7 +1631,7 @@
 <a class="jxr_linenumber" name="L1623" href="#L1623">1623</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L1624" href="#L1624">1624</a> 
 <a class="jxr_linenumber" name="L1625" href="#L1625">1625</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L1626" href="#L1626">1626</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L1626" href="#L1626">1626</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L1627" href="#L1627">1627</a> 
 <a class="jxr_linenumber" name="L1628" href="#L1628">1628</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L1629" href="#L1629">1629</a> 
@@ -1664,7 +1664,7 @@
 <a class="jxr_linenumber" name="L1656" href="#L1656">1656</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L1657" href="#L1657">1657</a> 
 <a class="jxr_linenumber" name="L1658" href="#L1658">1658</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L1659" href="#L1659">1659</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L1659" href="#L1659">1659</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L1660" href="#L1660">1660</a> 
 <a class="jxr_linenumber" name="L1661" href="#L1661">1661</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L1662" href="#L1662">1662</a> 
@@ -1697,7 +1697,7 @@
 <a class="jxr_linenumber" name="L1689" href="#L1689">1689</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L1690" href="#L1690">1690</a> 
 <a class="jxr_linenumber" name="L1691" href="#L1691">1691</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L1692" href="#L1692">1692</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L1692" href="#L1692">1692</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L1693" href="#L1693">1693</a> 
 <a class="jxr_linenumber" name="L1694" href="#L1694">1694</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L1695" href="#L1695">1695</a> 
@@ -1707,7 +1707,7 @@
 <a class="jxr_linenumber" name="L1699" href="#L1699">1699</a> 
 <a class="jxr_linenumber" name="L1700" href="#L1700">1700</a>         SelectDSL&lt;SelectModel&gt; builder5 = builder4.orderBy(StudentDynamicSqlSupport.id);
 <a class="jxr_linenumber" name="L1701" href="#L1701">1701</a> 
-<a class="jxr_linenumber" name="L1702" href="#L1702">1702</a>         SelectDSL&lt;SelectModel&gt;.RowsOnlyFinisher builder6 = builder5.fetchFirst(3).rowsOnly();
+<a class="jxr_linenumber" name="L1702" href="#L1702">1702</a>         <strong class="jxr_keyword">var</strong> builder6 = builder5.fetchFirst(3).rowsOnly();
 <a class="jxr_linenumber" name="L1703" href="#L1703">1703</a> 
 <a class="jxr_linenumber" name="L1704" href="#L1704">1704</a>         String expected = <span class="jxr_string">"select student.id, student.name, student.idcard"</span>
 <a class="jxr_linenumber" name="L1705" href="#L1705">1705</a>                 + <span class="jxr_string">" from student"</span>
@@ -1730,7 +1730,7 @@
 <a class="jxr_linenumber" name="L1722" href="#L1722">1722</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L1723" href="#L1723">1723</a> 
 <a class="jxr_linenumber" name="L1724" href="#L1724">1724</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L1725" href="#L1725">1725</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L1725" href="#L1725">1725</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L1726" href="#L1726">1726</a> 
 <a class="jxr_linenumber" name="L1727" href="#L1727">1727</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L1728" href="#L1728">1728</a> 
@@ -1760,7 +1760,7 @@
 <a class="jxr_linenumber" name="L1752" href="#L1752">1752</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L1753" href="#L1753">1753</a> 
 <a class="jxr_linenumber" name="L1754" href="#L1754">1754</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L1755" href="#L1755">1755</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L1755" href="#L1755">1755</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L1756" href="#L1756">1756</a> 
 <a class="jxr_linenumber" name="L1757" href="#L1757">1757</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L1758" href="#L1758">1758</a> 
@@ -1790,7 +1790,7 @@
 <a class="jxr_linenumber" name="L1782" href="#L1782">1782</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L1783" href="#L1783">1783</a> 
 <a class="jxr_linenumber" name="L1784" href="#L1784">1784</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L1785" href="#L1785">1785</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L1785" href="#L1785">1785</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L1786" href="#L1786">1786</a> 
 <a class="jxr_linenumber" name="L1787" href="#L1787">1787</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L1788" href="#L1788">1788</a> 
@@ -1820,7 +1820,7 @@
 <a class="jxr_linenumber" name="L1812" href="#L1812">1812</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L1813" href="#L1813">1813</a> 
 <a class="jxr_linenumber" name="L1814" href="#L1814">1814</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L1815" href="#L1815">1815</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L1815" href="#L1815">1815</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L1816" href="#L1816">1816</a> 
 <a class="jxr_linenumber" name="L1817" href="#L1817">1817</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L1818" href="#L1818">1818</a> 
@@ -1850,7 +1850,7 @@
 <a class="jxr_linenumber" name="L1842" href="#L1842">1842</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L1843" href="#L1843">1843</a> 
 <a class="jxr_linenumber" name="L1844" href="#L1844">1844</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L1845" href="#L1845">1845</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L1845" href="#L1845">1845</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L1846" href="#L1846">1846</a> 
 <a class="jxr_linenumber" name="L1847" href="#L1847">1847</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L1848" href="#L1848">1848</a> 
@@ -1858,7 +1858,7 @@
 <a class="jxr_linenumber" name="L1850" href="#L1850">1850</a>                 .select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
 <a class="jxr_linenumber" name="L1851" href="#L1851">1851</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L1852" href="#L1852">1852</a> 
-<a class="jxr_linenumber" name="L1853" href="#L1853">1853</a>         SelectDSL&lt;SelectModel&gt;.LimitFinisher builder5 = builder4.limit(3);
+<a class="jxr_linenumber" name="L1853" href="#L1853">1853</a>         <strong class="jxr_keyword">var</strong> builder5 = builder4.limit(3);
 <a class="jxr_linenumber" name="L1854" href="#L1854">1854</a> 
 <a class="jxr_linenumber" name="L1855" href="#L1855">1855</a>         String expected = <span class="jxr_string">"select student.id, student.name, student.idcard"</span>
 <a class="jxr_linenumber" name="L1856" href="#L1856">1856</a>                 + <span class="jxr_string">" from student"</span>
@@ -1880,7 +1880,7 @@
 <a class="jxr_linenumber" name="L1872" href="#L1872">1872</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L1873" href="#L1873">1873</a> 
 <a class="jxr_linenumber" name="L1874" href="#L1874">1874</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L1875" href="#L1875">1875</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L1875" href="#L1875">1875</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L1876" href="#L1876">1876</a> 
 <a class="jxr_linenumber" name="L1877" href="#L1877">1877</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L1878" href="#L1878">1878</a> 
@@ -1888,7 +1888,7 @@
 <a class="jxr_linenumber" name="L1880" href="#L1880">1880</a>                 .select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
 <a class="jxr_linenumber" name="L1881" href="#L1881">1881</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L1882" href="#L1882">1882</a> 
-<a class="jxr_linenumber" name="L1883" href="#L1883">1883</a>         SelectDSL&lt;SelectModel&gt;.LimitFinisher builder5 = builder4.limit(3);
+<a class="jxr_linenumber" name="L1883" href="#L1883">1883</a>         <strong class="jxr_keyword">var</strong> builder5 = builder4.limit(3);
 <a class="jxr_linenumber" name="L1884" href="#L1884">1884</a> 
 <a class="jxr_linenumber" name="L1885" href="#L1885">1885</a>         builder5.offset(2);
 <a class="jxr_linenumber" name="L1886" href="#L1886">1886</a> 
@@ -1913,7 +1913,7 @@
 <a class="jxr_linenumber" name="L1905" href="#L1905">1905</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L1906" href="#L1906">1906</a> 
 <a class="jxr_linenumber" name="L1907" href="#L1907">1907</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L1908" href="#L1908">1908</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L1908" href="#L1908">1908</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L1909" href="#L1909">1909</a> 
 <a class="jxr_linenumber" name="L1910" href="#L1910">1910</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L1911" href="#L1911">1911</a> 
@@ -1921,7 +1921,7 @@
 <a class="jxr_linenumber" name="L1913" href="#L1913">1913</a>                 .select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
 <a class="jxr_linenumber" name="L1914" href="#L1914">1914</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L1915" href="#L1915">1915</a> 
-<a class="jxr_linenumber" name="L1916" href="#L1916">1916</a>         SelectDSL&lt;SelectModel&gt;.LimitFinisher builder5 = builder4.limit(3);
+<a class="jxr_linenumber" name="L1916" href="#L1916">1916</a>         <strong class="jxr_keyword">var</strong> builder5 = builder4.limit(3);
 <a class="jxr_linenumber" name="L1917" href="#L1917">1917</a> 
 <a class="jxr_linenumber" name="L1918" href="#L1918">1918</a>         builder5.offset(2);
 <a class="jxr_linenumber" name="L1919" href="#L1919">1919</a> 
@@ -1946,7 +1946,7 @@
 <a class="jxr_linenumber" name="L1938" href="#L1938">1938</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L1939" href="#L1939">1939</a> 
 <a class="jxr_linenumber" name="L1940" href="#L1940">1940</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L1941" href="#L1941">1941</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L1941" href="#L1941">1941</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L1942" href="#L1942">1942</a> 
 <a class="jxr_linenumber" name="L1943" href="#L1943">1943</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L1944" href="#L1944">1944</a> 
@@ -1954,7 +1954,7 @@
 <a class="jxr_linenumber" name="L1946" href="#L1946">1946</a>                 .select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
 <a class="jxr_linenumber" name="L1947" href="#L1947">1947</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L1948" href="#L1948">1948</a> 
-<a class="jxr_linenumber" name="L1949" href="#L1949">1949</a>         SelectDSL&lt;SelectModel&gt;.LimitFinisher builder5 = builder4.limit(3);
+<a class="jxr_linenumber" name="L1949" href="#L1949">1949</a>         <strong class="jxr_keyword">var</strong> builder5 = builder4.limit(3);
 <a class="jxr_linenumber" name="L1950" href="#L1950">1950</a> 
 <a class="jxr_linenumber" name="L1951" href="#L1951">1951</a>         builder5.offset(2);
 <a class="jxr_linenumber" name="L1952" href="#L1952">1952</a> 
@@ -1979,7 +1979,7 @@
 <a class="jxr_linenumber" name="L1971" href="#L1971">1971</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L1972" href="#L1972">1972</a> 
 <a class="jxr_linenumber" name="L1973" href="#L1973">1973</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L1974" href="#L1974">1974</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L1974" href="#L1974">1974</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L1975" href="#L1975">1975</a> 
 <a class="jxr_linenumber" name="L1976" href="#L1976">1976</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L1977" href="#L1977">1977</a> 
@@ -1987,7 +1987,7 @@
 <a class="jxr_linenumber" name="L1979" href="#L1979">1979</a>                 .select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
 <a class="jxr_linenumber" name="L1980" href="#L1980">1980</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L1981" href="#L1981">1981</a> 
-<a class="jxr_linenumber" name="L1982" href="#L1982">1982</a>         SelectDSL&lt;SelectModel&gt;.LimitFinisher builder5 = builder4.limit(3);
+<a class="jxr_linenumber" name="L1982" href="#L1982">1982</a>         <strong class="jxr_keyword">var</strong> builder5 = builder4.limit(3);
 <a class="jxr_linenumber" name="L1983" href="#L1983">1983</a> 
 <a class="jxr_linenumber" name="L1984" href="#L1984">1984</a>         builder5.offset(2);
 <a class="jxr_linenumber" name="L1985" href="#L1985">1985</a> 
@@ -2012,7 +2012,7 @@
 <a class="jxr_linenumber" name="L2004" href="#L2004">2004</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L2005" href="#L2005">2005</a> 
 <a class="jxr_linenumber" name="L2006" href="#L2006">2006</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L2007" href="#L2007">2007</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L2007" href="#L2007">2007</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L2008" href="#L2008">2008</a> 
 <a class="jxr_linenumber" name="L2009" href="#L2009">2009</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L2010" href="#L2010">2010</a> 
@@ -2020,7 +2020,7 @@
 <a class="jxr_linenumber" name="L2012" href="#L2012">2012</a>                 .select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
 <a class="jxr_linenumber" name="L2013" href="#L2013">2013</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L2014" href="#L2014">2014</a> 
-<a class="jxr_linenumber" name="L2015" href="#L2015">2015</a>         SelectDSL&lt;SelectModel&gt;.LimitFinisher builder5 = builder4.limit(3);
+<a class="jxr_linenumber" name="L2015" href="#L2015">2015</a>         <strong class="jxr_keyword">var</strong> builder5 = builder4.limit(3);
 <a class="jxr_linenumber" name="L2016" href="#L2016">2016</a> 
 <a class="jxr_linenumber" name="L2017" href="#L2017">2017</a>         builder5.offset(2);
 <a class="jxr_linenumber" name="L2018" href="#L2018">2018</a> 
@@ -2045,7 +2045,7 @@
 <a class="jxr_linenumber" name="L2037" href="#L2037">2037</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L2038" href="#L2038">2038</a> 
 <a class="jxr_linenumber" name="L2039" href="#L2039">2039</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L2040" href="#L2040">2040</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L2040" href="#L2040">2040</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L2041" href="#L2041">2041</a> 
 <a class="jxr_linenumber" name="L2042" href="#L2042">2042</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L2043" href="#L2043">2043</a> 
@@ -2053,9 +2053,9 @@
 <a class="jxr_linenumber" name="L2045" href="#L2045">2045</a>                 .select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
 <a class="jxr_linenumber" name="L2046" href="#L2046">2046</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L2047" href="#L2047">2047</a> 
-<a class="jxr_linenumber" name="L2048" href="#L2048">2048</a>         SelectDSL&lt;SelectModel&gt;.LimitFinisher builder5 = builder4.limit(3);
+<a class="jxr_linenumber" name="L2048" href="#L2048">2048</a>         <strong class="jxr_keyword">var</strong> builder5 = builder4.limit(3);
 <a class="jxr_linenumber" name="L2049" href="#L2049">2049</a> 
-<a class="jxr_linenumber" name="L2050" href="#L2050">2050</a>         SelectDSL&lt;SelectModel&gt;.OffsetFinisher builder6 = builder5.offset(2);
+<a class="jxr_linenumber" name="L2050" href="#L2050">2050</a>         <strong class="jxr_keyword">var</strong> builder6 = builder5.offset(2);
 <a class="jxr_linenumber" name="L2051" href="#L2051">2051</a> 
 <a class="jxr_linenumber" name="L2052" href="#L2052">2052</a>         String expected = <span class="jxr_string">"select student.id, student.name, student.idcard"</span>
 <a class="jxr_linenumber" name="L2053" href="#L2053">2053</a>                 + <span class="jxr_string">" from student"</span>
@@ -2078,7 +2078,7 @@
 <a class="jxr_linenumber" name="L2070" href="#L2070">2070</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L2071" href="#L2071">2071</a> 
 <a class="jxr_linenumber" name="L2072" href="#L2072">2072</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L2073" href="#L2073">2073</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L2073" href="#L2073">2073</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L2074" href="#L2074">2074</a> 
 <a class="jxr_linenumber" name="L2075" href="#L2075">2075</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L2076" href="#L2076">2076</a> 
@@ -2108,7 +2108,7 @@
 <a class="jxr_linenumber" name="L2100" href="#L2100">2100</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L2101" href="#L2101">2101</a> 
 <a class="jxr_linenumber" name="L2102" href="#L2102">2102</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L2103" href="#L2103">2103</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L2103" href="#L2103">2103</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L2104" href="#L2104">2104</a> 
 <a class="jxr_linenumber" name="L2105" href="#L2105">2105</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L2106" href="#L2106">2106</a> 
@@ -2138,7 +2138,7 @@
 <a class="jxr_linenumber" name="L2130" href="#L2130">2130</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L2131" href="#L2131">2131</a> 
 <a class="jxr_linenumber" name="L2132" href="#L2132">2132</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L2133" href="#L2133">2133</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L2133" href="#L2133">2133</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L2134" href="#L2134">2134</a> 
 <a class="jxr_linenumber" name="L2135" href="#L2135">2135</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L2136" href="#L2136">2136</a> 
@@ -2168,7 +2168,7 @@
 <a class="jxr_linenumber" name="L2160" href="#L2160">2160</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L2161" href="#L2161">2161</a> 
 <a class="jxr_linenumber" name="L2162" href="#L2162">2162</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L2163" href="#L2163">2163</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L2163" href="#L2163">2163</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L2164" href="#L2164">2164</a> 
 <a class="jxr_linenumber" name="L2165" href="#L2165">2165</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L2166" href="#L2166">2166</a> 
@@ -2198,7 +2198,7 @@
 <a class="jxr_linenumber" name="L2190" href="#L2190">2190</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L2191" href="#L2191">2191</a> 
 <a class="jxr_linenumber" name="L2192" href="#L2192">2192</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L2193" href="#L2193">2193</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L2193" href="#L2193">2193</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L2194" href="#L2194">2194</a> 
 <a class="jxr_linenumber" name="L2195" href="#L2195">2195</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L2196" href="#L2196">2196</a> 
@@ -2206,7 +2206,7 @@
 <a class="jxr_linenumber" name="L2198" href="#L2198">2198</a>                 .select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
 <a class="jxr_linenumber" name="L2199" href="#L2199">2199</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L2200" href="#L2200">2200</a> 
-<a class="jxr_linenumber" name="L2201" href="#L2201">2201</a>         SelectDSL&lt;SelectModel&gt;.OffsetFirstFinisher builder5 = builder4.offset(2);
+<a class="jxr_linenumber" name="L2201" href="#L2201">2201</a>         <strong class="jxr_keyword">var</strong> builder5 = builder4.offset(2);
 <a class="jxr_linenumber" name="L2202" href="#L2202">2202</a> 
 <a class="jxr_linenumber" name="L2203" href="#L2203">2203</a>         String expected = <span class="jxr_string">"select student.id, student.name, student.idcard"</span>
 <a class="jxr_linenumber" name="L2204" href="#L2204">2204</a>                 + <span class="jxr_string">" from student"</span>
@@ -2228,7 +2228,7 @@
 <a class="jxr_linenumber" name="L2220" href="#L2220">2220</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L2221" href="#L2221">2221</a> 
 <a class="jxr_linenumber" name="L2222" href="#L2222">2222</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L2223" href="#L2223">2223</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L2223" href="#L2223">2223</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L2224" href="#L2224">2224</a> 
 <a class="jxr_linenumber" name="L2225" href="#L2225">2225</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L2226" href="#L2226">2226</a> 
@@ -2236,7 +2236,7 @@
 <a class="jxr_linenumber" name="L2228" href="#L2228">2228</a>                 .select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
 <a class="jxr_linenumber" name="L2229" href="#L2229">2229</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L2230" href="#L2230">2230</a> 
-<a class="jxr_linenumber" name="L2231" href="#L2231">2231</a>         SelectDSL&lt;SelectModel&gt;.OffsetFirstFinisher builder5 = builder4.offset(2);
+<a class="jxr_linenumber" name="L2231" href="#L2231">2231</a>         <strong class="jxr_keyword">var</strong> builder5 = builder4.offset(2);
 <a class="jxr_linenumber" name="L2232" href="#L2232">2232</a> 
 <a class="jxr_linenumber" name="L2233" href="#L2233">2233</a>         builder5.fetchFirst(2).rowsOnly();
 <a class="jxr_linenumber" name="L2234" href="#L2234">2234</a> 
@@ -2261,7 +2261,7 @@
 <a class="jxr_linenumber" name="L2253" href="#L2253">2253</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L2254" href="#L2254">2254</a> 
 <a class="jxr_linenumber" name="L2255" href="#L2255">2255</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L2256" href="#L2256">2256</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L2256" href="#L2256">2256</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L2257" href="#L2257">2257</a> 
 <a class="jxr_linenumber" name="L2258" href="#L2258">2258</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L2259" href="#L2259">2259</a> 
@@ -2269,7 +2269,7 @@
 <a class="jxr_linenumber" name="L2261" href="#L2261">2261</a>                 .select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
 <a class="jxr_linenumber" name="L2262" href="#L2262">2262</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L2263" href="#L2263">2263</a> 
-<a class="jxr_linenumber" name="L2264" href="#L2264">2264</a>         SelectDSL&lt;SelectModel&gt;.OffsetFirstFinisher builder5 = builder4.offset(2);
+<a class="jxr_linenumber" name="L2264" href="#L2264">2264</a>         <strong class="jxr_keyword">var</strong> builder5 = builder4.offset(2);
 <a class="jxr_linenumber" name="L2265" href="#L2265">2265</a> 
 <a class="jxr_linenumber" name="L2266" href="#L2266">2266</a>         builder5.fetchFirst(2).rowsOnly();
 <a class="jxr_linenumber" name="L2267" href="#L2267">2267</a> 
@@ -2294,7 +2294,7 @@
 <a class="jxr_linenumber" name="L2286" href="#L2286">2286</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L2287" href="#L2287">2287</a> 
 <a class="jxr_linenumber" name="L2288" href="#L2288">2288</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L2289" href="#L2289">2289</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L2289" href="#L2289">2289</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L2290" href="#L2290">2290</a> 
 <a class="jxr_linenumber" name="L2291" href="#L2291">2291</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L2292" href="#L2292">2292</a> 
@@ -2302,7 +2302,7 @@
 <a class="jxr_linenumber" name="L2294" href="#L2294">2294</a>                 .select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
 <a class="jxr_linenumber" name="L2295" href="#L2295">2295</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L2296" href="#L2296">2296</a> 
-<a class="jxr_linenumber" name="L2297" href="#L2297">2297</a>         SelectDSL&lt;SelectModel&gt;.OffsetFirstFinisher builder5 = builder4.offset(2);
+<a class="jxr_linenumber" name="L2297" href="#L2297">2297</a>         <strong class="jxr_keyword">var</strong> builder5 = builder4.offset(2);
 <a class="jxr_linenumber" name="L2298" href="#L2298">2298</a> 
 <a class="jxr_linenumber" name="L2299" href="#L2299">2299</a>         builder5.fetchFirst(2).rowsOnly();
 <a class="jxr_linenumber" name="L2300" href="#L2300">2300</a> 
@@ -2327,7 +2327,7 @@
 <a class="jxr_linenumber" name="L2319" href="#L2319">2319</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L2320" href="#L2320">2320</a> 
 <a class="jxr_linenumber" name="L2321" href="#L2321">2321</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L2322" href="#L2322">2322</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L2322" href="#L2322">2322</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L2323" href="#L2323">2323</a> 
 <a class="jxr_linenumber" name="L2324" href="#L2324">2324</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L2325" href="#L2325">2325</a> 
@@ -2335,7 +2335,7 @@
 <a class="jxr_linenumber" name="L2327" href="#L2327">2327</a>                 .select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
 <a class="jxr_linenumber" name="L2328" href="#L2328">2328</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L2329" href="#L2329">2329</a> 
-<a class="jxr_linenumber" name="L2330" href="#L2330">2330</a>         SelectDSL&lt;SelectModel&gt;.OffsetFirstFinisher builder5 = builder4.offset(2);
+<a class="jxr_linenumber" name="L2330" href="#L2330">2330</a>         <strong class="jxr_keyword">var</strong> builder5 = builder4.offset(2);
 <a class="jxr_linenumber" name="L2331" href="#L2331">2331</a> 
 <a class="jxr_linenumber" name="L2332" href="#L2332">2332</a>         builder5.fetchFirst(2).rowsOnly();
 <a class="jxr_linenumber" name="L2333" href="#L2333">2333</a> 
@@ -2360,7 +2360,7 @@
 <a class="jxr_linenumber" name="L2352" href="#L2352">2352</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L2353" href="#L2353">2353</a> 
 <a class="jxr_linenumber" name="L2354" href="#L2354">2354</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L2355" href="#L2355">2355</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L2355" href="#L2355">2355</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L2356" href="#L2356">2356</a> 
 <a class="jxr_linenumber" name="L2357" href="#L2357">2357</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L2358" href="#L2358">2358</a> 
@@ -2368,7 +2368,7 @@
 <a class="jxr_linenumber" name="L2360" href="#L2360">2360</a>                 .select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
 <a class="jxr_linenumber" name="L2361" href="#L2361">2361</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L2362" href="#L2362">2362</a> 
-<a class="jxr_linenumber" name="L2363" href="#L2363">2363</a>         SelectDSL&lt;SelectModel&gt;.OffsetFirstFinisher builder5 = builder4.offset(2);
+<a class="jxr_linenumber" name="L2363" href="#L2363">2363</a>         <strong class="jxr_keyword">var</strong> builder5 = builder4.offset(2);
 <a class="jxr_linenumber" name="L2364" href="#L2364">2364</a> 
 <a class="jxr_linenumber" name="L2365" href="#L2365">2365</a>         builder5.fetchFirst(2).rowsOnly();
 <a class="jxr_linenumber" name="L2366" href="#L2366">2366</a> 
@@ -2393,7 +2393,7 @@
 <a class="jxr_linenumber" name="L2385" href="#L2385">2385</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L2386" href="#L2386">2386</a> 
 <a class="jxr_linenumber" name="L2387" href="#L2387">2387</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L2388" href="#L2388">2388</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L2388" href="#L2388">2388</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L2389" href="#L2389">2389</a> 
 <a class="jxr_linenumber" name="L2390" href="#L2390">2390</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L2391" href="#L2391">2391</a> 
@@ -2401,9 +2401,9 @@
 <a class="jxr_linenumber" name="L2393" href="#L2393">2393</a>                 .select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
 <a class="jxr_linenumber" name="L2394" href="#L2394">2394</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L2395" href="#L2395">2395</a> 
-<a class="jxr_linenumber" name="L2396" href="#L2396">2396</a>         SelectDSL&lt;SelectModel&gt;.OffsetFirstFinisher builder5 = builder4.offset(2);
+<a class="jxr_linenumber" name="L2396" href="#L2396">2396</a>         <strong class="jxr_keyword">var</strong> builder5 = builder4.offset(2);
 <a class="jxr_linenumber" name="L2397" href="#L2397">2397</a> 
-<a class="jxr_linenumber" name="L2398" href="#L2398">2398</a>         SelectDSL&lt;SelectModel&gt;.RowsOnlyFinisher builder6 = builder5.fetchFirst(2).rowsOnly();
+<a class="jxr_linenumber" name="L2398" href="#L2398">2398</a>         <strong class="jxr_keyword">var</strong> builder6 = builder5.fetchFirst(2).rowsOnly();
 <a class="jxr_linenumber" name="L2399" href="#L2399">2399</a> 
 <a class="jxr_linenumber" name="L2400" href="#L2400">2400</a>         String expected = <span class="jxr_string">"select student.id, student.name, student.idcard"</span>
 <a class="jxr_linenumber" name="L2401" href="#L2401">2401</a>                 + <span class="jxr_string">" from student"</span>
@@ -2426,7 +2426,7 @@
 <a class="jxr_linenumber" name="L2418" href="#L2418">2418</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L2419" href="#L2419">2419</a> 
 <a class="jxr_linenumber" name="L2420" href="#L2420">2420</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L2421" href="#L2421">2421</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L2421" href="#L2421">2421</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L2422" href="#L2422">2422</a> 
 <a class="jxr_linenumber" name="L2423" href="#L2423">2423</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L2424" href="#L2424">2424</a> 
@@ -2456,7 +2456,7 @@
 <a class="jxr_linenumber" name="L2448" href="#L2448">2448</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L2449" href="#L2449">2449</a> 
 <a class="jxr_linenumber" name="L2450" href="#L2450">2450</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L2451" href="#L2451">2451</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L2451" href="#L2451">2451</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L2452" href="#L2452">2452</a> 
 <a class="jxr_linenumber" name="L2453" href="#L2453">2453</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L2454" href="#L2454">2454</a> 
@@ -2486,7 +2486,7 @@
 <a class="jxr_linenumber" name="L2478" href="#L2478">2478</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L2479" href="#L2479">2479</a> 
 <a class="jxr_linenumber" name="L2480" href="#L2480">2480</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L2481" href="#L2481">2481</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L2481" href="#L2481">2481</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L2482" href="#L2482">2482</a> 
 <a class="jxr_linenumber" name="L2483" href="#L2483">2483</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L2484" href="#L2484">2484</a> 
@@ -2516,7 +2516,7 @@
 <a class="jxr_linenumber" name="L2508" href="#L2508">2508</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L2509" href="#L2509">2509</a> 
 <a class="jxr_linenumber" name="L2510" href="#L2510">2510</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L2511" href="#L2511">2511</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L2511" href="#L2511">2511</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L2512" href="#L2512">2512</a> 
 <a class="jxr_linenumber" name="L2513" href="#L2513">2513</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L2514" href="#L2514">2514</a> 
@@ -2546,7 +2546,7 @@
 <a class="jxr_linenumber" name="L2538" href="#L2538">2538</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L2539" href="#L2539">2539</a> 
 <a class="jxr_linenumber" name="L2540" href="#L2540">2540</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L2541" href="#L2541">2541</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L2541" href="#L2541">2541</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L2542" href="#L2542">2542</a> 
 <a class="jxr_linenumber" name="L2543" href="#L2543">2543</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L2544" href="#L2544">2544</a> 
@@ -2554,7 +2554,7 @@
 <a class="jxr_linenumber" name="L2546" href="#L2546">2546</a>                 .select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
 <a class="jxr_linenumber" name="L2547" href="#L2547">2547</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L2548" href="#L2548">2548</a> 
-<a class="jxr_linenumber" name="L2549" href="#L2549">2549</a>         SelectDSL&lt;SelectModel&gt;.RowsOnlyFinisher builder5 = builder4.fetchFirst(2).rowsOnly();
+<a class="jxr_linenumber" name="L2549" href="#L2549">2549</a>         <strong class="jxr_keyword">var</strong> builder5 = builder4.fetchFirst(2).rowsOnly();
 <a class="jxr_linenumber" name="L2550" href="#L2550">2550</a> 
 <a class="jxr_linenumber" name="L2551" href="#L2551">2551</a>         String expected = <span class="jxr_string">"select student.id, student.name, student.idcard"</span>
 <a class="jxr_linenumber" name="L2552" href="#L2552">2552</a>                 + <span class="jxr_string">" from student"</span>
@@ -2576,7 +2576,7 @@
 <a class="jxr_linenumber" name="L2568" href="#L2568">2568</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L2569" href="#L2569">2569</a> 
 <a class="jxr_linenumber" name="L2570" href="#L2570">2570</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L2571" href="#L2571">2571</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L2571" href="#L2571">2571</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L2572" href="#L2572">2572</a> 
 <a class="jxr_linenumber" name="L2573" href="#L2573">2573</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L2574" href="#L2574">2574</a> 
@@ -2599,7 +2599,7 @@
 <a class="jxr_linenumber" name="L2591" href="#L2591">2591</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L2592" href="#L2592">2592</a> 
 <a class="jxr_linenumber" name="L2593" href="#L2593">2593</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L2594" href="#L2594">2594</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L2594" href="#L2594">2594</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L2595" href="#L2595">2595</a> 
 <a class="jxr_linenumber" name="L2596" href="#L2596">2596</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L2597" href="#L2597">2597</a> 
@@ -2622,7 +2622,7 @@
 <a class="jxr_linenumber" name="L2614" href="#L2614">2614</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L2615" href="#L2615">2615</a> 
 <a class="jxr_linenumber" name="L2616" href="#L2616">2616</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L2617" href="#L2617">2617</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L2617" href="#L2617">2617</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L2618" href="#L2618">2618</a> 
 <a class="jxr_linenumber" name="L2619" href="#L2619">2619</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L2620" href="#L2620">2620</a> 
@@ -2645,7 +2645,7 @@
 <a class="jxr_linenumber" name="L2637" href="#L2637">2637</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L2638" href="#L2638">2638</a> 
 <a class="jxr_linenumber" name="L2639" href="#L2639">2639</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L2640" href="#L2640">2640</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L2640" href="#L2640">2640</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L2641" href="#L2641">2641</a> 
 <a class="jxr_linenumber" name="L2642" href="#L2642">2642</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L2643" href="#L2643">2643</a> 
@@ -2668,7 +2668,7 @@
 <a class="jxr_linenumber" name="L2660" href="#L2660">2660</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L2661" href="#L2661">2661</a> 
 <a class="jxr_linenumber" name="L2662" href="#L2662">2662</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L2663" href="#L2663">2663</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L2663" href="#L2663">2663</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L2664" href="#L2664">2664</a> 
 <a class="jxr_linenumber" name="L2665" href="#L2665">2665</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L2666" href="#L2666">2666</a> 
@@ -2694,7 +2694,7 @@
 <a class="jxr_linenumber" name="L2686" href="#L2686">2686</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L2687" href="#L2687">2687</a> 
 <a class="jxr_linenumber" name="L2688" href="#L2688">2688</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L2689" href="#L2689">2689</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L2689" href="#L2689">2689</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L2690" href="#L2690">2690</a> 
 <a class="jxr_linenumber" name="L2691" href="#L2691">2691</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L2692" href="#L2692">2692</a> 
@@ -2720,7 +2720,7 @@
 <a class="jxr_linenumber" name="L2712" href="#L2712">2712</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L2713" href="#L2713">2713</a> 
 <a class="jxr_linenumber" name="L2714" href="#L2714">2714</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L2715" href="#L2715">2715</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L2715" href="#L2715">2715</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L2716" href="#L2716">2716</a> 
 <a class="jxr_linenumber" name="L2717" href="#L2717">2717</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L2718" href="#L2718">2718</a> 
@@ -2746,7 +2746,7 @@
 <a class="jxr_linenumber" name="L2738" href="#L2738">2738</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L2739" href="#L2739">2739</a> 
 <a class="jxr_linenumber" name="L2740" href="#L2740">2740</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L2741" href="#L2741">2741</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L2741" href="#L2741">2741</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L2742" href="#L2742">2742</a> 
 <a class="jxr_linenumber" name="L2743" href="#L2743">2743</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L2744" href="#L2744">2744</a> 
@@ -2772,13 +2772,13 @@
 <a class="jxr_linenumber" name="L2764" href="#L2764">2764</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L2765" href="#L2765">2765</a> 
 <a class="jxr_linenumber" name="L2766" href="#L2766">2766</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L2767" href="#L2767">2767</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L2767" href="#L2767">2767</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L2768" href="#L2768">2768</a> 
 <a class="jxr_linenumber" name="L2769" href="#L2769">2769</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L2770" href="#L2770">2770</a> 
 <a class="jxr_linenumber" name="L2771" href="#L2771">2771</a>         SelectDSL&lt;SelectModel&gt; builder4 = builder3.orderBy(StudentDynamicSqlSupport.id);
 <a class="jxr_linenumber" name="L2772" href="#L2772">2772</a> 
-<a class="jxr_linenumber" name="L2773" href="#L2773">2773</a>         SelectDSL&lt;SelectModel&gt;.LimitFinisher builder5 = builder4.limit(3);
+<a class="jxr_linenumber" name="L2773" href="#L2773">2773</a>         <strong class="jxr_keyword">var</strong> builder5 = builder4.limit(3);
 <a class="jxr_linenumber" name="L2774" href="#L2774">2774</a> 
 <a class="jxr_linenumber" name="L2775" href="#L2775">2775</a>         String expected = <span class="jxr_string">"select student.id, student.name, student.idcard"</span>
 <a class="jxr_linenumber" name="L2776" href="#L2776">2776</a>                 + <span class="jxr_string">" from student"</span>
@@ -2798,13 +2798,13 @@
 <a class="jxr_linenumber" name="L2790" href="#L2790">2790</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L2791" href="#L2791">2791</a> 
 <a class="jxr_linenumber" name="L2792" href="#L2792">2792</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L2793" href="#L2793">2793</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L2793" href="#L2793">2793</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L2794" href="#L2794">2794</a> 
 <a class="jxr_linenumber" name="L2795" href="#L2795">2795</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L2796" href="#L2796">2796</a> 
 <a class="jxr_linenumber" name="L2797" href="#L2797">2797</a>         SelectDSL&lt;SelectModel&gt; builder4 = builder3.orderBy(StudentDynamicSqlSupport.id);
 <a class="jxr_linenumber" name="L2798" href="#L2798">2798</a> 
-<a class="jxr_linenumber" name="L2799" href="#L2799">2799</a>         SelectDSL&lt;SelectModel&gt;.LimitFinisher builder5 = builder4.limit(3);
+<a class="jxr_linenumber" name="L2799" href="#L2799">2799</a>         <strong class="jxr_keyword">var</strong> builder5 = builder4.limit(3);
 <a class="jxr_linenumber" name="L2800" href="#L2800">2800</a> 
 <a class="jxr_linenumber" name="L2801" href="#L2801">2801</a>         builder5.offset(2);
 <a class="jxr_linenumber" name="L2802" href="#L2802">2802</a> 
@@ -2827,13 +2827,13 @@
 <a class="jxr_linenumber" name="L2819" href="#L2819">2819</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L2820" href="#L2820">2820</a> 
 <a class="jxr_linenumber" name="L2821" href="#L2821">2821</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L2822" href="#L2822">2822</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L2822" href="#L2822">2822</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L2823" href="#L2823">2823</a> 
 <a class="jxr_linenumber" name="L2824" href="#L2824">2824</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L2825" href="#L2825">2825</a> 
 <a class="jxr_linenumber" name="L2826" href="#L2826">2826</a>         SelectDSL&lt;SelectModel&gt; builder4 = builder3.orderBy(StudentDynamicSqlSupport.id);
 <a class="jxr_linenumber" name="L2827" href="#L2827">2827</a> 
-<a class="jxr_linenumber" name="L2828" href="#L2828">2828</a>         SelectDSL&lt;SelectModel&gt;.LimitFinisher builder5 = builder4.limit(3);
+<a class="jxr_linenumber" name="L2828" href="#L2828">2828</a>         <strong class="jxr_keyword">var</strong> builder5 = builder4.limit(3);
 <a class="jxr_linenumber" name="L2829" href="#L2829">2829</a> 
 <a class="jxr_linenumber" name="L2830" href="#L2830">2830</a>         builder5.offset(2);
 <a class="jxr_linenumber" name="L2831" href="#L2831">2831</a> 
@@ -2856,13 +2856,13 @@
 <a class="jxr_linenumber" name="L2848" href="#L2848">2848</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L2849" href="#L2849">2849</a> 
 <a class="jxr_linenumber" name="L2850" href="#L2850">2850</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L2851" href="#L2851">2851</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L2851" href="#L2851">2851</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L2852" href="#L2852">2852</a> 
 <a class="jxr_linenumber" name="L2853" href="#L2853">2853</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L2854" href="#L2854">2854</a> 
 <a class="jxr_linenumber" name="L2855" href="#L2855">2855</a>         SelectDSL&lt;SelectModel&gt; builder4 = builder3.orderBy(StudentDynamicSqlSupport.id);
 <a class="jxr_linenumber" name="L2856" href="#L2856">2856</a> 
-<a class="jxr_linenumber" name="L2857" href="#L2857">2857</a>         SelectDSL&lt;SelectModel&gt;.LimitFinisher builder5 = builder4.limit(3);
+<a class="jxr_linenumber" name="L2857" href="#L2857">2857</a>         <strong class="jxr_keyword">var</strong> builder5 = builder4.limit(3);
 <a class="jxr_linenumber" name="L2858" href="#L2858">2858</a> 
 <a class="jxr_linenumber" name="L2859" href="#L2859">2859</a>         builder5.offset(2);
 <a class="jxr_linenumber" name="L2860" href="#L2860">2860</a> 
@@ -2885,13 +2885,13 @@
 <a class="jxr_linenumber" name="L2877" href="#L2877">2877</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L2878" href="#L2878">2878</a> 
 <a class="jxr_linenumber" name="L2879" href="#L2879">2879</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L2880" href="#L2880">2880</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L2880" href="#L2880">2880</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L2881" href="#L2881">2881</a> 
 <a class="jxr_linenumber" name="L2882" href="#L2882">2882</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L2883" href="#L2883">2883</a> 
 <a class="jxr_linenumber" name="L2884" href="#L2884">2884</a>         SelectDSL&lt;SelectModel&gt; builder4 = builder3.orderBy(StudentDynamicSqlSupport.id);
 <a class="jxr_linenumber" name="L2885" href="#L2885">2885</a> 
-<a class="jxr_linenumber" name="L2886" href="#L2886">2886</a>         SelectDSL&lt;SelectModel&gt;.LimitFinisher builder5 = builder4.limit(3);
+<a class="jxr_linenumber" name="L2886" href="#L2886">2886</a>         <strong class="jxr_keyword">var</strong> builder5 = builder4.limit(3);
 <a class="jxr_linenumber" name="L2887" href="#L2887">2887</a> 
 <a class="jxr_linenumber" name="L2888" href="#L2888">2888</a>         builder5.offset(2);
 <a class="jxr_linenumber" name="L2889" href="#L2889">2889</a> 
@@ -2914,13 +2914,13 @@
 <a class="jxr_linenumber" name="L2906" href="#L2906">2906</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L2907" href="#L2907">2907</a> 
 <a class="jxr_linenumber" name="L2908" href="#L2908">2908</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L2909" href="#L2909">2909</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L2909" href="#L2909">2909</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L2910" href="#L2910">2910</a> 
 <a class="jxr_linenumber" name="L2911" href="#L2911">2911</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L2912" href="#L2912">2912</a> 
 <a class="jxr_linenumber" name="L2913" href="#L2913">2913</a>         SelectDSL&lt;SelectModel&gt; builder4 = builder3.orderBy(StudentDynamicSqlSupport.id);
 <a class="jxr_linenumber" name="L2914" href="#L2914">2914</a> 
-<a class="jxr_linenumber" name="L2915" href="#L2915">2915</a>         SelectDSL&lt;SelectModel&gt;.LimitFinisher builder5 = builder4.limit(3);
+<a class="jxr_linenumber" name="L2915" href="#L2915">2915</a>         <strong class="jxr_keyword">var</strong> builder5 = builder4.limit(3);
 <a class="jxr_linenumber" name="L2916" href="#L2916">2916</a> 
 <a class="jxr_linenumber" name="L2917" href="#L2917">2917</a>         builder5.offset(2);
 <a class="jxr_linenumber" name="L2918" href="#L2918">2918</a> 
@@ -2943,15 +2943,15 @@
 <a class="jxr_linenumber" name="L2935" href="#L2935">2935</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L2936" href="#L2936">2936</a> 
 <a class="jxr_linenumber" name="L2937" href="#L2937">2937</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L2938" href="#L2938">2938</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L2938" href="#L2938">2938</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L2939" href="#L2939">2939</a> 
 <a class="jxr_linenumber" name="L2940" href="#L2940">2940</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L2941" href="#L2941">2941</a> 
 <a class="jxr_linenumber" name="L2942" href="#L2942">2942</a>         SelectDSL&lt;SelectModel&gt; builder4 = builder3.orderBy(StudentDynamicSqlSupport.id);
 <a class="jxr_linenumber" name="L2943" href="#L2943">2943</a> 
-<a class="jxr_linenumber" name="L2944" href="#L2944">2944</a>         SelectDSL&lt;SelectModel&gt;.LimitFinisher builder5 = builder4.limit(3);
+<a class="jxr_linenumber" name="L2944" href="#L2944">2944</a>         <strong class="jxr_keyword">var</strong> builder5 = builder4.limit(3);
 <a class="jxr_linenumber" name="L2945" href="#L2945">2945</a> 
-<a class="jxr_linenumber" name="L2946" href="#L2946">2946</a>         SelectDSL&lt;SelectModel&gt;.OffsetFinisher builder6 = builder5.offset(2);
+<a class="jxr_linenumber" name="L2946" href="#L2946">2946</a>         <strong class="jxr_keyword">var</strong> builder6 = builder5.offset(2);
 <a class="jxr_linenumber" name="L2947" href="#L2947">2947</a> 
 <a class="jxr_linenumber" name="L2948" href="#L2948">2948</a>         String expected = <span class="jxr_string">"select student.id, student.name, student.idcard"</span>
 <a class="jxr_linenumber" name="L2949" href="#L2949">2949</a>                 + <span class="jxr_string">" from student"</span>
@@ -2972,7 +2972,7 @@
 <a class="jxr_linenumber" name="L2964" href="#L2964">2964</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L2965" href="#L2965">2965</a> 
 <a class="jxr_linenumber" name="L2966" href="#L2966">2966</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L2967" href="#L2967">2967</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L2967" href="#L2967">2967</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L2968" href="#L2968">2968</a> 
 <a class="jxr_linenumber" name="L2969" href="#L2969">2969</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L2970" href="#L2970">2970</a> 
@@ -2998,7 +2998,7 @@
 <a class="jxr_linenumber" name="L2990" href="#L2990">2990</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L2991" href="#L2991">2991</a> 
 <a class="jxr_linenumber" name="L2992" href="#L2992">2992</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L2993" href="#L2993">2993</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L2993" href="#L2993">2993</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L2994" href="#L2994">2994</a> 
 <a class="jxr_linenumber" name="L2995" href="#L2995">2995</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L2996" href="#L2996">2996</a> 
@@ -3024,7 +3024,7 @@
 <a class="jxr_linenumber" name="L3016" href="#L3016">3016</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L3017" href="#L3017">3017</a> 
 <a class="jxr_linenumber" name="L3018" href="#L3018">3018</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L3019" href="#L3019">3019</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L3019" href="#L3019">3019</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L3020" href="#L3020">3020</a> 
 <a class="jxr_linenumber" name="L3021" href="#L3021">3021</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L3022" href="#L3022">3022</a> 
@@ -3050,7 +3050,7 @@
 <a class="jxr_linenumber" name="L3042" href="#L3042">3042</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L3043" href="#L3043">3043</a> 
 <a class="jxr_linenumber" name="L3044" href="#L3044">3044</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L3045" href="#L3045">3045</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L3045" href="#L3045">3045</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L3046" href="#L3046">3046</a> 
 <a class="jxr_linenumber" name="L3047" href="#L3047">3047</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L3048" href="#L3048">3048</a> 
@@ -3076,13 +3076,13 @@
 <a class="jxr_linenumber" name="L3068" href="#L3068">3068</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L3069" href="#L3069">3069</a> 
 <a class="jxr_linenumber" name="L3070" href="#L3070">3070</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L3071" href="#L3071">3071</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L3071" href="#L3071">3071</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L3072" href="#L3072">3072</a> 
 <a class="jxr_linenumber" name="L3073" href="#L3073">3073</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L3074" href="#L3074">3074</a> 
 <a class="jxr_linenumber" name="L3075" href="#L3075">3075</a>         SelectDSL&lt;SelectModel&gt; builder4 = builder3.orderBy(StudentDynamicSqlSupport.id);
 <a class="jxr_linenumber" name="L3076" href="#L3076">3076</a> 
-<a class="jxr_linenumber" name="L3077" href="#L3077">3077</a>         SelectDSL&lt;SelectModel&gt;.OffsetFirstFinisher builder5 = builder4.offset(2);
+<a class="jxr_linenumber" name="L3077" href="#L3077">3077</a>         <strong class="jxr_keyword">var</strong> builder5 = builder4.offset(2);
 <a class="jxr_linenumber" name="L3078" href="#L3078">3078</a> 
 <a class="jxr_linenumber" name="L3079" href="#L3079">3079</a>         String expected = <span class="jxr_string">"select student.id, student.name, student.idcard"</span>
 <a class="jxr_linenumber" name="L3080" href="#L3080">3080</a>                 + <span class="jxr_string">" from student"</span>
@@ -3102,13 +3102,13 @@
 <a class="jxr_linenumber" name="L3094" href="#L3094">3094</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L3095" href="#L3095">3095</a> 
 <a class="jxr_linenumber" name="L3096" href="#L3096">3096</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L3097" href="#L3097">3097</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L3097" href="#L3097">3097</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L3098" href="#L3098">3098</a> 
 <a class="jxr_linenumber" name="L3099" href="#L3099">3099</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L3100" href="#L3100">3100</a> 
 <a class="jxr_linenumber" name="L3101" href="#L3101">3101</a>         SelectDSL&lt;SelectModel&gt; builder4 = builder3.orderBy(StudentDynamicSqlSupport.id);
 <a class="jxr_linenumber" name="L3102" href="#L3102">3102</a> 
-<a class="jxr_linenumber" name="L3103" href="#L3103">3103</a>         SelectDSL&lt;SelectModel&gt;.OffsetFirstFinisher builder5 = builder4.offset(2);
+<a class="jxr_linenumber" name="L3103" href="#L3103">3103</a>         <strong class="jxr_keyword">var</strong> builder5 = builder4.offset(2);
 <a class="jxr_linenumber" name="L3104" href="#L3104">3104</a> 
 <a class="jxr_linenumber" name="L3105" href="#L3105">3105</a>         builder5.fetchFirst(3).rowsOnly();
 <a class="jxr_linenumber" name="L3106" href="#L3106">3106</a> 
@@ -3131,13 +3131,13 @@
 <a class="jxr_linenumber" name="L3123" href="#L3123">3123</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L3124" href="#L3124">3124</a> 
 <a class="jxr_linenumber" name="L3125" href="#L3125">3125</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L3126" href="#L3126">3126</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L3126" href="#L3126">3126</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L3127" href="#L3127">3127</a> 
 <a class="jxr_linenumber" name="L3128" href="#L3128">3128</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L3129" href="#L3129">3129</a> 
 <a class="jxr_linenumber" name="L3130" href="#L3130">3130</a>         SelectDSL&lt;SelectModel&gt; builder4 = builder3.orderBy(StudentDynamicSqlSupport.id);
 <a class="jxr_linenumber" name="L3131" href="#L3131">3131</a> 
-<a class="jxr_linenumber" name="L3132" href="#L3132">3132</a>         SelectDSL&lt;SelectModel&gt;.OffsetFirstFinisher builder5 = builder4.offset(2);
+<a class="jxr_linenumber" name="L3132" href="#L3132">3132</a>         <strong class="jxr_keyword">var</strong> builder5 = builder4.offset(2);
 <a class="jxr_linenumber" name="L3133" href="#L3133">3133</a> 
 <a class="jxr_linenumber" name="L3134" href="#L3134">3134</a>         builder5.fetchFirst(3).rowsOnly();
 <a class="jxr_linenumber" name="L3135" href="#L3135">3135</a> 
@@ -3160,13 +3160,13 @@
 <a class="jxr_linenumber" name="L3152" href="#L3152">3152</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L3153" href="#L3153">3153</a> 
 <a class="jxr_linenumber" name="L3154" href="#L3154">3154</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L3155" href="#L3155">3155</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L3155" href="#L3155">3155</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L3156" href="#L3156">3156</a> 
 <a class="jxr_linenumber" name="L3157" href="#L3157">3157</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L3158" href="#L3158">3158</a> 
 <a class="jxr_linenumber" name="L3159" href="#L3159">3159</a>         SelectDSL&lt;SelectModel&gt; builder4 = builder3.orderBy(StudentDynamicSqlSupport.id);
 <a class="jxr_linenumber" name="L3160" href="#L3160">3160</a> 
-<a class="jxr_linenumber" name="L3161" href="#L3161">3161</a>         SelectDSL&lt;SelectModel&gt;.OffsetFirstFinisher builder5 = builder4.offset(2);
+<a class="jxr_linenumber" name="L3161" href="#L3161">3161</a>         <strong class="jxr_keyword">var</strong> builder5 = builder4.offset(2);
 <a class="jxr_linenumber" name="L3162" href="#L3162">3162</a> 
 <a class="jxr_linenumber" name="L3163" href="#L3163">3163</a>         builder5.fetchFirst(3).rowsOnly();
 <a class="jxr_linenumber" name="L3164" href="#L3164">3164</a> 
@@ -3189,13 +3189,13 @@
 <a class="jxr_linenumber" name="L3181" href="#L3181">3181</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L3182" href="#L3182">3182</a> 
 <a class="jxr_linenumber" name="L3183" href="#L3183">3183</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L3184" href="#L3184">3184</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L3184" href="#L3184">3184</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L3185" href="#L3185">3185</a> 
 <a class="jxr_linenumber" name="L3186" href="#L3186">3186</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L3187" href="#L3187">3187</a> 
 <a class="jxr_linenumber" name="L3188" href="#L3188">3188</a>         SelectDSL&lt;SelectModel&gt; builder4 = builder3.orderBy(StudentDynamicSqlSupport.id);
 <a class="jxr_linenumber" name="L3189" href="#L3189">3189</a> 
-<a class="jxr_linenumber" name="L3190" href="#L3190">3190</a>         SelectDSL&lt;SelectModel&gt;.OffsetFirstFinisher builder5 = builder4.offset(2);
+<a class="jxr_linenumber" name="L3190" href="#L3190">3190</a>         <strong class="jxr_keyword">var</strong> builder5 = builder4.offset(2);
 <a class="jxr_linenumber" name="L3191" href="#L3191">3191</a> 
 <a class="jxr_linenumber" name="L3192" href="#L3192">3192</a>         builder5.fetchFirst(3).rowsOnly();
 <a class="jxr_linenumber" name="L3193" href="#L3193">3193</a> 
@@ -3218,13 +3218,13 @@
 <a class="jxr_linenumber" name="L3210" href="#L3210">3210</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L3211" href="#L3211">3211</a> 
 <a class="jxr_linenumber" name="L3212" href="#L3212">3212</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L3213" href="#L3213">3213</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L3213" href="#L3213">3213</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L3214" href="#L3214">3214</a> 
 <a class="jxr_linenumber" name="L3215" href="#L3215">3215</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L3216" href="#L3216">3216</a> 
 <a class="jxr_linenumber" name="L3217" href="#L3217">3217</a>         SelectDSL&lt;SelectModel&gt; builder4 = builder3.orderBy(StudentDynamicSqlSupport.id);
 <a class="jxr_linenumber" name="L3218" href="#L3218">3218</a> 
-<a class="jxr_linenumber" name="L3219" href="#L3219">3219</a>         SelectDSL&lt;SelectModel&gt;.OffsetFirstFinisher builder5 = builder4.offset(2);
+<a class="jxr_linenumber" name="L3219" href="#L3219">3219</a>         <strong class="jxr_keyword">var</strong> builder5 = builder4.offset(2);
 <a class="jxr_linenumber" name="L3220" href="#L3220">3220</a> 
 <a class="jxr_linenumber" name="L3221" href="#L3221">3221</a>         builder5.fetchFirst(3).rowsOnly();
 <a class="jxr_linenumber" name="L3222" href="#L3222">3222</a> 
@@ -3247,15 +3247,15 @@
 <a class="jxr_linenumber" name="L3239" href="#L3239">3239</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L3240" href="#L3240">3240</a> 
 <a class="jxr_linenumber" name="L3241" href="#L3241">3241</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L3242" href="#L3242">3242</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L3242" href="#L3242">3242</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L3243" href="#L3243">3243</a> 
 <a class="jxr_linenumber" name="L3244" href="#L3244">3244</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L3245" href="#L3245">3245</a> 
 <a class="jxr_linenumber" name="L3246" href="#L3246">3246</a>         SelectDSL&lt;SelectModel&gt; builder4 = builder3.orderBy(StudentDynamicSqlSupport.id);
 <a class="jxr_linenumber" name="L3247" href="#L3247">3247</a> 
-<a class="jxr_linenumber" name="L3248" href="#L3248">3248</a>         SelectDSL&lt;SelectModel&gt;.OffsetFirstFinisher builder5 = builder4.offset(2);
+<a class="jxr_linenumber" name="L3248" href="#L3248">3248</a>         <strong class="jxr_keyword">var</strong> builder5 = builder4.offset(2);
 <a class="jxr_linenumber" name="L3249" href="#L3249">3249</a> 
-<a class="jxr_linenumber" name="L3250" href="#L3250">3250</a>         SelectDSL&lt;SelectModel&gt;.RowsOnlyFinisher builder6 = builder5.fetchFirst(3).rowsOnly();
+<a class="jxr_linenumber" name="L3250" href="#L3250">3250</a>         <strong class="jxr_keyword">var</strong> builder6 = builder5.fetchFirst(3).rowsOnly();
 <a class="jxr_linenumber" name="L3251" href="#L3251">3251</a> 
 <a class="jxr_linenumber" name="L3252" href="#L3252">3252</a>         String expected = <span class="jxr_string">"select student.id, student.name, student.idcard"</span>
 <a class="jxr_linenumber" name="L3253" href="#L3253">3253</a>                 + <span class="jxr_string">" from student"</span>
@@ -3276,7 +3276,7 @@
 <a class="jxr_linenumber" name="L3268" href="#L3268">3268</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L3269" href="#L3269">3269</a> 
 <a class="jxr_linenumber" name="L3270" href="#L3270">3270</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L3271" href="#L3271">3271</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L3271" href="#L3271">3271</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L3272" href="#L3272">3272</a> 
 <a class="jxr_linenumber" name="L3273" href="#L3273">3273</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L3274" href="#L3274">3274</a> 
@@ -3302,7 +3302,7 @@
 <a class="jxr_linenumber" name="L3294" href="#L3294">3294</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L3295" href="#L3295">3295</a> 
 <a class="jxr_linenumber" name="L3296" href="#L3296">3296</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L3297" href="#L3297">3297</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L3297" href="#L3297">3297</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L3298" href="#L3298">3298</a> 
 <a class="jxr_linenumber" name="L3299" href="#L3299">3299</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L3300" href="#L3300">3300</a> 
@@ -3328,7 +3328,7 @@
 <a class="jxr_linenumber" name="L3320" href="#L3320">3320</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L3321" href="#L3321">3321</a> 
 <a class="jxr_linenumber" name="L3322" href="#L3322">3322</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L3323" href="#L3323">3323</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L3323" href="#L3323">3323</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L3324" href="#L3324">3324</a> 
 <a class="jxr_linenumber" name="L3325" href="#L3325">3325</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L3326" href="#L3326">3326</a> 
@@ -3354,7 +3354,7 @@
 <a class="jxr_linenumber" name="L3346" href="#L3346">3346</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L3347" href="#L3347">3347</a> 
 <a class="jxr_linenumber" name="L3348" href="#L3348">3348</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L3349" href="#L3349">3349</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L3349" href="#L3349">3349</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L3350" href="#L3350">3350</a> 
 <a class="jxr_linenumber" name="L3351" href="#L3351">3351</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L3352" href="#L3352">3352</a> 
@@ -3380,13 +3380,13 @@
 <a class="jxr_linenumber" name="L3372" href="#L3372">3372</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L3373" href="#L3373">3373</a> 
 <a class="jxr_linenumber" name="L3374" href="#L3374">3374</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L3375" href="#L3375">3375</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L3375" href="#L3375">3375</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L3376" href="#L3376">3376</a> 
 <a class="jxr_linenumber" name="L3377" href="#L3377">3377</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L3378" href="#L3378">3378</a> 
 <a class="jxr_linenumber" name="L3379" href="#L3379">3379</a>         SelectDSL&lt;SelectModel&gt; builder4 = builder3.orderBy(StudentDynamicSqlSupport.id);
 <a class="jxr_linenumber" name="L3380" href="#L3380">3380</a> 
-<a class="jxr_linenumber" name="L3381" href="#L3381">3381</a>         SelectDSL&lt;SelectModel&gt;.RowsOnlyFinisher builder5 = builder4.fetchFirst(3).rowsOnly();
+<a class="jxr_linenumber" name="L3381" href="#L3381">3381</a>         <strong class="jxr_keyword">var</strong> builder5 = builder4.fetchFirst(3).rowsOnly();
 <a class="jxr_linenumber" name="L3382" href="#L3382">3382</a> 
 <a class="jxr_linenumber" name="L3383" href="#L3383">3383</a>         String expected = <span class="jxr_string">"select student.id, student.name, student.idcard"</span>
 <a class="jxr_linenumber" name="L3384" href="#L3384">3384</a>                 + <span class="jxr_string">" from student"</span>
@@ -3406,7 +3406,7 @@
 <a class="jxr_linenumber" name="L3398" href="#L3398">3398</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L3399" href="#L3399">3399</a> 
 <a class="jxr_linenumber" name="L3400" href="#L3400">3400</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L3401" href="#L3401">3401</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L3401" href="#L3401">3401</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L3402" href="#L3402">3402</a> 
 <a class="jxr_linenumber" name="L3403" href="#L3403">3403</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L3404" href="#L3404">3404</a> 
@@ -3429,7 +3429,7 @@
 <a class="jxr_linenumber" name="L3421" href="#L3421">3421</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L3422" href="#L3422">3422</a> 
 <a class="jxr_linenumber" name="L3423" href="#L3423">3423</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L3424" href="#L3424">3424</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L3424" href="#L3424">3424</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L3425" href="#L3425">3425</a> 
 <a class="jxr_linenumber" name="L3426" href="#L3426">3426</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L3427" href="#L3427">3427</a> 
@@ -3452,7 +3452,7 @@
 <a class="jxr_linenumber" name="L3444" href="#L3444">3444</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L3445" href="#L3445">3445</a> 
 <a class="jxr_linenumber" name="L3446" href="#L3446">3446</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L3447" href="#L3447">3447</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L3447" href="#L3447">3447</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L3448" href="#L3448">3448</a> 
 <a class="jxr_linenumber" name="L3449" href="#L3449">3449</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L3450" href="#L3450">3450</a> 
@@ -3475,11 +3475,11 @@
 <a class="jxr_linenumber" name="L3467" href="#L3467">3467</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L3468" href="#L3468">3468</a> 
 <a class="jxr_linenumber" name="L3469" href="#L3469">3469</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L3470" href="#L3470">3470</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L3470" href="#L3470">3470</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L3471" href="#L3471">3471</a> 
 <a class="jxr_linenumber" name="L3472" href="#L3472">3472</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L3473" href="#L3473">3473</a> 
-<a class="jxr_linenumber" name="L3474" href="#L3474">3474</a>         SelectDSL&lt;SelectModel&gt;.LimitFinisher builder4 = builder3.limit(2);
+<a class="jxr_linenumber" name="L3474" href="#L3474">3474</a>         <strong class="jxr_keyword">var</strong> builder4 = builder3.limit(2);
 <a class="jxr_linenumber" name="L3475" href="#L3475">3475</a> 
 <a class="jxr_linenumber" name="L3476" href="#L3476">3476</a>         String expected = <span class="jxr_string">"select student.id, student.name, student.idcard"</span>
 <a class="jxr_linenumber" name="L3477" href="#L3477">3477</a>                 + <span class="jxr_string">" from student"</span>
@@ -3498,11 +3498,11 @@
 <a class="jxr_linenumber" name="L3490" href="#L3490">3490</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L3491" href="#L3491">3491</a> 
 <a class="jxr_linenumber" name="L3492" href="#L3492">3492</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L3493" href="#L3493">3493</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L3493" href="#L3493">3493</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L3494" href="#L3494">3494</a> 
 <a class="jxr_linenumber" name="L3495" href="#L3495">3495</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L3496" href="#L3496">3496</a> 
-<a class="jxr_linenumber" name="L3497" href="#L3497">3497</a>         SelectDSL&lt;SelectModel&gt;.LimitFinisher builder4 = builder3.limit(2);
+<a class="jxr_linenumber" name="L3497" href="#L3497">3497</a>         <strong class="jxr_keyword">var</strong> builder4 = builder3.limit(2);
 <a class="jxr_linenumber" name="L3498" href="#L3498">3498</a> 
 <a class="jxr_linenumber" name="L3499" href="#L3499">3499</a>         builder4.offset(3);
 <a class="jxr_linenumber" name="L3500" href="#L3500">3500</a> 
@@ -3524,11 +3524,11 @@
 <a class="jxr_linenumber" name="L3516" href="#L3516">3516</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L3517" href="#L3517">3517</a> 
 <a class="jxr_linenumber" name="L3518" href="#L3518">3518</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L3519" href="#L3519">3519</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L3519" href="#L3519">3519</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L3520" href="#L3520">3520</a> 
 <a class="jxr_linenumber" name="L3521" href="#L3521">3521</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L3522" href="#L3522">3522</a> 
-<a class="jxr_linenumber" name="L3523" href="#L3523">3523</a>         SelectDSL&lt;SelectModel&gt;.LimitFinisher builder4 = builder3.limit(2);
+<a class="jxr_linenumber" name="L3523" href="#L3523">3523</a>         <strong class="jxr_keyword">var</strong> builder4 = builder3.limit(2);
 <a class="jxr_linenumber" name="L3524" href="#L3524">3524</a> 
 <a class="jxr_linenumber" name="L3525" href="#L3525">3525</a>         builder4.offset(3);
 <a class="jxr_linenumber" name="L3526" href="#L3526">3526</a> 
@@ -3550,11 +3550,11 @@
 <a class="jxr_linenumber" name="L3542" href="#L3542">3542</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L3543" href="#L3543">3543</a> 
 <a class="jxr_linenumber" name="L3544" href="#L3544">3544</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L3545" href="#L3545">3545</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L3545" href="#L3545">3545</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L3546" href="#L3546">3546</a> 
 <a class="jxr_linenumber" name="L3547" href="#L3547">3547</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L3548" href="#L3548">3548</a> 
-<a class="jxr_linenumber" name="L3549" href="#L3549">3549</a>         SelectDSL&lt;SelectModel&gt;.LimitFinisher builder4 = builder3.limit(2);
+<a class="jxr_linenumber" name="L3549" href="#L3549">3549</a>         <strong class="jxr_keyword">var</strong> builder4 = builder3.limit(2);
 <a class="jxr_linenumber" name="L3550" href="#L3550">3550</a> 
 <a class="jxr_linenumber" name="L3551" href="#L3551">3551</a>         builder4.offset(3);
 <a class="jxr_linenumber" name="L3552" href="#L3552">3552</a> 
@@ -3576,11 +3576,11 @@
 <a class="jxr_linenumber" name="L3568" href="#L3568">3568</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L3569" href="#L3569">3569</a> 
 <a class="jxr_linenumber" name="L3570" href="#L3570">3570</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L3571" href="#L3571">3571</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L3571" href="#L3571">3571</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L3572" href="#L3572">3572</a> 
 <a class="jxr_linenumber" name="L3573" href="#L3573">3573</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L3574" href="#L3574">3574</a> 
-<a class="jxr_linenumber" name="L3575" href="#L3575">3575</a>         SelectDSL&lt;SelectModel&gt;.LimitFinisher builder4 = builder3.limit(2);
+<a class="jxr_linenumber" name="L3575" href="#L3575">3575</a>         <strong class="jxr_keyword">var</strong> builder4 = builder3.limit(2);
 <a class="jxr_linenumber" name="L3576" href="#L3576">3576</a> 
 <a class="jxr_linenumber" name="L3577" href="#L3577">3577</a>         builder4.offset(3);
 <a class="jxr_linenumber" name="L3578" href="#L3578">3578</a> 
@@ -3602,13 +3602,13 @@
 <a class="jxr_linenumber" name="L3594" href="#L3594">3594</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L3595" href="#L3595">3595</a> 
 <a class="jxr_linenumber" name="L3596" href="#L3596">3596</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L3597" href="#L3597">3597</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L3597" href="#L3597">3597</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L3598" href="#L3598">3598</a> 
 <a class="jxr_linenumber" name="L3599" href="#L3599">3599</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L3600" href="#L3600">3600</a> 
-<a class="jxr_linenumber" name="L3601" href="#L3601">3601</a>         SelectDSL&lt;SelectModel&gt;.LimitFinisher builder4 = builder3.limit(2);
+<a class="jxr_linenumber" name="L3601" href="#L3601">3601</a>         <strong class="jxr_keyword">var</strong> builder4 = builder3.limit(2);
 <a class="jxr_linenumber" name="L3602" href="#L3602">3602</a> 
-<a class="jxr_linenumber" name="L3603" href="#L3603">3603</a>         SelectDSL&lt;SelectModel&gt;.OffsetFinisher builder5 = builder4.offset(3);
+<a class="jxr_linenumber" name="L3603" href="#L3603">3603</a>         <strong class="jxr_keyword">var</strong> builder5 = builder4.offset(3);
 <a class="jxr_linenumber" name="L3604" href="#L3604">3604</a> 
 <a class="jxr_linenumber" name="L3605" href="#L3605">3605</a>         String expected = <span class="jxr_string">"select student.id, student.name, student.idcard"</span>
 <a class="jxr_linenumber" name="L3606" href="#L3606">3606</a>                 + <span class="jxr_string">" from student"</span>
@@ -3628,7 +3628,7 @@
 <a class="jxr_linenumber" name="L3620" href="#L3620">3620</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L3621" href="#L3621">3621</a> 
 <a class="jxr_linenumber" name="L3622" href="#L3622">3622</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L3623" href="#L3623">3623</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L3623" href="#L3623">3623</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L3624" href="#L3624">3624</a> 
 <a class="jxr_linenumber" name="L3625" href="#L3625">3625</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L3626" href="#L3626">3626</a> 
@@ -3651,7 +3651,7 @@
 <a class="jxr_linenumber" name="L3643" href="#L3643">3643</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L3644" href="#L3644">3644</a> 
 <a class="jxr_linenumber" name="L3645" href="#L3645">3645</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L3646" href="#L3646">3646</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L3646" href="#L3646">3646</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L3647" href="#L3647">3647</a> 
 <a class="jxr_linenumber" name="L3648" href="#L3648">3648</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L3649" href="#L3649">3649</a> 
@@ -3674,7 +3674,7 @@
 <a class="jxr_linenumber" name="L3666" href="#L3666">3666</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L3667" href="#L3667">3667</a> 
 <a class="jxr_linenumber" name="L3668" href="#L3668">3668</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L3669" href="#L3669">3669</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L3669" href="#L3669">3669</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L3670" href="#L3670">3670</a> 
 <a class="jxr_linenumber" name="L3671" href="#L3671">3671</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L3672" href="#L3672">3672</a> 
@@ -3697,11 +3697,11 @@
 <a class="jxr_linenumber" name="L3689" href="#L3689">3689</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L3690" href="#L3690">3690</a> 
 <a class="jxr_linenumber" name="L3691" href="#L3691">3691</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L3692" href="#L3692">3692</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L3692" href="#L3692">3692</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L3693" href="#L3693">3693</a> 
 <a class="jxr_linenumber" name="L3694" href="#L3694">3694</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L3695" href="#L3695">3695</a> 
-<a class="jxr_linenumber" name="L3696" href="#L3696">3696</a>         SelectDSL&lt;SelectModel&gt;.OffsetFirstFinisher builder4 = builder3.offset(3);
+<a class="jxr_linenumber" name="L3696" href="#L3696">3696</a>         <strong class="jxr_keyword">var</strong> builder4 = builder3.offset(3);
 <a class="jxr_linenumber" name="L3697" href="#L3697">3697</a> 
 <a class="jxr_linenumber" name="L3698" href="#L3698">3698</a>         String expected = <span class="jxr_string">"select student.id, student.name, student.idcard"</span>
 <a class="jxr_linenumber" name="L3699" href="#L3699">3699</a>                 + <span class="jxr_string">" from student"</span>
@@ -3720,11 +3720,11 @@
 <a class="jxr_linenumber" name="L3712" href="#L3712">3712</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L3713" href="#L3713">3713</a> 
 <a class="jxr_linenumber" name="L3714" href="#L3714">3714</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L3715" href="#L3715">3715</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L3715" href="#L3715">3715</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L3716" href="#L3716">3716</a> 
 <a class="jxr_linenumber" name="L3717" href="#L3717">3717</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L3718" href="#L3718">3718</a> 
-<a class="jxr_linenumber" name="L3719" href="#L3719">3719</a>         SelectDSL&lt;SelectModel&gt;.OffsetFirstFinisher builder4 = builder3.offset(3);
+<a class="jxr_linenumber" name="L3719" href="#L3719">3719</a>         <strong class="jxr_keyword">var</strong> builder4 = builder3.offset(3);
 <a class="jxr_linenumber" name="L3720" href="#L3720">3720</a> 
 <a class="jxr_linenumber" name="L3721" href="#L3721">3721</a>         builder4.fetchFirst(2).rowsOnly();
 <a class="jxr_linenumber" name="L3722" href="#L3722">3722</a> 
@@ -3746,11 +3746,11 @@
 <a class="jxr_linenumber" name="L3738" href="#L3738">3738</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L3739" href="#L3739">3739</a> 
 <a class="jxr_linenumber" name="L3740" href="#L3740">3740</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L3741" href="#L3741">3741</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L3741" href="#L3741">3741</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L3742" href="#L3742">3742</a> 
 <a class="jxr_linenumber" name="L3743" href="#L3743">3743</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L3744" href="#L3744">3744</a> 
-<a class="jxr_linenumber" name="L3745" href="#L3745">3745</a>         SelectDSL&lt;SelectModel&gt;.OffsetFirstFinisher builder4 = builder3.offset(3);
+<a class="jxr_linenumber" name="L3745" href="#L3745">3745</a>         <strong class="jxr_keyword">var</strong> builder4 = builder3.offset(3);
 <a class="jxr_linenumber" name="L3746" href="#L3746">3746</a> 
 <a class="jxr_linenumber" name="L3747" href="#L3747">3747</a>         builder4.fetchFirst(2).rowsOnly();
 <a class="jxr_linenumber" name="L3748" href="#L3748">3748</a> 
@@ -3772,11 +3772,11 @@
 <a class="jxr_linenumber" name="L3764" href="#L3764">3764</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L3765" href="#L3765">3765</a> 
 <a class="jxr_linenumber" name="L3766" href="#L3766">3766</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L3767" href="#L3767">3767</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L3767" href="#L3767">3767</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L3768" href="#L3768">3768</a> 
 <a class="jxr_linenumber" name="L3769" href="#L3769">3769</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L3770" href="#L3770">3770</a> 
-<a class="jxr_linenumber" name="L3771" href="#L3771">3771</a>         SelectDSL&lt;SelectModel&gt;.OffsetFirstFinisher builder4 = builder3.offset(3);
+<a class="jxr_linenumber" name="L3771" href="#L3771">3771</a>         <strong class="jxr_keyword">var</strong> builder4 = builder3.offset(3);
 <a class="jxr_linenumber" name="L3772" href="#L3772">3772</a> 
 <a class="jxr_linenumber" name="L3773" href="#L3773">3773</a>         builder4.fetchFirst(2).rowsOnly();
 <a class="jxr_linenumber" name="L3774" href="#L3774">3774</a> 
@@ -3798,11 +3798,11 @@
 <a class="jxr_linenumber" name="L3790" href="#L3790">3790</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L3791" href="#L3791">3791</a> 
 <a class="jxr_linenumber" name="L3792" href="#L3792">3792</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L3793" href="#L3793">3793</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L3793" href="#L3793">3793</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L3794" href="#L3794">3794</a> 
 <a class="jxr_linenumber" name="L3795" href="#L3795">3795</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L3796" href="#L3796">3796</a> 
-<a class="jxr_linenumber" name="L3797" href="#L3797">3797</a>         SelectDSL&lt;SelectModel&gt;.OffsetFirstFinisher builder4 = builder3.offset(3);
+<a class="jxr_linenumber" name="L3797" href="#L3797">3797</a>         <strong class="jxr_keyword">var</strong> builder4 = builder3.offset(3);
 <a class="jxr_linenumber" name="L3798" href="#L3798">3798</a> 
 <a class="jxr_linenumber" name="L3799" href="#L3799">3799</a>         builder4.fetchFirst(2).rowsOnly();
 <a class="jxr_linenumber" name="L3800" href="#L3800">3800</a> 
@@ -3824,13 +3824,13 @@
 <a class="jxr_linenumber" name="L3816" href="#L3816">3816</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L3817" href="#L3817">3817</a> 
 <a class="jxr_linenumber" name="L3818" href="#L3818">3818</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L3819" href="#L3819">3819</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L3819" href="#L3819">3819</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L3820" href="#L3820">3820</a> 
 <a class="jxr_linenumber" name="L3821" href="#L3821">3821</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L3822" href="#L3822">3822</a> 
-<a class="jxr_linenumber" name="L3823" href="#L3823">3823</a>         SelectDSL&lt;SelectModel&gt;.OffsetFirstFinisher builder4 = builder3.offset(3);
+<a class="jxr_linenumber" name="L3823" href="#L3823">3823</a>         <strong class="jxr_keyword">var</strong> builder4 = builder3.offset(3);
 <a class="jxr_linenumber" name="L3824" href="#L3824">3824</a> 
-<a class="jxr_linenumber" name="L3825" href="#L3825">3825</a>         SelectDSL&lt;SelectModel&gt;.RowsOnlyFinisher builder5 = builder4.fetchFirst(2).rowsOnly();
+<a class="jxr_linenumber" name="L3825" href="#L3825">3825</a>         <strong class="jxr_keyword">var</strong> builder5 = builder4.fetchFirst(2).rowsOnly();
 <a class="jxr_linenumber" name="L3826" href="#L3826">3826</a> 
 <a class="jxr_linenumber" name="L3827" href="#L3827">3827</a>         String expected = <span class="jxr_string">"select student.id, student.name, student.idcard"</span>
 <a class="jxr_linenumber" name="L3828" href="#L3828">3828</a>                 + <span class="jxr_string">" from student"</span>
@@ -3850,7 +3850,7 @@
 <a class="jxr_linenumber" name="L3842" href="#L3842">3842</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L3843" href="#L3843">3843</a> 
 <a class="jxr_linenumber" name="L3844" href="#L3844">3844</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L3845" href="#L3845">3845</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L3845" href="#L3845">3845</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L3846" href="#L3846">3846</a> 
 <a class="jxr_linenumber" name="L3847" href="#L3847">3847</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L3848" href="#L3848">3848</a> 
@@ -3873,7 +3873,7 @@
 <a class="jxr_linenumber" name="L3865" href="#L3865">3865</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L3866" href="#L3866">3866</a> 
 <a class="jxr_linenumber" name="L3867" href="#L3867">3867</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L3868" href="#L3868">3868</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L3868" href="#L3868">3868</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L3869" href="#L3869">3869</a> 
 <a class="jxr_linenumber" name="L3870" href="#L3870">3870</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L3871" href="#L3871">3871</a> 
@@ -3896,7 +3896,7 @@
 <a class="jxr_linenumber" name="L3888" href="#L3888">3888</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L3889" href="#L3889">3889</a> 
 <a class="jxr_linenumber" name="L3890" href="#L3890">3890</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L3891" href="#L3891">3891</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L3891" href="#L3891">3891</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L3892" href="#L3892">3892</a> 
 <a class="jxr_linenumber" name="L3893" href="#L3893">3893</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L3894" href="#L3894">3894</a> 
@@ -3919,11 +3919,11 @@
 <a class="jxr_linenumber" name="L3911" href="#L3911">3911</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L3912" href="#L3912">3912</a> 
 <a class="jxr_linenumber" name="L3913" href="#L3913">3913</a>         QueryExpressionDSL&lt;SelectModel&gt;.JoinSpecificationFinisher builder2 = builder1.join(StudentRegDynamicSqlSupport.studentReg)
-<a class="jxr_linenumber" name="L3914" href="#L3914">3914</a>                 .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid));
+<a class="jxr_linenumber" name="L3914" href="#L3914">3914</a>                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));
 <a class="jxr_linenumber" name="L3915" href="#L3915">3915</a> 
 <a class="jxr_linenumber" name="L3916" href="#L3916">3916</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder3 = builder2.where(StudentDynamicSqlSupport.idcard, isEqualTo(<span class="jxr_string">"fred"</span>));
 <a class="jxr_linenumber" name="L3917" href="#L3917">3917</a> 
-<a class="jxr_linenumber" name="L3918" href="#L3918">3918</a>         SelectDSL&lt;SelectModel&gt;.RowsOnlyFinisher builder4 = builder3.fetchFirst(2).rowsOnly();
+<a class="jxr_linenumber" name="L3918" href="#L3918">3918</a>         <strong class="jxr_keyword">var</strong> builder4 = builder3.fetchFirst(2).rowsOnly();
 <a class="jxr_linenumber" name="L3919" href="#L3919">3919</a> 
 <a class="jxr_linenumber" name="L3920" href="#L3920">3920</a>         String expected = <span class="jxr_string">"select student.id, student.name, student.idcard"</span>
 <a class="jxr_linenumber" name="L3921" href="#L3921">3921</a>                 + <span class="jxr_string">" from student"</span>
@@ -3938,6 +3938,6 @@
 <a class="jxr_linenumber" name="L3930" href="#L3930">3930</a> }
 </pre>
 <hr/>
-<div id="footer">Copyright &#169; 2016&#x2013;2024 <a href="https://www.mybatis.org/">MyBatis.org</a>. All rights reserved.</div>
+<div id="footer">© 2016–2025 <a href="https://www.mybatis.org/">MyBatis.org</a></div>
 </body>
 </html>

@@ -7,7 +7,7 @@
 <body>
 <div id="overview"><a href="../../../../../../../apidocs/org/mybatis/dynamic/sql/select/function/AbstractUniTypeFunction.html">View Javadoc</a></div><pre>
 <a class="jxr_linenumber" name="L1" href="#L1">1</a>   <em class="jxr_comment">/*</em>
-<a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_comment"> *    Copyright 2016-2024 the original author or authors.</em>
+<a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_comment"> *    Copyright 2016-2025 the original author or authors.</em>
 <a class="jxr_linenumber" name="L3" href="#L3">3</a>   <em class="jxr_comment"> *</em>
 <a class="jxr_linenumber" name="L4" href="#L4">4</a>   <em class="jxr_comment"> *    Licensed under the Apache License, Version 2.0 (the "License");</em>
 <a class="jxr_linenumber" name="L5" href="#L5">5</a>   <em class="jxr_comment"> *    you may not use this file except in compliance with the License.</em>
@@ -26,7 +26,7 @@
 <a class="jxr_linenumber" name="L18" href="#L18">18</a>  <strong class="jxr_keyword">import</strong> java.sql.JDBCType;
 <a class="jxr_linenumber" name="L19" href="#L19">19</a>  <strong class="jxr_keyword">import</strong> java.util.Optional;
 <a class="jxr_linenumber" name="L20" href="#L20">20</a>  
-<a class="jxr_linenumber" name="L21" href="#L21">21</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.BindableColumn;
+<a class="jxr_linenumber" name="L21" href="#L21">21</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.BasicColumn;
 <a class="jxr_linenumber" name="L22" href="#L22">22</a>  
 <a class="jxr_linenumber" name="L23" href="#L23">23</a>  <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L24" href="#L24">24</a>  <em class="jxr_javadoccomment"> * Represents a function that does not change the underlying data type.</em>
@@ -41,7 +41,7 @@
 <a class="jxr_linenumber" name="L33" href="#L33">33</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">abstract</strong> <strong class="jxr_keyword">class</strong> AbstractUniTypeFunction&lt;T, U <strong class="jxr_keyword">extends</strong> AbstractUniTypeFunction&lt;T, U&gt;&gt;
 <a class="jxr_linenumber" name="L34" href="#L34">34</a>          <strong class="jxr_keyword">extends</strong> AbstractTypeConvertingFunction&lt;T, T, U&gt; {
 <a class="jxr_linenumber" name="L35" href="#L35">35</a>  
-<a class="jxr_linenumber" name="L36" href="#L36">36</a>      <strong class="jxr_keyword">protected</strong> <a name="AbstractUniTypeFunction" href="../../../../../../org/mybatis/dynamic/sql/select/function/AbstractUniTypeFunction.html#AbstractUniTypeFunction">AbstractUniTypeFunction</a>(BindableColumn&lt;T&gt; column) {
+<a class="jxr_linenumber" name="L36" href="#L36">36</a>      <strong class="jxr_keyword">protected</strong> <a name="AbstractUniTypeFunction" href="../../../../../../org/mybatis/dynamic/sql/select/function/AbstractUniTypeFunction.html#AbstractUniTypeFunction">AbstractUniTypeFunction</a>(<a name="BasicColumn" href="../../../../../../org/mybatis/dynamic/sql/BasicColumn.html#BasicColumn">BasicColumn</a> column) {
 <a class="jxr_linenumber" name="L37" href="#L37">37</a>          <strong class="jxr_keyword">super</strong>(column);
 <a class="jxr_linenumber" name="L38" href="#L38">38</a>      }
 <a class="jxr_linenumber" name="L39" href="#L39">39</a>  
@@ -57,6 +57,6 @@
 <a class="jxr_linenumber" name="L49" href="#L49">49</a>  }
 </pre>
 <hr/>
-<div id="footer">Copyright &#169; 2016&#x2013;2024 <a href="https://www.mybatis.org/">MyBatis.org</a>. All rights reserved.</div>
+<div id="footer">© 2016–2025 <a href="https://www.mybatis.org/">MyBatis.org</a></div>
 </body>
 </html>

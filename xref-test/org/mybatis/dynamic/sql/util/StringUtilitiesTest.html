@@ -7,7 +7,7 @@
 <body>
 <div id="overview"><a href="../../../../../../testapidocs/org/mybatis/dynamic/sql/util/StringUtilitiesTest.html">View Javadoc</a></div><pre>
 <a class="jxr_linenumber" name="L1" href="#L1">1</a>   <em class="jxr_comment">/*</em>
-<a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_comment"> *    Copyright 2016-2024 the original author or authors.</em>
+<a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_comment"> *    Copyright 2016-2025 the original author or authors.</em>
 <a class="jxr_linenumber" name="L3" href="#L3">3</a>   <em class="jxr_comment"> *</em>
 <a class="jxr_linenumber" name="L4" href="#L4">4</a>   <em class="jxr_comment"> *    Licensed under the Apache License, Version 2.0 (the "License");</em>
 <a class="jxr_linenumber" name="L5" href="#L5">5</a>   <em class="jxr_comment"> *    you may not use this file except in compliance with the License.</em>
@@ -46,9 +46,21 @@
 <a class="jxr_linenumber" name="L38" href="#L38">38</a>          String input = <span class="jxr_string">"USER%NAME%3"</span>;
 <a class="jxr_linenumber" name="L39" href="#L39">39</a>          assertThat(StringUtilities.toCamelCase(input)).isEqualTo(<span class="jxr_string">"userName3"</span>);
 <a class="jxr_linenumber" name="L40" href="#L40">40</a>      }
-<a class="jxr_linenumber" name="L41" href="#L41">41</a>  }
+<a class="jxr_linenumber" name="L41" href="#L41">41</a>  
+<a class="jxr_linenumber" name="L42" href="#L42">42</a>      @Test
+<a class="jxr_linenumber" name="L43" href="#L43">43</a>      <strong class="jxr_keyword">void</strong> testUpperCaseInteger() {
+<a class="jxr_linenumber" name="L44" href="#L44">44</a>          Integer i = StringUtilities.upperCaseIfPossible(3);
+<a class="jxr_linenumber" name="L45" href="#L45">45</a>          assertThat(i).isEqualTo(3);
+<a class="jxr_linenumber" name="L46" href="#L46">46</a>      }
+<a class="jxr_linenumber" name="L47" href="#L47">47</a>  
+<a class="jxr_linenumber" name="L48" href="#L48">48</a>      @Test
+<a class="jxr_linenumber" name="L49" href="#L49">49</a>      <strong class="jxr_keyword">void</strong> testUpperCaseString() {
+<a class="jxr_linenumber" name="L50" href="#L50">50</a>          String i = StringUtilities.upperCaseIfPossible(<span class="jxr_string">"fred"</span>);
+<a class="jxr_linenumber" name="L51" href="#L51">51</a>          assertThat(i).isEqualTo(<span class="jxr_string">"FRED"</span>);
+<a class="jxr_linenumber" name="L52" href="#L52">52</a>      }
+<a class="jxr_linenumber" name="L53" href="#L53">53</a>  }
 </pre>
 <hr/>
-<div id="footer">Copyright &#169; 2016&#x2013;2024 <a href="https://www.mybatis.org/">MyBatis.org</a>. All rights reserved.</div>
+<div id="footer">© 2016–2025 <a href="https://www.mybatis.org/">MyBatis.org</a></div>
 </body>
 </html>

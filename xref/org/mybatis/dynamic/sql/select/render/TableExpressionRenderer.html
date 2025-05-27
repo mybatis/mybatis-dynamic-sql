@@ -7,7 +7,7 @@
 <body>
 <div id="overview"><a href="../../../../../../../apidocs/org/mybatis/dynamic/sql/select/render/TableExpressionRenderer.html">View Javadoc</a></div><pre>
 <a class="jxr_linenumber" name="L1" href="#L1">1</a>   <em class="jxr_comment">/*</em>
-<a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_comment"> *    Copyright 2016-2024 the original author or authors.</em>
+<a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_comment"> *    Copyright 2016-2025 the original author or authors.</em>
 <a class="jxr_linenumber" name="L3" href="#L3">3</a>   <em class="jxr_comment"> *</em>
 <a class="jxr_linenumber" name="L4" href="#L4">4</a>   <em class="jxr_comment"> *    Licensed under the Apache License, Version 2.0 (the "License");</em>
 <a class="jxr_linenumber" name="L5" href="#L5">5</a>   <em class="jxr_comment"> *    you may not use this file except in compliance with the License.</em>
@@ -23,62 +23,55 @@
 <a class="jxr_linenumber" name="L15" href="#L15">15</a>  <em class="jxr_comment"> */</em>
 <a class="jxr_linenumber" name="L16" href="#L16">16</a>  <strong class="jxr_keyword">package</strong> org.mybatis.dynamic.sql.select.render;
 <a class="jxr_linenumber" name="L17" href="#L17">17</a>  
-<a class="jxr_linenumber" name="L18" href="#L18">18</a>  <strong class="jxr_keyword">import</strong> <strong class="jxr_keyword">static</strong> org.mybatis.dynamic.sql.util.StringUtilities.spaceBefore;
+<a class="jxr_linenumber" name="L18" href="#L18">18</a>  <strong class="jxr_keyword">import</strong> java.util.Objects;
 <a class="jxr_linenumber" name="L19" href="#L19">19</a>  
-<a class="jxr_linenumber" name="L20" href="#L20">20</a>  <strong class="jxr_keyword">import</strong> java.util.Objects;
-<a class="jxr_linenumber" name="L21" href="#L21">21</a>  
-<a class="jxr_linenumber" name="L22" href="#L22">22</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.SqlTable;
-<a class="jxr_linenumber" name="L23" href="#L23">23</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.TableExpressionVisitor;
-<a class="jxr_linenumber" name="L24" href="#L24">24</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.render.RenderingContext;
-<a class="jxr_linenumber" name="L25" href="#L25">25</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.select.SubQuery;
-<a class="jxr_linenumber" name="L26" href="#L26">26</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.util.FragmentAndParameters;
-<a class="jxr_linenumber" name="L27" href="#L27">27</a>  
-<a class="jxr_linenumber" name="L28" href="#L28">28</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="TableExpressionRenderer" href="../../../../../../org/mybatis/dynamic/sql/select/render/TableExpressionRenderer.html#TableExpressionRenderer">TableExpressionRenderer</a> <strong class="jxr_keyword">implements</strong> TableExpressionVisitor&lt;FragmentAndParameters&gt; {
-<a class="jxr_linenumber" name="L29" href="#L29">29</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <a name="RenderingContext" href="../../../../../../org/mybatis/dynamic/sql/render/RenderingContext.html#RenderingContext">RenderingContext</a> renderingContext;
-<a class="jxr_linenumber" name="L30" href="#L30">30</a>  
-<a class="jxr_linenumber" name="L31" href="#L31">31</a>      <strong class="jxr_keyword">private</strong> <a name="TableExpressionRenderer" href="../../../../../../org/mybatis/dynamic/sql/select/render/TableExpressionRenderer.html#TableExpressionRenderer">TableExpressionRenderer</a>(Builder builder) {
-<a class="jxr_linenumber" name="L32" href="#L32">32</a>          renderingContext = Objects.requireNonNull(builder.renderingContext);
-<a class="jxr_linenumber" name="L33" href="#L33">33</a>      }
-<a class="jxr_linenumber" name="L34" href="#L34">34</a>  
-<a class="jxr_linenumber" name="L35" href="#L35">35</a>      @Override
-<a class="jxr_linenumber" name="L36" href="#L36">36</a>      <strong class="jxr_keyword">public</strong> <a name="FragmentAndParameters" href="../../../../../../org/mybatis/dynamic/sql/util/FragmentAndParameters.html#FragmentAndParameters">FragmentAndParameters</a> visit(<a name="SqlTable" href="../../../../../../org/mybatis/dynamic/sql/SqlTable.html#SqlTable">SqlTable</a> table) {
-<a class="jxr_linenumber" name="L37" href="#L37">37</a>          <strong class="jxr_keyword">return</strong> FragmentAndParameters.fromFragment(renderingContext.aliasedTableName(table));
-<a class="jxr_linenumber" name="L38" href="#L38">38</a>      }
-<a class="jxr_linenumber" name="L39" href="#L39">39</a>  
-<a class="jxr_linenumber" name="L40" href="#L40">40</a>      @Override
-<a class="jxr_linenumber" name="L41" href="#L41">41</a>      <strong class="jxr_keyword">public</strong> <a name="FragmentAndParameters" href="../../../../../../org/mybatis/dynamic/sql/util/FragmentAndParameters.html#FragmentAndParameters">FragmentAndParameters</a> visit(<a name="SubQuery" href="../../../../../../org/mybatis/dynamic/sql/select/SubQuery.html#SubQuery">SubQuery</a> subQuery) {
-<a class="jxr_linenumber" name="L42" href="#L42">42</a>          <a name="SelectStatementProvider" href="../../../../../../org/mybatis/dynamic/sql/select/render/SelectStatementProvider.html#SelectStatementProvider">SelectStatementProvider</a> selectStatement = subQuery.selectModel().render(renderingContext);
+<a class="jxr_linenumber" name="L20" href="#L20">20</a>  <strong class="jxr_keyword">import</strong> org.jspecify.annotations.Nullable;
+<a class="jxr_linenumber" name="L21" href="#L21">21</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.SqlTable;
+<a class="jxr_linenumber" name="L22" href="#L22">22</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.TableExpressionVisitor;
+<a class="jxr_linenumber" name="L23" href="#L23">23</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.render.RenderingContext;
+<a class="jxr_linenumber" name="L24" href="#L24">24</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.select.SubQuery;
+<a class="jxr_linenumber" name="L25" href="#L25">25</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.util.FragmentAndParameters;
+<a class="jxr_linenumber" name="L26" href="#L26">26</a>  
+<a class="jxr_linenumber" name="L27" href="#L27">27</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="TableExpressionRenderer" href="../../../../../../org/mybatis/dynamic/sql/select/render/TableExpressionRenderer.html#TableExpressionRenderer">TableExpressionRenderer</a> <strong class="jxr_keyword">implements</strong> TableExpressionVisitor&lt;FragmentAndParameters&gt; {
+<a class="jxr_linenumber" name="L28" href="#L28">28</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <a name="RenderingContext" href="../../../../../../org/mybatis/dynamic/sql/render/RenderingContext.html#RenderingContext">RenderingContext</a> renderingContext;
+<a class="jxr_linenumber" name="L29" href="#L29">29</a>  
+<a class="jxr_linenumber" name="L30" href="#L30">30</a>      <strong class="jxr_keyword">private</strong> <a name="TableExpressionRenderer" href="../../../../../../org/mybatis/dynamic/sql/select/render/TableExpressionRenderer.html#TableExpressionRenderer">TableExpressionRenderer</a>(Builder builder) {
+<a class="jxr_linenumber" name="L31" href="#L31">31</a>          renderingContext = Objects.requireNonNull(builder.renderingContext);
+<a class="jxr_linenumber" name="L32" href="#L32">32</a>      }
+<a class="jxr_linenumber" name="L33" href="#L33">33</a>  
+<a class="jxr_linenumber" name="L34" href="#L34">34</a>      @Override
+<a class="jxr_linenumber" name="L35" href="#L35">35</a>      <strong class="jxr_keyword">public</strong> <a name="FragmentAndParameters" href="../../../../../../org/mybatis/dynamic/sql/util/FragmentAndParameters.html#FragmentAndParameters">FragmentAndParameters</a> visit(<a name="SqlTable" href="../../../../../../org/mybatis/dynamic/sql/SqlTable.html#SqlTable">SqlTable</a> table) {
+<a class="jxr_linenumber" name="L36" href="#L36">36</a>          <strong class="jxr_keyword">return</strong> FragmentAndParameters.fromFragment(renderingContext.aliasedTableName(table));
+<a class="jxr_linenumber" name="L37" href="#L37">37</a>      }
+<a class="jxr_linenumber" name="L38" href="#L38">38</a>  
+<a class="jxr_linenumber" name="L39" href="#L39">39</a>      @Override
+<a class="jxr_linenumber" name="L40" href="#L40">40</a>      <strong class="jxr_keyword">public</strong> <a name="FragmentAndParameters" href="../../../../../../org/mybatis/dynamic/sql/util/FragmentAndParameters.html#FragmentAndParameters">FragmentAndParameters</a> visit(<a name="SubQuery" href="../../../../../../org/mybatis/dynamic/sql/select/SubQuery.html#SubQuery">SubQuery</a> subQuery) {
+<a class="jxr_linenumber" name="L41" href="#L41">41</a>          String suffix = subQuery.alias().map(a -&gt; <span class="jxr_string">") "</span> + a) <em class="jxr_comment">//$NON-NLS-1$</em>
+<a class="jxr_linenumber" name="L42" href="#L42">42</a>                  .orElse(<span class="jxr_string">")"</span>); <em class="jxr_comment">//$NON-NLS-1$</em>
 <a class="jxr_linenumber" name="L43" href="#L43">43</a>  
-<a class="jxr_linenumber" name="L44" href="#L44">44</a>          String fragment = <span class="jxr_string">"("</span> + selectStatement.getSelectStatement() + <span class="jxr_string">")"</span>; <em class="jxr_comment">//$NON-NLS-1$ //$NON-NLS-2$</em>
-<a class="jxr_linenumber" name="L45" href="#L45">45</a>  
-<a class="jxr_linenumber" name="L46" href="#L46">46</a>          fragment = applyAlias(fragment, subQuery);
-<a class="jxr_linenumber" name="L47" href="#L47">47</a>  
-<a class="jxr_linenumber" name="L48" href="#L48">48</a>          <strong class="jxr_keyword">return</strong> FragmentAndParameters.withFragment(fragment)
-<a class="jxr_linenumber" name="L49" href="#L49">49</a>                  .withParameters(selectStatement.getParameters())
-<a class="jxr_linenumber" name="L50" href="#L50">50</a>                  .build();
-<a class="jxr_linenumber" name="L51" href="#L51">51</a>      }
-<a class="jxr_linenumber" name="L52" href="#L52">52</a>  
-<a class="jxr_linenumber" name="L53" href="#L53">53</a>      <strong class="jxr_keyword">private</strong> String applyAlias(String fragment, <a name="SubQuery" href="../../../../../../org/mybatis/dynamic/sql/select/SubQuery.html#SubQuery">SubQuery</a> subQuery) {
-<a class="jxr_linenumber" name="L54" href="#L54">54</a>          <strong class="jxr_keyword">return</strong> subQuery.alias()
-<a class="jxr_linenumber" name="L55" href="#L55">55</a>                  .map(a -&gt; fragment + spaceBefore(a))
-<a class="jxr_linenumber" name="L56" href="#L56">56</a>                  .orElse(fragment);
-<a class="jxr_linenumber" name="L57" href="#L57">57</a>      }
-<a class="jxr_linenumber" name="L58" href="#L58">58</a>  
-<a class="jxr_linenumber" name="L59" href="#L59">59</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">class</strong> Builder {
-<a class="jxr_linenumber" name="L60" href="#L60">60</a>          <strong class="jxr_keyword">private</strong> <a name="RenderingContext" href="../../../../../../org/mybatis/dynamic/sql/render/RenderingContext.html#RenderingContext">RenderingContext</a> renderingContext;
-<a class="jxr_linenumber" name="L61" href="#L61">61</a>  
-<a class="jxr_linenumber" name="L62" href="#L62">62</a>          <strong class="jxr_keyword">public</strong> Builder withRenderingContext(<a name="RenderingContext" href="../../../../../../org/mybatis/dynamic/sql/render/RenderingContext.html#RenderingContext">RenderingContext</a> renderingContext) {
-<a class="jxr_linenumber" name="L63" href="#L63">63</a>              <strong class="jxr_keyword">this</strong>.renderingContext = renderingContext;
-<a class="jxr_linenumber" name="L64" href="#L64">64</a>              <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">this</strong>;
-<a class="jxr_linenumber" name="L65" href="#L65">65</a>          }
-<a class="jxr_linenumber" name="L66" href="#L66">66</a>  
-<a class="jxr_linenumber" name="L67" href="#L67">67</a>          <strong class="jxr_keyword">public</strong> <a name="TableExpressionRenderer" href="../../../../../../org/mybatis/dynamic/sql/select/render/TableExpressionRenderer.html#TableExpressionRenderer">TableExpressionRenderer</a> build() {
-<a class="jxr_linenumber" name="L68" href="#L68">68</a>              <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> <a name="TableExpressionRenderer" href="../../../../../../org/mybatis/dynamic/sql/select/render/TableExpressionRenderer.html#TableExpressionRenderer">TableExpressionRenderer</a>(<strong class="jxr_keyword">this</strong>);
-<a class="jxr_linenumber" name="L69" href="#L69">69</a>          }
-<a class="jxr_linenumber" name="L70" href="#L70">70</a>      }
-<a class="jxr_linenumber" name="L71" href="#L71">71</a>  }
+<a class="jxr_linenumber" name="L44" href="#L44">44</a>          <strong class="jxr_keyword">return</strong> SubQueryRenderer.withSelectModel(subQuery.selectModel())
+<a class="jxr_linenumber" name="L45" href="#L45">45</a>                  .withRenderingContext(renderingContext)
+<a class="jxr_linenumber" name="L46" href="#L46">46</a>                  .withPrefix(<span class="jxr_string">"("</span>)<em class="jxr_comment">//$NON-NLS-1$</em>
+<a class="jxr_linenumber" name="L47" href="#L47">47</a>                  .withSuffix(suffix)
+<a class="jxr_linenumber" name="L48" href="#L48">48</a>                  .build()
+<a class="jxr_linenumber" name="L49" href="#L49">49</a>                  .render();
+<a class="jxr_linenumber" name="L50" href="#L50">50</a>      }
+<a class="jxr_linenumber" name="L51" href="#L51">51</a>  
+<a class="jxr_linenumber" name="L52" href="#L52">52</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">class</strong> Builder {
+<a class="jxr_linenumber" name="L53" href="#L53">53</a>          <strong class="jxr_keyword">private</strong> @Nullable <a name="RenderingContext" href="../../../../../../org/mybatis/dynamic/sql/render/RenderingContext.html#RenderingContext">RenderingContext</a> renderingContext;
+<a class="jxr_linenumber" name="L54" href="#L54">54</a>  
+<a class="jxr_linenumber" name="L55" href="#L55">55</a>          <strong class="jxr_keyword">public</strong> Builder withRenderingContext(<a name="RenderingContext" href="../../../../../../org/mybatis/dynamic/sql/render/RenderingContext.html#RenderingContext">RenderingContext</a> renderingContext) {
+<a class="jxr_linenumber" name="L56" href="#L56">56</a>              <strong class="jxr_keyword">this</strong>.renderingContext = renderingContext;
+<a class="jxr_linenumber" name="L57" href="#L57">57</a>              <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">this</strong>;
+<a class="jxr_linenumber" name="L58" href="#L58">58</a>          }
+<a class="jxr_linenumber" name="L59" href="#L59">59</a>  
+<a class="jxr_linenumber" name="L60" href="#L60">60</a>          <strong class="jxr_keyword">public</strong> <a name="TableExpressionRenderer" href="../../../../../../org/mybatis/dynamic/sql/select/render/TableExpressionRenderer.html#TableExpressionRenderer">TableExpressionRenderer</a> build() {
+<a class="jxr_linenumber" name="L61" href="#L61">61</a>              <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> <a name="TableExpressionRenderer" href="../../../../../../org/mybatis/dynamic/sql/select/render/TableExpressionRenderer.html#TableExpressionRenderer">TableExpressionRenderer</a>(<strong class="jxr_keyword">this</strong>);
+<a class="jxr_linenumber" name="L62" href="#L62">62</a>          }
+<a class="jxr_linenumber" name="L63" href="#L63">63</a>      }
+<a class="jxr_linenumber" name="L64" href="#L64">64</a>  }
 </pre>
 <hr/>
-<div id="footer">Copyright &#169; 2016&#x2013;2024 <a href="https://www.mybatis.org/">MyBatis.org</a>. All rights reserved.</div>
+<div id="footer">© 2016–2025 <a href="https://www.mybatis.org/">MyBatis.org</a></div>
 </body>
 </html>

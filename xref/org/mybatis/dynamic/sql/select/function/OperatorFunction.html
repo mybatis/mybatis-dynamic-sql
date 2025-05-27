@@ -7,7 +7,7 @@
 <body>
 <div id="overview"><a href="../../../../../../../apidocs/org/mybatis/dynamic/sql/select/function/OperatorFunction.html">View Javadoc</a></div><pre>
 <a class="jxr_linenumber" name="L1" href="#L1">1</a>   <em class="jxr_comment">/*</em>
-<a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_comment"> *    Copyright 2016-2024 the original author or authors.</em>
+<a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_comment"> *    Copyright 2016-2025 the original author or authors.</em>
 <a class="jxr_linenumber" name="L3" href="#L3">3</a>   <em class="jxr_comment"> *</em>
 <a class="jxr_linenumber" name="L4" href="#L4">4</a>   <em class="jxr_comment"> *    Licensed under the Apache License, Version 2.0 (the "License");</em>
 <a class="jxr_linenumber" name="L5" href="#L5">5</a>   <em class="jxr_comment"> *    you may not use this file except in compliance with the License.</em>
@@ -43,7 +43,7 @@
 <a class="jxr_linenumber" name="L35" href="#L35">35</a>      <strong class="jxr_keyword">protected</strong> <strong class="jxr_keyword">final</strong> List&lt;BasicColumn&gt; subsequentColumns = <strong class="jxr_keyword">new</strong> ArrayList&lt;&gt;();
 <a class="jxr_linenumber" name="L36" href="#L36">36</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> String <strong class="jxr_keyword">operator</strong>;
 <a class="jxr_linenumber" name="L37" href="#L37">37</a>  
-<a class="jxr_linenumber" name="L38" href="#L38">38</a>      <strong class="jxr_keyword">protected</strong> <a name="OperatorFunction" href="../../../../../../org/mybatis/dynamic/sql/select/function/OperatorFunction.html#OperatorFunction">OperatorFunction</a>(String <strong class="jxr_keyword">operator</strong>, BindableColumn&lt;T&gt; firstColumn, <a name="BasicColumn" href="../../../../../../org/mybatis/dynamic/sql/BasicColumn.html#BasicColumn">BasicColumn</a> secondColumn,
+<a class="jxr_linenumber" name="L38" href="#L38">38</a>      <strong class="jxr_keyword">protected</strong> <a name="OperatorFunction" href="../../../../../../org/mybatis/dynamic/sql/select/function/OperatorFunction.html#OperatorFunction">OperatorFunction</a>(String <strong class="jxr_keyword">operator</strong>, <a name="BasicColumn" href="../../../../../../org/mybatis/dynamic/sql/BasicColumn.html#BasicColumn">BasicColumn</a> firstColumn, <a name="BasicColumn" href="../../../../../../org/mybatis/dynamic/sql/BasicColumn.html#BasicColumn">BasicColumn</a> secondColumn,
 <a class="jxr_linenumber" name="L39" href="#L39">39</a>              List&lt;BasicColumn&gt; subsequentColumns) {
 <a class="jxr_linenumber" name="L40" href="#L40">40</a>          <strong class="jxr_keyword">super</strong>(firstColumn);
 <a class="jxr_linenumber" name="L41" href="#L41">41</a>          <strong class="jxr_keyword">this</strong>.secondColumn = Objects.requireNonNull(secondColumn);
@@ -60,27 +60,25 @@
 <a class="jxr_linenumber" name="L52" href="#L52">52</a>      <strong class="jxr_keyword">public</strong> <a name="FragmentAndParameters" href="../../../../../../org/mybatis/dynamic/sql/util/FragmentAndParameters.html#FragmentAndParameters">FragmentAndParameters</a> render(<a name="RenderingContext" href="../../../../../../org/mybatis/dynamic/sql/render/RenderingContext.html#RenderingContext">RenderingContext</a> renderingContext) {
 <a class="jxr_linenumber" name="L53" href="#L53">53</a>          String paddedOperator = <span class="jxr_string">" "</span> + <strong class="jxr_keyword">operator</strong> + <span class="jxr_string">" "</span>; <em class="jxr_comment">//$NON-NLS-1$ //$NON-NLS-2$</em>
 <a class="jxr_linenumber" name="L54" href="#L54">54</a>  
-<a class="jxr_linenumber" name="L55" href="#L55">55</a>          <em class="jxr_comment">// note - the cast below is added for type inference issues in some compilers</em>
-<a class="jxr_linenumber" name="L56" href="#L56">56</a>          <strong class="jxr_keyword">return</strong> Stream.of(Stream.of((<a name="BasicColumn" href="../../../../../../org/mybatis/dynamic/sql/BasicColumn.html#BasicColumn">BasicColumn</a>) column),
-<a class="jxr_linenumber" name="L57" href="#L57">57</a>                          Stream.of(secondColumn), subsequentColumns.stream())
-<a class="jxr_linenumber" name="L58" href="#L58">58</a>                  .flatMap(Function.identity())
-<a class="jxr_linenumber" name="L59" href="#L59">59</a>                  .map(column -&gt; column.render(renderingContext))
-<a class="jxr_linenumber" name="L60" href="#L60">60</a>                  .collect(FragmentCollector.collect())
-<a class="jxr_linenumber" name="L61" href="#L61">61</a>                  .toFragmentAndParameters(Collectors.joining(paddedOperator, <span class="jxr_string">"("</span>, <span class="jxr_string">")"</span>)); <em class="jxr_comment">//$NON-NLS-1$ //$NON-NLS-2$</em>
-<a class="jxr_linenumber" name="L62" href="#L62">62</a>      }
-<a class="jxr_linenumber" name="L63" href="#L63">63</a>  
-<a class="jxr_linenumber" name="L64" href="#L64">64</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> &lt;T&gt; OperatorFunction&lt;T&gt; of(String <strong class="jxr_keyword">operator</strong>, BindableColumn&lt;T&gt; firstColumn, <a name="BasicColumn" href="../../../../../../org/mybatis/dynamic/sql/BasicColumn.html#BasicColumn">BasicColumn</a> secondColumn,
-<a class="jxr_linenumber" name="L65" href="#L65">65</a>              BasicColumn... subsequentColumns) {
-<a class="jxr_linenumber" name="L66" href="#L66">66</a>          <strong class="jxr_keyword">return</strong> of(<strong class="jxr_keyword">operator</strong>, firstColumn, secondColumn, Arrays.asList(subsequentColumns));
-<a class="jxr_linenumber" name="L67" href="#L67">67</a>      }
-<a class="jxr_linenumber" name="L68" href="#L68">68</a>  
-<a class="jxr_linenumber" name="L69" href="#L69">69</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> &lt;T&gt; OperatorFunction&lt;T&gt; of(String <strong class="jxr_keyword">operator</strong>, BindableColumn&lt;T&gt; firstColumn, <a name="BasicColumn" href="../../../../../../org/mybatis/dynamic/sql/BasicColumn.html#BasicColumn">BasicColumn</a> secondColumn,
-<a class="jxr_linenumber" name="L70" href="#L70">70</a>              List&lt;BasicColumn&gt; subsequentColumns) {
-<a class="jxr_linenumber" name="L71" href="#L71">71</a>          <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> OperatorFunction&lt;&gt;(<strong class="jxr_keyword">operator</strong>, firstColumn, secondColumn, subsequentColumns);
-<a class="jxr_linenumber" name="L72" href="#L72">72</a>      }
-<a class="jxr_linenumber" name="L73" href="#L73">73</a>  }
+<a class="jxr_linenumber" name="L55" href="#L55">55</a>          <strong class="jxr_keyword">return</strong> Stream.of(Stream.of(column, secondColumn), subsequentColumns.stream())
+<a class="jxr_linenumber" name="L56" href="#L56">56</a>                  .flatMap(Function.identity())
+<a class="jxr_linenumber" name="L57" href="#L57">57</a>                  .map(column -&gt; column.render(renderingContext))
+<a class="jxr_linenumber" name="L58" href="#L58">58</a>                  .collect(FragmentCollector.collect())
+<a class="jxr_linenumber" name="L59" href="#L59">59</a>                  .toFragmentAndParameters(Collectors.joining(paddedOperator, <span class="jxr_string">"("</span>, <span class="jxr_string">")"</span>)); <em class="jxr_comment">//$NON-NLS-1$ //$NON-NLS-2$</em>
+<a class="jxr_linenumber" name="L60" href="#L60">60</a>      }
+<a class="jxr_linenumber" name="L61" href="#L61">61</a>  
+<a class="jxr_linenumber" name="L62" href="#L62">62</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> &lt;T&gt; OperatorFunction&lt;T&gt; of(String <strong class="jxr_keyword">operator</strong>, BindableColumn&lt;T&gt; firstColumn, <a name="BasicColumn" href="../../../../../../org/mybatis/dynamic/sql/BasicColumn.html#BasicColumn">BasicColumn</a> secondColumn,
+<a class="jxr_linenumber" name="L63" href="#L63">63</a>              BasicColumn... subsequentColumns) {
+<a class="jxr_linenumber" name="L64" href="#L64">64</a>          <strong class="jxr_keyword">return</strong> of(<strong class="jxr_keyword">operator</strong>, firstColumn, secondColumn, Arrays.asList(subsequentColumns));
+<a class="jxr_linenumber" name="L65" href="#L65">65</a>      }
+<a class="jxr_linenumber" name="L66" href="#L66">66</a>  
+<a class="jxr_linenumber" name="L67" href="#L67">67</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> &lt;T&gt; OperatorFunction&lt;T&gt; of(String <strong class="jxr_keyword">operator</strong>, BindableColumn&lt;T&gt; firstColumn, <a name="BasicColumn" href="../../../../../../org/mybatis/dynamic/sql/BasicColumn.html#BasicColumn">BasicColumn</a> secondColumn,
+<a class="jxr_linenumber" name="L68" href="#L68">68</a>              List&lt;BasicColumn&gt; subsequentColumns) {
+<a class="jxr_linenumber" name="L69" href="#L69">69</a>          <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> OperatorFunction&lt;&gt;(<strong class="jxr_keyword">operator</strong>, firstColumn, secondColumn, subsequentColumns);
+<a class="jxr_linenumber" name="L70" href="#L70">70</a>      }
+<a class="jxr_linenumber" name="L71" href="#L71">71</a>  }
 </pre>
 <hr/>
-<div id="footer">Copyright &#169; 2016&#x2013;2024 <a href="https://www.mybatis.org/">MyBatis.org</a>. All rights reserved.</div>
+<div id="footer">© 2016–2025 <a href="https://www.mybatis.org/">MyBatis.org</a></div>
 </body>
 </html>

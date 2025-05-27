@@ -7,7 +7,7 @@
 <body>
 <div id="overview"><a href="../../../../../testapidocs/examples/generated/always/mybatis/GeneratedAlwaysMapper.html">View Javadoc</a></div><pre>
 <a class="jxr_linenumber" name="L1" href="#L1">1</a>   <em class="jxr_comment">/*</em>
-<a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_comment"> *    Copyright 2016-2024 the original author or authors.</em>
+<a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_comment"> *    Copyright 2016-2025 the original author or authors.</em>
 <a class="jxr_linenumber" name="L3" href="#L3">3</a>   <em class="jxr_comment"> *</em>
 <a class="jxr_linenumber" name="L4" href="#L4">4</a>   <em class="jxr_comment"> *    Licensed under the Apache License, Version 2.0 (the "License");</em>
 <a class="jxr_linenumber" name="L5" href="#L5">5</a>   <em class="jxr_comment"> *    you may not use this file except in compliance with the License.</em>
@@ -84,8 +84,8 @@
 <a class="jxr_linenumber" name="L76" href="#L76">76</a>          <strong class="jxr_keyword">return</strong> MyBatis3Utils.selectList(<strong class="jxr_keyword">this</strong>::selectMany, selectList, generatedAlways, completer);
 <a class="jxr_linenumber" name="L77" href="#L77">77</a>      }
 <a class="jxr_linenumber" name="L78" href="#L78">78</a>  
-<a class="jxr_linenumber" name="L79" href="#L79">79</a>      <strong class="jxr_keyword">default</strong> Optional&lt;GeneratedAlwaysRecord&gt; selectByPrimaryKey(Integer _id) {
-<a class="jxr_linenumber" name="L80" href="#L80">80</a>          <strong class="jxr_keyword">return</strong> selectOne(c -&gt; c.where(id, isEqualTo(_id)));
+<a class="jxr_linenumber" name="L79" href="#L79">79</a>      <strong class="jxr_keyword">default</strong> Optional&lt;GeneratedAlwaysRecord&gt; selectByPrimaryKey(Integer recordId) {
+<a class="jxr_linenumber" name="L80" href="#L80">80</a>          <strong class="jxr_keyword">return</strong> selectOne(c -&gt; c.where(id, isEqualTo(recordId)));
 <a class="jxr_linenumber" name="L81" href="#L81">81</a>      }
 <a class="jxr_linenumber" name="L82" href="#L82">82</a>  
 <a class="jxr_linenumber" name="L83" href="#L83">83</a>      <strong class="jxr_keyword">default</strong> <strong class="jxr_keyword">int</strong> insert(<a name="GeneratedAlwaysRecord" href="../../../../examples/generated/always/GeneratedAlwaysRecord.html#GeneratedAlwaysRecord">GeneratedAlwaysRecord</a> row) {
@@ -144,6 +144,6 @@
 <a class="jxr_linenumber" name="L136" href="#L136">136</a> }
 </pre>
 <hr/>
-<div id="footer">Copyright &#169; 2016&#x2013;2024 <a href="https://www.mybatis.org/">MyBatis.org</a>. All rights reserved.</div>
+<div id="footer">© 2016–2025 <a href="https://www.mybatis.org/">MyBatis.org</a></div>
 </body>
 </html>
