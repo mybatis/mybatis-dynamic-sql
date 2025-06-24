@@ -60,7 +60,7 @@
     <java.release.version>17</java.release.version>
     <java.test.version>17</java.test.version>
     <java.test.release.version>17</java.test.release.version>
-    <junit.jupiter.version>5.13.1</junit.jupiter.version>
+    <junit.jupiter.version>5.13.2</junit.jupiter.version>
     <spring.batch.version>5.2.2</spring.batch.version>
 
     <checkstyle.config>checkstyle-override.xml</checkstyle.config>
