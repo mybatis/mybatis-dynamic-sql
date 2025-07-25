@@ -106,13 +106,13 @@ public interface PersonMapper extends CommonCountMapper, CommonDeleteMapper, Com
 
     default int insert(PersonRecord row) {
         return MyBatis3Utils.insert(this::insert, row, person, c ->
-            c.map(id).toProperty("id")
-            .map(firstName).toProperty("firstName")
-            .map(lastName).toProperty("lastName")
-            .map(birthDate).toProperty("birthDate")
-            .map(employed).toProperty("employed")
-            .map(occupation).toProperty("occupation")
-            .map(addressId).toProperty("addressId")
+            c.withMappedColumn(id)
+            .withMappedColumn(firstName)
+            .withMappedColumn(lastName)
+            .withMappedColumn(birthDate)
+            .withMappedColumn(employed)
+            .withMappedColumn(occupation)
+            .withMappedColumn(addressId)
         );
     }
 
@@ -122,25 +122,25 @@ public interface PersonMapper extends CommonCountMapper, CommonDeleteMapper, Com
 
     default int insertMultiple(Collection<PersonRecord> records) {
         return MyBatis3Utils.insertMultiple(this::insertMultiple, records, person, c ->
-            c.map(id).toProperty("id")
-            .map(firstName).toProperty("firstName")
-            .map(lastName).toProperty("lastName")
-            .map(birthDate).toProperty("birthDate")
-            .map(employed).toProperty("employed")
-            .map(occupation).toProperty("occupation")
-            .map(addressId).toProperty("addressId")
+            c.withMappedColumn(id)
+            .withMappedColumn(firstName)
+            .withMappedColumn(lastName)
+            .withMappedColumn(birthDate)
+            .withMappedColumn(employed)
+            .withMappedColumn(occupation)
+            .withMappedColumn(addressId)
         );
     }
 
     default int insertSelective(PersonRecord row) {
         return MyBatis3Utils.insert(this::insert, row, person, c ->
-            c.map(id).toPropertyWhenPresent("id", row::id)
-            .map(firstName).toPropertyWhenPresent("firstName", row::firstName)
-            .map(lastName).toPropertyWhenPresent("lastName", row::lastName)
-            .map(birthDate).toPropertyWhenPresent("birthDate", row::birthDate)
-            .map(employed).toPropertyWhenPresent("employed", row::employed)
-            .map(occupation).toPropertyWhenPresent("occupation", row::occupation)
-            .map(addressId).toPropertyWhenPresent("addressId", row::addressId)
+            c.withMappedColumnWhenPresent(id, row::id)
+            .withMappedColumnWhenPresent(firstName, row::firstName)
+            .withMappedColumnWhenPresent(lastName, row::lastName)
+            .withMappedColumnWhenPresent(birthDate, row::birthDate)
+            .withMappedColumnWhenPresent(employed, row::employed)
+            .withMappedColumnWhenPresent(occupation, row::occupation)
+            .withMappedColumnWhenPresent(addressId, row::addressId)
         );
     }
 

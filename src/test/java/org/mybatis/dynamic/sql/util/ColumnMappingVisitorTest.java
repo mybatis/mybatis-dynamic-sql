@@ -204,6 +204,56 @@ class ColumnMappingVisitorTest {
                 .withMessage("Internal Error 15");
     }
 
+    @Test
+    void testThatUpdateVisitorErrorsForMappedColumnMapping() {
+        TestTable table = new TestTable();
+        UpdateVisitor tv = new UpdateVisitor();
+        MappedColumnMapping mapping = MappedColumnMapping.of(table.id);
+
+        assertThatExceptionOfType(UnsupportedOperationException.class).isThrownBy(() -> tv.visit(mapping))
+                .withMessage("Internal Error 19");
+    }
+
+    @Test
+    void testThatUpdateVisitorErrorsForMappedWhenPresentColumnMapping() {
+        TestTable table = new TestTable();
+        UpdateVisitor tv = new UpdateVisitor();
+        MappedColumnWhenPresentMapping mapping = MappedColumnWhenPresentMapping.of(table.id, () -> 1);
+
+        assertThatExceptionOfType(UnsupportedOperationException.class).isThrownBy(() -> tv.visit(mapping))
+                .withMessage("Internal Error 20");
+    }
+
+    @Test
+    void testThatGeneralInsertVisitorErrorsForMappedColumnMapping() {
+        TestTable table = new TestTable();
+        GeneralInsertVisitor tv = new GeneralInsertVisitor();
+        MappedColumnMapping mapping = MappedColumnMapping.of(table.id);
+
+        assertThatExceptionOfType(UnsupportedOperationException.class).isThrownBy(() -> tv.visit(mapping))
+                .withMessage("Internal Error 16");
+    }
+
+    @Test
+    void testThatGeneralInsertVisitorErrorsForMappedWhenPresentColumnMapping() {
+        TestTable table = new TestTable();
+        GeneralInsertVisitor tv = new GeneralInsertVisitor();
+        MappedColumnWhenPresentMapping mapping = MappedColumnWhenPresentMapping.of(table.id, () -> 1);
+
+        assertThatExceptionOfType(UnsupportedOperationException.class).isThrownBy(() -> tv.visit(mapping))
+                .withMessage("Internal Error 17");
+    }
+
+    @Test
+    void testThatMultiRowInsertVisitorErrorsForMappedColumnWhenPresentMapping() {
+        TestTable table = new TestTable();
+        MultiRowInsertVisitor tv = new MultiRowInsertVisitor();
+        MappedColumnWhenPresentMapping mapping = MappedColumnWhenPresentMapping.of(table.id, () -> 1);
+
+        assertThatExceptionOfType(UnsupportedOperationException.class).isThrownBy(() -> tv.visit(mapping))
+                .withMessage("Internal Error 18");
+    }
+
     private static class TestTable extends SqlTable {
         public final SqlColumn<Integer> id;
         public final SqlColumn<String> description;
@@ -278,6 +328,16 @@ class ColumnMappingVisitorTest {
         public String visit(RowMapping mapping) {
             return "Row Mapping";
         }
+
+        @Override
+        public String visit(MappedColumnMapping mapping) {
+            return "Mapped Column Mapping";
+        }
+
+        @Override
+        public String visit(MappedColumnWhenPresentMapping mapping) {
+            return "Mapped Column When Present Mapping";
+        }
     }
 
     private static class UpdateVisitor extends UpdateMappingVisitor<String> {
@@ -349,5 +409,9 @@ class ColumnMappingVisitorTest {
             return "Row Mapping";
         }
 
+        @Override
+        public String visit(MappedColumnMapping mapping) {
+            return "Mapped Column Mapping";
+        }
     }
 }

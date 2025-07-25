@@ -25,6 +25,7 @@ import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.util.AbstractColumnMapping;
 import org.mybatis.dynamic.sql.util.Buildable;
 import org.mybatis.dynamic.sql.util.ConstantMapping;
+import org.mybatis.dynamic.sql.util.MappedColumnMapping;
 import org.mybatis.dynamic.sql.util.NullMapping;
 import org.mybatis.dynamic.sql.util.PropertyMapping;
 import org.mybatis.dynamic.sql.util.RowMapping;
@@ -44,6 +45,11 @@ public class MultiRowInsertDSL<T> implements Buildable<MultiRowInsertModel<T>> {
 
     public <F> ColumnMappingFinisher<F> map(SqlColumn<F> column) {
         return new ColumnMappingFinisher<>(column);
+    }
+
+    public <F> MultiRowInsertDSL<T> withMappedColumn(SqlColumn<F> column) {
+        columnMappings.add(MappedColumnMapping.of(column));
+        return this;
     }
 
     @Override
