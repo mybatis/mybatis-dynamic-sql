@@ -15,10 +15,10 @@
  */
 package org.mybatis.dynamic.sql.util;
 
-import org.mybatis.dynamic.sql.SqlColumn;
-
 import java.util.Objects;
 import java.util.function.Supplier;
+
+import org.mybatis.dynamic.sql.SqlColumn;
 
 public class MappedColumnWhenPresentMapping extends MappedColumnMapping {
     private final Supplier<?> valueSupplier;
