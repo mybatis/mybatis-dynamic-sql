@@ -31,20 +31,22 @@ object PersonDynamicSqlSupport {
     val addressId = person.addressId
 
     class Person : SqlTable("Person") {
-        val id = column<Int>(name = "id", jdbcType = JDBCType.INTEGER)
-        val firstName = column<String>(name = "first_name", jdbcType = JDBCType.VARCHAR)
+        val id = column<Int>(name = "id", jdbcType = JDBCType.INTEGER, javaProperty = "id")
+        val firstName = column<String>(name = "first_name", jdbcType = JDBCType.VARCHAR, javaProperty = "firstName")
         val lastName = column<LastName>(
             name = "last_name",
             jdbcType = JDBCType.VARCHAR,
-            typeHandler = "examples.kotlin.mybatis3.canonical.LastNameTypeHandler"
+            typeHandler = "examples.kotlin.mybatis3.canonical.LastNameTypeHandler",
+            javaProperty = "lastName"
         )
-        val birthDate = column<Date>(name = "birth_date", jdbcType = JDBCType.DATE)
+        val birthDate = column<Date>(name = "birth_date", jdbcType = JDBCType.DATE, javaProperty = "birthDate")
         val employed = column<Boolean>(
             name = "employed",
             JDBCType.VARCHAR,
-            typeHandler = "examples.kotlin.mybatis3.canonical.YesNoTypeHandler"
+            typeHandler = "examples.kotlin.mybatis3.canonical.YesNoTypeHandler",
+            javaProperty = "employed"
         )
-        val occupation = column<String>(name = "occupation", jdbcType = JDBCType.VARCHAR)
-        val addressId = column<Int>(name = "address_id", jdbcType = JDBCType.INTEGER)
+        val occupation = column<String>(name = "occupation", jdbcType = JDBCType.VARCHAR, javaProperty = "occupation")
+        val addressId = column<Int>(name = "address_id", jdbcType = JDBCType.INTEGER, javaProperty = "addressId")
     }
 }

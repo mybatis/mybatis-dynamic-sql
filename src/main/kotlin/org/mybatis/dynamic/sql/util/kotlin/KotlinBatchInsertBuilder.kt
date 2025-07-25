@@ -21,6 +21,7 @@ import org.mybatis.dynamic.sql.insert.BatchInsertDSL
 import org.mybatis.dynamic.sql.insert.BatchInsertModel
 import org.mybatis.dynamic.sql.util.AbstractColumnMapping
 import org.mybatis.dynamic.sql.util.Buildable
+import org.mybatis.dynamic.sql.util.MappedColumnMapping
 
 typealias KotlinBatchInsertCompleter<T> = KotlinBatchInsertBuilder<T>.() -> Unit
 
@@ -35,6 +36,10 @@ class KotlinBatchInsertBuilder<T : Any> (private val rows: Collection<T>): Build
 
     fun <C : Any> map(column: SqlColumn<C>) = MultiRowInsertColumnMapCompleter(column) {
         columnMappings.add(it)
+    }
+
+    fun <C : Any> withMappedColumn(column: SqlColumn<C>) {
+        columnMappings.add(MappedColumnMapping.of(column))
     }
 
     override fun build(): BatchInsertModel<T> {

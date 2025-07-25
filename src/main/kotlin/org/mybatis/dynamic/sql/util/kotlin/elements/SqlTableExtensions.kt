@@ -34,7 +34,8 @@ fun <T : Any> SqlTable.column(
     typeHandler: String? = null,
     renderingStrategy: RenderingStrategy? = null,
     parameterTypeConverter: ((T?) -> Any?) = { it },
-    javaType: KClass<T>? = null
+    javaType: KClass<T>? = null,
+    javaProperty: String? = null,
 ): SqlColumn<T> = SqlColumn.Builder<T>().run {
     withTable(this@column)
     withName(name)
@@ -43,5 +44,6 @@ fun <T : Any> SqlTable.column(
     withRenderingStrategy(renderingStrategy)
     withParameterTypeConverter(parameterTypeConverter)
     withJavaType(javaType?.java)
+    withJavaProperty(javaProperty)
     build()
 }

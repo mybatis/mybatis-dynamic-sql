@@ -21,6 +21,8 @@ import org.mybatis.dynamic.sql.insert.InsertDSL
 import org.mybatis.dynamic.sql.insert.InsertModel
 import org.mybatis.dynamic.sql.util.AbstractColumnMapping
 import org.mybatis.dynamic.sql.util.Buildable
+import org.mybatis.dynamic.sql.util.MappedColumnMapping
+import org.mybatis.dynamic.sql.util.MappedColumnWhenPresentMapping
 
 typealias KotlinInsertCompleter<T> = KotlinInsertBuilder<T>.() -> Unit
 
@@ -35,6 +37,14 @@ class KotlinInsertBuilder<T : Any> (private val row: T): Buildable<InsertModel<T
 
     fun <C : Any> map(column: SqlColumn<C>) = SingleRowInsertColumnMapCompleter(column) {
         columnMappings.add(it)
+    }
+
+    fun <C : Any> withMappedColumn(column: SqlColumn<C>) {
+        columnMappings.add(MappedColumnMapping.of(column))
+    }
+
+    fun <C : Any> withMappedColumnWhenPresent(column: SqlColumn<C>, valueSupplier: () -> Any?) {
+        columnMappings.add(MappedColumnWhenPresentMapping.of(column, valueSupplier))
     }
 
     override fun build(): InsertModel<T> {
