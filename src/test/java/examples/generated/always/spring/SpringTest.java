@@ -241,9 +241,9 @@ class SpringTest {
 
         BatchInsert<GeneratedAlwaysRecord> batchInsert = insertBatch(records)
                 .into(generatedAlways)
-                .map(id).toProperty("id")
-                .map(firstName).toProperty("firstName")
-                .map(lastName).toProperty("lastName")
+                .withMappedColumn(id)
+                .withMappedColumn(firstName)
+                .withMappedColumn(lastName)
                 .build()
                 .render(RenderingStrategies.SPRING_NAMED_PARAMETER);
 
