@@ -107,6 +107,8 @@ Runtime behavior changes:
   are not supported by the library out of the box. The statement renderers now call methods `renderCondition` and
   `renderLeftColumn` that you can override to implement any rendering you need. In addition, we've made `filter` and
   `map` support optional if you implement custom conditions
+- Added support for configuring a Java property name to be associated with an `SqlColumn`. This property name can be
+  used with the record based insert methods to reduce the boilerplate code for mapping columns to Java properties.
 
 ## Release 1.5.2 - June 3, 2024
 
