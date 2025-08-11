@@ -16,11 +16,9 @@
 package org.mybatis.dynamic.sql.insert.render;
 
 import org.mybatis.dynamic.sql.SqlColumn;
-import org.mybatis.dynamic.sql.exception.InvalidSqlException;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.util.ConstantMapping;
 import org.mybatis.dynamic.sql.util.MappedColumnMapping;
-import org.mybatis.dynamic.sql.util.Messages;
 import org.mybatis.dynamic.sql.util.MultiRowInsertMappingVisitor;
 import org.mybatis.dynamic.sql.util.NullMapping;
 import org.mybatis.dynamic.sql.util.PropertyMapping;
@@ -77,15 +75,9 @@ public class MultiRowValuePhraseVisitor extends MultiRowInsertMappingVisitor<Fie
         return FieldAndValueAndParameters.withFieldName(mapping.columnName())
                 .withValuePhrase(calculateJdbcPlaceholder(
                         mapping.column(),
-                        getMappedPropertyName(mapping.column()))
+                        InsertRenderingUtilities.getMappedPropertyName(mapping.column()))
                 )
                 .build();
-    }
-
-    private String getMappedPropertyName(SqlColumn<?> column) {
-        return column.javaProperty().orElseThrow(() ->
-                new InvalidSqlException(Messages
-                        .getString("ERROR.50", column.name()))); //$NON-NLS-1$
     }
 
     private String calculateJdbcPlaceholder(SqlColumn<?> column) {
