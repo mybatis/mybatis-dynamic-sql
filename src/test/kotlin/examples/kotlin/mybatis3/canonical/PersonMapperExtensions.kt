@@ -65,13 +65,13 @@ fun PersonMapper.deleteByPrimaryKey(id_: Int) =
 
 fun PersonMapper.insert(record: PersonRecord) =
     insert(this::insert, record, person) {
-        map(id) toProperty "id"
-        map(firstName) toProperty "firstName"
-        map(lastName) toProperty "lastName"
-        map(birthDate) toProperty "birthDate"
-        map(employed) toProperty "employed"
-        map(occupation) toProperty "occupation"
-        map(addressId) toProperty "addressId"
+        withMappedColumn(id)
+        withMappedColumn(firstName)
+        withMappedColumn(lastName)
+        withMappedColumn(birthDate)
+        withMappedColumn(employed)
+        withMappedColumn(occupation)
+        withMappedColumn(addressId)
     }
 
 fun PersonMapper.generalInsert(completer: GeneralInsertCompleter) =
@@ -85,13 +85,13 @@ fun PersonMapper.insertBatch(vararg records: PersonRecord): List<Int> =
 
 fun PersonMapper.insertBatch(records: Collection<PersonRecord>): List<Int> =
     insertBatch(this::insert, records, person) {
-        map(id) toProperty "id"
-        map(firstName) toProperty "firstName"
-        map(lastName) toProperty "lastName"
-        map(birthDate) toProperty "birthDate"
-        map(employed) toProperty "employed"
-        map(occupation) toProperty "occupation"
-        map(addressId) toProperty "addressId"
+        withMappedColumn(id)
+        withMappedColumn(firstName)
+        withMappedColumn(lastName)
+        withMappedColumn(birthDate)
+        withMappedColumn(employed)
+        withMappedColumn(occupation)
+        withMappedColumn(addressId)
     }
 
 fun PersonMapper.insertMultiple(vararg records: PersonRecord) =
@@ -99,24 +99,24 @@ fun PersonMapper.insertMultiple(vararg records: PersonRecord) =
 
 fun PersonMapper.insertMultiple(records: Collection<PersonRecord>) =
     insertMultiple(this::insertMultiple, records, person) {
-        map(id) toProperty "id"
-        map(firstName) toProperty "firstName"
-        map(lastName) toProperty "lastName"
-        map(birthDate) toProperty "birthDate"
-        map(employed) toProperty "employed"
-        map(occupation) toProperty "occupation"
-        map(addressId) toProperty "addressId"
+        withMappedColumn(id)
+        withMappedColumn(firstName)
+        withMappedColumn(lastName)
+        withMappedColumn(birthDate)
+        withMappedColumn(employed)
+        withMappedColumn(occupation)
+        withMappedColumn(addressId)
     }
 
 fun PersonMapper.insertSelective(record: PersonRecord) =
     insert(this::insert, record, person) {
-        map(id).toPropertyWhenPresent("id", record::id)
-        map(firstName).toPropertyWhenPresent("firstName", record::firstName)
-        map(lastName).toPropertyWhenPresent("lastName", record::lastName)
-        map(birthDate).toPropertyWhenPresent("birthDate", record::birthDate)
-        map(employed).toPropertyWhenPresent("employed", record::employed)
-        map(occupation).toPropertyWhenPresent("occupation", record::occupation)
-        map(addressId).toPropertyWhenPresent("addressId", record::addressId)
+        withMappedColumnWhenPresent(id, record::id)
+        withMappedColumnWhenPresent(firstName, record::firstName)
+        withMappedColumnWhenPresent(lastName, record::lastName)
+        withMappedColumnWhenPresent(birthDate, record::birthDate)
+        withMappedColumnWhenPresent(employed, record::employed)
+        withMappedColumnWhenPresent(occupation, record::occupation)
+        withMappedColumnWhenPresent(addressId, record::addressId)
     }
 
 private val columnList = listOf(id `as` "A_ID", firstName, lastName, birthDate, employed, occupation, addressId)

@@ -17,7 +17,10 @@ package org.mybatis.dynamic.sql.insert.render;
 
 import static org.mybatis.dynamic.sql.util.StringUtilities.spaceBefore;
 
+import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
+import org.mybatis.dynamic.sql.exception.InvalidSqlException;
+import org.mybatis.dynamic.sql.util.Messages;
 
 public class InsertRenderingUtilities {
     private InsertRenderingUtilities() {}
@@ -32,5 +35,11 @@ public class InsertRenderingUtilities {
 
     public static String calculateInsertStatementStart(SqlTable table) {
         return "insert into " + table.tableName(); //$NON-NLS-1$
+    }
+
+    public static String getMappedPropertyName(SqlColumn<?> column) {
+        return column.javaProperty().orElseThrow(() ->
+                new InvalidSqlException(Messages
+                        .getString("ERROR.50", column.name()))); //$NON-NLS-1$
     }
 }

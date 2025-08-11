@@ -21,6 +21,7 @@ import org.mybatis.dynamic.sql.insert.MultiRowInsertDSL
 import org.mybatis.dynamic.sql.insert.MultiRowInsertModel
 import org.mybatis.dynamic.sql.util.AbstractColumnMapping
 import org.mybatis.dynamic.sql.util.Buildable
+import org.mybatis.dynamic.sql.util.MappedColumnMapping
 
 typealias KotlinMultiRowInsertCompleter<T> = KotlinMultiRowInsertBuilder<T>.() -> Unit
 
@@ -35,6 +36,10 @@ class KotlinMultiRowInsertBuilder<T : Any> (private val rows: Collection<T>): Bu
 
     fun <C : Any> map(column: SqlColumn<C>) = MultiRowInsertColumnMapCompleter(column) {
         columnMappings.add(it)
+    }
+
+    fun <C : Any> withMappedColumn(column: SqlColumn<C>) {
+        columnMappings.add(MappedColumnMapping.of(column))
     }
 
     override fun build(): MultiRowInsertModel<T> {

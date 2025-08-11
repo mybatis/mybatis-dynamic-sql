@@ -37,6 +37,7 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
     protected final ParameterTypeConverter<T, ?> parameterTypeConverter;
     protected final @Nullable String tableQualifier;
     protected final @Nullable Class<T> javaType;
+    protected final @Nullable String javaProperty;
 
     private SqlColumn(Builder<T> builder) {
         name = Objects.requireNonNull(builder.name);
@@ -49,6 +50,7 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
         parameterTypeConverter = Objects.requireNonNull(builder.parameterTypeConverter);
         tableQualifier = builder.tableQualifier;
         javaType = builder.javaType;
+        javaProperty = builder.javaProperty;
     }
 
     public String name() {
@@ -77,6 +79,10 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
     @Override
     public Optional<Class<T>> javaType() {
         return Optional.ofNullable(javaType);
+    }
+
+    public Optional<String> javaProperty() {
+        return Optional.ofNullable(javaProperty);
     }
 
     @Override
@@ -164,6 +170,11 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
         return b.withJavaType(javaType).build();
     }
 
+    public <S> SqlColumn<S> withJavaProperty(String javaProperty) {
+        Builder<S> b = copy();
+        return b.withJavaProperty(javaProperty).build();
+    }
+
     /**
      * This method helps us tell a bit of fiction to the Java compiler. Java, for better or worse,
      * does not carry generic type information through chained methods. We want to enable method
@@ -185,7 +196,8 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
                 .withRenderingStrategy(this.renderingStrategy)
                 .withParameterTypeConverter((ParameterTypeConverter<S, ?>) this.parameterTypeConverter)
                 .withTableQualifier(this.tableQualifier)
-                .withJavaType((Class<S>) this.javaType);
+                .withJavaType((Class<S>) this.javaType)
+                .withJavaProperty(this.javaProperty);
     }
 
     public static <T> SqlColumn<T> of(String name, SqlTable table) {
@@ -212,6 +224,7 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
         protected ParameterTypeConverter<T, ?> parameterTypeConverter = v -> v;
         protected @Nullable String tableQualifier;
         protected @Nullable Class<T> javaType;
+        protected @Nullable String javaProperty;
 
         public Builder<T> withName(String name) {
             this.name = name;
@@ -260,6 +273,11 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
 
         public Builder<T> withJavaType(@Nullable Class<T> javaType) {
             this.javaType = javaType;
+            return this;
+        }
+
+        public Builder<T> withJavaProperty(@Nullable String javaProperty) {
+            this.javaProperty = javaProperty;
             return this;
         }
 

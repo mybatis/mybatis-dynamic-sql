@@ -52,4 +52,8 @@ public interface ColumnMappingVisitor<R> {
     R visit(ColumnToColumnMapping mapping);
 
     R visit(RowMapping mapping);
+
+    R visit(MappedColumnMapping mapping);
+
+    R visit(MappedColumnWhenPresentMapping mapping);
 }

@@ -201,9 +201,8 @@ class PersonTemplateTest {
 
         List<PersonRecord> rows = template.selectList(selectStatement, personRowMapper);
 
-        assertThat(rows).hasSize(2);
-
-        assertThat(rows).satisfiesExactly(
+        assertThat(rows).hasSize(2)
+                .satisfiesExactly(
                 person1 -> assertThat(person1).isNotNull()
                         .extracting("lastName").isNotNull()
                         .extracting("name").isEqualTo("Flintstone"),

@@ -53,6 +53,7 @@ import org.mybatis.dynamic.sql.delete.DeleteDSLCompleter;
 import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider;
 import org.mybatis.dynamic.sql.exception.NonRenderingWhereClauseException;
 import org.mybatis.dynamic.sql.insert.render.GeneralInsertStatementProvider;
+import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.CountDSLCompleter;
 import org.mybatis.dynamic.sql.select.SelectDSLCompleter;
@@ -334,6 +335,27 @@ class PersonMapperTest {
             PersonRecord row = new PersonRecord(100, "Joe", new LastName("Jones"), new Date(), true, "Developer", 1);
 
             int rows = mapper.insert(row);
+            assertThat(rows).isEqualTo(1);
+        }
+    }
+
+    @Test
+    void testRawInsert() {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
+            PersonMapper mapper = session.getMapper(PersonMapper.class);
+            PersonRecord row = new PersonRecord(100, "Joe", new LastName("Jones"), new Date(), true, "Developer", 1);
+
+            InsertStatementProvider<PersonRecord> insertStatement = insert(row).into(person)
+                    .withMappedColumn(id)
+                    .withMappedColumn(firstName)
+                    .withMappedColumn(lastName)
+                    .withMappedColumn(birthDate)
+                    .withMappedColumn(employed)
+                    .withMappedColumn(occupation)
+                    .withMappedColumn(addressId)
+                    .build().render(RenderingStrategies.MYBATIS3);
+
+            int rows = mapper.insert(insertStatement);
             assertThat(rows).isEqualTo(1);
         }
     }

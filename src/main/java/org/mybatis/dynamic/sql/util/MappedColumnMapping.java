@@ -15,14 +15,20 @@
  */
 package org.mybatis.dynamic.sql.util;
 
-public abstract class MultiRowInsertMappingVisitor<R> extends InsertMappingVisitor<R> {
-    @Override
-    public final R visit(PropertyWhenPresentMapping mapping) {
-        throw new UnsupportedOperationException(Messages.getInternalErrorString(InternalError.INTERNAL_ERROR_12));
+import org.mybatis.dynamic.sql.SqlColumn;
+
+public class MappedColumnMapping extends AbstractColumnMapping {
+
+    protected MappedColumnMapping(SqlColumn<?> column) {
+        super(column);
     }
 
     @Override
-    public R visit(MappedColumnWhenPresentMapping mapping) {
-        throw new UnsupportedOperationException(Messages.getInternalErrorString(InternalError.INTERNAL_ERROR_18));
+    public <R> R accept(ColumnMappingVisitor<R> visitor) {
+        return visitor.visit(this);
+    }
+
+    public static MappedColumnMapping of(SqlColumn<?> column) {
+        return new MappedColumnMapping(column);
     }
 }

@@ -32,13 +32,21 @@ public final class PersonDynamicSqlSupport {
     public static final SqlColumn<Integer> addressId = person.addressId;
 
     public static final class Person extends SqlTable {
-        public final SqlColumn<Integer> id = column("id", JDBCType.INTEGER);
-        public final SqlColumn<String> firstName = column("first_name", JDBCType.VARCHAR);
-        public final SqlColumn<LastName> lastName = column("last_name", JDBCType.VARCHAR, "examples.simple.LastNameTypeHandler");
-        public final SqlColumn<Date> birthDate = column("birth_date", JDBCType.DATE);
-        public final SqlColumn<Boolean> employed = column("employed", JDBCType.VARCHAR, "examples.simple.YesNoTypeHandler");
-        public final SqlColumn<String> occupation = column("occupation", JDBCType.VARCHAR);
-        public final SqlColumn<Integer> addressId = column("address_id", JDBCType.INTEGER);
+        public final SqlColumn<Integer> id = column("id", JDBCType.INTEGER).withJavaProperty("id");
+        public final SqlColumn<String> firstName = column("first_name", JDBCType.VARCHAR)
+                .withJavaProperty("firstName");
+        public final SqlColumn<LastName> lastName =
+                column("last_name", JDBCType.VARCHAR, "examples.simple.LastNameTypeHandler")
+                        .withJavaProperty("lastName");
+        public final SqlColumn<Date> birthDate = column("birth_date", JDBCType.DATE)
+                .withJavaProperty("birthDate");
+        public final SqlColumn<Boolean> employed =
+                column("employed", JDBCType.VARCHAR, "examples.simple.YesNoTypeHandler")
+                        .withJavaProperty("employed");
+        public final SqlColumn<String> occupation = column("occupation", JDBCType.VARCHAR)
+                .withJavaProperty("occupation");
+        public final SqlColumn<Integer> addressId = column("address_id", JDBCType.INTEGER)
+                .withJavaProperty("addressId");
 
         public Person() {
             super("Person");

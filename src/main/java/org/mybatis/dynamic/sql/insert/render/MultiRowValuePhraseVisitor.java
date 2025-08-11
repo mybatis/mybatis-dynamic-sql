@@ -18,6 +18,7 @@ package org.mybatis.dynamic.sql.insert.render;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.util.ConstantMapping;
+import org.mybatis.dynamic.sql.util.MappedColumnMapping;
 import org.mybatis.dynamic.sql.util.MultiRowInsertMappingVisitor;
 import org.mybatis.dynamic.sql.util.NullMapping;
 import org.mybatis.dynamic.sql.util.PropertyMapping;
@@ -66,6 +67,16 @@ public class MultiRowValuePhraseVisitor extends MultiRowInsertMappingVisitor<Fie
     public FieldAndValueAndParameters visit(RowMapping mapping) {
         return FieldAndValueAndParameters.withFieldName(mapping.columnName())
                 .withValuePhrase(calculateJdbcPlaceholder(mapping.column()))
+                .build();
+    }
+
+    @Override
+    public FieldAndValueAndParameters visit(MappedColumnMapping mapping) {
+        return FieldAndValueAndParameters.withFieldName(mapping.columnName())
+                .withValuePhrase(calculateJdbcPlaceholder(
+                        mapping.column(),
+                        InsertRenderingUtilities.getMappedPropertyName(mapping.column()))
+                )
                 .build();
     }
 

@@ -44,6 +44,66 @@ Notice the `map` method.  It is used to map a database column to an attribute of
 5. `map(column).toPropertyWhenPresent(property, Supplier<?> valueSupplier)` will insert a value from the record into a column if the value is non-null.  The value of the property will be bound to the SQL statement as a prepared statement parameter.  This is used to generate a "selective" insert as defined in MyBatis Generator.
 6. `map(column).toRow()` will insert the record itself into a column. This is appropriate when the "record" is a simple class like Integer or String.
 
+### Mapped Columns
+Starting in version 2.0.0 there are two new methods:
+
+1. `withMappedColumn(SqlColumn)` that will map a database column to a Java property based on a property name that can
+    be configured in an `SQLColumn`.
+2. `withMappedColumnWhenPresent(SqlColumn, Supplier<T>)` that will map a database column to a Java property based on a
+   property name that can be configured in an `SQLColumn`. The insert statement will only contain the mapped column when
+   the Supplier returns a non-null value (this method is for single record inserts only).
+
+This will allow you to configure mappings in a single place (the `SqlColumn`) and reuse them in multiple insert
+statements. For example:
+
+```java
+public final class PersonDynamicSqlSupport {
+    public static final Person person = new Person();
+    public static final SqlColumn<Integer> id = person.id;
+    public static final SqlColumn<String> firstName = person.firstName;
+    public static final SqlColumn<LastName> lastName = person.lastName;
+
+    public static final class Person extends SqlTable {
+        public final SqlColumn<Integer> id = column("id", JDBCType.INTEGER).withJavaProperty("id");
+        public final SqlColumn<String> firstName = column("first_name", JDBCType.VARCHAR)
+                .withJavaProperty("firstName");
+        public final SqlColumn<LastName> lastName =
+                column("last_name", JDBCType.VARCHAR).withJavaProperty("lastName");
+
+        public Person() {
+            super("Person");
+        }
+    }
+}
+```
+
+In this support class, each `SqlColumn` has a configured Java property. This property can be accessed in record based
+inserts in the following way:
+
+```java
+    @Test
+    void testRawInsert() {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
+            PersonMapper mapper = session.getMapper(PersonMapper.class);
+            PersonRecord row = new PersonRecord(100, "Joe", "Jones");
+
+            InsertStatementProvider<PersonRecord> insertStatement = insert(row).into(person)
+                    .withMappedColumn(id)
+                    .withMappedColumn(firstName)
+                    .withMappedColumn(lastName)
+                    .build().render(RenderingStrategies.MYBATIS3);
+
+            int rows = mapper.insert(insertStatement);
+            assertThat(rows).isEqualTo(1);
+        }
+    }
+```
+
+In this test, the mapping between a column and the property of a record is calculated by reading the configured Java
+property for each column.
+
+These new methods are available for the record based insert statements (`insert`, `insertMultiple`, `insertBatch`).
+
 ### Annotated Mapper for Single Row Insert Statements
 The InsertStatementProvider object can be used as a parameter to a MyBatis mapper method directly.  If you
 are using an annotated mapper, the insert method should look like this (with @Options added for generated values if necessary):

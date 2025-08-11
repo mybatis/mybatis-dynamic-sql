@@ -40,4 +40,14 @@ public abstract class GeneralInsertMappingVisitor<R> implements ColumnMappingVis
     public final R visit(RowMapping mapping) {
         throw new UnsupportedOperationException(Messages.getInternalErrorString(InternalError.INTERNAL_ERROR_14));
     }
+
+    @Override
+    public R visit(MappedColumnMapping mapping) {
+        throw new UnsupportedOperationException(Messages.getInternalErrorString(InternalError.INTERNAL_ERROR_16));
+    }
+
+    @Override
+    public R visit(MappedColumnWhenPresentMapping mapping) {
+        throw new UnsupportedOperationException(Messages.getInternalErrorString(InternalError.INTERNAL_ERROR_17));
+    }
 }
