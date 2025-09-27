@@ -1,0 +1,11 @@
+nondexFilter=.*
+nondexMode=FULL
+nondexSeed=1016066
+nondexStart=0
+nondexEnd=9223372036854775807
+nondexPrintstack=false
+nondexDir=/home/nadim/mybatis-dynamic-sql/.nondex
+nondexJarDir=/home/nadim/mybatis-dynamic-sql/.nondex
+nondexExecid=PvP3qL0WwCsbZLJ4LXbEyCMKva4jdCfQj5xeE+qMgX4=
+nondexLogging=CONFIG
+test=
