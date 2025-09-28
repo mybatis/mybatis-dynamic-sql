@@ -22,6 +22,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collector;
+import java.util.LinkedHashMap;
+
 
 public class FragmentCollector {
     final List<String> fragments = new ArrayList<>();
