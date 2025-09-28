@@ -66,8 +66,13 @@ public class FragmentCollector {
     public Map<String, Object> parameters() {
     return fragments.stream()
             .map(FragmentAndParameters::parameters)
-            .collect(LinkedHashMap::new, LinkedHashMap::putAll, LinkedHashMap::putAll);
+            .collect(
+                LinkedHashMap::new,  // collector container
+                Map::putAll,         // accumulator
+                Map::putAll          // combiner
+            );
 }
+
 
 
     public boolean hasMultipleFragments() {
