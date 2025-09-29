@@ -23,7 +23,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collector;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashMap;
+
 
 
 public class FragmentCollector {
@@ -65,13 +65,14 @@ public class FragmentCollector {
 
     public Map<String, Object> parameters() {
     return fragments.stream()
-            .map(FragmentAndParameters::parameters)
+            .map(FragmentAndParameters::parameters)   
             .collect(
-                LinkedHashMap::new,  // collector container
-                Map::putAll,         // accumulator
-                Map::putAll          // combiner
+                LinkedHashMap::new,  
+                (map, fragmentParams) -> map.putAll(fragmentParams), 
+                Map::putAll          
             );
 }
+
 
 
 
