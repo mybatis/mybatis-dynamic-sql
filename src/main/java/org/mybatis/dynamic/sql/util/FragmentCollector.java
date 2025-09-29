@@ -13,22 +13,17 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.mybatis.dynamic.sql.util;
+
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collector;
-import java.util.LinkedHashMap;
-
-
 
 public class FragmentCollector {
-    final List<String> fragments = new ArrayList<>();
-    final Map<String, Object> parameters = new HashMap<>();
+    final List<FragmentAndParameters> fragments = new ArrayList<>();
 
     public FragmentCollector() {
         super();
@@ -39,22 +34,22 @@ public class FragmentCollector {
     }
 
     public void add(FragmentAndParameters fragmentAndParameters) {
-        fragments.add(fragmentAndParameters.fragment());
-        parameters.putAll(fragmentAndParameters.parameters());
+        fragments.add(fragmentAndParameters);
     }
 
     public FragmentCollector merge(FragmentCollector other) {
         fragments.addAll(other.fragments);
-        parameters.putAll(other.parameters);
         return this;
     }
 
     public Optional<String> firstFragment() {
-        return fragments.stream().findFirst();
+        return fragments.stream().map(FragmentAndParameters::fragment).findFirst();
     }
 
     public String collectFragments(Collector<CharSequence, ?, String> fragmentCollector) {
-        return fragments.stream().collect(fragmentCollector);
+        return fragments.stream()
+                .map(FragmentAndParameters::fragment)
+                .collect(fragmentCollector);
     }
 
     public FragmentAndParameters toFragmentAndParameters(Collector<CharSequence, ?, String> fragmentCollector) {
@@ -64,17 +59,14 @@ public class FragmentCollector {
     }
 
     public Map<String, Object> parameters() {
-    return fragments.stream()
-            .map(FragmentAndParameters::parameters)   
-            .collect(
-                LinkedHashMap::new,  
-                (map, fragmentParams) -> map.putAll(fragmentParams), 
-                Map::putAll          
-            );
-}
-
-
-
+        return fragments.stream()
+                .map(FragmentAndParameters::parameters) 
+                .collect(
+                        LinkedHashMap::new,
+                        Map::putAll,
+                        Map::putAll
+                );
+    }
 
     public boolean hasMultipleFragments() {
         return fragments.size() > 1;
@@ -97,3 +89,4 @@ public class FragmentCollector {
                 FragmentCollector::merge);
     }
 }
+
