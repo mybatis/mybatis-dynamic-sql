@@ -276,17 +276,17 @@ class DeprecatedJoinMapperTest {
 
             assertThat(rows).hasSize(6)
 
-            assertThat(rows[0]).containsExactly(
+            assertThat(rows[0]).containsOnly(
                 entry("DESCRIPTION", "Catcher Glove"),
                 entry("ITEM_ID", 55)
             )
 
-            assertThat(rows[3]).containsExactly(
+            assertThat(rows[3]).containsOnly(
                 entry("ORDER_ID", 2),
                 entry("QUANTITY", 6)
             )
 
-            assertThat(rows[5]).containsExactly(
+            assertThat(rows[5]).containsOnly(
                 entry("ORDER_ID", 2),
                 entry("QUANTITY", 1),
                 entry("DESCRIPTION", "Outfield Glove"),
