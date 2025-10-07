@@ -15,18 +15,20 @@
  */
 package examples.simple;
 
+import org.jspecify.annotations.Nullable;
+
 import java.util.Date;
 
 public class PersonWithAddress {
-    private Integer id;
-    private String firstName;
-    private LastName lastName;
-    private Date birthDate;
-    private Boolean employed;
-    private String occupation;
-    private AddressRecord address;
+    private @Nullable Integer id;
+    private @Nullable String firstName;
+    private @Nullable LastName lastName;
+    private @Nullable Date birthDate;
+    private @Nullable Boolean employed;
+    private @Nullable String occupation;
+    private @Nullable AddressRecord address;
 
-    public Integer getId() {
+    public @Nullable Integer getId() {
         return id;
     }
 
@@ -34,7 +36,7 @@ public class PersonWithAddress {
         this.id = id;
     }
 
-    public String getFirstName() {
+    public @Nullable String getFirstName() {
         return firstName;
     }
 
@@ -42,7 +44,7 @@ public class PersonWithAddress {
         this.firstName = firstName;
     }
 
-    public LastName getLastName() {
+    public @Nullable LastName getLastName() {
         return lastName;
     }
 
@@ -50,7 +52,7 @@ public class PersonWithAddress {
         this.lastName = lastName;
     }
 
-    public Date getBirthDate() {
+    public @Nullable Date getBirthDate() {
         return birthDate;
     }
 
@@ -58,7 +60,7 @@ public class PersonWithAddress {
         this.birthDate = birthDate;
     }
 
-    public String getOccupation() {
+    public @Nullable String getOccupation() {
         return occupation;
     }
 
@@ -66,7 +68,7 @@ public class PersonWithAddress {
         this.occupation = occupation;
     }
 
-    public Boolean getEmployed() {
+    public @Nullable Boolean getEmployed() {
         return employed;
     }
 
@@ -74,7 +76,7 @@ public class PersonWithAddress {
         this.employed = employed;
     }
 
-    public AddressRecord getAddress() {
+    public @Nullable AddressRecord getAddress() {
         return address;
     }
 

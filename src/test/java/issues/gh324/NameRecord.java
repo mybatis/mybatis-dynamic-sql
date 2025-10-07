@@ -15,13 +15,15 @@
  */
 package issues.gh324;
 
+import org.jspecify.annotations.Nullable;
+
 import java.io.Serializable;
 
 public class NameRecord implements Serializable {
-    private Integer id;
-    private String name;
+    private @Nullable Integer id;
+    private @Nullable String name;
 
-    public Integer getId() {
+    public @Nullable Integer getId() {
         return id;
     }
 
@@ -29,7 +31,7 @@ public class NameRecord implements Serializable {
         this.id = id;
     }
 
-    public String getName() {
+    public @Nullable String getName() {
         return name;
     }
 

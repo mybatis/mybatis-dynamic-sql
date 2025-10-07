@@ -15,11 +15,13 @@
  */
 package examples.array;
 
-public class NamesRecord {
-    private Integer id;
-    private String[] names;
+import org.jspecify.annotations.Nullable;
 
-    public Integer getId() {
+public class NamesRecord {
+    private @Nullable Integer id;
+    private @Nullable String[] names;
+
+    public @Nullable Integer getId() {
         return id;
     }
 
@@ -27,7 +29,7 @@ public class NamesRecord {
         this.id = id;
     }
 
-    public String[] getNames() {
+    public @Nullable String[] getNames() {
         return names;
     }
 
