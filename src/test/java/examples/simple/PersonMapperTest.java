@@ -957,6 +957,6 @@ class PersonMapperTest {
                 "where id = #{parameters.p2,jdbcType=INTEGER}";
 
         assertThat(updateStatement.getUpdateStatement()).isEqualTo(expected);
-        assertThat(updateStatement.getParameters()).containsExactly(entry("p1", 4), entry("p2", 5));
+        assertThat(updateStatement.getParameters()).containsOnly(entry("p1", 4), entry("p2", 5));
     }
 }

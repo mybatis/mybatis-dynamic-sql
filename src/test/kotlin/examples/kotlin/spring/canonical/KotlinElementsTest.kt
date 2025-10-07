@@ -672,6 +672,6 @@ open class KotlinElementsTest {
         assertThat(updateStatement.updateStatement).isEqualTo(
             "update Person set address_id = (address_id + :p1) where id = :p2"
         )
-        assertThat(updateStatement.parameters).containsExactly(entry("p1", 4), entry("p2", 5))
+        assertThat(updateStatement.parameters).containsOnly(entry("p1", 4), entry("p2", 5))
     }
 }

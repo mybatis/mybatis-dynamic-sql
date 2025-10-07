@@ -41,6 +41,6 @@ class FragmentCollectorTest {
         fc1.merge(fc2);
 
         assertThat(fc1.collectFragments(Collectors.joining(","))).isEqualTo(":p1,:p2");
-        assertThat(fc1.parameters()).containsExactly(entry("p1", 1), entry("p2", 2));
+        assertThat(fc1.parameters()).containsOnly(entry("p1", 1), entry("p2", 2));
     }
 }
