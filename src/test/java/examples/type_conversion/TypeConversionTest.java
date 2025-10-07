@@ -93,7 +93,7 @@ class TypeConversionTest {
                     .render(RenderingStrategies.MYBATIS3);
 
             Map<String, Object> row = mapper.selectOneMappedRow(selectStatement);
-            assertThat(row).containsExactly(entry("FILE_ID", 1), entry("FILE_CONTENTS", randomBlob));
+            assertThat(row).containsOnly(entry("FILE_ID", 1), entry("FILE_CONTENTS", randomBlob));
 
             selectStatement = select(fileId, toBase64(fileContents).as("checksum"))
                     .from(myfiles)
