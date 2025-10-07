@@ -21,7 +21,7 @@
   <parent>
     <groupId>org.mybatis</groupId>
     <artifactId>mybatis-parent</artifactId>
-    <version>50</version>
+    <version>51</version>
   </parent>
 
   <groupId>org.mybatis.dynamic-sql</groupId>
@@ -60,7 +60,7 @@
     <java.release.version>17</java.release.version>
     <java.test.version>17</java.test.version>
     <java.test.release.version>17</java.test.release.version>
-    <junit.jupiter.version>5.13.4</junit.jupiter.version>
+    <junit.jupiter.version>6.0.0</junit.jupiter.version>
     <spring.batch.version>5.2.3</spring.batch.version>
 
     <checkstyle.config>checkstyle-override.xml</checkstyle.config>
@@ -172,7 +172,7 @@
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
-      <version>1.5.18</version>
+      <version>1.5.19</version>
       <scope>test</scope>
     </dependency>
     <dependency>
