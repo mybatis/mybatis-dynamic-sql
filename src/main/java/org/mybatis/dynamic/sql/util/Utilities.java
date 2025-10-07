@@ -26,9 +26,8 @@ public interface Utilities {
         return l == null ? 0 : l;
     }
 
-    static <T> Collection<T> filterNulls(Collection<@Nullable T> values) {
+    static <T> Stream<T> filterNulls(Collection<@Nullable T> values) {
         // this method helps IntelliJ understand intended nullability
-        Stream<T> st = values.stream().filter(Objects::nonNull);
-        return st.toList();
+        return values.stream().filter(Objects::nonNull);
     }
 }

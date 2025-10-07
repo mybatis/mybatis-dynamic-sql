@@ -18,13 +18,13 @@ package org.mybatis.dynamic.sql.where.condition;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
 import org.jspecify.annotations.Nullable;
 import org.mybatis.dynamic.sql.AbstractListValueCondition;
 import org.mybatis.dynamic.sql.util.StringUtilities;
+import org.mybatis.dynamic.sql.util.Utilities;
 
 public class IsNotInCaseInsensitiveWhenPresent<T> extends AbstractListValueCondition<T>
         implements CaseInsensitiveRenderableCondition<T>, AbstractListValueCondition.Filterable<T>,
@@ -39,7 +39,7 @@ public class IsNotInCaseInsensitiveWhenPresent<T> extends AbstractListValueCondi
     }
 
     protected IsNotInCaseInsensitiveWhenPresent(Collection<T> values) {
-        super(values.stream().filter(Objects::nonNull).map(StringUtilities::upperCaseIfPossible).toList());
+        super(Utilities.filterNulls(values).map(StringUtilities::upperCaseIfPossible).toList());
     }
 
     @Override

@@ -36,7 +36,7 @@ public class IsNotInWhenPresent<T> extends AbstractListValueCondition<T>
     }
 
     protected IsNotInWhenPresent(Collection<@Nullable T> values) {
-        super(Utilities.filterNulls(values));
+        super(Utilities.filterNulls(values).toList());
     }
 
     @Override
