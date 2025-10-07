@@ -21,7 +21,6 @@ import java.util.Collections;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import org.jspecify.annotations.NonNull;
 import org.mybatis.dynamic.sql.AbstractListValueCondition;
 import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.util.StringUtilities;
@@ -54,12 +53,12 @@ public class IsInCaseInsensitive<T> extends AbstractListValueCondition<T>
     }
 
     @Override
-    public IsInCaseInsensitive<T> filter(Predicate<? super @NonNull T> predicate) {
+    public IsInCaseInsensitive<T> filter(Predicate<? super T> predicate) {
         return filterSupport(predicate, IsInCaseInsensitive::new, this, IsInCaseInsensitive::empty);
     }
 
     @Override
-    public <R> IsInCaseInsensitive<R> map(Function<? super @NonNull T, ? extends @NonNull R> mapper) {
+    public <R> IsInCaseInsensitive<R> map(Function<? super T, ? extends R> mapper) {
         return mapSupport(mapper, IsInCaseInsensitive::new, IsInCaseInsensitive::empty);
     }
 

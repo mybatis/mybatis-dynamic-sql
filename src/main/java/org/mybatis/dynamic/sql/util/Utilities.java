@@ -15,10 +15,20 @@
  */
 package org.mybatis.dynamic.sql.util;
 
+import java.util.Collection;
+import java.util.Objects;
+import java.util.stream.Stream;
+
 import org.jspecify.annotations.Nullable;
 
 public interface Utilities {
     static long safelyUnbox(@Nullable Long l) {
         return l == null ? 0 : l;
+    }
+
+    static <T> Collection<T> filterNulls(Collection<@Nullable T> values) {
+        // this method helps IntelliJ understand intended nullability
+        Stream<T> st = values.stream().filter(Objects::nonNull);
+        return st.toList();
     }
 }

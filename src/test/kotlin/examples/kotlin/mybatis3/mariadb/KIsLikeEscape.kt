@@ -65,6 +65,6 @@ private class EmptyIsLikeEscape : KIsLikeEscape<Any>(-1) {
         private val EMPTY: KIsLikeEscape<Any> = EmptyIsLikeEscape()
 
         @Suppress("UNCHECKED_CAST")
-        internal fun <T : Any> empty(): KIsLikeEscape<T> = EMPTY as KIsLikeEscape<T>
+        fun <T : Any> empty(): KIsLikeEscape<T> = EMPTY as KIsLikeEscape<T>
     }
 }

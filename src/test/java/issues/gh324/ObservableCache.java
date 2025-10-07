@@ -16,6 +16,7 @@
 package issues.gh324;
 
 import org.apache.ibatis.cache.impl.PerpetualCache;
+import org.jspecify.annotations.Nullable;
 
 public class ObservableCache extends PerpetualCache {
 
@@ -48,7 +49,7 @@ public class ObservableCache extends PerpetualCache {
     }
 
     @Override
-    public Object getObject(Object key) {
+    public @Nullable Object getObject(Object key) {
         Object answer = super.getObject(key);
 
         if (key.toString().contains("select id, name from NameTable where id = ?")) {

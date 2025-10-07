@@ -19,7 +19,6 @@ import java.util.NoSuchElementException;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import org.jspecify.annotations.NonNull;
 import org.mybatis.dynamic.sql.AbstractSingleValueCondition;
 
 public class IsEqualTo<T> extends AbstractSingleValueCondition<T>
@@ -57,12 +56,12 @@ public class IsEqualTo<T> extends AbstractSingleValueCondition<T>
     }
 
     @Override
-    public IsEqualTo<T> filter(Predicate<? super @NonNull T> predicate) {
+    public IsEqualTo<T> filter(Predicate<? super T> predicate) {
         return filterSupport(predicate, IsEqualTo::empty, this);
     }
 
     @Override
-    public <R> IsEqualTo<R> map(Function<? super @NonNull T, ? extends @NonNull R> mapper) {
+    public <R> IsEqualTo<R> map(Function<? super T, ? extends R> mapper) {
         return mapSupport(mapper, IsEqualTo::new, IsEqualTo::empty);
     }
 }

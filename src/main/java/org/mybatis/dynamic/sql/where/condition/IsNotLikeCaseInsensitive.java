@@ -19,7 +19,6 @@ import java.util.NoSuchElementException;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import org.jspecify.annotations.NonNull;
 import org.mybatis.dynamic.sql.AbstractSingleValueCondition;
 import org.mybatis.dynamic.sql.util.StringUtilities;
 
@@ -54,12 +53,12 @@ public class IsNotLikeCaseInsensitive<T> extends AbstractSingleValueCondition<T>
     }
 
     @Override
-    public IsNotLikeCaseInsensitive<T> filter(Predicate<? super @NonNull T> predicate) {
+    public IsNotLikeCaseInsensitive<T> filter(Predicate<? super T> predicate) {
         return filterSupport(predicate, IsNotLikeCaseInsensitive::empty, this);
     }
 
     @Override
-    public <R> IsNotLikeCaseInsensitive<R> map(Function<? super @NonNull T, ? extends @NonNull R> mapper) {
+    public <R> IsNotLikeCaseInsensitive<R> map(Function<? super T, ? extends R> mapper) {
         return mapSupport(mapper, IsNotLikeCaseInsensitive::new, IsNotLikeCaseInsensitive::empty);
     }
 

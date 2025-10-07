@@ -17,17 +17,18 @@ package examples.type_conversion;
 
 import java.sql.JDBCType;
 
+import org.jspecify.annotations.NonNull;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
 
 public final class MyFilesDynamicSqlSupport {
     public static final MyFiles myfiles = new MyFiles();
     public static final SqlColumn<Integer> fileId = myfiles.fileId;
-    public static final SqlColumn<byte[]> fileContents = myfiles.fileContents;
+    public static final SqlColumn<byte @NonNull []> fileContents = myfiles.fileContents;
 
     public static final class MyFiles extends SqlTable {
         public final SqlColumn<Integer> fileId = column("file_id", JDBCType.INTEGER);
-        public final SqlColumn<byte[]> fileContents = column("file_contents", JDBCType.LONGVARBINARY);
+        public final SqlColumn<byte @NonNull []> fileContents = column("file_contents", JDBCType.LONGVARBINARY);
 
         public MyFiles() {
             super("MyFiles");
