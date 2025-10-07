@@ -15,27 +15,7 @@
  */
 package issues.gh324;
 
-import org.jspecify.annotations.Nullable;
-
 import java.io.Serializable;
 
-public class NameRecord implements Serializable {
-    private @Nullable Integer id;
-    private @Nullable String name;
-
-    public @Nullable Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public @Nullable String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
+public record NameRecord (Integer id, String name) implements Serializable {
 }
