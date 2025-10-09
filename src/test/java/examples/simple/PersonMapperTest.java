@@ -626,13 +626,13 @@ class PersonMapperTest {
             assertThat(records.get(0).getLastName()).isEqualTo(new LastName("Flintstone"));
             assertThat(records.get(0).getOccupation()).isEqualTo("Brontosaurus Operator");
             assertThat(records.get(0).getBirthDate()).isNotNull();
-            assertThat(records.get(0).getAddress().getId()).isEqualTo(1);
-            assertThat(records.get(0).getAddress().getStreetAddress()).isEqualTo("123 Main Street");
-            assertThat(records.get(0).getAddress().getCity()).isEqualTo("Bedrock");
-            assertThat(records.get(0).getAddress().getState()).isEqualTo("IN");
-            assertThat(records.get(0).getAddress().getAddressType()).isEqualTo(AddressRecord.AddressType.HOME);
+            assertThat(records.get(0).getAddress()).isNotNull()
+                    .extracting("id", "streetAddress", "city", "state", "addressType")
+                    .containsExactly(1, "123 Main Street", "Bedrock", "IN", AddressRecord.AddressType.HOME);
 
-            assertThat(records.get(4).getAddress().getAddressType()).isEqualTo(AddressRecord.AddressType.BUSINESS);
+            assertThat(records.get(4).getAddress()).isNotNull()
+                    .extracting("addressType")
+                    .isEqualTo(AddressRecord.AddressType.BUSINESS);
         }
     }
 
@@ -649,10 +649,9 @@ class PersonMapperTest {
             assertThat(records.get(0).getLastName()).isEqualTo(new LastName("Flintstone"));
             assertThat(records.get(0).getOccupation()).isEqualTo("Brontosaurus Operator");
             assertThat(records.get(0).getBirthDate()).isNotNull();
-            assertThat(records.get(0).getAddress().getId()).isEqualTo(1);
-            assertThat(records.get(0).getAddress().getStreetAddress()).isEqualTo("123 Main Street");
-            assertThat(records.get(0).getAddress().getCity()).isEqualTo("Bedrock");
-            assertThat(records.get(0).getAddress().getState()).isEqualTo("IN");
+            assertThat(records.get(0).getAddress()).isNotNull()
+                    .extracting("id", "streetAddress", "city", "state", "addressType")
+                    .containsExactly(1, "123 Main Street", "Bedrock", "IN", AddressRecord.AddressType.HOME);
         }
     }
 
@@ -669,10 +668,9 @@ class PersonMapperTest {
                 assertThat(r.getLastName()).isEqualTo(new LastName("Flintstone"));
                 assertThat(r.getOccupation()).isEqualTo("Brontosaurus Operator");
                 assertThat(r.getBirthDate()).isNotNull();
-                assertThat(r.getAddress().getId()).isEqualTo(1);
-                assertThat(r.getAddress().getStreetAddress()).isEqualTo("123 Main Street");
-                assertThat(r.getAddress().getCity()).isEqualTo("Bedrock");
-                assertThat(r.getAddress().getState()).isEqualTo("IN");
+                assertThat(r.getAddress()).isNotNull()
+                        .extracting("id", "streetAddress", "city", "state", "addressType")
+                        .containsExactly(1, "123 Main Street", "Bedrock", "IN", AddressRecord.AddressType.HOME);
             });
         }
     }

@@ -37,25 +37,19 @@ public class SpringNameService {
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void insertRecord() {
-        NameRecord row = new NameRecord();
-        row.setId(1);
-        row.setName("Fred");
+        NameRecord row = new NameRecord(1, "Fred");
         mapper.insert(row);
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void updateRecordAndCommit() {
-        NameRecord row = new NameRecord();
-        row.setId(1);
-        row.setName("Barney");
+        NameRecord row = new NameRecord(1, "Barney");
         mapper.updateByPrimaryKey(row);
     }
 
     public void updateRecordAndRollback() {
         TransactionStatus txStatus = transactionManager.getTransaction(new DefaultTransactionDefinition());
-        NameRecord row = new NameRecord();
-        row.setId(1);
-        row.setName("Barney");
+        NameRecord row = new NameRecord(1, "Barney");
         mapper.updateByPrimaryKey(row);
         transactionManager.rollback(txStatus);
     }

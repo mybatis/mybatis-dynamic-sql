@@ -15,11 +15,13 @@
  */
 package examples.generated.always.mybatis;
 
+import org.jspecify.annotations.Nullable;
+
 public class GeneratedKey {
 
-    private Integer key;
+    private @Nullable Integer key;
 
-    public Integer getKey() {
+    public @Nullable Integer getKey() {
         return key;
     }
 

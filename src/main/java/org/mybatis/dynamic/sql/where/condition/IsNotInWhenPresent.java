@@ -18,13 +18,12 @@ package org.mybatis.dynamic.sql.where.condition;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import org.mybatis.dynamic.sql.AbstractListValueCondition;
+import org.mybatis.dynamic.sql.util.Utilities;
 
 public class IsNotInWhenPresent<T> extends AbstractListValueCondition<T>
         implements AbstractListValueCondition.Filterable<T>, AbstractListValueCondition.Mappable<T> {
@@ -36,8 +35,8 @@ public class IsNotInWhenPresent<T> extends AbstractListValueCondition<T>
         return t;
     }
 
-    protected IsNotInWhenPresent(Collection<T> values) {
-        super(values.stream().filter(Objects::nonNull).toList());
+    protected IsNotInWhenPresent(Collection<@Nullable T> values) {
+        super(Utilities.filterNulls(values).toList());
     }
 
     @Override
@@ -46,12 +45,12 @@ public class IsNotInWhenPresent<T> extends AbstractListValueCondition<T>
     }
 
     @Override
-    public IsNotInWhenPresent<T> filter(Predicate<? super @NonNull T> predicate) {
+    public IsNotInWhenPresent<T> filter(Predicate<? super T> predicate) {
         return filterSupport(predicate, IsNotInWhenPresent::new, this, IsNotInWhenPresent::empty);
     }
 
     @Override
-    public <R> IsNotInWhenPresent<R> map(Function<? super @NonNull T, ? extends @Nullable R> mapper) {
+    public <R> IsNotInWhenPresent<R> map(Function<? super T, ? extends @Nullable R> mapper) {
         return mapSupport(mapper, IsNotInWhenPresent::new, IsNotInWhenPresent::empty);
     }
 

@@ -20,10 +20,9 @@ import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import org.jspecify.annotations.NonNull;
 import org.mybatis.dynamic.sql.AbstractTwoValueCondition;
 
-public class IsBetween<T> extends AbstractTwoValueCondition<@NonNull T>
+public class IsBetween<T> extends AbstractTwoValueCondition<T>
         implements AbstractTwoValueCondition.Filterable<T>, AbstractTwoValueCondition.Mappable<T> {
     private static final IsBetween<?> EMPTY = new IsBetween<Object>(-1, -1) {
         @Override
@@ -63,23 +62,23 @@ public class IsBetween<T> extends AbstractTwoValueCondition<@NonNull T>
     }
 
     @Override
-    public IsBetween<T> filter(BiPredicate<? super @NonNull T, ? super @NonNull T> predicate) {
+    public IsBetween<T> filter(BiPredicate<? super T, ? super T> predicate) {
         return filterSupport(predicate, IsBetween::empty, this);
     }
 
     @Override
-    public IsBetween<T> filter(Predicate<? super @NonNull T> predicate) {
+    public IsBetween<T> filter(Predicate<? super T> predicate) {
         return filterSupport(predicate, IsBetween::empty, this);
     }
 
     @Override
-    public <R> IsBetween<R> map(Function<? super @NonNull T, ? extends @NonNull R> mapper1,
-                                Function<? super @NonNull T, ? extends @NonNull R> mapper2) {
+    public <R> IsBetween<R> map(Function<? super T, ? extends R> mapper1,
+                                Function<? super T, ? extends R> mapper2) {
         return mapSupport(mapper1, mapper2, IsBetween::new, IsBetween::empty);
     }
 
     @Override
-    public <R> IsBetween<R> map(Function<? super @NonNull T, ? extends @NonNull R> mapper) {
+    public <R> IsBetween<R> map(Function<? super T, ? extends R> mapper) {
         return map(mapper, mapper);
     }
 

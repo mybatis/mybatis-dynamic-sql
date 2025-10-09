@@ -23,7 +23,6 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.jspecify.annotations.NonNull;
 import org.mybatis.dynamic.sql.render.RenderedParameterInfo;
 import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
@@ -114,7 +113,7 @@ public abstract class AbstractListValueCondition<T> implements RenderableConditi
          * @return this condition if renderable and the value matches the predicate, otherwise a condition
          *     that will not render.
          */
-        AbstractListValueCondition<T> filter(Predicate<? super @NonNull T> predicate);
+        AbstractListValueCondition<T> filter(Predicate<? super T> predicate);
     }
 
     /**
@@ -139,6 +138,6 @@ public abstract class AbstractListValueCondition<T> implements RenderableConditi
          * @return a new condition with the result of applying the mapper to the value of this condition,
          *     if renderable, otherwise a condition that will not render.
          */
-        <R> AbstractListValueCondition<R> map(Function<? super @NonNull T, ? extends R> mapper);
+        <R> AbstractListValueCondition<R> map(Function<? super T, ? extends R> mapper);
     }
 }
