@@ -63,7 +63,10 @@ import org.mybatis.dynamic.sql.util.StringUtilities;
  *     </li>
  * </ol>
  *
- * <p>The test code for this library contains an example of a proper extension of this class.
+ * <p>The test code for this library contains an example of a proper extension of this class. In most cases, the code
+ * for the overriding methods can be simply copied from this class and then the return types can be changed to the
+ * subclass's covariant type (this pre-supposes that you create a {@code copyBuilder} method that returns a new builder
+ * populated with all current class attributes).
  *
  * @param <T> the Java type associated with the column
  */
@@ -139,7 +142,11 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
      */
     @Override
     public SqlColumn<T> descending() {
-        return copyBuilder().withDescendingPhrase(" DESC").build(); //$NON-NLS-1$
+        return setDescending(copyBuilder()).build();
+    }
+
+    protected <B extends AbstractBuilder<T, ?>> B setDescending(B builder) {
+        return cast(builder.withDescendingPhrase(" DESC")); //$NON-NLS-1$
     }
 
     /**
@@ -152,7 +159,11 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
      */
     @Override
     public SqlColumn<T> as(String alias) {
-        return copyBuilder().withAlias(alias).build();
+        return setAlias(copyBuilder(), alias).build();
+    }
+
+    protected <B extends AbstractBuilder<T, ?>> B setAlias(B builder, String alias) {
+        return cast(builder.withAlias(alias));
     }
 
     /**
@@ -163,7 +174,11 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
      * @return a new column that will be rendered with the specified table qualifier
      */
     public SqlColumn<T> qualifiedWith(String tableQualifier) {
-        return copyBuilder().withTableQualifier(tableQualifier).build();
+        return setTableQualifier(copyBuilder(), tableQualifier).build();
+    }
+
+    protected <B extends AbstractBuilder<T, ?>> B setTableQualifier(B builder, String tableQualifier) {
+        return cast(builder.withTableQualifier(tableQualifier));
     }
 
     /**
@@ -178,8 +193,11 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
      * @return a new column aliased with a camel case version of the column name
      */
     public SqlColumn<T> asCamelCase() {
-        return copyBuilder()
-                .withAlias("\"" + StringUtilities.toCamelCase(name) + "\"").build(); //$NON-NLS-1$ //$NON-NLS-2$
+        return setCamelCaseAlias(copyBuilder()).build();
+    }
+
+    protected <B extends AbstractBuilder<T, ?>> B setCamelCaseAlias(B builder) {
+        return cast(builder.withAlias("\"" + StringUtilities.toCamelCase(name) + "\"")); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     @Override
@@ -299,6 +317,11 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
     @SuppressWarnings("unchecked")
     protected <S extends SqlColumn<?>> S cast(SqlColumn<?> column) {
         return (S) column;
+    }
+
+    @SuppressWarnings("unchecked")
+    protected <B extends AbstractBuilder<?, ?>> B cast(AbstractBuilder<?, ?> builder) {
+        return (B) builder;
     }
 
     /**
