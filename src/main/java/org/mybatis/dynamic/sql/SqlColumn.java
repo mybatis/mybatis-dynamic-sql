@@ -79,7 +79,6 @@ import org.mybatis.dynamic.sql.util.StringUtilities;
  * method and cast the result properly. We provide a {@link SqlColumn#cast(SqlColumn)} method to aid with this
  * process. For example, overriding the {@code descending} method could look like this:
  *
- * <p>
  * <pre>
  * {@code
  * @Override
@@ -237,8 +236,8 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
      * and method chaining would not work. This is a workaround for Java's lack of reification.
      *
      * @param typeHandler the type handler to set
-     * @return a new column instance with the specified type handler
      * @param <S> the type of the new column (will be the same as T)
+     * @return a new column instance with the specified type handler
      */
     public <S> SqlColumn<S> withTypeHandler(String typeHandler) {
         return cast(copyBuilder().withTypeHandler(typeHandler).build());
@@ -253,8 +252,8 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
      * and method chaining would not work. This is a workaround for Java's lack of reification.
      *
      * @param renderingStrategy the rendering strategy to set
-     * @return a new column instance with the specified type handler
      * @param <S> the type of the new column (will be the same as T)
+     * @return a new column instance with the specified type handler
      */
     public <S> SqlColumn<S> withRenderingStrategy(RenderingStrategy renderingStrategy) {
         return cast(copyBuilder().withRenderingStrategy(renderingStrategy).build());
@@ -271,8 +270,8 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
      * and method chaining would not work. This is a workaround for Java's lack of reification.
      *
      * @param parameterTypeConverter the parameter type converter to set
-     * @return a new column instance with the specified type handler
      * @param <S> the type of the new column (will be the same as T)
+     * @return a new column instance with the specified type handler
      */
     @SuppressWarnings("unchecked")
     public <S> SqlColumn<S> withParameterTypeConverter(ParameterTypeConverter<S, ?> parameterTypeConverter) {
@@ -292,8 +291,8 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
      * and method chaining would not work. This is a workaround for Java's lack of reification.
      *
      * @param javaType the Java type to set
-     * @return a new column instance with the specified type handler
      * @param <S> the type of the new column (will be the same as T)
+     * @return a new column instance with the specified type handler
      */
     @SuppressWarnings("unchecked")
     public <S> SqlColumn<S> withJavaType(Class<S> javaType) {
@@ -312,8 +311,8 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
      * and method chaining would not work. This is a workaround for Java's lack of reification.
      *
      * @param javaProperty the Java property to set
-     * @return a new column instance with the specified type handler
      * @param <S> the type of the new column (will be the same as T)
+     * @return a new column instance with the specified type handler
      */
     public <S> SqlColumn<S> withJavaProperty(String javaProperty) {
         return cast(copyBuilder().withJavaProperty(javaProperty).build());
@@ -366,7 +365,7 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
                 .build();
     }
 
-    public static abstract class AbstractBuilder<T, C extends SqlColumn<T>, B extends AbstractBuilder<T, C, B>> {
+    public abstract static class AbstractBuilder<T, C extends SqlColumn<T>, B extends AbstractBuilder<T, C, B>> {
         protected @Nullable String name;
         protected @Nullable SqlTable table;
         protected @Nullable JDBCType jdbcType;

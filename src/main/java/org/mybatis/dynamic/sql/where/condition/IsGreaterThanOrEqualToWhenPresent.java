@@ -26,16 +26,16 @@ public class IsGreaterThanOrEqualToWhenPresent<T> extends AbstractSingleValueCon
         implements AbstractSingleValueCondition.Filterable<T>, AbstractSingleValueCondition.Mappable<T> {
     private static final IsGreaterThanOrEqualToWhenPresent<?> EMPTY =
             new IsGreaterThanOrEqualToWhenPresent<Object>(-1) {
-        @Override
-        public Object value() {
-            throw new NoSuchElementException("No value present"); //$NON-NLS-1$
-        }
+                @Override
+                public Object value() {
+                    throw new NoSuchElementException("No value present"); //$NON-NLS-1$
+                }
 
-        @Override
-        public boolean isEmpty() {
-            return true;
-        }
-    };
+                @Override
+                public boolean isEmpty() {
+                    return true;
+                }
+            };
 
     public static <T> IsGreaterThanOrEqualToWhenPresent<T> empty() {
         @SuppressWarnings("unchecked")

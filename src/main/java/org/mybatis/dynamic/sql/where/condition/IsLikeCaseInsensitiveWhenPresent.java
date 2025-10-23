@@ -28,16 +28,16 @@ public class IsLikeCaseInsensitiveWhenPresent<T> extends AbstractSingleValueCond
         AbstractSingleValueCondition.Mappable<T> {
     private static final IsLikeCaseInsensitiveWhenPresent<?> EMPTY =
             new IsLikeCaseInsensitiveWhenPresent<>("") { //$NON-NLS-1$
-        @Override
-        public String value() {
-            throw new NoSuchElementException("No value present"); //$NON-NLS-1$
-        }
+                @Override
+                public String value() {
+                    throw new NoSuchElementException("No value present"); //$NON-NLS-1$
+                }
 
-        @Override
-        public boolean isEmpty() {
-            return true;
-        }
-    };
+                @Override
+                public boolean isEmpty() {
+                    return true;
+                }
+            };
 
     public static <T> IsLikeCaseInsensitiveWhenPresent<T> empty() {
         @SuppressWarnings("unchecked")
