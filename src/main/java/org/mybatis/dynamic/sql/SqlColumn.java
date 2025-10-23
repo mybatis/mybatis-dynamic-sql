@@ -30,18 +30,30 @@ import org.mybatis.dynamic.sql.util.StringUtilities;
  *
  * <p>The class contains many attributes that are helpful for use in MyBatis and Spring runtime
  * environments, but the only required attributes are the name of the column and a reference to
- * the SqlTable the column is a part of.
+ * the {@link SqlTable} the column is a part of.
  *
  * <p>The class can be extended if you wish to associate additional attributes with a column for your
- * own purposes. Extending the class involves the following activities:
+ * own purposes. Extending the class is a bit more challenging than you might expect because you will need to
+ * handle the covariant types for many methods in {@code SqlColumn}. Additionally, many methods in {@code SqlColumn}
+ * create new instances of the class in keeping with the library's primary strategy of immutability. You will also
+ * need to ensure that these methods create instances of your extended class, rather than the base {@code SqlColumn}
+ * class. We have worked to keep this process as simple as possible.
+ *
+ * <p>Extending the class involves the following activities:
  * <ol>
  *     <li>Create a class that extends {@link SqlColumn}</li>
  *     <li>In your extended class, create a static builder class that extends {@link SqlColumn.AbstractBuilder}</li>
  *     <li>Add your desired attributes to the class and the builder</li>
+ *     <li>In your extended class, override the {@link SqlColumn#copyBuilder()} method and return a new instance of
+ *       your builder with all attributes set. You should call the
+ *       {@link SqlColumn#populateBaseBuilder(AbstractBuilder)} method
+ *       to set the attributes from {@code SqlColumn}, then populate your extended attributes.
+ *     </li>
  *     <li>You MUST override the following methods. These methods are used with regular operations in the library.
  *         If you do not override these methods, it is likely that your extended attributes will be lost during
- *         regular usage. For example, if a user calls the {@code as} method to apply an alias, the base
- *         {@code SqlColumn} class will create a new instance of {@code SqlColumn}, NOT your extended class.
+ *         regular usage. For example, if you do not override the {@code as} method and a user calls the method to
+ *         apply an alias, then the base {@code SqlColumn} class would create a new instance of {@code SqlColumn}, NOT
+ *         your extended class.
  *       <ul>
  *           <li>{@link SqlColumn#as(String)}</li>
  *           <li>{@link SqlColumn#asCamelCase()}</li>
@@ -63,10 +75,21 @@ import org.mybatis.dynamic.sql.util.StringUtilities;
  *     </li>
  * </ol>
  *
- * <p>The test code for this library contains an example of a proper extension of this class. In most cases, the code
- * for the overriding methods can be simply copied from this class and then the return types can be changed to the
- * subclass's covariant type (this pre-supposes that you create a {@code copyBuilder} method that returns a new builder
- * populated with all current class attributes).
+ * <p>For all overridden methods except {@code copyBuilder()}, the process is to call the superclass
+ * method and cast the result properly. We provide a {@link SqlColumn#cast(SqlColumn)} method to aid with this
+ * process. For example, overriding the {@code descending} method could look like this:
+ *
+ * <p>
+ * <pre>
+ * {@code
+ * @Override
+ * public MyExtendedColumn<T> descending() {
+ *     return cast(super.descending());
+ * }
+ * }
+ * </pre>
+ *
+ * <p>The test code for this library contains an example of a proper extension of this class.
  *
  * @param <T> the Java type associated with the column
  */
@@ -84,7 +107,7 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
     protected final @Nullable Class<T> javaType;
     protected final @Nullable String javaProperty;
 
-    protected SqlColumn(AbstractBuilder<T, ?> builder) {
+    protected SqlColumn(AbstractBuilder<T, ?, ?> builder) {
         name = Objects.requireNonNull(builder.name);
         table = Objects.requireNonNull(builder.table);
         jdbcType = builder.jdbcType;
@@ -142,11 +165,7 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
      */
     @Override
     public SqlColumn<T> descending() {
-        return setDescending(copyBuilder()).build();
-    }
-
-    protected <B extends AbstractBuilder<T, ?>> B setDescending(B builder) {
-        return cast(builder.withDescendingPhrase(" DESC")); //$NON-NLS-1$
+        return cast(copyBuilder().withDescendingPhrase(" DESC").build()); //$NON-NLS-1$
     }
 
     /**
@@ -159,11 +178,7 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
      */
     @Override
     public SqlColumn<T> as(String alias) {
-        return setAlias(copyBuilder(), alias).build();
-    }
-
-    protected <B extends AbstractBuilder<T, ?>> B setAlias(B builder, String alias) {
-        return cast(builder.withAlias(alias));
+        return cast(copyBuilder().withAlias(alias).build());
     }
 
     /**
@@ -174,11 +189,7 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
      * @return a new column that will be rendered with the specified table qualifier
      */
     public SqlColumn<T> qualifiedWith(String tableQualifier) {
-        return setTableQualifier(copyBuilder(), tableQualifier).build();
-    }
-
-    protected <B extends AbstractBuilder<T, ?>> B setTableQualifier(B builder, String tableQualifier) {
-        return cast(builder.withTableQualifier(tableQualifier));
+        return cast(copyBuilder().withTableQualifier(tableQualifier).build());
     }
 
     /**
@@ -193,11 +204,9 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
      * @return a new column aliased with a camel case version of the column name
      */
     public SqlColumn<T> asCamelCase() {
-        return setCamelCaseAlias(copyBuilder()).build();
-    }
-
-    protected <B extends AbstractBuilder<T, ?>> B setCamelCaseAlias(B builder) {
-        return cast(builder.withAlias("\"" + StringUtilities.toCamelCase(name) + "\"")); //$NON-NLS-1$ //$NON-NLS-2$
+        return cast(copyBuilder()
+                .withAlias("\"" + StringUtilities.toCamelCase(name) + "\"") //$NON-NLS-1$ //$NON-NLS-2$
+                .build());
     }
 
     @Override
@@ -310,18 +319,13 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
         return cast(copyBuilder().withJavaProperty(javaProperty).build());
     }
 
-    private Builder<T> copyBuilder() {
+    protected AbstractBuilder<T, ?, ?> copyBuilder() {
         return populateBaseBuilder(new Builder<>());
     }
 
     @SuppressWarnings("unchecked")
     protected <S extends SqlColumn<?>> S cast(SqlColumn<?> column) {
         return (S) column;
-    }
-
-    @SuppressWarnings("unchecked")
-    protected <B extends AbstractBuilder<?, ?>> B cast(AbstractBuilder<?, ?> builder) {
-        return (B) builder;
     }
 
     /**
@@ -334,7 +338,7 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
      * @return the populated builder
      */
     @SuppressWarnings("unchecked")
-    protected <B extends AbstractBuilder<T, ?>> B populateBaseBuilder(B builder) {
+    protected <B extends AbstractBuilder<T, ?, ?>> B populateBaseBuilder(B builder) {
         return (B) builder
                 .withName(this.name)
                 .withTable(this.table)
@@ -362,7 +366,7 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
                 .build();
     }
 
-    public static abstract class AbstractBuilder<T, B extends AbstractBuilder<T, B>> {
+    public static abstract class AbstractBuilder<T, C extends SqlColumn<T>, B extends AbstractBuilder<T, C, B>> {
         protected @Nullable String name;
         protected @Nullable SqlTable table;
         protected @Nullable JDBCType jdbcType;
@@ -431,9 +435,12 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
         }
 
         protected abstract B getThis();
+
+        public abstract C build();
     }
 
-    public static class Builder<T> extends AbstractBuilder<T, Builder<T>> {
+    public static class Builder<T> extends AbstractBuilder<T, SqlColumn<T>, Builder<T>> {
+        @Override
         public SqlColumn<T> build() {
             return new SqlColumn<>(this);
         }

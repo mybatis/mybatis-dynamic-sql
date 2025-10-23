@@ -33,56 +33,55 @@ public class PrimaryKeyColumn<T> extends SqlColumn<T> {
 
     @Override
     public PrimaryKeyColumn<T> descending() {
-        return setDescending(copyBuilder()).build();
+        return cast(super.descending());
     }
 
     @Override
     public PrimaryKeyColumn<T> as(String alias) {
-        return setAlias(copyBuilder(), alias).build();
+        return cast(super.as(alias));
     }
 
     @Override
     public PrimaryKeyColumn<T> qualifiedWith(String tableQualifier) {
-        return setTableQualifier(copyBuilder(), tableQualifier).build();
+        return cast(super.qualifiedWith(tableQualifier));
     }
 
     @Override
     public PrimaryKeyColumn<T> asCamelCase() {
-        return setCamelCaseAlias(copyBuilder()).build();
+        return cast(super.asCamelCase());
     }
 
     @Override
     public <S> PrimaryKeyColumn<S> withTypeHandler(String typeHandler) {
-        return cast(copyBuilder().withTypeHandler(typeHandler).build());
+        return cast(super.withTypeHandler(typeHandler));
     }
 
     @Override
     public <S> PrimaryKeyColumn<S> withRenderingStrategy(RenderingStrategy renderingStrategy) {
-        return cast(copyBuilder().withRenderingStrategy(renderingStrategy).build());
+        return cast(super.withRenderingStrategy(renderingStrategy));
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public <S> PrimaryKeyColumn<S> withParameterTypeConverter(ParameterTypeConverter<S, ?> parameterTypeConverter) {
-        return cast(copyBuilder().withParameterTypeConverter((ParameterTypeConverter<T, ?>) parameterTypeConverter).build());
+        return cast(super.withParameterTypeConverter(parameterTypeConverter));
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public <S> PrimaryKeyColumn<S> withJavaType(Class<S> javaType) {
-        return cast(copyBuilder().withJavaType((Class<T>) javaType).build());
+        return cast(super.withJavaType(javaType));
     }
 
     @Override
     public <S> PrimaryKeyColumn<S> withJavaProperty(String javaProperty) {
-        return cast(copyBuilder().withJavaProperty(javaProperty).build());
+        return cast(super.withJavaProperty(javaProperty));
     }
 
-    private Builder<T> copyBuilder() {
+    @Override
+    protected Builder<T> copyBuilder() {
         return populateBaseBuilder(new Builder<>()).isPrimaryKeyColumn(isPrimaryKeyColumn);
     }
 
-    public static class Builder<T> extends AbstractBuilder<T, Builder<T>> {
+    public static class Builder<T> extends AbstractBuilder<T, PrimaryKeyColumn<T>, Builder<T>> {
         private boolean isPrimaryKeyColumn;
 
         public Builder<T> isPrimaryKeyColumn(boolean isPrimaryKeyColumn) {
@@ -90,6 +89,7 @@ public class PrimaryKeyColumn<T> extends SqlColumn<T> {
             return this;
         }
 
+        @Override
         public PrimaryKeyColumn<T> build() {
             return new PrimaryKeyColumn<>(this);
         }
