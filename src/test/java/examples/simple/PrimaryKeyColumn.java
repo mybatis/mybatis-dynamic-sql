@@ -19,6 +19,11 @@ import org.mybatis.dynamic.sql.ParameterTypeConverter;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 
+/**
+ * This class is an example of a properly extended {@link SqlColumn}.
+ *
+ * @param <T> the Java type associated with this column
+ */
 public class PrimaryKeyColumn<T> extends SqlColumn<T> {
     private final boolean isPrimaryKeyColumn;
 
