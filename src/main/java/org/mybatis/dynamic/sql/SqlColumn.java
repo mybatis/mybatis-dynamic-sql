@@ -25,6 +25,48 @@ import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 import org.mybatis.dynamic.sql.util.StringUtilities;
 
+/**
+ * This class represents the definition of a column in a table.
+ *
+ * <p>The class contains many attributes that are helpful for use in MyBatis and Spring runtime
+ * environments, but the only required attributes are the name of the column and a reference to
+ * the SqlTable the column is a part of.
+ *
+ * <p>The class can be extended if you wish to associate additional attributes with a column for your
+ * own purposes. Extending the class involves the following activities:
+ * <ol>
+ *     <li>Create a class that extends {@link SqlColumn}</li>
+ *     <li>In your extended class, create a static builder class that extends {@link SqlColumn.AbstractBuilder}</li>
+ *     <li>Add your desired attributes to the class and the builder</li>
+ *     <li>You MUST override the following methods. These methods are used with regular operations in the library.
+ *         If you do not override these methods, it is likely that your extended attributes will be lost during
+ *         regular usage. For example, if a user calls the {@code as} method to apply an alias, the base
+ *         {@code SqlColumn} class will create a new instance of {@code SqlColumn}, NOT your extended class.
+ *       <ul>
+ *           <li>{@link SqlColumn#as(String)}</li>
+ *           <li>{@link SqlColumn#asCamelCase()}</li>
+ *           <li>{@link SqlColumn#descending()}</li>
+ *           <li>{@link SqlColumn#qualifiedWith(String)}</li>
+ *       </ul>
+ *     </li>
+ *     <li>You SHOULD override the following methods. These methods can be used to add additional attributes to a
+ *         column by creating a new instance with a specified attribute set. These methods are used during the
+ *         construction of columns. If you do not override these methods, and a user calls them, then a new
+ *         {@code SqlColumn} will be created that does not contain your extended attributes.
+ *       <ul>
+ *           <li>{@link SqlColumn#withJavaProperty(String)}</li>
+ *           <li>{@link SqlColumn#withRenderingStrategy(RenderingStrategy)}</li>
+ *           <li>{@link SqlColumn#withTypeHandler(String)}</li>
+ *           <li>{@link SqlColumn#withJavaType(Class)}</li>
+ *           <li>{@link SqlColumn#withParameterTypeConverter(ParameterTypeConverter)}</li>
+ *       </ul>
+ *     </li>
+ * </ol>
+ *
+ * <p>The test code for this library contains an example of a proper extension of this class.
+ *
+ * @param <T> the Java type associated with the column
+ */
 public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
 
     protected final String name;
@@ -90,11 +132,24 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
         return value == null ? null : parameterTypeConverter.convert(value);
     }
 
+    /**
+     * Create a new column instance that will render as descending when used in an order by phrase.
+     *
+     * @return a new column instance that will render as descending when used in an order by phrase
+     */
     @Override
     public SqlColumn<T> descending() {
         return copyBuilder().withDescendingPhrase(" DESC").build(); //$NON-NLS-1$
     }
 
+    /**
+     * Create a new column instance with the specified alias that will render as "as alias" in a column list.
+     *
+     * @param alias
+     *            the column alias to set
+     *
+     * @return a new column instance with the specified alias
+     */
     @Override
     public SqlColumn<T> as(String alias) {
         return copyBuilder().withAlias(alias).build();
@@ -112,11 +167,11 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
     }
 
     /**
-     * Set an alias with a camel cased string based on the column name. This can be useful for queries using
+     * Set an alias with a camel-cased string based on the column name. This can be useful for queries using
      * the {@link org.mybatis.dynamic.sql.util.mybatis3.CommonSelectMapper} where the columns are placed into
      * a map based on the column name returned from the database.
      *
-     * <p>A camel case string is mixed case, and most databases do not support unquoted mixed case strings
+     * <p>A camel case string is a mixed case string, and most databases do not support unquoted mixed case strings
      * as identifiers. Therefore, the generated alias will be surrounded by double quotes thereby making it a
      * quoted identifier. Most databases will respect quoted mixed case identifiers.
      *
@@ -146,24 +201,93 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
         return Optional.ofNullable(renderingStrategy);
     }
 
+    /**
+     * Create a new column instance with the specified type handler.
+     *
+     * <p>This method uses a different type (S). This allows it to be chained with the other
+     * with* methods. Using new types forces the compiler to delay type inference until the end of a call chain.
+     * Without this different type (for example, if we used T), the compiler would erase the type after the call
+     * and method chaining would not work. This is a workaround for Java's lack of reification.
+     *
+     * @param typeHandler the type handler to set
+     * @return a new column instance with the specified type handler
+     * @param <S> the type of the new column (will be the same as T)
+     */
     public <S> SqlColumn<S> withTypeHandler(String typeHandler) {
         return cast(copyBuilder().withTypeHandler(typeHandler).build());
     }
 
+    /**
+     * Create a new column instance with the specified rendering strategy.
+     *
+     * <p>This method uses a different type (S). This allows it to be chained with the other
+     * with* methods. Using new types forces the compiler to delay type inference until the end of a call chain.
+     * Without this different type (for example, if we used T), the compiler would erase the type after the call
+     * and method chaining would not work. This is a workaround for Java's lack of reification.
+     *
+     * @param renderingStrategy the rendering strategy to set
+     * @return a new column instance with the specified type handler
+     * @param <S> the type of the new column (will be the same as T)
+     */
     public <S> SqlColumn<S> withRenderingStrategy(RenderingStrategy renderingStrategy) {
         return cast(copyBuilder().withRenderingStrategy(renderingStrategy).build());
     }
 
+    /**
+     * Create a new column instance with the specified parameter type converter.
+     *
+     * <p>Parameter type converters are useful with Spring JDBC. Typically, they are not needed for MyBatis.
+     *
+     * <p>This method uses a different type (S). This allows it to be chained with the other
+     * with* methods. Using new types forces the compiler to delay type inference until the end of a call chain.
+     * Without this different type (for example, if we used T), the compiler would erase the type after the call
+     * and method chaining would not work. This is a workaround for Java's lack of reification.
+     *
+     * @param parameterTypeConverter the parameter type converter to set
+     * @return a new column instance with the specified type handler
+     * @param <S> the type of the new column (will be the same as T)
+     */
     @SuppressWarnings("unchecked")
     public <S> SqlColumn<S> withParameterTypeConverter(ParameterTypeConverter<S, ?> parameterTypeConverter) {
-        return cast(copyBuilder().withParameterTypeConverter((ParameterTypeConverter<T, ?>) parameterTypeConverter).build());
+        return cast(copyBuilder().withParameterTypeConverter((ParameterTypeConverter<T, ?>) parameterTypeConverter)
+                .build());
     }
 
+    /**
+     * Create a new column instance with the specified Java type.
+     *
+     * <p>Specifying a Java type will force rendering of the Java type for MyBatis parameters. This can be useful
+     * with some MyBatis type handlers.
+     *
+     * <p>This method uses a different type (S). This allows it to be chained with the other
+     * with* methods. Using new types forces the compiler to delay type inference until the end of a call chain.
+     * Without this different type (for example, if we used T), the compiler would erase the type after the call
+     * and method chaining would not work. This is a workaround for Java's lack of reification.
+     *
+     * @param javaType the Java type to set
+     * @return a new column instance with the specified type handler
+     * @param <S> the type of the new column (will be the same as T)
+     */
     @SuppressWarnings("unchecked")
     public <S> SqlColumn<S> withJavaType(Class<S> javaType) {
         return cast(copyBuilder().withJavaType((Class<T>) javaType).build());
     }
 
+    /**
+     * Create a new column instance with the specified Java property.
+     *
+     * <p>Specifying a Java property in the column will allow usage of the column as a "mapped column" in record-based
+     * insert statements.
+     *
+     * <p>This method uses a different type (S). This allows it to be chained with the other
+     * with* methods. Using new types forces the compiler to delay type inference until the end of a call chain.
+     * Without this different type (for example, if we used T), the compiler would erase the type after the call
+     * and method chaining would not work. This is a workaround for Java's lack of reification.
+     *
+     * @param javaProperty the Java property to set
+     * @return a new column instance with the specified type handler
+     * @param <S> the type of the new column (will be the same as T)
+     */
     public <S> SqlColumn<S> withJavaProperty(String javaProperty) {
         return cast(copyBuilder().withJavaProperty(javaProperty).build());
     }
@@ -178,10 +302,10 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
     }
 
     /**
-     * This method helps us tell a bit of fiction to the Java compiler. Java, for better or worse,
-     * does not carry generic type information through chained methods. We want to enable method
-     * chaining in the "with" methods. With this bit of fiction, we force the compiler to delay type
-     * inference to the last method in the chain.
+     * This method will add all current attributes to the specified builder. It is useful when creating
+     * new class instances that only change one attribute - we set all current attributes, then
+     * change the one attribute. This utility can be used with the with* methods and other methods that
+     * create new instances.
      *
      * @param <B> the concrete builder type
      * @return the populated builder
