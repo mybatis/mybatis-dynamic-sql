@@ -25,7 +25,7 @@ import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 import org.mybatis.dynamic.sql.util.StringUtilities;
 
-public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
+public class SqlColumn<T> implements BindableColumn<T>, SortSpecification, SqlColumnBuilders {
 
     protected final String name;
     protected final SqlTable table;
@@ -39,7 +39,7 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
     protected final @Nullable Class<T> javaType;
     protected final @Nullable String javaProperty;
 
-    private SqlColumn(Builder<T> builder) {
+    protected SqlColumn(AbstractBuilder<T, ?> builder) {
         name = Objects.requireNonNull(builder.name);
         table = Objects.requireNonNull(builder.table);
         jdbcType = builder.jdbcType;
@@ -91,15 +91,13 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
     }
 
     @Override
-    public SortSpecification descending() {
-        Builder<T> b = copy();
-        return b.withDescendingPhrase(" DESC").build(); //$NON-NLS-1$
+    public SqlColumn<T> descending() {
+        return copyBuilder().withDescendingPhrase(" DESC").build(); //$NON-NLS-1$
     }
 
     @Override
     public SqlColumn<T> as(String alias) {
-        Builder<T> b = copy();
-        return b.withAlias(alias).build();
+        return copyBuilder().withAlias(alias).build();
     }
 
     /**
@@ -110,9 +108,7 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
      * @return a new column that will be rendered with the specified table qualifier
      */
     public SqlColumn<T> qualifiedWith(String tableQualifier) {
-        Builder<T> b = copy();
-        b.withTableQualifier(tableQualifier);
-        return b.build();
+        return copyBuilder().withTableQualifier(tableQualifier).build();
     }
 
     /**
@@ -127,8 +123,8 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
      * @return a new column aliased with a camel case version of the column name
      */
     public SqlColumn<T> asCamelCase() {
-        Builder<T> b = copy();
-        return b.withAlias("\"" + StringUtilities.toCamelCase(name) + "\"").build(); //$NON-NLS-1$ //$NON-NLS-2$
+        return copyBuilder()
+                .withAlias("\"" + StringUtilities.toCamelCase(name) + "\"").build(); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     @Override
@@ -150,29 +146,40 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
         return Optional.ofNullable(renderingStrategy);
     }
 
+    @Override
     public <S> SqlColumn<S> withTypeHandler(String typeHandler) {
-        Builder<S> b = copy();
-        return b.withTypeHandler(typeHandler).build();
+        return cast(copyBuilder().withTypeHandler(typeHandler).build());
     }
 
+    @Override
     public <S> SqlColumn<S> withRenderingStrategy(RenderingStrategy renderingStrategy) {
-        Builder<S> b = copy();
-        return b.withRenderingStrategy(renderingStrategy).build();
+        return cast(copyBuilder().withRenderingStrategy(renderingStrategy).build());
     }
 
+    @Override
+    @SuppressWarnings("unchecked")
     public <S> SqlColumn<S> withParameterTypeConverter(ParameterTypeConverter<S, ?> parameterTypeConverter) {
-        Builder<S> b = copy();
-        return b.withParameterTypeConverter(parameterTypeConverter).build();
+        return cast(copyBuilder().withParameterTypeConverter((ParameterTypeConverter<T, ?>) parameterTypeConverter).build());
     }
 
+    @Override
+    @SuppressWarnings("unchecked")
     public <S> SqlColumn<S> withJavaType(Class<S> javaType) {
-        Builder<S> b = copy();
-        return b.withJavaType(javaType).build();
+        return cast(copyBuilder().withJavaType((Class<T>) javaType).build());
     }
 
+    @Override
     public <S> SqlColumn<S> withJavaProperty(String javaProperty) {
-        Builder<S> b = copy();
-        return b.withJavaProperty(javaProperty).build();
+        return cast(copyBuilder().withJavaProperty(javaProperty).build());
+    }
+
+    private Builder<T> copyBuilder() {
+        return populateBaseBuilder(new Builder<>());
+    }
+
+    @SuppressWarnings("unchecked")
+    protected <S extends SqlColumn<?>> S cast(SqlColumn<?> column) {
+        return (S) column;
     }
 
     /**
@@ -181,12 +188,12 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
      * chaining in the "with" methods. With this bit of fiction, we force the compiler to delay type
      * inference to the last method in the chain.
      *
-     * @param <S> the type. Will be the same as T for this usage.
-     * @return a new SqlColumn of type S (S is the same as T)
+     * @param <B> the concrete builder type
+     * @return the populated builder
      */
     @SuppressWarnings("unchecked")
-    private <S> Builder<S> copy() {
-        return new Builder<S>()
+    protected <B extends AbstractBuilder<T, ?>> B populateBaseBuilder(B builder) {
+        return (B) builder
                 .withName(this.name)
                 .withTable(this.table)
                 .withJdbcType(this.jdbcType)
@@ -194,9 +201,9 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
                 .withAlias(this.alias)
                 .withTypeHandler(this.typeHandler)
                 .withRenderingStrategy(this.renderingStrategy)
-                .withParameterTypeConverter((ParameterTypeConverter<S, ?>) this.parameterTypeConverter)
+                .withParameterTypeConverter(this.parameterTypeConverter)
                 .withTableQualifier(this.tableQualifier)
-                .withJavaType((Class<S>) this.javaType)
+                .withJavaType(this.javaType)
                 .withJavaProperty(this.javaProperty);
     }
 
@@ -213,7 +220,7 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
                 .build();
     }
 
-    public static class Builder<T> {
+    public static abstract class AbstractBuilder<T, B extends AbstractBuilder<T, B>> {
         protected @Nullable String name;
         protected @Nullable SqlTable table;
         protected @Nullable JDBCType jdbcType;
@@ -226,63 +233,72 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
         protected @Nullable Class<T> javaType;
         protected @Nullable String javaProperty;
 
-        public Builder<T> withName(String name) {
+        public B withName(String name) {
             this.name = name;
-            return this;
+            return getThis();
         }
 
-        public Builder<T> withTable(SqlTable table) {
+        public B withTable(SqlTable table) {
             this.table = table;
-            return this;
+            return getThis();
         }
 
-        public Builder<T> withJdbcType(@Nullable JDBCType jdbcType) {
+        public B withJdbcType(@Nullable JDBCType jdbcType) {
             this.jdbcType = jdbcType;
-            return this;
+            return getThis();
         }
 
-        public Builder<T> withDescendingPhrase(String descendingPhrase) {
+        public B withDescendingPhrase(String descendingPhrase) {
             this.descendingPhrase = descendingPhrase;
-            return this;
+            return getThis();
         }
 
-        public Builder<T> withAlias(@Nullable String alias) {
+        public B withAlias(@Nullable String alias) {
             this.alias = alias;
-            return this;
+            return getThis();
         }
 
-        public Builder<T> withTypeHandler(@Nullable String typeHandler) {
+        public B withTypeHandler(@Nullable String typeHandler) {
             this.typeHandler = typeHandler;
-            return this;
+            return getThis();
         }
 
-        public Builder<T> withRenderingStrategy(@Nullable RenderingStrategy renderingStrategy) {
+        public B withRenderingStrategy(@Nullable RenderingStrategy renderingStrategy) {
             this.renderingStrategy = renderingStrategy;
-            return this;
+            return getThis();
         }
 
-        public Builder<T> withParameterTypeConverter(ParameterTypeConverter<T, ?> parameterTypeConverter) {
+        public B withParameterTypeConverter(ParameterTypeConverter<T, ?> parameterTypeConverter) {
             this.parameterTypeConverter = parameterTypeConverter;
-            return this;
+            return getThis();
         }
 
-        private Builder<T> withTableQualifier(@Nullable String tableQualifier) {
+        public B withTableQualifier(@Nullable String tableQualifier) {
             this.tableQualifier = tableQualifier;
-            return this;
+            return getThis();
         }
 
-        public Builder<T> withJavaType(@Nullable Class<T> javaType) {
+        public B withJavaType(@Nullable Class<T> javaType) {
             this.javaType = javaType;
-            return this;
+            return getThis();
         }
 
-        public Builder<T> withJavaProperty(@Nullable String javaProperty) {
+        public B withJavaProperty(@Nullable String javaProperty) {
             this.javaProperty = javaProperty;
-            return this;
+            return getThis();
         }
 
+        protected abstract B getThis();
+    }
+
+    public static class Builder<T> extends AbstractBuilder<T, Builder<T>> {
         public SqlColumn<T> build() {
             return new SqlColumn<>(this);
+        }
+
+        @Override
+        protected Builder<T> getThis() {
+            return this;
         }
     }
 }
