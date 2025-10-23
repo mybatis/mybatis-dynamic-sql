@@ -25,7 +25,7 @@ import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 import org.mybatis.dynamic.sql.util.StringUtilities;
 
-public class SqlColumn<T> implements BindableColumn<T>, SortSpecification, SqlColumnBuilders {
+public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
 
     protected final String name;
     protected final SqlTable table;
@@ -146,29 +146,24 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification, SqlCo
         return Optional.ofNullable(renderingStrategy);
     }
 
-    @Override
     public <S> SqlColumn<S> withTypeHandler(String typeHandler) {
         return cast(copyBuilder().withTypeHandler(typeHandler).build());
     }
 
-    @Override
     public <S> SqlColumn<S> withRenderingStrategy(RenderingStrategy renderingStrategy) {
         return cast(copyBuilder().withRenderingStrategy(renderingStrategy).build());
     }
 
-    @Override
     @SuppressWarnings("unchecked")
     public <S> SqlColumn<S> withParameterTypeConverter(ParameterTypeConverter<S, ?> parameterTypeConverter) {
         return cast(copyBuilder().withParameterTypeConverter((ParameterTypeConverter<T, ?>) parameterTypeConverter).build());
     }
 
-    @Override
     @SuppressWarnings("unchecked")
     public <S> SqlColumn<S> withJavaType(Class<S> javaType) {
         return cast(copyBuilder().withJavaType((Class<T>) javaType).build());
     }
 
-    @Override
     public <S> SqlColumn<S> withJavaProperty(String javaProperty) {
         return cast(copyBuilder().withJavaProperty(javaProperty).build());
     }

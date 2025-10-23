@@ -23,7 +23,7 @@ import org.mybatis.dynamic.sql.SqlTable;
 
 public final class PersonDynamicSqlSupport {
     public static final Person person = new Person();
-    public static final SqlColumn<Integer> id = person.id;
+    public static final PrimaryKeyColumn<Integer> id = person.id;
     public static final SqlColumn<String> firstName = person.firstName;
     public static final SqlColumn<LastName> lastName = person.lastName;
     public static final SqlColumn<Date> birthDate = person.birthDate;
@@ -32,7 +32,13 @@ public final class PersonDynamicSqlSupport {
     public static final SqlColumn<Integer> addressId = person.addressId;
 
     public static final class Person extends SqlTable {
-        public final SqlColumn<Integer> id = column("id", JDBCType.INTEGER).withJavaProperty("id");
+        public final PrimaryKeyColumn<Integer> id = new PrimaryKeyColumn.Builder<Integer>()
+                .withTable(this)
+                .withName("id")
+                .withJdbcType(JDBCType.INTEGER)
+                .withJavaProperty("id")
+                .isPrimaryKeyColumn(true)
+                .build();
         public final SqlColumn<String> firstName = column("first_name", JDBCType.VARCHAR)
                 .withJavaProperty("firstName");
         public final SqlColumn<LastName> lastName =
