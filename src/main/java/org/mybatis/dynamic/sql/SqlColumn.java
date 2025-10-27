@@ -33,7 +33,7 @@ import org.mybatis.dynamic.sql.util.StringUtilities;
  * the {@link SqlTable} the column is a part of.
  *
  * <p>The class can be extended if you wish to associate additional attributes with a column for your
- * own purposes. Extending the class is a bit more challenging than you might expect because you will need to
+ * own purposes. Extending the class is a bit more challenging than you might expect because you may need to
  * handle the covariant types for many methods in {@code SqlColumn}. Additionally, many methods in {@code SqlColumn}
  * create new instances of the class in keeping with the library's primary strategy of immutability. You will also
  * need to ensure that these methods create instances of your extended class, rather than the base {@code SqlColumn}
@@ -44,16 +44,18 @@ import org.mybatis.dynamic.sql.util.StringUtilities;
  *     <li>Create a class that extends {@link SqlColumn}</li>
  *     <li>In your extended class, create a static builder class that extends {@link SqlColumn.AbstractBuilder}</li>
  *     <li>Add your desired attributes to the class and the builder</li>
- *     <li>In your extended class, override the {@link SqlColumn#copyBuilder()} method and return a new instance of
- *       your builder with all attributes set. You should call the
+ *     <li>You MUST override the {@link SqlColumn#copyBuilder()} method and return a new instance of
+ *       your builder with all attributes set. In the overridden method you should call the superclass
  *       {@link SqlColumn#populateBaseBuilder(AbstractBuilder)} method
- *       to set the attributes from {@code SqlColumn}, then populate your extended attributes.
+ *       to set the attributes from the base {@code SqlColumn}, then populate your extended attributes. During normal
+ *       usage, the library may create additional instances of your class. If you do not override the
+ *       {@link SqlColumn#copyBuilder()} method properly, then your extended attributes will be lost.
  *     </li>
- *     <li>You MUST override the following methods. These methods are used with regular operations in the library.
- *         If you do not override these methods, it is likely that your extended attributes will be lost during
- *         regular usage. For example, if you do not override the {@code as} method and a user calls the method to
- *         apply an alias, then the base {@code SqlColumn} class would create a new instance of {@code SqlColumn}, NOT
- *         your extended class.
+ *     <li>You MAY override the following methods. These methods are used with regular operations in the library and
+ *         create new instances of the class. However, these methods are not typically chained, so losing the specific
+ *         type may not be a problem. If you want to preserve the type, then you can override these methods
+ *         to specify the covariant return type. See below for usage of the {@link SqlColumn#cast(SqlColumn)} method
+ *         to make it easier to override these methods.
  *       <ul>
  *           <li>{@link SqlColumn#as(String)}</li>
  *           <li>{@link SqlColumn#asCamelCase()}</li>
@@ -63,8 +65,10 @@ import org.mybatis.dynamic.sql.util.StringUtilities;
  *     </li>
  *     <li>You SHOULD override the following methods. These methods can be used to add additional attributes to a
  *         column by creating a new instance with a specified attribute set. These methods are used during the
- *         construction of columns. If you do not override these methods, and a user calls them, then a new
- *         {@code SqlColumn} will be created that does not contain your extended attributes.
+ *         construction of columns. If you do not override these methods, and a user calls them, then the specific type
+ *         will be lost. If you want to preserve the type, then you can override these methods
+ *         to specify the covariant return type. See below for usage of the {@link SqlColumn#cast(SqlColumn)} method
+ *         to make it easier to override these methods.
  *       <ul>
  *           <li>{@link SqlColumn#withJavaProperty(String)}</li>
  *           <li>{@link SqlColumn#withRenderingStrategy(RenderingStrategy)}</li>
@@ -88,7 +92,7 @@ import org.mybatis.dynamic.sql.util.StringUtilities;
  * }
  * </pre>
  *
- * <p>The test code for this library contains an example of a proper extension of this class.
+ * <p>The test code for this library contains an example of a fully executed extension of this class.
  *
  * @param <T> the Java type associated with the column
  */
@@ -164,7 +168,7 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
      */
     @Override
     public SqlColumn<T> descending() {
-        return cast(copyBuilder().withDescendingPhrase(" DESC").build()); //$NON-NLS-1$
+        return copyBuilder().withDescendingPhrase(" DESC").build(); //$NON-NLS-1$
     }
 
     /**
@@ -177,7 +181,7 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
      */
     @Override
     public SqlColumn<T> as(String alias) {
-        return cast(copyBuilder().withAlias(alias).build());
+        return copyBuilder().withAlias(alias).build();
     }
 
     /**
@@ -188,7 +192,7 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
      * @return a new column that will be rendered with the specified table qualifier
      */
     public SqlColumn<T> qualifiedWith(String tableQualifier) {
-        return cast(copyBuilder().withTableQualifier(tableQualifier).build());
+        return copyBuilder().withTableQualifier(tableQualifier).build();
     }
 
     /**
@@ -203,9 +207,9 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
      * @return a new column aliased with a camel case version of the column name
      */
     public SqlColumn<T> asCamelCase() {
-        return cast(copyBuilder()
+        return copyBuilder()
                 .withAlias("\"" + StringUtilities.toCamelCase(name) + "\"") //$NON-NLS-1$ //$NON-NLS-2$
-                .build());
+                .build();
     }
 
     @Override
@@ -318,6 +322,14 @@ public class SqlColumn<T> implements BindableColumn<T>, SortSpecification {
         return cast(copyBuilder().withJavaProperty(javaProperty).build());
     }
 
+    /**
+     * Create a new Builder, then populate all attributes in the builder with current values.
+     *
+     * <p>This method is used to create copies of the class during normal operations (e.g. when calling the
+     * {@link SqlColumn#as(String)} method). Any subclass of {@code SqlColumn} MUST override this method.
+     *
+     * @return a new Builder instance with all current values populated
+     */
     protected AbstractBuilder<T, ?, ?> copyBuilder() {
         return populateBaseBuilder(new Builder<>());
     }
