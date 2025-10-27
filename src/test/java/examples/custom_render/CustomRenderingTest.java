@@ -50,17 +50,16 @@ import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
 import org.mybatis.dynamic.sql.util.mybatis3.CommonSelectMapper;
-import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
+import org.testcontainers.postgresql.PostgreSQLContainer;
 
 @Testcontainers
 class CustomRenderingTest {
 
-    @SuppressWarnings("resource")
     @Container
-    private static final PostgreSQLContainer<?> postgres =
-            new PostgreSQLContainer<>(TestContainersConfiguration.POSTGRES_LATEST)
+    private static final PostgreSQLContainer postgres =
+            new PostgreSQLContainer(TestContainersConfiguration.POSTGRES_LATEST)
                     .withInitScript("examples/custom_render/dbInit.sql");
 
     private SqlSessionFactory sqlSessionFactory;

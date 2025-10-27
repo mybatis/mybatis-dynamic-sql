@@ -35,9 +35,9 @@ import org.mybatis.dynamic.sql.util.kotlin.mybatis3.update
 import org.mybatis.dynamic.sql.util.mybatis3.CommonDeleteMapper
 import org.mybatis.dynamic.sql.util.mybatis3.CommonSelectMapper
 import org.mybatis.dynamic.sql.util.mybatis3.CommonUpdateMapper
-import org.testcontainers.containers.MariaDBContainer
 import org.testcontainers.junit.jupiter.Container
 import org.testcontainers.junit.jupiter.Testcontainers
+import org.testcontainers.mariadb.MariaDBContainer
 import java.util.Locale
 
 @Testcontainers
