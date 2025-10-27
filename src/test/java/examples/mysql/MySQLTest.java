@@ -38,17 +38,16 @@ import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.util.mybatis3.CommonSelectMapper;
-import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
+import org.testcontainers.mysql.MySQLContainer;
 
 @Testcontainers
 class MySQLTest {
 
-    @SuppressWarnings("resource")
     @Container
-    private static final MySQLContainer<?> mysql =
-            new MySQLContainer<>(TestContainersConfiguration.MYSQL_LATEST)
+    private static final MySQLContainer mysql =
+            new MySQLContainer(TestContainersConfiguration.MYSQL_LATEST)
                     .withInitScript("examples/mariadb/CreateDB.sql");
 
     private SqlSessionFactory sqlSessionFactory;

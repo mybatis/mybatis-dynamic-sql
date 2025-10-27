@@ -23,6 +23,5 @@ import org.testcontainers.utility.DockerImageName;
 public interface TestContainersConfiguration {
     DockerImageName POSTGRES_LATEST = DockerImageName.parse("postgres:18.0");
     DockerImageName MARIADB_LATEST = DockerImageName.parse("mariadb:12.0.2");
-    // Note - Can't go past MySQL:9.2.0 until this is released: https://github.com/testcontainers/testcontainers-java/pull/10185
-    DockerImageName MYSQL_LATEST = DockerImageName.parse("mysql:9.2.0");
+    DockerImageName MYSQL_LATEST = DockerImageName.parse("mysql:9.5.0");
 }

@@ -41,17 +41,16 @@ import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.SelectModel;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.util.mybatis3.CommonSelectMapper;
-import org.testcontainers.containers.MariaDBContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
+import org.testcontainers.mariadb.MariaDBContainer;
 
 @Testcontainers
 class Gh655Test {
 
-    @SuppressWarnings("resource")
     @Container
-    private static final MariaDBContainer<?> mariadb =
-            new MariaDBContainer<>(TestContainersConfiguration.MARIADB_LATEST)
+    private static final MariaDBContainer mariadb =
+            new MariaDBContainer(TestContainersConfiguration.MARIADB_LATEST)
                     .withInitScript("examples/mariadb/CreateDB.sql");
 
     private static SqlSessionFactory sqlSessionFactory;
