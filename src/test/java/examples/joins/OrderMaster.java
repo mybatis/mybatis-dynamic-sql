@@ -18,12 +18,14 @@ package examples.joins;
 import java.util.Date;
 import java.util.List;
 
-public class OrderMaster {
-    private Integer id;
-    private Date orderDate;
-    private List<OrderDetail> details;
+import org.jspecify.annotations.Nullable;
 
-    public Integer getId() {
+public class OrderMaster {
+    private @Nullable Integer id;
+    private @Nullable Date orderDate;
+    private @Nullable List<OrderDetail> details;
+
+    public @Nullable Integer getId() {
         return id;
     }
 
@@ -31,7 +33,7 @@ public class OrderMaster {
         this.id = id;
     }
 
-    public Date getOrderDate() {
+    public @Nullable Date getOrderDate() {
         return orderDate;
     }
 
@@ -39,7 +41,7 @@ public class OrderMaster {
         this.orderDate = orderDate;
     }
 
-    public List<OrderDetail> getDetails() {
+    public @Nullable List<OrderDetail> getDetails() {
         return details;
     }
 

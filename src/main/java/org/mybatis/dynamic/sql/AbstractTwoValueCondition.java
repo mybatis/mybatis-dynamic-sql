@@ -23,7 +23,6 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-import org.jspecify.annotations.NonNull;
 import org.mybatis.dynamic.sql.render.RenderedParameterInfo;
 import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
@@ -111,7 +110,7 @@ public abstract class AbstractTwoValueCondition<T> implements RenderableConditio
          * @return this condition if renderable and the values match the predicate, otherwise a condition
          *     that will not render.
          */
-        AbstractTwoValueCondition<T> filter(BiPredicate<? super @NonNull T, ? super @NonNull T> predicate);
+        AbstractTwoValueCondition<T> filter(BiPredicate<? super T, ? super T> predicate);
 
         /**
          * If renderable and both values match the predicate, returns this condition. Else returns a condition
@@ -122,7 +121,7 @@ public abstract class AbstractTwoValueCondition<T> implements RenderableConditio
          * @return this condition if renderable and the values match the predicate, otherwise a condition
          *     that will not render.
          */
-        AbstractTwoValueCondition<T> filter(Predicate<? super @NonNull T> predicate);
+        AbstractTwoValueCondition<T> filter(Predicate<? super T> predicate);
     }
 
     /**
@@ -148,8 +147,8 @@ public abstract class AbstractTwoValueCondition<T> implements RenderableConditio
          * @return a new condition with the result of applying the mappers to the values of this condition,
          *     if renderable, otherwise a condition that will not render.
          */
-        <R> AbstractTwoValueCondition<R> map(Function<? super @NonNull T, ? extends R> mapper1,
-                                             Function<? super @NonNull T, ? extends R> mapper2);
+        <R> AbstractTwoValueCondition<R> map(Function<? super T, ? extends R> mapper1,
+                                             Function<? super T, ? extends R> mapper2);
 
         /**
          * If renderable, apply the mapping to both values and return a new condition with the new values. Else return a
@@ -160,6 +159,6 @@ public abstract class AbstractTwoValueCondition<T> implements RenderableConditio
          * @return a new condition with the result of applying the mappers to the values of this condition,
          *     if renderable, otherwise a condition that will not render.
          */
-        <R> AbstractTwoValueCondition<R> map(Function<? super @NonNull T, ? extends R> mapper);
+        <R> AbstractTwoValueCondition<R> map(Function<? super T, ? extends R> mapper);
     }
 }

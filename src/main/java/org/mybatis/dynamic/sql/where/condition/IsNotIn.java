@@ -21,7 +21,6 @@ import java.util.Collections;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import org.jspecify.annotations.NonNull;
 import org.mybatis.dynamic.sql.AbstractListValueCondition;
 import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.util.Validator;
@@ -52,12 +51,12 @@ public class IsNotIn<T> extends AbstractListValueCondition<T>
     }
 
     @Override
-    public IsNotIn<T> filter(Predicate<? super @NonNull T> predicate) {
+    public IsNotIn<T> filter(Predicate<? super T> predicate) {
         return filterSupport(predicate, IsNotIn::new, this, IsNotIn::empty);
     }
 
     @Override
-    public <R> IsNotIn<R> map(Function<? super @NonNull T, ? extends @NonNull R> mapper) {
+    public <R> IsNotIn<R> map(Function<? super T, ? extends R> mapper) {
         return mapSupport(mapper, IsNotIn::new, IsNotIn::empty);
     }
 

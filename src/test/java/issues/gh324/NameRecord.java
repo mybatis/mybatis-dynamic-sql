@@ -17,23 +17,5 @@ package issues.gh324;
 
 import java.io.Serializable;
 
-public class NameRecord implements Serializable {
-    private Integer id;
-    private String name;
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
+public record NameRecord (Integer id, String name) implements Serializable {
 }

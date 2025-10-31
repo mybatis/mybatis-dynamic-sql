@@ -20,7 +20,6 @@ import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import org.mybatis.dynamic.sql.AbstractTwoValueCondition;
 
@@ -64,23 +63,23 @@ public class IsBetweenWhenPresent<T> extends AbstractTwoValueCondition<T>
     }
 
     @Override
-    public IsBetweenWhenPresent<T> filter(BiPredicate<? super @NonNull T, ? super @NonNull T> predicate) {
+    public IsBetweenWhenPresent<T> filter(BiPredicate<? super T, ? super T> predicate) {
         return filterSupport(predicate, IsBetweenWhenPresent::empty, this);
     }
 
     @Override
-    public IsBetweenWhenPresent<T> filter(Predicate<? super @NonNull T> predicate) {
+    public IsBetweenWhenPresent<T> filter(Predicate<? super T> predicate) {
         return filterSupport(predicate, IsBetweenWhenPresent::empty, this);
     }
 
     @Override
-    public <R> IsBetweenWhenPresent<R> map(Function<? super @NonNull T, ? extends @Nullable R> mapper1,
-                                           Function<? super @NonNull T, ? extends @Nullable R> mapper2) {
+    public <R> IsBetweenWhenPresent<R> map(Function<? super T, ? extends @Nullable R> mapper1,
+                                           Function<? super T, ? extends @Nullable R> mapper2) {
         return mapSupport(mapper1, mapper2, IsBetweenWhenPresent::of, IsBetweenWhenPresent::empty);
     }
 
     @Override
-    public <R> IsBetweenWhenPresent<R> map(Function<? super @NonNull T, ? extends @Nullable R> mapper) {
+    public <R> IsBetweenWhenPresent<R> map(Function<? super T, ? extends @Nullable R> mapper) {
         return map(mapper, mapper);
     }
 

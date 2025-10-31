@@ -25,6 +25,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 
+import java.util.Objects;
+
 @Configuration
 @MapperScan("examples.column.comparison")
 public class ColumnComparisonConfiguration {
@@ -41,6 +43,6 @@ public class ColumnComparisonConfiguration {
     public SqlSessionFactory sqlSessionFactory(DataSource dataSource) throws Exception {
         SqlSessionFactoryBean factoryBean = new SqlSessionFactoryBean();
         factoryBean.setDataSource(dataSource);
-        return factoryBean.getObject();
+        return Objects.requireNonNull(factoryBean.getObject());
     }
 }

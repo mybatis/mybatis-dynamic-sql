@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Supplier;
 
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import org.mybatis.dynamic.sql.delete.DeleteDSL;
 import org.mybatis.dynamic.sql.delete.DeleteModel;
@@ -782,11 +781,11 @@ public interface SqlBuilder {
     }
 
     @SafeVarargs
-    static <T> IsIn<T> isIn(@NonNull T... values) {
+    static <T> IsIn<T> isIn(T... values) {
         return IsIn.of(values);
     }
 
-    static <T> IsIn<T> isIn(Collection<@NonNull T> values) {
+    static <T> IsIn<T> isIn(Collection<T> values) {
         return IsIn.of(values);
     }
 
@@ -804,11 +803,11 @@ public interface SqlBuilder {
     }
 
     @SafeVarargs
-    static <T> IsNotIn<T> isNotIn(@NonNull T... values) {
+    static <T> IsNotIn<T> isNotIn(T... values) {
         return IsNotIn.of(values);
     }
 
-    static <T> IsNotIn<T> isNotIn(Collection<@NonNull T> values) {
+    static <T> IsNotIn<T> isNotIn(Collection<T> values) {
         return IsNotIn.of(values);
     }
 
@@ -829,7 +828,7 @@ public interface SqlBuilder {
         return IsBetween.isBetween(value1);
     }
 
-    static <T> IsBetween.Builder<T> isBetween(Supplier<@NonNull T> valueSupplier1) {
+    static <T> IsBetween.Builder<T> isBetween(Supplier<T> valueSupplier1) {
         return isBetween(valueSupplier1.get());
     }
 
@@ -845,7 +844,7 @@ public interface SqlBuilder {
         return IsNotBetween.isNotBetween(value1);
     }
 
-    static <T> IsNotBetween.Builder<T> isNotBetween(Supplier<@NonNull T> valueSupplier1) {
+    static <T> IsNotBetween.Builder<T> isNotBetween(Supplier<T> valueSupplier1) {
         return isNotBetween(valueSupplier1.get());
     }
 

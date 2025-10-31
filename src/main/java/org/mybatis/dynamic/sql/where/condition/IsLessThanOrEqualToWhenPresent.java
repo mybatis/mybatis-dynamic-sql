@@ -19,7 +19,6 @@ import java.util.NoSuchElementException;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import org.mybatis.dynamic.sql.AbstractSingleValueCondition;
 
@@ -61,12 +60,12 @@ public class IsLessThanOrEqualToWhenPresent<T> extends AbstractSingleValueCondit
     }
 
     @Override
-    public IsLessThanOrEqualToWhenPresent<T> filter(Predicate<? super @NonNull T> predicate) {
+    public IsLessThanOrEqualToWhenPresent<T> filter(Predicate<? super T> predicate) {
         return filterSupport(predicate, IsLessThanOrEqualToWhenPresent::empty, this);
     }
 
     @Override
-    public <R> IsLessThanOrEqualToWhenPresent<R> map(Function<? super @NonNull T, ? extends @Nullable R> mapper) {
+    public <R> IsLessThanOrEqualToWhenPresent<R> map(Function<? super T, ? extends @Nullable R> mapper) {
         return mapSupport(mapper, IsLessThanOrEqualToWhenPresent::of, IsLessThanOrEqualToWhenPresent::empty);
     }
 }

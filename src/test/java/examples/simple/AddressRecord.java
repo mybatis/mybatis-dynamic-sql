@@ -15,14 +15,16 @@
  */
 package examples.simple;
 
-public class AddressRecord {
-    private Integer id;
-    private String streetAddress;
-    private String city;
-    private String state;
-    private AddressType addressType;
+import org.jspecify.annotations.Nullable;
 
-    public Integer getId() {
+public class AddressRecord {
+    private @Nullable Integer id;
+    private @Nullable String streetAddress;
+    private @Nullable String city;
+    private @Nullable String state;
+    private @Nullable AddressType addressType;
+
+    public @Nullable Integer getId() {
         return id;
     }
 
@@ -30,7 +32,7 @@ public class AddressRecord {
         this.id = id;
     }
 
-    public String getStreetAddress() {
+    public @Nullable String getStreetAddress() {
         return streetAddress;
     }
 
@@ -38,7 +40,7 @@ public class AddressRecord {
         this.streetAddress = streetAddress;
     }
 
-    public String getCity() {
+    public @Nullable String getCity() {
         return city;
     }
 
@@ -46,7 +48,7 @@ public class AddressRecord {
         this.city = city;
     }
 
-    public String getState() {
+    public @Nullable String getState() {
         return state;
     }
 
@@ -54,7 +56,7 @@ public class AddressRecord {
         this.state = state;
     }
 
-    public AddressType getAddressType() {
+    public @Nullable AddressType getAddressType() {
         return addressType;
     }
 

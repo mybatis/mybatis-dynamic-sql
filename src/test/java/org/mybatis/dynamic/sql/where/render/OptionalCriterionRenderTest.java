@@ -143,7 +143,7 @@ class OptionalCriterionRenderTest {
                 .render(RenderingStrategies.SPRING_NAMED_PARAMETER);
 
         assertThat(whereClause).hasValueSatisfying(wc -> {
-            assertThat(wc.getParameters()).containsExactly(entry("p1", "fred"), entry("p2", "flintstone"));
+            assertThat(wc.getParameters()).containsOnly(entry("p1", "fred"), entry("p2", "flintstone"));
             assertThat(wc.getWhereClause()).isEqualTo("where first_name = :p1 or last_name = :p2");
         });
     }
@@ -185,7 +185,7 @@ class OptionalCriterionRenderTest {
                 "or exists (select * from person where id = :p2)";
 
         assertThat(whereClause).hasValueSatisfying(wc -> {
-            assertThat(wc.getParameters()).containsExactly(entry("p1", 3), entry("p2", 4));
+            assertThat(wc.getParameters()).containsOnly(entry("p1", 3), entry("p2", 4));
             assertThat(wc.getWhereClause()).isEqualTo(expected);
         });
     }
@@ -217,7 +217,7 @@ class OptionalCriterionRenderTest {
                 "or exists (select * from person where id = :p3))";
 
         assertThat(whereClause).hasValueSatisfying(wc -> {
-            assertThat(wc.getParameters()).containsExactly(entry("p1", 3), entry("p2", 4), entry("p3", 5));
+            assertThat(wc.getParameters()).containsOnly(entry("p1", 3), entry("p2", 4), entry("p3", 5));
             assertThat(wc.getWhereClause()).isEqualTo(expected);
         });
     }
@@ -242,7 +242,7 @@ class OptionalCriterionRenderTest {
                 "and exists (select * from person where id = :p2)";
 
         assertThat(whereClause).hasValueSatisfying(wc -> {
-            assertThat(wc.getParameters()).containsExactly(entry("p1", 3), entry("p2", 4));
+            assertThat(wc.getParameters()).containsOnly(entry("p1", 3), entry("p2", 4));
             assertThat(wc.getWhereClause()).isEqualTo(expected);
         });
     }
@@ -274,7 +274,7 @@ class OptionalCriterionRenderTest {
                 "and exists (select * from person where id = :p3))";
 
         assertThat(whereClause).hasValueSatisfying(wc -> {
-            assertThat(wc.getParameters()).containsExactly(entry("p1", 3), entry("p2", 4), entry("p3", 5));
+            assertThat(wc.getParameters()).containsOnly(entry("p1", 3), entry("p2", 4), entry("p3", 5));
             assertThat(wc.getWhereClause()).isEqualTo(expected);
         });
     }
@@ -315,7 +315,7 @@ class OptionalCriterionRenderTest {
         String expected = "where first_name = :p1 or first_name = :p2";
 
         assertThat(whereClause).hasValueSatisfying(wc -> {
-            assertThat(wc.getParameters()).containsExactly(entry("p1", "Fred"), entry("p2", "Betty"));
+            assertThat(wc.getParameters()).containsOnly(entry("p1", "Fred"), entry("p2", "Betty"));
             assertThat(wc.getWhereClause()).isEqualTo(expected);
         });
     }

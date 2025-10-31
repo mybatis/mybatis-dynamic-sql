@@ -17,13 +17,14 @@ package examples.array;
 
 import java.sql.JDBCType;
 
+import org.jspecify.annotations.NonNull;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
 
 public class NamesTableDynamicSqlSupport {
     public static final NamesTable namesTable = new NamesTable();
     public static final SqlColumn<Integer> id = namesTable.id;
-    public static final SqlColumn<String[]> names = namesTable.names;
+    public static final SqlColumn<String @NonNull []> names = namesTable.names;
 
     public static final class NamesTable extends SqlTable {
         public NamesTable() {
@@ -31,7 +32,7 @@ public class NamesTableDynamicSqlSupport {
         }
 
         public final SqlColumn<Integer> id = column("id", JDBCType.INTEGER);
-        public final SqlColumn<String[]> names = column("names", JDBCType.ARRAY,
+        public final SqlColumn<String @NonNull[]> names = column("names", JDBCType.ARRAY,
                 "examples.array.StringArrayTypeHandler");
     }
 }

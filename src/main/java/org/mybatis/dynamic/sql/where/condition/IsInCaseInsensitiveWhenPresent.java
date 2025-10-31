@@ -18,14 +18,13 @@ package org.mybatis.dynamic.sql.where.condition;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import org.mybatis.dynamic.sql.AbstractListValueCondition;
 import org.mybatis.dynamic.sql.util.StringUtilities;
+import org.mybatis.dynamic.sql.util.Utilities;
 
 public class IsInCaseInsensitiveWhenPresent<T> extends AbstractListValueCondition<T>
         implements CaseInsensitiveRenderableCondition<T>, AbstractListValueCondition.Filterable<T>,
@@ -40,7 +39,7 @@ public class IsInCaseInsensitiveWhenPresent<T> extends AbstractListValueConditio
     }
 
     protected IsInCaseInsensitiveWhenPresent(Collection<T> values) {
-        super(values.stream().filter(Objects::nonNull).map(StringUtilities::upperCaseIfPossible).toList());
+        super(Utilities.filterNulls(values).map(StringUtilities::upperCaseIfPossible).toList());
     }
 
     @Override
@@ -49,13 +48,13 @@ public class IsInCaseInsensitiveWhenPresent<T> extends AbstractListValueConditio
     }
 
     @Override
-    public IsInCaseInsensitiveWhenPresent<T> filter(Predicate<? super @NonNull T> predicate) {
+    public IsInCaseInsensitiveWhenPresent<T> filter(Predicate<? super T> predicate) {
         return filterSupport(predicate, IsInCaseInsensitiveWhenPresent::new, this,
                 IsInCaseInsensitiveWhenPresent::empty);
     }
 
     @Override
-    public <R> IsInCaseInsensitiveWhenPresent<R> map(Function<? super @NonNull T, ? extends @Nullable R> mapper) {
+    public <R> IsInCaseInsensitiveWhenPresent<R> map(Function<? super T, ? extends @Nullable R> mapper) {
         return mapSupport(mapper, IsInCaseInsensitiveWhenPresent::new, IsInCaseInsensitiveWhenPresent::empty);
     }
 

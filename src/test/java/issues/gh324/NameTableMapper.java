@@ -21,26 +21,31 @@ import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
 import java.util.List;
 import java.util.Optional;
 
-import org.apache.ibatis.annotations.*;
+import org.apache.ibatis.annotations.Arg;
+import org.apache.ibatis.annotations.CacheNamespace;
+import org.apache.ibatis.annotations.SelectProvider;
 import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.delete.DeleteDSLCompleter;
 import org.mybatis.dynamic.sql.select.SelectDSLCompleter;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.update.UpdateDSLCompleter;
 import org.mybatis.dynamic.sql.util.SqlProviderAdapter;
-import org.mybatis.dynamic.sql.util.mybatis3.*;
+import org.mybatis.dynamic.sql.util.mybatis3.CommonCountMapper;
+import org.mybatis.dynamic.sql.util.mybatis3.CommonDeleteMapper;
+import org.mybatis.dynamic.sql.util.mybatis3.CommonInsertMapper;
+import org.mybatis.dynamic.sql.util.mybatis3.CommonUpdateMapper;
+import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
 
 @CacheNamespace(implementation = ObservableCache.class)
 public interface NameTableMapper extends CommonCountMapper, CommonDeleteMapper, CommonInsertMapper<NameRecord>, CommonUpdateMapper {
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
-    @Results(id="NameTableResult", value={
-            @Result(column="id", property="id", id=true),
-            @Result(column="name", property="name")
-    })
+    @Arg(column = "id", javaType = Integer.class, id = true)
+    @Arg(column = "name", javaType = String.class)
     List<NameRecord> selectMany(SelectStatementProvider selectStatement);
 
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
-    @ResultMap("NameTableResult")
+    @Arg(column = "id", javaType = Integer.class, id = true)
+    @Arg(column = "name", javaType = String.class)
     Optional<NameRecord> selectOne(SelectStatementProvider selectStatement);
 
     BasicColumn[] selectList = BasicColumn.columnList(id, name);
@@ -68,8 +73,8 @@ public interface NameTableMapper extends CommonCountMapper, CommonDeleteMapper, 
 
     default int updateByPrimaryKey(NameRecord row) {
         return update(c ->
-                c.set(name).equalTo(row::getName)
-                        .where(id, isEqualTo(row::getId))
+                c.set(name).equalTo(row::name)
+                        .where(id, isEqualTo(row::id))
         );
     }
 

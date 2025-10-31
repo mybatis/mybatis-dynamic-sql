@@ -60,9 +60,7 @@ public class NameService {
     public void insertRecord() {
         try (SqlSession session = sqlSessionFactory.openSession(true)) {
             NameTableMapper mapper = session.getMapper(NameTableMapper.class);
-            NameRecord row = new NameRecord();
-            row.setId(1);
-            row.setName("Fred");
+            NameRecord row = new NameRecord(1, "Fred");
             mapper.insert(row);
         }
     }
@@ -70,9 +68,7 @@ public class NameService {
     public void updateRecordWithAutoCommit() {
         try (SqlSession session = sqlSessionFactory.openSession(true)) {
             NameTableMapper mapper = session.getMapper(NameTableMapper.class);
-            NameRecord row = new NameRecord();
-            row.setId(1);
-            row.setName("Barney");
+            NameRecord row = new NameRecord(1, "Barney");
             mapper.updateByPrimaryKey(row);
         }
     }
@@ -81,9 +77,7 @@ public class NameService {
         // this should rollback
         try (SqlSession session = sqlSessionFactory.openSession()) {
             NameTableMapper mapper = session.getMapper(NameTableMapper.class);
-            NameRecord row = new NameRecord();
-            row.setId(1);
-            row.setName("Barney");
+            NameRecord row = new NameRecord(1, "Barney");
             mapper.updateByPrimaryKey(row);
         }
     }
@@ -91,9 +85,7 @@ public class NameService {
     public void updateRecordWithoutAutoCommitAndExplicitCommit() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             NameTableMapper mapper = session.getMapper(NameTableMapper.class);
-            NameRecord row = new NameRecord();
-            row.setId(1);
-            row.setName("Barney");
+            NameRecord row = new NameRecord(1, "Barney");
             mapper.updateByPrimaryKey(row);
             session.commit();
         }

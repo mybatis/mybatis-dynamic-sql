@@ -21,7 +21,7 @@
   <parent>
     <groupId>org.mybatis</groupId>
     <artifactId>mybatis-parent</artifactId>
-    <version>50</version>
+    <version>51</version>
   </parent>
 
   <groupId>org.mybatis.dynamic-sql</groupId>
@@ -60,8 +60,8 @@
     <java.release.version>17</java.release.version>
     <java.test.version>17</java.test.version>
     <java.test.release.version>17</java.test.release.version>
-    <junit.jupiter.version>5.13.4</junit.jupiter.version>
-    <spring.batch.version>5.2.3</spring.batch.version>
+    <junit.jupiter.version>6.0.0</junit.jupiter.version>
+    <spring.batch.version>5.2.4</spring.batch.version>
 
     <checkstyle.config>checkstyle-override.xml</checkstyle.config>
 
@@ -80,7 +80,7 @@
     <sonar.host.url>http://localhost:9000</sonar.host.url>
 
     <kotlin.code.style>official</kotlin.code.style>
-    <test.containers.version>1.21.3</test.containers.version>
+    <test.containers.version>2.0.1</test.containers.version>
     <osgi.export>org.mybatis.dynamic.sql.*;version=${project.version};-noimport:=true</osgi.export>
 
     <!-- Reproducible Builds -->
@@ -103,7 +103,7 @@
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-jdbc</artifactId>
-      <version>6.2.11</version>
+      <version>6.2.12</version>
       <scope>provided</scope>
       <optional>true</optional>
     </dependency>
@@ -172,18 +172,18 @@
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
-      <version>1.5.18</version>
+      <version>1.5.20</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.testcontainers</groupId>
-      <artifactId>junit-jupiter</artifactId>
+      <artifactId>testcontainers-junit-jupiter</artifactId>
       <version>${test.containers.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.testcontainers</groupId>
-      <artifactId>postgresql</artifactId>
+      <artifactId>testcontainers-postgresql</artifactId>
       <version>${test.containers.version}</version>
       <scope>test</scope>
     </dependency>
@@ -195,7 +195,7 @@
     </dependency>
     <dependency>
       <groupId>org.testcontainers</groupId>
-      <artifactId>mariadb</artifactId>
+      <artifactId>testcontainers-mariadb</artifactId>
       <version>${test.containers.version}</version>
       <scope>test</scope>
     </dependency>
@@ -207,14 +207,14 @@
     </dependency>
     <dependency>
       <groupId>org.testcontainers</groupId>
-      <artifactId>mysql</artifactId>
+      <artifactId>testcontainers-mysql</artifactId>
       <version>${test.containers.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>com.mysql</groupId>
       <artifactId>mysql-connector-j</artifactId>
-      <version>9.4.0</version>
+      <version>9.5.0</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

@@ -18,13 +18,14 @@ package examples.type_conversion;
 import java.sql.JDBCType;
 import java.util.Optional;
 
+import org.jspecify.annotations.NonNull;
 import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.BindableColumn;
 import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.select.function.AbstractTypeConvertingFunction;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 
-public class ToBase64 extends AbstractTypeConvertingFunction<byte[], String, ToBase64> {
+public class ToBase64 extends AbstractTypeConvertingFunction<byte @NonNull [], String, ToBase64> {
 
     protected ToBase64(BasicColumn column) {
         super(column);
@@ -46,7 +47,7 @@ public class ToBase64 extends AbstractTypeConvertingFunction<byte[], String, ToB
         return new ToBase64(column);
     }
 
-    public static ToBase64 toBase64(BindableColumn<byte[]> column) {
+    public static ToBase64 toBase64(BindableColumn<byte @NonNull []> column) {
         return new ToBase64(column);
     }
 }
