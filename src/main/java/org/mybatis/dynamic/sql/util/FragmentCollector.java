@@ -15,6 +15,8 @@
  */
 
 
+package org.mybatis.dynamic.sql.util;
+
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -60,7 +62,7 @@ public class FragmentCollector {
 
     public Map<String, Object> parameters() {
         return fragments.stream()
-                .map(FragmentAndParameters::parameters) 
+                .map(FragmentAndParameters::parameters)
                 .collect(
                         LinkedHashMap::new,
                         Map::putAll,
@@ -89,4 +91,3 @@ public class FragmentCollector {
                 FragmentCollector::merge);
     }
 }
-
