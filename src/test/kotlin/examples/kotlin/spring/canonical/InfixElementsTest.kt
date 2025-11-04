@@ -1270,7 +1270,7 @@ open class InfixElementsTest {
         fun search(vararg names: String) {
             val selectStatement = select(firstName) {
                 from(person)
-                where { firstName isIn names }
+                where { firstName isIn names.asList() }
                 orderBy(id)
             }
 
@@ -1291,7 +1291,7 @@ open class InfixElementsTest {
         fun search(vararg names: String?) {
             val selectStatement = select(firstName) {
                 from(person)
-                where { firstName isInWhenPresent names }
+                where { firstName isInWhenPresent names.asList() }
                 orderBy(id)
             }
 
@@ -1313,7 +1313,7 @@ open class InfixElementsTest {
             from(person)
             where {
                 id isLessThan 10
-                and { firstName isInWhenPresent null as Array<String>? }
+                and { firstName isInWhenPresent null as List<String>? }
             }
             orderBy(id)
         }
@@ -1332,7 +1332,7 @@ open class InfixElementsTest {
         fun search(vararg names: String) {
             val selectStatement = select(firstName) {
                 from(person)
-                where { firstName isNotIn names }
+                where { firstName isNotIn names.asList() }
                 orderBy(id)
             }
 
@@ -1394,7 +1394,7 @@ open class InfixElementsTest {
         fun search(vararg names: String) {
             val selectStatement = select(firstName) {
                 from(person)
-                where { firstName isInCaseInsensitive names }
+                where { firstName isInCaseInsensitive names.asList() }
                 orderBy(id)
             }
 
@@ -1415,7 +1415,7 @@ open class InfixElementsTest {
         fun search(vararg names: String?) {
             val selectStatement = select(firstName) {
                 from(person)
-                where { firstName isInCaseInsensitiveWhenPresent names }
+                where { firstName isInCaseInsensitiveWhenPresent names.asList() }
                 orderBy(id)
             }
 
@@ -1437,7 +1437,7 @@ open class InfixElementsTest {
             from(person)
             where {
                 id isLessThan 10
-                and { firstName isInCaseInsensitiveWhenPresent null as Array<String>? }
+                and { firstName isInCaseInsensitiveWhenPresent null as List<String>? }
             }
             orderBy(id)
         }
@@ -1456,7 +1456,7 @@ open class InfixElementsTest {
         fun search(vararg names: String) {
             val selectStatement = select(firstName) {
                 from(person)
-                where { firstName isNotInCaseInsensitive names }
+                where { firstName isNotInCaseInsensitive names.asList() }
                 orderBy(id)
             }
 
@@ -1477,7 +1477,7 @@ open class InfixElementsTest {
         fun search(vararg names: String?) {
             val selectStatement = select(firstName) {
                 from(person)
-                where { firstName isNotInCaseInsensitiveWhenPresent names }
+                where { firstName isNotInCaseInsensitiveWhenPresent names.asList() }
                 orderBy(id)
             }
 
@@ -1499,7 +1499,7 @@ open class InfixElementsTest {
             from(person)
             where {
                 id isLessThan 10
-                and { firstName isNotInCaseInsensitiveWhenPresent null as Array<String>? }
+                and { firstName isNotInCaseInsensitiveWhenPresent null as List<String>? }
             }
             orderBy(id)
         }

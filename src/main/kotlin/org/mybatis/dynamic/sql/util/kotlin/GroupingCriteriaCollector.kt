@@ -317,10 +317,6 @@ open class GroupingCriteriaCollector : SubCriteriaCollector() {
 
     fun <T : Any> BindableColumn<T>.isIn(vararg values: T) = isIn(values.asList())
 
-    @JvmName("isInArray")
-    infix fun <T : Any> BindableColumn<T>.isIn(values: Array<out T>) =
-        invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isIn(values))
-
     infix fun <T : Any> BindableColumn<T>.isIn(values: Collection<T>) =
         invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isIn(values))
 
@@ -329,18 +325,10 @@ open class GroupingCriteriaCollector : SubCriteriaCollector() {
 
     fun <T : Any> BindableColumn<T>.isInWhenPresent(vararg values: T?) = isInWhenPresent(values.asList())
 
-    @JvmName("isInArrayWhenPresent")
-    infix fun <T : Any> BindableColumn<T>.isInWhenPresent(values: Array<out T?>?) =
-        invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isInWhenPresent(values))
-
     infix fun <T : Any> BindableColumn<T>.isInWhenPresent(values: Collection<T?>?) =
         invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isInWhenPresent(values))
 
     fun <T : Any> BindableColumn<T>.isNotIn(vararg values: T) = isNotIn(values.asList())
-
-    @JvmName("isNotInArray")
-    infix fun <T : Any> BindableColumn<T>.isNotIn(values: Array<out T>) =
-        invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isNotIn(values))
 
     infix fun <T : Any> BindableColumn<T>.isNotIn(values: Collection<T>) =
         invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isNotIn(values))
@@ -352,7 +340,7 @@ open class GroupingCriteriaCollector : SubCriteriaCollector() {
 
     @JvmName("isNotInArrayWhenPresent")
     infix fun <T : Any> BindableColumn<T>.isNotInWhenPresent(values: Array<out T?>?) =
-        invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isNotInWhenPresent(values))
+        invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isNotInWhenPresent(values?.asList()))
 
     infix fun <T : Any> BindableColumn<T>.isNotInWhenPresent(values: Collection<T?>?) =
         invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isNotInWhenPresent(values))
@@ -410,19 +398,11 @@ open class GroupingCriteriaCollector : SubCriteriaCollector() {
 
     fun BindableColumn<String>.isInCaseInsensitive(vararg values: String) = isInCaseInsensitive(values.asList())
 
-    @JvmName("isInArrayCaseInsensitive")
-    infix fun BindableColumn<String>.isInCaseInsensitive(values: Array<out String>) =
-        invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isInCaseInsensitive(values))
-
     infix fun BindableColumn<String>.isInCaseInsensitive(values: Collection<String>) =
         invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isInCaseInsensitive(values))
 
     fun BindableColumn<String>.isInCaseInsensitiveWhenPresent(vararg values: String?) =
         isInCaseInsensitiveWhenPresent(values.asList())
-
-    @JvmName("isInArrayCaseInsensitiveWhenPresent")
-    infix fun BindableColumn<String>.isInCaseInsensitiveWhenPresent(values: Array<out String?>?) =
-        invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isInCaseInsensitiveWhenPresent(values))
 
     infix fun BindableColumn<String>.isInCaseInsensitiveWhenPresent(values: Collection<String?>?) =
         invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isInCaseInsensitiveWhenPresent(values))
@@ -430,19 +410,11 @@ open class GroupingCriteriaCollector : SubCriteriaCollector() {
     fun BindableColumn<String>.isNotInCaseInsensitive(vararg values: String) =
         isNotInCaseInsensitive(values.asList())
 
-    @JvmName("isNotInArrayCaseInsensitive")
-    infix fun BindableColumn<String>.isNotInCaseInsensitive(values: Array<out String>) =
-        invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isNotInCaseInsensitive(values))
-
     infix fun BindableColumn<String>.isNotInCaseInsensitive(values: Collection<String>) =
         invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isNotInCaseInsensitive(values))
 
     fun BindableColumn<String>.isNotInCaseInsensitiveWhenPresent(vararg values: String?) =
         isNotInCaseInsensitiveWhenPresent(values.asList())
-
-    @JvmName("isNotInArrayCaseInsensitiveWhenPresent")
-    infix fun BindableColumn<String>.isNotInCaseInsensitiveWhenPresent(values: Array<out String?>?) =
-        invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isNotInCaseInsensitiveWhenPresent(values))
 
     infix fun BindableColumn<String>.isNotInCaseInsensitiveWhenPresent(values: Collection<String?>?) =
         invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isNotInCaseInsensitiveWhenPresent(values))

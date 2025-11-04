@@ -286,9 +286,6 @@ fun <T : Any> isLessThanOrEqualToWhenPresent(value: T?): IsLessThanOrEqualToWhen
 
 fun <T : Any> isIn(vararg values: T): IsIn<T> = isIn(values.asList())
 
-@JvmName("isInArray")
-fun <T : Any> isIn(values: Array<out T>): IsIn<T> = SqlBuilder.isIn(values.asList())
-
 fun <T : Any> isIn(values: Collection<T>): IsIn<T> = SqlBuilder.isIn(values)
 
 fun <T : Any> isIn(subQuery: KotlinSubQueryBuilder.() -> Unit): IsInWithSubselect<T> =
@@ -296,15 +293,9 @@ fun <T : Any> isIn(subQuery: KotlinSubQueryBuilder.() -> Unit): IsInWithSubselec
 
 fun <T : Any> isInWhenPresent(vararg values: T?): IsInWhenPresent<T> = isInWhenPresent(values.asList())
 
-@JvmName("isInArrayWhenPresent")
-fun <T : Any> isInWhenPresent(values: Array<out T?>?): IsInWhenPresent<T> = SqlBuilder.isInWhenPresent(values?.asList())
-
 fun <T : Any> isInWhenPresent(values: Collection<T?>?): IsInWhenPresent<T> = SqlBuilder.isInWhenPresent(values)
 
 fun <T : Any> isNotIn(vararg values: T): IsNotIn<T> = isNotIn(values.asList())
-
-@JvmName("isNotInArray")
-fun <T : Any> isNotIn(values: Array<out T>): IsNotIn<T> = SqlBuilder.isNotIn(values.asList())
 
 fun <T : Any> isNotIn(values: Collection<T>): IsNotIn<T> = SqlBuilder.isNotIn(values)
 
@@ -312,9 +303,6 @@ fun <T : Any> isNotIn(subQuery: KotlinSubQueryBuilder.() -> Unit): IsNotInWithSu
     SqlBuilder.isNotIn(KotlinSubQueryBuilder().apply(subQuery))
 
 fun <T : Any> isNotInWhenPresent(vararg values: T?): IsNotInWhenPresent<T> = isNotInWhenPresent(values.asList())
-
-@JvmName("isNotInArrayWhenPresent")
-fun <T : Any> isNotInWhenPresent(values: Array<out T?>?): IsNotInWhenPresent<T> = SqlBuilder.isNotInWhenPresent(values?.asList())
 
 fun <T : Any> isNotInWhenPresent(values: Collection<T?>?): IsNotInWhenPresent<T> = SqlBuilder.isNotInWhenPresent(values)
 
@@ -354,19 +342,11 @@ fun isNotLikeCaseInsensitiveWhenPresent(value: String?): IsNotLikeCaseInsensitiv
 
 fun isInCaseInsensitive(vararg values: String): IsInCaseInsensitive<String> = isInCaseInsensitive(values.asList())
 
-@JvmName("isInArrayCaseInsensitive")
-fun isInCaseInsensitive(values: Array<out String>): IsInCaseInsensitive<String> =
-    SqlBuilder.isInCaseInsensitive(values.asList())
-
 fun isInCaseInsensitive(values: Collection<String>): IsInCaseInsensitive<String> =
     SqlBuilder.isInCaseInsensitive(values)
 
 fun isInCaseInsensitiveWhenPresent(vararg values: String?): IsInCaseInsensitiveWhenPresent<String> =
     isInCaseInsensitiveWhenPresent(values.asList())
-
-@JvmName("isInArrayCaseInsensitiveWhenPresent")
-fun isInCaseInsensitiveWhenPresent(values: Array<out String?>?): IsInCaseInsensitiveWhenPresent<String> =
-    SqlBuilder.isInCaseInsensitiveWhenPresent(values?.asList())
 
 fun isInCaseInsensitiveWhenPresent(values: Collection<String?>?): IsInCaseInsensitiveWhenPresent<String> =
     SqlBuilder.isInCaseInsensitiveWhenPresent(values)
@@ -374,19 +354,11 @@ fun isInCaseInsensitiveWhenPresent(values: Collection<String?>?): IsInCaseInsens
 fun isNotInCaseInsensitive(vararg values: String): IsNotInCaseInsensitive<String> =
     isNotInCaseInsensitive(values.asList())
 
-@JvmName("isNotInArrayCaseInsensitive")
-fun isNotInCaseInsensitive(values: Array<out String>): IsNotInCaseInsensitive<String> =
-    SqlBuilder.isNotInCaseInsensitive(values.asList())
-
 fun isNotInCaseInsensitive(values: Collection<String>): IsNotInCaseInsensitive<String> =
     SqlBuilder.isNotInCaseInsensitive(values)
 
 fun isNotInCaseInsensitiveWhenPresent(vararg values: String?): IsNotInCaseInsensitiveWhenPresent<String> =
     isNotInCaseInsensitiveWhenPresent(values.asList())
-
-@JvmName("isNotInArrayCaseInsensitiveWhenPresent")
-fun isNotInCaseInsensitiveWhenPresent(values: Array<out String?>?): IsNotInCaseInsensitiveWhenPresent<String> =
-    SqlBuilder.isNotInCaseInsensitiveWhenPresent(values?.asList())
 
 fun isNotInCaseInsensitiveWhenPresent(values: Collection<String?>?): IsNotInCaseInsensitiveWhenPresent<String> =
     SqlBuilder.isNotInCaseInsensitiveWhenPresent(values)
