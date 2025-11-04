@@ -48,6 +48,7 @@ class MySQLTest {
     @Container
     private static final MySQLContainer mysql =
             new MySQLContainer(TestContainersConfiguration.MYSQL_LATEST)
+                    .withUrlParam("openTelemetry", "DISABLED")
                     .withInitScript("examples/mariadb/CreateDB.sql");
 
     private SqlSessionFactory sqlSessionFactory;
