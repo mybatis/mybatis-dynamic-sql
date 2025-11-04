@@ -69,7 +69,7 @@
 
     <module.name>org.mybatis.dynamic.sql</module.name>
 
-    <kotlin.version>2.1.21</kotlin.version>
+    <kotlin.version>2.2.21</kotlin.version>
     <kotlin.compiler.jvmTarget>17</kotlin.compiler.jvmTarget>
     <kotlin.compiler.languageVersion>2.0</kotlin.compiler.languageVersion>
     <kotlin.compiler.apiVersion>2.0</kotlin.compiler.apiVersion>
@@ -95,7 +95,7 @@
     </dependency>
     <dependency>
       <groupId>org.jetbrains.kotlin</groupId>
-      <artifactId>kotlin-stdlib-jdk8</artifactId>
+      <artifactId>kotlin-stdlib</artifactId>
       <version>${kotlin.version}</version>
       <scope>provided</scope>
       <optional>true</optional>
