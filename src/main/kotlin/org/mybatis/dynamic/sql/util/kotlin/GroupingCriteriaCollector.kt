@@ -338,10 +338,6 @@ open class GroupingCriteriaCollector : SubCriteriaCollector() {
 
     fun <T : Any> BindableColumn<T>.isNotInWhenPresent(vararg values: T?) = isNotInWhenPresent(values.asList())
 
-    @JvmName("isNotInArrayWhenPresent")
-    infix fun <T : Any> BindableColumn<T>.isNotInWhenPresent(values: Array<out T?>?) =
-        invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isNotInWhenPresent(values?.asList()))
-
     infix fun <T : Any> BindableColumn<T>.isNotInWhenPresent(values: Collection<T?>?) =
         invoke(org.mybatis.dynamic.sql.util.kotlin.elements.isNotInWhenPresent(values))
 

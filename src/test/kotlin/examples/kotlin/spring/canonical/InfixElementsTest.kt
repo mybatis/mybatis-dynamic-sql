@@ -1353,7 +1353,7 @@ open class InfixElementsTest {
         fun search(vararg names: String?) {
             val selectStatement = select(firstName) {
                 from(person)
-                where { firstName isNotInWhenPresent names }
+                where { firstName isNotInWhenPresent names.asList() }
                 orderBy(id)
             }
 
@@ -1375,7 +1375,7 @@ open class InfixElementsTest {
             from(person)
             where {
                 id isLessThan 10
-                and { firstName isNotInWhenPresent null as Array<String>? }
+                and { firstName isNotInWhenPresent null as List<String>? }
             }
             orderBy(id)
         }
