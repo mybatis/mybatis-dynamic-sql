@@ -80,7 +80,7 @@
     <sonar.host.url>http://localhost:9000</sonar.host.url>
 
     <kotlin.code.style>official</kotlin.code.style>
-    <test.containers.version>2.0.1</test.containers.version>
+    <test.containers.version>2.0.2</test.containers.version>
     <osgi.export>org.mybatis.dynamic.sql.*;version=${project.version};-noimport:=true</osgi.export>
 
     <!-- Reproducible Builds -->
