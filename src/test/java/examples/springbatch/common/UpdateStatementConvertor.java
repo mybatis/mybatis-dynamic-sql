@@ -18,6 +18,8 @@ package examples.springbatch.common;
 import static examples.springbatch.mapper.PersonDynamicSqlSupport.*;
 import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
 
+import java.util.Objects;
+
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.update.UpdateDSL;
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
@@ -30,9 +32,9 @@ public class UpdateStatementConvertor implements Converter<PersonRecord, UpdateS
     @Override
     public UpdateStatementProvider convert(PersonRecord source) {
         return UpdateDSL.update(person)
-                .set(firstName).equalTo(source::getFirstName)
-                .set(lastName).equalTo(source::getLastName)
-                .where(id, isEqualTo(source::getId))
+                .set(firstName).equalTo(source::firstName)
+                .set(lastName).equalTo(source::lastName)
+                .where(id, isEqualTo(Objects.requireNonNull(source.id())))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
     }

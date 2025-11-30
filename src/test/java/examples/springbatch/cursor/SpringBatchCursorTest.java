@@ -20,6 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mybatis.dynamic.sql.SqlBuilder.count;
 import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
 
+import examples.springbatch.mapper.PersonMapper;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.junit.jupiter.api.Test;
@@ -27,22 +28,20 @@ import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.SelectDSL;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.springframework.batch.core.ExitStatus;
-import org.springframework.batch.core.JobExecution;
-import org.springframework.batch.core.StepExecution;
-import org.springframework.batch.item.ExecutionContext;
-import org.springframework.batch.test.JobLauncherTestUtils;
+import org.springframework.batch.core.job.JobExecution;
+import org.springframework.batch.core.step.StepExecution;
+import org.springframework.batch.infrastructure.item.ExecutionContext;
+import org.springframework.batch.test.JobOperatorTestUtils;
 import org.springframework.batch.test.context.SpringBatchTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
-
-import examples.springbatch.mapper.PersonMapper;
 
 @SpringBatchTest
 @SpringJUnitConfig(classes = CursorReaderBatchConfiguration.class)
 class SpringBatchCursorTest {
 
     @Autowired
-    private JobLauncherTestUtils jobLauncherTestUtils;
+    private JobOperatorTestUtils jobOperatorTestUtils;
 
     @Autowired
     private SqlSessionFactory sqlSessionFactory;
@@ -52,7 +51,7 @@ class SpringBatchCursorTest {
         // starting condition
         assertThat(upperCaseRowCount()).isZero();
 
-        JobExecution execution = jobLauncherTestUtils.launchJob();
+        JobExecution execution = jobOperatorTestUtils.startJob();
         assertThat(execution.getExitStatus()).isEqualTo(ExitStatus.COMPLETED);
         assertThat(numberOfRowsProcessed(execution)).isEqualTo(2);
 

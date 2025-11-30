@@ -18,6 +18,7 @@ package examples.springbatch.bulkinsert;
 import static examples.springbatch.mapper.PersonDynamicSqlSupport.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import examples.springbatch.mapper.PersonMapper;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.junit.jupiter.api.Test;
@@ -25,22 +26,20 @@ import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.CountDSL;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.springframework.batch.core.ExitStatus;
-import org.springframework.batch.core.JobExecution;
-import org.springframework.batch.core.StepExecution;
-import org.springframework.batch.item.ExecutionContext;
-import org.springframework.batch.test.JobLauncherTestUtils;
+import org.springframework.batch.core.job.JobExecution;
+import org.springframework.batch.core.step.StepExecution;
+import org.springframework.batch.infrastructure.item.ExecutionContext;
+import org.springframework.batch.test.JobOperatorTestUtils;
 import org.springframework.batch.test.context.SpringBatchTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
-
-import examples.springbatch.mapper.PersonMapper;
 
 @SpringBatchTest
 @SpringJUnitConfig(classes = BulkInsertConfiguration.class)
 class SpringBatchBulkInsertTest {
 
     @Autowired
-    private JobLauncherTestUtils jobLauncherTestUtils;
+    private JobOperatorTestUtils jobOperatorTestUtils;
 
     @Autowired
     private SqlSessionFactory sqlSessionFactory;
@@ -50,7 +49,7 @@ class SpringBatchBulkInsertTest {
         // starting condition
         assertThat(rowCount()).isZero();
 
-        JobExecution execution = jobLauncherTestUtils.launchJob();
+        JobExecution execution = jobOperatorTestUtils.startJob();
         assertThat(execution.getExitStatus()).isEqualTo(ExitStatus.COMPLETED);
         assertThat(numberOfRowsProcessed(execution)).isEqualTo(TestRecordGenerator.recordCount());
 

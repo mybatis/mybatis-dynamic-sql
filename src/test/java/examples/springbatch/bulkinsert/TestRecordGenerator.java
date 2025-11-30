@@ -15,25 +15,25 @@
  */
 package examples.springbatch.bulkinsert;
 
-import org.springframework.batch.item.ItemReader;
-
 import examples.springbatch.common.PersonRecord;
+import org.jspecify.annotations.Nullable;
+import org.springframework.batch.infrastructure.item.ItemReader;
 
 public class TestRecordGenerator implements ItemReader<PersonRecord> {
 
     private int index = 0;
 
     private static final PersonRecord[] testRecords = {
-            new PersonRecord("Fred", "Flintstone"),
-            new PersonRecord("Wilma", "Flintstone"),
-            new PersonRecord("Pebbles", "Flintstone"),
-            new PersonRecord("Barney", "Rubble"),
-            new PersonRecord("Betty", "Rubble"),
-            new PersonRecord("Bamm Bamm", "Rubble")
+            new PersonRecord(null, "Fred", "Flintstone"),
+            new PersonRecord(null, "Wilma", "Flintstone"),
+            new PersonRecord(null, "Pebbles", "Flintstone"),
+            new PersonRecord(null, "Barney", "Rubble"),
+            new PersonRecord(null, "Betty", "Rubble"),
+            new PersonRecord(null, "Bamm Bamm", "Rubble")
     };
 
     @Override
-    public PersonRecord read() {
+    public @Nullable PersonRecord read() {
         if (index < testRecords.length) {
             return (testRecords[index++]);
         } else {

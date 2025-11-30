@@ -13,8 +13,7 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package examples.springbatch.common;
+@NullMarked
+package examples.springbatch.bulkinsert;
 
-import org.jspecify.annotations.Nullable;
-
-public record PersonRecord(@Nullable Integer id, String firstName, String lastName) {}
+import org.jspecify.annotations.NullMarked;

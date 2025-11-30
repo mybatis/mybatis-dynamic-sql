@@ -29,16 +29,16 @@ import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.annotation.MapperScan;
 import org.mybatis.spring.batch.MyBatisBatchItemWriter;
 import org.mybatis.spring.batch.MyBatisPagingItemReader;
-import org.springframework.batch.core.Job;
-import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
+import org.springframework.batch.core.job.Job;
 import org.springframework.batch.core.job.builder.JobBuilder;
-import org.springframework.batch.core.launch.support.RunIdIncrementer;
+import org.springframework.batch.core.job.parameters.RunIdIncrementer;
 import org.springframework.batch.core.repository.JobRepository;
+import org.springframework.batch.core.step.Step;
 import org.springframework.batch.core.step.builder.StepBuilder;
-import org.springframework.batch.item.ItemProcessor;
-import org.springframework.batch.item.ItemReader;
-import org.springframework.batch.item.ItemWriter;
+import org.springframework.batch.infrastructure.item.ItemProcessor;
+import org.springframework.batch.infrastructure.item.ItemReader;
+import org.springframework.batch.infrastructure.item.ItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -48,6 +48,8 @@ import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import org.springframework.transaction.PlatformTransactionManager;
+
+import java.util.Objects;
 
 import examples.springbatch.common.PersonRecord;
 import examples.springbatch.mapper.PersonMapper;
@@ -60,9 +62,6 @@ public class PagingReaderBatchConfiguration {
 
     @Autowired
     private JobRepository jobRepository;
-
-    @Autowired
-    private PlatformTransactionManager transactionManager;
 
     @Bean
     public DataSource dataSource() {
@@ -79,7 +78,7 @@ public class PagingReaderBatchConfiguration {
     public SqlSessionFactory sqlSessionFactory(DataSource dataSource) throws Exception {
         SqlSessionFactoryBean sessionFactory = new SqlSessionFactoryBean();
         sessionFactory.setDataSource(dataSource);
-        return sessionFactory.getObject();
+        return Objects.requireNonNull(sessionFactory.getObject());
     }
 
     @Bean
@@ -119,7 +118,7 @@ public class PagingReaderBatchConfiguration {
     @Bean
     public Step step1(ItemReader<PersonRecord> reader, ItemProcessor<PersonRecord, PersonRecord> processor, ItemWriter<PersonRecord> writer) {
         return new StepBuilder("step1", jobRepository)
-                .<PersonRecord, PersonRecord>chunk(7, transactionManager)
+                .<PersonRecord, PersonRecord>chunk(7)
                 .reader(reader)
                 .processor(processor)
                 .writer(writer)
