@@ -15,12 +15,12 @@
  */
 package examples.springbatch.common;
 
-import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.annotation.BeforeChunk;
 import org.springframework.batch.core.annotation.BeforeStep;
-import org.springframework.batch.core.scope.context.ChunkContext;
-import org.springframework.batch.item.ExecutionContext;
-import org.springframework.batch.item.ItemProcessor;
+import org.springframework.batch.core.step.StepExecution;
+import org.springframework.batch.infrastructure.item.Chunk;
+import org.springframework.batch.infrastructure.item.ExecutionContext;
+import org.springframework.batch.infrastructure.item.ItemProcessor;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -32,11 +32,7 @@ public class PersonProcessor implements ItemProcessor<PersonRecord, PersonRecord
     public PersonRecord process(PersonRecord person) {
         incrementRowCount();
 
-        PersonRecord transformed = new PersonRecord();
-        transformed.setId(person.getId());
-        transformed.setFirstName(person.getFirstName().toUpperCase());
-        transformed.setLastName(person.getLastName().toUpperCase());
-        return transformed;
+        return new PersonRecord(person.id(), person.firstName().toUpperCase(), person.lastName().toUpperCase());
     }
 
     @BeforeStep
@@ -45,7 +41,7 @@ public class PersonProcessor implements ItemProcessor<PersonRecord, PersonRecord
     }
 
     @BeforeChunk
-    public void beforeChunk(ChunkContext chunkContext) {
+    public void beforeChunk(Chunk<PersonRecord> chunk) {
         incrementChunkCount();
     }
 

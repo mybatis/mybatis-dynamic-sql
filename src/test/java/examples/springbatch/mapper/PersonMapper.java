@@ -18,22 +18,21 @@ package examples.springbatch.mapper;
 import java.util.List;
 import java.util.Map;
 
+import examples.springbatch.common.PersonRecord;
+import org.apache.ibatis.annotations.Arg;
 import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.SelectProvider;
 import org.mybatis.dynamic.sql.util.mybatis3.CommonCountMapper;
 import org.mybatis.dynamic.sql.util.mybatis3.CommonInsertMapper;
 import org.mybatis.dynamic.sql.util.mybatis3.CommonUpdateMapper;
 import org.mybatis.dynamic.sql.util.springbatch.SpringBatchProviderAdapter;
 
-import examples.springbatch.common.PersonRecord;
-
 @Mapper
 public interface PersonMapper extends CommonCountMapper, CommonInsertMapper<PersonRecord>, CommonUpdateMapper {
 
     @SelectProvider(type=SpringBatchProviderAdapter.class, method="select")
-    @Result(column="id", property="id", id=true)
-    @Result(column="first_name", property="firstName")
-    @Result(column="last_name", property="lastName")
+    @Arg(column = "id", javaType = Integer.class, id = true)
+    @Arg(column = "first_name", javaType = String.class)
+    @Arg(column = "last_name", javaType = String.class)
     List<PersonRecord> selectMany(Map<String, Object> parameterValues);
 }
