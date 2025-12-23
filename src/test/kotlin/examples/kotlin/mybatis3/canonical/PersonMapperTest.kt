@@ -42,6 +42,8 @@ import org.mybatis.dynamic.sql.util.kotlin.elements.isIn
 import org.mybatis.dynamic.sql.util.kotlin.elements.sortColumn
 import org.mybatis.dynamic.sql.util.kotlin.elements.stringConstant
 import org.mybatis.dynamic.sql.util.kotlin.elements.sum
+import org.mybatis.dynamic.sql.util.kotlin.mybatis3.count
+import org.mybatis.dynamic.sql.util.kotlin.mybatis3.insert
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.insertInto
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.insertSelect
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.multiSelect
@@ -220,6 +222,15 @@ class PersonMapperTest {
     fun testInsert() {
         sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(PersonMapper::class.java)
+
+            val row = PersonRecord(100, "Joe", LastName("Jones"), Date(), true, "Developer", 1)
+
+            val rows = mapper.insert(row)
+            assertThat(rows).isEqualTo(1)
+        }
+
+        sqlSessionFactory.openSession().use { session ->
+            val mapper = session.getMapper(PersonDslMapper::class.java)
 
             val row = PersonRecord(100, "Joe", LastName("Jones"), Date(), true, "Developer", 1)
 
@@ -490,6 +501,19 @@ class PersonMapperTest {
     fun testCount1() {
         sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(PersonMapper::class.java)
+
+            val rows = mapper.count {
+                where {
+                    occupation.isNull()
+                    and { employed.isFalse() }
+                }
+            }
+
+            assertThat(rows).isEqualTo(2L)
+        }
+
+        sqlSessionFactory.openSession().use { session ->
+            val mapper = session.getMapper(PersonDslMapper::class.java)
 
             val rows = mapper.count {
                 where {

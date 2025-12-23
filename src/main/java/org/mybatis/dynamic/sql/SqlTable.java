@@ -16,12 +16,15 @@
 package org.mybatis.dynamic.sql;
 
 import java.sql.JDBCType;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
 public class SqlTable implements TableExpression {
 
     protected String tableName;
+    protected final List<SqlColumn<?>> columns = new ArrayList<>();
 
     protected SqlTable(String tableName) {
         this.tableName = Objects.requireNonNull(tableName);
@@ -31,21 +34,30 @@ public class SqlTable implements TableExpression {
         return tableName;
     }
 
+    public List<SqlColumn<?>> columns() {
+        return columns;
+    }
+
     public BasicColumn allColumns() {
         return SqlColumn.of("*", this); //$NON-NLS-1$
     }
 
     public <T> SqlColumn<T> column(String name) {
-        return SqlColumn.of(name, this);
+        SqlColumn<T> sqlColumn = SqlColumn.of(name, this);
+        columns.add(sqlColumn);
+        return sqlColumn;
     }
 
     public <T> SqlColumn<T> column(String name, JDBCType jdbcType) {
-        return SqlColumn.of(name, this, jdbcType);
+        SqlColumn<T> sqlColumn = SqlColumn.of(name, this, jdbcType);
+        columns.add(sqlColumn);
+        return sqlColumn;
     }
 
     public <T> SqlColumn<T> column(String name, JDBCType jdbcType, String typeHandler) {
-        SqlColumn<T> column = SqlColumn.of(name, this, jdbcType);
-        return column.withTypeHandler(typeHandler);
+        SqlColumn<T> column = SqlColumn.of(name, this, jdbcType).withTypeHandler(typeHandler);
+        columns.add(column);
+        return column;
     }
 
     @Override

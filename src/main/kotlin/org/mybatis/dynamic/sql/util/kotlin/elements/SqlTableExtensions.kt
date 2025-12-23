@@ -45,5 +45,7 @@ fun <T : Any> SqlTable.column(
     withParameterTypeConverter(parameterTypeConverter)
     withJavaType(javaType?.java)
     withJavaProperty(javaProperty)
-    build()
+    val column = build()
+    columns().add(column)
+    column
 }

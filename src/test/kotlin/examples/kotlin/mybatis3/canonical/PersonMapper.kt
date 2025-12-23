@@ -23,6 +23,7 @@ import org.apache.ibatis.annotations.SelectProvider
 import org.apache.ibatis.type.JdbcType
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider
 import org.mybatis.dynamic.sql.util.SqlProviderAdapter
+import org.mybatis.dynamic.sql.util.kotlin.mybatis3.KotlinDslMapper
 import org.mybatis.dynamic.sql.util.mybatis3.CommonCountMapper
 import org.mybatis.dynamic.sql.util.mybatis3.CommonDeleteMapper
 import org.mybatis.dynamic.sql.util.mybatis3.CommonInsertMapper
@@ -65,4 +66,10 @@ interface PersonMapper : CommonCountMapper, CommonDeleteMapper, CommonInsertMapp
     @SelectProvider(type = SqlProviderAdapter::class, method = "select")
     @ResultMap("PersonResult")
     fun selectOne(selectStatement: SelectStatementProvider): PersonRecord?
+}
+
+@Mapper
+interface PersonDslMapper: KotlinDslMapper<PersonDynamicSqlSupport.Person, PersonRecord> {
+    override val table: PersonDynamicSqlSupport.Person
+        get() = PersonDynamicSqlSupport.person
 }
