@@ -49,11 +49,11 @@
 <a class="jxr_linenumber" name="L41" href="#L41">41</a>          fc1.merge(fc2);
 <a class="jxr_linenumber" name="L42" href="#L42">42</a>  
 <a class="jxr_linenumber" name="L43" href="#L43">43</a>          assertThat(fc1.collectFragments(Collectors.joining(<span class="jxr_string">","</span>))).isEqualTo(<span class="jxr_string">":p1,:p2"</span>);
-<a class="jxr_linenumber" name="L44" href="#L44">44</a>          assertThat(fc1.parameters()).containsExactly(entry(<span class="jxr_string">"p1"</span>, 1), entry(<span class="jxr_string">"p2"</span>, 2));
+<a class="jxr_linenumber" name="L44" href="#L44">44</a>          assertThat(fc1.parameters()).containsOnly(entry(<span class="jxr_string">"p1"</span>, 1), entry(<span class="jxr_string">"p2"</span>, 2));
 <a class="jxr_linenumber" name="L45" href="#L45">45</a>      }
 <a class="jxr_linenumber" name="L46" href="#L46">46</a>  }
 </pre>
 <hr/>
-<div id="footer">© 2016–2025 <a href="https://www.mybatis.org/">MyBatis.org</a></div>
+<div id="footer">© 2016–2026 <a href="https://www.mybatis.org/">MyBatis.org</a></div>
 </body>
 </html>

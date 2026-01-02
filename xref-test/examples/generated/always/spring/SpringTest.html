@@ -249,9 +249,9 @@
 <a class="jxr_linenumber" name="L241" href="#L241">241</a> 
 <a class="jxr_linenumber" name="L242" href="#L242">242</a>         BatchInsert&lt;GeneratedAlwaysRecord&gt; batchInsert = insertBatch(records)
 <a class="jxr_linenumber" name="L243" href="#L243">243</a>                 .into(generatedAlways)
-<a class="jxr_linenumber" name="L244" href="#L244">244</a>                 .map(id).toProperty(<span class="jxr_string">"id"</span>)
-<a class="jxr_linenumber" name="L245" href="#L245">245</a>                 .map(firstName).toProperty(<span class="jxr_string">"firstName"</span>)
-<a class="jxr_linenumber" name="L246" href="#L246">246</a>                 .map(lastName).toProperty(<span class="jxr_string">"lastName"</span>)
+<a class="jxr_linenumber" name="L244" href="#L244">244</a>                 .withMappedColumn(id)
+<a class="jxr_linenumber" name="L245" href="#L245">245</a>                 .withMappedColumn(firstName)
+<a class="jxr_linenumber" name="L246" href="#L246">246</a>                 .withMappedColumn(lastName)
 <a class="jxr_linenumber" name="L247" href="#L247">247</a>                 .build()
 <a class="jxr_linenumber" name="L248" href="#L248">248</a>                 .render(RenderingStrategies.SPRING_NAMED_PARAMETER);
 <a class="jxr_linenumber" name="L249" href="#L249">249</a> 
@@ -339,6 +339,6 @@
 <a class="jxr_linenumber" name="L331" href="#L331">331</a> }
 </pre>
 <hr/>
-<div id="footer">© 2016–2025 <a href="https://www.mybatis.org/">MyBatis.org</a></div>
+<div id="footer">© 2016–2026 <a href="https://www.mybatis.org/">MyBatis.org</a></div>
 </body>
 </html>

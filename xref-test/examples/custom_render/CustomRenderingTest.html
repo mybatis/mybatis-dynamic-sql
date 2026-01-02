@@ -58,308 +58,307 @@
 <a class="jxr_linenumber" name="L50" href="#L50">50</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 <a class="jxr_linenumber" name="L51" href="#L51">51</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
 <a class="jxr_linenumber" name="L52" href="#L52">52</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.util.mybatis3.CommonSelectMapper;
-<a class="jxr_linenumber" name="L53" href="#L53">53</a>  <strong class="jxr_keyword">import</strong> org.testcontainers.containers.PostgreSQLContainer;
-<a class="jxr_linenumber" name="L54" href="#L54">54</a>  <strong class="jxr_keyword">import</strong> org.testcontainers.junit.jupiter.Container;
-<a class="jxr_linenumber" name="L55" href="#L55">55</a>  <strong class="jxr_keyword">import</strong> org.testcontainers.junit.jupiter.Testcontainers;
+<a class="jxr_linenumber" name="L53" href="#L53">53</a>  <strong class="jxr_keyword">import</strong> org.testcontainers.junit.jupiter.Container;
+<a class="jxr_linenumber" name="L54" href="#L54">54</a>  <strong class="jxr_keyword">import</strong> org.testcontainers.junit.jupiter.Testcontainers;
+<a class="jxr_linenumber" name="L55" href="#L55">55</a>  <strong class="jxr_keyword">import</strong> org.testcontainers.postgresql.PostgreSQLContainer;
 <a class="jxr_linenumber" name="L56" href="#L56">56</a>  
 <a class="jxr_linenumber" name="L57" href="#L57">57</a>  @Testcontainers
 <a class="jxr_linenumber" name="L58" href="#L58">58</a>  <strong class="jxr_keyword">class</strong> <a name="CustomRenderingTest" href="../../examples/custom_render/CustomRenderingTest.html#CustomRenderingTest">CustomRenderingTest</a> {
 <a class="jxr_linenumber" name="L59" href="#L59">59</a>  
-<a class="jxr_linenumber" name="L60" href="#L60">60</a>      @SuppressWarnings(<span class="jxr_string">"resource"</span>)
-<a class="jxr_linenumber" name="L61" href="#L61">61</a>      @Container
-<a class="jxr_linenumber" name="L62" href="#L62">62</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> PostgreSQLContainer&lt;?&gt; postgres =
-<a class="jxr_linenumber" name="L63" href="#L63">63</a>              <strong class="jxr_keyword">new</strong> PostgreSQLContainer&lt;&gt;(TestContainersConfiguration.POSTGRES_LATEST)
-<a class="jxr_linenumber" name="L64" href="#L64">64</a>                      .withInitScript(<span class="jxr_string">"examples/custom_render/dbInit.sql"</span>);
-<a class="jxr_linenumber" name="L65" href="#L65">65</a>  
-<a class="jxr_linenumber" name="L66" href="#L66">66</a>      <strong class="jxr_keyword">private</strong> SqlSessionFactory sqlSessionFactory;
-<a class="jxr_linenumber" name="L67" href="#L67">67</a>  
-<a class="jxr_linenumber" name="L68" href="#L68">68</a>      @BeforeEach
-<a class="jxr_linenumber" name="L69" href="#L69">69</a>      <strong class="jxr_keyword">void</strong> setUp() {
-<a class="jxr_linenumber" name="L70" href="#L70">70</a>          UnpooledDataSource ds = <strong class="jxr_keyword">new</strong> UnpooledDataSource(postgres.getDriverClassName(), postgres.getJdbcUrl(),
-<a class="jxr_linenumber" name="L71" href="#L71">71</a>                  postgres.getUsername(), postgres.getPassword());
-<a class="jxr_linenumber" name="L72" href="#L72">72</a>          Environment environment = <strong class="jxr_keyword">new</strong> Environment(<span class="jxr_string">"test"</span>, <strong class="jxr_keyword">new</strong> JdbcTransactionFactory(), ds);
-<a class="jxr_linenumber" name="L73" href="#L73">73</a>          Configuration configuration = <strong class="jxr_keyword">new</strong> Configuration(environment);
-<a class="jxr_linenumber" name="L74" href="#L74">74</a>          configuration.addMapper(JsonTestMapper.<strong class="jxr_keyword">class</strong>);
-<a class="jxr_linenumber" name="L75" href="#L75">75</a>          configuration.addMapper(CommonSelectMapper.<strong class="jxr_keyword">class</strong>);
-<a class="jxr_linenumber" name="L76" href="#L76">76</a>          sqlSessionFactory = <strong class="jxr_keyword">new</strong> SqlSessionFactoryBuilder().build(configuration);
-<a class="jxr_linenumber" name="L77" href="#L77">77</a>      }
-<a class="jxr_linenumber" name="L78" href="#L78">78</a>  
-<a class="jxr_linenumber" name="L79" href="#L79">79</a>      @Test
-<a class="jxr_linenumber" name="L80" href="#L80">80</a>      <strong class="jxr_keyword">void</strong> testInsertRecord() {
-<a class="jxr_linenumber" name="L81" href="#L81">81</a>          <strong class="jxr_keyword">try</strong> (SqlSession sqlSession = sqlSessionFactory.openSession()) {
-<a class="jxr_linenumber" name="L82" href="#L82">82</a>              <a name="JsonTestMapper" href="../../examples/custom_render/JsonTestMapper.html#JsonTestMapper">JsonTestMapper</a> mapper = sqlSession.getMapper(JsonTestMapper.<strong class="jxr_keyword">class</strong>);
-<a class="jxr_linenumber" name="L83" href="#L83">83</a>  
-<a class="jxr_linenumber" name="L84" href="#L84">84</a>              <a name="JsonTestRecord" href="../../examples/custom_render/JsonTestRecord.html#JsonTestRecord">JsonTestRecord</a> row = <strong class="jxr_keyword">new</strong> <a name="JsonTestRecord" href="../../examples/custom_render/JsonTestRecord.html#JsonTestRecord">JsonTestRecord</a>(1, <span class="jxr_string">"Fred"</span>,
-<a class="jxr_linenumber" name="L85" href="#L85">85</a>                      <span class="jxr_string">"{\&quot;firstName\&quot;: \&quot;Fred\&quot;, \&quot;lastName\&quot;: \&quot;Flintstone\&quot;, \&quot;age\&quot;: 30}"</span>);
-<a class="jxr_linenumber" name="L86" href="#L86">86</a>  
-<a class="jxr_linenumber" name="L87" href="#L87">87</a>              InsertStatementProvider&lt;JsonTestRecord&gt; insertStatement = insert(row).into(jsonTest)
-<a class="jxr_linenumber" name="L88" href="#L88">88</a>                      .map(id).toProperty(<span class="jxr_string">"id"</span>)
-<a class="jxr_linenumber" name="L89" href="#L89">89</a>                      .map(description).toProperty(<span class="jxr_string">"description"</span>)
-<a class="jxr_linenumber" name="L90" href="#L90">90</a>                      .map(info).toProperty(<span class="jxr_string">"info"</span>)
-<a class="jxr_linenumber" name="L91" href="#L91">91</a>                      .build()
-<a class="jxr_linenumber" name="L92" href="#L92">92</a>                      .render(RenderingStrategies.MYBATIS3);
-<a class="jxr_linenumber" name="L93" href="#L93">93</a>  
-<a class="jxr_linenumber" name="L94" href="#L94">94</a>              String expected = <span class="jxr_string">"insert into JsonTest (id, description, info) "</span>
-<a class="jxr_linenumber" name="L95" href="#L95">95</a>                      + <span class="jxr_string">"values (#{row.id,jdbcType=INTEGER}, #{row.description,jdbcType=VARCHAR}, "</span>
-<a class="jxr_linenumber" name="L96" href="#L96">96</a>                      + <span class="jxr_string">"#{row.info,jdbcType=VARCHAR}::json)"</span>;
-<a class="jxr_linenumber" name="L97" href="#L97">97</a>  
-<a class="jxr_linenumber" name="L98" href="#L98">98</a>              assertThat(insertStatement.getInsertStatement()).isEqualTo(expected);
-<a class="jxr_linenumber" name="L99" href="#L99">99</a>  
-<a class="jxr_linenumber" name="L100" href="#L100">100</a>             <strong class="jxr_keyword">int</strong> rows = mapper.insert(insertStatement);
-<a class="jxr_linenumber" name="L101" href="#L101">101</a>             assertThat(rows).isEqualTo(1);
-<a class="jxr_linenumber" name="L102" href="#L102">102</a> 
-<a class="jxr_linenumber" name="L103" href="#L103">103</a>             row = <strong class="jxr_keyword">new</strong> <a name="JsonTestRecord" href="../../examples/custom_render/JsonTestRecord.html#JsonTestRecord">JsonTestRecord</a>(2, <span class="jxr_string">"Wilma"</span>,
-<a class="jxr_linenumber" name="L104" href="#L104">104</a>                     <span class="jxr_string">"{\&quot;firstName\&quot;: \&quot;Wilma\&quot;, \&quot;lastName\&quot;: \&quot;Flintstone\&quot;, \&quot;age\&quot;: 25}"</span>);
-<a class="jxr_linenumber" name="L105" href="#L105">105</a> 
-<a class="jxr_linenumber" name="L106" href="#L106">106</a>             insertStatement = insert(row).into(jsonTest)
-<a class="jxr_linenumber" name="L107" href="#L107">107</a>                     .map(id).toProperty(<span class="jxr_string">"id"</span>)
-<a class="jxr_linenumber" name="L108" href="#L108">108</a>                     .map(description).toProperty(<span class="jxr_string">"description"</span>)
-<a class="jxr_linenumber" name="L109" href="#L109">109</a>                     .map(info).toProperty(<span class="jxr_string">"info"</span>)
-<a class="jxr_linenumber" name="L110" href="#L110">110</a>                     .build()
-<a class="jxr_linenumber" name="L111" href="#L111">111</a>                     .render(RenderingStrategies.MYBATIS3);
-<a class="jxr_linenumber" name="L112" href="#L112">112</a> 
-<a class="jxr_linenumber" name="L113" href="#L113">113</a>             rows = mapper.insert(insertStatement);
-<a class="jxr_linenumber" name="L114" href="#L114">114</a>             assertThat(rows).isEqualTo(1);
-<a class="jxr_linenumber" name="L115" href="#L115">115</a> 
-<a class="jxr_linenumber" name="L116" href="#L116">116</a>             SelectStatementProvider selectStatement = select(id, description, info)
-<a class="jxr_linenumber" name="L117" href="#L117">117</a>                     .from(jsonTest)
-<a class="jxr_linenumber" name="L118" href="#L118">118</a>                     .orderBy(id)
-<a class="jxr_linenumber" name="L119" href="#L119">119</a>                     .build()
-<a class="jxr_linenumber" name="L120" href="#L120">120</a>                     .render(RenderingStrategies.MYBATIS3);
-<a class="jxr_linenumber" name="L121" href="#L121">121</a> 
-<a class="jxr_linenumber" name="L122" href="#L122">122</a>             List&lt;JsonTestRecord&gt; records = mapper.selectMany(selectStatement);
-<a class="jxr_linenumber" name="L123" href="#L123">123</a>             assertThat(records).hasSize(2);
-<a class="jxr_linenumber" name="L124" href="#L124">124</a>             assertThat(records.get(0).info()).isEqualTo(<span class="jxr_string">"{\&quot;firstName\&quot;: \&quot;Fred\&quot;, \&quot;lastName\&quot;: \&quot;Flintstone\&quot;, \&quot;age\&quot;: 30}"</span>);
-<a class="jxr_linenumber" name="L125" href="#L125">125</a>             assertThat(records.get(1).info()).isEqualTo(<span class="jxr_string">"{\&quot;firstName\&quot;: \&quot;Wilma\&quot;, \&quot;lastName\&quot;: \&quot;Flintstone\&quot;, \&quot;age\&quot;: 25}"</span>);
-<a class="jxr_linenumber" name="L126" href="#L126">126</a>         }
-<a class="jxr_linenumber" name="L127" href="#L127">127</a>     }
-<a class="jxr_linenumber" name="L128" href="#L128">128</a> 
-<a class="jxr_linenumber" name="L129" href="#L129">129</a>     @Test
-<a class="jxr_linenumber" name="L130" href="#L130">130</a>     <strong class="jxr_keyword">void</strong> testGeneralInsert() {
-<a class="jxr_linenumber" name="L131" href="#L131">131</a>         <strong class="jxr_keyword">try</strong> (SqlSession sqlSession = sqlSessionFactory.openSession()) {
-<a class="jxr_linenumber" name="L132" href="#L132">132</a>             <a name="JsonTestMapper" href="../../examples/custom_render/JsonTestMapper.html#JsonTestMapper">JsonTestMapper</a> mapper = sqlSession.getMapper(JsonTestMapper.<strong class="jxr_keyword">class</strong>);
-<a class="jxr_linenumber" name="L133" href="#L133">133</a> 
-<a class="jxr_linenumber" name="L134" href="#L134">134</a>             GeneralInsertStatementProvider insertStatement = insertInto(jsonTest)
-<a class="jxr_linenumber" name="L135" href="#L135">135</a>                     .set(id).toValue(1)
-<a class="jxr_linenumber" name="L136" href="#L136">136</a>                     .set(description).toValue(<span class="jxr_string">"Fred"</span>)
-<a class="jxr_linenumber" name="L137" href="#L137">137</a>                     .set(info).toValue(<span class="jxr_string">"{\&quot;firstName\&quot;: \&quot;Fred\&quot;, \&quot;lastName\&quot;: \&quot;Flintstone\&quot;, \&quot;age\&quot;: 30}"</span>)
-<a class="jxr_linenumber" name="L138" href="#L138">138</a>                     .build()
-<a class="jxr_linenumber" name="L139" href="#L139">139</a>                     .render(RenderingStrategies.MYBATIS3);
-<a class="jxr_linenumber" name="L140" href="#L140">140</a> 
-<a class="jxr_linenumber" name="L141" href="#L141">141</a>             String expected = <span class="jxr_string">"insert into JsonTest (id, description, info) "</span>
-<a class="jxr_linenumber" name="L142" href="#L142">142</a>                     + <span class="jxr_string">"values (#{parameters.p1,jdbcType=INTEGER}, #{parameters.p2,jdbcType=VARCHAR}, "</span>
-<a class="jxr_linenumber" name="L143" href="#L143">143</a>                     + <span class="jxr_string">"#{parameters.p3,jdbcType=VARCHAR}::json)"</span>;
-<a class="jxr_linenumber" name="L144" href="#L144">144</a> 
-<a class="jxr_linenumber" name="L145" href="#L145">145</a>             assertThat(insertStatement.getInsertStatement()).isEqualTo(expected);
-<a class="jxr_linenumber" name="L146" href="#L146">146</a> 
-<a class="jxr_linenumber" name="L147" href="#L147">147</a>             <strong class="jxr_keyword">int</strong> rows = mapper.generalInsert(insertStatement);
-<a class="jxr_linenumber" name="L148" href="#L148">148</a>             assertThat(rows).isEqualTo(1);
-<a class="jxr_linenumber" name="L149" href="#L149">149</a> 
-<a class="jxr_linenumber" name="L150" href="#L150">150</a>             insertStatement = insertInto(jsonTest)
-<a class="jxr_linenumber" name="L151" href="#L151">151</a>                     .set(id).toValue(2)
-<a class="jxr_linenumber" name="L152" href="#L152">152</a>                     .set(description).toValue(<span class="jxr_string">"Wilma"</span>)
-<a class="jxr_linenumber" name="L153" href="#L153">153</a>                     .set(info).toValue(<span class="jxr_string">"{\&quot;firstName\&quot;: \&quot;Wilma\&quot;, \&quot;lastName\&quot;: \&quot;Flintstone\&quot;, \&quot;age\&quot;: 25}"</span>)
-<a class="jxr_linenumber" name="L154" href="#L154">154</a>                     .build()
-<a class="jxr_linenumber" name="L155" href="#L155">155</a>                     .render(RenderingStrategies.MYBATIS3);
-<a class="jxr_linenumber" name="L156" href="#L156">156</a> 
-<a class="jxr_linenumber" name="L157" href="#L157">157</a>             rows = mapper.generalInsert(insertStatement);
-<a class="jxr_linenumber" name="L158" href="#L158">158</a>             assertThat(rows).isEqualTo(1);
-<a class="jxr_linenumber" name="L159" href="#L159">159</a> 
-<a class="jxr_linenumber" name="L160" href="#L160">160</a>             SelectStatementProvider selectStatement = select(id, description, info)
-<a class="jxr_linenumber" name="L161" href="#L161">161</a>                     .from(jsonTest)
-<a class="jxr_linenumber" name="L162" href="#L162">162</a>                     .orderBy(id)
-<a class="jxr_linenumber" name="L163" href="#L163">163</a>                     .build()
-<a class="jxr_linenumber" name="L164" href="#L164">164</a>                     .render(RenderingStrategies.MYBATIS3);
-<a class="jxr_linenumber" name="L165" href="#L165">165</a> 
-<a class="jxr_linenumber" name="L166" href="#L166">166</a>             List&lt;JsonTestRecord&gt; records = mapper.selectMany(selectStatement);
-<a class="jxr_linenumber" name="L167" href="#L167">167</a>             assertThat(records).hasSize(2);
-<a class="jxr_linenumber" name="L168" href="#L168">168</a>             assertThat(records.get(0).info()).isEqualTo(<span class="jxr_string">"{\&quot;firstName\&quot;: \&quot;Fred\&quot;, \&quot;lastName\&quot;: \&quot;Flintstone\&quot;, \&quot;age\&quot;: 30}"</span>);
-<a class="jxr_linenumber" name="L169" href="#L169">169</a>             assertThat(records.get(1).info()).isEqualTo(<span class="jxr_string">"{\&quot;firstName\&quot;: \&quot;Wilma\&quot;, \&quot;lastName\&quot;: \&quot;Flintstone\&quot;, \&quot;age\&quot;: 25}"</span>);
-<a class="jxr_linenumber" name="L170" href="#L170">170</a>         }
-<a class="jxr_linenumber" name="L171" href="#L171">171</a>     }
-<a class="jxr_linenumber" name="L172" href="#L172">172</a> 
-<a class="jxr_linenumber" name="L173" href="#L173">173</a>     @Test
-<a class="jxr_linenumber" name="L174" href="#L174">174</a>     <strong class="jxr_keyword">void</strong> testInsertMultiple() {
-<a class="jxr_linenumber" name="L175" href="#L175">175</a>         <strong class="jxr_keyword">try</strong> (SqlSession sqlSession = sqlSessionFactory.openSession()) {
-<a class="jxr_linenumber" name="L176" href="#L176">176</a>             <a name="JsonTestMapper" href="../../examples/custom_render/JsonTestMapper.html#JsonTestMapper">JsonTestMapper</a> mapper = sqlSession.getMapper(JsonTestMapper.<strong class="jxr_keyword">class</strong>);
-<a class="jxr_linenumber" name="L177" href="#L177">177</a> 
-<a class="jxr_linenumber" name="L178" href="#L178">178</a>             <a name="JsonTestRecord" href="../../examples/custom_render/JsonTestRecord.html#JsonTestRecord">JsonTestRecord</a> record1 = <strong class="jxr_keyword">new</strong> <a name="JsonTestRecord" href="../../examples/custom_render/JsonTestRecord.html#JsonTestRecord">JsonTestRecord</a>(1, <span class="jxr_string">"Fred"</span>,
-<a class="jxr_linenumber" name="L179" href="#L179">179</a>                     <span class="jxr_string">"{\&quot;firstName\&quot;: \&quot;Fred\&quot;, \&quot;lastName\&quot;: \&quot;Flintstone\&quot;, \&quot;age\&quot;: 30}"</span>);
-<a class="jxr_linenumber" name="L180" href="#L180">180</a> 
-<a class="jxr_linenumber" name="L181" href="#L181">181</a>             <a name="JsonTestRecord" href="../../examples/custom_render/JsonTestRecord.html#JsonTestRecord">JsonTestRecord</a> record2 = <strong class="jxr_keyword">new</strong> <a name="JsonTestRecord" href="../../examples/custom_render/JsonTestRecord.html#JsonTestRecord">JsonTestRecord</a>(2, <span class="jxr_string">"Wilma"</span>,
-<a class="jxr_linenumber" name="L182" href="#L182">182</a>                     <span class="jxr_string">"{\&quot;firstName\&quot;: \&quot;Wilma\&quot;, \&quot;lastName\&quot;: \&quot;Flintstone\&quot;, \&quot;age\&quot;: 25}"</span>);
-<a class="jxr_linenumber" name="L183" href="#L183">183</a> 
-<a class="jxr_linenumber" name="L184" href="#L184">184</a>             MultiRowInsertStatementProvider&lt;JsonTestRecord&gt; insertStatement = insertMultiple(record1, record2)
-<a class="jxr_linenumber" name="L185" href="#L185">185</a>                     .into(jsonTest)
-<a class="jxr_linenumber" name="L186" href="#L186">186</a>                     .map(id).toProperty(<span class="jxr_string">"id"</span>)
-<a class="jxr_linenumber" name="L187" href="#L187">187</a>                     .map(description).toProperty(<span class="jxr_string">"description"</span>)
-<a class="jxr_linenumber" name="L188" href="#L188">188</a>                     .map(info).toProperty(<span class="jxr_string">"info"</span>)
-<a class="jxr_linenumber" name="L189" href="#L189">189</a>                     .build()
-<a class="jxr_linenumber" name="L190" href="#L190">190</a>                     .render(RenderingStrategies.MYBATIS3);
-<a class="jxr_linenumber" name="L191" href="#L191">191</a> 
-<a class="jxr_linenumber" name="L192" href="#L192">192</a>             String expected = <span class="jxr_string">"insert into JsonTest (id, description, info) "</span>
-<a class="jxr_linenumber" name="L193" href="#L193">193</a>                     + <span class="jxr_string">"values (#{records[0].id,jdbcType=INTEGER}, #{records[0].description,jdbcType=VARCHAR}, "</span>
-<a class="jxr_linenumber" name="L194" href="#L194">194</a>                     + <span class="jxr_string">"#{records[0].info,jdbcType=VARCHAR}::json), "</span>
-<a class="jxr_linenumber" name="L195" href="#L195">195</a>                     + <span class="jxr_string">"(#{records[1].id,jdbcType=INTEGER}, #{records[1].description,jdbcType=VARCHAR}, "</span>
-<a class="jxr_linenumber" name="L196" href="#L196">196</a>                     + <span class="jxr_string">"#{records[1].info,jdbcType=VARCHAR}::json)"</span>;
-<a class="jxr_linenumber" name="L197" href="#L197">197</a> 
-<a class="jxr_linenumber" name="L198" href="#L198">198</a>             assertThat(insertStatement.getInsertStatement()).isEqualTo(expected);
-<a class="jxr_linenumber" name="L199" href="#L199">199</a> 
-<a class="jxr_linenumber" name="L200" href="#L200">200</a>             <strong class="jxr_keyword">int</strong> rows = mapper.insertMultiple(insertStatement);
-<a class="jxr_linenumber" name="L201" href="#L201">201</a>             assertThat(rows).isEqualTo(2);
-<a class="jxr_linenumber" name="L202" href="#L202">202</a> 
-<a class="jxr_linenumber" name="L203" href="#L203">203</a>             SelectStatementProvider selectStatement = select(id, description, info)
-<a class="jxr_linenumber" name="L204" href="#L204">204</a>                     .from(jsonTest)
-<a class="jxr_linenumber" name="L205" href="#L205">205</a>                     .orderBy(id)
-<a class="jxr_linenumber" name="L206" href="#L206">206</a>                     .build()
-<a class="jxr_linenumber" name="L207" href="#L207">207</a>                     .render(RenderingStrategies.MYBATIS3);
-<a class="jxr_linenumber" name="L208" href="#L208">208</a> 
-<a class="jxr_linenumber" name="L209" href="#L209">209</a>             List&lt;JsonTestRecord&gt; records = mapper.selectMany(selectStatement);
-<a class="jxr_linenumber" name="L210" href="#L210">210</a>             assertThat(records).hasSize(2);
-<a class="jxr_linenumber" name="L211" href="#L211">211</a>             assertThat(records.get(0).info()).isEqualTo(<span class="jxr_string">"{\&quot;firstName\&quot;: \&quot;Fred\&quot;, \&quot;lastName\&quot;: \&quot;Flintstone\&quot;, \&quot;age\&quot;: 30}"</span>);
-<a class="jxr_linenumber" name="L212" href="#L212">212</a>             assertThat(records.get(1).info()).isEqualTo(<span class="jxr_string">"{\&quot;firstName\&quot;: \&quot;Wilma\&quot;, \&quot;lastName\&quot;: \&quot;Flintstone\&quot;, \&quot;age\&quot;: 25}"</span>);
-<a class="jxr_linenumber" name="L213" href="#L213">213</a>         }
-<a class="jxr_linenumber" name="L214" href="#L214">214</a>     }
-<a class="jxr_linenumber" name="L215" href="#L215">215</a> 
-<a class="jxr_linenumber" name="L216" href="#L216">216</a>     @Test
-<a class="jxr_linenumber" name="L217" href="#L217">217</a>     <strong class="jxr_keyword">void</strong> testUpdate() {
-<a class="jxr_linenumber" name="L218" href="#L218">218</a>         <strong class="jxr_keyword">try</strong> (SqlSession sqlSession = sqlSessionFactory.openSession()) {
-<a class="jxr_linenumber" name="L219" href="#L219">219</a>             <a name="JsonTestMapper" href="../../examples/custom_render/JsonTestMapper.html#JsonTestMapper">JsonTestMapper</a> mapper = sqlSession.getMapper(JsonTestMapper.<strong class="jxr_keyword">class</strong>);
-<a class="jxr_linenumber" name="L220" href="#L220">220</a> 
-<a class="jxr_linenumber" name="L221" href="#L221">221</a>             <a name="JsonTestRecord" href="../../examples/custom_render/JsonTestRecord.html#JsonTestRecord">JsonTestRecord</a> record1 = <strong class="jxr_keyword">new</strong> <a name="JsonTestRecord" href="../../examples/custom_render/JsonTestRecord.html#JsonTestRecord">JsonTestRecord</a>(1, <span class="jxr_string">"Fred"</span>,
-<a class="jxr_linenumber" name="L222" href="#L222">222</a>                     <span class="jxr_string">"{\&quot;firstName\&quot;: \&quot;Fred\&quot;, \&quot;lastName\&quot;: \&quot;Flintstone\&quot;, \&quot;age\&quot;: 30}"</span>);
-<a class="jxr_linenumber" name="L223" href="#L223">223</a> 
-<a class="jxr_linenumber" name="L224" href="#L224">224</a>             <a name="JsonTestRecord" href="../../examples/custom_render/JsonTestRecord.html#JsonTestRecord">JsonTestRecord</a> record2 = <strong class="jxr_keyword">new</strong> <a name="JsonTestRecord" href="../../examples/custom_render/JsonTestRecord.html#JsonTestRecord">JsonTestRecord</a>(2, <span class="jxr_string">"Wilma"</span>,
-<a class="jxr_linenumber" name="L225" href="#L225">225</a>                     <span class="jxr_string">"{\&quot;firstName\&quot;: \&quot;Wilma\&quot;, \&quot;lastName\&quot;: \&quot;Flintstone\&quot;, \&quot;age\&quot;: 25}"</span>);
-<a class="jxr_linenumber" name="L226" href="#L226">226</a> 
-<a class="jxr_linenumber" name="L227" href="#L227">227</a>             MultiRowInsertStatementProvider&lt;JsonTestRecord&gt; insertStatement = insertMultiple(record1, record2)
-<a class="jxr_linenumber" name="L228" href="#L228">228</a>                     .into(jsonTest)
-<a class="jxr_linenumber" name="L229" href="#L229">229</a>                     .map(id).toProperty(<span class="jxr_string">"id"</span>)
-<a class="jxr_linenumber" name="L230" href="#L230">230</a>                     .map(description).toProperty(<span class="jxr_string">"description"</span>)
-<a class="jxr_linenumber" name="L231" href="#L231">231</a>                     .map(info).toProperty(<span class="jxr_string">"info"</span>)
-<a class="jxr_linenumber" name="L232" href="#L232">232</a>                     .build()
-<a class="jxr_linenumber" name="L233" href="#L233">233</a>                     .render(RenderingStrategies.MYBATIS3);
-<a class="jxr_linenumber" name="L234" href="#L234">234</a> 
-<a class="jxr_linenumber" name="L235" href="#L235">235</a>             <strong class="jxr_keyword">int</strong> rows = mapper.insertMultiple(insertStatement);
-<a class="jxr_linenumber" name="L236" href="#L236">236</a>             assertThat(rows).isEqualTo(2);
-<a class="jxr_linenumber" name="L237" href="#L237">237</a> 
-<a class="jxr_linenumber" name="L238" href="#L238">238</a>             UpdateStatementProvider updateStatement = update(jsonTest)
-<a class="jxr_linenumber" name="L239" href="#L239">239</a>                     .set(info).equalTo(<span class="jxr_string">"{\&quot;firstName\&quot;: \&quot;Wilma\&quot;, \&quot;lastName\&quot;: \&quot;Flintstone\&quot;, \&quot;age\&quot;: 26}"</span>)
-<a class="jxr_linenumber" name="L240" href="#L240">240</a>                     .where(id, isEqualTo(2))
-<a class="jxr_linenumber" name="L241" href="#L241">241</a>                     .build()
-<a class="jxr_linenumber" name="L242" href="#L242">242</a>                     .render(RenderingStrategies.MYBATIS3);
-<a class="jxr_linenumber" name="L243" href="#L243">243</a> 
-<a class="jxr_linenumber" name="L244" href="#L244">244</a>             String expected = <span class="jxr_string">"update JsonTest "</span>
-<a class="jxr_linenumber" name="L245" href="#L245">245</a>                     + <span class="jxr_string">"set info = #{parameters.p1,jdbcType=VARCHAR}::json "</span>
-<a class="jxr_linenumber" name="L246" href="#L246">246</a>                     + <span class="jxr_string">"where id = #{parameters.p2,jdbcType=INTEGER}"</span>;
-<a class="jxr_linenumber" name="L247" href="#L247">247</a> 
-<a class="jxr_linenumber" name="L248" href="#L248">248</a>             assertThat(updateStatement.getUpdateStatement()).isEqualTo(expected);
-<a class="jxr_linenumber" name="L249" href="#L249">249</a> 
-<a class="jxr_linenumber" name="L250" href="#L250">250</a>             rows = mapper.update(updateStatement);
-<a class="jxr_linenumber" name="L251" href="#L251">251</a>             assertThat(rows).isEqualTo(1);
-<a class="jxr_linenumber" name="L252" href="#L252">252</a> 
-<a class="jxr_linenumber" name="L253" href="#L253">253</a>             SelectStatementProvider selectStatement = select(id, description, info)
-<a class="jxr_linenumber" name="L254" href="#L254">254</a>                     .from(jsonTest)
-<a class="jxr_linenumber" name="L255" href="#L255">255</a>                     .orderBy(id)
-<a class="jxr_linenumber" name="L256" href="#L256">256</a>                     .build()
-<a class="jxr_linenumber" name="L257" href="#L257">257</a>                     .render(RenderingStrategies.MYBATIS3);
-<a class="jxr_linenumber" name="L258" href="#L258">258</a> 
-<a class="jxr_linenumber" name="L259" href="#L259">259</a>             List&lt;JsonTestRecord&gt; records = mapper.selectMany(selectStatement);
-<a class="jxr_linenumber" name="L260" href="#L260">260</a>             assertThat(records).hasSize(2);
-<a class="jxr_linenumber" name="L261" href="#L261">261</a>             assertThat(records.get(0).info()).isEqualTo(<span class="jxr_string">"{\&quot;firstName\&quot;: \&quot;Fred\&quot;, \&quot;lastName\&quot;: \&quot;Flintstone\&quot;, \&quot;age\&quot;: 30}"</span>);
-<a class="jxr_linenumber" name="L262" href="#L262">262</a>             assertThat(records.get(1).info()).isEqualTo(<span class="jxr_string">"{\&quot;firstName\&quot;: \&quot;Wilma\&quot;, \&quot;lastName\&quot;: \&quot;Flintstone\&quot;, \&quot;age\&quot;: 26}"</span>);
-<a class="jxr_linenumber" name="L263" href="#L263">263</a>         }
-<a class="jxr_linenumber" name="L264" href="#L264">264</a>     }
-<a class="jxr_linenumber" name="L265" href="#L265">265</a> 
-<a class="jxr_linenumber" name="L266" href="#L266">266</a>     @Test
-<a class="jxr_linenumber" name="L267" href="#L267">267</a>     <strong class="jxr_keyword">void</strong> testDeReference() {
-<a class="jxr_linenumber" name="L268" href="#L268">268</a>         <strong class="jxr_keyword">try</strong> (SqlSession sqlSession = sqlSessionFactory.openSession()) {
-<a class="jxr_linenumber" name="L269" href="#L269">269</a>             <a name="JsonTestMapper" href="../../examples/custom_render/JsonTestMapper.html#JsonTestMapper">JsonTestMapper</a> mapper = sqlSession.getMapper(JsonTestMapper.<strong class="jxr_keyword">class</strong>);
-<a class="jxr_linenumber" name="L270" href="#L270">270</a> 
-<a class="jxr_linenumber" name="L271" href="#L271">271</a>             <a name="JsonTestRecord" href="../../examples/custom_render/JsonTestRecord.html#JsonTestRecord">JsonTestRecord</a> record1 = <strong class="jxr_keyword">new</strong> <a name="JsonTestRecord" href="../../examples/custom_render/JsonTestRecord.html#JsonTestRecord">JsonTestRecord</a>(1, <span class="jxr_string">"Fred"</span>,
-<a class="jxr_linenumber" name="L272" href="#L272">272</a>                     <span class="jxr_string">"{\&quot;firstName\&quot;: \&quot;Fred\&quot;, \&quot;lastName\&quot;: \&quot;Flintstone\&quot;, \&quot;age\&quot;: 30}"</span>);
-<a class="jxr_linenumber" name="L273" href="#L273">273</a> 
-<a class="jxr_linenumber" name="L274" href="#L274">274</a>             <a name="JsonTestRecord" href="../../examples/custom_render/JsonTestRecord.html#JsonTestRecord">JsonTestRecord</a> record2 = <strong class="jxr_keyword">new</strong> <a name="JsonTestRecord" href="../../examples/custom_render/JsonTestRecord.html#JsonTestRecord">JsonTestRecord</a>(2, <span class="jxr_string">"Wilma"</span>,
-<a class="jxr_linenumber" name="L275" href="#L275">275</a>                     <span class="jxr_string">"{\&quot;firstName\&quot;: \&quot;Wilma\&quot;, \&quot;lastName\&quot;: \&quot;Flintstone\&quot;, \&quot;age\&quot;: 25}"</span>);
-<a class="jxr_linenumber" name="L276" href="#L276">276</a> 
-<a class="jxr_linenumber" name="L277" href="#L277">277</a>             MultiRowInsertStatementProvider&lt;JsonTestRecord&gt; insertStatement = insertMultiple(record1, record2)
-<a class="jxr_linenumber" name="L278" href="#L278">278</a>                     .into(jsonTest)
-<a class="jxr_linenumber" name="L279" href="#L279">279</a>                     .map(id).toProperty(<span class="jxr_string">"id"</span>)
-<a class="jxr_linenumber" name="L280" href="#L280">280</a>                     .map(description).toProperty(<span class="jxr_string">"description"</span>)
-<a class="jxr_linenumber" name="L281" href="#L281">281</a>                     .map(info).toProperty(<span class="jxr_string">"info"</span>)
-<a class="jxr_linenumber" name="L282" href="#L282">282</a>                     .build()
-<a class="jxr_linenumber" name="L283" href="#L283">283</a>                     .render(RenderingStrategies.MYBATIS3);
-<a class="jxr_linenumber" name="L284" href="#L284">284</a> 
-<a class="jxr_linenumber" name="L285" href="#L285">285</a>             <strong class="jxr_keyword">int</strong> rows = mapper.insertMultiple(insertStatement);
-<a class="jxr_linenumber" name="L286" href="#L286">286</a>             assertThat(rows).isEqualTo(2);
-<a class="jxr_linenumber" name="L287" href="#L287">287</a> 
-<a class="jxr_linenumber" name="L288" href="#L288">288</a>             SelectStatementProvider selectStatement = select(id, description, info)
-<a class="jxr_linenumber" name="L289" href="#L289">289</a>                     .from(jsonTest)
-<a class="jxr_linenumber" name="L290" href="#L290">290</a>                     .where(dereference(info, <span class="jxr_string">"age"</span>), isEqualTo(<span class="jxr_string">"25"</span>))
-<a class="jxr_linenumber" name="L291" href="#L291">291</a>                     .build()
-<a class="jxr_linenumber" name="L292" href="#L292">292</a>                     .render(RenderingStrategies.MYBATIS3);
-<a class="jxr_linenumber" name="L293" href="#L293">293</a> 
-<a class="jxr_linenumber" name="L294" href="#L294">294</a>             String expected = <span class="jxr_string">"select id, description, info "</span>
-<a class="jxr_linenumber" name="L295" href="#L295">295</a>                     + <span class="jxr_string">"from JsonTest "</span>
-<a class="jxr_linenumber" name="L296" href="#L296">296</a>                     + <span class="jxr_string">"where info-&gt;&gt;'age' = #{parameters.p1,jdbcType=VARCHAR}"</span>;
-<a class="jxr_linenumber" name="L297" href="#L297">297</a> 
-<a class="jxr_linenumber" name="L298" href="#L298">298</a>             assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
-<a class="jxr_linenumber" name="L299" href="#L299">299</a> 
-<a class="jxr_linenumber" name="L300" href="#L300">300</a>             Optional&lt;JsonTestRecord&gt; row = mapper.selectOne(selectStatement);
-<a class="jxr_linenumber" name="L301" href="#L301">301</a> 
-<a class="jxr_linenumber" name="L302" href="#L302">302</a>             assertThat(row).hasValueSatisfying( r -&gt;
-<a class="jxr_linenumber" name="L303" href="#L303">303</a>                 assertThat(r.info())
-<a class="jxr_linenumber" name="L304" href="#L304">304</a>                         .isEqualTo(<span class="jxr_string">"{\&quot;firstName\&quot;: \&quot;Wilma\&quot;, \&quot;lastName\&quot;: \&quot;Flintstone\&quot;, \&quot;age\&quot;: 25}"</span>)
-<a class="jxr_linenumber" name="L305" href="#L305">305</a>             );
-<a class="jxr_linenumber" name="L306" href="#L306">306</a>         }
-<a class="jxr_linenumber" name="L307" href="#L307">307</a>     }
-<a class="jxr_linenumber" name="L308" href="#L308">308</a> 
-<a class="jxr_linenumber" name="L309" href="#L309">309</a>     @Test
-<a class="jxr_linenumber" name="L310" href="#L310">310</a>     <strong class="jxr_keyword">void</strong> testDereference2() {
-<a class="jxr_linenumber" name="L311" href="#L311">311</a>         <strong class="jxr_keyword">try</strong> (SqlSession sqlSession = sqlSessionFactory.openSession()) {
-<a class="jxr_linenumber" name="L312" href="#L312">312</a>             <a name="JsonTestMapper" href="../../examples/custom_render/JsonTestMapper.html#JsonTestMapper">JsonTestMapper</a> mapper = sqlSession.getMapper(JsonTestMapper.<strong class="jxr_keyword">class</strong>);
-<a class="jxr_linenumber" name="L313" href="#L313">313</a> 
-<a class="jxr_linenumber" name="L314" href="#L314">314</a>             <a name="JsonTestRecord" href="../../examples/custom_render/JsonTestRecord.html#JsonTestRecord">JsonTestRecord</a> record1 = <strong class="jxr_keyword">new</strong> <a name="JsonTestRecord" href="../../examples/custom_render/JsonTestRecord.html#JsonTestRecord">JsonTestRecord</a>(1, <span class="jxr_string">"Fred"</span>,
-<a class="jxr_linenumber" name="L315" href="#L315">315</a>                     <span class="jxr_string">"{\&quot;firstName\&quot;: \&quot;Fred\&quot;, \&quot;lastName\&quot;: \&quot;Flintstone\&quot;, \&quot;age\&quot;: 30}"</span>);
-<a class="jxr_linenumber" name="L316" href="#L316">316</a> 
-<a class="jxr_linenumber" name="L317" href="#L317">317</a>             <a name="JsonTestRecord" href="../../examples/custom_render/JsonTestRecord.html#JsonTestRecord">JsonTestRecord</a> record2 = <strong class="jxr_keyword">new</strong> <a name="JsonTestRecord" href="../../examples/custom_render/JsonTestRecord.html#JsonTestRecord">JsonTestRecord</a>(2, <span class="jxr_string">"Wilma"</span>,
-<a class="jxr_linenumber" name="L318" href="#L318">318</a>                     <span class="jxr_string">"{\&quot;firstName\&quot;: \&quot;Wilma\&quot;, \&quot;lastName\&quot;: \&quot;Flintstone\&quot;, \&quot;age\&quot;: 25}"</span>);
-<a class="jxr_linenumber" name="L319" href="#L319">319</a> 
-<a class="jxr_linenumber" name="L320" href="#L320">320</a>             MultiRowInsertStatementProvider&lt;JsonTestRecord&gt; insertStatement = insertMultiple(record1, record2)
-<a class="jxr_linenumber" name="L321" href="#L321">321</a>                     .into(jsonTest)
-<a class="jxr_linenumber" name="L322" href="#L322">322</a>                     .map(id).toProperty(<span class="jxr_string">"id"</span>)
-<a class="jxr_linenumber" name="L323" href="#L323">323</a>                     .map(description).toProperty(<span class="jxr_string">"description"</span>)
-<a class="jxr_linenumber" name="L324" href="#L324">324</a>                     .map(info).toProperty(<span class="jxr_string">"info"</span>)
-<a class="jxr_linenumber" name="L325" href="#L325">325</a>                     .build()
-<a class="jxr_linenumber" name="L326" href="#L326">326</a>                     .render(RenderingStrategies.MYBATIS3);
-<a class="jxr_linenumber" name="L327" href="#L327">327</a> 
-<a class="jxr_linenumber" name="L328" href="#L328">328</a>             <strong class="jxr_keyword">int</strong> rows = mapper.insertMultiple(insertStatement);
-<a class="jxr_linenumber" name="L329" href="#L329">329</a>             assertThat(rows).isEqualTo(2);
-<a class="jxr_linenumber" name="L330" href="#L330">330</a> 
-<a class="jxr_linenumber" name="L331" href="#L331">331</a>             SelectStatementProvider selectStatement = select(dereference(info, <span class="jxr_string">"firstName"</span>).as(<span class="jxr_string">"firstname"</span>))
-<a class="jxr_linenumber" name="L332" href="#L332">332</a>                     .from(jsonTest)
-<a class="jxr_linenumber" name="L333" href="#L333">333</a>                     .where(dereference(info, <span class="jxr_string">"age"</span>), isEqualTo(<span class="jxr_string">"25"</span>))
-<a class="jxr_linenumber" name="L334" href="#L334">334</a>                     .build()
-<a class="jxr_linenumber" name="L335" href="#L335">335</a>                     .render(RenderingStrategies.MYBATIS3);
-<a class="jxr_linenumber" name="L336" href="#L336">336</a> 
-<a class="jxr_linenumber" name="L337" href="#L337">337</a>             String expected = <span class="jxr_string">"select info-&gt;&gt;'firstName' as firstname "</span>
-<a class="jxr_linenumber" name="L338" href="#L338">338</a>                     + <span class="jxr_string">"from JsonTest "</span>
-<a class="jxr_linenumber" name="L339" href="#L339">339</a>                     + <span class="jxr_string">"where info-&gt;&gt;'age' = #{parameters.p1,jdbcType=VARCHAR}"</span>;
-<a class="jxr_linenumber" name="L340" href="#L340">340</a> 
-<a class="jxr_linenumber" name="L341" href="#L341">341</a>             assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
-<a class="jxr_linenumber" name="L342" href="#L342">342</a> 
-<a class="jxr_linenumber" name="L343" href="#L343">343</a>             List&lt;Map&lt;String, Object&gt;&gt; records = mapper.selectManyMappedRows(selectStatement);
-<a class="jxr_linenumber" name="L344" href="#L344">344</a>             assertThat(records).hasSize(1);
-<a class="jxr_linenumber" name="L345" href="#L345">345</a>             assertThat(records.get(0)).containsEntry(<span class="jxr_string">"firstname"</span>, <span class="jxr_string">"Wilma"</span>);
-<a class="jxr_linenumber" name="L346" href="#L346">346</a>         }
-<a class="jxr_linenumber" name="L347" href="#L347">347</a>     }
-<a class="jxr_linenumber" name="L348" href="#L348">348</a> 
-<a class="jxr_linenumber" name="L349" href="#L349">349</a>     <strong class="jxr_keyword">private</strong> &lt;T&gt; SqlColumn&lt;String&gt; dereference(SqlColumn&lt;T&gt; column, String attribute) {
-<a class="jxr_linenumber" name="L350" href="#L350">350</a>         <strong class="jxr_keyword">return</strong> SqlColumn.of(column.name() + <span class="jxr_string">"-&gt;&gt;'"</span> + attribute + <span class="jxr_string">"'"</span>, column.table(), JDBCType.VARCHAR);
-<a class="jxr_linenumber" name="L351" href="#L351">351</a>     }
-<a class="jxr_linenumber" name="L352" href="#L352">352</a> }
+<a class="jxr_linenumber" name="L60" href="#L60">60</a>      @Container
+<a class="jxr_linenumber" name="L61" href="#L61">61</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> PostgreSQLContainer postgres =
+<a class="jxr_linenumber" name="L62" href="#L62">62</a>              <strong class="jxr_keyword">new</strong> PostgreSQLContainer(TestContainersConfiguration.POSTGRES_LATEST)
+<a class="jxr_linenumber" name="L63" href="#L63">63</a>                      .withInitScript(<span class="jxr_string">"examples/custom_render/dbInit.sql"</span>);
+<a class="jxr_linenumber" name="L64" href="#L64">64</a>  
+<a class="jxr_linenumber" name="L65" href="#L65">65</a>      <strong class="jxr_keyword">private</strong> SqlSessionFactory sqlSessionFactory;
+<a class="jxr_linenumber" name="L66" href="#L66">66</a>  
+<a class="jxr_linenumber" name="L67" href="#L67">67</a>      @BeforeEach
+<a class="jxr_linenumber" name="L68" href="#L68">68</a>      <strong class="jxr_keyword">void</strong> setUp() {
+<a class="jxr_linenumber" name="L69" href="#L69">69</a>          UnpooledDataSource ds = <strong class="jxr_keyword">new</strong> UnpooledDataSource(postgres.getDriverClassName(), postgres.getJdbcUrl(),
+<a class="jxr_linenumber" name="L70" href="#L70">70</a>                  postgres.getUsername(), postgres.getPassword());
+<a class="jxr_linenumber" name="L71" href="#L71">71</a>          Environment environment = <strong class="jxr_keyword">new</strong> Environment(<span class="jxr_string">"test"</span>, <strong class="jxr_keyword">new</strong> JdbcTransactionFactory(), ds);
+<a class="jxr_linenumber" name="L72" href="#L72">72</a>          Configuration configuration = <strong class="jxr_keyword">new</strong> Configuration(environment);
+<a class="jxr_linenumber" name="L73" href="#L73">73</a>          configuration.addMapper(JsonTestMapper.<strong class="jxr_keyword">class</strong>);
+<a class="jxr_linenumber" name="L74" href="#L74">74</a>          configuration.addMapper(CommonSelectMapper.<strong class="jxr_keyword">class</strong>);
+<a class="jxr_linenumber" name="L75" href="#L75">75</a>          sqlSessionFactory = <strong class="jxr_keyword">new</strong> SqlSessionFactoryBuilder().build(configuration);
+<a class="jxr_linenumber" name="L76" href="#L76">76</a>      }
+<a class="jxr_linenumber" name="L77" href="#L77">77</a>  
+<a class="jxr_linenumber" name="L78" href="#L78">78</a>      @Test
+<a class="jxr_linenumber" name="L79" href="#L79">79</a>      <strong class="jxr_keyword">void</strong> testInsertRecord() {
+<a class="jxr_linenumber" name="L80" href="#L80">80</a>          <strong class="jxr_keyword">try</strong> (SqlSession sqlSession = sqlSessionFactory.openSession()) {
+<a class="jxr_linenumber" name="L81" href="#L81">81</a>              <a name="JsonTestMapper" href="../../examples/custom_render/JsonTestMapper.html#JsonTestMapper">JsonTestMapper</a> mapper = sqlSession.getMapper(JsonTestMapper.<strong class="jxr_keyword">class</strong>);
+<a class="jxr_linenumber" name="L82" href="#L82">82</a>  
+<a class="jxr_linenumber" name="L83" href="#L83">83</a>              <a name="JsonTestRecord" href="../../examples/custom_render/JsonTestRecord.html#JsonTestRecord">JsonTestRecord</a> row = <strong class="jxr_keyword">new</strong> <a name="JsonTestRecord" href="../../examples/custom_render/JsonTestRecord.html#JsonTestRecord">JsonTestRecord</a>(1, <span class="jxr_string">"Fred"</span>,
+<a class="jxr_linenumber" name="L84" href="#L84">84</a>                      <span class="jxr_string">"{\&quot;firstName\&quot;: \&quot;Fred\&quot;, \&quot;lastName\&quot;: \&quot;Flintstone\&quot;, \&quot;age\&quot;: 30}"</span>);
+<a class="jxr_linenumber" name="L85" href="#L85">85</a>  
+<a class="jxr_linenumber" name="L86" href="#L86">86</a>              InsertStatementProvider&lt;JsonTestRecord&gt; insertStatement = insert(row).into(jsonTest)
+<a class="jxr_linenumber" name="L87" href="#L87">87</a>                      .map(id).toProperty(<span class="jxr_string">"id"</span>)
+<a class="jxr_linenumber" name="L88" href="#L88">88</a>                      .map(description).toProperty(<span class="jxr_string">"description"</span>)
+<a class="jxr_linenumber" name="L89" href="#L89">89</a>                      .map(info).toProperty(<span class="jxr_string">"info"</span>)
+<a class="jxr_linenumber" name="L90" href="#L90">90</a>                      .build()
+<a class="jxr_linenumber" name="L91" href="#L91">91</a>                      .render(RenderingStrategies.MYBATIS3);
+<a class="jxr_linenumber" name="L92" href="#L92">92</a>  
+<a class="jxr_linenumber" name="L93" href="#L93">93</a>              String expected = <span class="jxr_string">"insert into JsonTest (id, description, info) "</span>
+<a class="jxr_linenumber" name="L94" href="#L94">94</a>                      + <span class="jxr_string">"values (#{row.id,jdbcType=INTEGER}, #{row.description,jdbcType=VARCHAR}, "</span>
+<a class="jxr_linenumber" name="L95" href="#L95">95</a>                      + <span class="jxr_string">"#{row.info,jdbcType=VARCHAR}::json)"</span>;
+<a class="jxr_linenumber" name="L96" href="#L96">96</a>  
+<a class="jxr_linenumber" name="L97" href="#L97">97</a>              assertThat(insertStatement.getInsertStatement()).isEqualTo(expected);
+<a class="jxr_linenumber" name="L98" href="#L98">98</a>  
+<a class="jxr_linenumber" name="L99" href="#L99">99</a>              <strong class="jxr_keyword">int</strong> rows = mapper.insert(insertStatement);
+<a class="jxr_linenumber" name="L100" href="#L100">100</a>             assertThat(rows).isEqualTo(1);
+<a class="jxr_linenumber" name="L101" href="#L101">101</a> 
+<a class="jxr_linenumber" name="L102" href="#L102">102</a>             row = <strong class="jxr_keyword">new</strong> <a name="JsonTestRecord" href="../../examples/custom_render/JsonTestRecord.html#JsonTestRecord">JsonTestRecord</a>(2, <span class="jxr_string">"Wilma"</span>,
+<a class="jxr_linenumber" name="L103" href="#L103">103</a>                     <span class="jxr_string">"{\&quot;firstName\&quot;: \&quot;Wilma\&quot;, \&quot;lastName\&quot;: \&quot;Flintstone\&quot;, \&quot;age\&quot;: 25}"</span>);
+<a class="jxr_linenumber" name="L104" href="#L104">104</a> 
+<a class="jxr_linenumber" name="L105" href="#L105">105</a>             insertStatement = insert(row).into(jsonTest)
+<a class="jxr_linenumber" name="L106" href="#L106">106</a>                     .map(id).toProperty(<span class="jxr_string">"id"</span>)
+<a class="jxr_linenumber" name="L107" href="#L107">107</a>                     .map(description).toProperty(<span class="jxr_string">"description"</span>)
+<a class="jxr_linenumber" name="L108" href="#L108">108</a>                     .map(info).toProperty(<span class="jxr_string">"info"</span>)
+<a class="jxr_linenumber" name="L109" href="#L109">109</a>                     .build()
+<a class="jxr_linenumber" name="L110" href="#L110">110</a>                     .render(RenderingStrategies.MYBATIS3);
+<a class="jxr_linenumber" name="L111" href="#L111">111</a> 
+<a class="jxr_linenumber" name="L112" href="#L112">112</a>             rows = mapper.insert(insertStatement);
+<a class="jxr_linenumber" name="L113" href="#L113">113</a>             assertThat(rows).isEqualTo(1);
+<a class="jxr_linenumber" name="L114" href="#L114">114</a> 
+<a class="jxr_linenumber" name="L115" href="#L115">115</a>             SelectStatementProvider selectStatement = select(id, description, info)
+<a class="jxr_linenumber" name="L116" href="#L116">116</a>                     .from(jsonTest)
+<a class="jxr_linenumber" name="L117" href="#L117">117</a>                     .orderBy(id)
+<a class="jxr_linenumber" name="L118" href="#L118">118</a>                     .build()
+<a class="jxr_linenumber" name="L119" href="#L119">119</a>                     .render(RenderingStrategies.MYBATIS3);
+<a class="jxr_linenumber" name="L120" href="#L120">120</a> 
+<a class="jxr_linenumber" name="L121" href="#L121">121</a>             List&lt;JsonTestRecord&gt; records = mapper.selectMany(selectStatement);
+<a class="jxr_linenumber" name="L122" href="#L122">122</a>             assertThat(records).hasSize(2);
+<a class="jxr_linenumber" name="L123" href="#L123">123</a>             assertThat(records.get(0).info()).isEqualTo(<span class="jxr_string">"{\&quot;firstName\&quot;: \&quot;Fred\&quot;, \&quot;lastName\&quot;: \&quot;Flintstone\&quot;, \&quot;age\&quot;: 30}"</span>);
+<a class="jxr_linenumber" name="L124" href="#L124">124</a>             assertThat(records.get(1).info()).isEqualTo(<span class="jxr_string">"{\&quot;firstName\&quot;: \&quot;Wilma\&quot;, \&quot;lastName\&quot;: \&quot;Flintstone\&quot;, \&quot;age\&quot;: 25}"</span>);
+<a class="jxr_linenumber" name="L125" href="#L125">125</a>         }
+<a class="jxr_linenumber" name="L126" href="#L126">126</a>     }
+<a class="jxr_linenumber" name="L127" href="#L127">127</a> 
+<a class="jxr_linenumber" name="L128" href="#L128">128</a>     @Test
+<a class="jxr_linenumber" name="L129" href="#L129">129</a>     <strong class="jxr_keyword">void</strong> testGeneralInsert() {
+<a class="jxr_linenumber" name="L130" href="#L130">130</a>         <strong class="jxr_keyword">try</strong> (SqlSession sqlSession = sqlSessionFactory.openSession()) {
+<a class="jxr_linenumber" name="L131" href="#L131">131</a>             <a name="JsonTestMapper" href="../../examples/custom_render/JsonTestMapper.html#JsonTestMapper">JsonTestMapper</a> mapper = sqlSession.getMapper(JsonTestMapper.<strong class="jxr_keyword">class</strong>);
+<a class="jxr_linenumber" name="L132" href="#L132">132</a> 
+<a class="jxr_linenumber" name="L133" href="#L133">133</a>             GeneralInsertStatementProvider insertStatement = insertInto(jsonTest)
+<a class="jxr_linenumber" name="L134" href="#L134">134</a>                     .set(id).toValue(1)
+<a class="jxr_linenumber" name="L135" href="#L135">135</a>                     .set(description).toValue(<span class="jxr_string">"Fred"</span>)
+<a class="jxr_linenumber" name="L136" href="#L136">136</a>                     .set(info).toValue(<span class="jxr_string">"{\&quot;firstName\&quot;: \&quot;Fred\&quot;, \&quot;lastName\&quot;: \&quot;Flintstone\&quot;, \&quot;age\&quot;: 30}"</span>)
+<a class="jxr_linenumber" name="L137" href="#L137">137</a>                     .build()
+<a class="jxr_linenumber" name="L138" href="#L138">138</a>                     .render(RenderingStrategies.MYBATIS3);
+<a class="jxr_linenumber" name="L139" href="#L139">139</a> 
+<a class="jxr_linenumber" name="L140" href="#L140">140</a>             String expected = <span class="jxr_string">"insert into JsonTest (id, description, info) "</span>
+<a class="jxr_linenumber" name="L141" href="#L141">141</a>                     + <span class="jxr_string">"values (#{parameters.p1,jdbcType=INTEGER}, #{parameters.p2,jdbcType=VARCHAR}, "</span>
+<a class="jxr_linenumber" name="L142" href="#L142">142</a>                     + <span class="jxr_string">"#{parameters.p3,jdbcType=VARCHAR}::json)"</span>;
+<a class="jxr_linenumber" name="L143" href="#L143">143</a> 
+<a class="jxr_linenumber" name="L144" href="#L144">144</a>             assertThat(insertStatement.getInsertStatement()).isEqualTo(expected);
+<a class="jxr_linenumber" name="L145" href="#L145">145</a> 
+<a class="jxr_linenumber" name="L146" href="#L146">146</a>             <strong class="jxr_keyword">int</strong> rows = mapper.generalInsert(insertStatement);
+<a class="jxr_linenumber" name="L147" href="#L147">147</a>             assertThat(rows).isEqualTo(1);
+<a class="jxr_linenumber" name="L148" href="#L148">148</a> 
+<a class="jxr_linenumber" name="L149" href="#L149">149</a>             insertStatement = insertInto(jsonTest)
+<a class="jxr_linenumber" name="L150" href="#L150">150</a>                     .set(id).toValue(2)
+<a class="jxr_linenumber" name="L151" href="#L151">151</a>                     .set(description).toValue(<span class="jxr_string">"Wilma"</span>)
+<a class="jxr_linenumber" name="L152" href="#L152">152</a>                     .set(info).toValue(<span class="jxr_string">"{\&quot;firstName\&quot;: \&quot;Wilma\&quot;, \&quot;lastName\&quot;: \&quot;Flintstone\&quot;, \&quot;age\&quot;: 25}"</span>)
+<a class="jxr_linenumber" name="L153" href="#L153">153</a>                     .build()
+<a class="jxr_linenumber" name="L154" href="#L154">154</a>                     .render(RenderingStrategies.MYBATIS3);
+<a class="jxr_linenumber" name="L155" href="#L155">155</a> 
+<a class="jxr_linenumber" name="L156" href="#L156">156</a>             rows = mapper.generalInsert(insertStatement);
+<a class="jxr_linenumber" name="L157" href="#L157">157</a>             assertThat(rows).isEqualTo(1);
+<a class="jxr_linenumber" name="L158" href="#L158">158</a> 
+<a class="jxr_linenumber" name="L159" href="#L159">159</a>             SelectStatementProvider selectStatement = select(id, description, info)
+<a class="jxr_linenumber" name="L160" href="#L160">160</a>                     .from(jsonTest)
+<a class="jxr_linenumber" name="L161" href="#L161">161</a>                     .orderBy(id)
+<a class="jxr_linenumber" name="L162" href="#L162">162</a>                     .build()
+<a class="jxr_linenumber" name="L163" href="#L163">163</a>                     .render(RenderingStrategies.MYBATIS3);
+<a class="jxr_linenumber" name="L164" href="#L164">164</a> 
+<a class="jxr_linenumber" name="L165" href="#L165">165</a>             List&lt;JsonTestRecord&gt; records = mapper.selectMany(selectStatement);
+<a class="jxr_linenumber" name="L166" href="#L166">166</a>             assertThat(records).hasSize(2);
+<a class="jxr_linenumber" name="L167" href="#L167">167</a>             assertThat(records.get(0).info()).isEqualTo(<span class="jxr_string">"{\&quot;firstName\&quot;: \&quot;Fred\&quot;, \&quot;lastName\&quot;: \&quot;Flintstone\&quot;, \&quot;age\&quot;: 30}"</span>);
+<a class="jxr_linenumber" name="L168" href="#L168">168</a>             assertThat(records.get(1).info()).isEqualTo(<span class="jxr_string">"{\&quot;firstName\&quot;: \&quot;Wilma\&quot;, \&quot;lastName\&quot;: \&quot;Flintstone\&quot;, \&quot;age\&quot;: 25}"</span>);
+<a class="jxr_linenumber" name="L169" href="#L169">169</a>         }
+<a class="jxr_linenumber" name="L170" href="#L170">170</a>     }
+<a class="jxr_linenumber" name="L171" href="#L171">171</a> 
+<a class="jxr_linenumber" name="L172" href="#L172">172</a>     @Test
+<a class="jxr_linenumber" name="L173" href="#L173">173</a>     <strong class="jxr_keyword">void</strong> testInsertMultiple() {
+<a class="jxr_linenumber" name="L174" href="#L174">174</a>         <strong class="jxr_keyword">try</strong> (SqlSession sqlSession = sqlSessionFactory.openSession()) {
+<a class="jxr_linenumber" name="L175" href="#L175">175</a>             <a name="JsonTestMapper" href="../../examples/custom_render/JsonTestMapper.html#JsonTestMapper">JsonTestMapper</a> mapper = sqlSession.getMapper(JsonTestMapper.<strong class="jxr_keyword">class</strong>);
+<a class="jxr_linenumber" name="L176" href="#L176">176</a> 
+<a class="jxr_linenumber" name="L177" href="#L177">177</a>             <a name="JsonTestRecord" href="../../examples/custom_render/JsonTestRecord.html#JsonTestRecord">JsonTestRecord</a> record1 = <strong class="jxr_keyword">new</strong> <a name="JsonTestRecord" href="../../examples/custom_render/JsonTestRecord.html#JsonTestRecord">JsonTestRecord</a>(1, <span class="jxr_string">"Fred"</span>,
+<a class="jxr_linenumber" name="L178" href="#L178">178</a>                     <span class="jxr_string">"{\&quot;firstName\&quot;: \&quot;Fred\&quot;, \&quot;lastName\&quot;: \&quot;Flintstone\&quot;, \&quot;age\&quot;: 30}"</span>);
+<a class="jxr_linenumber" name="L179" href="#L179">179</a> 
+<a class="jxr_linenumber" name="L180" href="#L180">180</a>             <a name="JsonTestRecord" href="../../examples/custom_render/JsonTestRecord.html#JsonTestRecord">JsonTestRecord</a> record2 = <strong class="jxr_keyword">new</strong> <a name="JsonTestRecord" href="../../examples/custom_render/JsonTestRecord.html#JsonTestRecord">JsonTestRecord</a>(2, <span class="jxr_string">"Wilma"</span>,
+<a class="jxr_linenumber" name="L181" href="#L181">181</a>                     <span class="jxr_string">"{\&quot;firstName\&quot;: \&quot;Wilma\&quot;, \&quot;lastName\&quot;: \&quot;Flintstone\&quot;, \&quot;age\&quot;: 25}"</span>);
+<a class="jxr_linenumber" name="L182" href="#L182">182</a> 
+<a class="jxr_linenumber" name="L183" href="#L183">183</a>             MultiRowInsertStatementProvider&lt;JsonTestRecord&gt; insertStatement = insertMultiple(record1, record2)
+<a class="jxr_linenumber" name="L184" href="#L184">184</a>                     .into(jsonTest)
+<a class="jxr_linenumber" name="L185" href="#L185">185</a>                     .map(id).toProperty(<span class="jxr_string">"id"</span>)
+<a class="jxr_linenumber" name="L186" href="#L186">186</a>                     .map(description).toProperty(<span class="jxr_string">"description"</span>)
+<a class="jxr_linenumber" name="L187" href="#L187">187</a>                     .map(info).toProperty(<span class="jxr_string">"info"</span>)
+<a class="jxr_linenumber" name="L188" href="#L188">188</a>                     .build()
+<a class="jxr_linenumber" name="L189" href="#L189">189</a>                     .render(RenderingStrategies.MYBATIS3);
+<a class="jxr_linenumber" name="L190" href="#L190">190</a> 
+<a class="jxr_linenumber" name="L191" href="#L191">191</a>             String expected = <span class="jxr_string">"insert into JsonTest (id, description, info) "</span>
+<a class="jxr_linenumber" name="L192" href="#L192">192</a>                     + <span class="jxr_string">"values (#{records[0].id,jdbcType=INTEGER}, #{records[0].description,jdbcType=VARCHAR}, "</span>
+<a class="jxr_linenumber" name="L193" href="#L193">193</a>                     + <span class="jxr_string">"#{records[0].info,jdbcType=VARCHAR}::json), "</span>
+<a class="jxr_linenumber" name="L194" href="#L194">194</a>                     + <span class="jxr_string">"(#{records[1].id,jdbcType=INTEGER}, #{records[1].description,jdbcType=VARCHAR}, "</span>
+<a class="jxr_linenumber" name="L195" href="#L195">195</a>                     + <span class="jxr_string">"#{records[1].info,jdbcType=VARCHAR}::json)"</span>;
+<a class="jxr_linenumber" name="L196" href="#L196">196</a> 
+<a class="jxr_linenumber" name="L197" href="#L197">197</a>             assertThat(insertStatement.getInsertStatement()).isEqualTo(expected);
+<a class="jxr_linenumber" name="L198" href="#L198">198</a> 
+<a class="jxr_linenumber" name="L199" href="#L199">199</a>             <strong class="jxr_keyword">int</strong> rows = mapper.insertMultiple(insertStatement);
+<a class="jxr_linenumber" name="L200" href="#L200">200</a>             assertThat(rows).isEqualTo(2);
+<a class="jxr_linenumber" name="L201" href="#L201">201</a> 
+<a class="jxr_linenumber" name="L202" href="#L202">202</a>             SelectStatementProvider selectStatement = select(id, description, info)
+<a class="jxr_linenumber" name="L203" href="#L203">203</a>                     .from(jsonTest)
+<a class="jxr_linenumber" name="L204" href="#L204">204</a>                     .orderBy(id)
+<a class="jxr_linenumber" name="L205" href="#L205">205</a>                     .build()
+<a class="jxr_linenumber" name="L206" href="#L206">206</a>                     .render(RenderingStrategies.MYBATIS3);
+<a class="jxr_linenumber" name="L207" href="#L207">207</a> 
+<a class="jxr_linenumber" name="L208" href="#L208">208</a>             List&lt;JsonTestRecord&gt; records = mapper.selectMany(selectStatement);
+<a class="jxr_linenumber" name="L209" href="#L209">209</a>             assertThat(records).hasSize(2);
+<a class="jxr_linenumber" name="L210" href="#L210">210</a>             assertThat(records.get(0).info()).isEqualTo(<span class="jxr_string">"{\&quot;firstName\&quot;: \&quot;Fred\&quot;, \&quot;lastName\&quot;: \&quot;Flintstone\&quot;, \&quot;age\&quot;: 30}"</span>);
+<a class="jxr_linenumber" name="L211" href="#L211">211</a>             assertThat(records.get(1).info()).isEqualTo(<span class="jxr_string">"{\&quot;firstName\&quot;: \&quot;Wilma\&quot;, \&quot;lastName\&quot;: \&quot;Flintstone\&quot;, \&quot;age\&quot;: 25}"</span>);
+<a class="jxr_linenumber" name="L212" href="#L212">212</a>         }
+<a class="jxr_linenumber" name="L213" href="#L213">213</a>     }
+<a class="jxr_linenumber" name="L214" href="#L214">214</a> 
+<a class="jxr_linenumber" name="L215" href="#L215">215</a>     @Test
+<a class="jxr_linenumber" name="L216" href="#L216">216</a>     <strong class="jxr_keyword">void</strong> testUpdate() {
+<a class="jxr_linenumber" name="L217" href="#L217">217</a>         <strong class="jxr_keyword">try</strong> (SqlSession sqlSession = sqlSessionFactory.openSession()) {
+<a class="jxr_linenumber" name="L218" href="#L218">218</a>             <a name="JsonTestMapper" href="../../examples/custom_render/JsonTestMapper.html#JsonTestMapper">JsonTestMapper</a> mapper = sqlSession.getMapper(JsonTestMapper.<strong class="jxr_keyword">class</strong>);
+<a class="jxr_linenumber" name="L219" href="#L219">219</a> 
+<a class="jxr_linenumber" name="L220" href="#L220">220</a>             <a name="JsonTestRecord" href="../../examples/custom_render/JsonTestRecord.html#JsonTestRecord">JsonTestRecord</a> record1 = <strong class="jxr_keyword">new</strong> <a name="JsonTestRecord" href="../../examples/custom_render/JsonTestRecord.html#JsonTestRecord">JsonTestRecord</a>(1, <span class="jxr_string">"Fred"</span>,
+<a class="jxr_linenumber" name="L221" href="#L221">221</a>                     <span class="jxr_string">"{\&quot;firstName\&quot;: \&quot;Fred\&quot;, \&quot;lastName\&quot;: \&quot;Flintstone\&quot;, \&quot;age\&quot;: 30}"</span>);
+<a class="jxr_linenumber" name="L222" href="#L222">222</a> 
+<a class="jxr_linenumber" name="L223" href="#L223">223</a>             <a name="JsonTestRecord" href="../../examples/custom_render/JsonTestRecord.html#JsonTestRecord">JsonTestRecord</a> record2 = <strong class="jxr_keyword">new</strong> <a name="JsonTestRecord" href="../../examples/custom_render/JsonTestRecord.html#JsonTestRecord">JsonTestRecord</a>(2, <span class="jxr_string">"Wilma"</span>,
+<a class="jxr_linenumber" name="L224" href="#L224">224</a>                     <span class="jxr_string">"{\&quot;firstName\&quot;: \&quot;Wilma\&quot;, \&quot;lastName\&quot;: \&quot;Flintstone\&quot;, \&quot;age\&quot;: 25}"</span>);
+<a class="jxr_linenumber" name="L225" href="#L225">225</a> 
+<a class="jxr_linenumber" name="L226" href="#L226">226</a>             MultiRowInsertStatementProvider&lt;JsonTestRecord&gt; insertStatement = insertMultiple(record1, record2)
+<a class="jxr_linenumber" name="L227" href="#L227">227</a>                     .into(jsonTest)
+<a class="jxr_linenumber" name="L228" href="#L228">228</a>                     .map(id).toProperty(<span class="jxr_string">"id"</span>)
+<a class="jxr_linenumber" name="L229" href="#L229">229</a>                     .map(description).toProperty(<span class="jxr_string">"description"</span>)
+<a class="jxr_linenumber" name="L230" href="#L230">230</a>                     .map(info).toProperty(<span class="jxr_string">"info"</span>)
+<a class="jxr_linenumber" name="L231" href="#L231">231</a>                     .build()
+<a class="jxr_linenumber" name="L232" href="#L232">232</a>                     .render(RenderingStrategies.MYBATIS3);
+<a class="jxr_linenumber" name="L233" href="#L233">233</a> 
+<a class="jxr_linenumber" name="L234" href="#L234">234</a>             <strong class="jxr_keyword">int</strong> rows = mapper.insertMultiple(insertStatement);
+<a class="jxr_linenumber" name="L235" href="#L235">235</a>             assertThat(rows).isEqualTo(2);
+<a class="jxr_linenumber" name="L236" href="#L236">236</a> 
+<a class="jxr_linenumber" name="L237" href="#L237">237</a>             UpdateStatementProvider updateStatement = update(jsonTest)
+<a class="jxr_linenumber" name="L238" href="#L238">238</a>                     .set(info).equalTo(<span class="jxr_string">"{\&quot;firstName\&quot;: \&quot;Wilma\&quot;, \&quot;lastName\&quot;: \&quot;Flintstone\&quot;, \&quot;age\&quot;: 26}"</span>)
+<a class="jxr_linenumber" name="L239" href="#L239">239</a>                     .where(id, isEqualTo(2))
+<a class="jxr_linenumber" name="L240" href="#L240">240</a>                     .build()
+<a class="jxr_linenumber" name="L241" href="#L241">241</a>                     .render(RenderingStrategies.MYBATIS3);
+<a class="jxr_linenumber" name="L242" href="#L242">242</a> 
+<a class="jxr_linenumber" name="L243" href="#L243">243</a>             String expected = <span class="jxr_string">"update JsonTest "</span>
+<a class="jxr_linenumber" name="L244" href="#L244">244</a>                     + <span class="jxr_string">"set info = #{parameters.p1,jdbcType=VARCHAR}::json "</span>
+<a class="jxr_linenumber" name="L245" href="#L245">245</a>                     + <span class="jxr_string">"where id = #{parameters.p2,jdbcType=INTEGER}"</span>;
+<a class="jxr_linenumber" name="L246" href="#L246">246</a> 
+<a class="jxr_linenumber" name="L247" href="#L247">247</a>             assertThat(updateStatement.getUpdateStatement()).isEqualTo(expected);
+<a class="jxr_linenumber" name="L248" href="#L248">248</a> 
+<a class="jxr_linenumber" name="L249" href="#L249">249</a>             rows = mapper.update(updateStatement);
+<a class="jxr_linenumber" name="L250" href="#L250">250</a>             assertThat(rows).isEqualTo(1);
+<a class="jxr_linenumber" name="L251" href="#L251">251</a> 
+<a class="jxr_linenumber" name="L252" href="#L252">252</a>             SelectStatementProvider selectStatement = select(id, description, info)
+<a class="jxr_linenumber" name="L253" href="#L253">253</a>                     .from(jsonTest)
+<a class="jxr_linenumber" name="L254" href="#L254">254</a>                     .orderBy(id)
+<a class="jxr_linenumber" name="L255" href="#L255">255</a>                     .build()
+<a class="jxr_linenumber" name="L256" href="#L256">256</a>                     .render(RenderingStrategies.MYBATIS3);
+<a class="jxr_linenumber" name="L257" href="#L257">257</a> 
+<a class="jxr_linenumber" name="L258" href="#L258">258</a>             List&lt;JsonTestRecord&gt; records = mapper.selectMany(selectStatement);
+<a class="jxr_linenumber" name="L259" href="#L259">259</a>             assertThat(records).hasSize(2);
+<a class="jxr_linenumber" name="L260" href="#L260">260</a>             assertThat(records.get(0).info()).isEqualTo(<span class="jxr_string">"{\&quot;firstName\&quot;: \&quot;Fred\&quot;, \&quot;lastName\&quot;: \&quot;Flintstone\&quot;, \&quot;age\&quot;: 30}"</span>);
+<a class="jxr_linenumber" name="L261" href="#L261">261</a>             assertThat(records.get(1).info()).isEqualTo(<span class="jxr_string">"{\&quot;firstName\&quot;: \&quot;Wilma\&quot;, \&quot;lastName\&quot;: \&quot;Flintstone\&quot;, \&quot;age\&quot;: 26}"</span>);
+<a class="jxr_linenumber" name="L262" href="#L262">262</a>         }
+<a class="jxr_linenumber" name="L263" href="#L263">263</a>     }
+<a class="jxr_linenumber" name="L264" href="#L264">264</a> 
+<a class="jxr_linenumber" name="L265" href="#L265">265</a>     @Test
+<a class="jxr_linenumber" name="L266" href="#L266">266</a>     <strong class="jxr_keyword">void</strong> testDeReference() {
+<a class="jxr_linenumber" name="L267" href="#L267">267</a>         <strong class="jxr_keyword">try</strong> (SqlSession sqlSession = sqlSessionFactory.openSession()) {
+<a class="jxr_linenumber" name="L268" href="#L268">268</a>             <a name="JsonTestMapper" href="../../examples/custom_render/JsonTestMapper.html#JsonTestMapper">JsonTestMapper</a> mapper = sqlSession.getMapper(JsonTestMapper.<strong class="jxr_keyword">class</strong>);
+<a class="jxr_linenumber" name="L269" href="#L269">269</a> 
+<a class="jxr_linenumber" name="L270" href="#L270">270</a>             <a name="JsonTestRecord" href="../../examples/custom_render/JsonTestRecord.html#JsonTestRecord">JsonTestRecord</a> record1 = <strong class="jxr_keyword">new</strong> <a name="JsonTestRecord" href="../../examples/custom_render/JsonTestRecord.html#JsonTestRecord">JsonTestRecord</a>(1, <span class="jxr_string">"Fred"</span>,
+<a class="jxr_linenumber" name="L271" href="#L271">271</a>                     <span class="jxr_string">"{\&quot;firstName\&quot;: \&quot;Fred\&quot;, \&quot;lastName\&quot;: \&quot;Flintstone\&quot;, \&quot;age\&quot;: 30}"</span>);
+<a class="jxr_linenumber" name="L272" href="#L272">272</a> 
+<a class="jxr_linenumber" name="L273" href="#L273">273</a>             <a name="JsonTestRecord" href="../../examples/custom_render/JsonTestRecord.html#JsonTestRecord">JsonTestRecord</a> record2 = <strong class="jxr_keyword">new</strong> <a name="JsonTestRecord" href="../../examples/custom_render/JsonTestRecord.html#JsonTestRecord">JsonTestRecord</a>(2, <span class="jxr_string">"Wilma"</span>,
+<a class="jxr_linenumber" name="L274" href="#L274">274</a>                     <span class="jxr_string">"{\&quot;firstName\&quot;: \&quot;Wilma\&quot;, \&quot;lastName\&quot;: \&quot;Flintstone\&quot;, \&quot;age\&quot;: 25}"</span>);
+<a class="jxr_linenumber" name="L275" href="#L275">275</a> 
+<a class="jxr_linenumber" name="L276" href="#L276">276</a>             MultiRowInsertStatementProvider&lt;JsonTestRecord&gt; insertStatement = insertMultiple(record1, record2)
+<a class="jxr_linenumber" name="L277" href="#L277">277</a>                     .into(jsonTest)
+<a class="jxr_linenumber" name="L278" href="#L278">278</a>                     .map(id).toProperty(<span class="jxr_string">"id"</span>)
+<a class="jxr_linenumber" name="L279" href="#L279">279</a>                     .map(description).toProperty(<span class="jxr_string">"description"</span>)
+<a class="jxr_linenumber" name="L280" href="#L280">280</a>                     .map(info).toProperty(<span class="jxr_string">"info"</span>)
+<a class="jxr_linenumber" name="L281" href="#L281">281</a>                     .build()
+<a class="jxr_linenumber" name="L282" href="#L282">282</a>                     .render(RenderingStrategies.MYBATIS3);
+<a class="jxr_linenumber" name="L283" href="#L283">283</a> 
+<a class="jxr_linenumber" name="L284" href="#L284">284</a>             <strong class="jxr_keyword">int</strong> rows = mapper.insertMultiple(insertStatement);
+<a class="jxr_linenumber" name="L285" href="#L285">285</a>             assertThat(rows).isEqualTo(2);
+<a class="jxr_linenumber" name="L286" href="#L286">286</a> 
+<a class="jxr_linenumber" name="L287" href="#L287">287</a>             SelectStatementProvider selectStatement = select(id, description, info)
+<a class="jxr_linenumber" name="L288" href="#L288">288</a>                     .from(jsonTest)
+<a class="jxr_linenumber" name="L289" href="#L289">289</a>                     .where(dereference(info, <span class="jxr_string">"age"</span>), isEqualTo(<span class="jxr_string">"25"</span>))
+<a class="jxr_linenumber" name="L290" href="#L290">290</a>                     .build()
+<a class="jxr_linenumber" name="L291" href="#L291">291</a>                     .render(RenderingStrategies.MYBATIS3);
+<a class="jxr_linenumber" name="L292" href="#L292">292</a> 
+<a class="jxr_linenumber" name="L293" href="#L293">293</a>             String expected = <span class="jxr_string">"select id, description, info "</span>
+<a class="jxr_linenumber" name="L294" href="#L294">294</a>                     + <span class="jxr_string">"from JsonTest "</span>
+<a class="jxr_linenumber" name="L295" href="#L295">295</a>                     + <span class="jxr_string">"where info-&gt;&gt;'age' = #{parameters.p1,jdbcType=VARCHAR}"</span>;
+<a class="jxr_linenumber" name="L296" href="#L296">296</a> 
+<a class="jxr_linenumber" name="L297" href="#L297">297</a>             assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
+<a class="jxr_linenumber" name="L298" href="#L298">298</a> 
+<a class="jxr_linenumber" name="L299" href="#L299">299</a>             Optional&lt;JsonTestRecord&gt; row = mapper.selectOne(selectStatement);
+<a class="jxr_linenumber" name="L300" href="#L300">300</a> 
+<a class="jxr_linenumber" name="L301" href="#L301">301</a>             assertThat(row).hasValueSatisfying( r -&gt;
+<a class="jxr_linenumber" name="L302" href="#L302">302</a>                 assertThat(r.info())
+<a class="jxr_linenumber" name="L303" href="#L303">303</a>                         .isEqualTo(<span class="jxr_string">"{\&quot;firstName\&quot;: \&quot;Wilma\&quot;, \&quot;lastName\&quot;: \&quot;Flintstone\&quot;, \&quot;age\&quot;: 25}"</span>)
+<a class="jxr_linenumber" name="L304" href="#L304">304</a>             );
+<a class="jxr_linenumber" name="L305" href="#L305">305</a>         }
+<a class="jxr_linenumber" name="L306" href="#L306">306</a>     }
+<a class="jxr_linenumber" name="L307" href="#L307">307</a> 
+<a class="jxr_linenumber" name="L308" href="#L308">308</a>     @Test
+<a class="jxr_linenumber" name="L309" href="#L309">309</a>     <strong class="jxr_keyword">void</strong> testDereference2() {
+<a class="jxr_linenumber" name="L310" href="#L310">310</a>         <strong class="jxr_keyword">try</strong> (SqlSession sqlSession = sqlSessionFactory.openSession()) {
+<a class="jxr_linenumber" name="L311" href="#L311">311</a>             <a name="JsonTestMapper" href="../../examples/custom_render/JsonTestMapper.html#JsonTestMapper">JsonTestMapper</a> mapper = sqlSession.getMapper(JsonTestMapper.<strong class="jxr_keyword">class</strong>);
+<a class="jxr_linenumber" name="L312" href="#L312">312</a> 
+<a class="jxr_linenumber" name="L313" href="#L313">313</a>             <a name="JsonTestRecord" href="../../examples/custom_render/JsonTestRecord.html#JsonTestRecord">JsonTestRecord</a> record1 = <strong class="jxr_keyword">new</strong> <a name="JsonTestRecord" href="../../examples/custom_render/JsonTestRecord.html#JsonTestRecord">JsonTestRecord</a>(1, <span class="jxr_string">"Fred"</span>,
+<a class="jxr_linenumber" name="L314" href="#L314">314</a>                     <span class="jxr_string">"{\&quot;firstName\&quot;: \&quot;Fred\&quot;, \&quot;lastName\&quot;: \&quot;Flintstone\&quot;, \&quot;age\&quot;: 30}"</span>);
+<a class="jxr_linenumber" name="L315" href="#L315">315</a> 
+<a class="jxr_linenumber" name="L316" href="#L316">316</a>             <a name="JsonTestRecord" href="../../examples/custom_render/JsonTestRecord.html#JsonTestRecord">JsonTestRecord</a> record2 = <strong class="jxr_keyword">new</strong> <a name="JsonTestRecord" href="../../examples/custom_render/JsonTestRecord.html#JsonTestRecord">JsonTestRecord</a>(2, <span class="jxr_string">"Wilma"</span>,
+<a class="jxr_linenumber" name="L317" href="#L317">317</a>                     <span class="jxr_string">"{\&quot;firstName\&quot;: \&quot;Wilma\&quot;, \&quot;lastName\&quot;: \&quot;Flintstone\&quot;, \&quot;age\&quot;: 25}"</span>);
+<a class="jxr_linenumber" name="L318" href="#L318">318</a> 
+<a class="jxr_linenumber" name="L319" href="#L319">319</a>             MultiRowInsertStatementProvider&lt;JsonTestRecord&gt; insertStatement = insertMultiple(record1, record2)
+<a class="jxr_linenumber" name="L320" href="#L320">320</a>                     .into(jsonTest)
+<a class="jxr_linenumber" name="L321" href="#L321">321</a>                     .map(id).toProperty(<span class="jxr_string">"id"</span>)
+<a class="jxr_linenumber" name="L322" href="#L322">322</a>                     .map(description).toProperty(<span class="jxr_string">"description"</span>)
+<a class="jxr_linenumber" name="L323" href="#L323">323</a>                     .map(info).toProperty(<span class="jxr_string">"info"</span>)
+<a class="jxr_linenumber" name="L324" href="#L324">324</a>                     .build()
+<a class="jxr_linenumber" name="L325" href="#L325">325</a>                     .render(RenderingStrategies.MYBATIS3);
+<a class="jxr_linenumber" name="L326" href="#L326">326</a> 
+<a class="jxr_linenumber" name="L327" href="#L327">327</a>             <strong class="jxr_keyword">int</strong> rows = mapper.insertMultiple(insertStatement);
+<a class="jxr_linenumber" name="L328" href="#L328">328</a>             assertThat(rows).isEqualTo(2);
+<a class="jxr_linenumber" name="L329" href="#L329">329</a> 
+<a class="jxr_linenumber" name="L330" href="#L330">330</a>             SelectStatementProvider selectStatement = select(dereference(info, <span class="jxr_string">"firstName"</span>).as(<span class="jxr_string">"firstname"</span>))
+<a class="jxr_linenumber" name="L331" href="#L331">331</a>                     .from(jsonTest)
+<a class="jxr_linenumber" name="L332" href="#L332">332</a>                     .where(dereference(info, <span class="jxr_string">"age"</span>), isEqualTo(<span class="jxr_string">"25"</span>))
+<a class="jxr_linenumber" name="L333" href="#L333">333</a>                     .build()
+<a class="jxr_linenumber" name="L334" href="#L334">334</a>                     .render(RenderingStrategies.MYBATIS3);
+<a class="jxr_linenumber" name="L335" href="#L335">335</a> 
+<a class="jxr_linenumber" name="L336" href="#L336">336</a>             String expected = <span class="jxr_string">"select info-&gt;&gt;'firstName' as firstname "</span>
+<a class="jxr_linenumber" name="L337" href="#L337">337</a>                     + <span class="jxr_string">"from JsonTest "</span>
+<a class="jxr_linenumber" name="L338" href="#L338">338</a>                     + <span class="jxr_string">"where info-&gt;&gt;'age' = #{parameters.p1,jdbcType=VARCHAR}"</span>;
+<a class="jxr_linenumber" name="L339" href="#L339">339</a> 
+<a class="jxr_linenumber" name="L340" href="#L340">340</a>             assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
+<a class="jxr_linenumber" name="L341" href="#L341">341</a> 
+<a class="jxr_linenumber" name="L342" href="#L342">342</a>             List&lt;Map&lt;String, Object&gt;&gt; records = mapper.selectManyMappedRows(selectStatement);
+<a class="jxr_linenumber" name="L343" href="#L343">343</a>             assertThat(records).hasSize(1);
+<a class="jxr_linenumber" name="L344" href="#L344">344</a>             assertThat(records.get(0)).containsEntry(<span class="jxr_string">"firstname"</span>, <span class="jxr_string">"Wilma"</span>);
+<a class="jxr_linenumber" name="L345" href="#L345">345</a>         }
+<a class="jxr_linenumber" name="L346" href="#L346">346</a>     }
+<a class="jxr_linenumber" name="L347" href="#L347">347</a> 
+<a class="jxr_linenumber" name="L348" href="#L348">348</a>     <strong class="jxr_keyword">private</strong> &lt;T&gt; SqlColumn&lt;String&gt; dereference(SqlColumn&lt;T&gt; column, String attribute) {
+<a class="jxr_linenumber" name="L349" href="#L349">349</a>         <strong class="jxr_keyword">return</strong> SqlColumn.of(column.name() + <span class="jxr_string">"-&gt;&gt;'"</span> + attribute + <span class="jxr_string">"'"</span>, column.table(), JDBCType.VARCHAR);
+<a class="jxr_linenumber" name="L350" href="#L350">350</a>     }
+<a class="jxr_linenumber" name="L351" href="#L351">351</a> }
 </pre>
 <hr/>
-<div id="footer">© 2016–2025 <a href="https://www.mybatis.org/">MyBatis.org</a></div>
+<div id="footer">© 2016–2026 <a href="https://www.mybatis.org/">MyBatis.org</a></div>
 </body>
 </html>

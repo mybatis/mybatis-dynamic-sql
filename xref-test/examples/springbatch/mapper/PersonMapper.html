@@ -26,27 +26,26 @@
 <a class="jxr_linenumber" name="L18" href="#L18">18</a>  <strong class="jxr_keyword">import</strong> java.util.List;
 <a class="jxr_linenumber" name="L19" href="#L19">19</a>  <strong class="jxr_keyword">import</strong> java.util.Map;
 <a class="jxr_linenumber" name="L20" href="#L20">20</a>  
-<a class="jxr_linenumber" name="L21" href="#L21">21</a>  <strong class="jxr_keyword">import</strong> org.apache.ibatis.annotations.Mapper;
-<a class="jxr_linenumber" name="L22" href="#L22">22</a>  <strong class="jxr_keyword">import</strong> org.apache.ibatis.annotations.Result;
-<a class="jxr_linenumber" name="L23" href="#L23">23</a>  <strong class="jxr_keyword">import</strong> org.apache.ibatis.annotations.SelectProvider;
-<a class="jxr_linenumber" name="L24" href="#L24">24</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.util.mybatis3.CommonCountMapper;
-<a class="jxr_linenumber" name="L25" href="#L25">25</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.util.mybatis3.CommonInsertMapper;
-<a class="jxr_linenumber" name="L26" href="#L26">26</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.util.mybatis3.CommonUpdateMapper;
-<a class="jxr_linenumber" name="L27" href="#L27">27</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.util.springbatch.SpringBatchProviderAdapter;
-<a class="jxr_linenumber" name="L28" href="#L28">28</a>  
-<a class="jxr_linenumber" name="L29" href="#L29">29</a>  <strong class="jxr_keyword">import</strong> examples.springbatch.common.PersonRecord;
-<a class="jxr_linenumber" name="L30" href="#L30">30</a>  
-<a class="jxr_linenumber" name="L31" href="#L31">31</a>  @Mapper
-<a class="jxr_linenumber" name="L32" href="#L32">32</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">interface</strong> <a name="PersonMapper" href="../../../examples/springbatch/mapper/PersonMapper.html#PersonMapper">PersonMapper</a> <strong class="jxr_keyword">extends</strong> CommonCountMapper, CommonInsertMapper&lt;PersonRecord&gt;, CommonUpdateMapper {
-<a class="jxr_linenumber" name="L33" href="#L33">33</a>  
-<a class="jxr_linenumber" name="L34" href="#L34">34</a>      @SelectProvider(type=SpringBatchProviderAdapter.<strong class="jxr_keyword">class</strong>, method=<span class="jxr_string">"select"</span>)
-<a class="jxr_linenumber" name="L35" href="#L35">35</a>      @Result(column=<span class="jxr_string">"id"</span>, property=<span class="jxr_string">"id"</span>, id=<strong class="jxr_keyword">true</strong>)
-<a class="jxr_linenumber" name="L36" href="#L36">36</a>      @Result(column=<span class="jxr_string">"first_name"</span>, property=<span class="jxr_string">"firstName"</span>)
-<a class="jxr_linenumber" name="L37" href="#L37">37</a>      @Result(column=<span class="jxr_string">"last_name"</span>, property=<span class="jxr_string">"lastName"</span>)
-<a class="jxr_linenumber" name="L38" href="#L38">38</a>      List&lt;PersonRecord&gt; selectMany(Map&lt;String, Object&gt; parameterValues);
-<a class="jxr_linenumber" name="L39" href="#L39">39</a>  }
+<a class="jxr_linenumber" name="L21" href="#L21">21</a>  <strong class="jxr_keyword">import</strong> examples.springbatch.common.PersonRecord;
+<a class="jxr_linenumber" name="L22" href="#L22">22</a>  <strong class="jxr_keyword">import</strong> org.apache.ibatis.annotations.Arg;
+<a class="jxr_linenumber" name="L23" href="#L23">23</a>  <strong class="jxr_keyword">import</strong> org.apache.ibatis.annotations.Mapper;
+<a class="jxr_linenumber" name="L24" href="#L24">24</a>  <strong class="jxr_keyword">import</strong> org.apache.ibatis.annotations.SelectProvider;
+<a class="jxr_linenumber" name="L25" href="#L25">25</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.util.mybatis3.CommonCountMapper;
+<a class="jxr_linenumber" name="L26" href="#L26">26</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.util.mybatis3.CommonInsertMapper;
+<a class="jxr_linenumber" name="L27" href="#L27">27</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.util.mybatis3.CommonUpdateMapper;
+<a class="jxr_linenumber" name="L28" href="#L28">28</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.util.springbatch.SpringBatchProviderAdapter;
+<a class="jxr_linenumber" name="L29" href="#L29">29</a>  
+<a class="jxr_linenumber" name="L30" href="#L30">30</a>  @Mapper
+<a class="jxr_linenumber" name="L31" href="#L31">31</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">interface</strong> <a name="PersonMapper" href="../../../examples/springbatch/mapper/PersonMapper.html#PersonMapper">PersonMapper</a> <strong class="jxr_keyword">extends</strong> CommonCountMapper, CommonInsertMapper&lt;PersonRecord&gt;, CommonUpdateMapper {
+<a class="jxr_linenumber" name="L32" href="#L32">32</a>  
+<a class="jxr_linenumber" name="L33" href="#L33">33</a>      @SelectProvider(type=SpringBatchProviderAdapter.<strong class="jxr_keyword">class</strong>, method=<span class="jxr_string">"select"</span>)
+<a class="jxr_linenumber" name="L34" href="#L34">34</a>      @Arg(column = <span class="jxr_string">"id"</span>, javaType = Integer.<strong class="jxr_keyword">class</strong>, id = <strong class="jxr_keyword">true</strong>)
+<a class="jxr_linenumber" name="L35" href="#L35">35</a>      @Arg(column = <span class="jxr_string">"first_name"</span>, javaType = String.<strong class="jxr_keyword">class</strong>)
+<a class="jxr_linenumber" name="L36" href="#L36">36</a>      @Arg(column = <span class="jxr_string">"last_name"</span>, javaType = String.<strong class="jxr_keyword">class</strong>)
+<a class="jxr_linenumber" name="L37" href="#L37">37</a>      List&lt;PersonRecord&gt; selectMany(Map&lt;String, Object&gt; parameterValues);
+<a class="jxr_linenumber" name="L38" href="#L38">38</a>  }
 </pre>
 <hr/>
-<div id="footer">© 2016–2025 <a href="https://www.mybatis.org/">MyBatis.org</a></div>
+<div id="footer">© 2016–2026 <a href="https://www.mybatis.org/">MyBatis.org</a></div>
 </body>
 </html>

@@ -114,13 +114,13 @@
 <a class="jxr_linenumber" name="L106" href="#L106">106</a> 
 <a class="jxr_linenumber" name="L107" href="#L107">107</a>     <strong class="jxr_keyword">default</strong> <strong class="jxr_keyword">int</strong> insert(<a name="PersonRecord" href="../../examples/simple/PersonRecord.html#PersonRecord">PersonRecord</a> row) {
 <a class="jxr_linenumber" name="L108" href="#L108">108</a>         <strong class="jxr_keyword">return</strong> MyBatis3Utils.insert(<strong class="jxr_keyword">this</strong>::insert, row, person, c -&gt;
-<a class="jxr_linenumber" name="L109" href="#L109">109</a>             c.map(id).toProperty(<span class="jxr_string">"id"</span>)
-<a class="jxr_linenumber" name="L110" href="#L110">110</a>             .map(firstName).toProperty(<span class="jxr_string">"firstName"</span>)
-<a class="jxr_linenumber" name="L111" href="#L111">111</a>             .map(lastName).toProperty(<span class="jxr_string">"lastName"</span>)
-<a class="jxr_linenumber" name="L112" href="#L112">112</a>             .map(birthDate).toProperty(<span class="jxr_string">"birthDate"</span>)
-<a class="jxr_linenumber" name="L113" href="#L113">113</a>             .map(employed).toProperty(<span class="jxr_string">"employed"</span>)
-<a class="jxr_linenumber" name="L114" href="#L114">114</a>             .map(occupation).toProperty(<span class="jxr_string">"occupation"</span>)
-<a class="jxr_linenumber" name="L115" href="#L115">115</a>             .map(addressId).toProperty(<span class="jxr_string">"addressId"</span>)
+<a class="jxr_linenumber" name="L109" href="#L109">109</a>             c.withMappedColumn(id)
+<a class="jxr_linenumber" name="L110" href="#L110">110</a>             .withMappedColumn(firstName)
+<a class="jxr_linenumber" name="L111" href="#L111">111</a>             .withMappedColumn(lastName)
+<a class="jxr_linenumber" name="L112" href="#L112">112</a>             .withMappedColumn(birthDate)
+<a class="jxr_linenumber" name="L113" href="#L113">113</a>             .withMappedColumn(employed)
+<a class="jxr_linenumber" name="L114" href="#L114">114</a>             .withMappedColumn(occupation)
+<a class="jxr_linenumber" name="L115" href="#L115">115</a>             .withMappedColumn(addressId)
 <a class="jxr_linenumber" name="L116" href="#L116">116</a>         );
 <a class="jxr_linenumber" name="L117" href="#L117">117</a>     }
 <a class="jxr_linenumber" name="L118" href="#L118">118</a> 
@@ -130,25 +130,25 @@
 <a class="jxr_linenumber" name="L122" href="#L122">122</a> 
 <a class="jxr_linenumber" name="L123" href="#L123">123</a>     <strong class="jxr_keyword">default</strong> <strong class="jxr_keyword">int</strong> insertMultiple(Collection&lt;PersonRecord&gt; records) {
 <a class="jxr_linenumber" name="L124" href="#L124">124</a>         <strong class="jxr_keyword">return</strong> MyBatis3Utils.insertMultiple(<strong class="jxr_keyword">this</strong>::insertMultiple, records, person, c -&gt;
-<a class="jxr_linenumber" name="L125" href="#L125">125</a>             c.map(id).toProperty(<span class="jxr_string">"id"</span>)
-<a class="jxr_linenumber" name="L126" href="#L126">126</a>             .map(firstName).toProperty(<span class="jxr_string">"firstName"</span>)
-<a class="jxr_linenumber" name="L127" href="#L127">127</a>             .map(lastName).toProperty(<span class="jxr_string">"lastName"</span>)
-<a class="jxr_linenumber" name="L128" href="#L128">128</a>             .map(birthDate).toProperty(<span class="jxr_string">"birthDate"</span>)
-<a class="jxr_linenumber" name="L129" href="#L129">129</a>             .map(employed).toProperty(<span class="jxr_string">"employed"</span>)
-<a class="jxr_linenumber" name="L130" href="#L130">130</a>             .map(occupation).toProperty(<span class="jxr_string">"occupation"</span>)
-<a class="jxr_linenumber" name="L131" href="#L131">131</a>             .map(addressId).toProperty(<span class="jxr_string">"addressId"</span>)
+<a class="jxr_linenumber" name="L125" href="#L125">125</a>             c.withMappedColumn(id)
+<a class="jxr_linenumber" name="L126" href="#L126">126</a>             .withMappedColumn(firstName)
+<a class="jxr_linenumber" name="L127" href="#L127">127</a>             .withMappedColumn(lastName)
+<a class="jxr_linenumber" name="L128" href="#L128">128</a>             .withMappedColumn(birthDate)
+<a class="jxr_linenumber" name="L129" href="#L129">129</a>             .withMappedColumn(employed)
+<a class="jxr_linenumber" name="L130" href="#L130">130</a>             .withMappedColumn(occupation)
+<a class="jxr_linenumber" name="L131" href="#L131">131</a>             .withMappedColumn(addressId)
 <a class="jxr_linenumber" name="L132" href="#L132">132</a>         );
 <a class="jxr_linenumber" name="L133" href="#L133">133</a>     }
 <a class="jxr_linenumber" name="L134" href="#L134">134</a> 
 <a class="jxr_linenumber" name="L135" href="#L135">135</a>     <strong class="jxr_keyword">default</strong> <strong class="jxr_keyword">int</strong> insertSelective(<a name="PersonRecord" href="../../examples/simple/PersonRecord.html#PersonRecord">PersonRecord</a> row) {
 <a class="jxr_linenumber" name="L136" href="#L136">136</a>         <strong class="jxr_keyword">return</strong> MyBatis3Utils.insert(<strong class="jxr_keyword">this</strong>::insert, row, person, c -&gt;
-<a class="jxr_linenumber" name="L137" href="#L137">137</a>             c.map(id).toPropertyWhenPresent(<span class="jxr_string">"id"</span>, row::id)
-<a class="jxr_linenumber" name="L138" href="#L138">138</a>             .map(firstName).toPropertyWhenPresent(<span class="jxr_string">"firstName"</span>, row::firstName)
-<a class="jxr_linenumber" name="L139" href="#L139">139</a>             .map(lastName).toPropertyWhenPresent(<span class="jxr_string">"lastName"</span>, row::lastName)
-<a class="jxr_linenumber" name="L140" href="#L140">140</a>             .map(birthDate).toPropertyWhenPresent(<span class="jxr_string">"birthDate"</span>, row::birthDate)
-<a class="jxr_linenumber" name="L141" href="#L141">141</a>             .map(employed).toPropertyWhenPresent(<span class="jxr_string">"employed"</span>, row::employed)
-<a class="jxr_linenumber" name="L142" href="#L142">142</a>             .map(occupation).toPropertyWhenPresent(<span class="jxr_string">"occupation"</span>, row::occupation)
-<a class="jxr_linenumber" name="L143" href="#L143">143</a>             .map(addressId).toPropertyWhenPresent(<span class="jxr_string">"addressId"</span>, row::addressId)
+<a class="jxr_linenumber" name="L137" href="#L137">137</a>             c.withMappedColumnWhenPresent(id, row::id)
+<a class="jxr_linenumber" name="L138" href="#L138">138</a>             .withMappedColumnWhenPresent(firstName, row::firstName)
+<a class="jxr_linenumber" name="L139" href="#L139">139</a>             .withMappedColumnWhenPresent(lastName, row::lastName)
+<a class="jxr_linenumber" name="L140" href="#L140">140</a>             .withMappedColumnWhenPresent(birthDate, row::birthDate)
+<a class="jxr_linenumber" name="L141" href="#L141">141</a>             .withMappedColumnWhenPresent(employed, row::employed)
+<a class="jxr_linenumber" name="L142" href="#L142">142</a>             .withMappedColumnWhenPresent(occupation, row::occupation)
+<a class="jxr_linenumber" name="L143" href="#L143">143</a>             .withMappedColumnWhenPresent(addressId, row::addressId)
 <a class="jxr_linenumber" name="L144" href="#L144">144</a>         );
 <a class="jxr_linenumber" name="L145" href="#L145">145</a>     }
 <a class="jxr_linenumber" name="L146" href="#L146">146</a> 
@@ -222,6 +222,6 @@
 <a class="jxr_linenumber" name="L214" href="#L214">214</a> }
 </pre>
 <hr/>
-<div id="footer">© 2016–2025 <a href="https://www.mybatis.org/">MyBatis.org</a></div>
+<div id="footer">© 2016–2026 <a href="https://www.mybatis.org/">MyBatis.org</a></div>
 </body>
 </html>

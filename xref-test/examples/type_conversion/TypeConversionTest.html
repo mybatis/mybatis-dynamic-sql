@@ -101,7 +101,7 @@
 <a class="jxr_linenumber" name="L93" href="#L93">93</a>                      .render(RenderingStrategies.MYBATIS3);
 <a class="jxr_linenumber" name="L94" href="#L94">94</a>  
 <a class="jxr_linenumber" name="L95" href="#L95">95</a>              Map&lt;String, Object&gt; row = mapper.selectOneMappedRow(selectStatement);
-<a class="jxr_linenumber" name="L96" href="#L96">96</a>              assertThat(row).containsExactly(entry(<span class="jxr_string">"FILE_ID"</span>, 1), entry(<span class="jxr_string">"FILE_CONTENTS"</span>, randomBlob));
+<a class="jxr_linenumber" name="L96" href="#L96">96</a>              assertThat(row).containsOnly(entry(<span class="jxr_string">"FILE_ID"</span>, 1), entry(<span class="jxr_string">"FILE_CONTENTS"</span>, randomBlob));
 <a class="jxr_linenumber" name="L97" href="#L97">97</a>  
 <a class="jxr_linenumber" name="L98" href="#L98">98</a>              selectStatement = select(fileId, toBase64(fileContents).as(<span class="jxr_string">"checksum"</span>))
 <a class="jxr_linenumber" name="L99" href="#L99">99</a>                      .from(myfiles)
@@ -166,6 +166,6 @@
 <a class="jxr_linenumber" name="L158" href="#L158">158</a> }
 </pre>
 <hr/>
-<div id="footer">© 2016–2025 <a href="https://www.mybatis.org/">MyBatis.org</a></div>
+<div id="footer">© 2016–2026 <a href="https://www.mybatis.org/">MyBatis.org</a></div>
 </body>
 </html>

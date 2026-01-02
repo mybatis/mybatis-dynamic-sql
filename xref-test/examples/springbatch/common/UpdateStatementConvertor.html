@@ -26,27 +26,29 @@
 <a class="jxr_linenumber" name="L18" href="#L18">18</a>  <strong class="jxr_keyword">import</strong> <strong class="jxr_keyword">static</strong> examples.springbatch.mapper.PersonDynamicSqlSupport.*;
 <a class="jxr_linenumber" name="L19" href="#L19">19</a>  <strong class="jxr_keyword">import</strong> <strong class="jxr_keyword">static</strong> org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
 <a class="jxr_linenumber" name="L20" href="#L20">20</a>  
-<a class="jxr_linenumber" name="L21" href="#L21">21</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.render.RenderingStrategies;
-<a class="jxr_linenumber" name="L22" href="#L22">22</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.update.UpdateDSL;
-<a class="jxr_linenumber" name="L23" href="#L23">23</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
-<a class="jxr_linenumber" name="L24" href="#L24">24</a>  <strong class="jxr_keyword">import</strong> org.springframework.core.convert.converter.Converter;
-<a class="jxr_linenumber" name="L25" href="#L25">25</a>  <strong class="jxr_keyword">import</strong> org.springframework.stereotype.Component;
-<a class="jxr_linenumber" name="L26" href="#L26">26</a>  
-<a class="jxr_linenumber" name="L27" href="#L27">27</a>  @Component
-<a class="jxr_linenumber" name="L28" href="#L28">28</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="UpdateStatementConvertor" href="../../../examples/springbatch/common/UpdateStatementConvertor.html#UpdateStatementConvertor">UpdateStatementConvertor</a> <strong class="jxr_keyword">implements</strong> Converter&lt;PersonRecord, UpdateStatementProvider&gt; {
-<a class="jxr_linenumber" name="L29" href="#L29">29</a>  
-<a class="jxr_linenumber" name="L30" href="#L30">30</a>      @Override
-<a class="jxr_linenumber" name="L31" href="#L31">31</a>      <strong class="jxr_keyword">public</strong> UpdateStatementProvider convert(<a name="PersonRecord" href="../../../examples/springbatch/common/PersonRecord.html#PersonRecord">PersonRecord</a> source) {
-<a class="jxr_linenumber" name="L32" href="#L32">32</a>          <strong class="jxr_keyword">return</strong> UpdateDSL.update(person)
-<a class="jxr_linenumber" name="L33" href="#L33">33</a>                  .set(firstName).equalTo(source::getFirstName)
-<a class="jxr_linenumber" name="L34" href="#L34">34</a>                  .set(lastName).equalTo(source::getLastName)
-<a class="jxr_linenumber" name="L35" href="#L35">35</a>                  .where(id, isEqualTo(source::getId))
-<a class="jxr_linenumber" name="L36" href="#L36">36</a>                  .build()
-<a class="jxr_linenumber" name="L37" href="#L37">37</a>                  .render(RenderingStrategies.MYBATIS3);
-<a class="jxr_linenumber" name="L38" href="#L38">38</a>      }
-<a class="jxr_linenumber" name="L39" href="#L39">39</a>  }
+<a class="jxr_linenumber" name="L21" href="#L21">21</a>  <strong class="jxr_keyword">import</strong> java.util.Objects;
+<a class="jxr_linenumber" name="L22" href="#L22">22</a>  
+<a class="jxr_linenumber" name="L23" href="#L23">23</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.render.RenderingStrategies;
+<a class="jxr_linenumber" name="L24" href="#L24">24</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.update.UpdateDSL;
+<a class="jxr_linenumber" name="L25" href="#L25">25</a>  <strong class="jxr_keyword">import</strong> org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
+<a class="jxr_linenumber" name="L26" href="#L26">26</a>  <strong class="jxr_keyword">import</strong> org.springframework.core.convert.converter.Converter;
+<a class="jxr_linenumber" name="L27" href="#L27">27</a>  <strong class="jxr_keyword">import</strong> org.springframework.stereotype.Component;
+<a class="jxr_linenumber" name="L28" href="#L28">28</a>  
+<a class="jxr_linenumber" name="L29" href="#L29">29</a>  @Component
+<a class="jxr_linenumber" name="L30" href="#L30">30</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="UpdateStatementConvertor" href="../../../examples/springbatch/common/UpdateStatementConvertor.html#UpdateStatementConvertor">UpdateStatementConvertor</a> <strong class="jxr_keyword">implements</strong> Converter&lt;PersonRecord, UpdateStatementProvider&gt; {
+<a class="jxr_linenumber" name="L31" href="#L31">31</a>  
+<a class="jxr_linenumber" name="L32" href="#L32">32</a>      @Override
+<a class="jxr_linenumber" name="L33" href="#L33">33</a>      <strong class="jxr_keyword">public</strong> UpdateStatementProvider convert(<a name="PersonRecord" href="../../../examples/springbatch/common/PersonRecord.html#PersonRecord">PersonRecord</a> source) {
+<a class="jxr_linenumber" name="L34" href="#L34">34</a>          <strong class="jxr_keyword">return</strong> UpdateDSL.update(person)
+<a class="jxr_linenumber" name="L35" href="#L35">35</a>                  .set(firstName).equalTo(source::firstName)
+<a class="jxr_linenumber" name="L36" href="#L36">36</a>                  .set(lastName).equalTo(source::lastName)
+<a class="jxr_linenumber" name="L37" href="#L37">37</a>                  .where(id, isEqualTo(Objects.requireNonNull(source.id())))
+<a class="jxr_linenumber" name="L38" href="#L38">38</a>                  .build()
+<a class="jxr_linenumber" name="L39" href="#L39">39</a>                  .render(RenderingStrategies.MYBATIS3);
+<a class="jxr_linenumber" name="L40" href="#L40">40</a>      }
+<a class="jxr_linenumber" name="L41" href="#L41">41</a>  }
 </pre>
 <hr/>
-<div id="footer">© 2016–2025 <a href="https://www.mybatis.org/">MyBatis.org</a></div>
+<div id="footer">© 2016–2026 <a href="https://www.mybatis.org/">MyBatis.org</a></div>
 </body>
 </html>

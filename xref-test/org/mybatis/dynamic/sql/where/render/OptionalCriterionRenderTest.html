@@ -151,7 +151,7 @@
 <a class="jxr_linenumber" name="L143" href="#L143">143</a>                 .render(RenderingStrategies.SPRING_NAMED_PARAMETER);
 <a class="jxr_linenumber" name="L144" href="#L144">144</a> 
 <a class="jxr_linenumber" name="L145" href="#L145">145</a>         assertThat(whereClause).hasValueSatisfying(wc -&gt; {
-<a class="jxr_linenumber" name="L146" href="#L146">146</a>             assertThat(wc.getParameters()).containsExactly(entry(<span class="jxr_string">"p1"</span>, <span class="jxr_string">"fred"</span>), entry(<span class="jxr_string">"p2"</span>, <span class="jxr_string">"flintstone"</span>));
+<a class="jxr_linenumber" name="L146" href="#L146">146</a>             assertThat(wc.getParameters()).containsOnly(entry(<span class="jxr_string">"p1"</span>, <span class="jxr_string">"fred"</span>), entry(<span class="jxr_string">"p2"</span>, <span class="jxr_string">"flintstone"</span>));
 <a class="jxr_linenumber" name="L147" href="#L147">147</a>             assertThat(wc.getWhereClause()).isEqualTo(<span class="jxr_string">"where first_name = :p1 or last_name = :p2"</span>);
 <a class="jxr_linenumber" name="L148" href="#L148">148</a>         });
 <a class="jxr_linenumber" name="L149" href="#L149">149</a>     }
@@ -193,7 +193,7 @@
 <a class="jxr_linenumber" name="L185" href="#L185">185</a>                 <span class="jxr_string">"or exists (select * from person where id = :p2)"</span>;
 <a class="jxr_linenumber" name="L186" href="#L186">186</a> 
 <a class="jxr_linenumber" name="L187" href="#L187">187</a>         assertThat(whereClause).hasValueSatisfying(wc -&gt; {
-<a class="jxr_linenumber" name="L188" href="#L188">188</a>             assertThat(wc.getParameters()).containsExactly(entry(<span class="jxr_string">"p1"</span>, 3), entry(<span class="jxr_string">"p2"</span>, 4));
+<a class="jxr_linenumber" name="L188" href="#L188">188</a>             assertThat(wc.getParameters()).containsOnly(entry(<span class="jxr_string">"p1"</span>, 3), entry(<span class="jxr_string">"p2"</span>, 4));
 <a class="jxr_linenumber" name="L189" href="#L189">189</a>             assertThat(wc.getWhereClause()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L190" href="#L190">190</a>         });
 <a class="jxr_linenumber" name="L191" href="#L191">191</a>     }
@@ -225,7 +225,7 @@
 <a class="jxr_linenumber" name="L217" href="#L217">217</a>                 <span class="jxr_string">"or exists (select * from person where id = :p3))"</span>;
 <a class="jxr_linenumber" name="L218" href="#L218">218</a> 
 <a class="jxr_linenumber" name="L219" href="#L219">219</a>         assertThat(whereClause).hasValueSatisfying(wc -&gt; {
-<a class="jxr_linenumber" name="L220" href="#L220">220</a>             assertThat(wc.getParameters()).containsExactly(entry(<span class="jxr_string">"p1"</span>, 3), entry(<span class="jxr_string">"p2"</span>, 4), entry(<span class="jxr_string">"p3"</span>, 5));
+<a class="jxr_linenumber" name="L220" href="#L220">220</a>             assertThat(wc.getParameters()).containsOnly(entry(<span class="jxr_string">"p1"</span>, 3), entry(<span class="jxr_string">"p2"</span>, 4), entry(<span class="jxr_string">"p3"</span>, 5));
 <a class="jxr_linenumber" name="L221" href="#L221">221</a>             assertThat(wc.getWhereClause()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L222" href="#L222">222</a>         });
 <a class="jxr_linenumber" name="L223" href="#L223">223</a>     }
@@ -250,7 +250,7 @@
 <a class="jxr_linenumber" name="L242" href="#L242">242</a>                 <span class="jxr_string">"and exists (select * from person where id = :p2)"</span>;
 <a class="jxr_linenumber" name="L243" href="#L243">243</a> 
 <a class="jxr_linenumber" name="L244" href="#L244">244</a>         assertThat(whereClause).hasValueSatisfying(wc -&gt; {
-<a class="jxr_linenumber" name="L245" href="#L245">245</a>             assertThat(wc.getParameters()).containsExactly(entry(<span class="jxr_string">"p1"</span>, 3), entry(<span class="jxr_string">"p2"</span>, 4));
+<a class="jxr_linenumber" name="L245" href="#L245">245</a>             assertThat(wc.getParameters()).containsOnly(entry(<span class="jxr_string">"p1"</span>, 3), entry(<span class="jxr_string">"p2"</span>, 4));
 <a class="jxr_linenumber" name="L246" href="#L246">246</a>             assertThat(wc.getWhereClause()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L247" href="#L247">247</a>         });
 <a class="jxr_linenumber" name="L248" href="#L248">248</a>     }
@@ -282,7 +282,7 @@
 <a class="jxr_linenumber" name="L274" href="#L274">274</a>                 <span class="jxr_string">"and exists (select * from person where id = :p3))"</span>;
 <a class="jxr_linenumber" name="L275" href="#L275">275</a> 
 <a class="jxr_linenumber" name="L276" href="#L276">276</a>         assertThat(whereClause).hasValueSatisfying(wc -&gt; {
-<a class="jxr_linenumber" name="L277" href="#L277">277</a>             assertThat(wc.getParameters()).containsExactly(entry(<span class="jxr_string">"p1"</span>, 3), entry(<span class="jxr_string">"p2"</span>, 4), entry(<span class="jxr_string">"p3"</span>, 5));
+<a class="jxr_linenumber" name="L277" href="#L277">277</a>             assertThat(wc.getParameters()).containsOnly(entry(<span class="jxr_string">"p1"</span>, 3), entry(<span class="jxr_string">"p2"</span>, 4), entry(<span class="jxr_string">"p3"</span>, 5));
 <a class="jxr_linenumber" name="L278" href="#L278">278</a>             assertThat(wc.getWhereClause()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L279" href="#L279">279</a>         });
 <a class="jxr_linenumber" name="L280" href="#L280">280</a>     }
@@ -323,13 +323,13 @@
 <a class="jxr_linenumber" name="L315" href="#L315">315</a>         String expected = <span class="jxr_string">"where first_name = :p1 or first_name = :p2"</span>;
 <a class="jxr_linenumber" name="L316" href="#L316">316</a> 
 <a class="jxr_linenumber" name="L317" href="#L317">317</a>         assertThat(whereClause).hasValueSatisfying(wc -&gt; {
-<a class="jxr_linenumber" name="L318" href="#L318">318</a>             assertThat(wc.getParameters()).containsExactly(entry(<span class="jxr_string">"p1"</span>, <span class="jxr_string">"Fred"</span>), entry(<span class="jxr_string">"p2"</span>, <span class="jxr_string">"Betty"</span>));
+<a class="jxr_linenumber" name="L318" href="#L318">318</a>             assertThat(wc.getParameters()).containsOnly(entry(<span class="jxr_string">"p1"</span>, <span class="jxr_string">"Fred"</span>), entry(<span class="jxr_string">"p2"</span>, <span class="jxr_string">"Betty"</span>));
 <a class="jxr_linenumber" name="L319" href="#L319">319</a>             assertThat(wc.getWhereClause()).isEqualTo(expected);
 <a class="jxr_linenumber" name="L320" href="#L320">320</a>         });
 <a class="jxr_linenumber" name="L321" href="#L321">321</a>     }
 <a class="jxr_linenumber" name="L322" href="#L322">322</a> }
 </pre>
 <hr/>
-<div id="footer">© 2016–2025 <a href="https://www.mybatis.org/">MyBatis.org</a></div>
+<div id="footer">© 2016–2026 <a href="https://www.mybatis.org/">MyBatis.org</a></div>
 </body>
 </html>
