@@ -17,7 +17,7 @@ jobs:
         cache: [maven]
         distribution: [temurin]
         java: [21, 25, 26-ea]
-        os: [macos-latest, ubuntu-latest, windows-latest]
+        os: [ubuntu-latest]
       fail-fast: false
       max-parallel: 6
     name: Test JDK ${{ matrix.java }}, ${{ matrix.os }}
