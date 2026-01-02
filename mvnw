@@ -8,7 +8,7 @@
 # "License"); you may not use this file except in compliance
 # with the License.  You may obtain a copy of the License at
 #
-#    http://www.apache.org/licenses/LICENSE-2.0
+#    https://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing,
 # software distributed under the License is distributed on an
@@ -327,6 +327,8 @@ fi
 MAVEN_CMD_LINE_ARGS="$MAVEN_CONFIG $*"
 export MAVEN_CMD_LINE_ARGS
 
+# Maven main class is here to fix maven 4.0.0-beta-5 through 4.0.0-rc-4
+MAVEN_MAIN_CLASS=org.apache.maven.cling.MavenCling
 WRAPPER_LAUNCHER=org.apache.maven.wrapper.MavenWrapperMain
 
 # shellcheck disable=SC2086 # safe args
@@ -335,4 +337,5 @@ exec "$JAVACMD" \
   $MAVEN_DEBUG_OPTS \
   -classpath "$MAVEN_PROJECTBASEDIR/.mvn/wrapper/maven-wrapper.jar" \
   "-Dmaven.multiModuleProjectDirectory=${MAVEN_PROJECTBASEDIR}" \
+  "-Dmaven.mainClass=${MAVEN_MAIN_CLASS}" \
   ${WRAPPER_LAUNCHER} $MAVEN_CONFIG "$@"

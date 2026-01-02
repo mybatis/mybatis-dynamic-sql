@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *  http://www.apache.org/licenses/LICENSE-2.0
+ *  https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -25,7 +25,6 @@ import java.net.URI;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -45,7 +44,7 @@ public final class MavenWrapperDownloader {
         try {
             log(" - Downloader started");
             final URL wrapperUrl = URI.create(args[0]).toURL();
-            final Path baseDir = Paths.get(".").toAbsolutePath().normalize();
+            final Path baseDir = Path.of(".").toAbsolutePath().normalize();
             final Path wrapperJarPath = baseDir.resolve(args[1]).normalize();
             if (!wrapperJarPath.startsWith(baseDir)) {
                 throw new IOException("Invalid path: outside of allowed directory");
