@@ -62,6 +62,7 @@
     <java.test.release.version>17</java.test.release.version>
     <junit.jupiter.version>6.0.2</junit.jupiter.version>
     <spring.batch.version>6.0.1</spring.batch.version>
+    <spring.version>7.0.3</spring.version>
 
     <checkstyle.config>checkstyle-override.xml</checkstyle.config>
 
@@ -87,6 +88,18 @@
     <project.build.outputTimestamp>1717449335</project.build.outputTimestamp>
   </properties>
 
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-framework-bom</artifactId>
+        <version>${spring.version}</version>
+        <scope>import</scope>
+        <type>pom</type>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
   <dependencies>
     <dependency>
       <groupId>org.jspecify</groupId>
@@ -103,7 +116,7 @@
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-jdbc</artifactId>
-      <version>7.0.2</version>
+      <version>${spring.version}</version>
       <scope>provided</scope>
       <optional>true</optional>
     </dependency>
