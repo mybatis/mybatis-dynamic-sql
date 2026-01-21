@@ -61,7 +61,7 @@
     <java.test.version>17</java.test.version>
     <java.test.release.version>17</java.test.release.version>
     <junit.jupiter.version>6.0.2</junit.jupiter.version>
-    <spring.batch.version>6.0.1</spring.batch.version>
+    <spring.batch.version>6.0.2</spring.batch.version>
     <spring.version>7.0.3</spring.version>
 
     <checkstyle.config>checkstyle-override.xml</checkstyle.config>
