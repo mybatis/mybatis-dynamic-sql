@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2025 the original author or authors.
+ *    Copyright 2016-2026 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -702,6 +702,53 @@ class PersonMapperTest {
             long count = mapper.count(c -> c.where(person.id, isEqualTo(55), or(person.id, isEqualTo(1))));
 
             assertThat(count).isEqualTo(1);
+        }
+    }
+
+    @Test
+    void testJoinCountWithSubcriteriaInSingleStatement() {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
+            PersonWithAddressMapper mapper = session.getMapper(PersonWithAddressMapper.class);
+
+            SelectStatementProvider selectStatement = countFrom(person)
+                    .join(address).on(person.id, isEqualTo(address.id))
+                    .where(person.id, isEqualTo(55), or(person.id, isEqualTo(1)))
+                    .build()
+                    .render(RenderingStrategies.MYBATIS3);
+
+            String expected = """
+                select count(*)
+                from Person
+                join Address on Person.id = Address.address_id
+                where Person.id = #{parameters.p1,jdbcType=INTEGER} or Person.id = #{parameters.p2,jdbcType=INTEGER}
+                """;
+            assertThat(selectStatement.getSelectStatement()).isEqualToNormalizingWhitespace(expected);
+
+            long count = mapper.count(selectStatement);
+            assertThat(count).isEqualTo(1);
+        }
+    }
+
+    @Test
+    void testJoinCountInSingleStatement() {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
+            PersonWithAddressMapper mapper = session.getMapper(PersonWithAddressMapper.class);
+
+            SelectStatementProvider selectStatement = countFrom(person, "p")
+                    .join(address, "a").on(person.id, isEqualTo(address.id))
+                    .configureStatement(c -> c.setNonRenderingWhereClauseAllowed(true))
+                    .build()
+                    .render(RenderingStrategies.MYBATIS3);
+
+            String expected = """
+                select count(*)
+                from Person p
+                join Address a on p.id = a.address_id
+                """;
+            assertThat(selectStatement.getSelectStatement()).isEqualToNormalizingWhitespace(expected);
+
+            long count = mapper.count(selectStatement);
+            assertThat(count).isEqualTo(2);
         }
     }
 

@@ -53,6 +53,7 @@ public class CountDSL<R> extends AbstractQueryingDSL implements
     private @Nullable CountWhereBuilder whereBuilder;
     private final BasicColumn countColumn;
     private final StatementConfiguration statementConfiguration = new StatementConfiguration();
+    private static final String ERROR_24 = "ERROR.24"; //$NON-NLS-1$
 
     private CountDSL(Builder<R> builder) {
         countColumn = Objects.requireNonNull(builder.column);
@@ -60,7 +61,14 @@ public class CountDSL<R> extends AbstractQueryingDSL implements
     }
 
     public CountDSL<R> from(SqlTable table) {
-        Validator.assertNull(this.table, "ERROR.24"); //$NON-NLS-1$
+        Validator.assertNull(this.table, ERROR_24);
+        this.table = table;
+        return this;
+    }
+
+    public CountDSL<R> from(SqlTable table, String tableAlias) {
+        Validator.assertNull(this.table, ERROR_24);
+        addTableAlias(table, tableAlias);
         this.table = table;
         return this;
     }
@@ -83,7 +91,7 @@ public class CountDSL<R> extends AbstractQueryingDSL implements
     }
 
     private SelectModel buildModel() {
-        Validator.assertTrue(table != null, "ERROR.24"); //$NON-NLS-1$
+        Validator.assertTrue(table != null, ERROR_24);
         QueryExpressionModel queryExpressionModel = new QueryExpressionModel.Builder()
                 .withSelectColumn(countColumn)
                 .withTable(table)
@@ -100,6 +108,14 @@ public class CountDSL<R> extends AbstractQueryingDSL implements
 
     public static CountDSL<SelectModel> countFrom(SqlTable table) {
         return countFrom(Function.identity(), table);
+    }
+
+    public static CountDSL<SelectModel> countFrom(SqlTable table, String tableAlias) {
+        return new Builder<SelectModel>()
+                .withAdapterFunction(Function.identity())
+                .withColumn(SqlBuilder.count())
+                .build()
+                .from(table, tableAlias);
     }
 
     public static <R> CountDSL<R> countFrom(Function<SelectModel, R> adapterFunction, SqlTable table) {

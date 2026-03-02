@@ -32,7 +32,7 @@ import org.mybatis.dynamic.sql.select.join.JoinType;
 import org.mybatis.dynamic.sql.util.Buildable;
 
 /**
- * Methods related to joins
+ * Methods related to joins.
  *
  * @param <D> a class that implements this interface. Typically, this is the owning DSL. We require this for
  *           the methods suchs as {@link #join(SqlTable, SqlCriterion, AndOrCriteriaGroup...)} that build

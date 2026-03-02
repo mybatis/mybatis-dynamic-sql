@@ -150,6 +150,10 @@ public interface SqlBuilder {
         return CountDSL.countFrom(table);
     }
 
+    static CountDSL<SelectModel> countFrom(SqlTable table, String tableAlias) {
+        return CountDSL.countFrom(table, tableAlias);
+    }
+
     static DeleteDSL<DeleteModel> deleteFrom(SqlTable table) {
         return DeleteDSL.deleteFrom(table);
     }
