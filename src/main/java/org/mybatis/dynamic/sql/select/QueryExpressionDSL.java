@@ -29,19 +29,17 @@ import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.TableExpression;
 import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
 import org.mybatis.dynamic.sql.dsl.AbstractBooleanOperations;
-import org.mybatis.dynamic.sql.dsl.AbstractDSL;
 import org.mybatis.dynamic.sql.dsl.AbstractJoinSpecificationFinisher;
+import org.mybatis.dynamic.sql.dsl.AbstractQueryingDSL;
 import org.mybatis.dynamic.sql.dsl.HavingOperations;
 import org.mybatis.dynamic.sql.dsl.JoinOperations;
 import org.mybatis.dynamic.sql.dsl.WhereOperations;
-import org.mybatis.dynamic.sql.select.join.JoinModel;
-import org.mybatis.dynamic.sql.select.join.JoinSpecification;
 import org.mybatis.dynamic.sql.util.Buildable;
 import org.mybatis.dynamic.sql.util.ConfigurableStatement;
 import org.mybatis.dynamic.sql.util.Validator;
 import org.mybatis.dynamic.sql.where.EmbeddedWhereModel;
 
-public class QueryExpressionDSL<R> extends AbstractDSL implements
+public class QueryExpressionDSL<R> extends AbstractQueryingDSL implements
         JoinOperations<QueryExpressionDSL<R>, QueryExpressionDSL<R>.JoinSpecificationFinisher>,
         WhereOperations<QueryExpressionDSL<R>.QueryExpressionWhereBuilder>,
         HavingOperations<QueryExpressionDSL<R>.QueryExpressionHavingBuilder>,
@@ -53,7 +51,6 @@ public class QueryExpressionDSL<R> extends AbstractDSL implements
     private final boolean isDistinct;
     private final List<BasicColumn> selectList;
     private @Nullable TableExpression table;
-    private final List<JoinSpecificationFinisher> joinSpecifications = new ArrayList<>();
     private @Nullable QueryExpressionWhereBuilder whereBuilder;
     private @Nullable GroupByModel groupByModel;
     private @Nullable QueryExpressionHavingBuilder havingBuilder;
@@ -96,16 +93,6 @@ public class QueryExpressionDSL<R> extends AbstractDSL implements
         var finisher = new JoinSpecificationFinisher();
         joinSpecifications.add(finisher);
         return finisher;
-    }
-
-    private @Nullable JoinModel buildJoinModel() {
-        if (joinSpecifications.isEmpty()) {
-            return null;
-        }
-
-        return JoinModel.of(joinSpecifications.stream()
-                .map(JoinSpecificationFinisher::buildJoinSpecification)
-                .toList());
     }
 
     @Override
@@ -172,11 +159,6 @@ public class QueryExpressionDSL<R> extends AbstractDSL implements
     }
 
     @Override
-    public void addTableAlias(SqlTable table, String tableAlias) {
-        super.addTableAlias(table, tableAlias);
-    }
-
-    @Override
     public SelectDSL<R> getSelectDSL() {
         return selectDSL;
     }
@@ -239,10 +221,6 @@ public class QueryExpressionDSL<R> extends AbstractDSL implements
             WhereOperations<QueryExpressionWhereBuilder>,
             ConfigurableStatement<JoinSpecificationFinisher>, Buildable<R>,
             SelectDSLOperations<R> {
-
-        private JoinSpecification buildJoinSpecification() {
-            return toJoinSpecification();
-        }
 
         @Override
         public R build() {

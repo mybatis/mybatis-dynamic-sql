@@ -31,8 +31,7 @@ public class JoinSpecification extends AbstractBooleanExpressionModel {
         super(builder);
         table = Objects.requireNonNull(builder.table);
         joinType = Objects.requireNonNull(builder.joinType);
-        Validator.assertFalse(initialCriterion().isEmpty() && subCriteria().isEmpty(),
-                "ERROR.16"); //$NON-NLS-1$
+        Validator.assertTrue(initialCriterion().isPresent(), "ERROR.16"); //$NON-NLS-1$
     }
 
     public TableExpression table() {
