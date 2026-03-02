@@ -30,7 +30,6 @@ import org.mybatis.dynamic.sql.TableExpression;
 import org.mybatis.dynamic.sql.dsl.AbstractBooleanOperations;
 import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
 import org.mybatis.dynamic.sql.dsl.AbstractDSL;
-import org.mybatis.dynamic.sql.dsl.AbstractJoinOperations;
 import org.mybatis.dynamic.sql.dsl.HavingOperations;
 import org.mybatis.dynamic.sql.dsl.JoinOperations;
 import org.mybatis.dynamic.sql.dsl.WhereOperations;
@@ -240,7 +239,7 @@ public class QueryExpressionDSL<R> extends AbstractDSL implements
     }
 
     public class JoinSpecificationFinisher
-            extends AbstractJoinOperations<JoinSpecificationFinisher>
+            extends JoinOperations.JoinSpecificationStarter<JoinSpecificationFinisher>
             implements JoinOperations<QueryExpressionDSL<R>, JoinSpecificationFinisher>,
             WhereOperations<QueryExpressionWhereBuilder>,
             ConfigurableStatement<JoinSpecificationFinisher>, Buildable<R>,

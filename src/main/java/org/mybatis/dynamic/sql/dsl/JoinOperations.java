@@ -17,7 +17,6 @@ package org.mybatis.dynamic.sql.dsl;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.BiFunction;
 
 import org.jspecify.annotations.Nullable;
 import org.mybatis.dynamic.sql.AndOrCriteriaGroup;
@@ -29,61 +28,62 @@ import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.TableExpression;
 import org.mybatis.dynamic.sql.select.SelectModel;
 import org.mybatis.dynamic.sql.select.SubQuery;
+import org.mybatis.dynamic.sql.select.join.JoinSpecification;
 import org.mybatis.dynamic.sql.select.join.JoinType;
 import org.mybatis.dynamic.sql.util.Buildable;
 
-public interface JoinOperations<D extends JoinOperations<D, F>, F extends AbstractJoinOperations<F>> {
+public interface JoinOperations<D extends JoinOperations<D, F>, F extends JoinOperations.JoinSpecificationStarter<F>> {
 
-    default JoinSpecificationStarter<F> join(SqlTable joinTable) {
-        return new JoinSpecificationStarter<>(JoinType.INNER, joinTable, this::buildFinisher);
+    default F join(SqlTable joinTable) {
+        return buildFinisher(JoinType.INNER, joinTable);
     }
 
-    default JoinSpecificationStarter<F> join(SqlTable joinTable, String tableAlias) {
+    default F join(SqlTable joinTable, String tableAlias) {
         addTableAlias(joinTable, tableAlias);
         return join(joinTable);
     }
 
-    default JoinSpecificationStarter<F> join(Buildable<SelectModel> joinTable, @Nullable String tableAlias) {
-        return new JoinSpecificationStarter<>(JoinType.INNER, buildSubQuery(joinTable, tableAlias), this::buildFinisher);
+    default F join(Buildable<SelectModel> joinTable, @Nullable String tableAlias) {
+        return buildFinisher(JoinType.INNER, buildSubQuery(joinTable, tableAlias));
     }
 
-    default JoinSpecificationStarter<F> leftJoin(SqlTable joinTable) {
-        return new JoinSpecificationStarter<>(JoinType.LEFT, joinTable, this::buildFinisher);
+    default F leftJoin(SqlTable joinTable) {
+        return buildFinisher(JoinType.LEFT, joinTable);
     }
 
-    default JoinSpecificationStarter<F> leftJoin(SqlTable joinTable, String tableAlias) {
+    default F leftJoin(SqlTable joinTable, String tableAlias) {
         addTableAlias(joinTable, tableAlias);
         return leftJoin(joinTable);
     }
 
-    default JoinSpecificationStarter<F> leftJoin(Buildable<SelectModel> joinTable, @Nullable String tableAlias) {
-        return new JoinSpecificationStarter<>(JoinType.LEFT, buildSubQuery(joinTable, tableAlias), this::buildFinisher);
+    default F leftJoin(Buildable<SelectModel> joinTable, @Nullable String tableAlias) {
+        return buildFinisher(JoinType.LEFT, buildSubQuery(joinTable, tableAlias));
     }
 
-    default JoinSpecificationStarter<F> rightJoin(SqlTable joinTable) {
-        return new JoinSpecificationStarter<>(JoinType.RIGHT, joinTable, this::buildFinisher);
+    default F rightJoin(SqlTable joinTable) {
+        return buildFinisher(JoinType.RIGHT, joinTable);
     }
 
-    default JoinSpecificationStarter<F>rightJoin(SqlTable joinTable, String tableAlias) {
+    default F rightJoin(SqlTable joinTable, String tableAlias) {
         addTableAlias(joinTable, tableAlias);
         return rightJoin(joinTable);
     }
 
-    default JoinSpecificationStarter<F> rightJoin(Buildable<SelectModel> joinTable, @Nullable String tableAlias) {
-        return new JoinSpecificationStarter<>(JoinType.RIGHT, buildSubQuery(joinTable, tableAlias), this::buildFinisher);
+    default F rightJoin(Buildable<SelectModel> joinTable, @Nullable String tableAlias) {
+        return buildFinisher(JoinType.RIGHT, buildSubQuery(joinTable, tableAlias));
     }
 
-    default JoinSpecificationStarter<F> fullJoin(SqlTable joinTable) {
-        return new JoinSpecificationStarter<>(JoinType.FULL, joinTable, this::buildFinisher);
+    default F fullJoin(SqlTable joinTable) {
+        return buildFinisher(JoinType.FULL, joinTable);
     }
 
-    default JoinSpecificationStarter<F> fullJoin(SqlTable joinTable, String tableAlias) {
+    default F fullJoin(SqlTable joinTable, String tableAlias) {
         addTableAlias(joinTable, tableAlias);
         return fullJoin(joinTable);
     }
 
-    default JoinSpecificationStarter<F> fullJoin(Buildable<SelectModel> joinTable, @Nullable String tableAlias) {
-        return new JoinSpecificationStarter<>(JoinType.FULL, buildSubQuery(joinTable, tableAlias), this::buildFinisher);
+    default F fullJoin(Buildable<SelectModel> joinTable, @Nullable String tableAlias) {
+        return buildFinisher(JoinType.FULL, buildSubQuery(joinTable, tableAlias));
     }
 
     // these are the "old style" join methods. They are a complete expression of a join specification
@@ -213,44 +213,46 @@ public interface JoinOperations<D extends JoinOperations<D, F>, F extends Abstra
     // this is an unfortunate leak of a method into the public API. SHould maybe be something like addJoinSpecification
     D getDsl();
 
-    class JoinSpecificationStarter<F extends AbstractJoinOperations<F>> {
+    abstract class JoinSpecificationStarter<F extends JoinSpecificationStarter<F>> extends AbstractBooleanOperations<F> {
         private final TableExpression joinTable;
         private final JoinType joinType;
-        private final BiFunction<JoinType, TableExpression, F> finisherBuilder;
 
-        public JoinSpecificationStarter(JoinType joinType, TableExpression joinTable,
-                                        BiFunction<JoinType, TableExpression, F> finisherBuilder) {
+        protected JoinSpecificationStarter(JoinType joinType, TableExpression joinTable) {
             this.joinType = joinType;
             this.joinTable = joinTable;
-            this.finisherBuilder = finisherBuilder;
         }
 
         public F on(SqlCriterion sqlCriterion) {
-            F f = finisherBuilder.apply(joinType, joinTable);
-            f.setInitialCriterion(sqlCriterion);
-            return f;
+            setInitialCriterion(sqlCriterion);
+            return getThis();
         }
 
         public <T> F on(BindableColumn<T> joinColumn, RenderableCondition<T> joinCondition) {
-            F f = finisherBuilder.apply(joinType, joinTable);
             ColumnAndConditionCriterion<T> criterion = ColumnAndConditionCriterion.withColumn(joinColumn)
                     .withCondition(joinCondition)
                     .build();
 
-            f.setInitialCriterion(criterion);
-            return f;
+            setInitialCriterion(criterion);
+            return getThis();
         }
 
         public <T> F on(BindableColumn<T> joinColumn, RenderableCondition<T> onJoinCondition,
                         AndOrCriteriaGroup... subCriteria) {
-            F f = finisherBuilder.apply(joinType, joinTable);
             ColumnAndConditionCriterion<T> criterion = ColumnAndConditionCriterion.withColumn(joinColumn)
                     .withCondition(onJoinCondition)
                     .withSubCriteria(Arrays.asList(subCriteria))
                     .build();
 
-            f.setInitialCriterion(criterion);
-            return f;
+            setInitialCriterion(criterion);
+            return getThis();
+        }
+
+        protected JoinSpecification buildJoinSpecification() {
+            return JoinSpecification.withJoinTable(joinTable)
+                    .withJoinType(joinType)
+                    .withInitialCriterion(initialCriterion)
+                    .withSubCriteria(subCriteria)
+                    .build();
         }
     }
 }
