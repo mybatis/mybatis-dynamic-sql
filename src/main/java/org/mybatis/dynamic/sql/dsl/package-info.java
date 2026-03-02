@@ -13,25 +13,7 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.mybatis.dynamic.sql.util.kotlin
+@NullMarked
+package org.mybatis.dynamic.sql.dsl;
 
-import org.mybatis.dynamic.sql.SqlTable
-import org.mybatis.dynamic.sql.select.CountDSL
-import org.mybatis.dynamic.sql.select.SelectModel
-import org.mybatis.dynamic.sql.util.Buildable
-
-typealias CountCompleter = KotlinCountBuilder.() -> Unit
-
-class KotlinCountBuilder(private val dsl: CountDSL<SelectModel>) :
-    KotlinJoinOperations<CountDSL<SelectModel>>(dsl),
-    Buildable<SelectModel> {
-
-    fun from(table: SqlTable): KotlinCountBuilder =
-        apply {
-            dsl.from(table)
-        }
-
-    override fun build(): SelectModel {
-        return dsl.build()
-    }
-}
+import org.jspecify.annotations.NullMarked;

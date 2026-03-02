@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2025 the original author or authors.
+ *    Copyright 2016-2026 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -25,7 +25,8 @@ import org.mybatis.dynamic.sql.util.Buildable
 typealias UpdateCompleter = KotlinUpdateBuilder.() -> Unit
 
 class KotlinUpdateBuilder(private val dsl: UpdateDSL<UpdateModel>) :
-    KotlinBaseBuilder<UpdateDSL<UpdateModel>>(), Buildable<UpdateModel> {
+    KotlinWhereOperations<UpdateDSL<UpdateModel>>(dsl),
+    Buildable<UpdateModel> {
 
     fun <T : Any> set(column: SqlColumn<T>): KotlinSetClauseFinisher<T> = KotlinSetClauseFinisher(column)
 
@@ -42,8 +43,6 @@ class KotlinUpdateBuilder(private val dsl: UpdateDSL<UpdateModel>) :
     }
 
     override fun build(): UpdateModel = dsl.build()
-
-    override fun getDsl(): UpdateDSL<UpdateModel> = dsl
 
     @MyBatisDslMarker
     @Suppress("TooManyFunctions")

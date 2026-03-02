@@ -42,7 +42,7 @@ import org.mybatis.dynamic.sql.util.Validator;
  *            the type of model produced by this builder, typically SelectModel
  */
 public class SelectDSL<R> implements Buildable<R>, ConfigurableStatement<SelectDSL<R>> {
-    private final static String ERROR_48 = "ERROR.48"; //$NON-NLS-1$
+    private static final String ERROR_48 = "ERROR.48"; //$NON-NLS-1$
 
     private final Function<SelectModel, R> adapterFunction;
     private final List<QueryExpressionDSL<R>> queryExpressions = new ArrayList<>();

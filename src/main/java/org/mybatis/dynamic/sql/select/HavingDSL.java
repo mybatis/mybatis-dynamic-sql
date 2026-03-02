@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2025 the original author or authors.
+ *    Copyright 2016-2026 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -15,9 +15,11 @@
  */
 package org.mybatis.dynamic.sql.select;
 
+import org.mybatis.dynamic.sql.dsl.AbstractBooleanOperationsFinisher;
+import org.mybatis.dynamic.sql.dsl.HavingOperations;
 import org.mybatis.dynamic.sql.util.Buildable;
 
-public class HavingDSL implements AbstractHavingStarter<HavingDSL.StandaloneHavingFinisher> {
+public class HavingDSL implements HavingOperations<HavingDSL.StandaloneHavingFinisher> {
     private final StandaloneHavingFinisher havingFinisher = new StandaloneHavingFinisher();
 
     @Override
@@ -25,7 +27,7 @@ public class HavingDSL implements AbstractHavingStarter<HavingDSL.StandaloneHavi
         return havingFinisher;
     }
 
-    public static class StandaloneHavingFinisher extends AbstractHavingFinisher<StandaloneHavingFinisher>
+    public static class StandaloneHavingFinisher extends AbstractBooleanOperationsFinisher<StandaloneHavingFinisher>
             implements Buildable<HavingModel> {
 
         private StandaloneHavingFinisher() {}
@@ -37,11 +39,11 @@ public class HavingDSL implements AbstractHavingStarter<HavingDSL.StandaloneHavi
 
         @Override
         public HavingModel build() {
-            return buildModel();
+            return toHavingModel();
         }
 
         public HavingApplier toHavingApplier() {
-            return d -> d.initialize(getInitialCriterion(), subCriteria);
+            return d -> d.initialize(this, StatementType.HAVING);
         }
     }
 }

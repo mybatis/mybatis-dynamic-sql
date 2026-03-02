@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2025 the original author or authors.
+ *    Copyright 2016-2026 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -13,27 +13,29 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.mybatis.dynamic.sql.select;
+package org.mybatis.dynamic.sql.dsl;
 
 import java.util.Arrays;
 import java.util.List;
 
+import org.jspecify.annotations.Nullable;
 import org.mybatis.dynamic.sql.AndOrCriteriaGroup;
 import org.mybatis.dynamic.sql.BindableColumn;
 import org.mybatis.dynamic.sql.ColumnAndConditionCriterion;
 import org.mybatis.dynamic.sql.CriteriaGroup;
 import org.mybatis.dynamic.sql.RenderableCondition;
 import org.mybatis.dynamic.sql.SqlCriterion;
+import org.mybatis.dynamic.sql.select.HavingApplier;
 
-public interface AbstractHavingStarter<F extends AbstractHavingFinisher<?>> {
+public interface HavingOperations<F extends AbstractBooleanOperationsFinisher<?>> {
 
     default <T> F having(BindableColumn<T> column, RenderableCondition<T> condition,
-                        AndOrCriteriaGroup... subCriteria) {
+                         AndOrCriteriaGroup... subCriteria) {
         return having(column, condition, Arrays.asList(subCriteria));
     }
 
     default <T> F having(BindableColumn<T> column, RenderableCondition<T> condition,
-                        List<AndOrCriteriaGroup> subCriteria) {
+                         List<AndOrCriteriaGroup> subCriteria) {
         SqlCriterion sqlCriterion = ColumnAndConditionCriterion.withColumn(column)
                 .withCondition(condition)
                 .withSubCriteria(subCriteria)
@@ -46,7 +48,7 @@ public interface AbstractHavingStarter<F extends AbstractHavingFinisher<?>> {
         return having(initialCriterion, Arrays.asList(subCriteria));
     }
 
-    default F having(SqlCriterion initialCriterion, List<AndOrCriteriaGroup> subCriteria) {
+    default F having(@Nullable SqlCriterion initialCriterion, List<AndOrCriteriaGroup> subCriteria) {
         SqlCriterion sqlCriterion = new CriteriaGroup.Builder()
                 .withInitialCriterion(initialCriterion)
                 .withSubCriteria(subCriteria)
@@ -65,7 +67,7 @@ public interface AbstractHavingStarter<F extends AbstractHavingFinisher<?>> {
 
     private F initialize(SqlCriterion sqlCriterion) {
         F finisher = having();
-        finisher.initialize(sqlCriterion);
+        finisher.setInitialCriterion(sqlCriterion, AbstractBooleanOperationsFinisher.StatementType.HAVING);
         return finisher;
     }
 }

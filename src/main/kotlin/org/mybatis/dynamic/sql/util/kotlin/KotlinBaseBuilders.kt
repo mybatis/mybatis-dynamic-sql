@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2025 the original author or authors.
+ *    Copyright 2016-2026 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -18,52 +18,52 @@ package org.mybatis.dynamic.sql.util.kotlin
 import org.mybatis.dynamic.sql.AndOrCriteriaGroup
 import org.mybatis.dynamic.sql.SqlTable
 import org.mybatis.dynamic.sql.configuration.StatementConfiguration
-import org.mybatis.dynamic.sql.select.AbstractQueryExpressionDSL
-import org.mybatis.dynamic.sql.where.AbstractWhereStarter
+import org.mybatis.dynamic.sql.dsl.JoinOperations
+import org.mybatis.dynamic.sql.dsl.WhereOperations
+import org.mybatis.dynamic.sql.util.ConfigurableStatement
 
 @Target(AnnotationTarget.CLASS, AnnotationTarget.TYPE)
 @DslMarker
 annotation class MyBatisDslMarker
 
 @MyBatisDslMarker
-@Suppress("TooManyFunctions")
-abstract class KotlinBaseBuilder<D : AbstractWhereStarter<*,*>> {
-
-    fun configureStatement(c: StatementConfiguration.() -> Unit) {
-        getDsl().configureStatement(c)
-    }
-
+abstract class KotlinWhereOperations<D>(private val dsl : D)
+        where D : ConfigurableStatement<*>, D : WhereOperations<*> {
     fun where(criteria: GroupingCriteriaReceiver): Unit =
         GroupingCriteriaCollector().apply(criteria).let {
-            getDsl().where(it.initialCriterion, it.subCriteria)
+            dsl.where(it.initialCriterion, it.subCriteria)
         }
 
     fun where(criteria: List<AndOrCriteriaGroup>) {
-        getDsl().where(criteria)
+        dsl.where(criteria)
     }
 
     /**
      * This function does nothing, but it can be used to make some code snippets more understandable.
      *
-     * For example, to count all rows in a table you can write either of the following:
+     * For example, to count all rows in a table, you can write either of the following:
      *
+     * ```kotlin
      * val rows = countFrom(foo) { }
-     *
-     *    or
-     *
+     * ```
+     * or
+     * ```kotlin
      * val rows = countFrom(foo) { allRows() }
+     * ```
      */
     @SuppressWarnings("EmptyFunctionBlock")
     fun allRows() {
         // intentionally empty - this function exists for code beautification and clarity only
     }
 
-    protected abstract fun getDsl(): D
+    fun configureStatement(c: StatementConfiguration.() -> Unit) {
+        dsl.configureStatement(c)
+    }
 }
 
 @Suppress("TooManyFunctions")
-abstract class KotlinBaseJoiningBuilder<D : AbstractQueryExpressionDSL<*, *>> : KotlinBaseBuilder<D>() {
-
+abstract class KotlinJoinOperations<D>(private val dsl : D) : KotlinWhereOperations<D>(dsl)
+        where D : JoinOperations<*,*>, D: ConfigurableStatement<*>, D: WhereOperations<*>{
     @Deprecated("Please use the new form with the \"on\" keyword outside the lambda")
     fun join(table: SqlTable, joinCriteria: JoinReceiver): Unit =
         applyToDsl(joinCriteria) { jc ->
@@ -87,19 +87,19 @@ abstract class KotlinBaseJoiningBuilder<D : AbstractQueryExpressionDSL<*, *>> : 
 
     fun join(table: SqlTable): JoinCriteriaGatherer =
         JoinCriteriaGatherer {
-            getDsl().join(table, it.initialCriterion, it.subCriteria)
+            dsl.join(table).on(it.initialCriterion!!).and(it.subCriteria)
         }
 
     fun join(table: SqlTable, alias: String): JoinCriteriaGatherer =
         JoinCriteriaGatherer {
-            getDsl().join(table, alias, it.initialCriterion, it.subCriteria)
+            dsl.join(table, alias).on(it.initialCriterion!!).and(it.subCriteria)
         }
 
     fun join(
         subQuery: KotlinQualifiedSubQueryBuilder.() -> Unit): JoinCriteriaGatherer =
         JoinCriteriaGatherer {
             val sq = KotlinQualifiedSubQueryBuilder().apply(subQuery)
-            getDsl().join(sq, sq.correlationName, it.initialCriterion, it.subCriteria)
+            dsl.join(sq, sq.correlationName).on(it.initialCriterion!!).and(it.subCriteria)
         }
 
     @Deprecated("Please use the new form with the \"on\" keyword outside the lambda")
@@ -125,19 +125,19 @@ abstract class KotlinBaseJoiningBuilder<D : AbstractQueryExpressionDSL<*, *>> : 
 
     fun fullJoin(table: SqlTable): JoinCriteriaGatherer =
         JoinCriteriaGatherer {
-            getDsl().fullJoin(table, it.initialCriterion, it.subCriteria)
+            dsl.fullJoin(table).on(it.initialCriterion!!).and(it.subCriteria)
         }
 
     fun fullJoin(table: SqlTable, alias: String): JoinCriteriaGatherer =
         JoinCriteriaGatherer {
-            getDsl().fullJoin(table, alias, it.initialCriterion, it.subCriteria)
+            dsl.fullJoin(table, alias).on(it.initialCriterion!!).and(it.subCriteria)
         }
 
     fun fullJoin(
         subQuery: KotlinQualifiedSubQueryBuilder.() -> Unit): JoinCriteriaGatherer =
         JoinCriteriaGatherer {
             val sq = KotlinQualifiedSubQueryBuilder().apply(subQuery)
-            getDsl().fullJoin(sq, sq.correlationName, it.initialCriterion, it.subCriteria)
+            dsl.fullJoin(sq, sq.correlationName).on(it.initialCriterion!!).and(it.subCriteria)
         }
 
     @Deprecated("Please use the new form with the \"on\" keyword outside the lambda")
@@ -163,19 +163,19 @@ abstract class KotlinBaseJoiningBuilder<D : AbstractQueryExpressionDSL<*, *>> : 
 
     fun leftJoin(table: SqlTable): JoinCriteriaGatherer =
         JoinCriteriaGatherer {
-            getDsl().leftJoin(table, it.initialCriterion, it.subCriteria)
+            dsl.leftJoin(table).on(it.initialCriterion!!).and(it.subCriteria)
         }
 
     fun leftJoin(table: SqlTable, alias: String): JoinCriteriaGatherer =
         JoinCriteriaGatherer {
-            getDsl().leftJoin(table, alias, it.initialCriterion, it.subCriteria)
+            dsl.leftJoin(table, alias).on(it.initialCriterion!!).and(it.subCriteria)
         }
 
     fun leftJoin(
         subQuery: KotlinQualifiedSubQueryBuilder.() -> Unit): JoinCriteriaGatherer =
         JoinCriteriaGatherer {
             val sq = KotlinQualifiedSubQueryBuilder().apply(subQuery)
-            getDsl().leftJoin(sq, sq.correlationName, it.initialCriterion, it.subCriteria)
+            dsl.leftJoin(sq, sq.correlationName).on(it.initialCriterion!!).and(it.subCriteria)
         }
 
     @Deprecated("Please use the new form with the \"on\" keyword outside the lambda")
@@ -201,23 +201,23 @@ abstract class KotlinBaseJoiningBuilder<D : AbstractQueryExpressionDSL<*, *>> : 
 
     fun rightJoin(table: SqlTable): JoinCriteriaGatherer =
         JoinCriteriaGatherer {
-            getDsl().rightJoin(table, it.initialCriterion, it.subCriteria)
+            dsl.rightJoin(table).on(it.initialCriterion!!).and(it.subCriteria)
         }
 
     fun rightJoin(table: SqlTable, alias: String): JoinCriteriaGatherer =
         JoinCriteriaGatherer {
-            getDsl().rightJoin(table, alias, it.initialCriterion, it.subCriteria)
+            dsl.rightJoin(table, alias).on(it.initialCriterion!!).and(it.subCriteria)
         }
 
     fun rightJoin(
         subQuery: KotlinQualifiedSubQueryBuilder.() -> Unit): JoinCriteriaGatherer =
         JoinCriteriaGatherer {
             val sq = KotlinQualifiedSubQueryBuilder().apply(subQuery)
-            getDsl().rightJoin(sq, sq.correlationName, it.initialCriterion, it.subCriteria)
+            dsl.rightJoin(sq, sq.correlationName).on(it.initialCriterion!!).and(it.subCriteria)
         }
 
     private fun applyToDsl(joinCriteria: JoinReceiver, applyJoin: D.(JoinCollector) -> Unit) {
-        getDsl().applyJoin(JoinCollector().apply(joinCriteria))
+        dsl.applyJoin(JoinCollector().apply(joinCriteria))
     }
 
     private fun applyToDsl(
@@ -225,14 +225,14 @@ abstract class KotlinBaseJoiningBuilder<D : AbstractQueryExpressionDSL<*, *>> : 
         joinCriteria: JoinReceiver,
         applyJoin: D.(KotlinQualifiedSubQueryBuilder, JoinCollector) -> Unit
     ) {
-        getDsl().applyJoin(KotlinQualifiedSubQueryBuilder().apply(subQuery), JoinCollector().apply(joinCriteria))
+        dsl.applyJoin(KotlinQualifiedSubQueryBuilder().apply(subQuery), JoinCollector().apply(joinCriteria))
     }
 }
 
 class JoinCriteriaGatherer(private val consumer: (GroupingCriteriaCollector) -> Unit) {
     infix fun on (joinCriteria: GroupingCriteriaReceiver): Unit =
         with(GroupingCriteriaCollector().apply(joinCriteria)) {
-            assertTrue(initialCriterion != null || subCriteria.isNotEmpty(), "ERROR.22") //$NON-NLS-1$
+            assertTrue(initialCriterion != null, "ERROR.22") //$NON-NLS-1$
             consumer.invoke(this)
         }
 }

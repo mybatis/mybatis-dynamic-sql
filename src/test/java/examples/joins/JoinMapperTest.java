@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2025 the original author or authors.
+ *    Copyright 2016-2026 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -204,6 +204,20 @@ class JoinMapperTest {
     }
 
     @Test
+    void testCompoundJoin4WithoutAliases() {
+        // this is a nonsensical join, but it does test the "and" capability
+        SelectStatementProvider selectStatement = select(orderMaster.orderId, orderDate, orderDetail.lineNumber, orderDetail.description, orderDetail.quantity)
+                .from(orderMaster)
+                .leftJoin(orderDetail, on(orderMaster.orderId, isEqualTo(orderDetail.orderId)), and(orderMaster.orderId, isEqualTo(orderDetail.orderId)))
+                .build()
+                .render(RenderingStrategies.MYBATIS3);
+
+        String expectedStatement = "select OrderMaster.order_id, OrderMaster.order_date, OrderDetail.line_number, OrderDetail.description, OrderDetail.quantity"
+                + " from OrderMaster left join OrderDetail on OrderMaster.order_id = OrderDetail.order_id and OrderMaster.order_id = OrderDetail.order_id";
+        assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedStatement);
+    }
+
+    @Test
     void testCompoundJoin5() {
         // this is a nonsensical join, but it does test the "and" capability
         SelectStatementProvider selectStatement = select(orderMaster.orderId, orderDate, orderDetail.lineNumber, orderDetail.description, orderDetail.quantity)
@@ -218,6 +232,20 @@ class JoinMapperTest {
     }
 
     @Test
+    void testCompoundJoin5WithoutAliases() {
+        // this is a nonsensical join, but it does test the "and" capability
+        SelectStatementProvider selectStatement = select(orderMaster.orderId, orderDate, orderDetail.lineNumber, orderDetail.description, orderDetail.quantity)
+                .from(orderMaster)
+                .rightJoin(orderDetail, on(orderMaster.orderId, isEqualTo(orderDetail.orderId)), and(orderMaster.orderId, isEqualTo(orderDetail.orderId)))
+                .build()
+                .render(RenderingStrategies.MYBATIS3);
+
+        String expectedStatement = "select OrderMaster.order_id, OrderMaster.order_date, OrderDetail.line_number, OrderDetail.description, OrderDetail.quantity"
+                + " from OrderMaster right join OrderDetail on OrderMaster.order_id = OrderDetail.order_id and OrderMaster.order_id = OrderDetail.order_id";
+        assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedStatement);
+    }
+
+    @Test
     void testCompoundJoin6() {
         // this is a nonsensical join, but it does test the "and" capability
         SelectStatementProvider selectStatement = select(orderMaster.orderId, orderDate, orderDetail.lineNumber, orderDetail.description, orderDetail.quantity)
@@ -228,6 +256,20 @@ class JoinMapperTest {
 
         String expectedStatement = "select om.order_id, om.order_date, od.line_number, od.description, od.quantity"
                 + " from OrderMaster om full join OrderDetail od on om.order_id = od.order_id and om.order_id = od.order_id";
+        assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedStatement);
+    }
+
+    @Test
+    void testCompoundJoin6WithoutAliases() {
+        // this is a nonsensical join, but it does test the "and" capability
+        SelectStatementProvider selectStatement = select(orderMaster.orderId, orderDate, orderDetail.lineNumber, orderDetail.description, orderDetail.quantity)
+                .from(orderMaster)
+                .fullJoin(orderDetail, on(orderMaster.orderId, isEqualTo(orderDetail.orderId)), and(orderMaster.orderId, isEqualTo(orderDetail.orderId)))
+                .build()
+                .render(RenderingStrategies.MYBATIS3);
+
+        String expectedStatement = "select OrderMaster.order_id, OrderMaster.order_date, OrderDetail.line_number, OrderDetail.description, OrderDetail.quantity"
+                + " from OrderMaster full join OrderDetail on OrderMaster.order_id = OrderDetail.order_id and OrderMaster.order_id = OrderDetail.order_id";
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedStatement);
     }
 

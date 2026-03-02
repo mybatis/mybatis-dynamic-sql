@@ -24,9 +24,14 @@ import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.SqlBuilder;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
+import org.mybatis.dynamic.sql.dsl.AbstractBooleanOperationsFinisher;
+import org.mybatis.dynamic.sql.dsl.AbstractJoinSpecificationFinisher;
+import org.mybatis.dynamic.sql.dsl.AbstractQueryingDSL;
+import org.mybatis.dynamic.sql.dsl.JoinOperations;
+import org.mybatis.dynamic.sql.dsl.WhereOperations;
 import org.mybatis.dynamic.sql.util.Buildable;
+import org.mybatis.dynamic.sql.util.ConfigurableStatement;
 import org.mybatis.dynamic.sql.util.Validator;
-import org.mybatis.dynamic.sql.where.AbstractWhereFinisher;
 import org.mybatis.dynamic.sql.where.EmbeddedWhereModel;
 
 /**
@@ -38,14 +43,17 @@ import org.mybatis.dynamic.sql.where.EmbeddedWhereModel;
  *
  * @author Jeff Butler
  */
-public class CountDSL<R> extends AbstractQueryExpressionDSL<CountDSL<R>.CountWhereBuilder, CountDSL<R>>
-        implements Buildable<R> {
-
+public class CountDSL<R> extends AbstractQueryingDSL implements
+        JoinOperations<CountDSL<R>, CountDSL<R>.JoinSpecificationFinisher>,
+        WhereOperations<CountDSL<R>.CountWhereBuilder>,
+        ConfigurableStatement<CountDSL<R>>,
+        Buildable<R> {
     private final Function<SelectModel, R> adapterFunction;
     private @Nullable SqlTable table;
     private @Nullable CountWhereBuilder whereBuilder;
     private final BasicColumn countColumn;
     private final StatementConfiguration statementConfiguration = new StatementConfiguration();
+    private static final String ERROR_24 = "ERROR.24"; //$NON-NLS-1$
 
     private CountDSL(Builder<R> builder) {
         countColumn = Objects.requireNonNull(builder.column);
@@ -53,7 +61,14 @@ public class CountDSL<R> extends AbstractQueryExpressionDSL<CountDSL<R>.CountWhe
     }
 
     public CountDSL<R> from(SqlTable table) {
-        Validator.assertNull(this.table, "ERROR.24"); //$NON-NLS-1$
+        Validator.assertNull(this.table, ERROR_24);
+        this.table = table;
+        return this;
+    }
+
+    public CountDSL<R> from(SqlTable table, String tableAlias) {
+        Validator.assertNull(this.table, ERROR_24);
+        addTableAlias(table, tableAlias);
         this.table = table;
         return this;
     }
@@ -76,12 +91,12 @@ public class CountDSL<R> extends AbstractQueryExpressionDSL<CountDSL<R>.CountWhe
     }
 
     private SelectModel buildModel() {
-        Validator.assertTrue(table != null, "ERROR.24"); //$NON-NLS-1$
+        Validator.assertTrue(table != null, ERROR_24);
         QueryExpressionModel queryExpressionModel = new QueryExpressionModel.Builder()
                 .withSelectColumn(countColumn)
                 .withTable(table)
-                .withTableAliases(tableAliases())
-                .withJoinModel(buildJoinModel().orElse(null))
+                .withTableAliases(tableAliases)
+                .withJoinModel(buildJoinModel())
                 .withWhereModel(whereBuilder == null ? null : whereBuilder.buildWhereModel())
                 .build();
 
@@ -93,6 +108,14 @@ public class CountDSL<R> extends AbstractQueryExpressionDSL<CountDSL<R>.CountWhe
 
     public static CountDSL<SelectModel> countFrom(SqlTable table) {
         return countFrom(Function.identity(), table);
+    }
+
+    public static CountDSL<SelectModel> countFrom(SqlTable table, String tableAlias) {
+        return new Builder<SelectModel>()
+                .withAdapterFunction(Function.identity())
+                .withColumn(SqlBuilder.count())
+                .build()
+                .from(table, tableAlias);
     }
 
     public static <R> CountDSL<R> countFrom(Function<SelectModel, R> adapterFunction, SqlTable table) {
@@ -126,14 +149,50 @@ public class CountDSL<R> extends AbstractQueryExpressionDSL<CountDSL<R>.CountWhe
     }
 
     @Override
-    protected CountDSL<R> getThis() {
-        return this;
+    public JoinSpecificationFinisher buildJoinFinisher() {
+        var finisher = new JoinSpecificationFinisher();
+        joinSpecifications.add(finisher);
+        return finisher;
     }
 
-    public class CountWhereBuilder extends AbstractWhereFinisher<CountWhereBuilder>
-            implements Buildable<R> {
-        private CountWhereBuilder() {
-            super(CountDSL.this);
+    public class JoinSpecificationFinisher
+            extends AbstractJoinSpecificationFinisher<CountDSL<R>, JoinSpecificationFinisher>
+            implements WhereOperations<CountWhereBuilder>,
+            ConfigurableStatement<JoinSpecificationFinisher>, Buildable<R> {
+
+        @Override
+        protected JoinSpecificationFinisher getThis() {
+            return this;
+        }
+
+        @Override
+        public CountDSL<R> endJoinSpecification() {
+            return CountDSL.this;
+        }
+
+        @Override
+        public CountWhereBuilder where() {
+            return CountDSL.this.where();
+        }
+
+        @Override
+        public R build() {
+            return CountDSL.this.build();
+        }
+
+        @Override
+        public JoinSpecificationFinisher configureStatement(Consumer<StatementConfiguration> consumer) {
+            CountDSL.this.configureStatement(consumer);
+            return this;
+        }
+    }
+
+    public class CountWhereBuilder extends AbstractBooleanOperationsFinisher<CountWhereBuilder>
+            implements ConfigurableStatement<CountWhereBuilder>, Buildable<R> {
+        @Override
+        public CountWhereBuilder configureStatement(Consumer<StatementConfiguration> consumer) {
+            CountDSL.this.configureStatement(consumer);
+            return this;
         }
 
         @Override
@@ -147,7 +206,7 @@ public class CountDSL<R> extends AbstractQueryExpressionDSL<CountDSL<R>.CountWhe
         }
 
         protected EmbeddedWhereModel buildWhereModel() {
-            return super.buildModel();
+            return toWhereModel();
         }
     }
 
