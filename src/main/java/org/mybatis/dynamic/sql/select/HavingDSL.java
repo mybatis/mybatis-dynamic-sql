@@ -15,7 +15,7 @@
  */
 package org.mybatis.dynamic.sql.select;
 
-import org.mybatis.dynamic.sql.dsl.AbstractBooleanOperations;
+import org.mybatis.dynamic.sql.dsl.AbstractBooleanOperationsFinisher;
 import org.mybatis.dynamic.sql.dsl.HavingOperations;
 import org.mybatis.dynamic.sql.util.Buildable;
 
@@ -27,7 +27,7 @@ public class HavingDSL implements HavingOperations<HavingDSL.StandaloneHavingFin
         return havingFinisher;
     }
 
-    public static class StandaloneHavingFinisher extends AbstractBooleanOperations<StandaloneHavingFinisher>
+    public static class StandaloneHavingFinisher extends AbstractBooleanOperationsFinisher<StandaloneHavingFinisher>
             implements Buildable<HavingModel> {
 
         private StandaloneHavingFinisher() {}

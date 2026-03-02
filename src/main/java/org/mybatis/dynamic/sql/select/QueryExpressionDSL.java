@@ -28,7 +28,7 @@ import org.mybatis.dynamic.sql.SortSpecification;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.TableExpression;
 import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
-import org.mybatis.dynamic.sql.dsl.AbstractBooleanOperations;
+import org.mybatis.dynamic.sql.dsl.AbstractBooleanOperationsFinisher;
 import org.mybatis.dynamic.sql.dsl.AbstractJoinSpecificationFinisher;
 import org.mybatis.dynamic.sql.dsl.AbstractQueryingDSL;
 import org.mybatis.dynamic.sql.dsl.HavingOperations;
@@ -163,7 +163,7 @@ public class QueryExpressionDSL<R> extends AbstractQueryingDSL implements
         return selectDSL;
     }
 
-    public class QueryExpressionWhereBuilder extends AbstractBooleanOperations<QueryExpressionWhereBuilder>
+    public class QueryExpressionWhereBuilder extends AbstractBooleanOperationsFinisher<QueryExpressionWhereBuilder>
             implements ConfigurableStatement<QueryExpressionWhereBuilder>, Buildable<R>, SelectDSLOperations<R> {
         public UnionBuilder union() {
             return QueryExpressionDSL.this.union();
@@ -355,7 +355,7 @@ public class QueryExpressionDSL<R> extends AbstractQueryingDSL implements
         }
     }
 
-    public class QueryExpressionHavingBuilder extends AbstractBooleanOperations<QueryExpressionHavingBuilder>
+    public class QueryExpressionHavingBuilder extends AbstractBooleanOperationsFinisher<QueryExpressionHavingBuilder>
             implements Buildable<R>, SelectDSLOperations<R> {
 
         public SelectDSL<R> orderBy(SortSpecification... columns) {

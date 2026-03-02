@@ -25,7 +25,7 @@ import org.mybatis.dynamic.sql.select.HavingModel;
 import org.mybatis.dynamic.sql.util.Validator;
 import org.mybatis.dynamic.sql.where.EmbeddedWhereModel;
 
-public abstract class AbstractBooleanOperations<T extends AbstractBooleanOperations<T>>
+public abstract class AbstractBooleanOperationsFinisher<T extends AbstractBooleanOperationsFinisher<T>>
         implements BooleanOperations<T> {
     protected @Nullable SqlCriterion initialCriterion;
     protected final List<AndOrCriteriaGroup> subCriteria = new ArrayList<>();
@@ -39,7 +39,7 @@ public abstract class AbstractBooleanOperations<T extends AbstractBooleanOperati
         setInitialCriterion(initialCriterion);
     }
 
-    public void initialize(AbstractBooleanOperations<?> other, StatementType statementType) {
+    public void initialize(AbstractBooleanOperationsFinisher<?> other, StatementType statementType) {
         setInitialCriterion(other.initialCriterion, statementType);
         subCriteria.addAll(other.subCriteria);
     }

@@ -27,7 +27,7 @@ import org.mybatis.dynamic.sql.ColumnAndConditionCriterion;
 import org.mybatis.dynamic.sql.CriteriaGroup;
 import org.mybatis.dynamic.sql.RenderableCondition;
 import org.mybatis.dynamic.sql.SqlCriterion;
-import org.mybatis.dynamic.sql.dsl.AbstractBooleanOperations;
+import org.mybatis.dynamic.sql.dsl.AbstractBooleanOperationsFinisher;
 
 public class SearchedCaseDSL implements ElseDSL<SearchedCaseDSL.SearchedCaseEnder> {
     private final List<SearchedCaseWhenCondition> whenConditions = new ArrayList<>();
@@ -79,7 +79,7 @@ public class SearchedCaseDSL implements ElseDSL<SearchedCaseDSL.SearchedCaseEnde
                 .build();
     }
 
-    public class WhenDSL extends AbstractBooleanOperations<WhenDSL> implements ThenDSL<SearchedCaseDSL> {
+    public class WhenDSL extends AbstractBooleanOperationsFinisher<WhenDSL> implements ThenDSL<SearchedCaseDSL> {
         private WhenDSL(SqlCriterion sqlCriterion) {
             setInitialCriterion(sqlCriterion);
         }

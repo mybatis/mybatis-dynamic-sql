@@ -24,7 +24,7 @@ import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.SqlBuilder;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
-import org.mybatis.dynamic.sql.dsl.AbstractBooleanOperations;
+import org.mybatis.dynamic.sql.dsl.AbstractBooleanOperationsFinisher;
 import org.mybatis.dynamic.sql.dsl.AbstractJoinSpecificationFinisher;
 import org.mybatis.dynamic.sql.dsl.AbstractQueryingDSL;
 import org.mybatis.dynamic.sql.dsl.JoinOperations;
@@ -171,7 +171,7 @@ public class CountDSL<R> extends AbstractQueryingDSL implements
         }
     }
 
-    public class CountWhereBuilder extends AbstractBooleanOperations<CountWhereBuilder>
+    public class CountWhereBuilder extends AbstractBooleanOperationsFinisher<CountWhereBuilder>
             implements ConfigurableStatement<CountWhereBuilder>, Buildable<R> {
         @Override
         public CountWhereBuilder configureStatement(Consumer<StatementConfiguration> consumer) {

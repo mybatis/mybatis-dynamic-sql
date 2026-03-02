@@ -26,7 +26,7 @@ import org.mybatis.dynamic.sql.RenderableCondition;
 import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.select.HavingApplier;
 
-public interface HavingOperations<F extends AbstractBooleanOperations<?>> {
+public interface HavingOperations<F extends AbstractBooleanOperationsFinisher<?>> {
 
     default <T> F having(BindableColumn<T> column, RenderableCondition<T> condition,
                          AndOrCriteriaGroup... subCriteria) {
@@ -66,7 +66,7 @@ public interface HavingOperations<F extends AbstractBooleanOperations<?>> {
 
     private F initialize(SqlCriterion sqlCriterion) {
         F finisher = having();
-        finisher.setInitialCriterion(sqlCriterion, AbstractBooleanOperations.StatementType.HAVING);
+        finisher.setInitialCriterion(sqlCriterion, AbstractBooleanOperationsFinisher.StatementType.HAVING);
         return finisher;
     }
 }

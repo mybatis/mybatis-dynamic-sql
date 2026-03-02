@@ -23,7 +23,7 @@ import org.mybatis.dynamic.sql.select.join.JoinSpecification;
 import org.mybatis.dynamic.sql.select.join.JoinType;
 
 public abstract class AbstractJoinSpecificationFinisher<D extends JoinOperations<D, F>,
-        F extends AbstractJoinSpecificationFinisher<D, F>> extends AbstractBooleanOperations<F> {
+        F extends AbstractJoinSpecificationFinisher<D, F>> extends AbstractBooleanOperationsFinisher<F> {
     private @Nullable TableExpression joinTable;
     private @Nullable JoinType joinType;
 

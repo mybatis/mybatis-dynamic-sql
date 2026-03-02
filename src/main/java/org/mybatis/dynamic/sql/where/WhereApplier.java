@@ -17,12 +17,12 @@ package org.mybatis.dynamic.sql.where;
 
 import java.util.function.Consumer;
 
-import org.mybatis.dynamic.sql.dsl.AbstractBooleanOperations;
+import org.mybatis.dynamic.sql.dsl.AbstractBooleanOperationsFinisher;
 
 @FunctionalInterface
 public interface WhereApplier {
 
-    void accept(AbstractBooleanOperations<?> whereFinisher);
+    void accept(AbstractBooleanOperationsFinisher<?> whereFinisher);
 
     /**
      * Return a composed where applier that performs this operation followed by the after operation.
@@ -30,7 +30,7 @@ public interface WhereApplier {
      * @param after the operation to perform after this operation
      * @return a composed where applier that performs this operation followed by the after operation.
      */
-    default WhereApplier andThen(Consumer<AbstractBooleanOperations<?>> after) {
+    default WhereApplier andThen(Consumer<AbstractBooleanOperationsFinisher<?>> after) {
         return t -> {
             accept(t);
             after.accept(t);

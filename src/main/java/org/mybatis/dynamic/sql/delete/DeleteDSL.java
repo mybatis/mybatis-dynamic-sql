@@ -26,7 +26,7 @@ import org.mybatis.dynamic.sql.SortSpecification;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.common.OrderByModel;
 import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
-import org.mybatis.dynamic.sql.dsl.AbstractBooleanOperations;
+import org.mybatis.dynamic.sql.dsl.AbstractBooleanOperationsFinisher;
 import org.mybatis.dynamic.sql.dsl.WhereOperations;
 import org.mybatis.dynamic.sql.util.Buildable;
 import org.mybatis.dynamic.sql.util.ConfigurableStatement;
@@ -112,7 +112,7 @@ public class DeleteDSL<R> implements WhereOperations<DeleteDSL<R>.DeleteWhereBui
         return deleteFrom(Function.identity(), table, tableAlias);
     }
 
-    public class DeleteWhereBuilder extends AbstractBooleanOperations<DeleteWhereBuilder>
+    public class DeleteWhereBuilder extends AbstractBooleanOperationsFinisher<DeleteWhereBuilder>
             implements ConfigurableStatement<DeleteWhereBuilder>, Buildable<R> {
 
         public DeleteDSL<R> limit(long limit) {

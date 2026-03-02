@@ -31,7 +31,7 @@ import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.common.OrderByModel;
 import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
-import org.mybatis.dynamic.sql.dsl.AbstractBooleanOperations;
+import org.mybatis.dynamic.sql.dsl.AbstractBooleanOperationsFinisher;
 import org.mybatis.dynamic.sql.dsl.WhereOperations;
 import org.mybatis.dynamic.sql.select.SelectModel;
 import org.mybatis.dynamic.sql.util.AbstractColumnMapping;
@@ -194,7 +194,7 @@ public class UpdateDSL<R> implements WhereOperations<UpdateDSL<R>.UpdateWhereBui
         }
     }
 
-    public class UpdateWhereBuilder extends AbstractBooleanOperations<UpdateWhereBuilder>
+    public class UpdateWhereBuilder extends AbstractBooleanOperationsFinisher<UpdateWhereBuilder>
             implements ConfigurableStatement<UpdateWhereBuilder>, Buildable<R> {
 
         public UpdateDSL<R> limit(long limit) {
