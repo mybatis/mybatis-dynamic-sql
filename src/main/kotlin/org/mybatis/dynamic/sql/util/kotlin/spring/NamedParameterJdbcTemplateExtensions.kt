@@ -185,7 +185,7 @@ fun <T> NamedParameterJdbcTemplate.selectList(
 fun <T : Any> NamedParameterJdbcTemplate.selectList(
     selectStatement: SelectStatementProvider,
     type: KClass<T>
-): List<T> =
+): List<T?> =
     queryForList(selectStatement.selectStatement, selectStatement.parameters, type.java)
 
 fun NamedParameterJdbcTemplate.selectOne(
