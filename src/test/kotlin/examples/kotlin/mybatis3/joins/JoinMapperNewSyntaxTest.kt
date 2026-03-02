@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2025 the original author or authors.
+ *    Copyright 2016-2026 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -802,7 +802,7 @@ class JoinMapperNewSyntaxTest {
             val selectStatement = select(user.userId, user.userName, user.parentId) {
                 from(user, "u1")
                 join(user2, "u2") on {
-                    and { user.userId isEqualTo user2.parentId }
+                    user.userId isEqualTo user2.parentId
                 }
                 where { user2.userId isEqualTo 4 }
             }

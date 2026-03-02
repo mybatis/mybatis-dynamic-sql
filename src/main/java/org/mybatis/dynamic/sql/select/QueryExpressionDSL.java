@@ -27,15 +27,15 @@ import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.SortSpecification;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.TableExpression;
-import org.mybatis.dynamic.sql.dsl.AbstractBooleanOperations;
 import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
+import org.mybatis.dynamic.sql.dsl.AbstractBooleanOperations;
 import org.mybatis.dynamic.sql.dsl.AbstractDSL;
+import org.mybatis.dynamic.sql.dsl.AbstractJoinSpecificationFinisher;
 import org.mybatis.dynamic.sql.dsl.HavingOperations;
 import org.mybatis.dynamic.sql.dsl.JoinOperations;
 import org.mybatis.dynamic.sql.dsl.WhereOperations;
 import org.mybatis.dynamic.sql.select.join.JoinModel;
 import org.mybatis.dynamic.sql.select.join.JoinSpecification;
-import org.mybatis.dynamic.sql.select.join.JoinType;
 import org.mybatis.dynamic.sql.util.Buildable;
 import org.mybatis.dynamic.sql.util.ConfigurableStatement;
 import org.mybatis.dynamic.sql.util.Validator;
@@ -46,7 +46,7 @@ public class QueryExpressionDSL<R> extends AbstractDSL implements
         WhereOperations<QueryExpressionDSL<R>.QueryExpressionWhereBuilder>,
         HavingOperations<QueryExpressionDSL<R>.QueryExpressionHavingBuilder>,
         ConfigurableStatement<QueryExpressionDSL<R>>, SelectDSLOperations<R>, Buildable<R> {
-    private final static String ERROR_27 = "ERROR.27"; //$NON-NLS-1$
+    private static final String ERROR_27 = "ERROR.27"; //$NON-NLS-1$
 
     private final @Nullable String connector;
     private final SelectDSL<R> selectDSL;
@@ -92,8 +92,8 @@ public class QueryExpressionDSL<R> extends AbstractDSL implements
     }
 
     @Override
-    public JoinSpecificationFinisher buildFinisher(JoinType joinType, TableExpression joinTable) {
-        var finisher = new JoinSpecificationFinisher(joinType, joinTable);
+    public JoinSpecificationFinisher buildJoinFinisher() {
+        var finisher = new JoinSpecificationFinisher();
         joinSpecifications.add(finisher);
         return finisher;
     }
@@ -106,11 +106,6 @@ public class QueryExpressionDSL<R> extends AbstractDSL implements
         return JoinModel.of(joinSpecifications.stream()
                 .map(JoinSpecificationFinisher::buildJoinSpecification)
                 .toList());
-    }
-
-    @Override
-    public QueryExpressionDSL<R> getDsl() {
-        return this;
     }
 
     @Override
@@ -239,18 +234,14 @@ public class QueryExpressionDSL<R> extends AbstractDSL implements
     }
 
     public class JoinSpecificationFinisher
-            extends JoinOperations.JoinSpecificationStarter<JoinSpecificationFinisher>
+            extends AbstractJoinSpecificationFinisher<QueryExpressionDSL<R>, JoinSpecificationFinisher>
             implements JoinOperations<QueryExpressionDSL<R>, JoinSpecificationFinisher>,
             WhereOperations<QueryExpressionWhereBuilder>,
             ConfigurableStatement<JoinSpecificationFinisher>, Buildable<R>,
             SelectDSLOperations<R> {
 
-        public JoinSpecificationFinisher(JoinType joinType, TableExpression table) {
-            super(joinType, table);
-        }
-
-        protected JoinSpecification buildJoinSpecification() {
-            return super.buildJoinSpecification();
+        private JoinSpecification buildJoinSpecification() {
+            return toJoinSpecification();
         }
 
         @Override
@@ -299,8 +290,8 @@ public class QueryExpressionDSL<R> extends AbstractDSL implements
         }
 
         @Override
-        public QueryExpressionDSL<R> getDsl() {
-            return QueryExpressionDSL.this.getDsl();
+        public QueryExpressionDSL<R> endJoinSpecification() {
+            return QueryExpressionDSL.this;
         }
 
         @Override
@@ -314,8 +305,8 @@ public class QueryExpressionDSL<R> extends AbstractDSL implements
         }
 
         @Override
-        public JoinSpecificationFinisher buildFinisher(JoinType joinType, TableExpression joinTable) {
-            return QueryExpressionDSL.this.buildFinisher(joinType, joinTable);
+        public JoinSpecificationFinisher buildJoinFinisher() {
+            return QueryExpressionDSL.this.buildJoinFinisher();
         }
     }
 

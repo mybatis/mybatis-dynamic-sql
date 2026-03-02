@@ -56,6 +56,8 @@ public interface HavingOperations<F extends AbstractBooleanOperations<?>> {
         return initialize(sqlCriterion);
     }
 
+    F having();
+
     default F applyHaving(HavingApplier havingApplier) {
         F finisher = having();
         havingApplier.accept(finisher);
@@ -67,6 +69,4 @@ public interface HavingOperations<F extends AbstractBooleanOperations<?>> {
         finisher.setInitialCriterion(sqlCriterion, AbstractBooleanOperations.StatementType.HAVING);
         return finisher;
     }
-
-    F having();
 }

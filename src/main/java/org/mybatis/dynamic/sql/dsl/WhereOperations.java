@@ -86,6 +86,8 @@ public interface WhereOperations<F extends AbstractBooleanOperations<?>> {
         return initialize(sqlCriterion);
     }
 
+    F where();
+
     default F applyWhere(WhereApplier whereApplier) {
         F finisher = where();
         whereApplier.accept(finisher);
@@ -97,6 +99,4 @@ public interface WhereOperations<F extends AbstractBooleanOperations<?>> {
         finisher.setInitialCriterion(sqlCriterion, AbstractBooleanOperations.StatementType.WHERE);
         return finisher;
     }
-
-    F where();
 }

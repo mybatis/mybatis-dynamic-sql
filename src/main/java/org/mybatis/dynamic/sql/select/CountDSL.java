@@ -25,15 +25,14 @@ import org.jspecify.annotations.Nullable;
 import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.SqlBuilder;
 import org.mybatis.dynamic.sql.SqlTable;
-import org.mybatis.dynamic.sql.TableExpression;
 import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
 import org.mybatis.dynamic.sql.dsl.AbstractBooleanOperations;
 import org.mybatis.dynamic.sql.dsl.AbstractDSL;
+import org.mybatis.dynamic.sql.dsl.AbstractJoinSpecificationFinisher;
 import org.mybatis.dynamic.sql.dsl.JoinOperations;
 import org.mybatis.dynamic.sql.dsl.WhereOperations;
 import org.mybatis.dynamic.sql.select.join.JoinModel;
 import org.mybatis.dynamic.sql.select.join.JoinSpecification;
-import org.mybatis.dynamic.sql.select.join.JoinType;
 import org.mybatis.dynamic.sql.util.Buildable;
 import org.mybatis.dynamic.sql.util.ConfigurableStatement;
 import org.mybatis.dynamic.sql.util.Validator;
@@ -145,15 +144,10 @@ public class CountDSL<R> extends AbstractDSL implements
     }
 
     @Override
-    public JoinSpecificationFinisher buildFinisher(JoinType joinType, TableExpression joinTable) {
-        var finisher = new JoinSpecificationFinisher(joinType, joinTable);
+    public JoinSpecificationFinisher buildJoinFinisher() {
+        var finisher = new JoinSpecificationFinisher();
         joinSpecifications.add(finisher);
         return finisher;
-    }
-
-    @Override
-    public CountDSL<R> getDsl() {
-        return this;
     }
 
     private @Nullable JoinModel buildJoinModel() {
@@ -167,21 +161,22 @@ public class CountDSL<R> extends AbstractDSL implements
     }
 
     public class JoinSpecificationFinisher
-            extends JoinOperations.JoinSpecificationStarter<JoinSpecificationFinisher>
+            extends AbstractJoinSpecificationFinisher<CountDSL<R>, JoinSpecificationFinisher>
             implements WhereOperations<CountWhereBuilder>,
             ConfigurableStatement<JoinSpecificationFinisher>, Buildable<R> {
 
-        public JoinSpecificationFinisher(JoinType joinType, TableExpression table) {
-            super(joinType, table);
-        }
-
-        protected JoinSpecification buildJoinSpecification() {
-            return super.buildJoinSpecification();
+        private JoinSpecification buildJoinSpecification() {
+            return toJoinSpecification();
         }
 
         @Override
         protected JoinSpecificationFinisher getThis() {
             return this;
+        }
+
+        @Override
+        public CountDSL<R> endJoinSpecification() {
+            return CountDSL.this;
         }
 
         @Override
