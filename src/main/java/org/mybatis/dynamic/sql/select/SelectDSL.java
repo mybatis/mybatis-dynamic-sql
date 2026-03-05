@@ -30,6 +30,7 @@ import org.mybatis.dynamic.sql.SortSpecification;
 import org.mybatis.dynamic.sql.common.OrderByModel;
 import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
 import org.mybatis.dynamic.sql.dsl.ForAndWaitOperations;
+import org.mybatis.dynamic.sql.dsl.LimitAndOffsetOperations;
 import org.mybatis.dynamic.sql.dsl.OrderByOperations;
 import org.mybatis.dynamic.sql.util.Buildable;
 import org.mybatis.dynamic.sql.util.ConfigurableStatement;
@@ -44,6 +45,7 @@ import org.mybatis.dynamic.sql.util.Validator;
  *            the type of model produced by this builder, typically SelectModel
  */
 public class SelectDSL<R> implements ForAndWaitOperations<SelectDSL<R>>,
+        LimitAndOffsetOperations<R, SelectDSL<R>>,
         OrderByOperations<SelectDSL<R>>,
         ConfigurableStatement<SelectDSL<R>>,
         Buildable<R> {
@@ -116,31 +118,19 @@ public class SelectDSL<R> implements ForAndWaitOperations<SelectDSL<R>>,
         return this;
     }
 
-    public SelectDSL<R>.LimitFinisher limit(long limit) {
-        return limitWhenPresent(limit);
-    }
-
-    public SelectDSL<R>.LimitFinisher limitWhenPresent(@Nullable Long limit) {
+    public LimitFinisher<R, SelectDSL<R>> limitWhenPresent(@Nullable Long limit) {
         this.limit = limit;
-        return new LimitFinisher();
+        return new LimitFinisher<>(this);
     }
 
-    public SelectDSL<R>.OffsetFirstFinisher offset(long offset) {
-        return offsetWhenPresent(offset);
-    }
-
-    public SelectDSL<R>.OffsetFirstFinisher offsetWhenPresent(@Nullable Long offset) {
+    public OffsetFirstFinisher<R, SelectDSL<R>> offsetWhenPresent(@Nullable Long offset) {
         this.offset = offset;
-        return new OffsetFirstFinisher();
+        return new OffsetFirstFinisher<>(this);
     }
 
-    public SelectDSL<R>.FetchFirstFinisher fetchFirst(long fetchFirstRows) {
-        return fetchFirstWhenPresent(fetchFirstRows);
-    }
-
-    public SelectDSL<R>.FetchFirstFinisher fetchFirstWhenPresent(@Nullable Long fetchFirstRows) {
+    public FetchFirstFinisher<SelectDSL<R>> fetchFirstWhenPresent(@Nullable Long fetchFirstRows) {
         this.fetchFirstRows = fetchFirstRows;
-        return new FetchFirstFinisher();
+        return new FetchFirstFinisher<>(this);
     }
 
     @Override
@@ -187,63 +177,5 @@ public class SelectDSL<R> implements ForAndWaitOperations<SelectDSL<R>>,
                 .withOffset(offset)
                 .withFetchFirstRows(fetchFirstRows)
                 .build();
-    }
-
-    public class OffsetFirstFinisher implements ForAndWaitOperations<SelectDSL<R>>, Buildable<R> {
-        public FetchFirstFinisher fetchFirst(long fetchFirstRows) {
-            return fetchFirstWhenPresent(fetchFirstRows);
-        }
-
-        public FetchFirstFinisher fetchFirstWhenPresent(@Nullable Long fetchFirstRows) {
-            SelectDSL.this.fetchFirstRows = fetchFirstRows;
-            return new FetchFirstFinisher();
-        }
-
-        @Override
-        public SelectDSL<R> setWaitClause(String waitClause) {
-            return SelectDSL.this.setWaitClause(waitClause);
-        }
-
-        @Override
-        public SelectDSL<R> setForClause(String forClause) {
-            return SelectDSL.this.setForClause(forClause);
-        }
-
-        @Override
-        public R build() {
-            return SelectDSL.this.build();
-        }
-    }
-
-    public class LimitFinisher implements ForAndWaitOperations<SelectDSL<R>>, Buildable<R> {
-        public SelectDSL<R> offset(long offset) {
-            return offsetWhenPresent(offset);
-        }
-
-        public SelectDSL<R> offsetWhenPresent(@Nullable Long offset) {
-            SelectDSL.this.offset = offset;
-            return SelectDSL.this;
-        }
-
-        @Override
-        public SelectDSL<R> setWaitClause(String waitClause) {
-            return SelectDSL.this.setWaitClause(waitClause);
-        }
-
-        @Override
-        public SelectDSL<R> setForClause(String forClause) {
-            return SelectDSL.this.setForClause(forClause);
-        }
-
-        @Override
-        public R build() {
-            return SelectDSL.this.build();
-        }
-    }
-
-    public class FetchFirstFinisher {
-        public SelectDSL<R> rowsOnly() {
-            return SelectDSL.this;
-        }
     }
 }
