@@ -29,6 +29,7 @@ import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.SortSpecification;
 import org.mybatis.dynamic.sql.common.OrderByModel;
 import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
+import org.mybatis.dynamic.sql.dsl.ForAndWaitOperations;
 import org.mybatis.dynamic.sql.dsl.OrderByOperations;
 import org.mybatis.dynamic.sql.util.Buildable;
 import org.mybatis.dynamic.sql.util.ConfigurableStatement;
@@ -42,11 +43,10 @@ import org.mybatis.dynamic.sql.util.Validator;
  * @param <R>
  *            the type of model produced by this builder, typically SelectModel
  */
-public class SelectDSL<R> implements OrderByOperations<SelectDSL<R>>,
+public class SelectDSL<R> implements ForAndWaitOperations<SelectDSL<R>>,
+        OrderByOperations<SelectDSL<R>>,
         ConfigurableStatement<SelectDSL<R>>,
         Buildable<R> {
-    private static final String ERROR_48 = "ERROR.48"; //$NON-NLS-1$
-
     private final Function<SelectModel, R> adapterFunction;
     private final List<QueryExpressionDSL<R>> queryExpressions = new ArrayList<>();
     private @Nullable OrderByModel orderByModel;
@@ -143,39 +143,17 @@ public class SelectDSL<R> implements OrderByOperations<SelectDSL<R>>,
         return new FetchFirstFinisher();
     }
 
-    public SelectDSL<R> forUpdate() {
-        Validator.assertNull(forClause, ERROR_48);
-        forClause = "for update"; //$NON-NLS-1$
+    @Override
+    public SelectDSL<R> setWaitClause(String waitClause) {
+        Validator.assertNull(this.waitClause, "ERROR.49"); //$NON-NLS-1$
+        this.waitClause = waitClause;
         return this;
     }
 
-    public SelectDSL<R> forNoKeyUpdate() {
-        Validator.assertNull(forClause, ERROR_48);
-        forClause = "for no key update"; //$NON-NLS-1$
-        return this;
-    }
-
-    public SelectDSL<R> forShare() {
-        Validator.assertNull(forClause, ERROR_48);
-        forClause = "for share"; //$NON-NLS-1$
-        return this;
-    }
-
-    public SelectDSL<R> forKeyShare() {
-        Validator.assertNull(forClause, ERROR_48);
-        forClause = "for key share"; //$NON-NLS-1$
-        return this;
-    }
-
-    public SelectDSL<R> skipLocked() {
-        Validator.assertNull(waitClause, "ERROR.49"); //$NON-NLS-1$
-        waitClause = "skip locked"; //$NON-NLS-1$
-        return this;
-    }
-
-    public SelectDSL<R> nowait() {
-        Validator.assertNull(waitClause, "ERROR.49"); //$NON-NLS-1$
-        waitClause = "nowait"; //$NON-NLS-1$
+    @Override
+    public SelectDSL<R> setForClause(String forClause) {
+        Validator.assertNull(this.forClause, "ERROR.48"); //$NON-NLS-1$
+        this.forClause = forClause;
         return this;
     }
 
@@ -211,7 +189,7 @@ public class SelectDSL<R> implements OrderByOperations<SelectDSL<R>>,
                 .build();
     }
 
-    public class OffsetFirstFinisher implements SelectDSLForAndWaitOperations<R>, Buildable<R> {
+    public class OffsetFirstFinisher implements ForAndWaitOperations<SelectDSL<R>>, Buildable<R> {
         public FetchFirstFinisher fetchFirst(long fetchFirstRows) {
             return fetchFirstWhenPresent(fetchFirstRows);
         }
@@ -222,8 +200,13 @@ public class SelectDSL<R> implements OrderByOperations<SelectDSL<R>>,
         }
 
         @Override
-        public SelectDSL<R> getSelectDSL() {
-            return SelectDSL.this;
+        public SelectDSL<R> setWaitClause(String waitClause) {
+            return SelectDSL.this.setWaitClause(waitClause);
+        }
+
+        @Override
+        public SelectDSL<R> setForClause(String forClause) {
+            return SelectDSL.this.setForClause(forClause);
         }
 
         @Override
@@ -232,7 +215,7 @@ public class SelectDSL<R> implements OrderByOperations<SelectDSL<R>>,
         }
     }
 
-    public class LimitFinisher implements SelectDSLForAndWaitOperations<R>, Buildable<R> {
+    public class LimitFinisher implements ForAndWaitOperations<SelectDSL<R>>, Buildable<R> {
         public SelectDSL<R> offset(long offset) {
             return offsetWhenPresent(offset);
         }
@@ -243,8 +226,13 @@ public class SelectDSL<R> implements OrderByOperations<SelectDSL<R>>,
         }
 
         @Override
-        public SelectDSL<R> getSelectDSL() {
-            return SelectDSL.this;
+        public SelectDSL<R> setWaitClause(String waitClause) {
+            return SelectDSL.this.setWaitClause(waitClause);
+        }
+
+        @Override
+        public SelectDSL<R> setForClause(String forClause) {
+            return SelectDSL.this.setForClause(forClause);
         }
 
         @Override

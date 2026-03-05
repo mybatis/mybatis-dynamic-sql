@@ -30,6 +30,7 @@ import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
 import org.mybatis.dynamic.sql.dsl.AbstractBooleanOperationsFinisher;
 import org.mybatis.dynamic.sql.dsl.AbstractJoinSpecificationFinisher;
 import org.mybatis.dynamic.sql.dsl.AbstractQueryingDSL;
+import org.mybatis.dynamic.sql.dsl.ForAndWaitOperations;
 import org.mybatis.dynamic.sql.dsl.HavingOperations;
 import org.mybatis.dynamic.sql.dsl.JoinOperations;
 import org.mybatis.dynamic.sql.dsl.OrderByOperations;
@@ -44,7 +45,7 @@ public class QueryExpressionDSL<R> extends AbstractQueryingDSL implements
         HavingOperations<QueryExpressionDSL<R>.QueryExpressionHavingBuilder>,
         ConfigurableStatement<QueryExpressionDSL<R>>,
         SelectDSLLimitAndOffsetOperations<R>,
-        SelectDSLForAndWaitOperations<R>,
+        ForAndWaitOperations<SelectDSL<R>>,
         OrderByOperations<SelectDSL<R>>,
         Buildable<R> {
 
@@ -150,6 +151,16 @@ public class QueryExpressionDSL<R> extends AbstractQueryingDSL implements
     }
 
     @Override
+    public SelectDSL<R> setWaitClause(String waitClause) {
+        return selectDSL.setWaitClause(waitClause);
+    }
+
+    @Override
+    public SelectDSL<R> setForClause(String forClause) {
+        return selectDSL.setForClause(forClause);
+    }
+
+    @Override
     public SelectDSL<R> getSelectDSL() {
         return selectDSL;
     }
@@ -157,7 +168,7 @@ public class QueryExpressionDSL<R> extends AbstractQueryingDSL implements
     public class QueryExpressionWhereBuilder extends AbstractBooleanOperationsFinisher<QueryExpressionWhereBuilder>
             implements ConfigurableStatement<QueryExpressionWhereBuilder>,
             OrderByOperations<SelectDSL<R>>,
-            SelectDSLForAndWaitOperations<R>,
+            ForAndWaitOperations<SelectDSL<R>>,
             SelectDSLLimitAndOffsetOperations<R>,
             Buildable<R> {
         public UnionBuilder union() {
@@ -202,6 +213,16 @@ public class QueryExpressionDSL<R> extends AbstractQueryingDSL implements
             return QueryExpressionDSL.this.getSelectDSL();
         }
 
+        @Override
+        public SelectDSL<R> setWaitClause(String waitClause) {
+            return QueryExpressionDSL.this.setWaitClause(waitClause);
+        }
+
+        @Override
+        public SelectDSL<R> setForClause(String forClause) {
+            return QueryExpressionDSL.this.setForClause(forClause);
+        }
+
         protected EmbeddedWhereModel buildWhereModel() {
             return toWhereModel();
         }
@@ -212,7 +233,7 @@ public class QueryExpressionDSL<R> extends AbstractQueryingDSL implements
             implements JoinOperations<QueryExpressionDSL<R>, JoinSpecificationFinisher>,
             WhereOperations<QueryExpressionWhereBuilder>,
             ConfigurableStatement<JoinSpecificationFinisher>,
-            SelectDSLForAndWaitOperations<R>,
+            ForAndWaitOperations<SelectDSL<R>>,
             SelectDSLLimitAndOffsetOperations<R>,
             OrderByOperations<SelectDSL<R>>,
             Buildable<R> {
@@ -270,6 +291,16 @@ public class QueryExpressionDSL<R> extends AbstractQueryingDSL implements
         }
 
         @Override
+        public SelectDSL<R> setWaitClause(String waitClause) {
+            return QueryExpressionDSL.this.setWaitClause(waitClause);
+        }
+
+        @Override
+        public SelectDSL<R> setForClause(String forClause) {
+            return QueryExpressionDSL.this.setForClause(forClause);
+        }
+
+        @Override
         public void addTableAlias(SqlTable table, String tableAlias) {
             QueryExpressionDSL.this.addTableAlias(table, tableAlias);
         }
@@ -281,7 +312,7 @@ public class QueryExpressionDSL<R> extends AbstractQueryingDSL implements
     }
 
     public class GroupByFinisher implements HavingOperations<QueryExpressionHavingBuilder>,
-            SelectDSLForAndWaitOperations<R>,
+            ForAndWaitOperations<SelectDSL<R>>,
             SelectDSLLimitAndOffsetOperations<R>,
             OrderByOperations<SelectDSL<R>>,
             Buildable<R> {
@@ -312,6 +343,16 @@ public class QueryExpressionDSL<R> extends AbstractQueryingDSL implements
         @Override
         public SelectDSL<R> getSelectDSL() {
             return QueryExpressionDSL.this.getSelectDSL();
+        }
+
+        @Override
+        public SelectDSL<R> setWaitClause(String waitClause) {
+            return QueryExpressionDSL.this.setWaitClause(waitClause);
+        }
+
+        @Override
+        public SelectDSL<R> setForClause(String forClause) {
+            return QueryExpressionDSL.this.setForClause(forClause);
         }
     }
 
@@ -349,7 +390,7 @@ public class QueryExpressionDSL<R> extends AbstractQueryingDSL implements
     }
 
     public class QueryExpressionHavingBuilder extends AbstractBooleanOperationsFinisher<QueryExpressionHavingBuilder>
-            implements SelectDSLForAndWaitOperations<R>,
+            implements ForAndWaitOperations<SelectDSL<R>>,
             SelectDSLLimitAndOffsetOperations<R>,
             OrderByOperations<SelectDSL<R>>,
             Buildable<R> {
@@ -379,6 +420,16 @@ public class QueryExpressionDSL<R> extends AbstractQueryingDSL implements
 
         protected HavingModel buildHavingModel() {
             return toHavingModel();
+        }
+
+        @Override
+        public SelectDSL<R> setWaitClause(String waitClause) {
+            return QueryExpressionDSL.this.setWaitClause(waitClause);
+        }
+
+        @Override
+        public SelectDSL<R> setForClause(String forClause) {
+            return QueryExpressionDSL.this.setForClause(forClause);
         }
 
         @Override
