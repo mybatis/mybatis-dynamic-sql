@@ -18,6 +18,7 @@ package org.mybatis.dynamic.sql.dsl;
 import java.util.Objects;
 
 import org.jspecify.annotations.Nullable;
+import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.TableExpression;
 import org.mybatis.dynamic.sql.select.join.JoinSpecification;
 import org.mybatis.dynamic.sql.select.join.JoinType;
@@ -44,4 +45,6 @@ public abstract class AbstractJoinSpecificationFinisher<D extends JoinOperations
     }
 
     public abstract D endJoinSpecification();
+
+    protected abstract void addTableAlias(SqlTable table, String tableAlias);
 }

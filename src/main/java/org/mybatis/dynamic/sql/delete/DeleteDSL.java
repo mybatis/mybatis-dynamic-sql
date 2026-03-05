@@ -15,64 +15,22 @@
  */
 package org.mybatis.dynamic.sql.delete;
 
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Objects;
-import java.util.function.Consumer;
 import java.util.function.Function;
 
 import org.jspecify.annotations.Nullable;
-import org.mybatis.dynamic.sql.SortSpecification;
 import org.mybatis.dynamic.sql.SqlTable;
-import org.mybatis.dynamic.sql.common.OrderByModel;
-import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
-import org.mybatis.dynamic.sql.dsl.AbstractBooleanOperationsFinisher;
-import org.mybatis.dynamic.sql.dsl.WhereOperations;
-import org.mybatis.dynamic.sql.util.Buildable;
-import org.mybatis.dynamic.sql.util.ConfigurableStatement;
-import org.mybatis.dynamic.sql.where.EmbeddedWhereModel;
+import org.mybatis.dynamic.sql.dsl.AbstractDeleteDSL;
 
-public class DeleteDSL<R> implements WhereOperations<DeleteDSL<R>.DeleteWhereBuilder>,
-        ConfigurableStatement<DeleteDSL<R>>,
-        Buildable<R> {
+public class DeleteDSL<R> extends AbstractDeleteDSL<R, DeleteDSL<R>> {
 
     private final Function<DeleteModel, R> adapterFunction;
-    private final SqlTable table;
-    private final @Nullable String tableAlias;
-    private @Nullable DeleteWhereBuilder whereBuilder;
-    private final StatementConfiguration statementConfiguration = new StatementConfiguration();
-    private @Nullable Long limit;
-    private @Nullable OrderByModel orderByModel;
 
     private DeleteDSL(SqlTable table, @Nullable String tableAlias, Function<DeleteModel, R> adapterFunction) {
-        this.table = Objects.requireNonNull(table);
-        this.tableAlias = tableAlias;
+        super(table, tableAlias);
         this.adapterFunction = Objects.requireNonNull(adapterFunction);
     }
 
-    @Override
-    public DeleteWhereBuilder where() {
-        whereBuilder = Objects.requireNonNullElseGet(whereBuilder, DeleteWhereBuilder::new);
-        return whereBuilder;
-    }
-
-    public DeleteDSL<R> limit(long limit) {
-        return limitWhenPresent(limit);
-    }
-
-    public DeleteDSL<R> limitWhenPresent(@Nullable Long limit) {
-        this.limit = limit;
-        return this;
-    }
-
-    public DeleteDSL<R> orderBy(SortSpecification... columns) {
-        return orderBy(Arrays.asList(columns));
-    }
-
-    public DeleteDSL<R> orderBy(Collection<? extends SortSpecification> columns) {
-        orderByModel = OrderByModel.of(columns);
-        return this;
-    }
 
     /**
      * WARNING! Calling this method could result in a delete statement that deletes
@@ -82,25 +40,16 @@ public class DeleteDSL<R> implements WhereOperations<DeleteDSL<R>.DeleteWhereBui
      */
     @Override
     public R build() {
-        DeleteModel deleteModel = DeleteModel.withTable(table)
-                .withTableAlias(tableAlias)
-                .withLimit(limit)
-                .withOrderByModel(orderByModel)
-                .withWhereModel(whereBuilder == null ? null : whereBuilder.buildWhereModel())
-                .withStatementConfiguration(statementConfiguration)
-                .build();
-
-        return adapterFunction.apply(deleteModel);
+        return buildDeleteModel().map(adapterFunction);
     }
 
     @Override
-    public DeleteDSL<R> configureStatement(Consumer<StatementConfiguration> consumer) {
-        consumer.accept(statementConfiguration);
+    protected DeleteDSL<R> getThis() {
         return this;
     }
 
     public static <R> DeleteDSL<R> deleteFrom(Function<DeleteModel, R> adapterFunction, SqlTable table,
-            @Nullable String tableAlias) {
+                                              @Nullable String tableAlias) {
         return new DeleteDSL<>(table, tableAlias, adapterFunction);
     }
 
@@ -110,46 +59,5 @@ public class DeleteDSL<R> implements WhereOperations<DeleteDSL<R>.DeleteWhereBui
 
     public static DeleteDSL<DeleteModel> deleteFrom(SqlTable table, String tableAlias) {
         return deleteFrom(Function.identity(), table, tableAlias);
-    }
-
-    public class DeleteWhereBuilder extends AbstractBooleanOperationsFinisher<DeleteWhereBuilder>
-            implements ConfigurableStatement<DeleteWhereBuilder>, Buildable<R> {
-
-        public DeleteDSL<R> limit(long limit) {
-            return limitWhenPresent(limit);
-        }
-
-        public DeleteDSL<R> limitWhenPresent(@Nullable Long limit) {
-            return DeleteDSL.this.limitWhenPresent(limit);
-        }
-
-        public DeleteDSL<R> orderBy(SortSpecification... columns) {
-            return orderBy(Arrays.asList(columns));
-        }
-
-        public DeleteDSL<R> orderBy(Collection<? extends SortSpecification> columns) {
-            orderByModel = OrderByModel.of(columns);
-            return DeleteDSL.this;
-        }
-
-        @Override
-        public DeleteWhereBuilder configureStatement(Consumer<StatementConfiguration> consumer) {
-            DeleteDSL.this.configureStatement(consumer);
-            return this;
-        }
-
-        @Override
-        public R build() {
-            return DeleteDSL.this.build();
-        }
-
-        @Override
-        protected DeleteWhereBuilder getThis() {
-            return this;
-        }
-
-        protected EmbeddedWhereModel buildWhereModel() {
-            return toWhereModel();
-        }
     }
 }

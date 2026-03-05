@@ -17,6 +17,7 @@ package org.mybatis.dynamic.sql.delete;
 
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Function;
 
 import org.jspecify.annotations.Nullable;
 import org.mybatis.dynamic.sql.SqlTable;
@@ -74,6 +75,10 @@ public class DeleteModel {
                 .withRenderingStrategy(renderingStrategy)
                 .build()
                 .render();
+    }
+
+    public <R> R map(Function<DeleteModel, R> adapterFunction) {
+        return adapterFunction.apply(this);
     }
 
     public static Builder withTable(SqlTable table) {

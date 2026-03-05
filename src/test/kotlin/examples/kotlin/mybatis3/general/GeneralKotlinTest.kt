@@ -634,7 +634,7 @@ class GeneralKotlinTest {
                     }
                 }
             }
-        }.withMessage(Messages.getString("ERROR.24")) //$NON-NLS-1$
+        }.withMessage(Messages.getString("ERROR.27")) //$NON-NLS-1$
     }
 
     @Test
@@ -654,7 +654,7 @@ class GeneralKotlinTest {
                     }
                 }
             }
-        }.withMessage(Messages.getString("ERROR.24")) //$NON-NLS-1$
+        }.withMessage(Messages.getString("ERROR.27")) //$NON-NLS-1$
     }
 
     @Test

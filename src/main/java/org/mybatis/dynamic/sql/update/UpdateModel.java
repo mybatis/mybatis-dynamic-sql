@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 import org.jspecify.annotations.Nullable;
@@ -86,6 +87,10 @@ public class UpdateModel {
                 .withRenderingStrategy(renderingStrategy)
                 .build()
                 .render();
+    }
+
+    public <R> R map(Function<UpdateModel, R> mapper) {
+        return mapper.apply(this);
     }
 
     public static Builder withTable(SqlTable table) {

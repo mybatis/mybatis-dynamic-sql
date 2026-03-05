@@ -48,8 +48,9 @@ public interface JoinOperations<D extends JoinOperations<D, F>, F extends Abstra
     }
 
     default JoinOnGatherer<D, F> join(SqlTable joinTable, String tableAlias) {
-        addTableAlias(joinTable, tableAlias);
-        return join(joinTable);
+        var g = join(joinTable);
+        g.addTableAlias(joinTable, tableAlias);
+        return g;
     }
 
     default JoinOnGatherer<D, F> join(Buildable<SelectModel> joinTable, @Nullable String tableAlias) {
@@ -86,8 +87,9 @@ public interface JoinOperations<D extends JoinOperations<D, F>, F extends Abstra
     }
 
     default JoinOnGatherer<D, F> leftJoin(SqlTable joinTable, String tableAlias) {
-        addTableAlias(joinTable, tableAlias);
-        return leftJoin(joinTable);
+        var g = leftJoin(joinTable);
+        g.addTableAlias(joinTable, tableAlias);
+        return g;
     }
 
     default JoinOnGatherer<D, F> leftJoin(Buildable<SelectModel> joinTable, @Nullable String tableAlias) {
@@ -124,8 +126,9 @@ public interface JoinOperations<D extends JoinOperations<D, F>, F extends Abstra
     }
 
     default JoinOnGatherer<D, F> rightJoin(SqlTable joinTable, String tableAlias) {
-        addTableAlias(joinTable, tableAlias);
-        return rightJoin(joinTable);
+        var g = rightJoin(joinTable);
+        g.addTableAlias(joinTable, tableAlias);
+        return g;
     }
 
     default JoinOnGatherer<D, F> rightJoin(Buildable<SelectModel> joinTable, @Nullable String tableAlias) {
@@ -162,8 +165,9 @@ public interface JoinOperations<D extends JoinOperations<D, F>, F extends Abstra
     }
 
     default JoinOnGatherer<D, F> fullJoin(SqlTable joinTable, String tableAlias) {
-        addTableAlias(joinTable, tableAlias);
-        return fullJoin(joinTable);
+        var g = fullJoin(joinTable);
+        g.addTableAlias(joinTable, tableAlias);
+        return g;
     }
 
     default JoinOnGatherer<D, F> fullJoin(Buildable<SelectModel> joinTable, @Nullable String tableAlias) {
@@ -194,8 +198,6 @@ public interface JoinOperations<D extends JoinOperations<D, F>, F extends Abstra
                        SqlCriterion onJoinCriterion, List<AndOrCriteriaGroup> andJoinCriteria) {
         return fullJoin(subQuery, tableAlias).on(onJoinCriterion).and(andJoinCriteria).endJoinSpecification();
     }
-
-    void addTableAlias(SqlTable table, String tableAlias);
 
     private SubQuery buildSubQuery(Buildable<SelectModel> selectModel, @Nullable String alias) {
         return new SubQuery.Builder()
@@ -248,6 +250,10 @@ public interface JoinOperations<D extends JoinOperations<D, F>, F extends Abstra
                     .withSubCriteria(Arrays.asList(subCriteria))
                     .build());
             return finisher;
+        }
+
+        protected void addTableAlias(SqlTable table, String tableAlias) {
+            finisher.addTableAlias(table, tableAlias);
         }
     }
 }

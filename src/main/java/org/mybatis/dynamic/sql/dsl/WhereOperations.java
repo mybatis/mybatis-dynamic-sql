@@ -43,7 +43,7 @@ public interface WhereOperations<F extends AbstractBooleanOperationsFinisher<?>>
     }
 
     default <T> F where(BindableColumn<T> column, RenderableCondition<T> condition,
-                       List<AndOrCriteriaGroup> subCriteria) {
+                        List<AndOrCriteriaGroup> subCriteria) {
         SqlCriterion sqlCriterion = ColumnAndConditionCriterion.withColumn(column)
                 .withCondition(condition)
                 .withSubCriteria(subCriteria)

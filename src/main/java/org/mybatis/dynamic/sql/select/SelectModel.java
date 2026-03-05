@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 import org.jspecify.annotations.Nullable;
@@ -57,6 +58,10 @@ public class SelectModel extends AbstractSelectModel {
                 .withRenderingStrategy(renderingStrategy)
                 .build()
                 .render();
+    }
+
+    public <R> R map(Function<SelectModel, R> mapper) {
+        return mapper.apply(this);
     }
 
     public static Builder withQueryExpressions(List<QueryExpressionModel> queryExpressions) {

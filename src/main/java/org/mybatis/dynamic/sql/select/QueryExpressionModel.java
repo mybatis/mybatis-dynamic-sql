@@ -16,6 +16,7 @@
 package org.mybatis.dynamic.sql.select;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -126,7 +127,7 @@ public class QueryExpressionModel {
             return this;
         }
 
-        public Builder withSelectList(List<? extends BasicColumn> selectList) {
+        public Builder withSelectList(Collection<? extends BasicColumn> selectList) {
             this.selectList.addAll(selectList);
             return this;
         }

@@ -26,7 +26,6 @@ import org.jspecify.annotations.Nullable;
 import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.SortSpecification;
 import org.mybatis.dynamic.sql.SqlTable;
-import org.mybatis.dynamic.sql.TableExpression;
 import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
 import org.mybatis.dynamic.sql.dsl.AbstractBooleanOperationsFinisher;
 import org.mybatis.dynamic.sql.dsl.AbstractJoinSpecificationFinisher;
@@ -36,7 +35,6 @@ import org.mybatis.dynamic.sql.dsl.JoinOperations;
 import org.mybatis.dynamic.sql.dsl.WhereOperations;
 import org.mybatis.dynamic.sql.util.Buildable;
 import org.mybatis.dynamic.sql.util.ConfigurableStatement;
-import org.mybatis.dynamic.sql.util.Validator;
 import org.mybatis.dynamic.sql.where.EmbeddedWhereModel;
 
 public class QueryExpressionDSL<R> extends AbstractQueryingDSL implements
@@ -44,13 +42,11 @@ public class QueryExpressionDSL<R> extends AbstractQueryingDSL implements
         WhereOperations<QueryExpressionDSL<R>.QueryExpressionWhereBuilder>,
         HavingOperations<QueryExpressionDSL<R>.QueryExpressionHavingBuilder>,
         ConfigurableStatement<QueryExpressionDSL<R>>, SelectDSLOperations<R>, Buildable<R> {
-    private static final String ERROR_27 = "ERROR.27"; //$NON-NLS-1$
 
     private final @Nullable String connector;
     private final SelectDSL<R> selectDSL;
     private final boolean isDistinct;
     private final List<BasicColumn> selectList;
-    private @Nullable TableExpression table;
     private @Nullable QueryExpressionWhereBuilder whereBuilder;
     private @Nullable GroupByModel groupByModel;
     private @Nullable QueryExpressionHavingBuilder havingBuilder;
@@ -64,34 +60,29 @@ public class QueryExpressionDSL<R> extends AbstractQueryingDSL implements
     }
 
     public QueryExpressionDSL<R> from(Buildable<SelectModel> select) {
-        Validator.assertNull(table, ERROR_27);
-        table = buildSubQuery(select);
+        setTable(select);
         return this;
     }
 
     public QueryExpressionDSL<R> from(Buildable<SelectModel> select, String tableAlias) {
-        Validator.assertNull(table, ERROR_27);
-        table = buildSubQuery(select, tableAlias);
+        setTable(select, tableAlias);
         return this;
     }
 
     public QueryExpressionDSL<R> from(SqlTable table) {
-        Validator.assertNull(this.table, ERROR_27);
-        this.table = table;
+        setTable(table);
         return this;
     }
 
     public QueryExpressionDSL<R> from(SqlTable table, String tableAlias) {
-        Validator.assertNull(this.table, ERROR_27);
-        this.table = table;
-        addTableAlias(table, tableAlias);
+        setTable(table, tableAlias);
         return this;
     }
 
     @Override
     public JoinSpecificationFinisher buildJoinFinisher() {
         var finisher = new JoinSpecificationFinisher();
-        joinSpecifications.add(finisher);
+        addJoinSpecification(finisher);
         return finisher;
     }
 
@@ -145,12 +136,11 @@ public class QueryExpressionDSL<R> extends AbstractQueryingDSL implements
     }
 
     protected QueryExpressionModel buildModel() {
-        Validator.assertTrue(table != null, ERROR_27);
         return QueryExpressionModel.withSelectList(selectList)
                 .withConnector(connector)
-                .withTable(table)
+                .withTable(table())
                 .isDistinct(isDistinct)
-                .withTableAliases(tableAliases)
+                .withTableAliases(tableAliases())
                 .withJoinModel(buildJoinModel())
                 .withGroupByModel(groupByModel)
                 .withWhereModel(whereBuilder == null ? null : whereBuilder.buildWhereModel())
