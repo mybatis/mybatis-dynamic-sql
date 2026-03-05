@@ -43,7 +43,8 @@ public class QueryExpressionDSL<R> extends AbstractQueryingDSL implements
         WhereOperations<QueryExpressionDSL<R>.QueryExpressionWhereBuilder>,
         HavingOperations<QueryExpressionDSL<R>.QueryExpressionHavingBuilder>,
         ConfigurableStatement<QueryExpressionDSL<R>>,
-        SelectDSLOperations<R>,
+        SelectDSLLimitAndOffsetOperations<R>,
+        SelectDSLForAndWaitOperations<R>,
         OrderByOperations<SelectDSL<R>>,
         Buildable<R> {
 
@@ -156,7 +157,8 @@ public class QueryExpressionDSL<R> extends AbstractQueryingDSL implements
     public class QueryExpressionWhereBuilder extends AbstractBooleanOperationsFinisher<QueryExpressionWhereBuilder>
             implements ConfigurableStatement<QueryExpressionWhereBuilder>,
             OrderByOperations<SelectDSL<R>>,
-            SelectDSLOperations<R>,
+            SelectDSLForAndWaitOperations<R>,
+            SelectDSLLimitAndOffsetOperations<R>,
             Buildable<R> {
         public UnionBuilder union() {
             return QueryExpressionDSL.this.union();
@@ -210,7 +212,8 @@ public class QueryExpressionDSL<R> extends AbstractQueryingDSL implements
             implements JoinOperations<QueryExpressionDSL<R>, JoinSpecificationFinisher>,
             WhereOperations<QueryExpressionWhereBuilder>,
             ConfigurableStatement<JoinSpecificationFinisher>,
-            SelectDSLOperations<R>,
+            SelectDSLForAndWaitOperations<R>,
+            SelectDSLLimitAndOffsetOperations<R>,
             OrderByOperations<SelectDSL<R>>,
             Buildable<R> {
 
@@ -278,7 +281,8 @@ public class QueryExpressionDSL<R> extends AbstractQueryingDSL implements
     }
 
     public class GroupByFinisher implements HavingOperations<QueryExpressionHavingBuilder>,
-            SelectDSLOperations<R>,
+            SelectDSLForAndWaitOperations<R>,
+            SelectDSLLimitAndOffsetOperations<R>,
             OrderByOperations<SelectDSL<R>>,
             Buildable<R> {
 
@@ -345,7 +349,8 @@ public class QueryExpressionDSL<R> extends AbstractQueryingDSL implements
     }
 
     public class QueryExpressionHavingBuilder extends AbstractBooleanOperationsFinisher<QueryExpressionHavingBuilder>
-            implements SelectDSLOperations<R>,
+            implements SelectDSLForAndWaitOperations<R>,
+            SelectDSLLimitAndOffsetOperations<R>,
             OrderByOperations<SelectDSL<R>>,
             Buildable<R> {
 
