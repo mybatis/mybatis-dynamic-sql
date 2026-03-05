@@ -16,11 +16,10 @@
 package org.mybatis.dynamic.sql.util.kotlin
 
 import org.mybatis.dynamic.sql.BasicColumn
-import org.mybatis.dynamic.sql.select.QueryExpressionDSL
-import org.mybatis.dynamic.sql.select.SelectModel
+import org.mybatis.dynamic.sql.dsl.SelectDSL
 
 @MyBatisDslMarker
-class KotlinUnionBuilder(private val unionBuilder: QueryExpressionDSL<SelectModel>.UnionBuilder) {
+class KotlinUnionBuilder(private val unionBuilder: SelectDSL.UnionBuilder) {
     fun select(vararg selectList: BasicColumn, completer: SelectCompleter): Unit =
         select(selectList.toList(), completer)
 

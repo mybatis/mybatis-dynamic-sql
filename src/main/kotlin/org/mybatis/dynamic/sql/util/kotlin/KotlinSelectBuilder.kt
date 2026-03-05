@@ -18,15 +18,15 @@ package org.mybatis.dynamic.sql.util.kotlin
 import org.mybatis.dynamic.sql.BasicColumn
 import org.mybatis.dynamic.sql.SortSpecification
 import org.mybatis.dynamic.sql.SqlTable
-import org.mybatis.dynamic.sql.select.QueryExpressionDSL
+import org.mybatis.dynamic.sql.dsl.SelectDSL
 import org.mybatis.dynamic.sql.select.SelectModel
 import org.mybatis.dynamic.sql.util.Buildable
 
 typealias SelectCompleter = KotlinSelectBuilder.() -> Unit
 
 @Suppress("TooManyFunctions")
-class KotlinSelectBuilder(private val dsl: QueryExpressionDSL<SelectModel>) :
-    KotlinJoinOperations<QueryExpressionDSL<SelectModel>>(dsl),
+class KotlinSelectBuilder(private val dsl: SelectDSL) :
+    KotlinJoinOperations<SelectDSL>(dsl),
     Buildable<SelectModel>, KotlinPagingDSL {
 
     fun from(table: SqlTable) {

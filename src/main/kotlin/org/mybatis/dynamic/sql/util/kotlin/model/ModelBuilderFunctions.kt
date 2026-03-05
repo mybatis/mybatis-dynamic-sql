@@ -20,6 +20,10 @@ import org.mybatis.dynamic.sql.BasicColumn
 import org.mybatis.dynamic.sql.SqlBuilder
 import org.mybatis.dynamic.sql.SqlTable
 import org.mybatis.dynamic.sql.delete.DeleteModel
+import org.mybatis.dynamic.sql.dsl.CountDSL
+import org.mybatis.dynamic.sql.dsl.DeleteDSL
+import org.mybatis.dynamic.sql.dsl.SelectDSL
+import org.mybatis.dynamic.sql.dsl.UpdateDSL
 import org.mybatis.dynamic.sql.insert.BatchInsertModel
 import org.mybatis.dynamic.sql.insert.GeneralInsertModel
 import org.mybatis.dynamic.sql.insert.InsertModel
@@ -50,20 +54,20 @@ import org.mybatis.dynamic.sql.util.kotlin.SelectCompleter
 import org.mybatis.dynamic.sql.util.kotlin.UpdateCompleter
 
 fun count(column: BasicColumn, completer: CountCompleter): SelectModel =
-    KotlinCountBuilder(SqlBuilder.countColumn(column)).apply(completer).build()
+    KotlinCountBuilder(CountDSL.count(column)).apply(completer).build()
 
 fun countDistinct(column: BasicColumn, completer: CountCompleter): SelectModel =
-    KotlinCountBuilder(SqlBuilder.countDistinctColumn(column)).apply(completer).build()
+    KotlinCountBuilder(CountDSL.countDistinct(column)).apply(completer).build()
 
 fun countFrom(table: SqlTable, completer: CountCompleter): SelectModel =
-    KotlinCountBuilder(SqlBuilder.countColumn(SqlBuilder.constant<Long>("*")))
+    KotlinCountBuilder(CountDSL.count(SqlBuilder.constant<Long>("*")))
         .from(table).apply(completer).build()
 
 fun deleteFrom(table: SqlTable, completer: DeleteCompleter): DeleteModel =
-    KotlinDeleteBuilder(SqlBuilder.deleteFrom(table)).apply(completer).build()
+    KotlinDeleteBuilder(DeleteDSL.deleteFrom(table)).apply(completer).build()
 
 fun deleteFrom(table: SqlTable, tableAlias: String, completer: DeleteCompleter): DeleteModel =
-    KotlinDeleteBuilder(SqlBuilder.deleteFrom(table, tableAlias)).apply(completer).build()
+    KotlinDeleteBuilder(DeleteDSL.deleteFrom(table, tableAlias)).apply(completer).build()
 
 fun <T : Any> insert(row: T, completer: KotlinInsertCompleter<T>): InsertModel<T> =
     KotlinInsertBuilder(row).apply(completer).build()
@@ -84,19 +88,19 @@ fun select(vararg columns: BasicColumn, completer: SelectCompleter): SelectModel
     select(columns.asList(), completer)
 
 fun select(columns: List<BasicColumn>, completer: SelectCompleter): SelectModel =
-    KotlinSelectBuilder(SqlBuilder.select(columns)).apply(completer).build()
+    KotlinSelectBuilder(SelectDSL.select(columns)).apply(completer).build()
 
 fun selectDistinct(vararg columns: BasicColumn, completer: SelectCompleter): SelectModel =
     selectDistinct(columns.asList(), completer)
 
 fun selectDistinct(columns: List<BasicColumn>, completer: SelectCompleter): SelectModel =
-    KotlinSelectBuilder(SqlBuilder.selectDistinct(columns)).apply(completer).build()
+    KotlinSelectBuilder(SelectDSL.selectDistinct(columns)).apply(completer).build()
 
 fun multiSelect(completer: MultiSelectCompleter): MultiSelectModel =
     KotlinMultiSelectBuilder().apply(completer).build()
 
 fun update(table: SqlTable, completer: UpdateCompleter): UpdateModel =
-    KotlinUpdateBuilder(SqlBuilder.update(table)).apply(completer).build()
+    KotlinUpdateBuilder(UpdateDSL.update(table)).apply(completer).build()
 
 fun update(table: SqlTable, tableAlias: String, completer: UpdateCompleter): UpdateModel =
-    KotlinUpdateBuilder(SqlBuilder.update(table, tableAlias)).apply(completer).build()
+    KotlinUpdateBuilder(UpdateDSL.update(table, tableAlias)).apply(completer).build()

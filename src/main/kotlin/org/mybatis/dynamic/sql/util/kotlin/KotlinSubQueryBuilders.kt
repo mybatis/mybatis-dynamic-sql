@@ -20,6 +20,7 @@ import org.mybatis.dynamic.sql.SqlBuilder
 import org.mybatis.dynamic.sql.SqlColumn
 import org.mybatis.dynamic.sql.SqlTable
 import org.mybatis.dynamic.sql.configuration.StatementConfiguration
+import org.mybatis.dynamic.sql.dsl.SelectDSL
 import org.mybatis.dynamic.sql.insert.InsertSelectModel
 import org.mybatis.dynamic.sql.select.SelectModel
 import org.mybatis.dynamic.sql.util.Buildable
@@ -32,14 +33,14 @@ sealed class KotlinBaseSubQueryBuilder {
         select(selectList.toList(), completer)
 
     fun select(selectList: List<BasicColumn>, completer: SelectCompleter) {
-        selectBuilder = KotlinSelectBuilder(SqlBuilder.select(selectList)).apply(completer)
+        selectBuilder = KotlinSelectBuilder(SelectDSL.select(selectList)).apply(completer)
     }
 
     fun selectDistinct(vararg selectList: BasicColumn, completer: SelectCompleter): Unit =
         selectDistinct(selectList.toList(), completer)
 
     fun selectDistinct(selectList: List<BasicColumn>, completer: SelectCompleter) {
-        selectBuilder = KotlinSelectBuilder(SqlBuilder.selectDistinct(selectList)).apply(completer)
+        selectBuilder = KotlinSelectBuilder(SelectDSL.selectDistinct(selectList)).apply(completer)
     }
 
     internal fun buildSelectModel(): SelectModel = invalidIfNull(selectBuilder, "ERROR.28").build() //$NON-NLS-1$
