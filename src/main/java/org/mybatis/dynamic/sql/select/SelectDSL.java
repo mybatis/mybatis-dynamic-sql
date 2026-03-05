@@ -118,16 +118,19 @@ public class SelectDSL<R> implements ForAndWaitOperations<SelectDSL<R>>,
         return this;
     }
 
+    @Override
     public LimitFinisher<R, SelectDSL<R>> limitWhenPresent(@Nullable Long limit) {
         this.limit = limit;
         return new LimitFinisher<>(this);
     }
 
+    @Override
     public OffsetFirstFinisher<R, SelectDSL<R>> offsetWhenPresent(@Nullable Long offset) {
         this.offset = offset;
         return new OffsetFirstFinisher<>(this);
     }
 
+    @Override
     public FetchFirstFinisher<SelectDSL<R>> fetchFirstWhenPresent(@Nullable Long fetchFirstRows) {
         this.fetchFirstRows = fetchFirstRows;
         return new FetchFirstFinisher<>(this);
