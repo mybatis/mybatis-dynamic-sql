@@ -29,6 +29,7 @@ import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.SortSpecification;
 import org.mybatis.dynamic.sql.common.OrderByModel;
 import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
+import org.mybatis.dynamic.sql.dsl.OrderByOperations;
 import org.mybatis.dynamic.sql.util.Buildable;
 import org.mybatis.dynamic.sql.util.ConfigurableStatement;
 import org.mybatis.dynamic.sql.util.Validator;
@@ -41,7 +42,9 @@ import org.mybatis.dynamic.sql.util.Validator;
  * @param <R>
  *            the type of model produced by this builder, typically SelectModel
  */
-public class SelectDSL<R> implements Buildable<R>, ConfigurableStatement<SelectDSL<R>> {
+public class SelectDSL<R> implements OrderByOperations<SelectDSL<R>>,
+        ConfigurableStatement<SelectDSL<R>>,
+        Buildable<R> {
     private static final String ERROR_48 = "ERROR.48"; //$NON-NLS-1$
 
     private final Function<SelectModel, R> adapterFunction;
@@ -106,8 +109,11 @@ public class SelectDSL<R> implements Buildable<R>, ConfigurableStatement<SelectD
         queryExpressions.add(queryExpression);
     }
 
-    void orderBy(Collection<? extends SortSpecification> columns) {
+
+    @Override
+    public SelectDSL<R> orderBy(Collection<? extends SortSpecification> columns) {
         orderByModel = OrderByModel.of(columns);
+        return this;
     }
 
     public SelectDSL<R>.LimitFinisher limit(long limit) {

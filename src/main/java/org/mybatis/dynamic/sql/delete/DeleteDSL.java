@@ -31,7 +31,6 @@ public class DeleteDSL<R> extends AbstractDeleteDSL<R, DeleteDSL<R>> {
         this.adapterFunction = Objects.requireNonNull(adapterFunction);
     }
 
-
     /**
      * WARNING! Calling this method could result in a delete statement that deletes
      * all rows in a table.

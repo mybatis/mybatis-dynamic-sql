@@ -32,6 +32,7 @@ import org.mybatis.dynamic.sql.dsl.AbstractJoinSpecificationFinisher;
 import org.mybatis.dynamic.sql.dsl.AbstractQueryingDSL;
 import org.mybatis.dynamic.sql.dsl.HavingOperations;
 import org.mybatis.dynamic.sql.dsl.JoinOperations;
+import org.mybatis.dynamic.sql.dsl.OrderByOperations;
 import org.mybatis.dynamic.sql.dsl.WhereOperations;
 import org.mybatis.dynamic.sql.util.Buildable;
 import org.mybatis.dynamic.sql.util.ConfigurableStatement;
@@ -41,7 +42,10 @@ public class QueryExpressionDSL<R> extends AbstractQueryingDSL implements
         JoinOperations<QueryExpressionDSL<R>, QueryExpressionDSL<R>.JoinSpecificationFinisher>,
         WhereOperations<QueryExpressionDSL<R>.QueryExpressionWhereBuilder>,
         HavingOperations<QueryExpressionDSL<R>.QueryExpressionHavingBuilder>,
-        ConfigurableStatement<QueryExpressionDSL<R>>, SelectDSLOperations<R>, Buildable<R> {
+        ConfigurableStatement<QueryExpressionDSL<R>>,
+        SelectDSLOperations<R>,
+        OrderByOperations<SelectDSL<R>>,
+        Buildable<R> {
 
     private final @Nullable String connector;
     private final SelectDSL<R> selectDSL;
@@ -118,13 +122,9 @@ public class QueryExpressionDSL<R> extends AbstractQueryingDSL implements
         return new GroupByFinisher();
     }
 
-    public SelectDSL<R> orderBy(SortSpecification... columns) {
-        return orderBy(Arrays.asList(columns));
-    }
-
+    @Override
     public SelectDSL<R> orderBy(Collection<? extends SortSpecification> columns) {
-        selectDSL.orderBy(columns);
-        return selectDSL;
+        return selectDSL.orderBy(columns);
     }
 
     public UnionBuilder union() {
@@ -154,7 +154,10 @@ public class QueryExpressionDSL<R> extends AbstractQueryingDSL implements
     }
 
     public class QueryExpressionWhereBuilder extends AbstractBooleanOperationsFinisher<QueryExpressionWhereBuilder>
-            implements ConfigurableStatement<QueryExpressionWhereBuilder>, Buildable<R>, SelectDSLOperations<R> {
+            implements ConfigurableStatement<QueryExpressionWhereBuilder>,
+            OrderByOperations<SelectDSL<R>>,
+            SelectDSLOperations<R>,
+            Buildable<R> {
         public UnionBuilder union() {
             return QueryExpressionDSL.this.union();
         }
@@ -163,10 +166,7 @@ public class QueryExpressionDSL<R> extends AbstractQueryingDSL implements
             return QueryExpressionDSL.this.unionAll();
         }
 
-        public SelectDSL<R> orderBy(SortSpecification... columns) {
-            return orderBy(Arrays.asList(columns));
-        }
-
+        @Override
         public SelectDSL<R> orderBy(Collection<? extends SortSpecification> columns) {
             return QueryExpressionDSL.this.orderBy(columns);
         }
@@ -209,8 +209,10 @@ public class QueryExpressionDSL<R> extends AbstractQueryingDSL implements
             extends AbstractJoinSpecificationFinisher<QueryExpressionDSL<R>, JoinSpecificationFinisher>
             implements JoinOperations<QueryExpressionDSL<R>, JoinSpecificationFinisher>,
             WhereOperations<QueryExpressionWhereBuilder>,
-            ConfigurableStatement<JoinSpecificationFinisher>, Buildable<R>,
-            SelectDSLOperations<R> {
+            ConfigurableStatement<JoinSpecificationFinisher>,
+            SelectDSLOperations<R>,
+            OrderByOperations<SelectDSL<R>>,
+            Buildable<R> {
 
         @Override
         public R build() {
@@ -244,10 +246,7 @@ public class QueryExpressionDSL<R> extends AbstractQueryingDSL implements
             return QueryExpressionDSL.this.unionAll();
         }
 
-        public SelectDSL<R> orderBy(SortSpecification... columns) {
-            return orderBy(Arrays.asList(columns));
-        }
-
+        @Override
         public SelectDSL<R> orderBy(Collection<? extends SortSpecification> columns) {
             return QueryExpressionDSL.this.orderBy(columns);
         }
@@ -279,11 +278,11 @@ public class QueryExpressionDSL<R> extends AbstractQueryingDSL implements
     }
 
     public class GroupByFinisher implements HavingOperations<QueryExpressionHavingBuilder>,
-            Buildable<R>, SelectDSLOperations<R> {
-        public SelectDSL<R> orderBy(SortSpecification... columns) {
-            return orderBy(Arrays.asList(columns));
-        }
+            SelectDSLOperations<R>,
+            OrderByOperations<SelectDSL<R>>,
+            Buildable<R> {
 
+        @Override
         public SelectDSL<R> orderBy(Collection<? extends SortSpecification> columns) {
             return QueryExpressionDSL.this.orderBy(columns);
         }
@@ -346,12 +345,11 @@ public class QueryExpressionDSL<R> extends AbstractQueryingDSL implements
     }
 
     public class QueryExpressionHavingBuilder extends AbstractBooleanOperationsFinisher<QueryExpressionHavingBuilder>
-            implements Buildable<R>, SelectDSLOperations<R> {
+            implements SelectDSLOperations<R>,
+            OrderByOperations<SelectDSL<R>>,
+            Buildable<R> {
 
-        public SelectDSL<R> orderBy(SortSpecification... columns) {
-            return orderBy(Arrays.asList(columns));
-        }
-
+        @Override
         public SelectDSL<R> orderBy(Collection<? extends SortSpecification> columns) {
             return QueryExpressionDSL.this.orderBy(columns);
         }
