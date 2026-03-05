@@ -31,6 +31,7 @@ import org.mybatis.dynamic.sql.dsl.AbstractBooleanOperationsFinisher;
 import org.mybatis.dynamic.sql.dsl.AbstractJoinSpecificationFinisher;
 import org.mybatis.dynamic.sql.dsl.AbstractQueryingDSL;
 import org.mybatis.dynamic.sql.dsl.ForAndWaitOperations;
+import org.mybatis.dynamic.sql.dsl.GroupByOperations;
 import org.mybatis.dynamic.sql.dsl.HavingOperations;
 import org.mybatis.dynamic.sql.dsl.JoinOperations;
 import org.mybatis.dynamic.sql.dsl.LimitAndOffsetOperations;
@@ -43,6 +44,7 @@ import org.mybatis.dynamic.sql.where.EmbeddedWhereModel;
 public class QueryExpressionDSL<R> extends AbstractQueryingDSL implements
         JoinOperations<QueryExpressionDSL<R>, QueryExpressionDSL<R>.JoinSpecificationFinisher>,
         WhereOperations<QueryExpressionDSL<R>.QueryExpressionWhereBuilder>,
+        GroupByOperations<QueryExpressionDSL<R>>,
         HavingOperations<QueryExpressionDSL<R>.QueryExpressionHavingBuilder>,
         ConfigurableStatement<QueryExpressionDSL<R>>,
         LimitAndOffsetOperations<R, SelectDSL<R>>,
@@ -116,13 +118,9 @@ public class QueryExpressionDSL<R> extends AbstractQueryingDSL implements
         return selectDSL.build();
     }
 
-    public GroupByFinisher groupBy(BasicColumn... columns) {
-        return groupBy(Arrays.asList(columns));
-    }
-
-    public GroupByFinisher groupBy(Collection<? extends BasicColumn> columns) {
+    public QueryExpressionDSL<R> groupBy(Collection<? extends BasicColumn> columns) {
         groupByModel = GroupByModel.of(columns);
-        return new GroupByFinisher();
+        return this;
     }
 
     @Override
@@ -179,6 +177,7 @@ public class QueryExpressionDSL<R> extends AbstractQueryingDSL implements
     public class QueryExpressionWhereBuilder extends AbstractBooleanOperationsFinisher<QueryExpressionWhereBuilder>
             implements ConfigurableStatement<QueryExpressionWhereBuilder>,
             OrderByOperations<SelectDSL<R>>,
+            GroupByOperations<QueryExpressionDSL<R>>,
             ForAndWaitOperations<SelectDSL<R>>,
             LimitAndOffsetOperations<R, SelectDSL<R>>,
             Buildable<R> {
@@ -195,11 +194,7 @@ public class QueryExpressionDSL<R> extends AbstractQueryingDSL implements
             return QueryExpressionDSL.this.orderBy(columns);
         }
 
-        public GroupByFinisher groupBy(BasicColumn... columns) {
-            return groupBy(Arrays.asList(columns));
-        }
-
-        public GroupByFinisher groupBy(Collection<? extends BasicColumn> columns) {
+        public QueryExpressionDSL<R> groupBy(Collection<? extends BasicColumn> columns) {
             return QueryExpressionDSL.this.groupBy(columns);
         }
 
@@ -254,6 +249,7 @@ public class QueryExpressionDSL<R> extends AbstractQueryingDSL implements
             implements JoinOperations<QueryExpressionDSL<R>, JoinSpecificationFinisher>,
             WhereOperations<QueryExpressionWhereBuilder>,
             ConfigurableStatement<JoinSpecificationFinisher>,
+            GroupByOperations<QueryExpressionDSL<R>>,
             ForAndWaitOperations<SelectDSL<R>>,
             LimitAndOffsetOperations<R, SelectDSL<R>>,
             OrderByOperations<SelectDSL<R>>,
@@ -275,11 +271,7 @@ public class QueryExpressionDSL<R> extends AbstractQueryingDSL implements
             return QueryExpressionDSL.this.where();
         }
 
-        public GroupByFinisher groupBy(BasicColumn... columns) {
-            return groupBy(Arrays.asList(columns));
-        }
-
-        public GroupByFinisher groupBy(Collection<? extends BasicColumn> columns) {
+        public QueryExpressionDSL<R> groupBy(Collection<? extends BasicColumn> columns) {
             return QueryExpressionDSL.this.groupBy(columns);
         }
 
@@ -339,61 +331,6 @@ public class QueryExpressionDSL<R> extends AbstractQueryingDSL implements
         @Override
         public JoinSpecificationFinisher buildJoinFinisher() {
             return QueryExpressionDSL.this.buildJoinFinisher();
-        }
-    }
-
-    public class GroupByFinisher implements HavingOperations<QueryExpressionHavingBuilder>,
-            ForAndWaitOperations<SelectDSL<R>>,
-            LimitAndOffsetOperations<R, SelectDSL<R>>,
-            OrderByOperations<SelectDSL<R>>,
-            Buildable<R> {
-
-        @Override
-        public SelectDSL<R> orderBy(Collection<? extends SortSpecification> columns) {
-            return QueryExpressionDSL.this.orderBy(columns);
-        }
-
-        @Override
-        public R build() {
-            return QueryExpressionDSL.this.build();
-        }
-
-        public UnionBuilder union() {
-            return QueryExpressionDSL.this.union();
-        }
-
-        public UnionBuilder unionAll() {
-            return QueryExpressionDSL.this.unionAll();
-        }
-
-        @Override
-        public QueryExpressionHavingBuilder having() {
-            return QueryExpressionDSL.this.having();
-        }
-
-        @Override
-        public LimitFinisher<R, SelectDSL<R>> limitWhenPresent(@Nullable Long limit) {
-            return QueryExpressionDSL.this.limitWhenPresent(limit);
-        }
-
-        @Override
-        public OffsetFirstFinisher<R, SelectDSL<R>> offsetWhenPresent(@Nullable Long offset) {
-            return QueryExpressionDSL.this.offsetWhenPresent(offset);
-        }
-
-        @Override
-        public FetchFirstFinisher<SelectDSL<R>> fetchFirstWhenPresent(@Nullable Long fetchFirstRows) {
-            return QueryExpressionDSL.this.fetchFirstWhenPresent(fetchFirstRows);
-        }
-
-        @Override
-        public SelectDSL<R> setWaitClause(String waitClause) {
-            return QueryExpressionDSL.this.setWaitClause(waitClause);
-        }
-
-        @Override
-        public SelectDSL<R> setForClause(String forClause) {
-            return QueryExpressionDSL.this.setForClause(forClause);
         }
     }
 
