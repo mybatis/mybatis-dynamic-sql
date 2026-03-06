@@ -34,6 +34,7 @@ import org.mybatis.dynamic.sql.util.Buildable;
 import org.mybatis.dynamic.sql.util.ConfigurableStatement;
 import org.mybatis.dynamic.sql.util.Validator;
 import org.mybatis.dynamic.sql.where.EmbeddedWhereModel;
+import org.mybatis.dynamic.sql.where.WhereApplier;
 
 public abstract class AbstractDeleteDSL<M, D extends AbstractDeleteDSL<M, D>>
         implements WhereOperations<AbstractDeleteDSL<M, D>.DeleteWhereBuilder>,
@@ -54,16 +55,23 @@ public abstract class AbstractDeleteDSL<M, D extends AbstractDeleteDSL<M, D>>
 
     @Override
     public DeleteWhereBuilder where() {
-        whereBuilder = Objects.requireNonNullElseGet(whereBuilder, DeleteWhereBuilder::new);
+        Validator.assertNull(whereBuilder, "ERROR.32"); //$NON-NLS-1$
+        whereBuilder = new DeleteWhereBuilder();
         return whereBuilder;
     }
 
     @Override
     public DeleteWhereBuilder where(SqlCriterion initialCriterion) {
-        Validator.assertNull(whereBuilder, "ERROR.32"); //$NON-NLS-1$
-        whereBuilder = new DeleteWhereBuilder();
-        whereBuilder.initialCriterion = initialCriterion;
-        return whereBuilder;
+        DeleteWhereBuilder answer = where();
+        answer.initialCriterion = initialCriterion;
+        return answer;
+    }
+
+    @Override
+    public DeleteWhereBuilder applyWhere(WhereApplier whereApplier) {
+        DeleteWhereBuilder answer = where(whereApplier.initialCriterion());
+        answer.subCriteria.addAll(whereApplier.subCriteria());
+        return answer;
     }
 
     public D limit(long limit) {

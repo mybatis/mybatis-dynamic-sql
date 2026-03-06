@@ -47,6 +47,7 @@ import org.mybatis.dynamic.sql.util.ValueMapping;
 import org.mybatis.dynamic.sql.util.ValueOrNullMapping;
 import org.mybatis.dynamic.sql.util.ValueWhenPresentMapping;
 import org.mybatis.dynamic.sql.where.EmbeddedWhereModel;
+import org.mybatis.dynamic.sql.where.WhereApplier;
 
 public abstract class AbstractUpdateDSL<M, D extends AbstractUpdateDSL<M, D>>
         implements WhereOperations<AbstractUpdateDSL<M, D>.UpdateWhereBuilder>,
@@ -72,16 +73,23 @@ public abstract class AbstractUpdateDSL<M, D extends AbstractUpdateDSL<M, D>>
 
     @Override
     public UpdateWhereBuilder where() {
-        whereBuilder = Objects.requireNonNullElseGet(whereBuilder, UpdateWhereBuilder::new);
+        Validator.assertNull(whereBuilder, "ERROR.32"); //$NON-NLS-1$
+        whereBuilder = new UpdateWhereBuilder();
         return whereBuilder;
     }
 
     @Override
     public UpdateWhereBuilder where(SqlCriterion initialCriterion) {
-        Validator.assertNull(whereBuilder, "ERROR.32"); //$NON-NLS-1$
-        whereBuilder = new UpdateWhereBuilder();
-        whereBuilder.initialCriterion = initialCriterion;
-        return whereBuilder;
+        UpdateWhereBuilder answer = where();
+        answer.initialCriterion = initialCriterion;
+        return answer;
+    }
+
+    @Override
+    public UpdateWhereBuilder applyWhere(WhereApplier whereApplier) {
+        UpdateWhereBuilder answer = where(whereApplier.initialCriterion());
+        answer.subCriteria.addAll(whereApplier.subCriteria());
+        return answer;
     }
 
     public D limit(long limit) {

@@ -43,6 +43,7 @@ import org.mybatis.dynamic.sql.util.Buildable;
 import org.mybatis.dynamic.sql.util.ConfigurableStatement;
 import org.mybatis.dynamic.sql.util.Validator;
 import org.mybatis.dynamic.sql.where.EmbeddedWhereModel;
+import org.mybatis.dynamic.sql.where.WhereApplier;
 
 public class QueryExpressionDSL<R> extends AbstractQueryingDSL implements
         JoinOperations<QueryExpressionDSL<R>, QueryExpressionDSL<R>.JoinSpecificationFinisher>,
@@ -100,16 +101,23 @@ public class QueryExpressionDSL<R> extends AbstractQueryingDSL implements
 
     @Override
     public QueryExpressionWhereBuilder where() {
-        whereBuilder = Objects.requireNonNullElseGet(whereBuilder, QueryExpressionWhereBuilder::new);
+        Validator.assertNull(whereBuilder, "ERROR.32"); //$NON-NLS-1$
+        whereBuilder = new QueryExpressionWhereBuilder();
         return whereBuilder;
     }
 
     @Override
     public QueryExpressionWhereBuilder where(SqlCriterion initialCriterion) {
-        Validator.assertNull(whereBuilder, "ERROR.32"); //$NON-NLS-1$
-        whereBuilder = new QueryExpressionWhereBuilder();
-        whereBuilder.initialCriterion = initialCriterion;
-        return whereBuilder;
+        QueryExpressionWhereBuilder answer = where();
+        answer.initialCriterion = initialCriterion;
+        return answer;
+    }
+
+    @Override
+    public QueryExpressionWhereBuilder applyWhere(WhereApplier whereApplier) {
+        QueryExpressionWhereBuilder answer = where(whereApplier.initialCriterion());
+        answer.subCriteria.addAll(whereApplier.subCriteria());
+        return answer;
     }
 
     @Override
@@ -121,15 +129,14 @@ public class QueryExpressionDSL<R> extends AbstractQueryingDSL implements
     @Override
     public QueryExpressionHavingBuilder having(SqlCriterion initialCriterion) {
         Validator.assertNull(havingBuilder, "ERROR.31"); //$NON-NLS-1$
-        havingBuilder = new QueryExpressionHavingBuilder();
-        havingBuilder.initialCriterion = initialCriterion;
+        havingBuilder = new QueryExpressionHavingBuilder(initialCriterion);
         return havingBuilder;
     }
 
     @Override
     public QueryExpressionHavingBuilder applyHaving(HavingApplier havingApplier) {
-        havingBuilder = Objects.requireNonNullElseGet(havingBuilder, QueryExpressionHavingBuilder::new);
-        havingApplier.accept(havingBuilder);
+        Validator.assertNull(havingBuilder, "ERROR.31"); //$NON-NLS-1$
+        havingBuilder = new QueryExpressionHavingBuilder(havingApplier.initialCriterion(), havingApplier.subCriteria());
         return havingBuilder;
     }
 
@@ -304,6 +311,11 @@ public class QueryExpressionDSL<R> extends AbstractQueryingDSL implements
             return QueryExpressionDSL.this.where(initialCriterion);
         }
 
+        @Override
+        public QueryExpressionWhereBuilder applyWhere(WhereApplier whereApplier) {
+            return QueryExpressionDSL.this.applyWhere(whereApplier);
+        }
+
         public QueryExpressionDSL<R> groupBy(Collection<? extends BasicColumn> columns) {
             return QueryExpressionDSL.this.groupBy(columns);
         }
@@ -405,8 +417,17 @@ public class QueryExpressionDSL<R> extends AbstractQueryingDSL implements
             LimitAndOffsetOperations<R, SelectDSL<R>>,
             OrderByOperations<SelectDSL<R>>,
             Buildable<R> {
-        protected @Nullable SqlCriterion initialCriterion;
-        protected final List<AndOrCriteriaGroup> subCriteria = new ArrayList<>();
+        private final SqlCriterion initialCriterion;
+        private final List<AndOrCriteriaGroup> subCriteria = new ArrayList<>();
+
+        public QueryExpressionHavingBuilder(SqlCriterion initialCriterion) {
+            this.initialCriterion = initialCriterion;
+        }
+
+        public QueryExpressionHavingBuilder(SqlCriterion initialCriterion, List<AndOrCriteriaGroup> subCriteria) {
+            this(initialCriterion);
+            this.subCriteria.addAll(subCriteria);
+        }
 
         @Override
         public QueryExpressionHavingBuilder addSubCriterion(AndOrCriteriaGroup subCriterion) {

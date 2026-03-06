@@ -15,13 +15,13 @@
  */
 package org.mybatis.dynamic.sql.select;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.mybatis.dynamic.sql.AndOrCriteriaGroup;
 import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.dsl.BooleanOperations;
 import org.mybatis.dynamic.sql.util.Buildable;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class StandaloneHavingBuilder implements BooleanOperations<StandaloneHavingBuilder>, Buildable<HavingModel> {
     private final SqlCriterion initialCriterion;
@@ -47,13 +47,6 @@ public class StandaloneHavingBuilder implements BooleanOperations<StandaloneHavi
     }
 
     public HavingApplier toHavingApplier() {
-        return d -> {
-            // the initial condition will be null, so the connector will be ignored
-            var group = new AndOrCriteriaGroup.Builder().withInitialCriterion(initialCriterion)
-                    .withConnector("and") //$NON-NLS-1$
-                    .withSubCriteria(subCriteria)
-                    .build();
-            d.addSubCriterion(group);
-        };
+        return new HavingApplier(initialCriterion, subCriteria);
     }
 }

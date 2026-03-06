@@ -87,11 +87,8 @@ public interface WhereOperations<F extends BooleanOperations<?>> {
     }
 
     F where();
+
     F where(SqlCriterion initialCriterion);
 
-    default F applyWhere(WhereApplier whereApplier) {
-        F f = where();
-        whereApplier.accept(f);
-        return f;
-    }
+    F applyWhere(WhereApplier whereApplier);
 }

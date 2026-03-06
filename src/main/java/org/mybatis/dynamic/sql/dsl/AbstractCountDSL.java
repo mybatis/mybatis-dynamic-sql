@@ -32,6 +32,7 @@ import org.mybatis.dynamic.sql.util.Buildable;
 import org.mybatis.dynamic.sql.util.ConfigurableStatement;
 import org.mybatis.dynamic.sql.util.Validator;
 import org.mybatis.dynamic.sql.where.EmbeddedWhereModel;
+import org.mybatis.dynamic.sql.where.WhereApplier;
 
 /**
  * DSL for building count queries. Count queries are specializations of select queries. They have joins and where
@@ -67,16 +68,23 @@ public abstract class AbstractCountDSL<M, D extends AbstractCountDSL<M, D>> exte
 
     @Override
     public CountWhereBuilder where() {
-        whereBuilder = Objects.requireNonNullElseGet(whereBuilder, CountWhereBuilder::new);
+        Validator.assertNull(whereBuilder, "ERROR.32"); //$NON-NLS-1$
+        whereBuilder = new CountWhereBuilder();
         return whereBuilder;
     }
 
     @Override
     public CountWhereBuilder where(SqlCriterion initialCriterion) {
-        Validator.assertNull(whereBuilder, "ERROR.32"); //$NON-NLS-1$
-        whereBuilder = new CountWhereBuilder();
-        whereBuilder.initialCriterion = initialCriterion;
-        return whereBuilder;
+        CountWhereBuilder answer = where();
+        answer.initialCriterion = initialCriterion;
+        return answer;
+    }
+
+    @Override
+    public CountWhereBuilder applyWhere(WhereApplier whereApplier) {
+        CountWhereBuilder answer = where(whereApplier.initialCriterion());
+        answer.subCriteria.addAll(whereApplier.subCriteria());
+        return answer;
     }
 
     @Override
@@ -135,6 +143,11 @@ public abstract class AbstractCountDSL<M, D extends AbstractCountDSL<M, D>> exte
         }
 
         @Override
+        public CountWhereBuilder applyWhere(WhereApplier whereApplier) {
+            return AbstractCountDSL.this.applyWhere(whereApplier);
+        }
+
+        @Override
         public M build() {
             return AbstractCountDSL.this.build();
         }
@@ -153,8 +166,8 @@ public abstract class AbstractCountDSL<M, D extends AbstractCountDSL<M, D>> exte
 
     public class CountWhereBuilder implements BooleanOperations<CountWhereBuilder>,
             ConfigurableStatement<CountWhereBuilder>, Buildable<M> {
-        protected @Nullable SqlCriterion initialCriterion;
-        protected final List<AndOrCriteriaGroup> subCriteria = new ArrayList<>();
+        private @Nullable SqlCriterion initialCriterion;
+        private final List<AndOrCriteriaGroup> subCriteria = new ArrayList<>();
 
         @Override
         public CountWhereBuilder addSubCriterion(AndOrCriteriaGroup subCriterion) {

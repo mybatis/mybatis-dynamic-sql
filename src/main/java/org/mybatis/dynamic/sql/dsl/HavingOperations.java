@@ -58,5 +58,6 @@ public interface HavingOperations<F extends BooleanOperations<?>> {
     }
 
     F having(SqlCriterion initialCriterion);
+
     F applyHaving(HavingApplier havingApplier);
 }

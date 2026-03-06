@@ -15,6 +15,10 @@
  */
 package org.mybatis.dynamic.sql.where;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Consumer;
+
 import org.jspecify.annotations.Nullable;
 import org.mybatis.dynamic.sql.AndOrCriteriaGroup;
 import org.mybatis.dynamic.sql.SqlCriterion;
@@ -23,18 +27,13 @@ import org.mybatis.dynamic.sql.dsl.BooleanOperations;
 import org.mybatis.dynamic.sql.util.Buildable;
 import org.mybatis.dynamic.sql.util.ConfigurableStatement;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Consumer;
-
-public class StandaloneWhereBuilder
-        implements BooleanOperations<StandaloneWhereBuilder>, ConfigurableStatement<StandaloneWhereBuilder>, Buildable<WhereModel> {
+public class StandaloneWhereBuilder implements BooleanOperations<StandaloneWhereBuilder>,
+        ConfigurableStatement<StandaloneWhereBuilder>, Buildable<WhereModel> {
     private @Nullable SqlCriterion initialCriterion;
     private final List<AndOrCriteriaGroup> subCriteria = new ArrayList<>();
     private final StatementConfiguration statementConfiguration = new StatementConfiguration();
 
-    public StandaloneWhereBuilder() {
-    }
+    public StandaloneWhereBuilder() {}
 
     public StandaloneWhereBuilder(SqlCriterion initialCriterion, List<AndOrCriteriaGroup> subCriteria) {
         this.initialCriterion = initialCriterion;
@@ -63,13 +62,7 @@ public class StandaloneWhereBuilder
     }
 
     public WhereApplier toWhereApplier() {
-        return d -> {
-            // the initial condition will be null, so the connector will be ignored
-            var group = new AndOrCriteriaGroup.Builder().withInitialCriterion(initialCriterion)
-                    .withConnector("and") //$NON-NLS-1$
-                    .withSubCriteria(subCriteria)
-                    .build();
-            d.addSubCriterion(group);
-        };
+        // TODO - deal with null
+        return new WhereApplier(initialCriterion, subCriteria);
     }
 }

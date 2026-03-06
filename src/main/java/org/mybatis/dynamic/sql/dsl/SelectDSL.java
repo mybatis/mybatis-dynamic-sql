@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
 
@@ -41,6 +40,7 @@ import org.mybatis.dynamic.sql.util.Buildable;
 import org.mybatis.dynamic.sql.util.ConfigurableStatement;
 import org.mybatis.dynamic.sql.util.Validator;
 import org.mybatis.dynamic.sql.where.EmbeddedWhereModel;
+import org.mybatis.dynamic.sql.where.WhereApplier;
 
 public class SelectDSL implements
         JoinOperations<SelectDSL, SelectDSL.JoinSpecificationFinisher>,
@@ -128,17 +128,23 @@ public class SelectDSL implements
 
     @Override
     public QueryExpressionWhereBuilder where() {
-        currentQueryValues.whereBuilder =
-                Objects.requireNonNullElseGet(currentQueryValues.whereBuilder, QueryExpressionWhereBuilder::new);
+        Validator.assertNull(currentQueryValues.whereBuilder, "ERROR.32"); //$NON-NLS-1$
+        currentQueryValues.whereBuilder = new QueryExpressionWhereBuilder();
         return currentQueryValues.whereBuilder;
     }
 
     @Override
     public QueryExpressionWhereBuilder where(SqlCriterion initialCriterion) {
-        Validator.assertNull(currentQueryValues.whereBuilder, "ERROR.32"); //$NON-NLS-1$
-        currentQueryValues.whereBuilder = new QueryExpressionWhereBuilder();
-        currentQueryValues.whereBuilder.initialCriterion = initialCriterion;
-        return currentQueryValues.whereBuilder;
+        QueryExpressionWhereBuilder answer = where();
+        answer.initialCriterion = initialCriterion;
+        return answer;
+    }
+
+    @Override
+    public QueryExpressionWhereBuilder applyWhere(WhereApplier whereApplier) {
+        QueryExpressionWhereBuilder answer = where(whereApplier.initialCriterion());
+        answer.subCriteria.addAll(whereApplier.subCriteria());
+        return answer;
     }
 
     @Override
@@ -155,16 +161,15 @@ public class SelectDSL implements
     @Override
     public QueryExpressionHavingBuilder having(SqlCriterion initialCriterion) {
         Validator.assertNull(currentQueryValues.havingBuilder, "ERROR.31"); //$NON-NLS-1$
-        currentQueryValues.havingBuilder = new QueryExpressionHavingBuilder();
-        currentQueryValues.havingBuilder.initialCriterion = initialCriterion;
+        currentQueryValues.havingBuilder = new QueryExpressionHavingBuilder(initialCriterion);
         return currentQueryValues.havingBuilder;
     }
 
     @Override
     public QueryExpressionHavingBuilder applyHaving(HavingApplier havingApplier) {
+        Validator.assertNull(currentQueryValues.havingBuilder, "ERROR.31"); //$NON-NLS-1$
         currentQueryValues.havingBuilder =
-                Objects.requireNonNullElseGet(currentQueryValues.havingBuilder, QueryExpressionHavingBuilder::new);
-        havingApplier.accept(currentQueryValues.havingBuilder);
+                new QueryExpressionHavingBuilder(havingApplier.initialCriterion(), havingApplier.subCriteria());
         return currentQueryValues.havingBuilder;
     }
 
@@ -235,8 +240,8 @@ public class SelectDSL implements
                 .build();
     }
 
-    public class QueryExpressionWhereBuilder
-            implements BooleanOperations<QueryExpressionWhereBuilder>, ConfigurableStatement<QueryExpressionWhereBuilder>,
+    public class QueryExpressionWhereBuilder implements BooleanOperations<QueryExpressionWhereBuilder>,
+            ConfigurableStatement<QueryExpressionWhereBuilder>,
             OrderByOperations<SelectDSL>,
             GroupByOperations<SelectDSL>,
             LimitAndOffsetOperations<SelectModel, SelectDSL>,
@@ -346,6 +351,11 @@ public class SelectDSL implements
         }
 
         @Override
+        public QueryExpressionWhereBuilder applyWhere(WhereApplier whereApplier) {
+            return SelectDSL.this.applyWhere(whereApplier);
+        }
+
+        @Override
         public SelectDSL groupBy(Collection<? extends BasicColumn> columns) {
             return SelectDSL.this.groupBy(columns);
         }
@@ -415,8 +425,17 @@ public class SelectDSL implements
             LimitAndOffsetOperations<SelectModel, SelectDSL>,
             ForAndWaitOperations<SelectDSL>,
             Buildable<SelectModel> {
-        private @Nullable SqlCriterion initialCriterion;
+        private final SqlCriterion initialCriterion;
         private final List<AndOrCriteriaGroup> subCriteria = new ArrayList<>();
+
+        public QueryExpressionHavingBuilder(SqlCriterion initialCriterion) {
+            this.initialCriterion = initialCriterion;
+        }
+
+        public QueryExpressionHavingBuilder(SqlCriterion initialCriterion, List<AndOrCriteriaGroup> subCriteria) {
+            this(initialCriterion);
+            this.subCriteria.addAll(subCriteria);
+        }
 
         @Override
         public QueryExpressionHavingBuilder addSubCriterion(AndOrCriteriaGroup subCriterion) {
