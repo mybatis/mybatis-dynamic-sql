@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2025 the original author or authors.
+ *    Copyright 2016-2026 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -37,7 +37,7 @@ import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.update.UpdateDSL;
 import org.mybatis.dynamic.sql.update.UpdateModel;
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
-import org.mybatis.dynamic.sql.where.WhereDSL;
+import org.mybatis.dynamic.sql.where.StandaloneWhereBuilder;
 import org.mybatis.dynamic.sql.where.render.WhereClauseProvider;
 
 class EmptyWhereTest {
@@ -246,7 +246,7 @@ class EmptyWhereTest {
 
     @Test
     void testWhereThreeConditions() {
-        WhereDSL.StandaloneWhereFinisher builder = where(id, isEqualTo(3));
+        StandaloneWhereBuilder builder = where(id, isEqualTo(3));
 
         builder.and(firstName, isEqualTo(FIRST_NAME));
         builder.and(PersonDynamicSqlSupport.lastName, isEqualTo(LAST_NAME));
@@ -265,7 +265,7 @@ class EmptyWhereTest {
     @ParameterizedTest
     @MethodSource("whereVariations")
     void testWhereVariations(Variation variation) {
-        WhereDSL.StandaloneWhereFinisher builder = where();
+        StandaloneWhereBuilder builder = where();
 
         builder.and(firstName, isEqualToWhenPresent(variation.firstName));
         builder.or(PersonDynamicSqlSupport.lastName, isEqualToWhenPresent(variation.lastName));

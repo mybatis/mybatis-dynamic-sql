@@ -15,19 +15,24 @@
  */
 package org.mybatis.dynamic.sql.dsl;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
 
 import org.jspecify.annotations.Nullable;
+import org.mybatis.dynamic.sql.AndOrCriteriaGroup;
 import org.mybatis.dynamic.sql.SortSpecification;
+import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.common.OrderByModel;
 import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
 import org.mybatis.dynamic.sql.delete.DeleteModel;
 import org.mybatis.dynamic.sql.util.Buildable;
 import org.mybatis.dynamic.sql.util.ConfigurableStatement;
+import org.mybatis.dynamic.sql.util.Validator;
 import org.mybatis.dynamic.sql.where.EmbeddedWhereModel;
 
 public abstract class AbstractDeleteDSL<M, D extends AbstractDeleteDSL<M, D>>
@@ -50,6 +55,14 @@ public abstract class AbstractDeleteDSL<M, D extends AbstractDeleteDSL<M, D>>
     @Override
     public DeleteWhereBuilder where() {
         whereBuilder = Objects.requireNonNullElseGet(whereBuilder, DeleteWhereBuilder::new);
+        return whereBuilder;
+    }
+
+    @Override
+    public DeleteWhereBuilder where(SqlCriterion initialCriterion) {
+        Validator.assertNull(whereBuilder, "ERROR.32"); //$NON-NLS-1$
+        whereBuilder = new DeleteWhereBuilder();
+        whereBuilder.initialCriterion = initialCriterion;
         return whereBuilder;
     }
 
@@ -95,8 +108,16 @@ public abstract class AbstractDeleteDSL<M, D extends AbstractDeleteDSL<M, D>>
         return getThis();
     }
 
-    public class DeleteWhereBuilder extends AbstractBooleanOperationsFinisher<DeleteWhereBuilder>
-            implements ConfigurableStatement<DeleteWhereBuilder>, Buildable<M> {
+    public class DeleteWhereBuilder
+            implements BooleanOperations<DeleteWhereBuilder>, ConfigurableStatement<DeleteWhereBuilder>, Buildable<M> {
+        protected @Nullable SqlCriterion initialCriterion;
+        protected final List<AndOrCriteriaGroup> subCriteria = new ArrayList<>();
+
+        @Override
+        public DeleteWhereBuilder addSubCriterion(AndOrCriteriaGroup subCriterion) {
+            subCriteria.add(subCriterion);
+            return this;
+        }
 
         public D limit(long limit) {
             return limitWhenPresent(limit);
@@ -126,13 +147,11 @@ public abstract class AbstractDeleteDSL<M, D extends AbstractDeleteDSL<M, D>>
             return AbstractDeleteDSL.this.build();
         }
 
-        @Override
-        protected DeleteWhereBuilder getThis() {
-            return this;
-        }
-
         protected EmbeddedWhereModel buildWhereModel() {
-            return toWhereModel();
+            return new EmbeddedWhereModel.Builder()
+                    .withInitialCriterion(initialCriterion)
+                    .withSubCriteria(subCriteria)
+                    .build();
         }
     }
 }

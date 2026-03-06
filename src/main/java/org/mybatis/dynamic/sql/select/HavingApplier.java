@@ -17,12 +17,12 @@ package org.mybatis.dynamic.sql.select;
 
 import java.util.function.Consumer;
 
-import org.mybatis.dynamic.sql.dsl.AbstractBooleanOperationsFinisher;
+import org.mybatis.dynamic.sql.dsl.BooleanOperations;
 
 @FunctionalInterface
 public interface HavingApplier {
 
-    void accept(AbstractBooleanOperationsFinisher<?> havingFinisher);
+    void accept(BooleanOperations<?> havingFinisher);
 
     /**
      * Return a composed having applier that performs this operation followed by the after operation.
@@ -31,7 +31,7 @@ public interface HavingApplier {
      *
      * @return a composed having applier that performs this operation followed by the after operation.
      */
-    default HavingApplier andThen(Consumer<AbstractBooleanOperationsFinisher<?>> after) {
+    default HavingApplier andThen(Consumer<BooleanOperations<?>> after) {
         return t -> {
             accept(t);
             after.accept(t);

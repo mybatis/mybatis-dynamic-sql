@@ -24,9 +24,11 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import org.jspecify.annotations.Nullable;
+import org.mybatis.dynamic.sql.AndOrCriteriaGroup;
 import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.SortSpecification;
 import org.mybatis.dynamic.sql.SqlColumn;
+import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.common.OrderByModel;
 import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
@@ -40,6 +42,7 @@ import org.mybatis.dynamic.sql.util.ConstantMapping;
 import org.mybatis.dynamic.sql.util.NullMapping;
 import org.mybatis.dynamic.sql.util.SelectMapping;
 import org.mybatis.dynamic.sql.util.StringConstantMapping;
+import org.mybatis.dynamic.sql.util.Validator;
 import org.mybatis.dynamic.sql.util.ValueMapping;
 import org.mybatis.dynamic.sql.util.ValueOrNullMapping;
 import org.mybatis.dynamic.sql.util.ValueWhenPresentMapping;
@@ -70,6 +73,14 @@ public abstract class AbstractUpdateDSL<M, D extends AbstractUpdateDSL<M, D>>
     @Override
     public UpdateWhereBuilder where() {
         whereBuilder = Objects.requireNonNullElseGet(whereBuilder, UpdateWhereBuilder::new);
+        return whereBuilder;
+    }
+
+    @Override
+    public UpdateWhereBuilder where(SqlCriterion initialCriterion) {
+        Validator.assertNull(whereBuilder, "ERROR.32"); //$NON-NLS-1$
+        whereBuilder = new UpdateWhereBuilder();
+        whereBuilder.initialCriterion = initialCriterion;
         return whereBuilder;
     }
 
@@ -177,8 +188,16 @@ public abstract class AbstractUpdateDSL<M, D extends AbstractUpdateDSL<M, D>>
         }
     }
 
-    public class UpdateWhereBuilder extends AbstractBooleanOperationsFinisher<UpdateWhereBuilder>
-            implements ConfigurableStatement<UpdateWhereBuilder>, Buildable<M> {
+    public class UpdateWhereBuilder
+            implements BooleanOperations<UpdateWhereBuilder>, ConfigurableStatement<UpdateWhereBuilder>, Buildable<M> {
+        protected @Nullable SqlCriterion initialCriterion;
+        protected final List<AndOrCriteriaGroup> subCriteria = new ArrayList<>();
+
+        @Override
+        public UpdateWhereBuilder addSubCriterion(AndOrCriteriaGroup subCriterion) {
+            subCriteria.add(subCriterion);
+            return this;
+        }
 
         public D limit(long limit) {
             return limitWhenPresent(limit);
@@ -208,13 +227,11 @@ public abstract class AbstractUpdateDSL<M, D extends AbstractUpdateDSL<M, D>>
             return AbstractUpdateDSL.this.build();
         }
 
-        @Override
-        protected UpdateWhereBuilder getThis() {
-            return this;
-        }
-
         protected EmbeddedWhereModel buildWhereModel() {
-            return toWhereModel();
+            return new EmbeddedWhereModel.Builder()
+                    .withInitialCriterion(initialCriterion)
+                    .withSubCriteria(subCriteria)
+                    .build();
         }
     }
 }

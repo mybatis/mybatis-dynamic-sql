@@ -36,7 +36,7 @@ import org.mybatis.dynamic.sql.where.WhereApplier;
  *
  * @param <F> the implementation of the Where DSL customized for a particular SQL statement.
  */
-public interface WhereOperations<F extends AbstractBooleanOperationsFinisher<?>> {
+public interface WhereOperations<F extends BooleanOperations<?>> {
 
     default <T> F where(BindableColumn<T> column, RenderableCondition<T> condition, AndOrCriteriaGroup... subCriteria) {
         return where(column, condition, Arrays.asList(subCriteria));
@@ -49,7 +49,7 @@ public interface WhereOperations<F extends AbstractBooleanOperationsFinisher<?>>
                 .withSubCriteria(subCriteria)
                 .build();
 
-        return initialize(sqlCriterion);
+        return where(sqlCriterion);
     }
 
     default F where(ExistsPredicate existsPredicate, AndOrCriteriaGroup... subCriteria) {
@@ -62,7 +62,7 @@ public interface WhereOperations<F extends AbstractBooleanOperationsFinisher<?>>
                 .withSubCriteria(subCriteria)
                 .build();
 
-        return initialize(sqlCriterion);
+        return where(sqlCriterion);
     }
 
     default F where(SqlCriterion initialCriterion, AndOrCriteriaGroup... subCriteria) {
@@ -75,7 +75,7 @@ public interface WhereOperations<F extends AbstractBooleanOperationsFinisher<?>>
                 .withSubCriteria(subCriteria)
                 .build();
 
-        return initialize(sqlCriterion);
+        return where(sqlCriterion);
     }
 
     default F where(List<AndOrCriteriaGroup> subCriteria) {
@@ -83,20 +83,15 @@ public interface WhereOperations<F extends AbstractBooleanOperationsFinisher<?>>
                 .withSubCriteria(subCriteria)
                 .build();
 
-        return initialize(sqlCriterion);
+        return where(sqlCriterion);
     }
 
     F where();
+    F where(SqlCriterion initialCriterion);
 
     default F applyWhere(WhereApplier whereApplier) {
-        F finisher = where();
-        whereApplier.accept(finisher);
-        return finisher;
-    }
-
-    private F initialize(SqlCriterion sqlCriterion) {
-        F finisher = where();
-        finisher.setInitialCriterion(sqlCriterion, AbstractBooleanOperationsFinisher.StatementType.WHERE);
-        return finisher;
+        F f = where();
+        whereApplier.accept(f);
+        return f;
     }
 }

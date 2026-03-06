@@ -15,18 +15,36 @@
  */
 package org.mybatis.dynamic.sql.dsl;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import org.jspecify.annotations.Nullable;
+import org.mybatis.dynamic.sql.AndOrCriteriaGroup;
+import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.TableExpression;
 import org.mybatis.dynamic.sql.select.join.JoinSpecification;
 import org.mybatis.dynamic.sql.select.join.JoinType;
 
 public abstract class AbstractJoinSpecificationFinisher<D extends JoinOperations<D, F>,
-        F extends AbstractJoinSpecificationFinisher<D, F>> extends AbstractBooleanOperationsFinisher<F> {
+        F extends AbstractJoinSpecificationFinisher<D, F>> implements BooleanOperations<F> {
+    private @Nullable SqlCriterion initialCriterion;
+    private final List<AndOrCriteriaGroup> subCriteria = new ArrayList<>();
     private @Nullable TableExpression joinTable;
     private @Nullable JoinType joinType;
+
+    @Override
+    public F addSubCriterion(AndOrCriteriaGroup subCriterion) {
+        subCriteria.add(subCriterion);
+        return getThis();
+    }
+
+    public void setInitialCriterion(SqlCriterion initialCriterion) {
+        this.initialCriterion = initialCriterion;
+    }
+
+    protected abstract F getThis();
 
     void setJoinTable(TableExpression joinTable) {
         this.joinTable = joinTable;

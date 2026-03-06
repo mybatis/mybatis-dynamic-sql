@@ -31,12 +31,12 @@ import org.mybatis.dynamic.sql.insert.InsertSelectDSL;
 import org.mybatis.dynamic.sql.insert.MultiRowInsertDSL;
 import org.mybatis.dynamic.sql.select.ColumnSortSpecification;
 import org.mybatis.dynamic.sql.select.CountDSL;
-import org.mybatis.dynamic.sql.select.HavingDSL;
 import org.mybatis.dynamic.sql.select.MultiSelectDSL;
 import org.mybatis.dynamic.sql.select.QueryExpressionDSL;
 import org.mybatis.dynamic.sql.select.SelectDSL;
 import org.mybatis.dynamic.sql.select.SelectModel;
 import org.mybatis.dynamic.sql.select.SimpleSortSpecification;
+import org.mybatis.dynamic.sql.select.StandaloneHavingBuilder;
 import org.mybatis.dynamic.sql.select.aggregate.Avg;
 import org.mybatis.dynamic.sql.select.aggregate.Count;
 import org.mybatis.dynamic.sql.select.aggregate.CountAll;
@@ -60,7 +60,7 @@ import org.mybatis.dynamic.sql.select.function.Upper;
 import org.mybatis.dynamic.sql.update.UpdateDSL;
 import org.mybatis.dynamic.sql.update.UpdateModel;
 import org.mybatis.dynamic.sql.util.Buildable;
-import org.mybatis.dynamic.sql.where.WhereDSL;
+import org.mybatis.dynamic.sql.where.StandaloneWhereBuilder;
 import org.mybatis.dynamic.sql.where.condition.IsBetween;
 import org.mybatis.dynamic.sql.where.condition.IsBetweenWhenPresent;
 import org.mybatis.dynamic.sql.where.condition.IsEqualTo;
@@ -262,30 +262,37 @@ public interface SqlBuilder {
         return UpdateDSL.update(table, tableAlias);
     }
 
-    static WhereDSL.StandaloneWhereFinisher where() {
-        return new WhereDSL().where();
+    static StandaloneWhereBuilder where() {
+        return new StandaloneWhereBuilder();
     }
 
-    static <T> WhereDSL.StandaloneWhereFinisher where(BindableColumn<T> column, RenderableCondition<T> condition,
-                                                      AndOrCriteriaGroup... subCriteria) {
-        return new WhereDSL().where(column, condition, subCriteria);
+    static <T> StandaloneWhereBuilder where(BindableColumn<T> column, RenderableCondition<T> condition,
+                                            AndOrCriteriaGroup... subCriteria) {
+        ColumnAndConditionCriterion<T> initialCriterion = ColumnAndConditionCriterion.withColumn(column)
+                .withCondition(condition)
+                .build();
+
+        return where(initialCriterion, subCriteria);
     }
 
-    static WhereDSL.StandaloneWhereFinisher where(SqlCriterion initialCriterion, AndOrCriteriaGroup... subCriteria) {
-        return new WhereDSL().where(initialCriterion, subCriteria);
+    static StandaloneWhereBuilder where(SqlCriterion initialCriterion, AndOrCriteriaGroup... subCriteria) {
+        return new StandaloneWhereBuilder(initialCriterion, Arrays.asList(subCriteria));
     }
 
-    static WhereDSL.StandaloneWhereFinisher where(ExistsPredicate existsPredicate, AndOrCriteriaGroup... subCriteria) {
-        return new WhereDSL().where(existsPredicate, subCriteria);
+    static StandaloneWhereBuilder where(ExistsPredicate existsPredicate, AndOrCriteriaGroup... subCriteria) {
+        ExistsCriterion existsCriterion = new ExistsCriterion.Builder()
+                .withExistsPredicate(existsPredicate).build();
+        return where(existsCriterion, subCriteria);
     }
 
-    static <T> HavingDSL.StandaloneHavingFinisher having(BindableColumn<T> column, RenderableCondition<T> condition,
+    static <T> StandaloneHavingBuilder having(BindableColumn<T> column, RenderableCondition<T> condition,
                                               AndOrCriteriaGroup... subCriteria) {
-        return new HavingDSL().having(column, condition, subCriteria);
+        SqlCriterion initialCriterion = ColumnAndConditionCriterion.withColumn(column).withCondition(condition).build();
+        return having(initialCriterion, subCriteria);
     }
 
-    static HavingDSL.StandaloneHavingFinisher having(SqlCriterion initialCriterion, AndOrCriteriaGroup... subCriteria) {
-        return new HavingDSL().having(initialCriterion, subCriteria);
+    static StandaloneHavingBuilder having(SqlCriterion initialCriterion, AndOrCriteriaGroup... subCriteria) {
+        return new StandaloneHavingBuilder(initialCriterion, Arrays.asList(subCriteria));
     }
 
     // where condition connectors

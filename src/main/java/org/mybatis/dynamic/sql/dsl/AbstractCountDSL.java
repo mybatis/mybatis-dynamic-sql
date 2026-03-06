@@ -15,17 +15,22 @@
  */
 package org.mybatis.dynamic.sql.dsl;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
 
 import org.jspecify.annotations.Nullable;
+import org.mybatis.dynamic.sql.AndOrCriteriaGroup;
 import org.mybatis.dynamic.sql.BasicColumn;
+import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
 import org.mybatis.dynamic.sql.select.QueryExpressionModel;
 import org.mybatis.dynamic.sql.select.SelectModel;
 import org.mybatis.dynamic.sql.util.Buildable;
 import org.mybatis.dynamic.sql.util.ConfigurableStatement;
+import org.mybatis.dynamic.sql.util.Validator;
 import org.mybatis.dynamic.sql.where.EmbeddedWhereModel;
 
 /**
@@ -63,6 +68,14 @@ public abstract class AbstractCountDSL<M, D extends AbstractCountDSL<M, D>> exte
     @Override
     public CountWhereBuilder where() {
         whereBuilder = Objects.requireNonNullElseGet(whereBuilder, CountWhereBuilder::new);
+        return whereBuilder;
+    }
+
+    @Override
+    public CountWhereBuilder where(SqlCriterion initialCriterion) {
+        Validator.assertNull(whereBuilder, "ERROR.32"); //$NON-NLS-1$
+        whereBuilder = new CountWhereBuilder();
+        whereBuilder.initialCriterion = initialCriterion;
         return whereBuilder;
     }
 
@@ -117,6 +130,11 @@ public abstract class AbstractCountDSL<M, D extends AbstractCountDSL<M, D>> exte
         }
 
         @Override
+        public CountWhereBuilder where(SqlCriterion initialCriterion) {
+            return AbstractCountDSL.this.where(initialCriterion);
+        }
+
+        @Override
         public M build() {
             return AbstractCountDSL.this.build();
         }
@@ -133,8 +151,17 @@ public abstract class AbstractCountDSL<M, D extends AbstractCountDSL<M, D>> exte
         }
     }
 
-    public class CountWhereBuilder extends AbstractBooleanOperationsFinisher<CountWhereBuilder>
-            implements ConfigurableStatement<CountWhereBuilder>, Buildable<M> {
+    public class CountWhereBuilder implements BooleanOperations<CountWhereBuilder>,
+            ConfigurableStatement<CountWhereBuilder>, Buildable<M> {
+        protected @Nullable SqlCriterion initialCriterion;
+        protected final List<AndOrCriteriaGroup> subCriteria = new ArrayList<>();
+
+        @Override
+        public CountWhereBuilder addSubCriterion(AndOrCriteriaGroup subCriterion) {
+            subCriteria.add(subCriterion);
+            return this;
+        }
+
         @Override
         public CountWhereBuilder configureStatement(Consumer<StatementConfiguration> consumer) {
             AbstractCountDSL.this.configureStatement(consumer);
@@ -146,13 +173,11 @@ public abstract class AbstractCountDSL<M, D extends AbstractCountDSL<M, D>> exte
             return AbstractCountDSL.this.build();
         }
 
-        @Override
-        protected CountWhereBuilder getThis() {
-            return this;
-        }
-
         protected EmbeddedWhereModel buildWhereModel() {
-            return toWhereModel();
+            return new EmbeddedWhereModel.Builder()
+                    .withInitialCriterion(initialCriterion)
+                    .withSubCriteria(subCriteria)
+                    .build();
         }
     }
 }
