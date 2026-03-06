@@ -15,14 +15,24 @@
  */
 package org.mybatis.dynamic.sql;
 
-public interface SqlCriterionVisitor<R> {
-    <T> R visit(ColumnAndConditionCriterion<T> criterion);
+/**
+ * A simple SqlCriterion that does nothing and will not render. This is to solve the problem of
+ * awkward nullability operations in various classes. We can now say that an initial criterion is never null.
+ */
+public class NullCriterion extends SqlCriterion {
+    public NullCriterion() {
+        super(new Builder());
+    }
 
-    R visit(ExistsCriterion criterion);
+    @Override
+    public <R> R accept(SqlCriterionVisitor<R> visitor) {
+        return visitor.visit(this);
+    }
 
-    R visit(CriteriaGroup criterion);
-
-    R visit(NotCriterion criterion);
-
-    R visit(NullCriterion criterion);
+    private static class Builder extends AbstractBuilder<Builder> {
+        @Override
+        protected Builder getThis() {
+            return this;
+        }
+    }
 }

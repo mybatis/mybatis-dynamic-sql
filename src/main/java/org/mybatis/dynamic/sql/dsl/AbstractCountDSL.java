@@ -23,6 +23,7 @@ import java.util.function.Consumer;
 import org.jspecify.annotations.Nullable;
 import org.mybatis.dynamic.sql.AndOrCriteriaGroup;
 import org.mybatis.dynamic.sql.BasicColumn;
+import org.mybatis.dynamic.sql.NullCriterion;
 import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
@@ -68,23 +69,23 @@ public abstract class AbstractCountDSL<M, D extends AbstractCountDSL<M, D>> exte
 
     @Override
     public CountWhereBuilder where() {
-        Validator.assertNull(whereBuilder, "ERROR.32"); //$NON-NLS-1$
-        whereBuilder = new CountWhereBuilder();
+        Validator.assertNull(whereBuilder, Validator.ERROR_32);
+        whereBuilder = new CountWhereBuilder(new NullCriterion());
         return whereBuilder;
     }
 
     @Override
     public CountWhereBuilder where(SqlCriterion initialCriterion) {
-        CountWhereBuilder answer = where();
-        answer.initialCriterion = initialCriterion;
-        return answer;
+        Validator.assertNull(whereBuilder, Validator.ERROR_32);
+        whereBuilder = new CountWhereBuilder(initialCriterion);
+        return whereBuilder;
     }
 
     @Override
     public CountWhereBuilder applyWhere(WhereApplier whereApplier) {
-        CountWhereBuilder answer = where(whereApplier.initialCriterion());
-        answer.subCriteria.addAll(whereApplier.subCriteria());
-        return answer;
+        Validator.assertNull(whereBuilder, Validator.ERROR_32);
+        whereBuilder = new CountWhereBuilder(whereApplier.initialCriterion(), whereApplier.subCriteria());
+        return whereBuilder;
     }
 
     @Override
@@ -166,8 +167,17 @@ public abstract class AbstractCountDSL<M, D extends AbstractCountDSL<M, D>> exte
 
     public class CountWhereBuilder implements BooleanOperations<CountWhereBuilder>,
             ConfigurableStatement<CountWhereBuilder>, Buildable<M> {
-        private @Nullable SqlCriterion initialCriterion;
+        private final SqlCriterion initialCriterion;
         private final List<AndOrCriteriaGroup> subCriteria = new ArrayList<>();
+
+        public CountWhereBuilder(SqlCriterion initialCriterion) {
+            this.initialCriterion = initialCriterion;
+        }
+
+        public CountWhereBuilder(SqlCriterion initialCriterion, List<AndOrCriteriaGroup> subCriteria) {
+            this(initialCriterion);
+            this.subCriteria.addAll(subCriteria);
+        }
 
         @Override
         public CountWhereBuilder addSubCriterion(AndOrCriteriaGroup subCriterion) {

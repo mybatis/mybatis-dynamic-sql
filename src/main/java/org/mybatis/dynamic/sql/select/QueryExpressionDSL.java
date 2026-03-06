@@ -25,6 +25,7 @@ import java.util.function.Consumer;
 import org.jspecify.annotations.Nullable;
 import org.mybatis.dynamic.sql.AndOrCriteriaGroup;
 import org.mybatis.dynamic.sql.BasicColumn;
+import org.mybatis.dynamic.sql.NullCriterion;
 import org.mybatis.dynamic.sql.SortSpecification;
 import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.SqlTable;
@@ -101,23 +102,23 @@ public class QueryExpressionDSL<R> extends AbstractQueryingDSL implements
 
     @Override
     public QueryExpressionWhereBuilder where() {
-        Validator.assertNull(whereBuilder, "ERROR.32"); //$NON-NLS-1$
-        whereBuilder = new QueryExpressionWhereBuilder();
+        Validator.assertNull(whereBuilder, Validator.ERROR_32);
+        whereBuilder = new QueryExpressionWhereBuilder(new NullCriterion());
         return whereBuilder;
     }
 
     @Override
     public QueryExpressionWhereBuilder where(SqlCriterion initialCriterion) {
-        QueryExpressionWhereBuilder answer = where();
-        answer.initialCriterion = initialCriterion;
-        return answer;
+        Validator.assertNull(whereBuilder, Validator.ERROR_32);
+        whereBuilder = new QueryExpressionWhereBuilder(initialCriterion);
+        return whereBuilder;
     }
 
     @Override
     public QueryExpressionWhereBuilder applyWhere(WhereApplier whereApplier) {
-        QueryExpressionWhereBuilder answer = where(whereApplier.initialCriterion());
-        answer.subCriteria.addAll(whereApplier.subCriteria());
-        return answer;
+        Validator.assertNull(whereBuilder, Validator.ERROR_32);
+        whereBuilder = new QueryExpressionWhereBuilder(whereApplier.initialCriterion(), whereApplier.subCriteria());
+        return whereBuilder;
     }
 
     @Override
@@ -209,8 +210,17 @@ public class QueryExpressionDSL<R> extends AbstractQueryingDSL implements
             ForAndWaitOperations<SelectDSL<R>>,
             LimitAndOffsetOperations<R, SelectDSL<R>>,
             Buildable<R> {
-        protected @Nullable SqlCriterion initialCriterion;
+        protected final SqlCriterion initialCriterion;
         protected final List<AndOrCriteriaGroup> subCriteria = new ArrayList<>();
+
+        public QueryExpressionWhereBuilder(SqlCriterion initialCriterion) {
+            this.initialCriterion = initialCriterion;
+        }
+
+        public QueryExpressionWhereBuilder(SqlCriterion initialCriterion, List<AndOrCriteriaGroup> subCriteria) {
+            this(initialCriterion);
+            this.subCriteria.addAll(subCriteria);
+        }
 
         @Override
         public QueryExpressionWhereBuilder addSubCriterion(AndOrCriteriaGroup subCriterion) {

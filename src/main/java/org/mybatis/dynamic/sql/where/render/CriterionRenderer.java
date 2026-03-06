@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2025 the original author or authors.
+ *    Copyright 2016-2026 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -27,6 +27,7 @@ import org.mybatis.dynamic.sql.CriteriaGroup;
 import org.mybatis.dynamic.sql.ExistsCriterion;
 import org.mybatis.dynamic.sql.ExistsPredicate;
 import org.mybatis.dynamic.sql.NotCriterion;
+import org.mybatis.dynamic.sql.NullCriterion;
 import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.SqlCriterionVisitor;
 import org.mybatis.dynamic.sql.render.RenderingContext;
@@ -84,6 +85,11 @@ public class CriterionRenderer implements SqlCriterionVisitor<Optional<RenderedC
     @Override
     public Optional<RenderedCriterion> visit(NotCriterion criterion) {
         return renderCriteriaGroup(criterion, this::calculateNotFragment);
+    }
+
+    @Override
+    public Optional<RenderedCriterion> visit(NullCriterion criterion) {
+        return Optional.empty();
     }
 
     private Optional<RenderedCriterion> renderCriteriaGroup(CriteriaGroup criterion,

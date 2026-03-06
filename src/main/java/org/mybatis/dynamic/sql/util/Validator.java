@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2025 the original author or authors.
+ *    Copyright 2016-2026 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -21,6 +21,8 @@ import org.jspecify.annotations.Nullable;
 import org.mybatis.dynamic.sql.exception.InvalidSqlException;
 
 public class Validator {
+    public static final String ERROR_32 = "ERROR.32"; //$NON-NLS-1$
+
     private Validator() {}
 
     public static void assertNotEmpty(Collection<?> collection, String messageNumber) {

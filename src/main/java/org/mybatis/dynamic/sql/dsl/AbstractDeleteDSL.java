@@ -24,6 +24,7 @@ import java.util.function.Consumer;
 
 import org.jspecify.annotations.Nullable;
 import org.mybatis.dynamic.sql.AndOrCriteriaGroup;
+import org.mybatis.dynamic.sql.NullCriterion;
 import org.mybatis.dynamic.sql.SortSpecification;
 import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.SqlTable;
@@ -40,7 +41,6 @@ public abstract class AbstractDeleteDSL<M, D extends AbstractDeleteDSL<M, D>>
         implements WhereOperations<AbstractDeleteDSL<M, D>.DeleteWhereBuilder>,
         ConfigurableStatement<D>,
         Buildable<M> {
-
     private final SqlTable table;
     private final @Nullable String tableAlias;
     private @Nullable DeleteWhereBuilder whereBuilder;
@@ -55,23 +55,23 @@ public abstract class AbstractDeleteDSL<M, D extends AbstractDeleteDSL<M, D>>
 
     @Override
     public DeleteWhereBuilder where() {
-        Validator.assertNull(whereBuilder, "ERROR.32"); //$NON-NLS-1$
-        whereBuilder = new DeleteWhereBuilder();
+        Validator.assertNull(whereBuilder, Validator.ERROR_32);
+        whereBuilder = new DeleteWhereBuilder(new NullCriterion());
         return whereBuilder;
     }
 
     @Override
     public DeleteWhereBuilder where(SqlCriterion initialCriterion) {
-        DeleteWhereBuilder answer = where();
-        answer.initialCriterion = initialCriterion;
-        return answer;
+        Validator.assertNull(whereBuilder, Validator.ERROR_32);
+        whereBuilder = new DeleteWhereBuilder(initialCriterion);
+        return whereBuilder;
     }
 
     @Override
     public DeleteWhereBuilder applyWhere(WhereApplier whereApplier) {
-        DeleteWhereBuilder answer = where(whereApplier.initialCriterion());
-        answer.subCriteria.addAll(whereApplier.subCriteria());
-        return answer;
+        Validator.assertNull(whereBuilder, Validator.ERROR_32);
+        whereBuilder = new DeleteWhereBuilder(whereApplier.initialCriterion(), whereApplier.subCriteria());
+        return whereBuilder;
     }
 
     public D limit(long limit) {
@@ -118,8 +118,17 @@ public abstract class AbstractDeleteDSL<M, D extends AbstractDeleteDSL<M, D>>
 
     public class DeleteWhereBuilder
             implements BooleanOperations<DeleteWhereBuilder>, ConfigurableStatement<DeleteWhereBuilder>, Buildable<M> {
-        protected @Nullable SqlCriterion initialCriterion;
-        protected final List<AndOrCriteriaGroup> subCriteria = new ArrayList<>();
+        private final SqlCriterion initialCriterion;
+        private final List<AndOrCriteriaGroup> subCriteria = new ArrayList<>();
+
+        public DeleteWhereBuilder(SqlCriterion initialCriterion) {
+            this.initialCriterion = initialCriterion;
+        }
+
+        public DeleteWhereBuilder(SqlCriterion initialCriterion, List<AndOrCriteriaGroup> subCriteria) {
+            this(initialCriterion);
+            this.subCriteria.addAll(subCriteria);
+        }
 
         @Override
         public DeleteWhereBuilder addSubCriterion(AndOrCriteriaGroup subCriterion) {

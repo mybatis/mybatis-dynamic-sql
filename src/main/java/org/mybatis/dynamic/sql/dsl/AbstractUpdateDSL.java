@@ -26,6 +26,7 @@ import java.util.function.Supplier;
 import org.jspecify.annotations.Nullable;
 import org.mybatis.dynamic.sql.AndOrCriteriaGroup;
 import org.mybatis.dynamic.sql.BasicColumn;
+import org.mybatis.dynamic.sql.NullCriterion;
 import org.mybatis.dynamic.sql.SortSpecification;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlCriterion;
@@ -73,23 +74,23 @@ public abstract class AbstractUpdateDSL<M, D extends AbstractUpdateDSL<M, D>>
 
     @Override
     public UpdateWhereBuilder where() {
-        Validator.assertNull(whereBuilder, "ERROR.32"); //$NON-NLS-1$
-        whereBuilder = new UpdateWhereBuilder();
+        Validator.assertNull(whereBuilder, Validator.ERROR_32);
+        whereBuilder = new UpdateWhereBuilder(new NullCriterion());
         return whereBuilder;
     }
 
     @Override
     public UpdateWhereBuilder where(SqlCriterion initialCriterion) {
-        UpdateWhereBuilder answer = where();
-        answer.initialCriterion = initialCriterion;
-        return answer;
+        Validator.assertNull(whereBuilder, Validator.ERROR_32);
+        whereBuilder = new UpdateWhereBuilder(initialCriterion);
+        return whereBuilder;
     }
 
     @Override
     public UpdateWhereBuilder applyWhere(WhereApplier whereApplier) {
-        UpdateWhereBuilder answer = where(whereApplier.initialCriterion());
-        answer.subCriteria.addAll(whereApplier.subCriteria());
-        return answer;
+        Validator.assertNull(whereBuilder, Validator.ERROR_32);
+        whereBuilder = new UpdateWhereBuilder(whereApplier.initialCriterion(), whereApplier.subCriteria());
+        return whereBuilder;
     }
 
     public D limit(long limit) {
@@ -198,8 +199,17 @@ public abstract class AbstractUpdateDSL<M, D extends AbstractUpdateDSL<M, D>>
 
     public class UpdateWhereBuilder
             implements BooleanOperations<UpdateWhereBuilder>, ConfigurableStatement<UpdateWhereBuilder>, Buildable<M> {
-        protected @Nullable SqlCriterion initialCriterion;
-        protected final List<AndOrCriteriaGroup> subCriteria = new ArrayList<>();
+        private final SqlCriterion initialCriterion;
+        private final List<AndOrCriteriaGroup> subCriteria = new ArrayList<>();
+
+        public UpdateWhereBuilder(SqlCriterion initialCriterion) {
+            this.initialCriterion = initialCriterion;
+        }
+
+        public UpdateWhereBuilder(SqlCriterion initialCriterion, List<AndOrCriteriaGroup> subCriteria) {
+            this(initialCriterion);
+            this.subCriteria.addAll(subCriteria);
+        }
 
         @Override
         public UpdateWhereBuilder addSubCriterion(AndOrCriteriaGroup subCriterion) {
