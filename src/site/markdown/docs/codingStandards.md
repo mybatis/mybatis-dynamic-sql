@@ -7,13 +7,17 @@ these general principles for functional style coding in Java:
 
 - Immutability is the core concept of functional programming
     - Use private constructors for most classes
-    - Use a static "of" method as a builder method if there are one or two attributes. If there are two attributes, they may not be of the same type.  A Builder class is preferred with two attributes, but "of" may be used to make the code more compact or readable in some cases.
+    - Use a static "of" method as a builder method if there are one or two attributes. If there are two attributes,
+      they may not be of the same type.  A Builder class is preferred with two attributes, but "of" may be used to make
+      the code more compact or readable in some cases.
     - Generally use a static Builder class if more than one attribute is required to initialize a class
     - Builders only have a zero argument constructor.  All attributes set with "with" methods.
     - When using a Builder, private class constructors take the Builder as the only argument
     - Class constructors using a Builder should check for null if an attribute is required.
-    - In Builders, Lists should be initialized and then populated with `add` or `addAll`.  Classes may directly reference the list in the builder.
-    - In Builders, Maps should be initialized and then populated with `put` or `putAll`.  Classes may directly reference the map in the builder.
+    - In Builders, Lists should be initialized and then populated with `add` or `addAll`.  Classes may directly
+      reference the list in the builder.
+    - In Builders, Maps should be initialized and then populated with `put` or `putAll`.  Classes may directly
+      reference the map in the builder.
     - Builders may be mutable, other classes may not be mutable.
     - No setters
     - Classes never expose a modifiable List. Lists are exposed with an unmodifiable List, or a Stream.
@@ -44,6 +48,6 @@ Remember the three rules of TDD:
 
 1. You may not write production code until you have written a failing unit test.
 2. You may not write more of a unit test than is sufficient to fail, and not compiling is failing.
-3. You may not write more production code than is sufficient to passing the currently failing test.
+3. You may not write more production code than is sufficient to pass the currently failing test.
 
 

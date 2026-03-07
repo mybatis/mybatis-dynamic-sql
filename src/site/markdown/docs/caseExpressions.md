@@ -44,7 +44,7 @@ from foo
 The library will always render the "when" part of a case expression using bind variables. Rendering of the "then" and
 "else" parts of a case expression may or may not use bind variables depending on how you write the query. In general,
 the library will render "then" and "else" as constants - meaning not using bind variables. If you wish to use bind
-variables for these parts of a case expressions, then you can use the `value` function to turn a constant into a
+variables for these parts of a case expression, then you can use the `value` function to turn a constant into a
 bind variable. We will show examples of the different renderings in the following sections.
 
 If you choose to use bind variables for all "then" and "else" values, it is highly likely that the database will
@@ -75,7 +75,7 @@ select(case_(id)
     .when(1, 2, 3).then(true)
     .else_(false)
   .end().as("small_id"))
-.from(foo)
+.from(foo);
 ```
 
 A statement written this way will render as follows:

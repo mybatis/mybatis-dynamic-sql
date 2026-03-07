@@ -76,7 +76,7 @@ Relational database vendors provide hundreds of functions in their SQL dialects 
 processing to the database servers. This library does not try to implement every function that exists. This library
 also does not provide any abstraction over the different functions on different databases. For example, bitwise operator
 support is non-standard, and it would be difficult to provide a function in this library that worked on every database.
-So we take the approach of supplying examples for a few very common functions, and making it relatively easy to write
+So we take the approach of supplying examples for a few very common functions and making it relatively easy to write
 your own functions.
 
 The supplied functions are all in the `org.mybatis.dynamic.sql.select.function` package. They are all implemented
