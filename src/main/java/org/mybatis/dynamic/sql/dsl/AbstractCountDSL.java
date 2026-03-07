@@ -127,7 +127,7 @@ public abstract class AbstractCountDSL<M, D extends AbstractCountDSL<M, D>> exte
     }
 
     public class JoinSpecificationFinisher
-            extends AbstractJoinSpecificationFinisher<D, JoinSpecificationFinisher>
+            extends AbstractJoinSupport<D, JoinSpecificationFinisher>
             implements WhereOperations<CountWhereBuilder>,
             ConfigurableStatement<JoinSpecificationFinisher>, Buildable<M> {
 

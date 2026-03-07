@@ -25,15 +25,14 @@ import org.mybatis.dynamic.sql.TableExpression;
 import org.mybatis.dynamic.sql.select.join.JoinSpecification;
 import org.mybatis.dynamic.sql.select.join.JoinType;
 
-public abstract class AbstractJoinSpecificationFinisher<D extends JoinOperations<D, F>,
-        F extends AbstractJoinSpecificationFinisher<D, F>> implements BooleanOperations<F> {
+public abstract class AbstractJoinSupport<D extends JoinOperations<D, F>, F extends AbstractJoinSupport<D, F>>
+        implements BooleanOperations<F> {
     private final JoinType joinType;
     private final TableExpression joinTable;
     private final SqlCriterion initialCriterion;
     private final List<AndOrCriteriaGroup> subCriteria = new ArrayList<>();
 
-    protected AbstractJoinSpecificationFinisher(JoinType joinType, TableExpression joinTable,
-                                                SqlCriterion initialCriterion) {
+    protected AbstractJoinSupport(JoinType joinType, TableExpression joinTable, SqlCriterion initialCriterion) {
         this.joinType = joinType;
         this.joinTable = joinTable;
         this.initialCriterion = initialCriterion;

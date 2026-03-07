@@ -55,13 +55,13 @@ import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
 public class MyBatis3Utils {
     private MyBatis3Utils() {}
 
-    //@Deprecated
+    // deprecate
     public static long count(ToLongFunction<SelectStatementProvider> mapper, BasicColumn column, SqlTable table,
                              org.mybatis.dynamic.sql.select.CountDSLCompleter completer) {
         return mapper.applyAsLong(count(column, table, completer));
     }
 
-    //@Deprecated
+    // deprecate
     public static SelectStatementProvider count(BasicColumn column, SqlTable table,
                                                 org.mybatis.dynamic.sql.select.CountDSLCompleter completer) {
         return countFrom(org.mybatis.dynamic.sql.select.CountDSL.count(column).from(table), completer);
@@ -76,13 +76,13 @@ public class MyBatis3Utils {
         return countFrom(CountDSL.count(column).from(table), completer);
     }
 
-    //@Deprecated
+    // deprecate
     public static long countDistinct(ToLongFunction<SelectStatementProvider> mapper, BasicColumn column, SqlTable table,
                                      org.mybatis.dynamic.sql.select.CountDSLCompleter completer) {
         return mapper.applyAsLong(countDistinct(column, table, completer));
     }
 
-    //@Deprecated
+    // deprecate
     public static SelectStatementProvider countDistinct(BasicColumn column, SqlTable table,
                                                         org.mybatis.dynamic.sql.select.CountDSLCompleter completer) {
         return countFrom(org.mybatis.dynamic.sql.select.CountDSL.countDistinct(column).from(table), completer);
@@ -98,19 +98,19 @@ public class MyBatis3Utils {
         return countFrom(CountDSL.countDistinct(column).from(table), completer);
     }
 
-    //@Deprecated
+    // deprecate
     public static SelectStatementProvider countFrom(SqlTable table,
                                                     org.mybatis.dynamic.sql.select.CountDSLCompleter completer) {
         return countFrom(org.mybatis.dynamic.sql.select.CountDSL.countFrom(table), completer);
     }
 
-    //@Deprecated
+    // deprecate
     public static long countFrom(ToLongFunction<SelectStatementProvider> mapper, SqlTable table,
                                  org.mybatis.dynamic.sql.select.CountDSLCompleter completer) {
         return mapper.applyAsLong(countFrom(table, completer));
     }
 
-    //@Deprecated
+    // deprecate
     public static SelectStatementProvider countFrom(org.mybatis.dynamic.sql.select.CountDSL<SelectModel> start,
                                                     org.mybatis.dynamic.sql.select.CountDSLCompleter completer) {
         return completer.apply(start)
@@ -118,7 +118,7 @@ public class MyBatis3Utils {
                 .render(RenderingStrategies.MYBATIS3);
     }
 
-    //@Deprecated
+    // deprecate
     public static long countFrom(ToLongFunction<SelectStatementProvider> mapper,
                                  org.mybatis.dynamic.sql.select.CountDSL<SelectModel> start,
                                  org.mybatis.dynamic.sql.select.CountDSLCompleter completer) {
@@ -145,7 +145,7 @@ public class MyBatis3Utils {
         return mapper.applyAsLong(countFrom(start, completer));
     }
 
-    //@Deprecated
+    // deprecate
     public static DeleteStatementProvider deleteFrom(SqlTable table,
                                                      org.mybatis.dynamic.sql.delete.DeleteDSLCompleter completer) {
         return completer.apply(org.mybatis.dynamic.sql.delete.DeleteDSL.deleteFrom(table))
@@ -153,7 +153,7 @@ public class MyBatis3Utils {
                 .render(RenderingStrategies.MYBATIS3);
     }
 
-    //@Deprecated
+    // deprecate
     public static int deleteFrom(ToIntFunction<DeleteStatementProvider> mapper, SqlTable table,
                                  org.mybatis.dynamic.sql.delete.DeleteDSLCompleter completer) {
         return mapper.applyAsInt(deleteFrom(table, completer));
@@ -217,14 +217,14 @@ public class MyBatis3Utils {
         return mapper.applyAsInt(provider.getInsertStatement(), provider.getRecords());
     }
 
-    //@Deprecated
+    // deprecate
     public static SelectStatementProvider select(BasicColumn[] selectList,
                                                  SqlTable table,
                                                  org.mybatis.dynamic.sql.select.SelectDSLCompleter completer) {
         return select(org.mybatis.dynamic.sql.select.SelectDSL.select(selectList).from(table), completer);
     }
 
-    //@Deprecated
+    // deprecate
     public static SelectStatementProvider select(QueryExpressionDSL<SelectModel> start,
                                                  org.mybatis.dynamic.sql.select.SelectDSLCompleter completer) {
         return completer.apply(start)
@@ -243,13 +243,13 @@ public class MyBatis3Utils {
                 .render(RenderingStrategies.MYBATIS3);
     }
 
-    //@Deprecated
+    // deprecate
     public static SelectStatementProvider selectDistinct(BasicColumn[] selectList, SqlTable table,
                                                          org.mybatis.dynamic.sql.select.SelectDSLCompleter completer) {
         return select(org.mybatis.dynamic.sql.select.SelectDSL.selectDistinct(selectList).from(table), completer);
     }
 
-    //@Deprecated
+    // deprecate
     public static <R> List<R> selectDistinct(Function<SelectStatementProvider, List<R>> mapper,
                                              BasicColumn[] selectList,
                                              SqlTable table,
@@ -267,13 +267,13 @@ public class MyBatis3Utils {
         return mapper.apply(selectDistinct(selectList, table, completer));
     }
 
-    //@Deprecated
+    // deprecate
     public static <R> List<R> selectList(Function<SelectStatementProvider, List<R>> mapper,
             BasicColumn[] selectList, SqlTable table, org.mybatis.dynamic.sql.select.SelectDSLCompleter completer) {
         return mapper.apply(select(selectList, table, completer));
     }
 
-    //@Deprecated
+    // deprecate
     public static <R> List<R> selectList(Function<SelectStatementProvider, List<R>> mapper,
                                          QueryExpressionDSL<SelectModel> start,
                                          org.mybatis.dynamic.sql.select.SelectDSLCompleter completer) {
@@ -290,7 +290,7 @@ public class MyBatis3Utils {
         return mapper.apply(select(start, completer));
     }
 
-    //@Deprecated
+    // deprecate
     public static <R> R selectOne(Function<SelectStatementProvider, R> mapper,
                                   BasicColumn[] selectList,
                                   SqlTable table,
@@ -298,7 +298,7 @@ public class MyBatis3Utils {
         return mapper.apply(select(selectList, table, completer));
     }
 
-    //@Deprecated
+    // deprecate
     public static <R> R selectOne(Function<SelectStatementProvider, R> mapper,
                                   QueryExpressionDSL<SelectModel> start,
                                   org.mybatis.dynamic.sql.select.SelectDSLCompleter completer) {
@@ -315,7 +315,7 @@ public class MyBatis3Utils {
         return mapper.apply(select(start, completer));
     }
 
-    //@Deprecated
+    // deprecate
     public static UpdateStatementProvider update(SqlTable table,
                                                  org.mybatis.dynamic.sql.update.UpdateDSLCompleter completer) {
         return completer.apply(org.mybatis.dynamic.sql.update.UpdateDSL.update(table))
@@ -323,7 +323,7 @@ public class MyBatis3Utils {
                 .render(RenderingStrategies.MYBATIS3);
     }
 
-    //@Deprecated
+    // deprecate
     public static int update(ToIntFunction<UpdateStatementProvider> mapper,
                              SqlTable table,
                              org.mybatis.dynamic.sql.update.UpdateDSLCompleter completer) {

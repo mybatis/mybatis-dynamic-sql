@@ -344,7 +344,7 @@ public class SelectDSL implements
     }
 
     public class JoinSpecificationFinisher
-            extends AbstractJoinSpecificationFinisher<SelectDSL, JoinSpecificationFinisher>
+            extends AbstractJoinSupport<SelectDSL, JoinSpecificationFinisher>
             implements JoinOperations<SelectDSL, JoinSpecificationFinisher>,
             WhereOperations<QueryExpressionWhereBuilder>,
             ConfigurableStatement<JoinSpecificationFinisher>,
