@@ -43,6 +43,18 @@ import org.mybatis.dynamic.sql.util.Buildable;
  */
 public interface JoinOperations<D extends JoinOperations<D, F>, F extends BooleanOperations<?>> {
 
+    D endJoinSpecification();
+
+    void addTableAlias(SqlTable table, String tableAlias);
+
+    /**
+     * Builds a join finisher (a class that extends {@link BooleanOperations}) and provides access to
+     * other DSL methods as appropriate.
+     *
+     * @return the join finisher
+     */
+    F join(JoinType joinType, TableExpression joinTable, SqlCriterion initialCriterion);
+
     default JoinOnGatherer<F> join(SqlTable joinTable) {
         return new JoinOnGatherer<>(JoinType.INNER, joinTable, this::join);
     }
@@ -217,18 +229,6 @@ public interface JoinOperations<D extends JoinOperations<D, F>, F extends Boolea
                 .withAlias(alias)
                 .build();
     }
-
-    /**
-     * Builds a join finisher (a class that extends {@link BooleanOperations}) and provides access to
-     * other DSL methods as appropriate.
-     *
-     * @return the join finisher
-     */
-    F join(JoinType joinType, TableExpression joinTable, SqlCriterion initialCriterion);
-
-    D endJoinSpecification();
-
-    void addTableAlias(SqlTable table, String tableAlias);
 
     interface JoinBuilder<R> {
         R apply(JoinType joinType, TableExpression tableExpression, SqlCriterion initialCriterion);

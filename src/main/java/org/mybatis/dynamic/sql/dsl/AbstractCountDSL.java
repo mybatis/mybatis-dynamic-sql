@@ -71,8 +71,9 @@ public abstract class AbstractCountDSL<M, D extends AbstractCountDSL<M, D>> exte
 
     @Override
     public CountWhereBuilder where() {
-        Validator.assertNull(whereBuilder, Validator.ERROR_32);
-        whereBuilder = new CountWhereBuilder(new NullCriterion());
+        if (whereBuilder == null) {
+            whereBuilder = new CountWhereBuilder(new NullCriterion());
+        }
         return whereBuilder;
     }
 

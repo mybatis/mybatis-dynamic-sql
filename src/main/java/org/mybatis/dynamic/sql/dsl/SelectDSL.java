@@ -142,8 +142,9 @@ public class SelectDSL implements
 
     @Override
     public QueryExpressionWhereBuilder where() {
-        Validator.assertNull(currentQueryValues.whereBuilder, Validator.ERROR_32);
-        currentQueryValues.whereBuilder = new QueryExpressionWhereBuilder(new NullCriterion());
+        if (currentQueryValues.whereBuilder == null) {
+            currentQueryValues.whereBuilder = new QueryExpressionWhereBuilder(new NullCriterion());
+        }
         return currentQueryValues.whereBuilder;
     }
 
@@ -433,7 +434,8 @@ public class SelectDSL implements
         }
 
         @Override
-        public JoinSpecificationFinisher join(JoinType joinType, TableExpression joinTable, SqlCriterion initialCriterion) {
+        public JoinSpecificationFinisher join(JoinType joinType, TableExpression joinTable,
+                                              SqlCriterion initialCriterion) {
             return SelectDSL.this.join(joinType, joinTable, initialCriterion);
         }
 

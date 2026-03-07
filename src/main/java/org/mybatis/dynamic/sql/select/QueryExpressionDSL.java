@@ -110,8 +110,9 @@ public class QueryExpressionDSL<R> extends AbstractQueryingDSL implements
 
     @Override
     public QueryExpressionWhereBuilder where() {
-        Validator.assertNull(whereBuilder, Validator.ERROR_32);
-        whereBuilder = new QueryExpressionWhereBuilder(new NullCriterion());
+        if (whereBuilder == null) {
+            whereBuilder = new QueryExpressionWhereBuilder(new NullCriterion());
+        }
         return whereBuilder;
     }
 

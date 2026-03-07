@@ -55,8 +55,9 @@ public abstract class AbstractDeleteDSL<M, D extends AbstractDeleteDSL<M, D>>
 
     @Override
     public DeleteWhereBuilder where() {
-        Validator.assertNull(whereBuilder, Validator.ERROR_32);
-        whereBuilder = new DeleteWhereBuilder(new NullCriterion());
+        if (whereBuilder == null) {
+            whereBuilder = new DeleteWhereBuilder(new NullCriterion());
+        }
         return whereBuilder;
     }
 
