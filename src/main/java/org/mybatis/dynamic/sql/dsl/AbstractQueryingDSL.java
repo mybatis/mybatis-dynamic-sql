@@ -44,7 +44,7 @@ public abstract class AbstractQueryingDSL {
     private @Nullable TableExpression table;
     private final List<AbstractJoinSpecificationFinisher<?, ?>> joinSpecifications = new ArrayList<>();
 
-    protected void addTableAlias(SqlTable table, String tableAlias) {
+    public void addTableAlias(SqlTable table, String tableAlias) {
         if (tableAliases.containsKey(table)) {
             throw new DuplicateTableAliasException(table, tableAlias, tableAliases.get(table));
         }

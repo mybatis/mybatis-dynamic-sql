@@ -37,24 +37,24 @@ import org.mybatis.dynamic.sql.util.Buildable;
  * @param <D> a class that implements this interface. Typically, this is the owning DSL. We require this for
  *           the methods suchs as {@link #join(SqlTable, SqlCriterion, AndOrCriteriaGroup...)} that build
  *           an entire join specification in a single method call
- * @param <F> a class that extends {@link AbstractJoinSpecificationFinisher} - which includes "and" and "or"
+ * @param <F> a class that extends {@link BooleanOperations} - which includes "and" and "or"
  *           methods for build complex joins. We require this for methods such as {@link #join(SqlTable)}
  *           that build the join specification with fluent method calls.
  */
-public interface JoinOperations<D extends JoinOperations<D, F>, F extends AbstractJoinSpecificationFinisher<D, F>> {
+public interface JoinOperations<D extends JoinOperations<D, F>, F extends BooleanOperations<?>> {
 
-    default JoinOnGatherer<D, F> join(SqlTable joinTable) {
-        return new JoinOnGatherer<>(buildJoinFinisher(JoinType.INNER, joinTable));
+    default JoinOnGatherer<F> join(SqlTable joinTable) {
+        return new JoinOnGatherer<>(JoinType.INNER, joinTable, this::join);
     }
 
-    default JoinOnGatherer<D, F> join(SqlTable joinTable, String tableAlias) {
+    default JoinOnGatherer<F> join(SqlTable joinTable, String tableAlias) {
         var g = join(joinTable);
-        g.addTableAlias(joinTable, tableAlias);
+        addTableAlias(joinTable, tableAlias);
         return g;
     }
 
-    default JoinOnGatherer<D, F> join(Buildable<SelectModel> joinTable, @Nullable String tableAlias) {
-        return new JoinOnGatherer<>(buildJoinFinisher(JoinType.INNER, buildSubQuery(joinTable, tableAlias)));
+    default JoinOnGatherer<F> join(Buildable<SelectModel> joinTable, @Nullable String tableAlias) {
+        return new JoinOnGatherer<>(JoinType.INNER, buildSubQuery(joinTable, tableAlias), this::join);
     }
 
     default D join(SqlTable joinTable, SqlCriterion onJoinCriterion,
@@ -69,31 +69,34 @@ public interface JoinOperations<D extends JoinOperations<D, F>, F extends Abstra
 
     default D join(SqlTable joinTable, SqlCriterion onJoinCriterion,
                    List<AndOrCriteriaGroup> andJoinCriteria) {
-        return join(joinTable).on(onJoinCriterion).and(andJoinCriteria).endJoinSpecification();
+        join(joinTable).on(onJoinCriterion).and(andJoinCriteria);
+        return endJoinSpecification();
     }
 
     default D join(SqlTable joinTable, String tableAlias, SqlCriterion onJoinCriterion,
                    List<AndOrCriteriaGroup> andJoinCriteria) {
-        return join(joinTable, tableAlias).on(onJoinCriterion).and(andJoinCriteria).endJoinSpecification();
+        join(joinTable, tableAlias).on(onJoinCriterion).and(andJoinCriteria);
+        return endJoinSpecification();
     }
 
     default D join(Buildable<SelectModel> subQuery, @Nullable String tableAlias, SqlCriterion onJoinCriterion,
                    List<AndOrCriteriaGroup> andJoinCriteria) {
-        return join(subQuery, tableAlias).on(onJoinCriterion).and(andJoinCriteria).endJoinSpecification();
+        join(subQuery, tableAlias).on(onJoinCriterion).and(andJoinCriteria);
+        return endJoinSpecification();
     }
 
-    default JoinOnGatherer<D, F> leftJoin(SqlTable joinTable) {
-        return new JoinOnGatherer<>(buildJoinFinisher(JoinType.LEFT, joinTable));
+    default JoinOnGatherer<F> leftJoin(SqlTable joinTable) {
+        return new JoinOnGatherer<>(JoinType.LEFT, joinTable, this::join);
     }
 
-    default JoinOnGatherer<D, F> leftJoin(SqlTable joinTable, String tableAlias) {
+    default JoinOnGatherer<F> leftJoin(SqlTable joinTable, String tableAlias) {
         var g = leftJoin(joinTable);
-        g.addTableAlias(joinTable, tableAlias);
+        addTableAlias(joinTable, tableAlias);
         return g;
     }
 
-    default JoinOnGatherer<D, F> leftJoin(Buildable<SelectModel> joinTable, @Nullable String tableAlias) {
-        return new JoinOnGatherer<>(buildJoinFinisher(JoinType.LEFT, buildSubQuery(joinTable, tableAlias)));
+    default JoinOnGatherer<F> leftJoin(Buildable<SelectModel> joinTable, @Nullable String tableAlias) {
+        return new JoinOnGatherer<>(JoinType.LEFT, buildSubQuery(joinTable, tableAlias), this::join);
     }
 
     default D leftJoin(SqlTable joinTable, SqlCriterion onJoinCriterion,
@@ -103,36 +106,39 @@ public interface JoinOperations<D extends JoinOperations<D, F>, F extends Abstra
 
     default D leftJoin(SqlTable joinTable, String tableAlias, SqlCriterion onJoinCriterion,
                        AndOrCriteriaGroup... andJoinCriteria) {
-        return leftJoin(joinTable, tableAlias, onJoinCriterion, Arrays.asList(andJoinCriteria)) ;
+        return leftJoin(joinTable, tableAlias, onJoinCriterion, Arrays.asList(andJoinCriteria));
     }
 
     default D leftJoin(SqlTable joinTable, SqlCriterion onJoinCriterion,
                        List<AndOrCriteriaGroup> andJoinCriteria) {
-        return leftJoin(joinTable).on(onJoinCriterion).and(andJoinCriteria).endJoinSpecification();
+        leftJoin(joinTable).on(onJoinCriterion).and(andJoinCriteria);
+        return endJoinSpecification();
     }
 
     default D leftJoin(SqlTable joinTable, String tableAlias, SqlCriterion onJoinCriterion,
                        List<AndOrCriteriaGroup> andJoinCriteria) {
-        return leftJoin(joinTable, tableAlias).on(onJoinCriterion).and(andJoinCriteria).endJoinSpecification();
+        leftJoin(joinTable, tableAlias).on(onJoinCriterion).and(andJoinCriteria);
+        return endJoinSpecification();
     }
 
     default D leftJoin(Buildable<SelectModel> subQuery, @Nullable String tableAlias,
                        SqlCriterion onJoinCriterion, List<AndOrCriteriaGroup> andJoinCriteria) {
-        return leftJoin(subQuery, tableAlias).on(onJoinCriterion).and(andJoinCriteria).endJoinSpecification();
+        leftJoin(subQuery, tableAlias).on(onJoinCriterion).and(andJoinCriteria);
+        return endJoinSpecification();
     }
 
-    default JoinOnGatherer<D, F> rightJoin(SqlTable joinTable) {
-        return new JoinOnGatherer<>(buildJoinFinisher(JoinType.RIGHT, joinTable));
+    default JoinOnGatherer<F> rightJoin(SqlTable joinTable) {
+        return new JoinOnGatherer<>(JoinType.RIGHT, joinTable, this::join);
     }
 
-    default JoinOnGatherer<D, F> rightJoin(SqlTable joinTable, String tableAlias) {
+    default JoinOnGatherer<F> rightJoin(SqlTable joinTable, String tableAlias) {
         var g = rightJoin(joinTable);
-        g.addTableAlias(joinTable, tableAlias);
+        addTableAlias(joinTable, tableAlias);
         return g;
     }
 
-    default JoinOnGatherer<D, F> rightJoin(Buildable<SelectModel> joinTable, @Nullable String tableAlias) {
-        return new JoinOnGatherer<>(buildJoinFinisher(JoinType.RIGHT, buildSubQuery(joinTable, tableAlias)));
+    default JoinOnGatherer<F> rightJoin(Buildable<SelectModel> joinTable, @Nullable String tableAlias) {
+        return new JoinOnGatherer<>(JoinType.RIGHT, buildSubQuery(joinTable, tableAlias), this::join);
     }
 
     default D rightJoin(SqlTable joinTable, SqlCriterion onJoinCriterion,
@@ -147,31 +153,34 @@ public interface JoinOperations<D extends JoinOperations<D, F>, F extends Abstra
 
     default D rightJoin(SqlTable joinTable, SqlCriterion onJoinCriterion,
                         List<AndOrCriteriaGroup> andJoinCriteria) {
-        return rightJoin(joinTable).on(onJoinCriterion).and(andJoinCriteria).endJoinSpecification();
+        rightJoin(joinTable).on(onJoinCriterion).and(andJoinCriteria);
+        return endJoinSpecification();
     }
 
     default D rightJoin(SqlTable joinTable, String tableAlias, SqlCriterion onJoinCriterion,
                         List<AndOrCriteriaGroup> andJoinCriteria) {
-        return rightJoin(joinTable, tableAlias).on(onJoinCriterion).and(andJoinCriteria).endJoinSpecification();
+        rightJoin(joinTable, tableAlias).on(onJoinCriterion).and(andJoinCriteria);
+        return endJoinSpecification();
     }
 
     default D rightJoin(Buildable<SelectModel> subQuery, @Nullable String tableAlias,
                         SqlCriterion onJoinCriterion, List<AndOrCriteriaGroup> andJoinCriteria) {
-        return rightJoin(subQuery, tableAlias).on(onJoinCriterion).and(andJoinCriteria).endJoinSpecification();
+        rightJoin(subQuery, tableAlias).on(onJoinCriterion).and(andJoinCriteria);
+        return endJoinSpecification();
     }
 
-    default JoinOnGatherer<D, F> fullJoin(SqlTable joinTable) {
-        return new JoinOnGatherer<>(buildJoinFinisher(JoinType.FULL, joinTable));
+    default JoinOnGatherer<F> fullJoin(SqlTable joinTable) {
+        return new JoinOnGatherer<>(JoinType.FULL, joinTable, this::join);
     }
 
-    default JoinOnGatherer<D, F> fullJoin(SqlTable joinTable, String tableAlias) {
+    default JoinOnGatherer<F> fullJoin(SqlTable joinTable, String tableAlias) {
         var g = fullJoin(joinTable);
-        g.addTableAlias(joinTable, tableAlias);
+        addTableAlias(joinTable, tableAlias);
         return g;
     }
 
-    default JoinOnGatherer<D, F> fullJoin(Buildable<SelectModel> joinTable, @Nullable String tableAlias) {
-        return new JoinOnGatherer<>(buildJoinFinisher(JoinType.FULL, buildSubQuery(joinTable, tableAlias)));
+    default JoinOnGatherer<F> fullJoin(Buildable<SelectModel> joinTable, @Nullable String tableAlias) {
+        return new JoinOnGatherer<>(JoinType.FULL, buildSubQuery(joinTable, tableAlias), this::join);
     }
 
     default D fullJoin(SqlTable joinTable, SqlCriterion onJoinCriterion,
@@ -186,17 +195,20 @@ public interface JoinOperations<D extends JoinOperations<D, F>, F extends Abstra
 
     default D fullJoin(SqlTable joinTable, SqlCriterion onJoinCriterion,
                        List<AndOrCriteriaGroup> andJoinCriteria) {
-        return fullJoin(joinTable).on(onJoinCriterion).and(andJoinCriteria).endJoinSpecification();
+        fullJoin(joinTable).on(onJoinCriterion).and(andJoinCriteria);
+        return endJoinSpecification();
     }
 
     default D fullJoin(SqlTable joinTable, String tableAlias, SqlCriterion onJoinCriterion,
                        List<AndOrCriteriaGroup> andJoinCriteria) {
-        return fullJoin(joinTable, tableAlias).on(onJoinCriterion).and(andJoinCriteria).endJoinSpecification();
+        fullJoin(joinTable, tableAlias).on(onJoinCriterion).and(andJoinCriteria);
+        return endJoinSpecification();
     }
 
     default D fullJoin(Buildable<SelectModel> subQuery, @Nullable String tableAlias,
                        SqlCriterion onJoinCriterion, List<AndOrCriteriaGroup> andJoinCriteria) {
-        return fullJoin(subQuery, tableAlias).on(onJoinCriterion).and(andJoinCriteria).endJoinSpecification();
+        fullJoin(subQuery, tableAlias).on(onJoinCriterion).and(andJoinCriteria);
+        return endJoinSpecification();
     }
 
     private SubQuery buildSubQuery(Buildable<SelectModel> selectModel, @Nullable String alias) {
@@ -206,54 +218,49 @@ public interface JoinOperations<D extends JoinOperations<D, F>, F extends Abstra
                 .build();
     }
 
-    private F buildJoinFinisher(JoinType joinType, TableExpression joinTable) {
-        F finisher = buildJoinFinisher();
-        finisher.setJoinTable(joinTable);
-        finisher.setJoinType(joinType);
-        return finisher;
-    }
-
     /**
-     * Builds a join finisher (a class that extends {@link AbstractJoinSpecificationFinisher}) and provides access to
+     * Builds a join finisher (a class that extends {@link BooleanOperations}) and provides access to
      * other DSL methods as appropriate.
-     *
-     * <p>This method is called internally by the various join methods and is not intended to be called by general
-     * users.</p>
      *
      * @return the join finisher
      */
-    F buildJoinFinisher();
+    F join(JoinType joinType, TableExpression joinTable, SqlCriterion initialCriterion);
 
-    class JoinOnGatherer<D extends JoinOperations<D, F>, F extends AbstractJoinSpecificationFinisher<D, F>> {
-        private final F finisher;
+    D endJoinSpecification();
 
-        public JoinOnGatherer(F finisher) {
-            this.finisher = finisher;
-        }
+    void addTableAlias(SqlTable table, String tableAlias);
 
-        public F on(SqlCriterion sqlCriterion) {
-            finisher.setInitialCriterion(sqlCriterion);
-            return finisher;
+    interface JoinBuilder<R> {
+        R apply(JoinType joinType, TableExpression tableExpression, SqlCriterion initialCriterion);
+    }
+
+    class JoinOnGatherer<F extends BooleanOperations<?>> {
+        private final JoinType joinType;
+        private final TableExpression joinTable;
+        private final JoinBuilder<F> builder;
+
+        public JoinOnGatherer(JoinType joinType, TableExpression joinTable, JoinBuilder<F> builder) {
+            this.joinType = joinType;
+            this.joinTable = joinTable;
+            this.builder = builder;
         }
 
         public <T> F on(BindableColumn<T> joinColumn, RenderableCondition<T> joinCondition) {
-            finisher.setInitialCriterion(ColumnAndConditionCriterion.withColumn(joinColumn)
+            return on(ColumnAndConditionCriterion.withColumn(joinColumn)
                     .withCondition(joinCondition)
                     .build());
-            return finisher;
         }
 
         public <T> F on(BindableColumn<T> joinColumn, RenderableCondition<T> onJoinCondition,
                         AndOrCriteriaGroup... subCriteria) {
-            finisher.setInitialCriterion(ColumnAndConditionCriterion.withColumn(joinColumn)
+            return on(ColumnAndConditionCriterion.withColumn(joinColumn)
                     .withCondition(onJoinCondition)
                     .withSubCriteria(Arrays.asList(subCriteria))
                     .build());
-            return finisher;
         }
 
-        protected void addTableAlias(SqlTable table, String tableAlias) {
-            finisher.addTableAlias(table, tableAlias);
+        public F on(SqlCriterion initialCriterion) {
+            return builder.apply(joinType, joinTable, initialCriterion);
         }
     }
 }

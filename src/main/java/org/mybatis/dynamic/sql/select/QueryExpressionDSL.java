@@ -29,6 +29,7 @@ import org.mybatis.dynamic.sql.NullCriterion;
 import org.mybatis.dynamic.sql.SortSpecification;
 import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.SqlTable;
+import org.mybatis.dynamic.sql.TableExpression;
 import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
 import org.mybatis.dynamic.sql.dsl.AbstractJoinSpecificationFinisher;
 import org.mybatis.dynamic.sql.dsl.AbstractQueryingDSL;
@@ -40,6 +41,7 @@ import org.mybatis.dynamic.sql.dsl.JoinOperations;
 import org.mybatis.dynamic.sql.dsl.LimitAndOffsetOperations;
 import org.mybatis.dynamic.sql.dsl.OrderByOperations;
 import org.mybatis.dynamic.sql.dsl.WhereOperations;
+import org.mybatis.dynamic.sql.select.join.JoinType;
 import org.mybatis.dynamic.sql.util.Buildable;
 import org.mybatis.dynamic.sql.util.ConfigurableStatement;
 import org.mybatis.dynamic.sql.util.Validator;
@@ -94,10 +96,16 @@ public class QueryExpressionDSL<R> extends AbstractQueryingDSL implements
     }
 
     @Override
-    public JoinSpecificationFinisher buildJoinFinisher() {
-        var finisher = new JoinSpecificationFinisher();
+    public JoinSpecificationFinisher join(JoinType joinType, TableExpression joinTable,
+                                          SqlCriterion initialCriterion) {
+        var finisher = new JoinSpecificationFinisher(joinType, joinTable, initialCriterion);
         addJoinSpecification(finisher);
         return finisher;
+    }
+
+    @Override
+    public QueryExpressionDSL<R> endJoinSpecification() {
+        return this;
     }
 
     @Override
@@ -300,6 +308,11 @@ public class QueryExpressionDSL<R> extends AbstractQueryingDSL implements
             OrderByOperations<SelectDSL<R>>,
             Buildable<R> {
 
+        protected JoinSpecificationFinisher(JoinType joinType, TableExpression joinTable,
+                                            SqlCriterion initialCriterion) {
+            super(joinType, joinTable, initialCriterion);
+        }
+
         @Override
         public R build() {
             return QueryExpressionDSL.this.build();
@@ -349,8 +362,19 @@ public class QueryExpressionDSL<R> extends AbstractQueryingDSL implements
         }
 
         @Override
+        public JoinSpecificationFinisher join(JoinType joinType, TableExpression joinTable,
+                                              SqlCriterion initialCriterion) {
+            return QueryExpressionDSL.this.join(joinType, joinTable, initialCriterion);
+        }
+
+        @Override
         public QueryExpressionDSL<R> endJoinSpecification() {
             return QueryExpressionDSL.this;
+        }
+
+        @Override
+        public void addTableAlias(SqlTable table, String tableAlias) {
+            QueryExpressionDSL.this.addTableAlias(table, tableAlias);
         }
 
         @Override
@@ -376,16 +400,6 @@ public class QueryExpressionDSL<R> extends AbstractQueryingDSL implements
         @Override
         public SelectDSL<R> setForClause(String forClause) {
             return QueryExpressionDSL.this.setForClause(forClause);
-        }
-
-        @Override
-        public void addTableAlias(SqlTable table, String tableAlias) {
-            QueryExpressionDSL.this.addTableAlias(table, tableAlias);
-        }
-
-        @Override
-        public JoinSpecificationFinisher buildJoinFinisher() {
-            return QueryExpressionDSL.this.buildJoinFinisher();
         }
     }
 

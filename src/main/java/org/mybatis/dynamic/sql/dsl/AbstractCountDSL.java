@@ -26,9 +26,11 @@ import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.NullCriterion;
 import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.SqlTable;
+import org.mybatis.dynamic.sql.TableExpression;
 import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
 import org.mybatis.dynamic.sql.select.QueryExpressionModel;
 import org.mybatis.dynamic.sql.select.SelectModel;
+import org.mybatis.dynamic.sql.select.join.JoinType;
 import org.mybatis.dynamic.sql.util.Buildable;
 import org.mybatis.dynamic.sql.util.ConfigurableStatement;
 import org.mybatis.dynamic.sql.util.Validator;
@@ -112,10 +114,15 @@ public abstract class AbstractCountDSL<M, D extends AbstractCountDSL<M, D>> exte
     protected abstract D getThis();
 
     @Override
-    public JoinSpecificationFinisher buildJoinFinisher() {
-        var finisher = new JoinSpecificationFinisher();
+    public JoinSpecificationFinisher join(JoinType joinType, TableExpression joinTable, SqlCriterion initialCriterion) {
+        var finisher = new JoinSpecificationFinisher(joinType, joinTable, initialCriterion);
         addJoinSpecification(finisher);
         return finisher;
+    }
+
+    @Override
+    public D endJoinSpecification() {
+        return getThis();
     }
 
     public class JoinSpecificationFinisher
@@ -123,14 +130,14 @@ public abstract class AbstractCountDSL<M, D extends AbstractCountDSL<M, D>> exte
             implements WhereOperations<CountWhereBuilder>,
             ConfigurableStatement<JoinSpecificationFinisher>, Buildable<M> {
 
-        @Override
-        protected JoinSpecificationFinisher getThis() {
-            return this;
+        protected JoinSpecificationFinisher(JoinType joinType, TableExpression joinTable,
+                                            SqlCriterion initialCriterion) {
+            super(joinType, joinTable, initialCriterion);
         }
 
         @Override
-        public D endJoinSpecification() {
-            return AbstractCountDSL.this.getThis();
+        protected JoinSpecificationFinisher getThis() {
+            return this;
         }
 
         @Override
@@ -157,11 +164,6 @@ public abstract class AbstractCountDSL<M, D extends AbstractCountDSL<M, D>> exte
         public JoinSpecificationFinisher configureStatement(Consumer<StatementConfiguration> consumer) {
             AbstractCountDSL.this.configureStatement(consumer);
             return this;
-        }
-
-        @Override
-        protected void addTableAlias(SqlTable table, String tableAlias) {
-            AbstractCountDSL.this.addTableAlias(table, tableAlias);
         }
     }
 

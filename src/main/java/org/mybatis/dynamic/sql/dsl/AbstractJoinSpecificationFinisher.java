@@ -19,20 +19,25 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import org.jspecify.annotations.Nullable;
 import org.mybatis.dynamic.sql.AndOrCriteriaGroup;
 import org.mybatis.dynamic.sql.SqlCriterion;
-import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.TableExpression;
 import org.mybatis.dynamic.sql.select.join.JoinSpecification;
 import org.mybatis.dynamic.sql.select.join.JoinType;
 
 public abstract class AbstractJoinSpecificationFinisher<D extends JoinOperations<D, F>,
         F extends AbstractJoinSpecificationFinisher<D, F>> implements BooleanOperations<F> {
-    private @Nullable SqlCriterion initialCriterion;
+    private final JoinType joinType;
+    private final TableExpression joinTable;
+    private final SqlCriterion initialCriterion;
     private final List<AndOrCriteriaGroup> subCriteria = new ArrayList<>();
-    private @Nullable TableExpression joinTable;
-    private @Nullable JoinType joinType;
+
+    protected AbstractJoinSpecificationFinisher(JoinType joinType, TableExpression joinTable,
+                                                SqlCriterion initialCriterion) {
+        this.joinType = joinType;
+        this.joinTable = joinTable;
+        this.initialCriterion = initialCriterion;
+    }
 
     @Override
     public F addSubCriterion(AndOrCriteriaGroup subCriterion) {
@@ -40,19 +45,7 @@ public abstract class AbstractJoinSpecificationFinisher<D extends JoinOperations
         return getThis();
     }
 
-    public void setInitialCriterion(SqlCriterion initialCriterion) {
-        this.initialCriterion = initialCriterion;
-    }
-
     protected abstract F getThis();
-
-    void setJoinTable(TableExpression joinTable) {
-        this.joinTable = joinTable;
-    }
-
-    void setJoinType(JoinType joinType) {
-        this.joinType = joinType;
-    }
 
     protected JoinSpecification toJoinSpecification() {
         return JoinSpecification.withJoinTable(Objects.requireNonNull(joinTable))
@@ -61,8 +54,4 @@ public abstract class AbstractJoinSpecificationFinisher<D extends JoinOperations
                 .withSubCriteria(subCriteria)
                 .build();
     }
-
-    public abstract D endJoinSpecification();
-
-    protected abstract void addTableAlias(SqlTable table, String tableAlias);
 }

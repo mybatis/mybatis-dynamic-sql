@@ -29,6 +29,7 @@ import org.mybatis.dynamic.sql.NullCriterion;
 import org.mybatis.dynamic.sql.SortSpecification;
 import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.SqlTable;
+import org.mybatis.dynamic.sql.TableExpression;
 import org.mybatis.dynamic.sql.common.OrderByModel;
 import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
 import org.mybatis.dynamic.sql.select.GroupByModel;
@@ -37,6 +38,7 @@ import org.mybatis.dynamic.sql.select.HavingModel;
 import org.mybatis.dynamic.sql.select.PagingModel;
 import org.mybatis.dynamic.sql.select.QueryExpressionModel;
 import org.mybatis.dynamic.sql.select.SelectModel;
+import org.mybatis.dynamic.sql.select.join.JoinType;
 import org.mybatis.dynamic.sql.util.Buildable;
 import org.mybatis.dynamic.sql.util.ConfigurableStatement;
 import org.mybatis.dynamic.sql.util.Validator;
@@ -121,10 +123,21 @@ public class SelectDSL implements
     }
 
     @Override
-    public JoinSpecificationFinisher buildJoinFinisher() {
-        JoinSpecificationFinisher finisher = new JoinSpecificationFinisher();
+    public JoinSpecificationFinisher join(JoinType joinType, TableExpression joinTable,
+                                          SqlCriterion initialCriterion) {
+        JoinSpecificationFinisher finisher = new JoinSpecificationFinisher(joinType, joinTable, initialCriterion);
         currentQueryValues.addJoinSpecification(finisher);
         return finisher;
+    }
+
+    @Override
+    public SelectDSL endJoinSpecification() {
+        return this;
+    }
+
+    @Override
+    public void addTableAlias(SqlTable table, String tableAlias) {
+        currentQueryValues.addTableAlias(table, tableAlias);
     }
 
     @Override
@@ -340,6 +353,11 @@ public class SelectDSL implements
             ForAndWaitOperations<SelectDSL>,
             Buildable<SelectModel> {
 
+        protected JoinSpecificationFinisher(JoinType joinType, TableExpression joinTable,
+                                            SqlCriterion initialCriterion) {
+            super(joinType, joinTable, initialCriterion);
+        }
+
         @Override
         public SelectModel build() {
             return SelectDSL.this.build();
@@ -390,21 +408,6 @@ public class SelectDSL implements
         }
 
         @Override
-        public SelectDSL endJoinSpecification() {
-            return SelectDSL.this;
-        }
-
-        @Override
-        public void addTableAlias(SqlTable table, String tableAlias) {
-            currentQueryValues.addTableAlias(table, tableAlias);
-        }
-
-        @Override
-        public JoinSpecificationFinisher buildJoinFinisher() {
-            return SelectDSL.this.buildJoinFinisher();
-        }
-
-        @Override
         public LimitFinisher<SelectModel, SelectDSL> limitWhenPresent(@Nullable Long limit) {
             return SelectDSL.this.limitWhenPresent(limit);
         }
@@ -427,6 +430,21 @@ public class SelectDSL implements
         @Override
         public SelectDSL setForClause(String forClause) {
             return SelectDSL.this.setForClause(forClause);
+        }
+
+        @Override
+        public JoinSpecificationFinisher join(JoinType joinType, TableExpression joinTable, SqlCriterion initialCriterion) {
+            return SelectDSL.this.join(joinType, joinTable, initialCriterion);
+        }
+
+        @Override
+        public SelectDSL endJoinSpecification() {
+            return SelectDSL.this.endJoinSpecification();
+        }
+
+        @Override
+        public void addTableAlias(SqlTable table, String tableAlias) {
+            SelectDSL.this.addTableAlias(table, tableAlias);
         }
     }
 
