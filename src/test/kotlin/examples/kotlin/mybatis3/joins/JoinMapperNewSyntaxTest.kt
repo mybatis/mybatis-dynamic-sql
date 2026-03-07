@@ -28,8 +28,8 @@ import org.assertj.core.api.Assertions.entry
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
+import org.mybatis.dynamic.sql.exception.InvalidSqlException
 import org.mybatis.dynamic.sql.util.Messages
-import org.mybatis.dynamic.sql.util.kotlin.KInvalidSQLException
 import org.mybatis.dynamic.sql.util.kotlin.elements.`as`
 import org.mybatis.dynamic.sql.util.kotlin.elements.constant
 import org.mybatis.dynamic.sql.util.kotlin.elements.count
@@ -826,13 +826,13 @@ class JoinMapperNewSyntaxTest {
         // create second table instance for self-join
         val user2 = user.withAlias("other_user")
 
-        assertThatExceptionOfType(KInvalidSQLException::class.java).isThrownBy {
+        assertThatExceptionOfType(InvalidSqlException::class.java).isThrownBy {
             select(user.userId, user.userName, user.parentId) {
                 from(user, "u1")
                 join(user2, "u2") on { }
                 where { user2.userId isEqualTo 4 }
             }
-        }.withMessage(Messages.getString("ERROR.22")) //$NON-NLS-1$
+        }.withMessage(Messages.getString("ERROR.46")) //$NON-NLS-1$
     }
 
     @Test

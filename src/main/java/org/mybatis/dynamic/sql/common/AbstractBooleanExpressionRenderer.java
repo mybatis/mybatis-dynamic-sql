@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2025 the original author or authors.
+ *    Copyright 2016-2026 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -22,7 +22,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.jspecify.annotations.Nullable;
-import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 import org.mybatis.dynamic.sql.util.FragmentCollector;
@@ -43,18 +42,8 @@ public abstract class AbstractBooleanExpressionRenderer {
     }
 
     public Optional<FragmentAndParameters> render() {
-        return model.initialCriterion()
-                .map(this::renderWithInitialCriterion)
-                .orElseGet(this::renderWithoutInitialCriterion)
+        return criterionRenderer.render(model.initialCriterion(), model.subCriteria(), this::calculateClause)
                 .map(RenderedCriterion::fragmentAndParameters);
-    }
-
-    private Optional<RenderedCriterion> renderWithInitialCriterion(SqlCriterion initialCriterion) {
-        return criterionRenderer.render(initialCriterion, model.subCriteria(), this::calculateClause);
-    }
-
-    private Optional<RenderedCriterion> renderWithoutInitialCriterion() {
-        return criterionRenderer.render(model.subCriteria(), this::calculateClause);
     }
 
     private String calculateClause(FragmentCollector collector) {

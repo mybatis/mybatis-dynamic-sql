@@ -18,13 +18,13 @@ package org.mybatis.dynamic.sql.dsl;
 import java.util.Arrays;
 import java.util.List;
 
-import org.jspecify.annotations.Nullable;
 import org.mybatis.dynamic.sql.AndOrCriteriaGroup;
 import org.mybatis.dynamic.sql.BindableColumn;
 import org.mybatis.dynamic.sql.ColumnAndConditionCriterion;
 import org.mybatis.dynamic.sql.CriteriaGroup;
 import org.mybatis.dynamic.sql.ExistsCriterion;
 import org.mybatis.dynamic.sql.ExistsPredicate;
+import org.mybatis.dynamic.sql.NullCriterion;
 import org.mybatis.dynamic.sql.RenderableCondition;
 import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.where.WhereApplier;
@@ -69,7 +69,7 @@ public interface WhereOperations<F extends BooleanOperations<?>> {
         return where(initialCriterion, Arrays.asList(subCriteria));
     }
 
-    default F where(@Nullable SqlCriterion initialCriterion, List<AndOrCriteriaGroup> subCriteria) {
+    default F where(SqlCriterion initialCriterion, List<AndOrCriteriaGroup> subCriteria) {
         SqlCriterion sqlCriterion = new CriteriaGroup.Builder()
                 .withInitialCriterion(initialCriterion)
                 .withSubCriteria(subCriteria)
@@ -80,6 +80,7 @@ public interface WhereOperations<F extends BooleanOperations<?>> {
 
     default F where(List<AndOrCriteriaGroup> subCriteria) {
         SqlCriterion sqlCriterion = new CriteriaGroup.Builder()
+                .withInitialCriterion(new NullCriterion())
                 .withSubCriteria(subCriteria)
                 .build();
 

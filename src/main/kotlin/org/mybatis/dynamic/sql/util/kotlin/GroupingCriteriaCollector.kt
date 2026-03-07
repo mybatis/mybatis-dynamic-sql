@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2025 the original author or authors.
+ *    Copyright 2016-2026 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ import org.mybatis.dynamic.sql.ColumnAndConditionCriterion
 import org.mybatis.dynamic.sql.CriteriaGroup
 import org.mybatis.dynamic.sql.ExistsCriterion
 import org.mybatis.dynamic.sql.NotCriterion
+import org.mybatis.dynamic.sql.NullCriterion
 import org.mybatis.dynamic.sql.RenderableCondition
 import org.mybatis.dynamic.sql.SqlBuilder
 import org.mybatis.dynamic.sql.SqlCriterion
@@ -69,6 +70,7 @@ sealed class SubCriteriaCollector {
     fun and(criteria: List<AndOrCriteriaGroup>) {
         subCriteria.add(
             AndOrCriteriaGroup.Builder().withConnector("and") //$NON-NLS-1$
+                .withInitialCriterion(NullCriterion())
                 .withSubCriteria(criteria)
                 .build()
         )
@@ -106,6 +108,7 @@ sealed class SubCriteriaCollector {
     fun or(criteria: List<AndOrCriteriaGroup>) {
         subCriteria.add(
             AndOrCriteriaGroup.Builder().withConnector("or") //$NON-NLS-1$
+                .withInitialCriterion(NullCriterion())
                 .withSubCriteria(criteria)
                 .build()
         )
@@ -128,8 +131,11 @@ sealed class SubCriteriaCollector {
 @Suppress("TooManyFunctions")
 @MyBatisDslMarker
 open class GroupingCriteriaCollector : SubCriteriaCollector() {
-    internal var initialCriterion: SqlCriterion? = null
-        private set(value) {
+    val initialCriterion : SqlCriterion
+        get() = internalInitialCriterion?:NullCriterion()
+
+    private var internalInitialCriterion: SqlCriterion? = null
+        set(value) {
             assertNull(field, "ERROR.21") //$NON-NLS-1$
             field = value
         }
@@ -145,7 +151,7 @@ open class GroupingCriteriaCollector : SubCriteriaCollector() {
      */
     fun not(criteriaReceiver: GroupingCriteriaReceiver): Unit =
         GroupingCriteriaCollector().apply(criteriaReceiver).let {
-            initialCriterion = NotCriterion.Builder()
+            internalInitialCriterion = NotCriterion.Builder()
                 .withInitialCriterion(it.initialCriterion)
                 .withSubCriteria(it.subCriteria)
                 .build()
@@ -164,7 +170,8 @@ open class GroupingCriteriaCollector : SubCriteriaCollector() {
      *
      */
     fun not(criteria: List<AndOrCriteriaGroup>) {
-        initialCriterion = NotCriterion.Builder().withSubCriteria(criteria).build()
+        internalInitialCriterion = NotCriterion.Builder().withInitialCriterion(NullCriterion())
+            .withSubCriteria(criteria).build()
     }
 
     /**
@@ -177,7 +184,8 @@ open class GroupingCriteriaCollector : SubCriteriaCollector() {
      */
     fun exists(kotlinSubQueryBuilder: KotlinSubQueryBuilder.() -> Unit): Unit =
         KotlinSubQueryBuilder().apply(kotlinSubQueryBuilder).let {
-            initialCriterion = ExistsCriterion.Builder().withExistsPredicate(SqlBuilder.exists(it)).build()
+            internalInitialCriterion = ExistsCriterion.Builder()
+                .withExistsPredicate(SqlBuilder.exists(it)).build()
         }
 
     /**
@@ -195,7 +203,7 @@ open class GroupingCriteriaCollector : SubCriteriaCollector() {
      */
     fun group(criteriaReceiver: GroupingCriteriaReceiver): Unit =
         GroupingCriteriaCollector().apply(criteriaReceiver).let {
-            initialCriterion = CriteriaGroup.Builder()
+            internalInitialCriterion = CriteriaGroup.Builder()
                 .withInitialCriterion(it.initialCriterion)
                 .withSubCriteria(it.subCriteria)
                 .build()
@@ -214,7 +222,8 @@ open class GroupingCriteriaCollector : SubCriteriaCollector() {
      *
      */
     fun group(criteria: List<AndOrCriteriaGroup>) {
-        initialCriterion = CriteriaGroup.Builder().withSubCriteria(criteria).build()
+        internalInitialCriterion = CriteriaGroup.Builder().withInitialCriterion(NullCriterion())
+            .withSubCriteria(criteria).build()
     }
 
     /**
@@ -230,7 +239,7 @@ open class GroupingCriteriaCollector : SubCriteriaCollector() {
      * @param condition the condition to be applied to this column, in this scope
      */
     operator fun <T : Any> BindableColumn<T>.invoke(condition: RenderableCondition<T>) {
-        initialCriterion = ColumnAndConditionCriterion.withColumn(this)
+        internalInitialCriterion = ColumnAndConditionCriterion.withColumn(this)
             .withCondition(condition)
             .build()
     }

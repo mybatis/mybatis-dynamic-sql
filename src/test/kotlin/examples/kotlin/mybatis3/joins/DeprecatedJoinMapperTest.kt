@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2025 the original author or authors.
+ *    Copyright 2016-2026 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -574,15 +574,20 @@ class DeprecatedJoinMapperTest {
         // create second table instance for self-join
         val user2 = user.withAlias("other_user")
 
-        assertThatExceptionOfType(KInvalidSQLException::class.java).isThrownBy {
-            select(user.userId, user.userName, user.parentId) {
-                from(user, "u1")
-                join(user2, "u2") {
-                    and(user.userId) equalTo user2.parentId
-                }
-                where { user2.userId isEqualTo 4 }
+        val f = select(user.userId, user.userName, user.parentId) {
+            from(user, "u1")
+            join(user2, "u2") {
+                and(user.userId) equalTo user2.parentId
             }
-        }.withMessage(Messages.getString("ERROR.22")) //$NON-NLS-1$
+            where { user2.userId isEqualTo 4 }
+        }
+
+        // this is now allowed because we can default to NullCriteria
+        assertThat(f.selectStatement).isEqualTo(
+            "select u1.user_id, u1.user_name, u1.parent_id " +
+            "from User u1 join User u2 on u1.user_id = u2.parent_id " +
+            "where u2.user_id = #{parameters.p1,jdbcType=INTEGER}"
+        )
     }
 
     @Test
@@ -599,6 +604,6 @@ class DeprecatedJoinMapperTest {
                 }
                 where { user2.userId isEqualTo 4 }
             }
-        }.withMessage(Messages.getString("ERROR.45")) //$NON-NLS-1$
+        }.withMessage(Messages.getString("ERROR.21")) //$NON-NLS-1$
     }
 }

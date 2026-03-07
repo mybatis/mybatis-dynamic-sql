@@ -20,7 +20,6 @@ import java.util.Objects;
 import org.jspecify.annotations.Nullable;
 import org.mybatis.dynamic.sql.TableExpression;
 import org.mybatis.dynamic.sql.common.AbstractBooleanExpressionModel;
-import org.mybatis.dynamic.sql.util.Validator;
 
 public class JoinSpecification extends AbstractBooleanExpressionModel {
 
@@ -31,7 +30,6 @@ public class JoinSpecification extends AbstractBooleanExpressionModel {
         super(builder);
         table = Objects.requireNonNull(builder.table);
         joinType = Objects.requireNonNull(builder.joinType);
-        Validator.assertTrue(initialCriterion().isPresent(), "ERROR.16"); //$NON-NLS-1$
     }
 
     public TableExpression table() {

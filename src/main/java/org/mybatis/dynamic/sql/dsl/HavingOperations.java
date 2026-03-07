@@ -18,7 +18,6 @@ package org.mybatis.dynamic.sql.dsl;
 import java.util.Arrays;
 import java.util.List;
 
-import org.jspecify.annotations.Nullable;
 import org.mybatis.dynamic.sql.AndOrCriteriaGroup;
 import org.mybatis.dynamic.sql.BindableColumn;
 import org.mybatis.dynamic.sql.ColumnAndConditionCriterion;
@@ -48,7 +47,7 @@ public interface HavingOperations<F extends BooleanOperations<?>> {
         return having(initialCriterion, Arrays.asList(subCriteria));
     }
 
-    default F having(@Nullable SqlCriterion initialCriterion, List<AndOrCriteriaGroup> subCriteria) {
+    default F having(SqlCriterion initialCriterion, List<AndOrCriteriaGroup> subCriteria) {
         SqlCriterion sqlCriterion = new CriteriaGroup.Builder()
                 .withInitialCriterion(initialCriterion)
                 .withSubCriteria(subCriteria)

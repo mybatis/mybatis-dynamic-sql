@@ -94,8 +94,7 @@ public class CriterionRenderer implements SqlCriterionVisitor<Optional<RenderedC
 
     private Optional<RenderedCriterion> renderCriteriaGroup(CriteriaGroup criterion,
                                                             Function<FragmentCollector, String> fragmentCalculator) {
-        return criterion.initialCriterion().map(ic -> render(ic, criterion.subCriteria(), fragmentCalculator))
-                .orElseGet(() -> render(criterion.subCriteria(), fragmentCalculator));
+        return render(criterion.initialCriterion(), criterion.subCriteria(), fragmentCalculator);
     }
 
     public Optional<RenderedCriterion> render(SqlCriterion initialCriterion, List<AndOrCriteriaGroup> subCriteria,
@@ -106,12 +105,6 @@ public class CriterionRenderer implements SqlCriterionVisitor<Optional<RenderedC
 
         return fragmentAndParameters.map(fp -> calculateRenderedCriterion(fp, renderedSubCriteria, fragmentCalculator))
                 .orElseGet(() -> calculateRenderedCriterion(renderedSubCriteria, fragmentCalculator));
-    }
-
-    public Optional<RenderedCriterion> render(List<AndOrCriteriaGroup> subCriteria,
-                                              Function<FragmentCollector, String> fragmentCalculator) {
-        List<RenderedCriterion> renderedSubCriteria = renderSubCriteria(subCriteria);
-        return calculateRenderedCriterion(renderedSubCriteria, fragmentCalculator);
     }
 
     private <T> Optional<FragmentAndParameters> renderColumnAndCondition(ColumnAndConditionCriterion<T> criterion) {
@@ -140,8 +133,7 @@ public class CriterionRenderer implements SqlCriterionVisitor<Optional<RenderedC
     }
 
     private Optional<RenderedCriterion> renderAndOrCriteriaGroup(AndOrCriteriaGroup criterion) {
-        return criterion.initialCriterion().map(ic -> render(ic, criterion.subCriteria(), this::calculateFragment))
-                .orElseGet(() -> render(criterion.subCriteria(), this::calculateFragment))
+        return render(criterion.initialCriterion(), criterion.subCriteria(), this::calculateFragment)
                 .map(rc -> rc.withConnector(criterion.connector()));
     }
 

@@ -335,6 +335,7 @@ public interface SqlBuilder {
 
     static CriteriaGroup group(List<AndOrCriteriaGroup> subCriteria) {
         return new CriteriaGroup.Builder()
+                .withInitialCriterion(new NullCriterion())
                 .withSubCriteria(subCriteria)
                 .build();
     }
@@ -378,6 +379,7 @@ public interface SqlBuilder {
 
     static NotCriterion not(List<AndOrCriteriaGroup> subCriteria) {
         return new NotCriterion.Builder()
+                .withInitialCriterion(new NullCriterion())
                 .withSubCriteria(subCriteria)
                 .build();
     }
@@ -413,6 +415,7 @@ public interface SqlBuilder {
     static AndOrCriteriaGroup or(List<AndOrCriteriaGroup> subCriteria) {
         return new AndOrCriteriaGroup.Builder()
                 .withConnector("or") //$NON-NLS-1$
+                .withInitialCriterion(new NullCriterion())
                 .withSubCriteria(subCriteria)
                 .build();
     }
@@ -448,6 +451,7 @@ public interface SqlBuilder {
     static AndOrCriteriaGroup and(List<AndOrCriteriaGroup> subCriteria) {
         return new AndOrCriteriaGroup.Builder()
                 .withConnector("and") //$NON-NLS-1$
+                .withInitialCriterion(new NullCriterion())
                 .withSubCriteria(subCriteria)
                 .build();
     }

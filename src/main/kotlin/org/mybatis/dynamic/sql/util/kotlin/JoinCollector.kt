@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2025 the original author or authors.
+ *    Copyright 2016-2026 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -25,11 +25,10 @@ typealias JoinReceiver = JoinCollector.() -> Unit
 class JoinCollector {
     private val criteriaCollector = GroupingCriteriaCollector()
 
-    internal fun initialCriterion() = invalidIfNull(criteriaCollector.initialCriterion, "ERROR.22") //$NON-NLS-1$
+    internal fun initialCriterion() = criteriaCollector.initialCriterion
     internal fun subCriteria() = criteriaCollector.subCriteria
 
     fun <T : Any> on(leftColumn: BindableColumn<T>): RightColumnCollector<T> = RightColumnCollector {
-        assertNull(criteriaCollector.initialCriterion, "ERROR.45") //$NON-NLS-1$
         criteriaCollector.apply { leftColumn.invoke(it) }
     }
 
