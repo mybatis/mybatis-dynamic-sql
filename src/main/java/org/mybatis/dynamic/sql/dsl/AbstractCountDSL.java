@@ -121,11 +121,6 @@ public abstract class AbstractCountDSL<M, D extends AbstractCountDSL<M, D>> exte
         return finisher;
     }
 
-    @Override
-    public D endJoinSpecification() {
-        return getThis();
-    }
-
     public class JoinSpecificationFinisher
             extends AbstractJoinSupport<D, JoinSpecificationFinisher>
             implements WhereOperations<CountWhereBuilder>,
@@ -165,6 +160,11 @@ public abstract class AbstractCountDSL<M, D extends AbstractCountDSL<M, D>> exte
         public JoinSpecificationFinisher configureStatement(Consumer<StatementConfiguration> consumer) {
             AbstractCountDSL.this.configureStatement(consumer);
             return this;
+        }
+
+        @Override
+        protected D endJoinSpecification() {
+            return AbstractCountDSL.this.getThis();
         }
     }
 

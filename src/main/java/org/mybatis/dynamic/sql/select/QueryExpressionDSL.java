@@ -31,7 +31,6 @@ import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.TableExpression;
 import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
-import org.mybatis.dynamic.sql.dsl.AbstractJoinSupport;
 import org.mybatis.dynamic.sql.dsl.AbstractQueryingDSL;
 import org.mybatis.dynamic.sql.dsl.BooleanOperations;
 import org.mybatis.dynamic.sql.dsl.ForAndWaitOperations;
@@ -101,11 +100,6 @@ public class QueryExpressionDSL<R> extends AbstractQueryingDSL implements
         var finisher = new JoinSpecificationFinisher(joinType, joinTable, initialCriterion);
         addJoinSpecification(finisher);
         return finisher;
-    }
-
-    @Override
-    public QueryExpressionDSL<R> endJoinSpecification() {
-        return this;
     }
 
     @Override
@@ -299,7 +293,7 @@ public class QueryExpressionDSL<R> extends AbstractQueryingDSL implements
     }
 
     public class JoinSpecificationFinisher
-            extends AbstractJoinSupport<QueryExpressionDSL<R>, JoinSpecificationFinisher>
+            extends JoinOperations.AbstractJoinSupport<QueryExpressionDSL<R>, JoinSpecificationFinisher>
             implements JoinOperations<QueryExpressionDSL<R>, JoinSpecificationFinisher>,
             WhereOperations<QueryExpressionWhereBuilder>,
             ConfigurableStatement<JoinSpecificationFinisher>,
@@ -368,7 +362,7 @@ public class QueryExpressionDSL<R> extends AbstractQueryingDSL implements
         }
 
         @Override
-        public QueryExpressionDSL<R> endJoinSpecification() {
+        protected QueryExpressionDSL<R> endJoinSpecification() {
             return QueryExpressionDSL.this;
         }
 

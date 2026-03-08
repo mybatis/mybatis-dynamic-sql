@@ -131,11 +131,6 @@ public class SelectDSL implements
     }
 
     @Override
-    public SelectDSL endJoinSpecification() {
-        return this;
-    }
-
-    @Override
     public void addTableAlias(SqlTable table, String tableAlias) {
         currentQueryValues.addTableAlias(table, tableAlias);
     }
@@ -440,8 +435,8 @@ public class SelectDSL implements
         }
 
         @Override
-        public SelectDSL endJoinSpecification() {
-            return SelectDSL.this.endJoinSpecification();
+        protected SelectDSL endJoinSpecification() {
+            return SelectDSL.this;
         }
 
         @Override

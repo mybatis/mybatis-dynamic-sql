@@ -15,8 +15,10 @@
  */
 package org.mybatis.dynamic.sql.dsl;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import org.jspecify.annotations.Nullable;
 import org.mybatis.dynamic.sql.AndOrCriteriaGroup;
@@ -28,6 +30,7 @@ import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.TableExpression;
 import org.mybatis.dynamic.sql.select.SelectModel;
 import org.mybatis.dynamic.sql.select.SubQuery;
+import org.mybatis.dynamic.sql.select.join.JoinSpecification;
 import org.mybatis.dynamic.sql.select.join.JoinType;
 import org.mybatis.dynamic.sql.util.Buildable;
 
@@ -41,9 +44,7 @@ import org.mybatis.dynamic.sql.util.Buildable;
  *           methods for build complex joins. We require this for methods such as {@link #join(SqlTable)}
  *           that build the join specification with fluent method calls.
  */
-public interface JoinOperations<D extends JoinOperations<D, F>, F extends BooleanOperations<?>> {
-
-    D endJoinSpecification();
+public interface JoinOperations<D extends JoinOperations<D, F>, F extends JoinOperations.AbstractJoinSupport<D, F>> {
 
     void addTableAlias(SqlTable table, String tableAlias);
 
@@ -81,20 +82,17 @@ public interface JoinOperations<D extends JoinOperations<D, F>, F extends Boolea
 
     default D join(SqlTable joinTable, SqlCriterion onJoinCriterion,
                    List<AndOrCriteriaGroup> andJoinCriteria) {
-        join(joinTable).on(onJoinCriterion).and(andJoinCriteria);
-        return endJoinSpecification();
+        return join(joinTable).on(onJoinCriterion).and(andJoinCriteria).endJoinSpecification();
     }
 
     default D join(SqlTable joinTable, String tableAlias, SqlCriterion onJoinCriterion,
                    List<AndOrCriteriaGroup> andJoinCriteria) {
-        join(joinTable, tableAlias).on(onJoinCriterion).and(andJoinCriteria);
-        return endJoinSpecification();
+        return join(joinTable, tableAlias).on(onJoinCriterion).and(andJoinCriteria).endJoinSpecification();
     }
 
     default D join(Buildable<SelectModel> subQuery, @Nullable String tableAlias, SqlCriterion onJoinCriterion,
                    List<AndOrCriteriaGroup> andJoinCriteria) {
-        join(subQuery, tableAlias).on(onJoinCriterion).and(andJoinCriteria);
-        return endJoinSpecification();
+        return join(subQuery, tableAlias).on(onJoinCriterion).and(andJoinCriteria).endJoinSpecification();
     }
 
     default JoinOnGatherer<F> leftJoin(SqlTable joinTable) {
@@ -123,20 +121,17 @@ public interface JoinOperations<D extends JoinOperations<D, F>, F extends Boolea
 
     default D leftJoin(SqlTable joinTable, SqlCriterion onJoinCriterion,
                        List<AndOrCriteriaGroup> andJoinCriteria) {
-        leftJoin(joinTable).on(onJoinCriterion).and(andJoinCriteria);
-        return endJoinSpecification();
+        return leftJoin(joinTable).on(onJoinCriterion).and(andJoinCriteria).endJoinSpecification();
     }
 
     default D leftJoin(SqlTable joinTable, String tableAlias, SqlCriterion onJoinCriterion,
                        List<AndOrCriteriaGroup> andJoinCriteria) {
-        leftJoin(joinTable, tableAlias).on(onJoinCriterion).and(andJoinCriteria);
-        return endJoinSpecification();
+        return leftJoin(joinTable, tableAlias).on(onJoinCriterion).and(andJoinCriteria).endJoinSpecification();
     }
 
     default D leftJoin(Buildable<SelectModel> subQuery, @Nullable String tableAlias,
                        SqlCriterion onJoinCriterion, List<AndOrCriteriaGroup> andJoinCriteria) {
-        leftJoin(subQuery, tableAlias).on(onJoinCriterion).and(andJoinCriteria);
-        return endJoinSpecification();
+        return leftJoin(subQuery, tableAlias).on(onJoinCriterion).and(andJoinCriteria).endJoinSpecification();
     }
 
     default JoinOnGatherer<F> rightJoin(SqlTable joinTable) {
@@ -165,20 +160,17 @@ public interface JoinOperations<D extends JoinOperations<D, F>, F extends Boolea
 
     default D rightJoin(SqlTable joinTable, SqlCriterion onJoinCriterion,
                         List<AndOrCriteriaGroup> andJoinCriteria) {
-        rightJoin(joinTable).on(onJoinCriterion).and(andJoinCriteria);
-        return endJoinSpecification();
+        return rightJoin(joinTable).on(onJoinCriterion).and(andJoinCriteria).endJoinSpecification();
     }
 
     default D rightJoin(SqlTable joinTable, String tableAlias, SqlCriterion onJoinCriterion,
                         List<AndOrCriteriaGroup> andJoinCriteria) {
-        rightJoin(joinTable, tableAlias).on(onJoinCriterion).and(andJoinCriteria);
-        return endJoinSpecification();
+        return rightJoin(joinTable, tableAlias).on(onJoinCriterion).and(andJoinCriteria).endJoinSpecification();
     }
 
     default D rightJoin(Buildable<SelectModel> subQuery, @Nullable String tableAlias,
                         SqlCriterion onJoinCriterion, List<AndOrCriteriaGroup> andJoinCriteria) {
-        rightJoin(subQuery, tableAlias).on(onJoinCriterion).and(andJoinCriteria);
-        return endJoinSpecification();
+        return rightJoin(subQuery, tableAlias).on(onJoinCriterion).and(andJoinCriteria).endJoinSpecification();
     }
 
     default JoinOnGatherer<F> fullJoin(SqlTable joinTable) {
@@ -207,20 +199,17 @@ public interface JoinOperations<D extends JoinOperations<D, F>, F extends Boolea
 
     default D fullJoin(SqlTable joinTable, SqlCriterion onJoinCriterion,
                        List<AndOrCriteriaGroup> andJoinCriteria) {
-        fullJoin(joinTable).on(onJoinCriterion).and(andJoinCriteria);
-        return endJoinSpecification();
+        return fullJoin(joinTable).on(onJoinCriterion).and(andJoinCriteria).endJoinSpecification();
     }
 
     default D fullJoin(SqlTable joinTable, String tableAlias, SqlCriterion onJoinCriterion,
                        List<AndOrCriteriaGroup> andJoinCriteria) {
-        fullJoin(joinTable, tableAlias).on(onJoinCriterion).and(andJoinCriteria);
-        return endJoinSpecification();
+        return fullJoin(joinTable, tableAlias).on(onJoinCriterion).and(andJoinCriteria).endJoinSpecification();
     }
 
     default D fullJoin(Buildable<SelectModel> subQuery, @Nullable String tableAlias,
                        SqlCriterion onJoinCriterion, List<AndOrCriteriaGroup> andJoinCriteria) {
-        fullJoin(subQuery, tableAlias).on(onJoinCriterion).and(andJoinCriteria);
-        return endJoinSpecification();
+        return fullJoin(subQuery, tableAlias).on(onJoinCriterion).and(andJoinCriteria).endJoinSpecification();
     }
 
     private SubQuery buildSubQuery(Buildable<SelectModel> selectModel, @Nullable String alias) {
@@ -261,6 +250,38 @@ public interface JoinOperations<D extends JoinOperations<D, F>, F extends Boolea
 
         public F on(SqlCriterion initialCriterion) {
             return builder.apply(joinType, joinTable, initialCriterion);
+        }
+    }
+
+    abstract class AbstractJoinSupport<D extends JoinOperations<D, F>, F extends AbstractJoinSupport<D, F>>
+            implements BooleanOperations<F> {
+        private final JoinType joinType;
+        private final TableExpression joinTable;
+        private final SqlCriterion initialCriterion;
+        private final List<AndOrCriteriaGroup> subCriteria = new ArrayList<>();
+
+        protected AbstractJoinSupport(JoinType joinType, TableExpression joinTable, SqlCriterion initialCriterion) {
+            this.joinType = joinType;
+            this.joinTable = joinTable;
+            this.initialCriterion = initialCriterion;
+        }
+
+        @Override
+        public F addSubCriterion(AndOrCriteriaGroup subCriterion) {
+            subCriteria.add(subCriterion);
+            return getThis();
+        }
+
+        protected abstract F getThis();
+
+        protected abstract D endJoinSpecification();
+
+        protected JoinSpecification toJoinSpecification() {
+            return JoinSpecification.withJoinTable(Objects.requireNonNull(joinTable))
+                    .withJoinType(Objects.requireNonNull(joinType))
+                    .withInitialCriterion(initialCriterion)
+                    .withSubCriteria(subCriteria)
+                    .build();
         }
     }
 }
