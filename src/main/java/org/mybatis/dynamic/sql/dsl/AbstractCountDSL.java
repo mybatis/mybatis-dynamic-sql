@@ -166,6 +166,16 @@ public abstract class AbstractCountDSL<M, D extends AbstractCountDSL<M, D>> exte
         protected D endJoinSpecification() {
             return AbstractCountDSL.this.getThis();
         }
+
+        @Override
+        public void addTableAlias(SqlTable table, String tableAlias) {
+            AbstractCountDSL.this.addTableAlias(table, tableAlias);
+        }
+
+        @Override
+        public JoinSpecificationFinisher join(JoinType joinType, TableExpression joinTable, SqlCriterion initialCriterion) {
+            return AbstractCountDSL.this.join(joinType, joinTable, initialCriterion);
+        }
     }
 
     public class CountWhereBuilder implements BooleanOperations<CountWhereBuilder>,

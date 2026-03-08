@@ -254,7 +254,7 @@ public interface JoinOperations<D extends JoinOperations<D, F>, F extends JoinOp
     }
 
     abstract class AbstractJoinSupport<D extends JoinOperations<D, F>, F extends AbstractJoinSupport<D, F>>
-            implements BooleanOperations<F> {
+            implements JoinOperations<D, F>, BooleanOperations<F> {
         private final JoinType joinType;
         private final TableExpression joinTable;
         private final SqlCriterion initialCriterion;
