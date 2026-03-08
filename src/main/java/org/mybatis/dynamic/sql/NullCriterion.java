@@ -20,19 +20,8 @@ package org.mybatis.dynamic.sql;
  * awkward nullability operations in various classes. We can now say that an initial criterion is never null.
  */
 public class NullCriterion extends SqlCriterion {
-    public NullCriterion() {
-        super(new Builder());
-    }
-
     @Override
     public <R> R accept(SqlCriterionVisitor<R> visitor) {
         return visitor.visit(this);
-    }
-
-    private static class Builder extends AbstractBuilder<Builder> {
-        @Override
-        protected Builder getThis() {
-            return this;
-        }
     }
 }

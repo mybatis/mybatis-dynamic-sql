@@ -23,6 +23,9 @@ public abstract class SqlCriterion {
 
     private final List<AndOrCriteriaGroup> subCriteria = new ArrayList<>();
 
+    protected SqlCriterion() {
+    }
+
     protected SqlCriterion(AbstractBuilder<?> builder) {
         subCriteria.addAll(builder.subCriteria);
     }

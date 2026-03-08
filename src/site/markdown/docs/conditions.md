@@ -1,6 +1,6 @@
 # Where Conditions
 
-MyBatis Dynamic SQL supports a wide variety of where clause conditions. All conditions can be combined with "and" and 
+MyBatis Dynamic SQL supports a wide variety of where clause conditions. All conditions can be combined with "and" and
 "or" operators to create arbitrarily complex where clauses.
 
 In the following examples:
@@ -206,7 +206,7 @@ Optionality with the "in" and "not in" conditions is a bit more complex than the
 are different for the base conditions ("isIn", "isNotIn", etc.) and the "when present" conditions ("isInWhenPresent",
 "isNotInWhenPresent", etc.).
 
-Optionality of the "in" conditions is more about the optionality 
+Optionality of the "in" conditions is more about the optionality
 of the *values* of the condition. The library comes with functions that will filter out null values, and will upper
 case String values to enable case-insensitive queries. There are extension points to add additional filtering and
 mapping if you so desire.

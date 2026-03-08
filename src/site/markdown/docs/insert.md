@@ -87,7 +87,7 @@ public final class PersonDynamicSqlSupport {
 }
 ```
 
-In this support class, each `SqlColumn` has a configured Java property. This property can be accessed in record-based 
+In this support class, each `SqlColumn` has a configured Java property. This property can be accessed in record-based
 inserts in the following way:
 
 ```java

@@ -48,6 +48,7 @@ import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.util.Messages;
 import org.mybatis.dynamic.sql.util.mybatis3.CommonSelectMapper;
+import org.mybatis.dynamic.sql.where.condition.IsEqualToColumn;
 
 class JoinMapperTest {
 
@@ -998,8 +999,10 @@ class JoinMapperTest {
                 .from(user, "u1")
                 .join(user, "u2");
 
+        IsEqualToColumn<Integer> condition = isEqualTo(user.parentId);
+
         assertThatExceptionOfType(DuplicateTableAliasException.class)
-                .isThrownBy(() -> dsl.on(user.userId, isEqualTo(user.parentId)))
+                .isThrownBy(() -> dsl.on(user.userId, condition))
                 .withMessage(Messages.getString("ERROR.1", user.tableName(), "u2", "u1"));
     }
 

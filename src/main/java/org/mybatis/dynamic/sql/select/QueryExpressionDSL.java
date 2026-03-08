@@ -369,7 +369,8 @@ public class QueryExpressionDSL<R> extends AbstractQueryingDSL implements
         }
 
         @Override
-        public JoinSpecificationFinisher join(JoinType joinType, SqlTable joinTable, String tableAlias, SqlCriterion initialCriterion) {
+        public JoinSpecificationFinisher join(JoinType joinType, SqlTable joinTable, String tableAlias,
+                                              SqlCriterion initialCriterion) {
             return QueryExpressionDSL.this.join(joinType, joinTable, tableAlias, initialCriterion);
         }
 
