@@ -340,8 +340,7 @@ public class SelectDSL implements
 
     public class JoinSpecificationFinisher
             extends AbstractJoinSupport<SelectDSL, JoinSpecificationFinisher>
-            implements JoinOperations<SelectDSL, JoinSpecificationFinisher>,
-            WhereOperations<QueryExpressionWhereBuilder>,
+            implements WhereOperations<QueryExpressionWhereBuilder>,
             ConfigurableStatement<JoinSpecificationFinisher>,
             GroupByOperations<SelectDSL>,
             OrderByOperations<SelectDSL>,
@@ -435,7 +434,7 @@ public class SelectDSL implements
         }
 
         @Override
-        protected SelectDSL endJoinSpecification() {
+        protected SelectDSL endJoin() {
             return SelectDSL.this;
         }
 

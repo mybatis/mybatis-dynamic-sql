@@ -82,17 +82,17 @@ public interface JoinOperations<D extends JoinOperations<D, F>, F extends JoinOp
 
     default D join(SqlTable joinTable, SqlCriterion onJoinCriterion,
                    List<AndOrCriteriaGroup> andJoinCriteria) {
-        return join(joinTable).on(onJoinCriterion).and(andJoinCriteria).endJoinSpecification();
+        return join(joinTable).on(onJoinCriterion).and(andJoinCriteria).endJoin();
     }
 
     default D join(SqlTable joinTable, String tableAlias, SqlCriterion onJoinCriterion,
                    List<AndOrCriteriaGroup> andJoinCriteria) {
-        return join(joinTable, tableAlias).on(onJoinCriterion).and(andJoinCriteria).endJoinSpecification();
+        return join(joinTable, tableAlias).on(onJoinCriterion).and(andJoinCriteria).endJoin();
     }
 
     default D join(Buildable<SelectModel> subQuery, @Nullable String tableAlias, SqlCriterion onJoinCriterion,
                    List<AndOrCriteriaGroup> andJoinCriteria) {
-        return join(subQuery, tableAlias).on(onJoinCriterion).and(andJoinCriteria).endJoinSpecification();
+        return join(subQuery, tableAlias).on(onJoinCriterion).and(andJoinCriteria).endJoin();
     }
 
     default JoinOnGatherer<F> leftJoin(SqlTable joinTable) {
@@ -121,17 +121,17 @@ public interface JoinOperations<D extends JoinOperations<D, F>, F extends JoinOp
 
     default D leftJoin(SqlTable joinTable, SqlCriterion onJoinCriterion,
                        List<AndOrCriteriaGroup> andJoinCriteria) {
-        return leftJoin(joinTable).on(onJoinCriterion).and(andJoinCriteria).endJoinSpecification();
+        return leftJoin(joinTable).on(onJoinCriterion).and(andJoinCriteria).endJoin();
     }
 
     default D leftJoin(SqlTable joinTable, String tableAlias, SqlCriterion onJoinCriterion,
                        List<AndOrCriteriaGroup> andJoinCriteria) {
-        return leftJoin(joinTable, tableAlias).on(onJoinCriterion).and(andJoinCriteria).endJoinSpecification();
+        return leftJoin(joinTable, tableAlias).on(onJoinCriterion).and(andJoinCriteria).endJoin();
     }
 
     default D leftJoin(Buildable<SelectModel> subQuery, @Nullable String tableAlias,
                        SqlCriterion onJoinCriterion, List<AndOrCriteriaGroup> andJoinCriteria) {
-        return leftJoin(subQuery, tableAlias).on(onJoinCriterion).and(andJoinCriteria).endJoinSpecification();
+        return leftJoin(subQuery, tableAlias).on(onJoinCriterion).and(andJoinCriteria).endJoin();
     }
 
     default JoinOnGatherer<F> rightJoin(SqlTable joinTable) {
@@ -160,17 +160,17 @@ public interface JoinOperations<D extends JoinOperations<D, F>, F extends JoinOp
 
     default D rightJoin(SqlTable joinTable, SqlCriterion onJoinCriterion,
                         List<AndOrCriteriaGroup> andJoinCriteria) {
-        return rightJoin(joinTable).on(onJoinCriterion).and(andJoinCriteria).endJoinSpecification();
+        return rightJoin(joinTable).on(onJoinCriterion).and(andJoinCriteria).endJoin();
     }
 
     default D rightJoin(SqlTable joinTable, String tableAlias, SqlCriterion onJoinCriterion,
                         List<AndOrCriteriaGroup> andJoinCriteria) {
-        return rightJoin(joinTable, tableAlias).on(onJoinCriterion).and(andJoinCriteria).endJoinSpecification();
+        return rightJoin(joinTable, tableAlias).on(onJoinCriterion).and(andJoinCriteria).endJoin();
     }
 
     default D rightJoin(Buildable<SelectModel> subQuery, @Nullable String tableAlias,
                         SqlCriterion onJoinCriterion, List<AndOrCriteriaGroup> andJoinCriteria) {
-        return rightJoin(subQuery, tableAlias).on(onJoinCriterion).and(andJoinCriteria).endJoinSpecification();
+        return rightJoin(subQuery, tableAlias).on(onJoinCriterion).and(andJoinCriteria).endJoin();
     }
 
     default JoinOnGatherer<F> fullJoin(SqlTable joinTable) {
@@ -199,17 +199,17 @@ public interface JoinOperations<D extends JoinOperations<D, F>, F extends JoinOp
 
     default D fullJoin(SqlTable joinTable, SqlCriterion onJoinCriterion,
                        List<AndOrCriteriaGroup> andJoinCriteria) {
-        return fullJoin(joinTable).on(onJoinCriterion).and(andJoinCriteria).endJoinSpecification();
+        return fullJoin(joinTable).on(onJoinCriterion).and(andJoinCriteria).endJoin();
     }
 
     default D fullJoin(SqlTable joinTable, String tableAlias, SqlCriterion onJoinCriterion,
                        List<AndOrCriteriaGroup> andJoinCriteria) {
-        return fullJoin(joinTable, tableAlias).on(onJoinCriterion).and(andJoinCriteria).endJoinSpecification();
+        return fullJoin(joinTable, tableAlias).on(onJoinCriterion).and(andJoinCriteria).endJoin();
     }
 
     default D fullJoin(Buildable<SelectModel> subQuery, @Nullable String tableAlias,
                        SqlCriterion onJoinCriterion, List<AndOrCriteriaGroup> andJoinCriteria) {
-        return fullJoin(subQuery, tableAlias).on(onJoinCriterion).and(andJoinCriteria).endJoinSpecification();
+        return fullJoin(subQuery, tableAlias).on(onJoinCriterion).and(andJoinCriteria).endJoin();
     }
 
     private SubQuery buildSubQuery(Buildable<SelectModel> selectModel, @Nullable String alias) {
@@ -274,7 +274,7 @@ public interface JoinOperations<D extends JoinOperations<D, F>, F extends JoinOp
 
         protected abstract F getThis();
 
-        protected abstract D endJoinSpecification();
+        protected abstract D endJoin();
 
         protected JoinSpecification toJoinSpecification() {
             return JoinSpecification.withJoinTable(Objects.requireNonNull(joinTable))

@@ -294,8 +294,7 @@ public class QueryExpressionDSL<R> extends AbstractQueryingDSL implements
 
     public class JoinSpecificationFinisher
             extends JoinOperations.AbstractJoinSupport<QueryExpressionDSL<R>, JoinSpecificationFinisher>
-            implements JoinOperations<QueryExpressionDSL<R>, JoinSpecificationFinisher>,
-            WhereOperations<QueryExpressionWhereBuilder>,
+            implements WhereOperations<QueryExpressionWhereBuilder>,
             ConfigurableStatement<JoinSpecificationFinisher>,
             GroupByOperations<QueryExpressionDSL<R>>,
             ForAndWaitOperations<SelectDSL<R>>,
@@ -362,7 +361,7 @@ public class QueryExpressionDSL<R> extends AbstractQueryingDSL implements
         }
 
         @Override
-        protected QueryExpressionDSL<R> endJoinSpecification() {
+        protected QueryExpressionDSL<R> endJoin() {
             return QueryExpressionDSL.this;
         }
 

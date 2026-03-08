@@ -163,7 +163,7 @@ public abstract class AbstractCountDSL<M, D extends AbstractCountDSL<M, D>> exte
         }
 
         @Override
-        protected D endJoinSpecification() {
+        protected D endJoin() {
             return AbstractCountDSL.this.getThis();
         }
 
