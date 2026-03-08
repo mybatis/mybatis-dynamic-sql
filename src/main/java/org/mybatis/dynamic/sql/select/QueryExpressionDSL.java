@@ -103,6 +103,14 @@ public class QueryExpressionDSL<R> extends AbstractQueryingDSL implements
     }
 
     @Override
+    public JoinSpecificationFinisher join(JoinType joinType, SqlTable joinTable, String tableAlias,
+                                          SqlCriterion initialCriterion) {
+        addTableAlias(joinTable, tableAlias);
+        return join(joinType, joinTable, initialCriterion);
+    }
+
+
+    @Override
     public QueryExpressionWhereBuilder where() {
         if (whereBuilder == null) {
             whereBuilder = new QueryExpressionWhereBuilder(new NullCriterion());
@@ -361,13 +369,13 @@ public class QueryExpressionDSL<R> extends AbstractQueryingDSL implements
         }
 
         @Override
-        protected QueryExpressionDSL<R> endJoin() {
-            return QueryExpressionDSL.this;
+        public JoinSpecificationFinisher join(JoinType joinType, SqlTable joinTable, String tableAlias, SqlCriterion initialCriterion) {
+            return QueryExpressionDSL.this.join(joinType, joinTable, tableAlias, initialCriterion);
         }
 
         @Override
-        public void addTableAlias(SqlTable table, String tableAlias) {
-            QueryExpressionDSL.this.addTableAlias(table, tableAlias);
+        protected QueryExpressionDSL<R> endJoin() {
+            return QueryExpressionDSL.this;
         }
 
         @Override

@@ -45,8 +45,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.exception.DuplicateTableAliasException;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
-import org.mybatis.dynamic.sql.select.QueryExpressionDSL;
-import org.mybatis.dynamic.sql.select.SelectModel;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.util.Messages;
 import org.mybatis.dynamic.sql.util.mybatis3.CommonSelectMapper;
@@ -996,10 +994,12 @@ class JoinMapperTest {
 
     @Test
     void testSelfWithDuplicateAlias() {
-        QueryExpressionDSL<SelectModel> dsl = select(user.userId, user.userName, user.parentId)
-                .from(user, "u1");
+        var dsl = select(user.userId, user.userName, user.parentId)
+                .from(user, "u1")
+                .join(user, "u2");
 
-        assertThatExceptionOfType(DuplicateTableAliasException.class).isThrownBy(() -> dsl.join(user, "u2"))
+        assertThatExceptionOfType(DuplicateTableAliasException.class)
+                .isThrownBy(() -> dsl.on(user.userId, isEqualTo(user.parentId)))
                 .withMessage(Messages.getString("ERROR.1", user.tableName(), "u2", "u1"));
     }
 

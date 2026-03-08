@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Function;
 
 import org.jspecify.annotations.Nullable;
 import org.mybatis.dynamic.sql.AndOrCriteriaGroup;
@@ -40,34 +41,26 @@ import org.mybatis.dynamic.sql.util.Buildable;
  * @param <D> a class that implements this interface. Typically, this is the owning DSL. We require this for
  *           the methods suchs as {@link #join(SqlTable, SqlCriterion, AndOrCriteriaGroup...)} that build
  *           an entire join specification in a single method call
- * @param <F> a class that extends {@link BooleanOperations} - which includes "and" and "or"
+ * @param <F> a class that extends {@link AbstractJoinSupport} - which includes "and" and "or"
  *           methods for build complex joins. We require this for methods such as {@link #join(SqlTable)}
  *           that build the join specification with fluent method calls.
  */
 public interface JoinOperations<D extends JoinOperations<D, F>, F extends JoinOperations.AbstractJoinSupport<D, F>> {
 
-    void addTableAlias(SqlTable table, String tableAlias);
-
-    /**
-     * Builds a join finisher (a class that extends {@link BooleanOperations}) and provides access to
-     * other DSL methods as appropriate.
-     *
-     * @return the join finisher
-     */
     F join(JoinType joinType, TableExpression joinTable, SqlCriterion initialCriterion);
 
+    F join(JoinType joinType, SqlTable joinTable, String tableAlias, SqlCriterion initialCriterion);
+
     default JoinOnGatherer<F> join(SqlTable joinTable) {
-        return new JoinOnGatherer<>(JoinType.INNER, joinTable, this::join);
+        return new JoinOnGatherer<>(ic -> join(JoinType.INNER, joinTable, ic));
     }
 
     default JoinOnGatherer<F> join(SqlTable joinTable, String tableAlias) {
-        var g = join(joinTable);
-        addTableAlias(joinTable, tableAlias);
-        return g;
+        return new JoinOnGatherer<>(ic -> join(JoinType.INNER, joinTable, tableAlias, ic));
     }
 
     default JoinOnGatherer<F> join(Buildable<SelectModel> joinTable, @Nullable String tableAlias) {
-        return new JoinOnGatherer<>(JoinType.INNER, buildSubQuery(joinTable, tableAlias), this::join);
+        return new JoinOnGatherer<>(ic -> join(JoinType.INNER, buildSubQuery(joinTable, tableAlias), ic));
     }
 
     default D join(SqlTable joinTable, SqlCriterion onJoinCriterion,
@@ -96,17 +89,15 @@ public interface JoinOperations<D extends JoinOperations<D, F>, F extends JoinOp
     }
 
     default JoinOnGatherer<F> leftJoin(SqlTable joinTable) {
-        return new JoinOnGatherer<>(JoinType.LEFT, joinTable, this::join);
+        return new JoinOnGatherer<>(ic -> join(JoinType.LEFT, joinTable, ic));
     }
 
     default JoinOnGatherer<F> leftJoin(SqlTable joinTable, String tableAlias) {
-        var g = leftJoin(joinTable);
-        addTableAlias(joinTable, tableAlias);
-        return g;
+        return new JoinOnGatherer<>(ic -> join(JoinType.LEFT, joinTable, tableAlias, ic));
     }
 
     default JoinOnGatherer<F> leftJoin(Buildable<SelectModel> joinTable, @Nullable String tableAlias) {
-        return new JoinOnGatherer<>(JoinType.LEFT, buildSubQuery(joinTable, tableAlias), this::join);
+        return new JoinOnGatherer<>(ic -> join(JoinType.LEFT, buildSubQuery(joinTable, tableAlias), ic));
     }
 
     default D leftJoin(SqlTable joinTable, SqlCriterion onJoinCriterion,
@@ -135,17 +126,15 @@ public interface JoinOperations<D extends JoinOperations<D, F>, F extends JoinOp
     }
 
     default JoinOnGatherer<F> rightJoin(SqlTable joinTable) {
-        return new JoinOnGatherer<>(JoinType.RIGHT, joinTable, this::join);
+        return new JoinOnGatherer<>(ic -> join(JoinType.RIGHT, joinTable, ic));
     }
 
     default JoinOnGatherer<F> rightJoin(SqlTable joinTable, String tableAlias) {
-        var g = rightJoin(joinTable);
-        addTableAlias(joinTable, tableAlias);
-        return g;
+        return new JoinOnGatherer<>(ic -> join(JoinType.RIGHT, joinTable, tableAlias, ic));
     }
 
     default JoinOnGatherer<F> rightJoin(Buildable<SelectModel> joinTable, @Nullable String tableAlias) {
-        return new JoinOnGatherer<>(JoinType.RIGHT, buildSubQuery(joinTable, tableAlias), this::join);
+        return new JoinOnGatherer<>(ic -> join(JoinType.RIGHT, buildSubQuery(joinTable, tableAlias), ic));
     }
 
     default D rightJoin(SqlTable joinTable, SqlCriterion onJoinCriterion,
@@ -174,17 +163,15 @@ public interface JoinOperations<D extends JoinOperations<D, F>, F extends JoinOp
     }
 
     default JoinOnGatherer<F> fullJoin(SqlTable joinTable) {
-        return new JoinOnGatherer<>(JoinType.FULL, joinTable, this::join);
+        return new JoinOnGatherer<>(ic -> join(JoinType.FULL, joinTable, ic));
     }
 
     default JoinOnGatherer<F> fullJoin(SqlTable joinTable, String tableAlias) {
-        var g = fullJoin(joinTable);
-        addTableAlias(joinTable, tableAlias);
-        return g;
+        return new JoinOnGatherer<>(ic -> join(JoinType.FULL, joinTable, tableAlias, ic));
     }
 
     default JoinOnGatherer<F> fullJoin(Buildable<SelectModel> joinTable, @Nullable String tableAlias) {
-        return new JoinOnGatherer<>(JoinType.FULL, buildSubQuery(joinTable, tableAlias), this::join);
+        return new JoinOnGatherer<>(ic -> join(JoinType.FULL, buildSubQuery(joinTable, tableAlias), ic));
     }
 
     default D fullJoin(SqlTable joinTable, SqlCriterion onJoinCriterion,
@@ -219,18 +206,10 @@ public interface JoinOperations<D extends JoinOperations<D, F>, F extends JoinOp
                 .build();
     }
 
-    interface JoinBuilder<R> {
-        R apply(JoinType joinType, TableExpression tableExpression, SqlCriterion initialCriterion);
-    }
-
     class JoinOnGatherer<F extends BooleanOperations<?>> {
-        private final JoinType joinType;
-        private final TableExpression joinTable;
-        private final JoinBuilder<F> builder;
+        private final Function<SqlCriterion, F> builder;
 
-        public JoinOnGatherer(JoinType joinType, TableExpression joinTable, JoinBuilder<F> builder) {
-            this.joinType = joinType;
-            this.joinTable = joinTable;
+        public JoinOnGatherer(Function<SqlCriterion, F> builder) {
             this.builder = builder;
         }
 
@@ -249,7 +228,7 @@ public interface JoinOperations<D extends JoinOperations<D, F>, F extends JoinOp
         }
 
         public F on(SqlCriterion initialCriterion) {
-            return builder.apply(joinType, joinTable, initialCriterion);
+            return builder.apply(initialCriterion);
         }
     }
 

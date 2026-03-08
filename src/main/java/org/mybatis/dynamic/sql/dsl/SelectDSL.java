@@ -131,8 +131,10 @@ public class SelectDSL implements
     }
 
     @Override
-    public void addTableAlias(SqlTable table, String tableAlias) {
-        currentQueryValues.addTableAlias(table, tableAlias);
+    public JoinSpecificationFinisher join(JoinType joinType, SqlTable joinTable, String tableAlias,
+                                          SqlCriterion initialCriterion) {
+        currentQueryValues.addTableAlias(joinTable, tableAlias);
+        return join(joinType, joinTable, initialCriterion);
     }
 
     @Override
@@ -434,13 +436,14 @@ public class SelectDSL implements
         }
 
         @Override
-        protected SelectDSL endJoin() {
-            return SelectDSL.this;
+        public JoinSpecificationFinisher join(JoinType joinType, SqlTable joinTable, String tableAlias,
+                                              SqlCriterion initialCriterion) {
+            return SelectDSL.this.join(joinType, joinTable, tableAlias, initialCriterion);
         }
 
         @Override
-        public void addTableAlias(SqlTable table, String tableAlias) {
-            SelectDSL.this.addTableAlias(table, tableAlias);
+        protected SelectDSL endJoin() {
+            return SelectDSL.this;
         }
     }
 

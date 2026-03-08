@@ -115,10 +115,18 @@ public abstract class AbstractCountDSL<M, D extends AbstractCountDSL<M, D>> exte
     protected abstract D getThis();
 
     @Override
-    public JoinSpecificationFinisher join(JoinType joinType, TableExpression joinTable, SqlCriterion initialCriterion) {
+    public JoinSpecificationFinisher join(JoinType joinType, TableExpression joinTable,
+                                          SqlCriterion initialCriterion) {
         var finisher = new JoinSpecificationFinisher(joinType, joinTable, initialCriterion);
         addJoinSpecification(finisher);
         return finisher;
+    }
+
+    @Override
+    public JoinSpecificationFinisher join(JoinType joinType, SqlTable joinTable, String tableAlias,
+                                          SqlCriterion initialCriterion) {
+        addTableAlias(joinTable, tableAlias);
+        return join(joinType, joinTable, initialCriterion);
     }
 
     public class JoinSpecificationFinisher
@@ -168,13 +176,13 @@ public abstract class AbstractCountDSL<M, D extends AbstractCountDSL<M, D>> exte
         }
 
         @Override
-        public void addTableAlias(SqlTable table, String tableAlias) {
-            AbstractCountDSL.this.addTableAlias(table, tableAlias);
+        public JoinSpecificationFinisher join(JoinType joinType, TableExpression joinTable, SqlCriterion initialCriterion) {
+            return AbstractCountDSL.this.join(joinType, joinTable, initialCriterion);
         }
 
         @Override
-        public JoinSpecificationFinisher join(JoinType joinType, TableExpression joinTable, SqlCriterion initialCriterion) {
-            return AbstractCountDSL.this.join(joinType, joinTable, initialCriterion);
+        public JoinSpecificationFinisher join(JoinType joinType, SqlTable joinTable, String tableAlias, SqlCriterion initialCriterion) {
+            return AbstractCountDSL.this.join(joinType, joinTable, tableAlias, initialCriterion);
         }
     }
 
