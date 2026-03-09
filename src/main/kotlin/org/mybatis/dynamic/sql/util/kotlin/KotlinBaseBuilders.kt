@@ -63,7 +63,7 @@ abstract class KotlinWhereOperations<D>(private val dsl : D)
 
 @Suppress("TooManyFunctions")
 abstract class KotlinJoinOperations<D>(private val dsl : D) : KotlinWhereOperations<D>(dsl)
-        where D : JoinOperations<*,*>, D: ConfigurableStatement<*>, D: WhereOperations<*>{
+        where D : JoinOperations<*>, D: ConfigurableStatement<*>, D: WhereOperations<*>{
     @Deprecated("Please use the new form with the \"on\" keyword outside the lambda")
     fun join(table: SqlTable, joinCriteria: JoinReceiver): Unit =
         applyToDsl(joinCriteria) { jc ->

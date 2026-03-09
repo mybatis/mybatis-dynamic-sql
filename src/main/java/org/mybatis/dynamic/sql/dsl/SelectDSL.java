@@ -46,7 +46,7 @@ import org.mybatis.dynamic.sql.where.EmbeddedWhereModel;
 import org.mybatis.dynamic.sql.where.WhereApplier;
 
 public class SelectDSL implements
-        JoinOperations<SelectDSL, SelectDSL.JoinSpecificationFinisher>,
+        JoinOperations<SelectDSL.JoinSpecificationFinisher>,
         WhereOperations<SelectDSL.QueryExpressionWhereBuilder>,
         OrderByOperations<SelectDSL>,
         GroupByOperations<SelectDSL>,
@@ -442,7 +442,7 @@ public class SelectDSL implements
         }
 
         @Override
-        protected SelectDSL endJoin() {
+        public SelectDSL endJoin() {
             return SelectDSL.this;
         }
     }

@@ -36,7 +36,7 @@ import org.mybatis.dynamic.sql.where.WhereApplier;
  *
  * @param <F> the implementation of the Where DSL customized for a particular SQL statement.
  */
-public interface WhereOperations<F extends BooleanOperations<?>> {
+public interface WhereOperations<F extends BooleanOperations<F>> {
 
     default <T> F where(BindableColumn<T> column, RenderableCondition<T> condition, AndOrCriteriaGroup... subCriteria) {
         return where(column, condition, Arrays.asList(subCriteria));

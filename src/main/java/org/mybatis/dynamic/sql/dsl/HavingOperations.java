@@ -26,7 +26,7 @@ import org.mybatis.dynamic.sql.RenderableCondition;
 import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.select.HavingApplier;
 
-public interface HavingOperations<F extends BooleanOperations<?>> {
+public interface HavingOperations<F extends BooleanOperations<F>> {
 
     default <T> F having(BindableColumn<T> column, RenderableCondition<T> condition,
                          AndOrCriteriaGroup... subCriteria) {

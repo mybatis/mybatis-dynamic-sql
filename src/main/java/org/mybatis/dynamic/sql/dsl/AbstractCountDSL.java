@@ -48,7 +48,7 @@ import org.mybatis.dynamic.sql.where.WhereApplier;
  * @author Jeff Butler
  */
 public abstract class AbstractCountDSL<M, D extends AbstractCountDSL<M, D>> extends AbstractQueryingDSL implements
-        JoinOperations<D, AbstractCountDSL<M, D>.JoinSpecificationFinisher>,
+        JoinOperations<AbstractCountDSL<M, D>.JoinSpecificationFinisher>,
         WhereOperations<AbstractCountDSL<M, D>.CountWhereBuilder>,
         ConfigurableStatement<D>, Buildable<M> {
     private @Nullable CountWhereBuilder whereBuilder;
@@ -171,7 +171,7 @@ public abstract class AbstractCountDSL<M, D extends AbstractCountDSL<M, D>> exte
         }
 
         @Override
-        protected D endJoin() {
+        public D endJoin() {
             return AbstractCountDSL.this.getThis();
         }
 

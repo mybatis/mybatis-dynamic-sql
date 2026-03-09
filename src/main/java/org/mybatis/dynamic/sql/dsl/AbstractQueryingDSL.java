@@ -42,7 +42,7 @@ public abstract class AbstractQueryingDSL {
 
     private final Map<SqlTable, String> tableAliases = new HashMap<>();
     private @Nullable TableExpression table;
-    private final List<JoinOperations.AbstractJoinSupport<?, ?>> joinSpecifications = new ArrayList<>();
+    private final List<AbstractJoinSupport<?, ?>> joinSpecifications = new ArrayList<>();
 
     protected void addTableAlias(SqlTable table, String tableAlias) {
         if (tableAliases.containsKey(table)) {
@@ -95,7 +95,7 @@ public abstract class AbstractQueryingDSL {
         table = buildSubQuery(select, tableAlias);
     }
 
-    protected void addJoinSpecification(JoinOperations.AbstractJoinSupport<?, ?> joinSpecification) {
+    protected void addJoinSpecification(AbstractJoinSupport<?, ?> joinSpecification) {
         joinSpecifications.add(joinSpecification);
     }
 
@@ -105,7 +105,7 @@ public abstract class AbstractQueryingDSL {
         }
 
         return JoinModel.of(joinSpecifications.stream()
-                .map(JoinOperations.AbstractJoinSupport::toJoinSpecification)
+                .map(AbstractJoinSupport::toJoinSpecification)
                 .toList());
     }
 }
