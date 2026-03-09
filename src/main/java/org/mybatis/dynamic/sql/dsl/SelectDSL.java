@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Consumer;
 
 import org.jspecify.annotations.Nullable;
@@ -51,7 +50,7 @@ public class SelectDSL implements
         OrderByOperations<SelectDSL>,
         GroupByOperations<SelectDSL>,
         HavingOperations<SelectDSL.QueryExpressionHavingBuilder>,
-        LimitAndOffsetOperations<SelectModel, SelectDSL>,
+        LimitAndOffsetOperations<SelectDSL, SelectModel>,
         ForAndWaitOperations<SelectDSL>,
         ConfigurableStatement<SelectDSL>,
         Buildable<SelectModel> {
@@ -59,9 +58,7 @@ public class SelectDSL implements
     private CurrentQueryValues currentQueryValues = new CurrentQueryValues();
     private final List<QueryExpressionModel> unionQueries = new ArrayList<>();
     private @Nullable OrderByModel orderByModel;
-    private @Nullable Long limit;
-    private @Nullable Long offset;
-    private @Nullable Long fetchFirstRows;
+    private final LimitAndOffsetSupport limitAndOffsetSupport = new LimitAndOffsetSupport();
     private @Nullable String forClause;
     private @Nullable String waitClause;
 
@@ -187,29 +184,18 @@ public class SelectDSL implements
     }
 
     @Override
-    public LimitFinisher<SelectModel, SelectDSL> limitWhenPresent(@Nullable Long limit) {
-        this.limit = limit;
-        return new LimitFinisher<>(this);
+    public LimitFinisher<SelectDSL, SelectModel> limitWhenPresent(@Nullable Long limit) {
+        return limitAndOffsetSupport.limitWhenPresent(limit);
     }
 
     @Override
-    public OffsetFirstFinisher<SelectModel, SelectDSL> offsetWhenPresent(@Nullable Long offset) {
-        this.offset = offset;
-        return new OffsetFirstFinisher<>(this);
+    public OffsetFirstFinisher<SelectDSL, SelectModel> offsetWhenPresent(@Nullable Long offset) {
+        return limitAndOffsetSupport.offsetWhenPresent(offset);
     }
 
     @Override
     public FetchFirstFinisher<SelectDSL> fetchFirstWhenPresent(@Nullable Long fetchFirstRows) {
-        this.fetchFirstRows = fetchFirstRows;
-        return new FetchFirstFinisher<>(this);
-    }
-
-    private Optional<PagingModel> buildPagingModel() {
-        return new PagingModel.Builder()
-                .withLimit(limit)
-                .withOffset(offset)
-                .withFetchFirstRows(fetchFirstRows)
-                .build();
+        return limitAndOffsetSupport.fetchFirstWhenPresent(fetchFirstRows);
     }
 
     @Override
@@ -247,7 +233,7 @@ public class SelectDSL implements
                 .withQueryExpressions(unionQueries)
                 .withQueryExpression(currentQueryValues.toQueryExpressionModel())
                 .withOrderByModel(orderByModel)
-                .withPagingModel(buildPagingModel().orElse(null))
+                .withPagingModel(limitAndOffsetSupport.buildPagingModel())
                 .withForClause(forClause)
                 .withWaitClause(waitClause)
                 .build();
@@ -257,7 +243,7 @@ public class SelectDSL implements
             ConfigurableStatement<QueryExpressionWhereBuilder>,
             OrderByOperations<SelectDSL>,
             GroupByOperations<SelectDSL>,
-            LimitAndOffsetOperations<SelectModel, SelectDSL>,
+            LimitAndOffsetOperations<SelectDSL, SelectModel>,
             ForAndWaitOperations<SelectDSL>,
             Buildable<SelectModel> {
         private final SqlCriterion initialCriterion;
@@ -287,12 +273,12 @@ public class SelectDSL implements
         }
 
         @Override
-        public LimitFinisher<SelectModel, SelectDSL> limitWhenPresent(@Nullable Long limit) {
+        public LimitFinisher<SelectDSL, SelectModel> limitWhenPresent(@Nullable Long limit) {
             return SelectDSL.this.limitWhenPresent(limit);
         }
 
         @Override
-        public OffsetFirstFinisher<SelectModel, SelectDSL> offsetWhenPresent(@Nullable Long offset) {
+        public OffsetFirstFinisher<SelectDSL, SelectModel> offsetWhenPresent(@Nullable Long offset) {
             return SelectDSL.this.offsetWhenPresent(offset);
         }
 
@@ -346,7 +332,7 @@ public class SelectDSL implements
             ConfigurableStatement<JoinSpecificationFinisher>,
             GroupByOperations<SelectDSL>,
             OrderByOperations<SelectDSL>,
-            LimitAndOffsetOperations<SelectModel, SelectDSL>,
+            LimitAndOffsetOperations<SelectDSL, SelectModel>,
             ForAndWaitOperations<SelectDSL>,
             Buildable<SelectModel> {
 
@@ -405,12 +391,12 @@ public class SelectDSL implements
         }
 
         @Override
-        public LimitFinisher<SelectModel, SelectDSL> limitWhenPresent(@Nullable Long limit) {
+        public LimitFinisher<SelectDSL, SelectModel> limitWhenPresent(@Nullable Long limit) {
             return SelectDSL.this.limitWhenPresent(limit);
         }
 
         @Override
-        public OffsetFirstFinisher<SelectModel, SelectDSL> offsetWhenPresent(@Nullable Long offset) {
+        public OffsetFirstFinisher<SelectDSL, SelectModel> offsetWhenPresent(@Nullable Long offset) {
             return SelectDSL.this.offsetWhenPresent(offset);
         }
 
@@ -450,7 +436,7 @@ public class SelectDSL implements
     public class QueryExpressionHavingBuilder
             implements BooleanOperations<QueryExpressionHavingBuilder>,
             OrderByOperations<SelectDSL>,
-            LimitAndOffsetOperations<SelectModel, SelectDSL>,
+            LimitAndOffsetOperations<SelectDSL, SelectModel>,
             ForAndWaitOperations<SelectDSL>,
             Buildable<SelectModel> {
         private final SqlCriterion initialCriterion;
@@ -497,12 +483,12 @@ public class SelectDSL implements
         }
 
         @Override
-        public LimitFinisher<SelectModel, SelectDSL> limitWhenPresent(@Nullable Long limit) {
+        public LimitFinisher<SelectDSL, SelectModel> limitWhenPresent(@Nullable Long limit) {
             return SelectDSL.this.limitWhenPresent(limit);
         }
 
         @Override
-        public OffsetFirstFinisher<SelectModel, SelectDSL> offsetWhenPresent(@Nullable Long offset) {
+        public OffsetFirstFinisher<SelectDSL, SelectModel> offsetWhenPresent(@Nullable Long offset) {
             return SelectDSL.this.offsetWhenPresent(offset);
         }
 
@@ -519,6 +505,21 @@ public class SelectDSL implements
         @Override
         public SelectDSL setForClause(String forClause) {
             return SelectDSL.this.setForClause(forClause);
+        }
+    }
+
+    private class LimitAndOffsetSupport extends AbstractLimitAndOffsetSupport<SelectDSL, SelectModel> {
+        public LimitAndOffsetSupport() {
+            super(SelectDSL.this);
+        }
+
+        protected @Nullable PagingModel buildPagingModel() {
+            return toPagingModel().orElse(null);
+        }
+
+        @Override
+        protected SelectDSL getThis() {
+            return SelectDSL.this;
         }
     }
 

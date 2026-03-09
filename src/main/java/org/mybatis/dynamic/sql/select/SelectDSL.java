@@ -20,7 +20,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -31,6 +30,7 @@ import org.mybatis.dynamic.sql.common.OrderByModel;
 import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
 import org.mybatis.dynamic.sql.dsl.ForAndWaitOperations;
 import org.mybatis.dynamic.sql.dsl.LimitAndOffsetOperations;
+import org.mybatis.dynamic.sql.dsl.AbstractLimitAndOffsetSupport;
 import org.mybatis.dynamic.sql.dsl.OrderByOperations;
 import org.mybatis.dynamic.sql.util.Buildable;
 import org.mybatis.dynamic.sql.util.ConfigurableStatement;
@@ -45,16 +45,14 @@ import org.mybatis.dynamic.sql.util.Validator;
  *            the type of model produced by this builder, typically SelectModel
  */
 public class SelectDSL<R> implements ForAndWaitOperations<SelectDSL<R>>,
-        LimitAndOffsetOperations<R, SelectDSL<R>>,
+        LimitAndOffsetOperations<SelectDSL<R>, R>,
         OrderByOperations<SelectDSL<R>>,
         ConfigurableStatement<SelectDSL<R>>,
         Buildable<R> {
     private final Function<SelectModel, R> adapterFunction;
     private final List<QueryExpressionDSL<R>> queryExpressions = new ArrayList<>();
     private @Nullable OrderByModel orderByModel;
-    private @Nullable Long limit;
-    private @Nullable Long offset;
-    private @Nullable Long fetchFirstRows;
+    private final LimitAndOffsetSupport limitAndOffsetSupport = new LimitAndOffsetSupport();
     final StatementConfiguration statementConfiguration = new StatementConfiguration();
     private @Nullable String forClause;
     private @Nullable String waitClause;
@@ -119,21 +117,18 @@ public class SelectDSL<R> implements ForAndWaitOperations<SelectDSL<R>>,
     }
 
     @Override
-    public LimitFinisher<R, SelectDSL<R>> limitWhenPresent(@Nullable Long limit) {
-        this.limit = limit;
-        return new LimitFinisher<>(this);
+    public LimitFinisher<SelectDSL<R>, R> limitWhenPresent(@Nullable Long limit) {
+        return limitAndOffsetSupport.limitWhenPresent(limit);
     }
 
     @Override
-    public OffsetFirstFinisher<R, SelectDSL<R>> offsetWhenPresent(@Nullable Long offset) {
-        this.offset = offset;
-        return new OffsetFirstFinisher<>(this);
+    public OffsetFirstFinisher<SelectDSL<R>, R> offsetWhenPresent(@Nullable Long offset) {
+        return limitAndOffsetSupport.offsetWhenPresent(offset);
     }
 
     @Override
     public FetchFirstFinisher<SelectDSL<R>> fetchFirstWhenPresent(@Nullable Long fetchFirstRows) {
-        this.fetchFirstRows = fetchFirstRows;
-        return new FetchFirstFinisher<>(this);
+        return limitAndOffsetSupport.fetchFirstWhenPresent(fetchFirstRows);
     }
 
     @Override
@@ -160,7 +155,7 @@ public class SelectDSL<R> implements ForAndWaitOperations<SelectDSL<R>>,
     public R build() {
         SelectModel selectModel = SelectModel.withQueryExpressions(buildModels())
                 .withOrderByModel(orderByModel)
-                .withPagingModel(buildPagingModel().orElse(null))
+                .withPagingModel(limitAndOffsetSupport.buildPagingModel())
                 .withStatementConfiguration(statementConfiguration)
                 .withForClause(forClause)
                 .withWaitClause(waitClause)
@@ -174,11 +169,19 @@ public class SelectDSL<R> implements ForAndWaitOperations<SelectDSL<R>>,
                 .toList();
     }
 
-    private Optional<PagingModel> buildPagingModel() {
-        return new PagingModel.Builder()
-                .withLimit(limit)
-                .withOffset(offset)
-                .withFetchFirstRows(fetchFirstRows)
-                .build();
+    private class LimitAndOffsetSupport extends AbstractLimitAndOffsetSupport<SelectDSL<R>, R> {
+
+        protected LimitAndOffsetSupport() {
+            super(SelectDSL.this);
+        }
+
+        protected @Nullable PagingModel buildPagingModel() {
+            return toPagingModel().orElse(null);
+        }
+
+        @Override
+        protected SelectDSL<R> getThis() {
+            return SelectDSL.this;
+        }
     }
 }

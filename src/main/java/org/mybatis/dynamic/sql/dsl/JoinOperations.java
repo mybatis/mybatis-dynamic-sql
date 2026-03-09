@@ -15,10 +15,8 @@
  */
 package org.mybatis.dynamic.sql.dsl;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.function.Function;
 
 import org.jspecify.annotations.Nullable;
@@ -31,7 +29,6 @@ import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.TableExpression;
 import org.mybatis.dynamic.sql.select.SelectModel;
 import org.mybatis.dynamic.sql.select.SubQuery;
-import org.mybatis.dynamic.sql.select.join.JoinSpecification;
 import org.mybatis.dynamic.sql.select.join.JoinType;
 import org.mybatis.dynamic.sql.util.Buildable;
 
@@ -221,5 +218,4 @@ public interface JoinOperations<F extends BooleanOperations<F>> {
             return builder.apply(initialCriterion);
         }
     }
-
 }

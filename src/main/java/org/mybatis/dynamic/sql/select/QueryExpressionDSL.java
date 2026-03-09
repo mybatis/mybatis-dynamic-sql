@@ -54,7 +54,7 @@ public class QueryExpressionDSL<R> extends AbstractQueryingDSL implements
         GroupByOperations<QueryExpressionDSL<R>>,
         HavingOperations<QueryExpressionDSL<R>.QueryExpressionHavingBuilder>,
         ConfigurableStatement<QueryExpressionDSL<R>>,
-        LimitAndOffsetOperations<R, SelectDSL<R>>,
+        LimitAndOffsetOperations<SelectDSL<R>, R>,
         ForAndWaitOperations<SelectDSL<R>>,
         OrderByOperations<SelectDSL<R>>,
         Buildable<R> {
@@ -200,12 +200,12 @@ public class QueryExpressionDSL<R> extends AbstractQueryingDSL implements
     }
 
     @Override
-    public LimitFinisher<R, SelectDSL<R>> limitWhenPresent(@Nullable Long limit) {
+    public LimitFinisher<SelectDSL<R>, R> limitWhenPresent(@Nullable Long limit) {
         return selectDSL.limitWhenPresent(limit);
     }
 
     @Override
-    public OffsetFirstFinisher<R, SelectDSL<R>> offsetWhenPresent(@Nullable Long offset) {
+    public OffsetFirstFinisher<SelectDSL<R>, R> offsetWhenPresent(@Nullable Long offset) {
         return selectDSL.offsetWhenPresent(offset);
     }
 
@@ -220,7 +220,7 @@ public class QueryExpressionDSL<R> extends AbstractQueryingDSL implements
             OrderByOperations<SelectDSL<R>>,
             GroupByOperations<QueryExpressionDSL<R>>,
             ForAndWaitOperations<SelectDSL<R>>,
-            LimitAndOffsetOperations<R, SelectDSL<R>>,
+            LimitAndOffsetOperations<SelectDSL<R>, R>,
             Buildable<R> {
         protected final SqlCriterion initialCriterion;
         protected final List<AndOrCriteriaGroup> subCriteria = new ArrayList<>();
@@ -279,12 +279,12 @@ public class QueryExpressionDSL<R> extends AbstractQueryingDSL implements
         }
 
         @Override
-        public LimitFinisher<R, SelectDSL<R>> limitWhenPresent(@Nullable Long limit) {
+        public LimitFinisher<SelectDSL<R>, R> limitWhenPresent(@Nullable Long limit) {
             return QueryExpressionDSL.this.limitWhenPresent(limit);
         }
 
         @Override
-        public OffsetFirstFinisher<R, SelectDSL<R>> offsetWhenPresent(@Nullable Long offset) {
+        public OffsetFirstFinisher<SelectDSL<R>, R> offsetWhenPresent(@Nullable Long offset) {
             return QueryExpressionDSL.this.offsetWhenPresent(offset);
         }
 
@@ -307,7 +307,7 @@ public class QueryExpressionDSL<R> extends AbstractQueryingDSL implements
             ConfigurableStatement<JoinSpecificationFinisher>,
             GroupByOperations<QueryExpressionDSL<R>>,
             ForAndWaitOperations<SelectDSL<R>>,
-            LimitAndOffsetOperations<R, SelectDSL<R>>,
+            LimitAndOffsetOperations<SelectDSL<R>, R>,
             OrderByOperations<SelectDSL<R>>,
             Buildable<R> {
         protected JoinSpecificationFinisher(JoinType joinType, TableExpression joinTable,
@@ -381,12 +381,12 @@ public class QueryExpressionDSL<R> extends AbstractQueryingDSL implements
         }
 
         @Override
-        public LimitFinisher<R, SelectDSL<R>> limitWhenPresent(@Nullable Long limit) {
+        public LimitFinisher<SelectDSL<R>, R> limitWhenPresent(@Nullable Long limit) {
             return QueryExpressionDSL.this.limitWhenPresent(limit);
         }
 
         @Override
-        public OffsetFirstFinisher<R, SelectDSL<R>> offsetWhenPresent(@Nullable Long offset) {
+        public OffsetFirstFinisher<SelectDSL<R>, R> offsetWhenPresent(@Nullable Long offset) {
             return QueryExpressionDSL.this.offsetWhenPresent(offset);
         }
 
@@ -441,7 +441,7 @@ public class QueryExpressionDSL<R> extends AbstractQueryingDSL implements
 
     public class QueryExpressionHavingBuilder implements BooleanOperations<QueryExpressionHavingBuilder>,
             ForAndWaitOperations<SelectDSL<R>>,
-            LimitAndOffsetOperations<R, SelectDSL<R>>,
+            LimitAndOffsetOperations<SelectDSL<R>, R>,
             OrderByOperations<SelectDSL<R>>,
             Buildable<R> {
         private final SqlCriterion initialCriterion;
@@ -498,12 +498,12 @@ public class QueryExpressionDSL<R> extends AbstractQueryingDSL implements
         }
 
         @Override
-        public LimitFinisher<R, SelectDSL<R>> limitWhenPresent(@Nullable Long limit) {
+        public LimitFinisher<SelectDSL<R>, R> limitWhenPresent(@Nullable Long limit) {
             return QueryExpressionDSL.this.limitWhenPresent(limit);
         }
 
         @Override
-        public OffsetFirstFinisher<R, SelectDSL<R>> offsetWhenPresent(@Nullable Long offset) {
+        public OffsetFirstFinisher<SelectDSL<R>, R> offsetWhenPresent(@Nullable Long offset) {
             return QueryExpressionDSL.this.offsetWhenPresent(offset);
         }
 

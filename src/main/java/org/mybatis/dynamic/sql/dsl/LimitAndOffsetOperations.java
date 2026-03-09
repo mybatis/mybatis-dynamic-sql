@@ -18,19 +18,18 @@ package org.mybatis.dynamic.sql.dsl;
 import org.jspecify.annotations.Nullable;
 import org.mybatis.dynamic.sql.util.Buildable;
 
-public interface LimitAndOffsetOperations
-        <R, T extends LimitAndOffsetOperations<R, T> & Buildable<R> & ForAndWaitOperations<T>> {
-    default LimitFinisher<R, T> limit(long limit) {
+public interface LimitAndOffsetOperations<T, M> {
+    default LimitFinisher<T, M> limit(long limit) {
         return limitWhenPresent(limit);
     }
 
-    LimitFinisher<R, T> limitWhenPresent(@Nullable Long limit);
+    LimitFinisher<T, M> limitWhenPresent(@Nullable Long limit);
 
-    default OffsetFirstFinisher<R, T> offset(long offset) {
+    default OffsetFirstFinisher<T, M> offset(long offset) {
         return offsetWhenPresent(offset);
     }
 
-    OffsetFirstFinisher<R, T> offsetWhenPresent(@Nullable Long offset);
+    OffsetFirstFinisher<T, M> offsetWhenPresent(@Nullable Long offset);
 
     default FetchFirstFinisher<T> fetchFirst(long fetchFirstRows) {
         return fetchFirstWhenPresent(fetchFirstRows);
@@ -38,81 +37,23 @@ public interface LimitAndOffsetOperations
 
     FetchFirstFinisher<T> fetchFirstWhenPresent(@Nullable Long fetchFirstRows);
 
-    class OffsetFirstFinisher<R, T extends LimitAndOffsetOperations<R, T> & Buildable<R> & ForAndWaitOperations<T>>
-            implements Buildable<R>, ForAndWaitOperations<T> {
-        private final T delegate;
-
-        public OffsetFirstFinisher(T delegate) {
-            this.delegate = delegate;
-        }
-
-        public FetchFirstFinisher<T> fetchFirst(long fetchFirstRows) {
+    interface OffsetFirstFinisher<T, M> extends ForAndWaitOperations<T>, Buildable<M> {
+        default FetchFirstFinisher<T> fetchFirst(long fetchFirstRows) {
             return fetchFirstWhenPresent(fetchFirstRows);
         }
 
-        public FetchFirstFinisher<T> fetchFirstWhenPresent(@Nullable Long fetchFirstRows) {
-            delegate.fetchFirstWhenPresent(fetchFirstRows);
-            return new FetchFirstFinisher<>(delegate);
-        }
-
-        @Override
-        public T setWaitClause(String waitClause) {
-            return delegate.setWaitClause(waitClause);
-        }
-
-        @Override
-        public T setForClause(String forClause) {
-            return delegate.setForClause(forClause);
-        }
-
-        @Override
-        public R build() {
-            return delegate.build();
-        }
+        FetchFirstFinisher<T> fetchFirstWhenPresent(@Nullable Long fetchFirstRows);
     }
 
-    class LimitFinisher<R, T extends LimitAndOffsetOperations<R, T> & Buildable<R> & ForAndWaitOperations<T>>
-            implements Buildable<R>, ForAndWaitOperations<T> {
-        private final T delegate;
-
-        public LimitFinisher(T delegate) {
-            this.delegate = delegate;
-        }
-
-        public T offset(long offset) {
+    interface LimitFinisher<T, M> extends ForAndWaitOperations<T>, Buildable<M> {
+        default T offset(long offset) {
             return offsetWhenPresent(offset);
         }
 
-        public T offsetWhenPresent(@Nullable Long offset) {
-            delegate.offsetWhenPresent(offset);
-            return delegate;
-        }
-
-        @Override
-        public T setWaitClause(String waitClause) {
-            return delegate.setWaitClause(waitClause);
-        }
-
-        @Override
-        public T setForClause(String forClause) {
-            return delegate.setForClause(forClause);
-        }
-
-        @Override
-        public R build() {
-            return delegate.build();
-        }
+        T offsetWhenPresent(@Nullable Long offset);
     }
 
-    class FetchFirstFinisher<T> {
-        private final T delegate;
-
-        public FetchFirstFinisher(T delegate) {
-            this.delegate = delegate;
-        }
-
-        public T rowsOnly() {
-            return delegate;
-        }
+    interface FetchFirstFinisher<T> {
+        T rowsOnly();
     }
 }
