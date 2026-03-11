@@ -81,10 +81,11 @@ class PersonMapperV2Test {
         Class.forName(JDBC_DRIVER);
         try (InputStream is = getClass().getResourceAsStream("/examples/simple/CreateSimpleDB.sql")) {
             assert is != null;
-            try (Connection connection = DriverManager.getConnection(JDBC_URL, "sa", "")) {
+            try (Connection connection = DriverManager.getConnection(JDBC_URL, "sa", "");
+                 InputStreamReader isr = new InputStreamReader(is)) {
                 ScriptRunner sr = new ScriptRunner(connection);
                 sr.setLogWriter(null);
-                sr.runScript(new InputStreamReader(is));
+                sr.runScript(isr);
             }
         }
 
