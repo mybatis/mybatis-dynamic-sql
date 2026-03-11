@@ -30,7 +30,7 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 
-public final class NameService {
+public class NameService {
     private static final String JDBC_URL = "jdbc:hsqldb:mem:aname";
     private static final String JDBC_DRIVER = "org.hsqldb.jdbcDriver";
 
@@ -39,7 +39,7 @@ public final class NameService {
     public NameService() {
         try {
             Class.forName(JDBC_DRIVER);
-            try (InputStream is = getClass().getResourceAsStream("/issues/gh324/CreateDB.sql")) {
+            try (InputStream is = NameService.class.getResourceAsStream("/issues/gh324/CreateDB.sql")) {
                 assert is != null;
                 try (Connection connection = DriverManager.getConnection(JDBC_URL, "sa", "");
                      InputStreamReader isr = new InputStreamReader(is)) {
