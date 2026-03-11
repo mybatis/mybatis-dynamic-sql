@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2025 the original author or authors.
+ *    Copyright 2016-2026 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -74,8 +74,8 @@ public class LimitAndOffsetAdapter<R> {
 
         public LimitAndOffsetDecorator(SelectStatementProvider delegate) {
             parameters.putAll(delegate.getParameters());
-            parameters.put("limit", limit);
-            parameters.put("offset", offset);
+            parameters.put("limit", LimitAndOffsetAdapter.this.limit);
+            parameters.put("offset", LimitAndOffsetAdapter.this.offset);
 
             selectStatement = delegate.getSelectStatement() +
                     " LIMIT #{parameters.limit} OFFSET #{parameters.offset}";

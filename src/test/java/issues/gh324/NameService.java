@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2025 the original author or authors.
+ *    Copyright 2016-2026 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -30,7 +30,7 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 
-public class NameService {
+public final class NameService {
     private static final String JDBC_URL = "jdbc:hsqldb:mem:aname";
     private static final String JDBC_DRIVER = "org.hsqldb.jdbcDriver";
 
@@ -39,12 +39,14 @@ public class NameService {
     public NameService() {
         try {
             Class.forName(JDBC_DRIVER);
-            InputStream is = getClass().getResourceAsStream("/issues/gh324/CreateDB.sql");
-            assert is != null;
-            try (Connection connection = DriverManager.getConnection(JDBC_URL, "sa", "")) {
-                ScriptRunner sr = new ScriptRunner(connection);
-                sr.setLogWriter(null);
-                sr.runScript(new InputStreamReader(is));
+            try (InputStream is = getClass().getResourceAsStream("/issues/gh324/CreateDB.sql")) {
+                assert is != null;
+                try (Connection connection = DriverManager.getConnection(JDBC_URL, "sa", "");
+                     InputStreamReader isr = new InputStreamReader(is)) {
+                    ScriptRunner sr = new ScriptRunner(connection);
+                    sr.setLogWriter(null);
+                    sr.runScript(isr);
+                }
             }
 
             UnpooledDataSource ds = new UnpooledDataSource(JDBC_DRIVER, JDBC_URL, "sa", "");

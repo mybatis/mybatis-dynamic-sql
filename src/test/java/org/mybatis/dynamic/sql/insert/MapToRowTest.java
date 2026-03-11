@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2025 the original author or authors.
+ *    Copyright 2016-2026 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -36,12 +36,12 @@ class MapToRowTest {
 
     @Test
     void testBasicInsertMultipleWithMyBatis() {
-        List<Record> records = List.of(
-                new Record(33, 1),
-                new Record(33, 2),
-                new Record(33, 3));
+        List<IdRecord> records = List.of(
+                new IdRecord(33, 1),
+                new IdRecord(33, 2),
+                new IdRecord(33, 3));
 
-        MultiRowInsertStatementProvider<Record> insertStatement = insertMultiple(records)
+        MultiRowInsertStatementProvider<IdRecord> insertStatement = insertMultiple(records)
                 .into(foo)
                 .map(id1).toConstant("22")
                 .map(id2).toProperty("id2")
@@ -54,12 +54,12 @@ class MapToRowTest {
 
     @Test
     void testBasicInsertMultipleWithSpring() {
-        List<Record> records = List.of(
-                new Record(33, 1),
-                new Record(33, 2),
-                new Record(33, 3));
+        List<IdRecord> records = List.of(
+                new IdRecord(33, 1),
+                new IdRecord(33, 2),
+                new IdRecord(33, 3));
 
-        MultiRowInsertStatementProvider<Record> insertStatement = insertMultiple(records)
+        MultiRowInsertStatementProvider<IdRecord> insertStatement = insertMultiple(records)
                 .into(foo)
                 .map(id1).toConstant("22")
                 .map(id2).toProperty("id2")
@@ -102,12 +102,12 @@ class MapToRowTest {
 
     @Test
     void testBatchInsertWithMyBatis() {
-        List<Record> records = List.of(
-                new Record(33, 1),
-                new Record(33, 2),
-                new Record(33, 3));
+        List<IdRecord> records = List.of(
+                new IdRecord(33, 1),
+                new IdRecord(33, 2),
+                new IdRecord(33, 3));
 
-        BatchInsert<Record> batchInsert = insertBatch(records)
+        BatchInsert<IdRecord> batchInsert = insertBatch(records)
                 .into(foo)
                 .map(id1).toConstant("22")
                 .map(id2).toProperty("id2")
@@ -120,12 +120,12 @@ class MapToRowTest {
 
     @Test
     void testBatchInsertWithSpring() {
-        List<Record> records = List.of(
-                new Record(33, 1),
-                new Record(33, 2),
-                new Record(33, 3));
+        List<IdRecord> records = List.of(
+                new IdRecord(33, 1),
+                new IdRecord(33, 2),
+                new IdRecord(33, 3));
 
-        BatchInsert<Record> batchInsert = insertBatch(records)
+        BatchInsert<IdRecord> batchInsert = insertBatch(records)
                 .into(foo)
                 .map(id1).toConstant("22")
                 .map(id2).toProperty("id2")
@@ -166,5 +166,5 @@ class MapToRowTest {
         assertThat(batchInsert.getInsertStatementSQL()).isEqualTo(expected);
     }
 
-    record Record(Integer id1, Integer id2) { }
+    record IdRecord(Integer id1, Integer id2) { }
 }
