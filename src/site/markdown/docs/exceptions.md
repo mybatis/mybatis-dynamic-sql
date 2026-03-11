@@ -42,7 +42,7 @@ a statement, then we assume that you intend for all rows to be affected.
 
 ## Exception Details
 
-Details of the different exceptions follows:
+Details of the different exceptions follow:
 
 | Exception                                                            | Causes                                                                                                                                                                                                                                                                            |
 |----------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|

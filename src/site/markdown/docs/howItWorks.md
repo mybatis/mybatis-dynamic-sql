@@ -81,9 +81,11 @@ is designed to be the one single parameter for a MyBatis mapper method.
 ## What About SQL Injection?
 
 It is true that mappers written this way are open to SQL injection. This is also true of using any of the
-various SQL provider classes in MyBatis (`@SelectProvider`, etc.) So you must be careful that these types of mappers are not exposed to any general user input.
+various SQL provider classes in MyBatis (`@SelectProvider`, etc.) So you must be careful that these types of mappers
+are not exposed to any general user input.
 
 If you follow these practices, you will lower the risk of SQL injection:
 
 1. Always use MyBatis annotated mappers
-2. Use the `SqlProviderAdapter` utility class in conjunction with the MyBatis provider annotations (`@InsertProvider`, `@SelectProvider`, etc.)
+2. Use the `SqlProviderAdapter` utility class in conjunction with the MyBatis provider annotations (`@InsertProvider`,
+   `@SelectProvider`, etc.)

@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2025 the original author or authors.
+ *    Copyright 2016-2026 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -563,6 +563,25 @@ class PersonMapperTest {
                     id isLessThan 5
                     and {
                         id isLessThan 3
+                        and { id isEqualTo 1 }
+                    }
+                }
+            }
+
+            assertThat(rows).isEqualTo(1L)
+        }
+    }
+
+    @Test
+    fun testCount6() {
+        sqlSessionFactory.openSession().use { session ->
+            val mapper = session.getMapper(PersonMapper::class.java)
+
+            val rows = mapper.count {
+                where {
+                    id isLessThan 5
+                    and {
+                        and { id isLessThan 3 }
                         and { id isEqualTo 1 }
                     }
                 }

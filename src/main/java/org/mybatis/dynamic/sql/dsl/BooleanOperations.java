@@ -24,17 +24,18 @@ import org.mybatis.dynamic.sql.ColumnAndConditionCriterion;
 import org.mybatis.dynamic.sql.CriteriaGroup;
 import org.mybatis.dynamic.sql.ExistsCriterion;
 import org.mybatis.dynamic.sql.ExistsPredicate;
+import org.mybatis.dynamic.sql.NullCriterion;
 import org.mybatis.dynamic.sql.RenderableCondition;
 import org.mybatis.dynamic.sql.SqlCriterion;
 
 public interface BooleanOperations<T extends BooleanOperations<T>> {
     default <S> T and(BindableColumn<S> column, RenderableCondition<S> condition,
-                     AndOrCriteriaGroup... subCriteria) {
+                      AndOrCriteriaGroup... subCriteria) {
         return and(column, condition, Arrays.asList(subCriteria));
     }
 
     default <S> T and(BindableColumn<S> column, RenderableCondition<S> condition,
-                     List<AndOrCriteriaGroup> subCriteria) {
+                      List<AndOrCriteriaGroup> subCriteria) {
         return addSubCriterion("and", buildCriterion(column, condition), subCriteria); //$NON-NLS-1$
     }
 
@@ -59,12 +60,12 @@ public interface BooleanOperations<T extends BooleanOperations<T>> {
     }
 
     default <S> T or(BindableColumn<S> column, RenderableCondition<S> condition,
-                    AndOrCriteriaGroup... subCriteria) {
+                     AndOrCriteriaGroup... subCriteria) {
         return or(column, condition, Arrays.asList(subCriteria));
     }
 
     default <S> T or(BindableColumn<S> column, RenderableCondition<S> condition,
-                    List<AndOrCriteriaGroup> subCriteria) {
+                     List<AndOrCriteriaGroup> subCriteria) {
         return addSubCriterion("or", buildCriterion(column, condition), subCriteria); //$NON-NLS-1$
     }
 
@@ -112,6 +113,7 @@ public interface BooleanOperations<T extends BooleanOperations<T>> {
     private T addSubCriterion(String connector, List<AndOrCriteriaGroup> criteria) {
         return addSubCriterion(new AndOrCriteriaGroup.Builder()
                 .withConnector(connector)
+                .withInitialCriterion(new NullCriterion())
                 .withSubCriteria(criteria)
                 .build());
     }

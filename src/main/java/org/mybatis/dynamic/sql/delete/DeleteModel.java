@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2025 the original author or authors.
+ *    Copyright 2016-2026 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@ package org.mybatis.dynamic.sql.delete;
 
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Function;
 
 import org.jspecify.annotations.Nullable;
 import org.mybatis.dynamic.sql.SqlTable;
@@ -74,6 +75,10 @@ public class DeleteModel {
                 .withRenderingStrategy(renderingStrategy)
                 .build()
                 .render();
+    }
+
+    public <R> R map(Function<DeleteModel, R> adapterFunction) {
+        return adapterFunction.apply(this);
     }
 
     public static Builder withTable(SqlTable table) {

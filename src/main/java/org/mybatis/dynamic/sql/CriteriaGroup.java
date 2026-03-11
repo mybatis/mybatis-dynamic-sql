@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2025 the original author or authors.
+ *    Copyright 2016-2026 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  */
 package org.mybatis.dynamic.sql;
 
-import java.util.Optional;
+import java.util.Objects;
 
 import org.jspecify.annotations.Nullable;
 
@@ -29,15 +29,15 @@ import org.jspecify.annotations.Nullable;
  * @since 1.4.0
  */
 public class CriteriaGroup extends SqlCriterion {
-    private final @Nullable SqlCriterion initialCriterion;
+    private final SqlCriterion initialCriterion;
 
     protected CriteriaGroup(AbstractGroupBuilder<?> builder) {
         super(builder);
-        initialCriterion = builder.initialCriterion;
+        initialCriterion = Objects.requireNonNull(builder.initialCriterion);
     }
 
-    public Optional<SqlCriterion> initialCriterion() {
-        return Optional.ofNullable(initialCriterion);
+    public SqlCriterion initialCriterion() {
+        return initialCriterion;
     }
 
     @Override
@@ -48,7 +48,7 @@ public class CriteriaGroup extends SqlCriterion {
     public abstract static class AbstractGroupBuilder<T extends AbstractGroupBuilder<T>> extends AbstractBuilder<T> {
         private @Nullable SqlCriterion initialCriterion;
 
-        public T withInitialCriterion(@Nullable SqlCriterion initialCriterion) {
+        public T withInitialCriterion(SqlCriterion initialCriterion) {
             this.initialCriterion = initialCriterion;
             return getThis();
         }

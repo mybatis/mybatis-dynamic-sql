@@ -45,11 +45,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.exception.DuplicateTableAliasException;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
-import org.mybatis.dynamic.sql.select.QueryExpressionDSL;
-import org.mybatis.dynamic.sql.select.SelectModel;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.util.Messages;
 import org.mybatis.dynamic.sql.util.mybatis3.CommonSelectMapper;
+import org.mybatis.dynamic.sql.where.condition.IsEqualToColumn;
 
 class JoinMapperTest {
 
@@ -332,6 +331,52 @@ class JoinMapperTest {
             assertThat(orderDetail.lineNumber()).isEqualTo(1);
             orderDetail = orderMaster.getDetails().get(1);
             assertThat(orderDetail.lineNumber()).isEqualTo(2);
+        }
+    }
+
+    @Test
+    void testMultipleTableJoinCount() {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
+            JoinMapper mapper = session.getMapper(JoinMapper.class);
+
+            SelectStatementProvider selectStatement = countFrom(orderMaster, "om")
+                    .join(orderLine, "ol").on(orderMaster.orderId, isEqualTo(orderLine.orderId))
+                    .join(itemMaster, "im").on(orderLine.itemId, isEqualTo(itemMaster.itemId))
+                    .where(orderMaster.orderId, isEqualTo(2))
+                    .build()
+                    .render(RenderingStrategies.MYBATIS3);
+
+            String expectedStatement = "select count(*)"
+                    + " from OrderMaster om join OrderLine ol on om.order_id = ol.order_id join ItemMaster im on ol.item_id = im.item_id"
+                    + " where om.order_id = #{parameters.p1,jdbcType=INTEGER}";
+            assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedStatement);
+
+            long count = mapper.count(selectStatement);
+
+            assertThat(count).isEqualTo(2);
+        }
+    }
+
+    @Test
+    void testMultipleTableJoinCountNoSecondAlias() {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
+            JoinMapper mapper = session.getMapper(JoinMapper.class);
+
+            SelectStatementProvider selectStatement = countFrom(orderMaster, "om")
+                    .join(orderLine, "ol").on(orderMaster.orderId, isEqualTo(orderLine.orderId))
+                    .join(itemMaster).on(orderLine.itemId, isEqualTo(itemMaster.itemId))
+                    .where(orderMaster.orderId, isEqualTo(2))
+                    .build()
+                    .render(RenderingStrategies.MYBATIS3);
+
+            String expectedStatement = "select count(*)"
+                    + " from OrderMaster om join OrderLine ol on om.order_id = ol.order_id join ItemMaster on ol.item_id = ItemMaster.item_id"
+                    + " where om.order_id = #{parameters.p1,jdbcType=INTEGER}";
+            assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedStatement);
+
+            long count = mapper.count(selectStatement);
+
+            assertThat(count).isEqualTo(2);
         }
     }
 
@@ -996,10 +1041,14 @@ class JoinMapperTest {
 
     @Test
     void testSelfWithDuplicateAlias() {
-        QueryExpressionDSL<SelectModel> dsl = select(user.userId, user.userName, user.parentId)
-                .from(user, "u1");
+        var dsl = select(user.userId, user.userName, user.parentId)
+                .from(user, "u1")
+                .join(user, "u2");
 
-        assertThatExceptionOfType(DuplicateTableAliasException.class).isThrownBy(() -> dsl.join(user, "u2"))
+        IsEqualToColumn<Integer> condition = isEqualTo(user.parentId);
+
+        assertThatExceptionOfType(DuplicateTableAliasException.class)
+                .isThrownBy(() -> dsl.on(user.userId, condition))
                 .withMessage(Messages.getString("ERROR.1", user.tableName(), "u2", "u1"));
     }
 

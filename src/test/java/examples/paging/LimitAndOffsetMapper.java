@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2025 the original author or authors.
+ *    Copyright 2016-2026 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -40,6 +40,12 @@ public interface LimitAndOffsetMapper {
     default QueryExpressionDSL<LimitAndOffsetAdapter<List<AnimalData>>> selectWithLimitAndOffset(int limit, int offset) {
         return SelectDSL.select(selectModel -> LimitAndOffsetAdapter.of(selectModel, this::selectMany, limit, offset),
                 id, animalName, brainWeight, bodyWeight)
+                .from(animalData);
+    }
+
+    default QueryExpressionDSL<LimitAndOffsetAdapter<List<AnimalData>>> selectDistinctWithLimitAndOffset(int limit, int offset) {
+        return SelectDSL.selectDistinct(selectModel -> LimitAndOffsetAdapter.of(selectModel, this::selectMany, limit, offset),
+                        id, animalName, brainWeight, bodyWeight)
                 .from(animalData);
     }
 }

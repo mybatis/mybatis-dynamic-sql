@@ -15,26 +15,27 @@
  */
 package org.mybatis.dynamic.sql.select;
 
+import java.util.List;
 import java.util.function.Consumer;
 
-import org.mybatis.dynamic.sql.dsl.AbstractBooleanOperationsFinisher;
+import org.mybatis.dynamic.sql.AndOrCriteriaGroup;
+import org.mybatis.dynamic.sql.SqlCriterion;
+import org.mybatis.dynamic.sql.dsl.BooleanOperations;
+import org.mybatis.dynamic.sql.dsl.WhereOrHavingApplier;
 
-@FunctionalInterface
-public interface HavingApplier {
+public class HavingApplier extends WhereOrHavingApplier<HavingApplier> {
+    public HavingApplier(SqlCriterion initialCriterion, List<AndOrCriteriaGroup> subCriteria) {
+        super(initialCriterion, subCriteria);
+    }
 
-    void accept(AbstractBooleanOperationsFinisher<?> havingFinisher);
+    private HavingApplier(SqlCriterion initialCriterion, List<AndOrCriteriaGroup> subCriteria,
+                          Consumer<BooleanOperations<?>> after) {
+        super(initialCriterion, subCriteria, after);
+    }
 
-    /**
-     * Return a composed having applier that performs this operation followed by the after operation.
-     *
-     * @param after the operation to perform after this operation
-     *
-     * @return a composed having applier that performs this operation followed by the after operation.
-     */
-    default HavingApplier andThen(Consumer<AbstractBooleanOperationsFinisher<?>> after) {
-        return t -> {
-            accept(t);
-            after.accept(t);
-        };
+    @Override
+    protected HavingApplier buildNew(SqlCriterion initialCriterion, List<AndOrCriteriaGroup> subCriteria,
+                                     Consumer<BooleanOperations<?>> after) {
+        return new HavingApplier(initialCriterion, subCriteria, after);
     }
 }

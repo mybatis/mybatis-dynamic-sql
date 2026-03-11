@@ -4,88 +4,69 @@ This log will detail notable changes to MyBatis Dynamic SQL. Full details are av
 
 ## Release 2.0.0 - Unreleased
 
-Release 2.0.0 is a significant milestone for the library. We have moved to Java 17 as the minimum version supported. If
-you are unable to move to this version of Java then the releases in the 1.x line can be used with Java 8.
+Release 2.0.0 is a significant milestone for the library with many enhancements and changes. We have moved to Java 17
+as the minimum version supported. If you are unable to move to this version of Java then the releases in the 1.x line
+can be used with Java 8.
 
-In addition, we have taken the opportunity to make changes to the library that may break existing code. We have
+We have taken the opportunity to make changes to the library that may break existing code. We have
 worked to make these changes as minimal as possible.
 
-### Potentially Breaking Changes:
+Please read these release notes carefully as there are changes that may impact many users.
 
-- If you use this library with MyBatis' Spring Batch integration, you will need to make changes as we have
-  refactored that support to be more flexible. Please see the
-  [Spring Batch](https://mybatis.org/mybatis-dynamic-sql/docs/springBatch.html) documentation page to see the new usage
-  details.
-- If you have created any custom implementations of `SortSpecification`, you will need to update those
-  implementations due to a new rendering strategy for ORDER BY phrases. The old methods `isDescending` and `orderByName`
-  are removed in favor of a new method `renderForOrderBy` 
-- If you have implemented any custom functions, you will likely need to make changes. The supplied base classes now
-  hold an instance of `BasicColumn` rather than `BindableColumn`. This change was made to make the functions more
-  useful in variety of circumstances. If you follow the patterns shown on the
-  [Extending the Library](https://mybatis.org/mybatis-dynamic-sql/docs/extending.html) page, the change should be
-  limited to changing the private constructor to accept `BasicColumn` rather than `BindableColumn`.
+### DSL Updates and Migration Plan
 
-### Adoption of JSpecify (https://jspecify.dev/)
+With this release, I have started a long-term plan to update the DSLs that have "where" clauses – namely, CountDSL,
+DeleteDSL, SelectDSL, and UpdateDSL. All of these DSLs are generic and allow you to specify a function
+that can modify the model created when invoking `build()`. I now view this as a design flaw that provides very
+little benefit and makes direct use of a DSL more complex. For example, direct usage of a DSL often requires declaring
+a variable like `DeleteDSL<DeleteModel>` instead of simply `DeleteDSL`. This gets worse when you have more complex
+situations involving DSL inner classes.
 
-Following the lead of many other projects (including The Spring Framework), we have adopted JSpecify to fully
-document the null handling properties of this library. JSpecify is now a runtime dependency - as is
-recommended practice with JSpecify.
+Another issue is the tight coupling between `SelectDSL` and `QueryExpressionDSL`. It is confusing to have the `select`
+method actually return `QueryExpressionDSL<SelectModel>`.
 
-This change should not impact the running of any existing code, but depending on your usage you may see new IDE or
-tooling warnings based on the declared nullability of methods in the library. You may choose to ignore the
-warnings and things should continue to function. Of course, we recommend that you do not ignore these warnings!
+So this release includes new, non-generic, versions of the DSLs in a new package structure. The new DSLs will live
+side by side with the old DSLs for now to maintain backwards compatibility. Eventually, the old DSls will be removed.
 
-In general, the library does not expect that you will pass a null value into any method. There are two exceptions to
-this rule:
+Here is the migration plan:
 
-1. Some builder methods will accept a null value if the target object will properly handle null values through the
-   use of java.util.Optional
-2. Methods with names that include "WhenPresent" will properly handle null parameters
-   (for example, "isEqualToWhenPresent")
+1. In this release I have updated the Kotlin support to use the new DSLs under the covers. This should be completely
+   transparent to Kotlin users as all the prior complexity was hidden by the Kotlin DSLs.
+2. After the 2.0.0 release of this library, I will update MyBatis Generator so that it creates code based on the new DSL
+   versions.
+3. In the next minor release of this library, I will deprecate all the old DSLs. I will also change the methods in
+   `SqlBuilder` to use the new DSLs. In many cases you will be able to update to the new DSL by simply changing a
+   package name.
+4. In the next major release of this library, I will delete the old DSLs.
 
-As you might expect, standardizing null handling revealed some issues in the library that may impact you.
+I expect these next releases to be a relatively fast follow after the 2.0.0 release.
 
-Fixing compiler warnings and errors:
+This table shows the old and new versions of the DSLs:
 
-1. We expect that most of the warnings you encounter will be related to passing null values into a where condition.
-   These warnings should be resolved by changing your code to use the "WhenPresent" versions of methods as those
-   methods handle null values in a predictable way.
-2. Java Classes that extend "AliasableSqlTable" will likely see IDE warnings about non-null type arguments. This can be
-   resolved by adding a "@NullMarked" annotation to the class or package. This issue does not affect Kotlin classes
-   that extend "AliasableSqlTable".
-3. Similarly, if you have coded any functions for use with your queries, you can resolve most IDE warnings by adding
-   the "@NullMarked" annotation.
-4. If you have coded any Kotlin functions that operate on a generic Java class from the library, then you should
-   change the type parameter definition to specify a non-nullable type. For example...
+| New DSL                                 | Old DSL (Will Be Removed Eventually)                                                               |
+|-----------------------------------------|----------------------------------------------------------------------------------------------------|
+| `org.mybatis.dynamic.sql.dsl.CountDSL`  | `org.mybatis.dynamic.sql.select.CountDSL`                                                          |
+| `org.mybatis.dynamic.sql.dsl.DeleteDSL` | `org.mybatis.dynamic.sql.delete.DeleteDSL`                                                         |
+| `org.mybatis.dynamic.sql.dsl.SelectDSL` | `org.mybatis.dynamic.sql.select.SelectDSL` and `org.mybatis.dynamic.sql.select.QueryExpressionDSL` |
+| `org.mybatis.dynamic.sql.dsl.UpdateDSL` | `org.mybatis.dynamic.sql.update.UpdateDSL`                                                         |
 
-   ```kotlin
-   import org.mybatis.dynamic.sql.SqlColumn
+The "completer" classes are also impacted and will need to change. This table shows the old and new versions:
 
-   fun <T> foo(column: SqlColumn<T>) {
-   }
-   ```
-   
-   Should change to:
+| New Completer                                    | Old Completer (Will Be Removed Eventually)          |
+|--------------------------------------------------|-----------------------------------------------------|
+| `org.mybatis.dynamic.sql.dsl.CountDSLCompleter`  | `org.mybatis.dynamic.sql.select.CountDSLCompleter`  |
+| `org.mybatis.dynamic.sql.dsl.DeleteDSLCompleter` | `org.mybatis.dynamic.sql.delete.DeleteDSLCompleter` |
+| `org.mybatis.dynamic.sql.dsl.SelectDSLCompleter` | `org.mybatis.dynamic.sql.select.SelectDSLCompleter` |
+| `org.mybatis.dynamic.sql.dsl.UpdateDSLCompleter` | `org.mybatis.dynamic.sql.update.UpdateDSLCompleter` |
 
-   ```kotlin
-   import org.mybatis.dynamic.sql.SqlColumn
+If you are actually using the generic function in the old DSLs to alter the model class produced by a DSL, then you can
+replace it with the new `map` method on all affected model classes to achieve the same result.
 
-   fun <T : Any> foo(column: SqlColumn<T>) {
-   }
-   ```
+If you are using the DSLs directly (for example, not with code generated by MyBatis Generator), I encourage you to
+update your code to use the new DSLs now. As always, if you experience any difficulties with this new version of the
+library or in migrating to the new DSLs, please let us know by opening an issue on GitHub.
 
-Runtime behavior changes:
-
-1. The where conditions (isEqualTo, isLessThan, etc.) can be filtered and result in an "empty" condition -
-   similar to java.util.Optional. Previously, calling a "value" method of the condition would return null. Now
-   those methods will throw "NoSuchElementException". This should not impact you in normal usage.
-2. We have updated the "ParameterTypeConverter" used in Spring applications to maintain compatibility with Spring's
-   "Converter" interface. The primary change is that the framework will no longer call a type converter if the
-   input value is null. This should simplify the coding of converters and foster reuse with existing Spring converters.
-3. The "map" method on the "WhenPresent" conditions will accept a mapper function that may return a null value. The
-   conditions will now properly handle this outcome 
-
-### Other important changes:
+### Other Important Changes:
 
 - The library now requires Java 17
 - Deprecated code from prior releases is removed
@@ -100,7 +81,7 @@ Runtime behavior changes:
   is deprecated and will be removed in a future release.
 - Add support for locking options in select statements (for update, for share, etc.) This is not an abstraction of
   these concepts for different databases it simply adds known clauses to a generated SQL statement. You should always
-  test to make sure these functions work in your target database. Currently, we support, and test, the options
+  test to make sure these functions work in your target database. Currently, we support and test the options
   supported by PostgreSQL.
 - Rendering for all the conditions (isEqualTo, etc.) has changed. This should be transparent to most users unless you
   have coded a direct implementation of `VisitableCondition`. The change makes it easier to code custom conditions that
@@ -108,7 +89,78 @@ Runtime behavior changes:
   `renderLeftColumn` that you can override to implement any rendering you need. In addition, we've made `filter` and
   `map` support optional if you implement custom conditions
 - Added support for configuring a Java property name to be associated with an `SqlColumn`. This property name can be
-  used with the record based insert methods to reduce the boilerplate code for mapping columns to Java properties.
+  used with the record-based insert methods to reduce the boilerplate code for mapping columns to Java properties.
+
+### Potentially Breaking Changes:
+
+- If you use this library with MyBatis' Spring Batch integration, you will need to make changes as we have
+  refactored that support to be more flexible. Please see the
+  [Spring Batch](https://mybatis.org/mybatis-dynamic-sql/docs/springBatch.html) documentation page to see the new usage
+  details.
+- If you have created any custom implementations of `SortSpecification`, you will need to update those
+  implementations due to a new rendering strategy for ORDER BY phrases. The old methods `isDescending` and `orderByName`
+  are removed in favor of a new method `renderForOrderBy` 
+- If you have implemented any custom functions, you will likely need to make changes. The supplied base classes now
+  hold an instance of `BasicColumn` rather than `BindableColumn`. This change was made to make the functions more
+  useful in a variety of circumstances. If you follow the patterns shown on the
+  [Extending the Library](https://mybatis.org/mybatis-dynamic-sql/docs/extending.html) page, the change should be
+  limited to changing the private constructor to accept `BasicColumn` rather than `BindableColumn`.
+
+### Adoption of JSpecify (https://jspecify.dev/)
+
+Following the lead of many other projects (including The Spring Framework), we have adopted JSpecify to fully
+document the null handling properties of this library. JSpecify is now a runtime dependency – as is
+recommended practice with JSpecify.
+
+This change should not impact the running of any existing code, but depending on your usage, you may see new IDE or
+tooling warnings based on the declared nullability of methods in the library. You may choose to ignore the
+ warnings, and things should continue to function. Of course, we recommend that you do not ignore these warnings!
+
+In general, the library does not expect that you will pass a null value into any method. There are two exceptions to
+this rule:
+
+1. Some builder methods will accept a null value if the target object properly handles null values through the
+   use of java.util.Optional
+2. Methods with names that include "WhenPresent" will properly handle null parameters
+   (for example, "isEqualToWhenPresent")
+
+As you might expect, standardizing null handling revealed some issues in the library that may impact you.
+
+Fixing compiler warnings and errors:
+
+1. We expect that most of the warnings you encounter will be related to passing null values into a where condition.
+   These warnings should be resolved by changing your code to use the "WhenPresent" versions of methods as those
+   methods handle null values predictably.
+2. Java Classes that extend "AliasableSqlTable" will likely see IDE warnings about non-null type arguments. This can be
+   resolved by adding a "@NullMarked" annotation to the class or package. This issue does not affect Kotlin classes
+   that extend "AliasableSqlTable".
+3. Similarly, if you have coded any functions for use with your queries, you can resolve most IDE warnings by adding
+   the "@NullMarked" annotation.
+4. If you have coded any Kotlin functions that operate on a generic Java class from the library, then you should
+   change the type parameter definition to specify a non-nullable type. For example...
+
+   ```kotlin
+   fun <T> foo(column: SqlColumn<T>) {
+   }
+   ```
+   
+   Should change to:
+
+   ```kotlin
+   fun <T : Any> foo(column: SqlColumn<T>) {
+   }
+   ```
+
+Runtime behavior changes:
+
+1. The where conditions (isEqualTo, isLessThan, etc.) can be filtered and result in an "empty" condition –
+   similar to `java.util.Optional`. Previously, calling a "value" method of the condition would return null. Now
+   those methods will throw `java.util.NoSuchElementException`. This should not impact you in normal usage.
+2. We have updated the "ParameterTypeConverter" used in Spring applications to maintain compatibility with Spring's
+   "Converter" interface. The primary change is that the framework will no longer call a type converter if the
+   input value is null. This should simplify the coding of converters and foster reuse with existing Spring converters.
+3. The "map" method on the "WhenPresent" conditions will accept a mapper function that may return a null value. The
+   conditions will now properly handle this outcome 
 
 ## Release 1.5.2 - June 3, 2024
 

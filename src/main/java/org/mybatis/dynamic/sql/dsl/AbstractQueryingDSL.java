@@ -22,24 +22,29 @@ import java.util.Map;
 
 import org.jspecify.annotations.Nullable;
 import org.mybatis.dynamic.sql.SqlTable;
+import org.mybatis.dynamic.sql.TableExpression;
 import org.mybatis.dynamic.sql.exception.DuplicateTableAliasException;
 import org.mybatis.dynamic.sql.select.SelectModel;
 import org.mybatis.dynamic.sql.select.SubQuery;
 import org.mybatis.dynamic.sql.select.join.JoinModel;
 import org.mybatis.dynamic.sql.util.Buildable;
+import org.mybatis.dynamic.sql.util.Validator;
 
 /**
  * Abstract base class for query DSL implementations.
  *
  * <p>This class does not implement any specific interface. That is an intentional choice to allow for flexibility
  * in composing a DSL based on the interfaces that DSL needs to implement. This class is simply a landing ground
- * for common functionality that can be shared across multiple DSL implementations.</p>
+ * for common functionality that can be shared across multiple query DSL implementations.</p>
  */
 public abstract class AbstractQueryingDSL {
-    protected final Map<SqlTable, String> tableAliases = new HashMap<>();
-    protected final List<AbstractJoinSpecificationFinisher<?, ?>> joinSpecifications = new ArrayList<>();
+    private static final String ERROR_27 = "ERROR.27"; //$NON-NLS-1$
 
-    public void addTableAlias(SqlTable table, String tableAlias) {
+    private final Map<SqlTable, String> tableAliases = new HashMap<>();
+    private @Nullable TableExpression table;
+    private final List<AbstractJoinSupport<?, ?>> joinSpecifications = new ArrayList<>();
+
+    protected void addTableAlias(SqlTable table, String tableAlias) {
         if (tableAliases.containsKey(table)) {
             throw new DuplicateTableAliasException(table, tableAlias, tableAliases.get(table));
         }
@@ -47,17 +52,51 @@ public abstract class AbstractQueryingDSL {
         tableAliases.put(table, tableAlias);
     }
 
-    protected SubQuery buildSubQuery(Buildable<SelectModel> selectModel) {
+    private SubQuery buildSubQuery(Buildable<SelectModel> selectModel) {
         return new SubQuery.Builder()
                 .withSelectModel(selectModel.build())
                 .build();
     }
 
-    protected SubQuery buildSubQuery(Buildable<SelectModel> selectModel, @Nullable String alias) {
+    private SubQuery buildSubQuery(Buildable<SelectModel> selectModel, @Nullable String alias) {
         return new SubQuery.Builder()
                 .withSelectModel(selectModel.build())
                 .withAlias(alias)
                 .build();
+    }
+
+    protected Map<SqlTable, String> tableAliases() {
+        return tableAliases;
+    }
+
+    protected TableExpression table() {
+        Validator.assertTrue(table != null, ERROR_27);
+        return table;
+    }
+
+    protected void setTable(SqlTable table) {
+        Validator.assertNull(this.table, ERROR_27);
+        this.table = table;
+    }
+
+    protected void setTable(SqlTable table, String tableAlias) {
+        Validator.assertNull(this.table, ERROR_27);
+        this.table = table;
+        addTableAlias(table, tableAlias);
+    }
+
+    protected void setTable(Buildable<SelectModel> select) {
+        Validator.assertNull(this.table, ERROR_27);
+        table = buildSubQuery(select);
+    }
+
+    protected void setTable(Buildable<SelectModel> select, String tableAlias) {
+        Validator.assertNull(this.table, ERROR_27);
+        table = buildSubQuery(select, tableAlias);
+    }
+
+    protected void addJoinSpecification(AbstractJoinSupport<?, ?> joinSpecification) {
+        joinSpecifications.add(joinSpecification);
     }
 
     protected @Nullable JoinModel buildJoinModel() {
@@ -66,7 +105,7 @@ public abstract class AbstractQueryingDSL {
         }
 
         return JoinModel.of(joinSpecifications.stream()
-                .map(AbstractJoinSpecificationFinisher::toJoinSpecification)
+                .map(AbstractJoinSupport::toJoinSpecification)
                 .toList());
     }
 }

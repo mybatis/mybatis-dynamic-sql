@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2025 the original author or authors.
+ *    Copyright 2016-2026 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -49,7 +49,7 @@ class FromGroupByTest {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.name, count())
                 .from(StudentDynamicSqlSupport.student);
 
-        QueryExpressionDSL<SelectModel>.GroupByFinisher builder2 = builder1.groupBy(StudentDynamicSqlSupport.name);
+        QueryExpressionDSL<SelectModel> builder2 = builder1.groupBy(StudentDynamicSqlSupport.name);
 
         String expected = "select name, count(*)"
                 + " from student"
@@ -65,7 +65,7 @@ class FromGroupByTest {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.name, count())
                 .from(StudentDynamicSqlSupport.student);
 
-        QueryExpressionDSL<SelectModel>.GroupByFinisher builder2 = builder1.groupBy(StudentDynamicSqlSupport.name);
+        QueryExpressionDSL<SelectModel> builder2 = builder1.groupBy(StudentDynamicSqlSupport.name);
 
         builder2.limit(3);
 
@@ -84,7 +84,7 @@ class FromGroupByTest {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.name, count())
                 .from(StudentDynamicSqlSupport.student);
 
-        QueryExpressionDSL<SelectModel>.GroupByFinisher builder2 = builder1.groupBy(StudentDynamicSqlSupport.name);
+        QueryExpressionDSL<SelectModel> builder2 = builder1.groupBy(StudentDynamicSqlSupport.name);
 
         builder2.limit(3);
 
@@ -103,7 +103,7 @@ class FromGroupByTest {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.name, count())
                 .from(StudentDynamicSqlSupport.student);
 
-        QueryExpressionDSL<SelectModel>.GroupByFinisher builder2 = builder1.groupBy(StudentDynamicSqlSupport.name);
+        QueryExpressionDSL<SelectModel> builder2 = builder1.groupBy(StudentDynamicSqlSupport.name);
 
         var builder3 = builder2.limit(3);
 
@@ -122,7 +122,7 @@ class FromGroupByTest {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.name, count())
                 .from(StudentDynamicSqlSupport.student);
 
-        QueryExpressionDSL<SelectModel>.GroupByFinisher builder2 = builder1.groupBy(StudentDynamicSqlSupport.name);
+        QueryExpressionDSL<SelectModel> builder2 = builder1.groupBy(StudentDynamicSqlSupport.name);
 
         builder2.offset(3);
 
@@ -141,7 +141,7 @@ class FromGroupByTest {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.name, count())
                 .from(StudentDynamicSqlSupport.student);
 
-        QueryExpressionDSL<SelectModel>.GroupByFinisher builder2 = builder1.groupBy(StudentDynamicSqlSupport.name);
+        QueryExpressionDSL<SelectModel> builder2 = builder1.groupBy(StudentDynamicSqlSupport.name);
 
         builder2.offset(3);
 
@@ -160,7 +160,7 @@ class FromGroupByTest {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.name, count())
                 .from(StudentDynamicSqlSupport.student);
 
-        QueryExpressionDSL<SelectModel>.GroupByFinisher builder2 = builder1.groupBy(StudentDynamicSqlSupport.name);
+        QueryExpressionDSL<SelectModel> builder2 = builder1.groupBy(StudentDynamicSqlSupport.name);
 
         var builder3 = builder2.offset(3);
 
@@ -179,7 +179,7 @@ class FromGroupByTest {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.name, count())
                 .from(StudentDynamicSqlSupport.student);
 
-        QueryExpressionDSL<SelectModel>.GroupByFinisher builder2 = builder1.groupBy(StudentDynamicSqlSupport.name);
+        QueryExpressionDSL<SelectModel> builder2 = builder1.groupBy(StudentDynamicSqlSupport.name);
 
         builder2.fetchFirst(2).rowsOnly();
 
@@ -198,7 +198,7 @@ class FromGroupByTest {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.name, count())
                 .from(StudentDynamicSqlSupport.student);
 
-        QueryExpressionDSL<SelectModel>.GroupByFinisher builder2 = builder1.groupBy(StudentDynamicSqlSupport.name);
+        QueryExpressionDSL<SelectModel> builder2 = builder1.groupBy(StudentDynamicSqlSupport.name);
 
         builder2.fetchFirst(2).rowsOnly();
 
@@ -217,7 +217,7 @@ class FromGroupByTest {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.name, count())
                 .from(StudentDynamicSqlSupport.student);
 
-        QueryExpressionDSL<SelectModel>.GroupByFinisher builder2 = builder1.groupBy(StudentDynamicSqlSupport.name);
+        QueryExpressionDSL<SelectModel> builder2 = builder1.groupBy(StudentDynamicSqlSupport.name);
 
         var builder3 = builder2.fetchFirst(2).rowsOnly();
 
@@ -236,7 +236,7 @@ class FromGroupByTest {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.name, count())
                 .from(StudentDynamicSqlSupport.student);
 
-        QueryExpressionDSL<SelectModel>.GroupByFinisher builder2 = builder1.groupBy(StudentDynamicSqlSupport.name);
+        QueryExpressionDSL<SelectModel> builder2 = builder1.groupBy(StudentDynamicSqlSupport.name);
 
         builder2.orderBy(StudentDynamicSqlSupport.name);
 
@@ -255,7 +255,7 @@ class FromGroupByTest {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.name, count())
                 .from(StudentDynamicSqlSupport.student);
 
-        QueryExpressionDSL<SelectModel>.GroupByFinisher builder2 = builder1.groupBy(StudentDynamicSqlSupport.name);
+        QueryExpressionDSL<SelectModel> builder2 = builder1.groupBy(StudentDynamicSqlSupport.name);
 
         builder2.orderBy(StudentDynamicSqlSupport.name);
 
@@ -274,7 +274,7 @@ class FromGroupByTest {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.name, count())
                 .from(StudentDynamicSqlSupport.student);
 
-        QueryExpressionDSL<SelectModel>.GroupByFinisher builder2 = builder1.groupBy(StudentDynamicSqlSupport.name);
+        QueryExpressionDSL<SelectModel> builder2 = builder1.groupBy(StudentDynamicSqlSupport.name);
 
         SelectDSL<SelectModel> builder3 = builder2.orderBy(StudentDynamicSqlSupport.name);
 
@@ -293,7 +293,7 @@ class FromGroupByTest {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.name, count())
                 .from(StudentDynamicSqlSupport.student);
 
-        QueryExpressionDSL<SelectModel>.GroupByFinisher builder2 = builder1.groupBy(StudentDynamicSqlSupport.name);
+        QueryExpressionDSL<SelectModel> builder2 = builder1.groupBy(StudentDynamicSqlSupport.name);
 
         SelectDSL<SelectModel> builder3 = builder2.orderBy(StudentDynamicSqlSupport.name);
 
@@ -315,7 +315,7 @@ class FromGroupByTest {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.name, count())
                 .from(StudentDynamicSqlSupport.student);
 
-        QueryExpressionDSL<SelectModel>.GroupByFinisher builder2 = builder1.groupBy(StudentDynamicSqlSupport.name);
+        QueryExpressionDSL<SelectModel> builder2 = builder1.groupBy(StudentDynamicSqlSupport.name);
 
         SelectDSL<SelectModel> builder3 = builder2.orderBy(StudentDynamicSqlSupport.name);
 
@@ -337,7 +337,7 @@ class FromGroupByTest {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.name, count())
                 .from(StudentDynamicSqlSupport.student);
 
-        QueryExpressionDSL<SelectModel>.GroupByFinisher builder2 = builder1.groupBy(StudentDynamicSqlSupport.name);
+        QueryExpressionDSL<SelectModel> builder2 = builder1.groupBy(StudentDynamicSqlSupport.name);
 
         SelectDSL<SelectModel> builder3 = builder2.orderBy(StudentDynamicSqlSupport.name);
 
@@ -359,7 +359,7 @@ class FromGroupByTest {
         QueryExpressionDSL<SelectModel> builder1 = select(StudentDynamicSqlSupport.name, count())
                 .from(StudentDynamicSqlSupport.student);
 
-        QueryExpressionDSL<SelectModel>.GroupByFinisher builder2 = builder1.groupBy(StudentDynamicSqlSupport.name);
+        QueryExpressionDSL<SelectModel> builder2 = builder1.groupBy(StudentDynamicSqlSupport.name);
 
         SelectDSL<SelectModel> builder3 = builder2.orderBy(StudentDynamicSqlSupport.name);
 

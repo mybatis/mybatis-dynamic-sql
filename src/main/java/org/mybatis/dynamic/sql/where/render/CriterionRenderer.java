@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2025 the original author or authors.
+ *    Copyright 2016-2026 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -27,6 +27,7 @@ import org.mybatis.dynamic.sql.CriteriaGroup;
 import org.mybatis.dynamic.sql.ExistsCriterion;
 import org.mybatis.dynamic.sql.ExistsPredicate;
 import org.mybatis.dynamic.sql.NotCriterion;
+import org.mybatis.dynamic.sql.NullCriterion;
 import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.SqlCriterionVisitor;
 import org.mybatis.dynamic.sql.render.RenderingContext;
@@ -86,10 +87,14 @@ public class CriterionRenderer implements SqlCriterionVisitor<Optional<RenderedC
         return renderCriteriaGroup(criterion, this::calculateNotFragment);
     }
 
+    @Override
+    public Optional<RenderedCriterion> visit(NullCriterion criterion) {
+        return Optional.empty();
+    }
+
     private Optional<RenderedCriterion> renderCriteriaGroup(CriteriaGroup criterion,
                                                             Function<FragmentCollector, String> fragmentCalculator) {
-        return criterion.initialCriterion().map(ic -> render(ic, criterion.subCriteria(), fragmentCalculator))
-                .orElseGet(() -> render(criterion.subCriteria(), fragmentCalculator));
+        return render(criterion.initialCriterion(), criterion.subCriteria(), fragmentCalculator);
     }
 
     public Optional<RenderedCriterion> render(SqlCriterion initialCriterion, List<AndOrCriteriaGroup> subCriteria,
@@ -100,12 +105,6 @@ public class CriterionRenderer implements SqlCriterionVisitor<Optional<RenderedC
 
         return fragmentAndParameters.map(fp -> calculateRenderedCriterion(fp, renderedSubCriteria, fragmentCalculator))
                 .orElseGet(() -> calculateRenderedCriterion(renderedSubCriteria, fragmentCalculator));
-    }
-
-    public Optional<RenderedCriterion> render(List<AndOrCriteriaGroup> subCriteria,
-                                              Function<FragmentCollector, String> fragmentCalculator) {
-        List<RenderedCriterion> renderedSubCriteria = renderSubCriteria(subCriteria);
-        return calculateRenderedCriterion(renderedSubCriteria, fragmentCalculator);
     }
 
     private <T> Optional<FragmentAndParameters> renderColumnAndCondition(ColumnAndConditionCriterion<T> criterion) {
@@ -134,8 +133,7 @@ public class CriterionRenderer implements SqlCriterionVisitor<Optional<RenderedC
     }
 
     private Optional<RenderedCriterion> renderAndOrCriteriaGroup(AndOrCriteriaGroup criterion) {
-        return criterion.initialCriterion().map(ic -> render(ic, criterion.subCriteria(), this::calculateFragment))
-                .orElseGet(() -> render(criterion.subCriteria(), this::calculateFragment))
+        return render(criterion.initialCriterion(), criterion.subCriteria(), this::calculateFragment)
                 .map(rc -> rc.withConnector(criterion.connector()));
     }
 

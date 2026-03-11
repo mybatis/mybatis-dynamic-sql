@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2025 the original author or authors.
+ *    Copyright 2016-2026 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -573,6 +573,26 @@ class GroupByTest {
             Map<String, Object> row = rows.get(0);
             assertThat(row).containsEntry("LAST_NAME", "Rubble");
         }
+    }
+
+    @Test
+    void testHavingForUpdate() {
+        SelectStatementProvider selectStatement = select(lastName, count())
+                .from(person)
+                .groupBy(lastName)
+                .having(count(), isEqualTo(3L))
+                .forUpdate()
+                .build()
+                .render(RenderingStrategies.MYBATIS3);
+
+        String expected = """
+                    select last_name, count(*)
+                    from Person
+                    group by last_name
+                    having count(*) = #{parameters.p1}
+                    for update
+                    """;
+        assertThat(selectStatement.getSelectStatement()).isEqualToNormalizingWhitespace(expected);
     }
 
     @Test

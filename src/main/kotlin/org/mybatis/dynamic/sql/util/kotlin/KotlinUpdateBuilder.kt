@@ -18,14 +18,14 @@ package org.mybatis.dynamic.sql.util.kotlin
 import org.mybatis.dynamic.sql.BasicColumn
 import org.mybatis.dynamic.sql.SortSpecification
 import org.mybatis.dynamic.sql.SqlColumn
-import org.mybatis.dynamic.sql.update.UpdateDSL
+import org.mybatis.dynamic.sql.dsl.UpdateDSL
 import org.mybatis.dynamic.sql.update.UpdateModel
 import org.mybatis.dynamic.sql.util.Buildable
 
 typealias UpdateCompleter = KotlinUpdateBuilder.() -> Unit
 
-class KotlinUpdateBuilder(private val dsl: UpdateDSL<UpdateModel>) :
-    KotlinWhereOperations<UpdateDSL<UpdateModel>>(dsl),
+class KotlinUpdateBuilder(private val dsl: UpdateDSL) :
+    KotlinWhereOperations<UpdateDSL>(dsl),
     Buildable<UpdateModel> {
 
     fun <T : Any> set(column: SqlColumn<T>): KotlinSetClauseFinisher<T> = KotlinSetClauseFinisher(column)
@@ -93,7 +93,7 @@ class KotlinUpdateBuilder(private val dsl: UpdateDSL<UpdateModel>) :
 
         infix fun equalToWhenPresent(value: T?): Unit = equalToWhenPresent { value }
 
-        private fun applyToDsl(block: UpdateDSL<UpdateModel>.() -> Unit) {
+        private fun applyToDsl(block: UpdateDSL.() -> Unit) {
             this@KotlinUpdateBuilder.dsl.apply(block)
         }
     }

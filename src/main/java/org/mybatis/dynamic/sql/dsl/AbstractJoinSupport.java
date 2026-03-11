@@ -15,25 +15,38 @@
  */
 package org.mybatis.dynamic.sql.dsl;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
-import org.jspecify.annotations.Nullable;
+import org.mybatis.dynamic.sql.AndOrCriteriaGroup;
+import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.TableExpression;
 import org.mybatis.dynamic.sql.select.join.JoinSpecification;
 import org.mybatis.dynamic.sql.select.join.JoinType;
 
-public abstract class AbstractJoinSpecificationFinisher<D extends JoinOperations<D, F>,
-        F extends AbstractJoinSpecificationFinisher<D, F>> extends AbstractBooleanOperationsFinisher<F> {
-    private @Nullable TableExpression joinTable;
-    private @Nullable JoinType joinType;
+public abstract class AbstractJoinSupport<D extends JoinOperations<F>, F extends AbstractJoinSupport<D, F>>
+        implements JoinOperations<F>, BooleanOperations<F> {
+    private final JoinType joinType;
+    private final TableExpression joinTable;
+    private final SqlCriterion initialCriterion;
+    private final List<AndOrCriteriaGroup> subCriteria = new ArrayList<>();
 
-    void setJoinTable(TableExpression joinTable) {
-        this.joinTable = joinTable;
-    }
-
-    void setJoinType(JoinType joinType) {
+    protected AbstractJoinSupport(JoinType joinType, TableExpression joinTable, SqlCriterion initialCriterion) {
         this.joinType = joinType;
+        this.joinTable = joinTable;
+        this.initialCriterion = initialCriterion;
     }
+
+    @Override
+    public F addSubCriterion(AndOrCriteriaGroup subCriterion) {
+        subCriteria.add(subCriterion);
+        return getThis();
+    }
+
+    protected abstract F getThis();
+
+    public abstract D endJoin();
 
     protected JoinSpecification toJoinSpecification() {
         return JoinSpecification.withJoinTable(Objects.requireNonNull(joinTable))
@@ -42,6 +55,4 @@ public abstract class AbstractJoinSpecificationFinisher<D extends JoinOperations
                 .withSubCriteria(subCriteria)
                 .build();
     }
-
-    public abstract D endJoinSpecification();
 }

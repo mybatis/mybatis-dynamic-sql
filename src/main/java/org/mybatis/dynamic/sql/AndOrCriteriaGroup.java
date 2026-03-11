@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2025 the original author or authors.
+ *    Copyright 2016-2026 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 import org.jspecify.annotations.Nullable;
 
@@ -34,12 +33,12 @@ import org.jspecify.annotations.Nullable;
  */
 public class AndOrCriteriaGroup {
     private final String connector;
-    private final @Nullable SqlCriterion initialCriterion;
+    private final SqlCriterion initialCriterion;
     private final List<AndOrCriteriaGroup> subCriteria;
 
     private AndOrCriteriaGroup(Builder builder) {
         connector = Objects.requireNonNull(builder.connector);
-        initialCriterion = builder.initialCriterion;
+        initialCriterion = Objects.requireNonNull(builder.initialCriterion);
         subCriteria = builder.subCriteria;
     }
 
@@ -47,8 +46,8 @@ public class AndOrCriteriaGroup {
         return connector;
     }
 
-    public Optional<SqlCriterion> initialCriterion() {
-        return Optional.ofNullable(initialCriterion);
+    public SqlCriterion initialCriterion() {
+        return initialCriterion;
     }
 
     public List<AndOrCriteriaGroup> subCriteria() {
@@ -65,7 +64,7 @@ public class AndOrCriteriaGroup {
             return this;
         }
 
-        public Builder withInitialCriterion(@Nullable SqlCriterion initialCriterion) {
+        public Builder withInitialCriterion(SqlCriterion initialCriterion) {
             this.initialCriterion = initialCriterion;
             return this;
         }

@@ -18,13 +18,13 @@ package org.mybatis.dynamic.sql.dsl;
 import java.util.Arrays;
 import java.util.List;
 
-import org.jspecify.annotations.Nullable;
 import org.mybatis.dynamic.sql.AndOrCriteriaGroup;
 import org.mybatis.dynamic.sql.BindableColumn;
 import org.mybatis.dynamic.sql.ColumnAndConditionCriterion;
 import org.mybatis.dynamic.sql.CriteriaGroup;
 import org.mybatis.dynamic.sql.ExistsCriterion;
 import org.mybatis.dynamic.sql.ExistsPredicate;
+import org.mybatis.dynamic.sql.NullCriterion;
 import org.mybatis.dynamic.sql.RenderableCondition;
 import org.mybatis.dynamic.sql.SqlCriterion;
 import org.mybatis.dynamic.sql.where.WhereApplier;
@@ -36,20 +36,20 @@ import org.mybatis.dynamic.sql.where.WhereApplier;
  *
  * @param <F> the implementation of the Where DSL customized for a particular SQL statement.
  */
-public interface WhereOperations<F extends AbstractBooleanOperationsFinisher<?>> {
+public interface WhereOperations<F extends BooleanOperations<F>> {
 
     default <T> F where(BindableColumn<T> column, RenderableCondition<T> condition, AndOrCriteriaGroup... subCriteria) {
         return where(column, condition, Arrays.asList(subCriteria));
     }
 
     default <T> F where(BindableColumn<T> column, RenderableCondition<T> condition,
-                       List<AndOrCriteriaGroup> subCriteria) {
+                        List<AndOrCriteriaGroup> subCriteria) {
         SqlCriterion sqlCriterion = ColumnAndConditionCriterion.withColumn(column)
                 .withCondition(condition)
                 .withSubCriteria(subCriteria)
                 .build();
 
-        return initialize(sqlCriterion);
+        return where(sqlCriterion);
     }
 
     default F where(ExistsPredicate existsPredicate, AndOrCriteriaGroup... subCriteria) {
@@ -62,41 +62,34 @@ public interface WhereOperations<F extends AbstractBooleanOperationsFinisher<?>>
                 .withSubCriteria(subCriteria)
                 .build();
 
-        return initialize(sqlCriterion);
+        return where(sqlCriterion);
     }
 
     default F where(SqlCriterion initialCriterion, AndOrCriteriaGroup... subCriteria) {
         return where(initialCriterion, Arrays.asList(subCriteria));
     }
 
-    default F where(@Nullable SqlCriterion initialCriterion, List<AndOrCriteriaGroup> subCriteria) {
+    default F where(SqlCriterion initialCriterion, List<AndOrCriteriaGroup> subCriteria) {
         SqlCriterion sqlCriterion = new CriteriaGroup.Builder()
                 .withInitialCriterion(initialCriterion)
                 .withSubCriteria(subCriteria)
                 .build();
 
-        return initialize(sqlCriterion);
+        return where(sqlCriterion);
     }
 
     default F where(List<AndOrCriteriaGroup> subCriteria) {
         SqlCriterion sqlCriterion = new CriteriaGroup.Builder()
+                .withInitialCriterion(new NullCriterion())
                 .withSubCriteria(subCriteria)
                 .build();
 
-        return initialize(sqlCriterion);
+        return where(sqlCriterion);
     }
 
     F where();
 
-    default F applyWhere(WhereApplier whereApplier) {
-        F finisher = where();
-        whereApplier.accept(finisher);
-        return finisher;
-    }
+    F where(SqlCriterion initialCriterion);
 
-    private F initialize(SqlCriterion sqlCriterion) {
-        F finisher = where();
-        finisher.setInitialCriterion(sqlCriterion, AbstractBooleanOperationsFinisher.StatementType.WHERE);
-        return finisher;
-    }
+    F applyWhere(WhereApplier whereApplier);
 }

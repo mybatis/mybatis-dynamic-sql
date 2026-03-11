@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2025 the original author or authors.
+ *    Copyright 2016-2026 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -58,6 +58,7 @@ import org.mybatis.dynamic.sql.insert.render.InsertSelectStatementProvider;
 import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider;
 import org.mybatis.dynamic.sql.render.ExplicitTableAliasCalculator;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
+import org.mybatis.dynamic.sql.select.SelectDSLCompleter;
 import org.mybatis.dynamic.sql.select.SelectModel;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
@@ -233,6 +234,25 @@ class AnimalDataTest {
             List<AnimalData> animals = mapper.selectMany(selectStatement);
             assertThat(animals).hasSize(19);
         }
+    }
+
+    @Test
+    void testSelectSkipLocked() {
+        SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
+                .from(animalData)
+                .where(id, isLessThan(20))
+                .skipLocked()
+                .build()
+                .render(RenderingStrategies.MYBATIS3);
+
+        String expected = """
+                select id, animal_name, body_weight, brain_weight
+                from AnimalData
+                where id < #{parameters.p1,jdbcType=INTEGER}
+                skip locked
+                """;
+
+        assertThat(selectStatement.getSelectStatement()).isEqualToNormalizingWhitespace(expected);
     }
 
     @Test
@@ -2311,7 +2331,7 @@ class AnimalDataTest {
             AnimalData row = MyBatis3Utils.selectOne(mapper::selectOne,
                     BasicColumn.columnList(id, animalName, bodyWeight, brainWeight),
                     animalData,
-                    c -> c.where(id, isEqualTo(1))
+                    (SelectDSLCompleter)  c -> c.where(id, isEqualTo(1))
             );
 
             assertThat(row.bodyWeight()).isEqualTo(-2.86);
@@ -2344,7 +2364,7 @@ class AnimalDataTest {
             AnimalData row = MyBatis3Utils.selectOne(mapper::selectOne,
                     BasicColumn.columnList(id, animalName, bodyWeight, brainWeight),
                     animalData,
-                    c -> c.where(id, isEqualTo(1))
+                    (SelectDSLCompleter) c -> c.where(id, isEqualTo(1))
             );
 
             assertThat(row.bodyWeight()).isEqualTo(0.42, within(.001));
