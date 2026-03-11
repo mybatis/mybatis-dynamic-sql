@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2025 the original author or authors.
+ *    Copyright 2016-2026 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -30,7 +30,7 @@ import org.mybatis.dynamic.sql.render.RenderingStrategy;
 import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 import org.mybatis.dynamic.sql.util.FragmentCollector;
-import org.mybatis.dynamic.sql.where.EmbeddedWhereModel;
+import org.mybatis.dynamic.sql.where.WhereModel;
 
 public class DeleteRenderer {
     private final DeleteModel deleteModel;
@@ -75,7 +75,7 @@ public class DeleteRenderer {
         return deleteModel.whereModel().flatMap(this::renderWhereClause);
     }
 
-    private Optional<FragmentAndParameters> renderWhereClause(EmbeddedWhereModel whereModel) {
+    private Optional<FragmentAndParameters> renderWhereClause(WhereModel whereModel) {
         return whereModel.render(renderingContext);
     }
 

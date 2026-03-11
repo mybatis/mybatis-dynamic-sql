@@ -45,8 +45,8 @@ import org.mybatis.dynamic.sql.select.join.JoinType;
 import org.mybatis.dynamic.sql.util.Buildable;
 import org.mybatis.dynamic.sql.util.ConfigurableStatement;
 import org.mybatis.dynamic.sql.util.Validator;
-import org.mybatis.dynamic.sql.where.EmbeddedWhereModel;
 import org.mybatis.dynamic.sql.where.WhereApplier;
+import org.mybatis.dynamic.sql.where.WhereModel;
 
 public class QueryExpressionDSL<R> extends AbstractQueryingDSL implements
         JoinOperations<QueryExpressionDSL<R>.JoinSpecificationFinisher>,
@@ -294,8 +294,8 @@ public class QueryExpressionDSL<R> extends AbstractQueryingDSL implements
             return QueryExpressionDSL.this.fetchFirstWhenPresent(fetchFirstRows);
         }
 
-        protected EmbeddedWhereModel buildWhereModel() {
-            return new EmbeddedWhereModel.Builder()
+        protected WhereModel buildWhereModel() {
+            return new WhereModel.Builder()
                     .withInitialCriterion(initialCriterion)
                     .withSubCriteria(subCriteria)
                     .build();

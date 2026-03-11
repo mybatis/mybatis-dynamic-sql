@@ -20,7 +20,6 @@ import static examples.emptywhere.PersonDynamicSqlSupport.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
 
-import java.util.Optional;
 import java.util.stream.Stream;
 
 import org.jspecify.annotations.Nullable;
@@ -37,8 +36,6 @@ import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.update.UpdateDSL;
 import org.mybatis.dynamic.sql.update.UpdateModel;
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
-import org.mybatis.dynamic.sql.where.StandaloneWhereBuilder;
-import org.mybatis.dynamic.sql.where.render.WhereClauseProvider;
 
 class EmptyWhereTest {
     private static final String FIRST_NAME = "Fred";
@@ -246,39 +243,38 @@ class EmptyWhereTest {
 
     @Test
     void testWhereThreeConditions() {
-        StandaloneWhereBuilder builder = where(id, isEqualTo(3));
+        SelectStatementProvider selectStatement = select(person.allColumns())
+                .from(person)
+                .where(id, isEqualTo(3))
+                .and(firstName, isEqualTo(FIRST_NAME))
+                .and(PersonDynamicSqlSupport.lastName, isEqualTo(LAST_NAME))
+                .configureStatement(c -> c.setNonRenderingWhereClauseAllowed(true))
+                .build()
+                .render(RenderingStrategies.MYBATIS3);
 
-        builder.and(firstName, isEqualTo(FIRST_NAME));
-        builder.and(PersonDynamicSqlSupport.lastName, isEqualTo(LAST_NAME));
-
-        Optional<WhereClauseProvider> whereClause = builder.build().render(RenderingStrategies.MYBATIS3);
-
-        String expected = "where id = #{parameters.p1}"
+        String expected = "select * from person where id = #{parameters.p1}"
                 + " and first_name = #{parameters.p2}"
                 + " and last_name = #{parameters.p3}";
 
-        assertThat(whereClause.map(WhereClauseProvider::getWhereClause)).hasValueSatisfying(wc ->
-            assertThat(wc).isEqualTo(expected)
-        );
+        assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
 
     @ParameterizedTest
     @MethodSource("whereVariations")
     void testWhereVariations(Variation variation) {
-        StandaloneWhereBuilder builder = where();
 
-        builder.and(firstName, isEqualToWhenPresent(variation.firstName));
-        builder.or(PersonDynamicSqlSupport.lastName, isEqualToWhenPresent(variation.lastName));
-        builder.configureStatement(c -> c.setNonRenderingWhereClauseAllowed(true));
-
-        Optional<WhereClauseProvider> whereClause = builder.build().render(RenderingStrategies.MYBATIS3);
+        SelectStatementProvider selectStatement = select(person.allColumns())
+                .from(person)
+                .where(firstName, isEqualToWhenPresent(variation.firstName))
+                .or(PersonDynamicSqlSupport.lastName, isEqualToWhenPresent(variation.lastName))
+                .configureStatement(c -> c.setNonRenderingWhereClauseAllowed(true))
+                .build()
+                .render(RenderingStrategies.MYBATIS3);
 
         if (variation.firstName == null && variation.lastName == null) {
-            assertThat(whereClause).isEmpty();
+            assertThat(selectStatement.getSelectStatement()).isEqualTo("select * from person");
         } else {
-            assertThat(whereClause.map(WhereClauseProvider::getWhereClause)).hasValueSatisfying(wc ->
-                    assertThat(wc).isEqualTo(variation.whereClause)
-            );
+            assertThat(selectStatement.getSelectStatement()).isEqualTo("select * from person " + variation.whereClause);
         }
     }
 

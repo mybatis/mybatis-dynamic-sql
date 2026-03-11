@@ -25,7 +25,7 @@ import org.mybatis.dynamic.sql.dsl.WhereOrHavingApplier;
 
 public class WhereApplier extends WhereOrHavingApplier<WhereApplier> {
 
-    protected WhereApplier(SqlCriterion initialCriterion, List<AndOrCriteriaGroup> subCriteria) {
+    public WhereApplier(SqlCriterion initialCriterion, List<AndOrCriteriaGroup> subCriteria) {
         super(initialCriterion, subCriteria);
     }
 

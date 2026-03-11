@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2025 the original author or authors.
+ *    Copyright 2016-2026 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -19,16 +19,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
 
 import java.sql.JDBCType;
-import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
-import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
-import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
-import org.mybatis.dynamic.sql.select.render.HavingRenderer;
-import org.mybatis.dynamic.sql.util.FragmentAndParameters;
+import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 
 class HavingModelTest {
     @Test
@@ -36,15 +32,17 @@ class HavingModelTest {
         SqlTable table = SqlTable.of("foo");
         SqlColumn<Integer> id = table.column("id", JDBCType.INTEGER);
 
-        HavingModel model = having(id, isLessThan(4))
+        HavingApplier havingApplier = having(id, isLessThan(4))
                 .or(id, isGreaterThan(14))
-                .build();
+                .toHavingApplier();
 
-        Optional<FragmentAndParameters> havingClause = renderHavingModel(model);
+        SelectStatementProvider selectStatementProvider = select(table.allColumns())
+                .from(table)
+                .applyHaving(havingApplier)
+                .build()
+                .render(RenderingStrategies.SPRING_NAMED_PARAMETER);
 
-        assertThat(havingClause).hasValueSatisfying(hc ->
-                assertThat(hc.fragment()).isEqualTo("having id < :p1 or id > :p2")
-        );
+        assertThat(selectStatementProvider.getSelectStatement()).isEqualTo("select * from foo having id < :p1 or id > :p2");
     }
 
     @Test
@@ -52,26 +50,16 @@ class HavingModelTest {
         SqlTable table = SqlTable.of("foo");
         SqlColumn<Integer> id = table.column("id", JDBCType.INTEGER);
 
-        HavingModel model = having(group(id, isLessThan(10), and(id, isGreaterThan(4))))
+        HavingApplier havingApplier = having(group(id, isLessThan(10), and(id, isGreaterThan(4))))
                 .or(id, isGreaterThan(14))
-                .build();
+                .toHavingApplier();
 
-        Optional<FragmentAndParameters> havingClause = renderHavingModel(model);
-
-        assertThat(havingClause).hasValueSatisfying(hc ->
-                assertThat(hc.fragment()).isEqualTo("having (id < :p1 and id > :p2) or id > :p3")
-        );
-    }
-
-    private Optional<FragmentAndParameters> renderHavingModel(HavingModel havingModel) {
-        RenderingContext renderingContext = RenderingContext
-                .withRenderingStrategy(RenderingStrategies.SPRING_NAMED_PARAMETER)
-                .withStatementConfiguration(new StatementConfiguration())
-                .build();
-
-        return HavingRenderer.withHavingModel(havingModel)
-                .withRenderingContext(renderingContext)
+        SelectStatementProvider selectStatementProvider = select(table.allColumns())
+                .from(table)
+                .applyHaving(havingApplier)
                 .build()
-                .render();
+                .render(RenderingStrategies.SPRING_NAMED_PARAMETER);
+
+        assertThat(selectStatementProvider.getSelectStatement()).isEqualTo("select * from foo having (id < :p1 and id > :p2) or id > :p3");
     }
 }

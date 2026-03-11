@@ -27,12 +27,12 @@ import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
 import org.mybatis.dynamic.sql.delete.render.DeleteRenderer;
 import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
-import org.mybatis.dynamic.sql.where.EmbeddedWhereModel;
+import org.mybatis.dynamic.sql.where.WhereModel;
 
 public class DeleteModel {
     private final SqlTable table;
     private final @Nullable String tableAlias;
-    private final @Nullable EmbeddedWhereModel whereModel;
+    private final @Nullable WhereModel whereModel;
     private final @Nullable Long limit;
     private final @Nullable OrderByModel orderByModel;
     private final StatementConfiguration statementConfiguration;
@@ -54,7 +54,7 @@ public class DeleteModel {
         return Optional.ofNullable(tableAlias);
     }
 
-    public Optional<EmbeddedWhereModel> whereModel() {
+    public Optional<WhereModel> whereModel() {
         return Optional.ofNullable(whereModel);
     }
 
