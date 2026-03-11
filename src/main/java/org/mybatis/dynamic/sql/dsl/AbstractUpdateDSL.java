@@ -52,6 +52,7 @@ import org.mybatis.dynamic.sql.where.WhereApplier;
 
 public abstract class AbstractUpdateDSL<M, D extends AbstractUpdateDSL<M, D>>
         implements WhereOperations<AbstractUpdateDSL<M, D>.UpdateWhereBuilder>,
+        OrderByOperations<D>,
         ConfigurableStatement<D>,
         Buildable<M> {
 
@@ -101,10 +102,7 @@ public abstract class AbstractUpdateDSL<M, D extends AbstractUpdateDSL<M, D>>
         return getThis();
     }
 
-    public D orderBy(SortSpecification... columns) {
-        return orderBy(Arrays.asList(columns));
-    }
-
+    @Override
     public D orderBy(Collection<? extends SortSpecification> columns) {
         orderByModel = OrderByModel.of(columns);
         return getThis();

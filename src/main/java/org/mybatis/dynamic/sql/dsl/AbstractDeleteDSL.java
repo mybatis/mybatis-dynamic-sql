@@ -40,6 +40,7 @@ import org.mybatis.dynamic.sql.where.WhereApplier;
 public abstract class AbstractDeleteDSL<M, D extends AbstractDeleteDSL<M, D>>
         implements WhereOperations<AbstractDeleteDSL<M, D>.DeleteWhereBuilder>,
         ConfigurableStatement<D>,
+        OrderByOperations<D>,
         Buildable<M> {
     private final SqlTable table;
     private final @Nullable String tableAlias;
@@ -82,10 +83,7 @@ public abstract class AbstractDeleteDSL<M, D extends AbstractDeleteDSL<M, D>>
         return getThis();
     }
 
-    public D orderBy(SortSpecification... columns) {
-        return orderBy(Arrays.asList(columns));
-    }
-
+    @Override
     public D orderBy(Collection<? extends SortSpecification> columns) {
         orderByModel = OrderByModel.of(columns);
         return getThis();

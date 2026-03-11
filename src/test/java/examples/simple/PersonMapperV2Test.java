@@ -140,7 +140,7 @@ class PersonMapperV2Test {
     }
 
     @Test
-    void testSelectWithTypeConversion() {
+    void testSelectWithTypeConversion() throws NumberFormatException {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             PersonMapperV2 mapper = session.getMapper(PersonMapperV2.class);
 
@@ -153,7 +153,7 @@ class PersonMapperV2Test {
     }
 
     @Test
-    void testSelectWithTypeConversionAndFilterAndNull() {
+    void testSelectWithTypeConversionAndFilterAndNull() throws NumberFormatException{
         try (SqlSession session = sqlSessionFactory.openSession()) {
             PersonMapperV2 mapper = session.getMapper(PersonMapperV2.class);
 

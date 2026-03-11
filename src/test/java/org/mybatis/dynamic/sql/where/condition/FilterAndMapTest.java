@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2025 the original author or authors.
+ *    Copyright 2016-2026 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -30,14 +30,14 @@ import org.mybatis.dynamic.sql.SqlBuilder;
 
 class FilterAndMapTest {
     @Test
-    void testTypeConversion() {
+    void testTypeConversion() throws NumberFormatException {
         var cond = SqlBuilder.isEqualTo("1").map(Integer::parseInt);
         assertThat(cond.isEmpty()).isFalse();
         assertThat(cond.value()).isEqualTo(1);
     }
 
     @Test
-    void testTypeConversionWithNullAndFilterDoesNotThrowException() {
+    void testTypeConversionWithNullAndFilterDoesNotThrowException() throws NumberFormatException {
         var cond = SqlBuilder.isEqualToWhenPresent((String) null).map(Integer::parseInt);
         assertThat(cond.isEmpty()).isTrue();
     }
@@ -489,7 +489,7 @@ class FilterAndMapTest {
     }
 
     @Test
-    void testBetweenMapWithSingleMapper() {
+    void testBetweenMapWithSingleMapper() throws NumberFormatException {
         IsBetween<Integer> cond = SqlBuilder.isBetween("3").and("4").map(Integer::parseInt);
         assertThat(cond.isEmpty()).isFalse();
         assertThat(cond.value1()).isEqualTo(3);
@@ -497,7 +497,7 @@ class FilterAndMapTest {
     }
 
     @Test
-    void testBetweenWhenPresentFilterWithBiPredicate() {
+    void testBetweenWhenPresentFilterWithBiPredicate()throws NumberFormatException  {
         IsBetweenWhenPresent<Integer> cond = SqlBuilder.isBetweenWhenPresent("3").and("4")
                 .map(Integer::parseInt)
                 .filter((v1, v2) -> true);
@@ -507,7 +507,7 @@ class FilterAndMapTest {
     }
 
     @Test
-    void testNotBetweenWhenPresentFilterWithBiPredicate() {
+    void testNotBetweenWhenPresentFilterWithBiPredicate() throws NumberFormatException {
         IsNotBetweenWhenPresent<Integer> cond = SqlBuilder.isNotBetweenWhenPresent("3").and("4")
                 .map(Integer::parseInt)
                 .filter((v1, v2) -> true);
@@ -518,7 +518,7 @@ class FilterAndMapTest {
 
     @ParameterizedTest
     @MethodSource("testBetweenFilterVariations")
-    void testBetweenFilterVariations(FilterVariation variation) {
+    void testBetweenFilterVariations(FilterVariation variation) throws NumberFormatException {
         IsBetween<Integer> cond = SqlBuilder.isBetween("4").and("6")
                 .map(Integer::parseInt)
                 .filter(variation.predicate);
@@ -561,7 +561,7 @@ class FilterAndMapTest {
     }
 
     @Test
-    void testNotBetweenMapWithSingleMapper() {
+    void testNotBetweenMapWithSingleMapper() throws NumberFormatException {
         IsNotBetween<Integer> cond = SqlBuilder.isNotBetween("3").and("4").map(Integer::parseInt);
         assertThat(cond.isEmpty()).isFalse();
         assertThat(cond.value1()).isEqualTo(3);
@@ -569,7 +569,7 @@ class FilterAndMapTest {
     }
 
     @Test
-    void testBetweenFilterToEmpty() {
+    void testBetweenFilterToEmpty() throws NumberFormatException {
         var cond = SqlBuilder.isBetween("3").and("4").map(Integer::parseInt)
                 .filter((i1, i2) -> false);
         assertThat(cond.isEmpty()).isTrue();
@@ -578,7 +578,7 @@ class FilterAndMapTest {
     }
 
     @Test
-    void testNotBetweenFilterToEmpty() {
+    void testNotBetweenFilterToEmpty() throws NumberFormatException {
         var cond = SqlBuilder.isNotBetween("3").and("4").map(Integer::parseInt)
                 .filter((i1, i2) -> false);
         assertThat(cond.isEmpty()).isTrue();
