@@ -235,7 +235,7 @@ public interface SqlBuilder {
     }
 
     static QueryExpressionDSL<SelectModel> select(BasicColumn... selectList) {
-        return SelectDSL.select(selectList);
+        return select(Arrays.asList(selectList));
     }
 
     static QueryExpressionDSL<SelectModel> select(Collection<? extends BasicColumn> selectList) {
@@ -243,7 +243,7 @@ public interface SqlBuilder {
     }
 
     static QueryExpressionDSL<SelectModel> selectDistinct(BasicColumn... selectList) {
-        return SelectDSL.selectDistinct(selectList);
+        return selectDistinct(Arrays.asList(selectList));
     }
 
     static QueryExpressionDSL<SelectModel> selectDistinct(Collection<? extends BasicColumn> selectList) {

@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2025 the original author or authors.
+ *    Copyright 2016-2026 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -22,8 +22,9 @@ import org.apache.ibatis.annotations.ResultMap;
 import org.apache.ibatis.annotations.SelectProvider;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.util.SqlProviderAdapter;
+import org.mybatis.dynamic.sql.util.mybatis3.CommonCountMapper;
 
-public interface JoinMapper {
+public interface JoinMapper extends CommonCountMapper {
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
     @ResultMap("SimpleJoinResult")
     List<OrderMaster> selectMany(SelectStatementProvider selectStatement);

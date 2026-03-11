@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 import org.jspecify.annotations.Nullable;
@@ -136,9 +137,8 @@ public class SelectDSL implements
 
     @Override
     public QueryExpressionWhereBuilder where() {
-        if (currentQueryValues.whereBuilder == null) {
-            currentQueryValues.whereBuilder = new QueryExpressionWhereBuilder(new NullCriterion());
-        }
+        currentQueryValues.whereBuilder = Objects.requireNonNullElseGet(currentQueryValues.whereBuilder,
+                () -> new QueryExpressionWhereBuilder(new NullCriterion()));
         return currentQueryValues.whereBuilder;
     }
 

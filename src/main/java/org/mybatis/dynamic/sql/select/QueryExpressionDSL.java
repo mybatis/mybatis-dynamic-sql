@@ -113,9 +113,8 @@ public class QueryExpressionDSL<R> extends AbstractQueryingDSL implements
 
     @Override
     public QueryExpressionWhereBuilder where() {
-        if (whereBuilder == null) {
-            whereBuilder = new QueryExpressionWhereBuilder(new NullCriterion());
-        }
+        whereBuilder = Objects.requireNonNullElseGet(whereBuilder,
+                () -> new QueryExpressionWhereBuilder(new NullCriterion()));
         return whereBuilder;
     }
 

@@ -37,7 +37,7 @@ public interface LimitAndOffsetOperations<T, M> {
 
     FetchFirstFinisher<T> fetchFirstWhenPresent(@Nullable Long fetchFirstRows);
 
-    interface OffsetFirstFinisher<T, M> extends ForAndWaitOperations<T>, Buildable<M> {
+    interface OffsetFirstFinisher<T, M> extends ForAndWaitOperations<T>, OrderByOperations<T>, Buildable<M> {
         default FetchFirstFinisher<T> fetchFirst(long fetchFirstRows) {
             return fetchFirstWhenPresent(fetchFirstRows);
         }
@@ -45,7 +45,7 @@ public interface LimitAndOffsetOperations<T, M> {
         FetchFirstFinisher<T> fetchFirstWhenPresent(@Nullable Long fetchFirstRows);
     }
 
-    interface LimitFinisher<T, M> extends ForAndWaitOperations<T>, Buildable<M> {
+    interface LimitFinisher<T, M> extends ForAndWaitOperations<T>, OrderByOperations<T>, Buildable<M> {
         default T offset(long offset) {
             return offsetWhenPresent(offset);
         }

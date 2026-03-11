@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2025 the original author or authors.
+ *    Copyright 2016-2026 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -68,6 +68,21 @@ class LimitAndOffsetTest {
             LimitAndOffsetMapper mapper = sqlSession.getMapper(LimitAndOffsetMapper.class);
 
             List<AnimalData> rows = mapper.selectWithLimitAndOffset(5, 3)
+                    .orderBy(id)
+                    .build()
+                    .execute();
+
+            assertThat(rows).hasSize(5);
+            assertThat(rows.get(0).id()).isEqualTo(4);
+        }
+    }
+
+    @Test
+    void testLimitAndOffsetDistinct() {
+        try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
+            LimitAndOffsetMapper mapper = sqlSession.getMapper(LimitAndOffsetMapper.class);
+
+            List<AnimalData> rows = mapper.selectDistinctWithLimitAndOffset(5, 3)
                     .orderBy(id)
                     .build()
                     .execute();

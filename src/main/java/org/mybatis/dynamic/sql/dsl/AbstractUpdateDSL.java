@@ -74,9 +74,7 @@ public abstract class AbstractUpdateDSL<M, D extends AbstractUpdateDSL<M, D>>
 
     @Override
     public UpdateWhereBuilder where() {
-        if (whereBuilder == null) {
-            whereBuilder = new UpdateWhereBuilder(new NullCriterion());
-        }
+        whereBuilder = Objects.requireNonNullElseGet(whereBuilder, () -> new UpdateWhereBuilder(new NullCriterion()));
         return whereBuilder;
     }
 

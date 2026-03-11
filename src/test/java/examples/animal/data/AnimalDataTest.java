@@ -237,6 +237,25 @@ class AnimalDataTest {
     }
 
     @Test
+    void testSelectSkipLocked() {
+        SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
+                .from(animalData)
+                .where(id, isLessThan(20))
+                .skipLocked()
+                .build()
+                .render(RenderingStrategies.MYBATIS3);
+
+        String expected = """
+                select id, animal_name, body_weight, brain_weight
+                from AnimalData
+                where id < #{parameters.p1,jdbcType=INTEGER}
+                skip locked
+                """;
+
+        assertThat(selectStatement.getSelectStatement()).isEqualToNormalizingWhitespace(expected);
+    }
+
+    @Test
     void testSelectRowsBetween30And40() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);

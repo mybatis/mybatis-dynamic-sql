@@ -15,14 +15,16 @@
  */
 package org.mybatis.dynamic.sql.dsl;
 
+import java.util.Collection;
 import java.util.Optional;
 
 import org.jspecify.annotations.Nullable;
+import org.mybatis.dynamic.sql.SortSpecification;
 import org.mybatis.dynamic.sql.select.PagingModel;
 import org.mybatis.dynamic.sql.util.Buildable;
 
 public abstract class AbstractLimitAndOffsetSupport<T extends
-        LimitAndOffsetOperations<T, M> & Buildable<M> & ForAndWaitOperations<T>, M>
+        LimitAndOffsetOperations<T, M> & ForAndWaitOperations<T> & OrderByOperations<T> & Buildable<M>, M>
         implements LimitAndOffsetOperations<T, M> {
     private @Nullable Long limit;
     private @Nullable Long offset;
@@ -36,19 +38,19 @@ public abstract class AbstractLimitAndOffsetSupport<T extends
     @Override
     public LimitFinisher<T, M> limitWhenPresent(@Nullable Long limit) {
         this.limit = limit;
-        return new MyLimitFinisher();
+        return new LimitFinisherImpl();
     }
 
     @Override
     public OffsetFirstFinisher<T, M> offsetWhenPresent(@Nullable Long offset) {
         this.offset = offset;
-        return new MyOffsetFirstFinisher();
+        return new OffsetFirstFinisherImpl();
     }
 
     @Override
     public FetchFirstFinisher<T> fetchFirstWhenPresent(@Nullable Long fetchFirstRows) {
         this.fetchFirstRows = fetchFirstRows;
-        return new MyFetchFirstFinisher();
+        return new FetchFirstFinisherImpl();
     }
 
     protected abstract T getThis();
@@ -61,52 +63,44 @@ public abstract class AbstractLimitAndOffsetSupport<T extends
                 .build();
     }
 
-    public class MyLimitFinisher implements LimitFinisher<T, M> {
+    public abstract class ExtraMethods implements ForAndWaitOperations<T>, OrderByOperations<T>, Buildable<M> {
+        @Override
+        public T setForClause(String forClause) {
+            return AbstractLimitAndOffsetSupport.this.delegate.setForClause(forClause);
+        }
+
+        @Override
+        public T setWaitClause(String waitClause) {
+            return AbstractLimitAndOffsetSupport.this.delegate.setWaitClause(waitClause);
+        }
+
+        @Override
+        public T orderBy(Collection<? extends SortSpecification> columns) {
+            return AbstractLimitAndOffsetSupport.this.delegate.orderBy(columns);
+        }
+
+        @Override
+        public M build() {
+            return delegate.build();
+        }
+    }
+
+    public class LimitFinisherImpl extends ExtraMethods implements LimitFinisher<T, M> {
         @Override
         public T offsetWhenPresent(@Nullable Long offset) {
             AbstractLimitAndOffsetSupport.this.offset = offset;
             return AbstractLimitAndOffsetSupport.this.getThis();
         }
-
-        @Override
-        public T setForClause(String forClause) {
-            return AbstractLimitAndOffsetSupport.this.delegate.setForClause(forClause);
-        }
-
-        @Override
-        public T setWaitClause(String waitClause) {
-            return AbstractLimitAndOffsetSupport.this.delegate.setWaitClause(waitClause);
-        }
-
-        @Override
-        public M build() {
-            return delegate.build();
-        }
     }
 
-    public class MyOffsetFirstFinisher implements OffsetFirstFinisher<T, M> {
+    public class OffsetFirstFinisherImpl extends ExtraMethods implements OffsetFirstFinisher<T, M> {
         @Override
         public FetchFirstFinisher<T> fetchFirstWhenPresent(@Nullable Long fetchFirstRows) {
             return AbstractLimitAndOffsetSupport.this.fetchFirstWhenPresent(fetchFirstRows);
         }
-
-        @Override
-        public T setForClause(String forClause) {
-            return AbstractLimitAndOffsetSupport.this.delegate.setForClause(forClause);
-        }
-
-        @Override
-        public T setWaitClause(String waitClause) {
-            return AbstractLimitAndOffsetSupport.this.delegate.setWaitClause(waitClause);
-        }
-
-        @Override
-        public M build() {
-            return delegate.build();
-        }
     }
 
-    public class MyFetchFirstFinisher implements FetchFirstFinisher<T> {
+    public class FetchFirstFinisherImpl implements FetchFirstFinisher<T> {
         @Override
         public T rowsOnly() {
             return AbstractLimitAndOffsetSupport.this.getThis();

@@ -753,6 +753,24 @@ class PersonMapperTest {
     }
 
     @Test
+    void testSelectJoinForUpdate() {
+        SelectStatementProvider selectStatement = select(person.id, address.city)
+                .from(person, "p")
+                .join(address, "a").on(person.id, isEqualTo(address.id))
+                .forUpdate()
+                .build()
+                .render(RenderingStrategies.MYBATIS3);
+
+        String expected = """
+                select p.id, a.city
+                from Person p
+                join Address a on p.id = a.address_id
+                for update
+                """;
+        assertThat(selectStatement.getSelectStatement()).isEqualToNormalizingWhitespace(expected);
+    }
+
+    @Test
     void testWithEnumOrdinalTypeHandler() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             AddressMapper mapper = session.getMapper(AddressMapper.class);

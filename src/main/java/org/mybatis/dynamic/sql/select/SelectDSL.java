@@ -28,9 +28,9 @@ import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.SortSpecification;
 import org.mybatis.dynamic.sql.common.OrderByModel;
 import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
+import org.mybatis.dynamic.sql.dsl.AbstractLimitAndOffsetSupport;
 import org.mybatis.dynamic.sql.dsl.ForAndWaitOperations;
 import org.mybatis.dynamic.sql.dsl.LimitAndOffsetOperations;
-import org.mybatis.dynamic.sql.dsl.AbstractLimitAndOffsetSupport;
 import org.mybatis.dynamic.sql.dsl.OrderByOperations;
 import org.mybatis.dynamic.sql.util.Buildable;
 import org.mybatis.dynamic.sql.util.ConfigurableStatement;
@@ -83,7 +83,7 @@ public class SelectDSL<R> implements ForAndWaitOperations<SelectDSL<R>>,
     }
 
     public static QueryExpressionDSL<SelectModel> selectDistinct(BasicColumn... selectList) {
-        return selectDistinct(Function.identity(), selectList);
+        return selectDistinct(Arrays.asList(selectList));
     }
 
     public static QueryExpressionDSL<SelectModel> selectDistinct(

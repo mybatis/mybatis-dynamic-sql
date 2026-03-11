@@ -335,6 +335,52 @@ class JoinMapperTest {
     }
 
     @Test
+    void testMultipleTableJoinCount() {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
+            JoinMapper mapper = session.getMapper(JoinMapper.class);
+
+            SelectStatementProvider selectStatement = countFrom(orderMaster, "om")
+                    .join(orderLine, "ol").on(orderMaster.orderId, isEqualTo(orderLine.orderId))
+                    .join(itemMaster, "im").on(orderLine.itemId, isEqualTo(itemMaster.itemId))
+                    .where(orderMaster.orderId, isEqualTo(2))
+                    .build()
+                    .render(RenderingStrategies.MYBATIS3);
+
+            String expectedStatement = "select count(*)"
+                    + " from OrderMaster om join OrderLine ol on om.order_id = ol.order_id join ItemMaster im on ol.item_id = im.item_id"
+                    + " where om.order_id = #{parameters.p1,jdbcType=INTEGER}";
+            assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedStatement);
+
+            long count = mapper.count(selectStatement);
+
+            assertThat(count).isEqualTo(2);
+        }
+    }
+
+    @Test
+    void testMultipleTableJoinCountNoSecondAlias() {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
+            JoinMapper mapper = session.getMapper(JoinMapper.class);
+
+            SelectStatementProvider selectStatement = countFrom(orderMaster, "om")
+                    .join(orderLine, "ol").on(orderMaster.orderId, isEqualTo(orderLine.orderId))
+                    .join(itemMaster).on(orderLine.itemId, isEqualTo(itemMaster.itemId))
+                    .where(orderMaster.orderId, isEqualTo(2))
+                    .build()
+                    .render(RenderingStrategies.MYBATIS3);
+
+            String expectedStatement = "select count(*)"
+                    + " from OrderMaster om join OrderLine ol on om.order_id = ol.order_id join ItemMaster on ol.item_id = ItemMaster.item_id"
+                    + " where om.order_id = #{parameters.p1,jdbcType=INTEGER}";
+            assertThat(selectStatement.getSelectStatement()).isEqualTo(expectedStatement);
+
+            long count = mapper.count(selectStatement);
+
+            assertThat(count).isEqualTo(2);
+        }
+    }
+
+    @Test
     void testMultipleTableJoinWithComplexWhereClause() {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             JoinMapper mapper = session.getMapper(JoinMapper.class);
