@@ -105,6 +105,10 @@ library or in migrating to the new DSLs, please let us know by opening an issue 
   useful in a variety of circumstances. If you follow the patterns shown on the
   [Extending the Library](https://mybatis.org/mybatis-dynamic-sql/docs/extending.html) page, the change should be
   limited to changing the private constructor to accept `BasicColumn` rather than `BindableColumn`.
+- Remove support for independently renderable where clauses. This was a holdover from the earliest days of building the
+  library. The idea was to build where clauses that would render and could then be inserted into hand-coded SQL.
+  As far as I know, this was only used for some internal testing. If you have a use case for this feature, please
+  let us know and we will revisit this decision.
 
 ### Adoption of JSpecify (https://jspecify.dev/)
 

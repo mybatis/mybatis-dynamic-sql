@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2025 the original author or authors.
+ *    Copyright 2016-2026 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -38,20 +38,14 @@ public class RenderingContext {
     private final RenderingStrategy renderingStrategy;
     private final AtomicInteger sequence;
     private final TableAliasCalculator tableAliasCalculator;
-    private final @Nullable String configuredParameterName;
-    private final String calculatedParameterName;
+    private static final String PARAMETER_NAME = RenderingStrategy.DEFAULT_PARAMETER_PREFIX;
     private final StatementConfiguration statementConfiguration;
 
     private RenderingContext(Builder builder) {
         renderingStrategy = Objects.requireNonNull(builder.renderingStrategy);
-        configuredParameterName = builder.parameterName;
         tableAliasCalculator = Objects.requireNonNull(builder.tableAliasCalculator);
         statementConfiguration = Objects.requireNonNull(builder.statementConfiguration);
-
-        // reasonable defaults
-        sequence = builder.sequence == null ? new AtomicInteger(1) : builder.sequence;
-        calculatedParameterName = builder.parameterName == null ? RenderingStrategy.DEFAULT_PARAMETER_PREFIX
-                : builder.parameterName + "." + RenderingStrategy.DEFAULT_PARAMETER_PREFIX;  //$NON-NLS-1$
+        sequence = Objects.requireNonNullElseGet(builder.sequence, () -> new AtomicInteger(1));
     }
 
     private String nextMapKey() {
@@ -60,25 +54,25 @@ public class RenderingContext {
 
     private <T> String renderedPlaceHolder(String mapKey, BindableColumn<T> column) {
         return  column.renderingStrategy().orElse(renderingStrategy)
-                .getFormattedJdbcPlaceholder(column, calculatedParameterName, mapKey);
+                .getFormattedJdbcPlaceholder(column, PARAMETER_NAME, mapKey);
     }
 
     public RenderedParameterInfo calculateFetchFirstRowsParameterInfo() {
         String mapKey = renderingStrategy.formatParameterMapKeyForFetchFirstRows(sequence);
         return new RenderedParameterInfo(mapKey,
-                renderingStrategy.getFormattedJdbcPlaceholderForPagingParameters(calculatedParameterName, mapKey));
+                renderingStrategy.getFormattedJdbcPlaceholderForPagingParameters(PARAMETER_NAME, mapKey));
     }
 
     public RenderedParameterInfo calculateLimitParameterInfo() {
         String mapKey = renderingStrategy.formatParameterMapKeyForLimit(sequence);
         return new RenderedParameterInfo(mapKey,
-                renderingStrategy.getFormattedJdbcPlaceholderForPagingParameters(calculatedParameterName, mapKey));
+                renderingStrategy.getFormattedJdbcPlaceholderForPagingParameters(PARAMETER_NAME, mapKey));
     }
 
     public RenderedParameterInfo calculateOffsetParameterInfo() {
         String mapKey = renderingStrategy.formatParameterMapKeyForOffset(sequence);
         return new RenderedParameterInfo(mapKey,
-                renderingStrategy.getFormattedJdbcPlaceholderForPagingParameters(calculatedParameterName, mapKey));
+                renderingStrategy.getFormattedJdbcPlaceholderForPagingParameters(PARAMETER_NAME, mapKey));
     }
 
     public <T> RenderedParameterInfo calculateParameterInfo(BindableColumn<T> column) {
@@ -124,7 +118,6 @@ public class RenderingContext {
         return new Builder()
                 .withRenderingStrategy(this.renderingStrategy)
                 .withSequence(this.sequence)
-                .withParameterName(this.configuredParameterName)
                 .withTableAliasCalculator(tac)
                 .withStatementConfiguration(statementConfiguration)
                 .build();
@@ -138,7 +131,6 @@ public class RenderingContext {
         private @Nullable RenderingStrategy renderingStrategy;
         private @Nullable AtomicInteger sequence;
         private @Nullable TableAliasCalculator tableAliasCalculator = TableAliasCalculator.empty();
-        private @Nullable String parameterName;
         private @Nullable StatementConfiguration statementConfiguration;
 
         public Builder withRenderingStrategy(RenderingStrategy renderingStrategy) {
@@ -153,11 +145,6 @@ public class RenderingContext {
 
         public Builder withTableAliasCalculator(TableAliasCalculator tableAliasCalculator) {
             this.tableAliasCalculator = tableAliasCalculator;
-            return this;
-        }
-
-        public Builder withParameterName(@Nullable String parameterName) {
-            this.parameterName = parameterName;
             return this;
         }
 

@@ -13,53 +13,32 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.mybatis.dynamic.sql.where;
+package org.mybatis.dynamic.sql.dsl;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
 
 import org.mybatis.dynamic.sql.AndOrCriteriaGroup;
 import org.mybatis.dynamic.sql.NullCriterion;
 import org.mybatis.dynamic.sql.SqlCriterion;
-import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
-import org.mybatis.dynamic.sql.dsl.BooleanOperations;
-import org.mybatis.dynamic.sql.util.Buildable;
-import org.mybatis.dynamic.sql.util.ConfigurableStatement;
+import org.mybatis.dynamic.sql.where.WhereApplier;
 
-public class StandaloneWhereBuilder implements BooleanOperations<StandaloneWhereBuilder>,
-        ConfigurableStatement<StandaloneWhereBuilder>, Buildable<WhereModel> {
+public class WhereDSL implements BooleanOperations<WhereDSL> {
     private final SqlCriterion initialCriterion;
     private final List<AndOrCriteriaGroup> subCriteria = new ArrayList<>();
-    private final StatementConfiguration statementConfiguration = new StatementConfiguration();
 
-    public StandaloneWhereBuilder() {
+    public WhereDSL() {
         initialCriterion = new NullCriterion();
     }
 
-    public StandaloneWhereBuilder(SqlCriterion initialCriterion, List<AndOrCriteriaGroup> subCriteria) {
+    public WhereDSL(SqlCriterion initialCriterion, List<AndOrCriteriaGroup> subCriteria) {
         this.initialCriterion = initialCriterion;
         this.subCriteria.addAll(subCriteria);
     }
 
     @Override
-    public StandaloneWhereBuilder addSubCriterion(AndOrCriteriaGroup subCriterion) {
+    public WhereDSL addSubCriterion(AndOrCriteriaGroup subCriterion) {
         subCriteria.add(subCriterion);
-        return this;
-    }
-
-    @Override
-    public WhereModel build() {
-        return new WhereModel.Builder()
-                .withInitialCriterion(initialCriterion)
-                .withSubCriteria(subCriteria)
-                .withStatementConfiguration(statementConfiguration)
-                .build();
-    }
-
-    @Override
-    public StandaloneWhereBuilder configureStatement(Consumer<StatementConfiguration> consumer) {
-        consumer.accept(statementConfiguration);
         return this;
     }
 

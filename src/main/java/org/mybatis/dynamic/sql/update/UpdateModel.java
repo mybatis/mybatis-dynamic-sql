@@ -32,12 +32,12 @@ import org.mybatis.dynamic.sql.update.render.UpdateRenderer;
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
 import org.mybatis.dynamic.sql.util.AbstractColumnMapping;
 import org.mybatis.dynamic.sql.util.Validator;
-import org.mybatis.dynamic.sql.where.EmbeddedWhereModel;
+import org.mybatis.dynamic.sql.where.WhereModel;
 
 public class UpdateModel {
     private final SqlTable table;
     private final @Nullable String tableAlias;
-    private final @Nullable EmbeddedWhereModel whereModel;
+    private final @Nullable WhereModel whereModel;
     private final List<AbstractColumnMapping> columnMappings;
     private final @Nullable Long limit;
     private final @Nullable OrderByModel orderByModel;
@@ -62,7 +62,7 @@ public class UpdateModel {
         return Optional.ofNullable(tableAlias);
     }
 
-    public Optional<EmbeddedWhereModel> whereModel() {
+    public Optional<WhereModel> whereModel() {
         return Optional.ofNullable(whereModel);
     }
 

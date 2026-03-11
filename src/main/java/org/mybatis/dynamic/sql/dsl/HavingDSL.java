@@ -13,37 +13,28 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.mybatis.dynamic.sql.select;
+package org.mybatis.dynamic.sql.dsl;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.mybatis.dynamic.sql.AndOrCriteriaGroup;
 import org.mybatis.dynamic.sql.SqlCriterion;
-import org.mybatis.dynamic.sql.dsl.BooleanOperations;
-import org.mybatis.dynamic.sql.util.Buildable;
+import org.mybatis.dynamic.sql.select.HavingApplier;
 
-public class StandaloneHavingBuilder implements BooleanOperations<StandaloneHavingBuilder>, Buildable<HavingModel> {
+public class HavingDSL implements BooleanOperations<HavingDSL> {
     private final SqlCriterion initialCriterion;
     private final List<AndOrCriteriaGroup> subCriteria = new ArrayList<>();
 
-    public StandaloneHavingBuilder(SqlCriterion initialCriterion, List<AndOrCriteriaGroup> subCriteria) {
+    public HavingDSL(SqlCriterion initialCriterion, List<AndOrCriteriaGroup> subCriteria) {
         this.initialCriterion = initialCriterion;
         this.subCriteria.addAll(subCriteria);
     }
 
     @Override
-    public StandaloneHavingBuilder addSubCriterion(AndOrCriteriaGroup subCriterion) {
+    public HavingDSL addSubCriterion(AndOrCriteriaGroup subCriterion) {
         subCriteria.add(subCriterion);
         return this;
-    }
-
-    @Override
-    public HavingModel build() {
-        return new HavingModel.Builder()
-                .withInitialCriterion(initialCriterion)
-                .withSubCriteria(subCriteria)
-                .build();
     }
 
     public HavingApplier toHavingApplier() {

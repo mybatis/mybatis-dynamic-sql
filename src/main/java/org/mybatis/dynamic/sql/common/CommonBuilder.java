@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2025 the original author or authors.
+ *    Copyright 2016-2026 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ package org.mybatis.dynamic.sql.common;
 import org.jspecify.annotations.Nullable;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
-import org.mybatis.dynamic.sql.where.EmbeddedWhereModel;
+import org.mybatis.dynamic.sql.where.WhereModel;
 
 /**
  * Builder class shared between the delete and update model builders.
@@ -28,7 +28,7 @@ import org.mybatis.dynamic.sql.where.EmbeddedWhereModel;
 public abstract class CommonBuilder<T extends CommonBuilder<T>> {
     private @Nullable SqlTable table;
     private @Nullable String tableAlias;
-    private @Nullable EmbeddedWhereModel whereModel;
+    private @Nullable WhereModel whereModel;
     private @Nullable Long limit;
     private @Nullable OrderByModel orderByModel;
     private @Nullable StatementConfiguration statementConfiguration;
@@ -41,7 +41,7 @@ public abstract class CommonBuilder<T extends CommonBuilder<T>> {
         return tableAlias;
     }
 
-    public @Nullable EmbeddedWhereModel whereModel() {
+    public @Nullable WhereModel whereModel() {
         return whereModel;
     }
 
@@ -67,7 +67,7 @@ public abstract class CommonBuilder<T extends CommonBuilder<T>> {
         return getThis();
     }
 
-    public T withWhereModel(@Nullable EmbeddedWhereModel whereModel) {
+    public T withWhereModel(@Nullable WhereModel whereModel) {
         this.whereModel = whereModel;
         return getThis();
     }

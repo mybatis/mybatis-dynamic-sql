@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2025 the original author or authors.
+ *    Copyright 2016-2026 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -18,8 +18,6 @@ package examples.animal.data;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Arg;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.SelectProvider;
 import org.apache.ibatis.session.RowBounds;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
@@ -27,7 +25,6 @@ import org.mybatis.dynamic.sql.util.SqlProviderAdapter;
 import org.mybatis.dynamic.sql.util.mybatis3.CommonDeleteMapper;
 import org.mybatis.dynamic.sql.util.mybatis3.CommonInsertMapper;
 import org.mybatis.dynamic.sql.util.mybatis3.CommonUpdateMapper;
-import org.mybatis.dynamic.sql.where.render.WhereClauseProvider;
 
 public interface AnimalDataMapper extends CommonDeleteMapper, CommonInsertMapper<AnimalData>, CommonUpdateMapper {
 
@@ -51,54 +48,4 @@ public interface AnimalDataMapper extends CommonDeleteMapper, CommonInsertMapper
     @Arg(column = "brain_weight", javaType = double.class)
     @Arg(column = "body_weight", javaType = double.class)
     AnimalData selectOne(SelectStatementProvider selectStatement);
-
-    @Select({
-        "select id, animal_name, brain_weight, body_weight",
-        "from AnimalData",
-        "${whereClause}"
-    })
-    @Arg(column = "id", javaType = int.class, id = true)
-    @Arg(column = "animal_name", javaType = String.class)
-    @Arg(column = "brain_weight", javaType = double.class)
-    @Arg(column = "body_weight", javaType = double.class)
-    List<AnimalData> selectWithWhereClause(WhereClauseProvider whereClause);
-
-    @Select({
-        "select a.id, a.animal_name, a.brain_weight, a.body_weight",
-        "from AnimalData a",
-        "${whereClause}"
-    })
-    @Arg(column = "id", javaType = int.class, id = true)
-    @Arg(column = "animal_name", javaType = String.class)
-    @Arg(column = "brain_weight", javaType = double.class)
-    @Arg(column = "body_weight", javaType = double.class)
-    List<AnimalData> selectWithWhereClauseAndAlias(WhereClauseProvider whereClause);
-
-    @Select({
-        "select id, animal_name, brain_weight, body_weight",
-        "from AnimalData",
-        "${whereClauseProvider.whereClause}",
-        "order by id",
-        "OFFSET #{offset,jdbcType=INTEGER} LIMIT #{limit,jdbcType=INTEGER}"
-    })
-    @Arg(column = "id", javaType = int.class, id = true)
-    @Arg(column = "animal_name", javaType = String.class)
-    @Arg(column = "brain_weight", javaType = double.class)
-    @Arg(column = "body_weight", javaType = double.class)
-    List<AnimalData> selectWithWhereClauseLimitAndOffset(@Param("whereClauseProvider") WhereClauseProvider whereClause,
-            @Param("limit") int limit, @Param("offset") int offset);
-
-    @Select({
-        "select b.id, b.animal_name, b.brain_weight, b.body_weight",
-        "from AnimalData b",
-        "${whereClauseProvider.whereClause}",
-        "order by id",
-        "OFFSET #{offset,jdbcType=INTEGER} LIMIT #{limit,jdbcType=INTEGER}"
-    })
-    @Arg(column = "id", javaType = int.class, id = true)
-    @Arg(column = "animal_name", javaType = String.class)
-    @Arg(column = "brain_weight", javaType = double.class)
-    @Arg(column = "body_weight", javaType = double.class)
-    List<AnimalData> selectWithWhereClauseAliasLimitAndOffset(@Param("whereClauseProvider") WhereClauseProvider whereClause,
-                                                              @Param("limit") int limit, @Param("offset") int offset);
 }

@@ -34,8 +34,8 @@ import org.mybatis.dynamic.sql.delete.DeleteModel;
 import org.mybatis.dynamic.sql.util.Buildable;
 import org.mybatis.dynamic.sql.util.ConfigurableStatement;
 import org.mybatis.dynamic.sql.util.Validator;
-import org.mybatis.dynamic.sql.where.EmbeddedWhereModel;
 import org.mybatis.dynamic.sql.where.WhereApplier;
+import org.mybatis.dynamic.sql.where.WhereModel;
 
 public abstract class AbstractDeleteDSL<M, D extends AbstractDeleteDSL<M, D>>
         implements WhereOperations<AbstractDeleteDSL<M, D>.DeleteWhereBuilder>,
@@ -161,8 +161,8 @@ public abstract class AbstractDeleteDSL<M, D extends AbstractDeleteDSL<M, D>>
             return AbstractDeleteDSL.this.build();
         }
 
-        protected EmbeddedWhereModel buildWhereModel() {
-            return new EmbeddedWhereModel.Builder()
+        protected WhereModel buildWhereModel() {
+            return new WhereModel.Builder()
                     .withInitialCriterion(initialCriterion)
                     .withSubCriteria(subCriteria)
                     .build();

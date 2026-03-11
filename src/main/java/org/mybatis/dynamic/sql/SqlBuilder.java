@@ -24,6 +24,8 @@ import java.util.function.Supplier;
 import org.jspecify.annotations.Nullable;
 import org.mybatis.dynamic.sql.delete.DeleteDSL;
 import org.mybatis.dynamic.sql.delete.DeleteModel;
+import org.mybatis.dynamic.sql.dsl.HavingDSL;
+import org.mybatis.dynamic.sql.dsl.WhereDSL;
 import org.mybatis.dynamic.sql.insert.BatchInsertDSL;
 import org.mybatis.dynamic.sql.insert.GeneralInsertDSL;
 import org.mybatis.dynamic.sql.insert.InsertDSL;
@@ -36,7 +38,6 @@ import org.mybatis.dynamic.sql.select.QueryExpressionDSL;
 import org.mybatis.dynamic.sql.select.SelectDSL;
 import org.mybatis.dynamic.sql.select.SelectModel;
 import org.mybatis.dynamic.sql.select.SimpleSortSpecification;
-import org.mybatis.dynamic.sql.select.StandaloneHavingBuilder;
 import org.mybatis.dynamic.sql.select.aggregate.Avg;
 import org.mybatis.dynamic.sql.select.aggregate.Count;
 import org.mybatis.dynamic.sql.select.aggregate.CountAll;
@@ -60,7 +61,6 @@ import org.mybatis.dynamic.sql.select.function.Upper;
 import org.mybatis.dynamic.sql.update.UpdateDSL;
 import org.mybatis.dynamic.sql.update.UpdateModel;
 import org.mybatis.dynamic.sql.util.Buildable;
-import org.mybatis.dynamic.sql.where.StandaloneWhereBuilder;
 import org.mybatis.dynamic.sql.where.condition.IsBetween;
 import org.mybatis.dynamic.sql.where.condition.IsBetweenWhenPresent;
 import org.mybatis.dynamic.sql.where.condition.IsEqualTo;
@@ -262,12 +262,12 @@ public interface SqlBuilder {
         return UpdateDSL.update(table, tableAlias);
     }
 
-    static StandaloneWhereBuilder where() {
-        return new StandaloneWhereBuilder();
+    static WhereDSL where() {
+        return new WhereDSL();
     }
 
-    static <T> StandaloneWhereBuilder where(BindableColumn<T> column, RenderableCondition<T> condition,
-                                            AndOrCriteriaGroup... subCriteria) {
+    static <T> WhereDSL where(BindableColumn<T> column, RenderableCondition<T> condition,
+                              AndOrCriteriaGroup... subCriteria) {
         ColumnAndConditionCriterion<T> initialCriterion = ColumnAndConditionCriterion.withColumn(column)
                 .withCondition(condition)
                 .build();
@@ -275,24 +275,24 @@ public interface SqlBuilder {
         return where(initialCriterion, subCriteria);
     }
 
-    static StandaloneWhereBuilder where(SqlCriterion initialCriterion, AndOrCriteriaGroup... subCriteria) {
-        return new StandaloneWhereBuilder(initialCriterion, Arrays.asList(subCriteria));
+    static WhereDSL where(SqlCriterion initialCriterion, AndOrCriteriaGroup... subCriteria) {
+        return new WhereDSL(initialCriterion, Arrays.asList(subCriteria));
     }
 
-    static StandaloneWhereBuilder where(ExistsPredicate existsPredicate, AndOrCriteriaGroup... subCriteria) {
+    static WhereDSL where(ExistsPredicate existsPredicate, AndOrCriteriaGroup... subCriteria) {
         ExistsCriterion existsCriterion = new ExistsCriterion.Builder()
                 .withExistsPredicate(existsPredicate).build();
         return where(existsCriterion, subCriteria);
     }
 
-    static <T> StandaloneHavingBuilder having(BindableColumn<T> column, RenderableCondition<T> condition,
-                                              AndOrCriteriaGroup... subCriteria) {
+    static <T> HavingDSL having(BindableColumn<T> column, RenderableCondition<T> condition,
+                                AndOrCriteriaGroup... subCriteria) {
         SqlCriterion initialCriterion = ColumnAndConditionCriterion.withColumn(column).withCondition(condition).build();
         return having(initialCriterion, subCriteria);
     }
 
-    static StandaloneHavingBuilder having(SqlCriterion initialCriterion, AndOrCriteriaGroup... subCriteria) {
-        return new StandaloneHavingBuilder(initialCriterion, Arrays.asList(subCriteria));
+    static HavingDSL having(SqlCriterion initialCriterion, AndOrCriteriaGroup... subCriteria) {
+        return new HavingDSL(initialCriterion, Arrays.asList(subCriteria));
     }
 
     // where condition connectors

@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2025 the original author or authors.
+ *    Copyright 2016-2026 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -15,98 +15,26 @@
  */
 package org.mybatis.dynamic.sql.where;
 
-import java.util.Objects;
 import java.util.Optional;
 
-import org.jspecify.annotations.Nullable;
 import org.mybatis.dynamic.sql.common.AbstractBooleanExpressionModel;
-import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
 import org.mybatis.dynamic.sql.render.RenderingContext;
-import org.mybatis.dynamic.sql.render.RenderingStrategy;
-import org.mybatis.dynamic.sql.render.TableAliasCalculator;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
-import org.mybatis.dynamic.sql.where.render.DefaultWhereClauseProvider;
-import org.mybatis.dynamic.sql.where.render.WhereClauseProvider;
 import org.mybatis.dynamic.sql.where.render.WhereRenderer;
 
 public class WhereModel extends AbstractBooleanExpressionModel {
-    private final StatementConfiguration statementConfiguration;
-
     private WhereModel(Builder builder) {
         super(builder);
-        statementConfiguration = Objects.requireNonNull(builder.statementConfiguration);
     }
 
-    /**
-     * Renders a where clause without table aliases.
-     *
-     * @param renderingStrategy
-     *            rendering strategy
-     *
-     * @return rendered where clause
-     */
-    public Optional<WhereClauseProvider> render(RenderingStrategy renderingStrategy) {
-        RenderingContext renderingContext = RenderingContext.withRenderingStrategy(renderingStrategy)
-                .withStatementConfiguration(statementConfiguration).build();
-
-        return render(renderingContext);
-    }
-
-    public Optional<WhereClauseProvider> render(RenderingStrategy renderingStrategy,
-                                                TableAliasCalculator tableAliasCalculator) {
-        RenderingContext renderingContext = RenderingContext
-                .withRenderingStrategy(renderingStrategy)
-                .withTableAliasCalculator(tableAliasCalculator)
-                .withStatementConfiguration(statementConfiguration)
-                .build();
-
-        return render(renderingContext);
-    }
-
-    public Optional<WhereClauseProvider> render(RenderingStrategy renderingStrategy, String parameterName) {
-        RenderingContext renderingContext = RenderingContext
-                .withRenderingStrategy(renderingStrategy)
-                .withParameterName(parameterName)
-                .withStatementConfiguration(statementConfiguration)
-                .build();
-
-        return render(renderingContext);
-    }
-
-    public Optional<WhereClauseProvider> render(RenderingStrategy renderingStrategy,
-            TableAliasCalculator tableAliasCalculator, String parameterName) {
-        RenderingContext renderingContext = RenderingContext
-                .withRenderingStrategy(renderingStrategy)
-                .withTableAliasCalculator(tableAliasCalculator)
-                .withParameterName(parameterName)
-                .withStatementConfiguration(statementConfiguration)
-                .build();
-
-        return render(renderingContext);
-    }
-
-    private Optional<WhereClauseProvider> render(RenderingContext renderingContext) {
+    public Optional<FragmentAndParameters> render(RenderingContext renderingContext) {
         return WhereRenderer.withWhereModel(this)
                 .withRenderingContext(renderingContext)
                 .build()
-                .render()
-                .map(this::toWhereClauseProvider);
-    }
-
-    private WhereClauseProvider toWhereClauseProvider(FragmentAndParameters fragmentAndParameters) {
-        return DefaultWhereClauseProvider.withWhereClause(fragmentAndParameters.fragment())
-                .withParameters(fragmentAndParameters.parameters())
-                .build();
+                .render();
     }
 
     public static class Builder extends AbstractBuilder<Builder> {
-        private @Nullable StatementConfiguration statementConfiguration;
-
-        public Builder withStatementConfiguration(StatementConfiguration statementConfiguration) {
-            this.statementConfiguration = statementConfiguration;
-            return this;
-        }
-
         public WhereModel build() {
             return new WhereModel(this);
         }

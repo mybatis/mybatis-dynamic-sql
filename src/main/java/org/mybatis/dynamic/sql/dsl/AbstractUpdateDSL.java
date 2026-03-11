@@ -47,8 +47,8 @@ import org.mybatis.dynamic.sql.util.Validator;
 import org.mybatis.dynamic.sql.util.ValueMapping;
 import org.mybatis.dynamic.sql.util.ValueOrNullMapping;
 import org.mybatis.dynamic.sql.util.ValueWhenPresentMapping;
-import org.mybatis.dynamic.sql.where.EmbeddedWhereModel;
 import org.mybatis.dynamic.sql.where.WhereApplier;
+import org.mybatis.dynamic.sql.where.WhereModel;
 
 public abstract class AbstractUpdateDSL<M, D extends AbstractUpdateDSL<M, D>>
         implements WhereOperations<AbstractUpdateDSL<M, D>.UpdateWhereBuilder>,
@@ -242,8 +242,8 @@ public abstract class AbstractUpdateDSL<M, D extends AbstractUpdateDSL<M, D>>
             return AbstractUpdateDSL.this.build();
         }
 
-        protected EmbeddedWhereModel buildWhereModel() {
-            return new EmbeddedWhereModel.Builder()
+        protected WhereModel buildWhereModel() {
+            return new WhereModel.Builder()
                     .withInitialCriterion(initialCriterion)
                     .withSubCriteria(subCriteria)
                     .build();
