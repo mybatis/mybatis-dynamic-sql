@@ -157,6 +157,7 @@ public class QueryExpressionDSL<R> extends AbstractQueryingDSL implements
         return selectDSL.build();
     }
 
+    @Override
     public QueryExpressionDSL<R> groupBy(Collection<? extends BasicColumn> columns) {
         groupByModel = GroupByModel.of(columns);
         return this;
@@ -252,6 +253,7 @@ public class QueryExpressionDSL<R> extends AbstractQueryingDSL implements
             return QueryExpressionDSL.this.orderBy(columns);
         }
 
+        @Override
         public QueryExpressionDSL<R> groupBy(Collection<? extends BasicColumn> columns) {
             return QueryExpressionDSL.this.groupBy(columns);
         }
@@ -340,6 +342,7 @@ public class QueryExpressionDSL<R> extends AbstractQueryingDSL implements
             return QueryExpressionDSL.this.applyWhere(whereApplier);
         }
 
+        @Override
         public QueryExpressionDSL<R> groupBy(Collection<? extends BasicColumn> columns) {
             return QueryExpressionDSL.this.groupBy(columns);
         }

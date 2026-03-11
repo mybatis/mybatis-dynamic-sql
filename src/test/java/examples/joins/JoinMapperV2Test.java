@@ -58,12 +58,13 @@ class JoinMapperV2Test {
     @BeforeEach
     void setup() throws Exception {
         Class.forName(JDBC_DRIVER);
-        InputStream is = getClass().getResourceAsStream("/examples/joins/CreateJoinDB.sql");
-        assert is != null;
-        try (Connection connection = DriverManager.getConnection(JDBC_URL, "sa", "")) {
-            ScriptRunner sr = new ScriptRunner(connection);
-            sr.setLogWriter(null);
-            sr.runScript(new InputStreamReader(is));
+        try (InputStream is = getClass().getResourceAsStream("/examples/joins/CreateJoinDB.sql")) {
+            assert is != null;
+            try (Connection connection = DriverManager.getConnection(JDBC_URL, "sa", "")) {
+                ScriptRunner sr = new ScriptRunner(connection);
+                sr.setLogWriter(null);
+                sr.runScript(new InputStreamReader(is));
+            }
         }
 
         UnpooledDataSource ds = new UnpooledDataSource(JDBC_DRIVER, JDBC_URL, "sa", "");

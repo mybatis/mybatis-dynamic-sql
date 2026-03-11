@@ -163,6 +163,7 @@ public class SelectDSL implements
         return this;
     }
 
+    @Override
     public SelectDSL groupBy(Collection<? extends BasicColumn> columns) {
         currentQueryValues.builder.withGroupByModel(GroupByModel.of(columns));
         return this;
