@@ -7,7 +7,7 @@
 <body>
 <div id="overview"><a href="../../../testapidocs/issues/gh100/FromGroupByTest.html">View Javadoc</a></div><pre>
 <a class="jxr_linenumber" name="L1" href="#L1">1</a>   <em class="jxr_comment">/*</em>
-<a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_comment"> *    Copyright 2016-2025 the original author or authors.</em>
+<a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_comment"> *    Copyright 2016-2026 the original author or authors.</em>
 <a class="jxr_linenumber" name="L3" href="#L3">3</a>   <em class="jxr_comment"> *</em>
 <a class="jxr_linenumber" name="L4" href="#L4">4</a>   <em class="jxr_comment"> *    Licensed under the Apache License, Version 2.0 (the "License");</em>
 <a class="jxr_linenumber" name="L5" href="#L5">5</a>   <em class="jxr_comment"> *    you may not use this file except in compliance with the License.</em>
@@ -57,7 +57,7 @@
 <a class="jxr_linenumber" name="L49" href="#L49">49</a>          QueryExpressionDSL&lt;SelectModel&gt; builder1 = select(StudentDynamicSqlSupport.name, count())
 <a class="jxr_linenumber" name="L50" href="#L50">50</a>                  .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L51" href="#L51">51</a>  
-<a class="jxr_linenumber" name="L52" href="#L52">52</a>          QueryExpressionDSL&lt;SelectModel&gt;.GroupByFinisher builder2 = builder1.groupBy(StudentDynamicSqlSupport.name);
+<a class="jxr_linenumber" name="L52" href="#L52">52</a>          QueryExpressionDSL&lt;SelectModel&gt; builder2 = builder1.groupBy(StudentDynamicSqlSupport.name);
 <a class="jxr_linenumber" name="L53" href="#L53">53</a>  
 <a class="jxr_linenumber" name="L54" href="#L54">54</a>          String expected = <span class="jxr_string">"select name, count(*)"</span>
 <a class="jxr_linenumber" name="L55" href="#L55">55</a>                  + <span class="jxr_string">" from student"</span>
@@ -73,7 +73,7 @@
 <a class="jxr_linenumber" name="L65" href="#L65">65</a>          QueryExpressionDSL&lt;SelectModel&gt; builder1 = select(StudentDynamicSqlSupport.name, count())
 <a class="jxr_linenumber" name="L66" href="#L66">66</a>                  .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L67" href="#L67">67</a>  
-<a class="jxr_linenumber" name="L68" href="#L68">68</a>          QueryExpressionDSL&lt;SelectModel&gt;.GroupByFinisher builder2 = builder1.groupBy(StudentDynamicSqlSupport.name);
+<a class="jxr_linenumber" name="L68" href="#L68">68</a>          QueryExpressionDSL&lt;SelectModel&gt; builder2 = builder1.groupBy(StudentDynamicSqlSupport.name);
 <a class="jxr_linenumber" name="L69" href="#L69">69</a>  
 <a class="jxr_linenumber" name="L70" href="#L70">70</a>          builder2.limit(3);
 <a class="jxr_linenumber" name="L71" href="#L71">71</a>  
@@ -92,7 +92,7 @@
 <a class="jxr_linenumber" name="L84" href="#L84">84</a>          QueryExpressionDSL&lt;SelectModel&gt; builder1 = select(StudentDynamicSqlSupport.name, count())
 <a class="jxr_linenumber" name="L85" href="#L85">85</a>                  .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L86" href="#L86">86</a>  
-<a class="jxr_linenumber" name="L87" href="#L87">87</a>          QueryExpressionDSL&lt;SelectModel&gt;.GroupByFinisher builder2 = builder1.groupBy(StudentDynamicSqlSupport.name);
+<a class="jxr_linenumber" name="L87" href="#L87">87</a>          QueryExpressionDSL&lt;SelectModel&gt; builder2 = builder1.groupBy(StudentDynamicSqlSupport.name);
 <a class="jxr_linenumber" name="L88" href="#L88">88</a>  
 <a class="jxr_linenumber" name="L89" href="#L89">89</a>          builder2.limit(3);
 <a class="jxr_linenumber" name="L90" href="#L90">90</a>  
@@ -111,7 +111,7 @@
 <a class="jxr_linenumber" name="L103" href="#L103">103</a>         QueryExpressionDSL&lt;SelectModel&gt; builder1 = select(StudentDynamicSqlSupport.name, count())
 <a class="jxr_linenumber" name="L104" href="#L104">104</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L105" href="#L105">105</a> 
-<a class="jxr_linenumber" name="L106" href="#L106">106</a>         QueryExpressionDSL&lt;SelectModel&gt;.GroupByFinisher builder2 = builder1.groupBy(StudentDynamicSqlSupport.name);
+<a class="jxr_linenumber" name="L106" href="#L106">106</a>         QueryExpressionDSL&lt;SelectModel&gt; builder2 = builder1.groupBy(StudentDynamicSqlSupport.name);
 <a class="jxr_linenumber" name="L107" href="#L107">107</a> 
 <a class="jxr_linenumber" name="L108" href="#L108">108</a>         <strong class="jxr_keyword">var</strong> builder3 = builder2.limit(3);
 <a class="jxr_linenumber" name="L109" href="#L109">109</a> 
@@ -130,7 +130,7 @@
 <a class="jxr_linenumber" name="L122" href="#L122">122</a>         QueryExpressionDSL&lt;SelectModel&gt; builder1 = select(StudentDynamicSqlSupport.name, count())
 <a class="jxr_linenumber" name="L123" href="#L123">123</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L124" href="#L124">124</a> 
-<a class="jxr_linenumber" name="L125" href="#L125">125</a>         QueryExpressionDSL&lt;SelectModel&gt;.GroupByFinisher builder2 = builder1.groupBy(StudentDynamicSqlSupport.name);
+<a class="jxr_linenumber" name="L125" href="#L125">125</a>         QueryExpressionDSL&lt;SelectModel&gt; builder2 = builder1.groupBy(StudentDynamicSqlSupport.name);
 <a class="jxr_linenumber" name="L126" href="#L126">126</a> 
 <a class="jxr_linenumber" name="L127" href="#L127">127</a>         builder2.offset(3);
 <a class="jxr_linenumber" name="L128" href="#L128">128</a> 
@@ -149,7 +149,7 @@
 <a class="jxr_linenumber" name="L141" href="#L141">141</a>         QueryExpressionDSL&lt;SelectModel&gt; builder1 = select(StudentDynamicSqlSupport.name, count())
 <a class="jxr_linenumber" name="L142" href="#L142">142</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L143" href="#L143">143</a> 
-<a class="jxr_linenumber" name="L144" href="#L144">144</a>         QueryExpressionDSL&lt;SelectModel&gt;.GroupByFinisher builder2 = builder1.groupBy(StudentDynamicSqlSupport.name);
+<a class="jxr_linenumber" name="L144" href="#L144">144</a>         QueryExpressionDSL&lt;SelectModel&gt; builder2 = builder1.groupBy(StudentDynamicSqlSupport.name);
 <a class="jxr_linenumber" name="L145" href="#L145">145</a> 
 <a class="jxr_linenumber" name="L146" href="#L146">146</a>         builder2.offset(3);
 <a class="jxr_linenumber" name="L147" href="#L147">147</a> 
@@ -168,7 +168,7 @@
 <a class="jxr_linenumber" name="L160" href="#L160">160</a>         QueryExpressionDSL&lt;SelectModel&gt; builder1 = select(StudentDynamicSqlSupport.name, count())
 <a class="jxr_linenumber" name="L161" href="#L161">161</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L162" href="#L162">162</a> 
-<a class="jxr_linenumber" name="L163" href="#L163">163</a>         QueryExpressionDSL&lt;SelectModel&gt;.GroupByFinisher builder2 = builder1.groupBy(StudentDynamicSqlSupport.name);
+<a class="jxr_linenumber" name="L163" href="#L163">163</a>         QueryExpressionDSL&lt;SelectModel&gt; builder2 = builder1.groupBy(StudentDynamicSqlSupport.name);
 <a class="jxr_linenumber" name="L164" href="#L164">164</a> 
 <a class="jxr_linenumber" name="L165" href="#L165">165</a>         <strong class="jxr_keyword">var</strong> builder3 = builder2.offset(3);
 <a class="jxr_linenumber" name="L166" href="#L166">166</a> 
@@ -187,7 +187,7 @@
 <a class="jxr_linenumber" name="L179" href="#L179">179</a>         QueryExpressionDSL&lt;SelectModel&gt; builder1 = select(StudentDynamicSqlSupport.name, count())
 <a class="jxr_linenumber" name="L180" href="#L180">180</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L181" href="#L181">181</a> 
-<a class="jxr_linenumber" name="L182" href="#L182">182</a>         QueryExpressionDSL&lt;SelectModel&gt;.GroupByFinisher builder2 = builder1.groupBy(StudentDynamicSqlSupport.name);
+<a class="jxr_linenumber" name="L182" href="#L182">182</a>         QueryExpressionDSL&lt;SelectModel&gt; builder2 = builder1.groupBy(StudentDynamicSqlSupport.name);
 <a class="jxr_linenumber" name="L183" href="#L183">183</a> 
 <a class="jxr_linenumber" name="L184" href="#L184">184</a>         builder2.fetchFirst(2).rowsOnly();
 <a class="jxr_linenumber" name="L185" href="#L185">185</a> 
@@ -206,7 +206,7 @@
 <a class="jxr_linenumber" name="L198" href="#L198">198</a>         QueryExpressionDSL&lt;SelectModel&gt; builder1 = select(StudentDynamicSqlSupport.name, count())
 <a class="jxr_linenumber" name="L199" href="#L199">199</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L200" href="#L200">200</a> 
-<a class="jxr_linenumber" name="L201" href="#L201">201</a>         QueryExpressionDSL&lt;SelectModel&gt;.GroupByFinisher builder2 = builder1.groupBy(StudentDynamicSqlSupport.name);
+<a class="jxr_linenumber" name="L201" href="#L201">201</a>         QueryExpressionDSL&lt;SelectModel&gt; builder2 = builder1.groupBy(StudentDynamicSqlSupport.name);
 <a class="jxr_linenumber" name="L202" href="#L202">202</a> 
 <a class="jxr_linenumber" name="L203" href="#L203">203</a>         builder2.fetchFirst(2).rowsOnly();
 <a class="jxr_linenumber" name="L204" href="#L204">204</a> 
@@ -225,7 +225,7 @@
 <a class="jxr_linenumber" name="L217" href="#L217">217</a>         QueryExpressionDSL&lt;SelectModel&gt; builder1 = select(StudentDynamicSqlSupport.name, count())
 <a class="jxr_linenumber" name="L218" href="#L218">218</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L219" href="#L219">219</a> 
-<a class="jxr_linenumber" name="L220" href="#L220">220</a>         QueryExpressionDSL&lt;SelectModel&gt;.GroupByFinisher builder2 = builder1.groupBy(StudentDynamicSqlSupport.name);
+<a class="jxr_linenumber" name="L220" href="#L220">220</a>         QueryExpressionDSL&lt;SelectModel&gt; builder2 = builder1.groupBy(StudentDynamicSqlSupport.name);
 <a class="jxr_linenumber" name="L221" href="#L221">221</a> 
 <a class="jxr_linenumber" name="L222" href="#L222">222</a>         <strong class="jxr_keyword">var</strong> builder3 = builder2.fetchFirst(2).rowsOnly();
 <a class="jxr_linenumber" name="L223" href="#L223">223</a> 
@@ -244,7 +244,7 @@
 <a class="jxr_linenumber" name="L236" href="#L236">236</a>         QueryExpressionDSL&lt;SelectModel&gt; builder1 = select(StudentDynamicSqlSupport.name, count())
 <a class="jxr_linenumber" name="L237" href="#L237">237</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L238" href="#L238">238</a> 
-<a class="jxr_linenumber" name="L239" href="#L239">239</a>         QueryExpressionDSL&lt;SelectModel&gt;.GroupByFinisher builder2 = builder1.groupBy(StudentDynamicSqlSupport.name);
+<a class="jxr_linenumber" name="L239" href="#L239">239</a>         QueryExpressionDSL&lt;SelectModel&gt; builder2 = builder1.groupBy(StudentDynamicSqlSupport.name);
 <a class="jxr_linenumber" name="L240" href="#L240">240</a> 
 <a class="jxr_linenumber" name="L241" href="#L241">241</a>         builder2.orderBy(StudentDynamicSqlSupport.name);
 <a class="jxr_linenumber" name="L242" href="#L242">242</a> 
@@ -263,7 +263,7 @@
 <a class="jxr_linenumber" name="L255" href="#L255">255</a>         QueryExpressionDSL&lt;SelectModel&gt; builder1 = select(StudentDynamicSqlSupport.name, count())
 <a class="jxr_linenumber" name="L256" href="#L256">256</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L257" href="#L257">257</a> 
-<a class="jxr_linenumber" name="L258" href="#L258">258</a>         QueryExpressionDSL&lt;SelectModel&gt;.GroupByFinisher builder2 = builder1.groupBy(StudentDynamicSqlSupport.name);
+<a class="jxr_linenumber" name="L258" href="#L258">258</a>         QueryExpressionDSL&lt;SelectModel&gt; builder2 = builder1.groupBy(StudentDynamicSqlSupport.name);
 <a class="jxr_linenumber" name="L259" href="#L259">259</a> 
 <a class="jxr_linenumber" name="L260" href="#L260">260</a>         builder2.orderBy(StudentDynamicSqlSupport.name);
 <a class="jxr_linenumber" name="L261" href="#L261">261</a> 
@@ -282,7 +282,7 @@
 <a class="jxr_linenumber" name="L274" href="#L274">274</a>         QueryExpressionDSL&lt;SelectModel&gt; builder1 = select(StudentDynamicSqlSupport.name, count())
 <a class="jxr_linenumber" name="L275" href="#L275">275</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L276" href="#L276">276</a> 
-<a class="jxr_linenumber" name="L277" href="#L277">277</a>         QueryExpressionDSL&lt;SelectModel&gt;.GroupByFinisher builder2 = builder1.groupBy(StudentDynamicSqlSupport.name);
+<a class="jxr_linenumber" name="L277" href="#L277">277</a>         QueryExpressionDSL&lt;SelectModel&gt; builder2 = builder1.groupBy(StudentDynamicSqlSupport.name);
 <a class="jxr_linenumber" name="L278" href="#L278">278</a> 
 <a class="jxr_linenumber" name="L279" href="#L279">279</a>         SelectDSL&lt;SelectModel&gt; builder3 = builder2.orderBy(StudentDynamicSqlSupport.name);
 <a class="jxr_linenumber" name="L280" href="#L280">280</a> 
@@ -301,7 +301,7 @@
 <a class="jxr_linenumber" name="L293" href="#L293">293</a>         QueryExpressionDSL&lt;SelectModel&gt; builder1 = select(StudentDynamicSqlSupport.name, count())
 <a class="jxr_linenumber" name="L294" href="#L294">294</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L295" href="#L295">295</a> 
-<a class="jxr_linenumber" name="L296" href="#L296">296</a>         QueryExpressionDSL&lt;SelectModel&gt;.GroupByFinisher builder2 = builder1.groupBy(StudentDynamicSqlSupport.name);
+<a class="jxr_linenumber" name="L296" href="#L296">296</a>         QueryExpressionDSL&lt;SelectModel&gt; builder2 = builder1.groupBy(StudentDynamicSqlSupport.name);
 <a class="jxr_linenumber" name="L297" href="#L297">297</a> 
 <a class="jxr_linenumber" name="L298" href="#L298">298</a>         SelectDSL&lt;SelectModel&gt; builder3 = builder2.orderBy(StudentDynamicSqlSupport.name);
 <a class="jxr_linenumber" name="L299" href="#L299">299</a> 
@@ -323,7 +323,7 @@
 <a class="jxr_linenumber" name="L315" href="#L315">315</a>         QueryExpressionDSL&lt;SelectModel&gt; builder1 = select(StudentDynamicSqlSupport.name, count())
 <a class="jxr_linenumber" name="L316" href="#L316">316</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L317" href="#L317">317</a> 
-<a class="jxr_linenumber" name="L318" href="#L318">318</a>         QueryExpressionDSL&lt;SelectModel&gt;.GroupByFinisher builder2 = builder1.groupBy(StudentDynamicSqlSupport.name);
+<a class="jxr_linenumber" name="L318" href="#L318">318</a>         QueryExpressionDSL&lt;SelectModel&gt; builder2 = builder1.groupBy(StudentDynamicSqlSupport.name);
 <a class="jxr_linenumber" name="L319" href="#L319">319</a> 
 <a class="jxr_linenumber" name="L320" href="#L320">320</a>         SelectDSL&lt;SelectModel&gt; builder3 = builder2.orderBy(StudentDynamicSqlSupport.name);
 <a class="jxr_linenumber" name="L321" href="#L321">321</a> 
@@ -345,7 +345,7 @@
 <a class="jxr_linenumber" name="L337" href="#L337">337</a>         QueryExpressionDSL&lt;SelectModel&gt; builder1 = select(StudentDynamicSqlSupport.name, count())
 <a class="jxr_linenumber" name="L338" href="#L338">338</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L339" href="#L339">339</a> 
-<a class="jxr_linenumber" name="L340" href="#L340">340</a>         QueryExpressionDSL&lt;SelectModel&gt;.GroupByFinisher builder2 = builder1.groupBy(StudentDynamicSqlSupport.name);
+<a class="jxr_linenumber" name="L340" href="#L340">340</a>         QueryExpressionDSL&lt;SelectModel&gt; builder2 = builder1.groupBy(StudentDynamicSqlSupport.name);
 <a class="jxr_linenumber" name="L341" href="#L341">341</a> 
 <a class="jxr_linenumber" name="L342" href="#L342">342</a>         SelectDSL&lt;SelectModel&gt; builder3 = builder2.orderBy(StudentDynamicSqlSupport.name);
 <a class="jxr_linenumber" name="L343" href="#L343">343</a> 
@@ -367,7 +367,7 @@
 <a class="jxr_linenumber" name="L359" href="#L359">359</a>         QueryExpressionDSL&lt;SelectModel&gt; builder1 = select(StudentDynamicSqlSupport.name, count())
 <a class="jxr_linenumber" name="L360" href="#L360">360</a>                 .from(StudentDynamicSqlSupport.student);
 <a class="jxr_linenumber" name="L361" href="#L361">361</a> 
-<a class="jxr_linenumber" name="L362" href="#L362">362</a>         QueryExpressionDSL&lt;SelectModel&gt;.GroupByFinisher builder2 = builder1.groupBy(StudentDynamicSqlSupport.name);
+<a class="jxr_linenumber" name="L362" href="#L362">362</a>         QueryExpressionDSL&lt;SelectModel&gt; builder2 = builder1.groupBy(StudentDynamicSqlSupport.name);
 <a class="jxr_linenumber" name="L363" href="#L363">363</a> 
 <a class="jxr_linenumber" name="L364" href="#L364">364</a>         SelectDSL&lt;SelectModel&gt; builder3 = builder2.orderBy(StudentDynamicSqlSupport.name);
 <a class="jxr_linenumber" name="L365" href="#L365">365</a> 

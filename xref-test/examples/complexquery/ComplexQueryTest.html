@@ -7,7 +7,7 @@
 <body>
 <div id="overview"><a href="../../../testapidocs/examples/complexquery/ComplexQueryTest.html">View Javadoc</a></div><pre>
 <a class="jxr_linenumber" name="L1" href="#L1">1</a>   <em class="jxr_comment">/*</em>
-<a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_comment"> *    Copyright 2016-2025 the original author or authors.</em>
+<a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_comment"> *    Copyright 2016-2026 the original author or authors.</em>
 <a class="jxr_linenumber" name="L3" href="#L3">3</a>   <em class="jxr_comment"> *</em>
 <a class="jxr_linenumber" name="L4" href="#L4">4</a>   <em class="jxr_comment"> *    Licensed under the Apache License, Version 2.0 (the "License");</em>
 <a class="jxr_linenumber" name="L5" href="#L5">5</a>   <em class="jxr_comment"> *    you may not use this file except in compliance with the License.</em>
@@ -117,8 +117,8 @@
 <a class="jxr_linenumber" name="L109" href="#L109">109</a>     SelectStatementProvider search(@Nullable Integer targetId, @Nullable String fName, @Nullable String lName) {
 <a class="jxr_linenumber" name="L110" href="#L110">110</a>         QueryExpressionDSL&lt;SelectModel&gt;.QueryExpressionWhereBuilder builder = select(id, firstName, lastName)
 <a class="jxr_linenumber" name="L111" href="#L111">111</a>                 .from(person)
-<a class="jxr_linenumber" name="L112" href="#L112">112</a>                 .where()
-<a class="jxr_linenumber" name="L113" href="#L113">113</a>                 .configureStatement(c -&gt; c.setNonRenderingWhereClauseAllowed(<strong class="jxr_keyword">true</strong>));
+<a class="jxr_linenumber" name="L112" href="#L112">112</a>                 .configureStatement(c -&gt; c.setNonRenderingWhereClauseAllowed(<strong class="jxr_keyword">true</strong>))
+<a class="jxr_linenumber" name="L113" href="#L113">113</a>                 .where();
 <a class="jxr_linenumber" name="L114" href="#L114">114</a> 
 <a class="jxr_linenumber" name="L115" href="#L115">115</a>         <strong class="jxr_keyword">if</strong> (targetId != <strong class="jxr_keyword">null</strong>) {
 <a class="jxr_linenumber" name="L116" href="#L116">116</a>             builder.and(id, isEqualTo(targetId));

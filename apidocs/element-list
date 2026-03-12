@@ -3,6 +3,7 @@ org.mybatis.dynamic.sql.common
 org.mybatis.dynamic.sql.configuration
 org.mybatis.dynamic.sql.delete
 org.mybatis.dynamic.sql.delete.render
+org.mybatis.dynamic.sql.dsl
 org.mybatis.dynamic.sql.exception
 org.mybatis.dynamic.sql.insert
 org.mybatis.dynamic.sql.insert.render

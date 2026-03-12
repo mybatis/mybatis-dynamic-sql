@@ -7,7 +7,7 @@
 <body>
 <div id="overview"><a href="../../../../../../../testapidocs/org/mybatis/dynamic/sql/where/condition/FilterAndMapTest.html">View Javadoc</a></div><pre>
 <a class="jxr_linenumber" name="L1" href="#L1">1</a>   <em class="jxr_comment">/*</em>
-<a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_comment"> *    Copyright 2016-2025 the original author or authors.</em>
+<a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_comment"> *    Copyright 2016-2026 the original author or authors.</em>
 <a class="jxr_linenumber" name="L3" href="#L3">3</a>   <em class="jxr_comment"> *</em>
 <a class="jxr_linenumber" name="L4" href="#L4">4</a>   <em class="jxr_comment"> *    Licensed under the Apache License, Version 2.0 (the "License");</em>
 <a class="jxr_linenumber" name="L5" href="#L5">5</a>   <em class="jxr_comment"> *    you may not use this file except in compliance with the License.</em>
@@ -38,14 +38,14 @@
 <a class="jxr_linenumber" name="L30" href="#L30">30</a>  
 <a class="jxr_linenumber" name="L31" href="#L31">31</a>  <strong class="jxr_keyword">class</strong> <a name="FilterAndMapTest" href="../../../../../../org/mybatis/dynamic/sql/where/condition/FilterAndMapTest.html#FilterAndMapTest">FilterAndMapTest</a> {
 <a class="jxr_linenumber" name="L32" href="#L32">32</a>      @Test
-<a class="jxr_linenumber" name="L33" href="#L33">33</a>      <strong class="jxr_keyword">void</strong> testTypeConversion() {
+<a class="jxr_linenumber" name="L33" href="#L33">33</a>      <strong class="jxr_keyword">void</strong> testTypeConversion() <strong class="jxr_keyword">throws</strong> NumberFormatException {
 <a class="jxr_linenumber" name="L34" href="#L34">34</a>          <strong class="jxr_keyword">var</strong> cond = SqlBuilder.isEqualTo(<span class="jxr_string">"1"</span>).map(Integer::parseInt);
 <a class="jxr_linenumber" name="L35" href="#L35">35</a>          assertThat(cond.isEmpty()).isFalse();
 <a class="jxr_linenumber" name="L36" href="#L36">36</a>          assertThat(cond.value()).isEqualTo(1);
 <a class="jxr_linenumber" name="L37" href="#L37">37</a>      }
 <a class="jxr_linenumber" name="L38" href="#L38">38</a>  
 <a class="jxr_linenumber" name="L39" href="#L39">39</a>      @Test
-<a class="jxr_linenumber" name="L40" href="#L40">40</a>      <strong class="jxr_keyword">void</strong> testTypeConversionWithNullAndFilterDoesNotThrowException() {
+<a class="jxr_linenumber" name="L40" href="#L40">40</a>      <strong class="jxr_keyword">void</strong> testTypeConversionWithNullAndFilterDoesNotThrowException() <strong class="jxr_keyword">throws</strong> NumberFormatException {
 <a class="jxr_linenumber" name="L41" href="#L41">41</a>          <strong class="jxr_keyword">var</strong> cond = SqlBuilder.isEqualToWhenPresent((String) <strong class="jxr_keyword">null</strong>).map(Integer::parseInt);
 <a class="jxr_linenumber" name="L42" href="#L42">42</a>          assertThat(cond.isEmpty()).isTrue();
 <a class="jxr_linenumber" name="L43" href="#L43">43</a>      }
@@ -497,7 +497,7 @@
 <a class="jxr_linenumber" name="L489" href="#L489">489</a>     }
 <a class="jxr_linenumber" name="L490" href="#L490">490</a> 
 <a class="jxr_linenumber" name="L491" href="#L491">491</a>     @Test
-<a class="jxr_linenumber" name="L492" href="#L492">492</a>     <strong class="jxr_keyword">void</strong> testBetweenMapWithSingleMapper() {
+<a class="jxr_linenumber" name="L492" href="#L492">492</a>     <strong class="jxr_keyword">void</strong> testBetweenMapWithSingleMapper() <strong class="jxr_keyword">throws</strong> NumberFormatException {
 <a class="jxr_linenumber" name="L493" href="#L493">493</a>         IsBetween&lt;Integer&gt; cond = SqlBuilder.isBetween(<span class="jxr_string">"3"</span>).and(<span class="jxr_string">"4"</span>).map(Integer::parseInt);
 <a class="jxr_linenumber" name="L494" href="#L494">494</a>         assertThat(cond.isEmpty()).isFalse();
 <a class="jxr_linenumber" name="L495" href="#L495">495</a>         assertThat(cond.value1()).isEqualTo(3);
@@ -505,7 +505,7 @@
 <a class="jxr_linenumber" name="L497" href="#L497">497</a>     }
 <a class="jxr_linenumber" name="L498" href="#L498">498</a> 
 <a class="jxr_linenumber" name="L499" href="#L499">499</a>     @Test
-<a class="jxr_linenumber" name="L500" href="#L500">500</a>     <strong class="jxr_keyword">void</strong> testBetweenWhenPresentFilterWithBiPredicate() {
+<a class="jxr_linenumber" name="L500" href="#L500">500</a>     <strong class="jxr_keyword">void</strong> testBetweenWhenPresentFilterWithBiPredicate()<strong class="jxr_keyword">throws</strong> NumberFormatException  {
 <a class="jxr_linenumber" name="L501" href="#L501">501</a>         IsBetweenWhenPresent&lt;Integer&gt; cond = SqlBuilder.isBetweenWhenPresent(<span class="jxr_string">"3"</span>).and(<span class="jxr_string">"4"</span>)
 <a class="jxr_linenumber" name="L502" href="#L502">502</a>                 .map(Integer::parseInt)
 <a class="jxr_linenumber" name="L503" href="#L503">503</a>                 .filter((v1, v2) -&gt; <strong class="jxr_keyword">true</strong>);
@@ -515,7 +515,7 @@
 <a class="jxr_linenumber" name="L507" href="#L507">507</a>     }
 <a class="jxr_linenumber" name="L508" href="#L508">508</a> 
 <a class="jxr_linenumber" name="L509" href="#L509">509</a>     @Test
-<a class="jxr_linenumber" name="L510" href="#L510">510</a>     <strong class="jxr_keyword">void</strong> testNotBetweenWhenPresentFilterWithBiPredicate() {
+<a class="jxr_linenumber" name="L510" href="#L510">510</a>     <strong class="jxr_keyword">void</strong> testNotBetweenWhenPresentFilterWithBiPredicate() <strong class="jxr_keyword">throws</strong> NumberFormatException {
 <a class="jxr_linenumber" name="L511" href="#L511">511</a>         IsNotBetweenWhenPresent&lt;Integer&gt; cond = SqlBuilder.isNotBetweenWhenPresent(<span class="jxr_string">"3"</span>).and(<span class="jxr_string">"4"</span>)
 <a class="jxr_linenumber" name="L512" href="#L512">512</a>                 .map(Integer::parseInt)
 <a class="jxr_linenumber" name="L513" href="#L513">513</a>                 .filter((v1, v2) -&gt; <strong class="jxr_keyword">true</strong>);
@@ -526,7 +526,7 @@
 <a class="jxr_linenumber" name="L518" href="#L518">518</a> 
 <a class="jxr_linenumber" name="L519" href="#L519">519</a>     @ParameterizedTest
 <a class="jxr_linenumber" name="L520" href="#L520">520</a>     @MethodSource(<span class="jxr_string">"testBetweenFilterVariations"</span>)
-<a class="jxr_linenumber" name="L521" href="#L521">521</a>     <strong class="jxr_keyword">void</strong> testBetweenFilterVariations(FilterVariation variation) {
+<a class="jxr_linenumber" name="L521" href="#L521">521</a>     <strong class="jxr_keyword">void</strong> testBetweenFilterVariations(FilterVariation variation) <strong class="jxr_keyword">throws</strong> NumberFormatException {
 <a class="jxr_linenumber" name="L522" href="#L522">522</a>         IsBetween&lt;Integer&gt; cond = SqlBuilder.isBetween(<span class="jxr_string">"4"</span>).and(<span class="jxr_string">"6"</span>)
 <a class="jxr_linenumber" name="L523" href="#L523">523</a>                 .map(Integer::parseInt)
 <a class="jxr_linenumber" name="L524" href="#L524">524</a>                 .filter(variation.predicate);
@@ -569,7 +569,7 @@
 <a class="jxr_linenumber" name="L561" href="#L561">561</a>     }
 <a class="jxr_linenumber" name="L562" href="#L562">562</a> 
 <a class="jxr_linenumber" name="L563" href="#L563">563</a>     @Test
-<a class="jxr_linenumber" name="L564" href="#L564">564</a>     <strong class="jxr_keyword">void</strong> testNotBetweenMapWithSingleMapper() {
+<a class="jxr_linenumber" name="L564" href="#L564">564</a>     <strong class="jxr_keyword">void</strong> testNotBetweenMapWithSingleMapper() <strong class="jxr_keyword">throws</strong> NumberFormatException {
 <a class="jxr_linenumber" name="L565" href="#L565">565</a>         IsNotBetween&lt;Integer&gt; cond = SqlBuilder.isNotBetween(<span class="jxr_string">"3"</span>).and(<span class="jxr_string">"4"</span>).map(Integer::parseInt);
 <a class="jxr_linenumber" name="L566" href="#L566">566</a>         assertThat(cond.isEmpty()).isFalse();
 <a class="jxr_linenumber" name="L567" href="#L567">567</a>         assertThat(cond.value1()).isEqualTo(3);
@@ -577,7 +577,7 @@
 <a class="jxr_linenumber" name="L569" href="#L569">569</a>     }
 <a class="jxr_linenumber" name="L570" href="#L570">570</a> 
 <a class="jxr_linenumber" name="L571" href="#L571">571</a>     @Test
-<a class="jxr_linenumber" name="L572" href="#L572">572</a>     <strong class="jxr_keyword">void</strong> testBetweenFilterToEmpty() {
+<a class="jxr_linenumber" name="L572" href="#L572">572</a>     <strong class="jxr_keyword">void</strong> testBetweenFilterToEmpty() <strong class="jxr_keyword">throws</strong> NumberFormatException {
 <a class="jxr_linenumber" name="L573" href="#L573">573</a>         <strong class="jxr_keyword">var</strong> cond = SqlBuilder.isBetween(<span class="jxr_string">"3"</span>).and(<span class="jxr_string">"4"</span>).map(Integer::parseInt)
 <a class="jxr_linenumber" name="L574" href="#L574">574</a>                 .filter((i1, i2) -&gt; false);
 <a class="jxr_linenumber" name="L575" href="#L575">575</a>         assertThat(cond.isEmpty()).isTrue();
@@ -586,7 +586,7 @@
 <a class="jxr_linenumber" name="L578" href="#L578">578</a>     }
 <a class="jxr_linenumber" name="L579" href="#L579">579</a> 
 <a class="jxr_linenumber" name="L580" href="#L580">580</a>     @Test
-<a class="jxr_linenumber" name="L581" href="#L581">581</a>     <strong class="jxr_keyword">void</strong> testNotBetweenFilterToEmpty() {
+<a class="jxr_linenumber" name="L581" href="#L581">581</a>     <strong class="jxr_keyword">void</strong> testNotBetweenFilterToEmpty() <strong class="jxr_keyword">throws</strong> NumberFormatException {
 <a class="jxr_linenumber" name="L582" href="#L582">582</a>         <strong class="jxr_keyword">var</strong> cond = SqlBuilder.isNotBetween(<span class="jxr_string">"3"</span>).and(<span class="jxr_string">"4"</span>).map(Integer::parseInt)
 <a class="jxr_linenumber" name="L583" href="#L583">583</a>                 .filter((i1, i2) -&gt; false);
 <a class="jxr_linenumber" name="L584" href="#L584">584</a>         assertThat(cond.isEmpty()).isTrue();
