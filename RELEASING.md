@@ -1,12 +1,35 @@
 # Release Information
 
-The project is released with the normal Maven release cycle except for the site.
+The project is released with the normal Maven release support.
 
 ## Pre-Requisites
 
 1. Get authorization to Sonatype and make sure your GPG key is setup and registered per instructions here:
    https://github.com/mybatis/committers-stuff/wiki/Release-Process
 2. Make sure your SSH key is setup at GitHub
+3. Create a Maven Central Publishing token if you don't have one, or it is expired:
+   - Logon to https://central.sonatype.com/
+   - Go to Profile, View User Tokens
+   - Generate a new token if you need to and add it to the maven settings file
+4. Make sure your Maven `settings.xml` file is correct. At a minimum, it should contain the following:
+    ```xml
+    <settings>
+      <servers>
+        <server>
+          <id>gh-pages-scm</id>
+          <configuration>
+            <scmVersionType>branch</scmVersionType>
+            <scmVersion>gh-pages</scmVersion>
+          </configuration>
+        </server>
+        <server>
+          <id>central</id>
+          <username>[tokenized user name]</username>
+          <password>[tokenized password]</password>
+        </server>
+      </servers>
+    </settings>
+    ```
 
 ## Preparation
 
@@ -15,39 +38,36 @@ The project is released with the normal Maven release cycle except for the site.
 ## Release Process
 
 1. Clone the main repo (with ssh), checkout the master branch
-2. mvn release:prepare
-3. mvn release:perform
-4. Logon to https://oss.sonatype.org/
-5. Find the mybatis staging repo
-6. Verify everything looks OK
-7. Close the repo
-8. Release the repo
+2. If you are on a Unix or Mac, then setup GPG to use the terminal when asking for your password: `export GPG_TTY=$(tty)`
+3. `./mvnw release:prepare`
+4. `./mvnw release:perform`
+5. Logon to https://central.sonatype.com/
+6. Go to Profile->View Deployments
+7. Verify everything looks OK
+8. Publish the deployment
 
 ## Update the Site
 
-Automatic site deployment plugin is broken on Mac M1 and with newer keys on any platform. Therefore, it is disabled
-in the normal release. Here's how to do it manually:
+The site will publish automatically as part of the release process. But you can do it independently too.
 
-1. Clone the main repo and checkout the release tag:
-   - `git clone git@github.com:mybatis/mybatis-dynamic-sql.git`
-   - `cd mybatis-dynamic-sql`
-   - `git checkout mybatis-dynamic-sql-1.5.1`
-2. `./mvnw clean site`
-3. Checkout a copy of the main repo in a temp directory:
-   - `mkdir ~/temp/temp-mybatis`
-   - `cd ~/temp/temp-mybatis`
-   - `git clone git@github.com:mybatis/mybatis-dynamic-sql.git`
-   - `cd mybatis-dynamic-sql`
-   - `git checkout gh-pages`
-4. Copy the generated site into the temp checkout:
-   - `cp -R <<source git>>/mybatis-dynamic-sql/target/site/ ~/temp/temp-mybatis/mybatis-dynamic-sql`
-5. Push the new site:
-   - `cd ~/temp/temp-mybatis/mybatis-dynamic-sql`
-   - `git add .`
-   - `git commit -m "Manual Site Update 1.5.1"`
-   - `git push`
-6. Delete the temporary checkout
-   - `rm -R ~/temp/temp-mybatis`
+The following command will do a dry run of the site publishing process - you can use it to see what will be published:
+
+```shell
+./mvnw clean site scm-publish:publish-scm -Dscmpublish.dryRun=true
+```
+
+This command will publish the site:
+
+```shell
+./mvnw clean site scm-publish:publish-scm
+```
+
+If you run into issues with the publishing process, then resetting the working directory can help:
+
+```shell
+cd ~
+sudo rm -r maven-sites
+```
 
 ## After Releasing
 
