@@ -2,7 +2,7 @@
 
 This log will detail notable changes to MyBatis Dynamic SQL. Full details are available on the GitHub milestone pages.
 
-## Release 2.0.0 - Unreleased
+## Release 2.0.0 - March 11, 2026
 
 Release 2.0.0 is a significant milestone for the library with many enhancements and changes. We have moved to Java 17
 as the minimum version supported. If you are unable to move to this version of Java then the releases in the 1.x line
