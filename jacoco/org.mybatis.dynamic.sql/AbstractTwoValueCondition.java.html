@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AbstractTwoValueCondition.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql</a> &gt; <span class="el_source">AbstractTwoValueCondition.java</span></div><h1>AbstractTwoValueCondition.java</h1><pre class="source lang-java linenums">/*
+ *    Copyright 2016-2026 the original author or authors.
+ *
+ *    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *       https://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+package org.mybatis.dynamic.sql;
+
+import static org.mybatis.dynamic.sql.util.StringUtilities.spaceBefore;
+
+import java.util.function.BiFunction;
+import java.util.function.BiPredicate;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
+
+import org.mybatis.dynamic.sql.render.RenderedParameterInfo;
+import org.mybatis.dynamic.sql.render.RenderingContext;
+import org.mybatis.dynamic.sql.util.FragmentAndParameters;
+
+public abstract class AbstractTwoValueCondition&lt;T&gt; implements RenderableCondition&lt;T&gt; {
+    protected final T value1;
+    protected final T value2;
+
+<span class="fc" id="L34">    protected AbstractTwoValueCondition(T value1, T value2) {</span>
+<span class="fc" id="L35">        this.value1 = value1;</span>
+<span class="fc" id="L36">        this.value2 = value2;</span>
+<span class="fc" id="L37">    }</span>
+
+    public T value1() {
+<span class="fc" id="L40">        return value1;</span>
+    }
+
+    public T value2() {
+<span class="fc" id="L44">        return value2;</span>
+    }
+
+    protected &lt;S extends AbstractTwoValueCondition&lt;T&gt;&gt; S filterSupport(BiPredicate&lt;? super T, ? super T&gt; predicate,
+            Supplier&lt;S&gt; emptySupplier, S self) {
+<span class="fc bfc" id="L49" title="All 2 branches covered.">        if (isEmpty()) {</span>
+<span class="fc" id="L50">            return self;</span>
+        } else {
+<span class="fc bfc" id="L52" title="All 2 branches covered.">            return predicate.test(value1, value2) ? self : emptySupplier.get();</span>
+        }
+    }
+
+    protected &lt;S extends AbstractTwoValueCondition&lt;T&gt;&gt; S filterSupport(Predicate&lt;? super T&gt; predicate,
+            Supplier&lt;S&gt; emptySupplier, S self) {
+<span class="fc bfc" id="L58" title="All 4 branches covered.">        return filterSupport((v1, v2) -&gt; predicate.test(v1) &amp;&amp; predicate.test(v2), emptySupplier, self);</span>
+    }
+
+    protected &lt;R, S extends AbstractTwoValueCondition&lt;R&gt;&gt; S mapSupport(Function&lt;? super T, ? extends R&gt; mapper1,
+            Function&lt;? super T, ? extends R&gt; mapper2, BiFunction&lt;R, R, S&gt; constructor, Supplier&lt;S&gt; emptySupplier) {
+<span class="fc bfc" id="L63" title="All 2 branches covered.">        if (isEmpty()) {</span>
+<span class="fc" id="L64">            return emptySupplier.get();</span>
+        } else {
+<span class="fc" id="L66">            return constructor.apply(mapper1.apply(value1), mapper2.apply(value2));</span>
+        }
+    }
+
+    public abstract String operator1();
+
+    public abstract String operator2();
+
+    @Override
+    public FragmentAndParameters renderCondition(RenderingContext renderingContext, BindableColumn&lt;T&gt; leftColumn) {
+<span class="fc" id="L76">        RenderedParameterInfo parameterInfo1 = renderingContext.calculateParameterInfo(leftColumn);</span>
+<span class="fc" id="L77">        RenderedParameterInfo parameterInfo2 = renderingContext.calculateParameterInfo(leftColumn);</span>
+
+<span class="fc" id="L79">        String finalFragment = operator1()</span>
+<span class="fc" id="L80">                + spaceBefore(parameterInfo1.renderedPlaceHolder())</span>
+<span class="fc" id="L81">                + spaceBefore(operator2())</span>
+<span class="fc" id="L82">                + spaceBefore(parameterInfo2.renderedPlaceHolder());</span>
+
+<span class="fc" id="L84">        return FragmentAndParameters.withFragment(finalFragment)</span>
+<span class="fc" id="L85">                .withParameter(parameterInfo1.parameterMapKey(), leftColumn.convertParameterType(value1()))</span>
+<span class="fc" id="L86">                .withParameter(parameterInfo2.parameterMapKey(), leftColumn.convertParameterType(value2()))</span>
+<span class="fc" id="L87">                .build();</span>
+    }
+
+    /**
+     * Conditions may implement Filterable to add optionality to rendering.
+     *
+     * &lt;p&gt;If a condition is Filterable, then a user may add a filter to the usage of the condition that makes a decision
+     * whether to render the condition at runtime. Conditions that fail the filter will be dropped from the
+     * rendered SQL.
+     *
+     * &lt;p&gt;Implementations of Filterable may call
+     * {@link AbstractTwoValueCondition#filterSupport(Predicate, Supplier, AbstractTwoValueCondition)}
+     * or {@link AbstractTwoValueCondition#filterSupport(BiPredicate, Supplier, AbstractTwoValueCondition)} as
+     * a common implementation of the filtering algorithm.
+     *
+     * @param &lt;T&gt; the Java type related to the database column type
+     */
+    public interface Filterable&lt;T&gt; {
+        /**
+         * If renderable and the values match the predicate, returns this condition. Else returns a condition
+         *     that will not render.
+         *
+         * @param predicate predicate applied to the values, if renderable
+         * @return this condition if renderable and the values match the predicate, otherwise a condition
+         *     that will not render.
+         */
+        AbstractTwoValueCondition&lt;T&gt; filter(BiPredicate&lt;? super T, ? super T&gt; predicate);
+
+        /**
+         * If renderable and both values match the predicate, returns this condition. Else returns a condition
+         *     that will not render. This function implements a short-circuiting test. If the
+         *     first value does not match the predicate, then the second value will not be tested.
+         *
+         * @param predicate predicate applied to both values, if renderable
+         * @return this condition if renderable and the values match the predicate, otherwise a condition
+         *     that will not render.
+         */
+        AbstractTwoValueCondition&lt;T&gt; filter(Predicate&lt;? super T&gt; predicate);
+    }
+
+    /**
+     * Conditions may implement Mappable to alter condition values or types during rendering.
+     *
+     * &lt;p&gt;If a condition is Mappable, then a user may add a mapper to the usage of the condition that can alter the
+     * values of a condition, or change that datatype.
+     *
+     * &lt;p&gt;Implementations of Mappable may call
+     * {@link AbstractTwoValueCondition#mapSupport(Function, Function, BiFunction, Supplier)} as
+     * a common implementation of the mapping algorithm.
+     *
+     * @param &lt;T&gt; the Java type related to the database column type
+     */
+    public interface Mappable&lt;T&gt; {
+        /**
+         * If renderable, apply the mappings to the values and return a new condition with the new values. Else return a
+         * condition that will not render (this).
+         *
+         * @param mapper1 a mapping function to apply to the first value, if renderable
+         * @param mapper2 a mapping function to apply to the second value, if renderable
+         * @param &lt;R&gt; type of the new condition
+         * @return a new condition with the result of applying the mappers to the values of this condition,
+         *     if renderable, otherwise a condition that will not render.
+         */
+        &lt;R&gt; AbstractTwoValueCondition&lt;R&gt; map(Function&lt;? super T, ? extends R&gt; mapper1,
+                                             Function&lt;? super T, ? extends R&gt; mapper2);
+
+        /**
+         * If renderable, apply the mapping to both values and return a new condition with the new values. Else return a
+         *     condition that will not render (this).
+         *
+         * @param mapper a mapping function to apply to both values, if renderable
+         * @param &lt;R&gt; type of the new condition
+         * @return a new condition with the result of applying the mappers to the values of this condition,
+         *     if renderable, otherwise a condition that will not render.
+         */
+        &lt;R&gt; AbstractTwoValueCondition&lt;R&gt; map(Function&lt;? super T, ? extends R&gt; mapper);
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

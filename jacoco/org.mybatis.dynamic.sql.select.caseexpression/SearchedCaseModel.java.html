@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SearchedCaseModel.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.select.caseexpression</a> &gt; <span class="el_source">SearchedCaseModel.java</span></div><h1>SearchedCaseModel.java</h1><pre class="source lang-java linenums">/*
+ *    Copyright 2016-2026 the original author or authors.
+ *
+ *    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *       https://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+package org.mybatis.dynamic.sql.select.caseexpression;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Stream;
+
+import org.jspecify.annotations.Nullable;
+import org.mybatis.dynamic.sql.BasicColumn;
+import org.mybatis.dynamic.sql.SortSpecification;
+import org.mybatis.dynamic.sql.render.RenderingContext;
+import org.mybatis.dynamic.sql.select.render.SearchedCaseRenderer;
+import org.mybatis.dynamic.sql.util.FragmentAndParameters;
+import org.mybatis.dynamic.sql.util.Validator;
+
+public class SearchedCaseModel implements BasicColumn, SortSpecification {
+    private final List&lt;SearchedCaseWhenCondition&gt; whenConditions;
+    private final @Nullable BasicColumn elseValue;
+    private final @Nullable String alias;
+    private final String descendingPhrase;
+
+<span class="fc" id="L37">    private SearchedCaseModel(Builder builder) {</span>
+<span class="fc" id="L38">        whenConditions = builder.whenConditions;</span>
+<span class="fc" id="L39">        alias = builder.alias;</span>
+<span class="fc" id="L40">        elseValue = builder.elseValue;</span>
+<span class="fc" id="L41">        descendingPhrase = builder.descendingPhrase;</span>
+<span class="fc" id="L42">        Validator.assertNotEmpty(whenConditions, &quot;ERROR.40&quot;); //$NON-NLS-1$</span>
+<span class="fc" id="L43">    }</span>
+
+    public Stream&lt;SearchedCaseWhenCondition&gt; whenConditions() {
+<span class="fc" id="L46">        return whenConditions.stream();</span>
+    }
+
+    public Optional&lt;BasicColumn&gt; elseValue() {
+<span class="fc" id="L50">        return Optional.ofNullable(elseValue);</span>
+    }
+
+    @Override
+    public Optional&lt;String&gt; alias() {
+<span class="fc" id="L55">        return Optional.ofNullable(alias);</span>
+    }
+
+    @Override
+    public SearchedCaseModel as(String alias) {
+<span class="fc" id="L60">        return new Builder().withWhenConditions(whenConditions)</span>
+<span class="fc" id="L61">                .withElseValue(elseValue)</span>
+<span class="fc" id="L62">                .withAlias(alias)</span>
+<span class="fc" id="L63">                .withDescendingPhrase(descendingPhrase)</span>
+<span class="fc" id="L64">                .build();</span>
+    }
+
+    @Override
+    public SearchedCaseModel descending() {
+<span class="fc" id="L69">        return new Builder().withWhenConditions(whenConditions)</span>
+<span class="fc" id="L70">                .withElseValue(elseValue)</span>
+<span class="fc" id="L71">                .withAlias(alias)</span>
+<span class="fc" id="L72">                .withDescendingPhrase(&quot; DESC&quot;) //$NON-NLS-1$</span>
+<span class="fc" id="L73">                .build();</span>
+    }
+
+    @Override
+    public FragmentAndParameters renderForOrderBy(RenderingContext renderingContext) {
+<span class="fc" id="L78">        return render(renderingContext).mapFragment(f -&gt; f + descendingPhrase);</span>
+    }
+
+    @Override
+    public FragmentAndParameters render(RenderingContext renderingContext) {
+<span class="fc" id="L83">        return new SearchedCaseRenderer(this, renderingContext).render();</span>
+    }
+
+<span class="fc" id="L86">    public static class Builder {</span>
+<span class="fc" id="L87">        private final List&lt;SearchedCaseWhenCondition&gt; whenConditions = new ArrayList&lt;&gt;();</span>
+        private @Nullable BasicColumn elseValue;
+        private @Nullable String alias;
+<span class="fc" id="L90">        private String descendingPhrase = &quot;&quot;; //$NON-NLS-1$</span>
+
+        public Builder withWhenConditions(List&lt;SearchedCaseWhenCondition&gt; whenConditions) {
+<span class="fc" id="L93">            this.whenConditions.addAll(whenConditions);</span>
+<span class="fc" id="L94">            return this;</span>
+        }
+
+        public Builder withElseValue(@Nullable BasicColumn elseValue) {
+<span class="fc" id="L98">            this.elseValue = elseValue;</span>
+<span class="fc" id="L99">            return this;</span>
+        }
+
+        public Builder withAlias(@Nullable String alias) {
+<span class="fc" id="L103">            this.alias = alias;</span>
+<span class="fc" id="L104">            return this;</span>
+        }
+
+        public Builder withDescendingPhrase(String descendingPhrase) {
+<span class="fc" id="L108">            this.descendingPhrase = descendingPhrase;</span>
+<span class="fc" id="L109">            return this;</span>
+        }
+
+        public SearchedCaseModel build() {
+<span class="fc" id="L113">            return new SearchedCaseModel(this);</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

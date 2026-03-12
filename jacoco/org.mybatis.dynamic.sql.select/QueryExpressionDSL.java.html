@@ -1,0 +1,549 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>QueryExpressionDSL.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.select</a> &gt; <span class="el_source">QueryExpressionDSL.java</span></div><h1>QueryExpressionDSL.java</h1><pre class="source lang-java linenums">/*
+ *    Copyright 2016-2026 the original author or authors.
+ *
+ *    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *       https://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+package org.mybatis.dynamic.sql.select;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
+import java.util.function.Consumer;
+
+import org.jspecify.annotations.Nullable;
+import org.mybatis.dynamic.sql.AndOrCriteriaGroup;
+import org.mybatis.dynamic.sql.BasicColumn;
+import org.mybatis.dynamic.sql.NullCriterion;
+import org.mybatis.dynamic.sql.SortSpecification;
+import org.mybatis.dynamic.sql.SqlCriterion;
+import org.mybatis.dynamic.sql.SqlTable;
+import org.mybatis.dynamic.sql.TableExpression;
+import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
+import org.mybatis.dynamic.sql.dsl.AbstractJoinSupport;
+import org.mybatis.dynamic.sql.dsl.AbstractQueryingDSL;
+import org.mybatis.dynamic.sql.dsl.BooleanOperations;
+import org.mybatis.dynamic.sql.dsl.ForAndWaitOperations;
+import org.mybatis.dynamic.sql.dsl.GroupByOperations;
+import org.mybatis.dynamic.sql.dsl.HavingOperations;
+import org.mybatis.dynamic.sql.dsl.JoinOperations;
+import org.mybatis.dynamic.sql.dsl.LimitAndOffsetOperations;
+import org.mybatis.dynamic.sql.dsl.OrderByOperations;
+import org.mybatis.dynamic.sql.dsl.WhereOperations;
+import org.mybatis.dynamic.sql.select.join.JoinType;
+import org.mybatis.dynamic.sql.util.Buildable;
+import org.mybatis.dynamic.sql.util.ConfigurableStatement;
+import org.mybatis.dynamic.sql.util.Validator;
+import org.mybatis.dynamic.sql.where.WhereApplier;
+import org.mybatis.dynamic.sql.where.WhereModel;
+
+public class QueryExpressionDSL&lt;R&gt; extends AbstractQueryingDSL implements
+        JoinOperations&lt;QueryExpressionDSL&lt;R&gt;.JoinSpecificationFinisher&gt;,
+        WhereOperations&lt;QueryExpressionDSL&lt;R&gt;.QueryExpressionWhereBuilder&gt;,
+        GroupByOperations&lt;QueryExpressionDSL&lt;R&gt;&gt;,
+        HavingOperations&lt;QueryExpressionDSL&lt;R&gt;.QueryExpressionHavingBuilder&gt;,
+        ConfigurableStatement&lt;QueryExpressionDSL&lt;R&gt;&gt;,
+        LimitAndOffsetOperations&lt;SelectDSL&lt;R&gt;, R&gt;,
+        ForAndWaitOperations&lt;SelectDSL&lt;R&gt;&gt;,
+        OrderByOperations&lt;SelectDSL&lt;R&gt;&gt;,
+        Buildable&lt;R&gt; {
+
+    private final @Nullable String connector;
+    private final SelectDSL&lt;R&gt; selectDSL;
+    private final boolean isDistinct;
+    private final List&lt;BasicColumn&gt; selectList;
+    private @Nullable QueryExpressionWhereBuilder whereBuilder;
+    private @Nullable GroupByModel groupByModel;
+    private @Nullable QueryExpressionHavingBuilder havingBuilder;
+
+<span class="fc" id="L70">    protected QueryExpressionDSL(Builder&lt;R&gt; builder) {</span>
+<span class="fc" id="L71">        connector = builder.connector;</span>
+<span class="fc" id="L72">        selectList = builder.selectList;</span>
+<span class="fc" id="L73">        isDistinct = builder.isDistinct;</span>
+<span class="fc" id="L74">        selectDSL = Objects.requireNonNull(builder.selectDSL);</span>
+<span class="fc" id="L75">        selectDSL.registerQueryExpression(this);</span>
+<span class="fc" id="L76">    }</span>
+
+    public QueryExpressionDSL&lt;R&gt; from(Buildable&lt;SelectModel&gt; select) {
+<span class="fc" id="L79">        setTable(select);</span>
+<span class="fc" id="L80">        return this;</span>
+    }
+
+    public QueryExpressionDSL&lt;R&gt; from(Buildable&lt;SelectModel&gt; select, String tableAlias) {
+<span class="fc" id="L84">        setTable(select, tableAlias);</span>
+<span class="fc" id="L85">        return this;</span>
+    }
+
+    public QueryExpressionDSL&lt;R&gt; from(SqlTable table) {
+<span class="fc" id="L89">        setTable(table);</span>
+<span class="fc" id="L90">        return this;</span>
+    }
+
+    public QueryExpressionDSL&lt;R&gt; from(SqlTable table, String tableAlias) {
+<span class="fc" id="L94">        setTable(table, tableAlias);</span>
+<span class="fc" id="L95">        return this;</span>
+    }
+
+    @Override
+    public JoinSpecificationFinisher join(JoinType joinType, TableExpression joinTable,
+                                          SqlCriterion initialCriterion) {
+<span class="fc" id="L101">        var finisher = new JoinSpecificationFinisher(joinType, joinTable, initialCriterion);</span>
+<span class="fc" id="L102">        addJoinSpecification(finisher);</span>
+<span class="fc" id="L103">        return finisher;</span>
+    }
+
+    @Override
+    public JoinSpecificationFinisher join(JoinType joinType, SqlTable joinTable, String tableAlias,
+                                          SqlCriterion initialCriterion) {
+<span class="fc" id="L109">        addTableAlias(joinTable, tableAlias);</span>
+<span class="fc" id="L110">        return join(joinType, joinTable, initialCriterion);</span>
+    }
+
+
+    @Override
+    public QueryExpressionWhereBuilder where() {
+<span class="fc" id="L116">        whereBuilder = Objects.requireNonNullElseGet(whereBuilder,</span>
+<span class="fc" id="L117">                () -&gt; new QueryExpressionWhereBuilder(new NullCriterion()));</span>
+<span class="fc" id="L118">        return whereBuilder;</span>
+    }
+
+    @Override
+    public QueryExpressionWhereBuilder where(SqlCriterion initialCriterion) {
+<span class="fc" id="L123">        Validator.assertNull(whereBuilder, Validator.ERROR_32);</span>
+<span class="fc" id="L124">        whereBuilder = new QueryExpressionWhereBuilder(initialCriterion);</span>
+<span class="fc" id="L125">        return whereBuilder;</span>
+    }
+
+    @Override
+    public QueryExpressionWhereBuilder applyWhere(WhereApplier whereApplier) {
+<span class="fc" id="L130">        Validator.assertNull(whereBuilder, Validator.ERROR_32);</span>
+<span class="fc" id="L131">        whereBuilder = new QueryExpressionWhereBuilder(whereApplier.initialCriterion(), whereApplier.subCriteria());</span>
+<span class="fc" id="L132">        return whereBuilder;</span>
+    }
+
+    @Override
+    public QueryExpressionDSL&lt;R&gt; configureStatement(Consumer&lt;StatementConfiguration&gt; consumer) {
+<span class="fc" id="L137">        selectDSL.configureStatement(consumer);</span>
+<span class="fc" id="L138">        return this;</span>
+    }
+
+    @Override
+    public QueryExpressionHavingBuilder having(SqlCriterion initialCriterion) {
+<span class="fc" id="L143">        Validator.assertNull(havingBuilder, &quot;ERROR.31&quot;); //$NON-NLS-1$</span>
+<span class="fc" id="L144">        havingBuilder = new QueryExpressionHavingBuilder(initialCriterion);</span>
+<span class="fc" id="L145">        return havingBuilder;</span>
+    }
+
+    @Override
+    public QueryExpressionHavingBuilder applyHaving(HavingApplier havingApplier) {
+<span class="fc" id="L150">        Validator.assertNull(havingBuilder, &quot;ERROR.31&quot;); //$NON-NLS-1$</span>
+<span class="fc" id="L151">        havingBuilder = new QueryExpressionHavingBuilder(havingApplier.initialCriterion(), havingApplier.subCriteria());</span>
+<span class="fc" id="L152">        return havingBuilder;</span>
+    }
+
+    @Override
+    public R build() {
+<span class="fc" id="L157">        return selectDSL.build();</span>
+    }
+
+    @Override
+    public QueryExpressionDSL&lt;R&gt; groupBy(Collection&lt;? extends BasicColumn&gt; columns) {
+<span class="fc" id="L162">        groupByModel = GroupByModel.of(columns);</span>
+<span class="fc" id="L163">        return this;</span>
+    }
+
+    @Override
+    public SelectDSL&lt;R&gt; orderBy(Collection&lt;? extends SortSpecification&gt; columns) {
+<span class="fc" id="L168">        return selectDSL.orderBy(columns);</span>
+    }
+
+    public UnionBuilder union() {
+<span class="fc" id="L172">        return new UnionBuilder(&quot;union&quot;); //$NON-NLS-1$</span>
+    }
+
+    public UnionBuilder unionAll() {
+<span class="fc" id="L176">        return new UnionBuilder(&quot;union all&quot;); //$NON-NLS-1$</span>
+    }
+
+    protected QueryExpressionModel buildModel() {
+<span class="fc" id="L180">        return QueryExpressionModel.withSelectList(selectList)</span>
+<span class="fc" id="L181">                .withConnector(connector)</span>
+<span class="fc" id="L182">                .withTable(table())</span>
+<span class="fc" id="L183">                .isDistinct(isDistinct)</span>
+<span class="fc" id="L184">                .withTableAliases(tableAliases())</span>
+<span class="fc" id="L185">                .withJoinModel(buildJoinModel())</span>
+<span class="fc" id="L186">                .withGroupByModel(groupByModel)</span>
+<span class="fc bfc" id="L187" title="All 2 branches covered.">                .withWhereModel(whereBuilder == null ? null : whereBuilder.buildWhereModel())</span>
+<span class="fc bfc" id="L188" title="All 2 branches covered.">                .withHavingModel(havingBuilder == null ? null : havingBuilder.buildHavingModel())</span>
+<span class="fc" id="L189">                .build();</span>
+    }
+
+    @Override
+    public SelectDSL&lt;R&gt; setWaitClause(String waitClause) {
+<span class="fc" id="L194">        return selectDSL.setWaitClause(waitClause);</span>
+    }
+
+    @Override
+    public SelectDSL&lt;R&gt; setForClause(String forClause) {
+<span class="fc" id="L199">        return selectDSL.setForClause(forClause);</span>
+    }
+
+    @Override
+    public LimitFinisher&lt;SelectDSL&lt;R&gt;, R&gt; limitWhenPresent(@Nullable Long limit) {
+<span class="fc" id="L204">        return selectDSL.limitWhenPresent(limit);</span>
+    }
+
+    @Override
+    public OffsetFirstFinisher&lt;SelectDSL&lt;R&gt;, R&gt; offsetWhenPresent(@Nullable Long offset) {
+<span class="fc" id="L209">        return selectDSL.offsetWhenPresent(offset);</span>
+    }
+
+    @Override
+    public FetchFirstFinisher&lt;SelectDSL&lt;R&gt;&gt; fetchFirstWhenPresent(@Nullable Long fetchFirstRows) {
+<span class="fc" id="L214">        return selectDSL.fetchFirstWhenPresent(fetchFirstRows);</span>
+    }
+
+    public class QueryExpressionWhereBuilder
+            implements BooleanOperations&lt;QueryExpressionWhereBuilder&gt;,
+            ConfigurableStatement&lt;QueryExpressionWhereBuilder&gt;,
+            OrderByOperations&lt;SelectDSL&lt;R&gt;&gt;,
+            GroupByOperations&lt;QueryExpressionDSL&lt;R&gt;&gt;,
+            ForAndWaitOperations&lt;SelectDSL&lt;R&gt;&gt;,
+            LimitAndOffsetOperations&lt;SelectDSL&lt;R&gt;, R&gt;,
+            Buildable&lt;R&gt; {
+        protected final SqlCriterion initialCriterion;
+<span class="fc" id="L226">        protected final List&lt;AndOrCriteriaGroup&gt; subCriteria = new ArrayList&lt;&gt;();</span>
+
+<span class="fc" id="L228">        public QueryExpressionWhereBuilder(SqlCriterion initialCriterion) {</span>
+<span class="fc" id="L229">            this.initialCriterion = initialCriterion;</span>
+<span class="fc" id="L230">        }</span>
+
+        public QueryExpressionWhereBuilder(SqlCriterion initialCriterion, List&lt;AndOrCriteriaGroup&gt; subCriteria) {
+<span class="fc" id="L233">            this(initialCriterion);</span>
+<span class="fc" id="L234">            this.subCriteria.addAll(subCriteria);</span>
+<span class="fc" id="L235">        }</span>
+
+        @Override
+        public QueryExpressionWhereBuilder addSubCriterion(AndOrCriteriaGroup subCriterion) {
+<span class="fc" id="L239">            subCriteria.add(subCriterion);</span>
+<span class="fc" id="L240">            return this;</span>
+        }
+
+        public UnionBuilder union() {
+<span class="fc" id="L244">            return QueryExpressionDSL.this.union();</span>
+        }
+
+        public UnionBuilder unionAll() {
+<span class="fc" id="L248">            return QueryExpressionDSL.this.unionAll();</span>
+        }
+
+        @Override
+        public SelectDSL&lt;R&gt; orderBy(Collection&lt;? extends SortSpecification&gt; columns) {
+<span class="fc" id="L253">            return QueryExpressionDSL.this.orderBy(columns);</span>
+        }
+
+        @Override
+        public QueryExpressionDSL&lt;R&gt; groupBy(Collection&lt;? extends BasicColumn&gt; columns) {
+<span class="fc" id="L258">            return QueryExpressionDSL.this.groupBy(columns);</span>
+        }
+
+        @Override
+        public QueryExpressionWhereBuilder configureStatement(Consumer&lt;StatementConfiguration&gt; consumer) {
+<span class="fc" id="L263">            QueryExpressionDSL.this.configureStatement(consumer);</span>
+<span class="fc" id="L264">            return this;</span>
+        }
+
+        @Override
+        public R build() {
+<span class="fc" id="L269">            return QueryExpressionDSL.this.build();</span>
+        }
+
+        @Override
+        public SelectDSL&lt;R&gt; setWaitClause(String waitClause) {
+<span class="fc" id="L274">            return QueryExpressionDSL.this.setWaitClause(waitClause);</span>
+        }
+
+        @Override
+        public SelectDSL&lt;R&gt; setForClause(String forClause) {
+<span class="fc" id="L279">            return QueryExpressionDSL.this.setForClause(forClause);</span>
+        }
+
+        @Override
+        public LimitFinisher&lt;SelectDSL&lt;R&gt;, R&gt; limitWhenPresent(@Nullable Long limit) {
+<span class="fc" id="L284">            return QueryExpressionDSL.this.limitWhenPresent(limit);</span>
+        }
+
+        @Override
+        public OffsetFirstFinisher&lt;SelectDSL&lt;R&gt;, R&gt; offsetWhenPresent(@Nullable Long offset) {
+<span class="fc" id="L289">            return QueryExpressionDSL.this.offsetWhenPresent(offset);</span>
+        }
+
+        @Override
+        public FetchFirstFinisher&lt;SelectDSL&lt;R&gt;&gt; fetchFirstWhenPresent(@Nullable Long fetchFirstRows) {
+<span class="fc" id="L294">            return QueryExpressionDSL.this.fetchFirstWhenPresent(fetchFirstRows);</span>
+        }
+
+        protected WhereModel buildWhereModel() {
+<span class="fc" id="L298">            return new WhereModel.Builder()</span>
+<span class="fc" id="L299">                    .withInitialCriterion(initialCriterion)</span>
+<span class="fc" id="L300">                    .withSubCriteria(subCriteria)</span>
+<span class="fc" id="L301">                    .build();</span>
+        }
+    }
+
+    public class JoinSpecificationFinisher
+            extends AbstractJoinSupport&lt;QueryExpressionDSL&lt;R&gt;, JoinSpecificationFinisher&gt;
+            implements WhereOperations&lt;QueryExpressionWhereBuilder&gt;,
+            ConfigurableStatement&lt;JoinSpecificationFinisher&gt;,
+            GroupByOperations&lt;QueryExpressionDSL&lt;R&gt;&gt;,
+            ForAndWaitOperations&lt;SelectDSL&lt;R&gt;&gt;,
+            LimitAndOffsetOperations&lt;SelectDSL&lt;R&gt;, R&gt;,
+            OrderByOperations&lt;SelectDSL&lt;R&gt;&gt;,
+            Buildable&lt;R&gt; {
+        protected JoinSpecificationFinisher(JoinType joinType, TableExpression joinTable,
+<span class="fc" id="L315">                                            SqlCriterion initialCriterion) {</span>
+<span class="fc" id="L316">            super(joinType, joinTable, initialCriterion);</span>
+<span class="fc" id="L317">        }</span>
+
+        @Override
+        public R build() {
+<span class="fc" id="L321">            return QueryExpressionDSL.this.build();</span>
+        }
+
+        @Override
+        public JoinSpecificationFinisher configureStatement(Consumer&lt;StatementConfiguration&gt; consumer) {
+<span class="fc" id="L326">            selectDSL.configureStatement(consumer);</span>
+<span class="fc" id="L327">            return this;</span>
+        }
+
+        @Override
+        public QueryExpressionWhereBuilder where() {
+<span class="fc" id="L332">            return QueryExpressionDSL.this.where();</span>
+        }
+
+        @Override
+        public QueryExpressionWhereBuilder where(SqlCriterion initialCriterion) {
+<span class="fc" id="L337">            return QueryExpressionDSL.this.where(initialCriterion);</span>
+        }
+
+        @Override
+        public QueryExpressionWhereBuilder applyWhere(WhereApplier whereApplier) {
+<span class="fc" id="L342">            return QueryExpressionDSL.this.applyWhere(whereApplier);</span>
+        }
+
+        @Override
+        public QueryExpressionDSL&lt;R&gt; groupBy(Collection&lt;? extends BasicColumn&gt; columns) {
+<span class="fc" id="L347">            return QueryExpressionDSL.this.groupBy(columns);</span>
+        }
+
+        public UnionBuilder union() {
+<span class="fc" id="L351">            return QueryExpressionDSL.this.union();</span>
+        }
+
+        public UnionBuilder unionAll() {
+<span class="fc" id="L355">            return QueryExpressionDSL.this.unionAll();</span>
+        }
+
+        @Override
+        public SelectDSL&lt;R&gt; orderBy(Collection&lt;? extends SortSpecification&gt; columns) {
+<span class="fc" id="L360">            return QueryExpressionDSL.this.orderBy(columns);</span>
+        }
+
+        @Override
+        protected JoinSpecificationFinisher getThis() {
+<span class="fc" id="L365">            return this;</span>
+        }
+
+        @Override
+        public JoinSpecificationFinisher join(JoinType joinType, TableExpression joinTable,
+                                              SqlCriterion initialCriterion) {
+<span class="fc" id="L371">            return QueryExpressionDSL.this.join(joinType, joinTable, initialCriterion);</span>
+        }
+
+        @Override
+        public JoinSpecificationFinisher join(JoinType joinType, SqlTable joinTable, String tableAlias,
+                                              SqlCriterion initialCriterion) {
+<span class="fc" id="L377">            return QueryExpressionDSL.this.join(joinType, joinTable, tableAlias, initialCriterion);</span>
+        }
+
+        @Override
+        public QueryExpressionDSL&lt;R&gt; endJoin() {
+<span class="fc" id="L382">            return QueryExpressionDSL.this;</span>
+        }
+
+        @Override
+        public LimitFinisher&lt;SelectDSL&lt;R&gt;, R&gt; limitWhenPresent(@Nullable Long limit) {
+<span class="fc" id="L387">            return QueryExpressionDSL.this.limitWhenPresent(limit);</span>
+        }
+
+        @Override
+        public OffsetFirstFinisher&lt;SelectDSL&lt;R&gt;, R&gt; offsetWhenPresent(@Nullable Long offset) {
+<span class="fc" id="L392">            return QueryExpressionDSL.this.offsetWhenPresent(offset);</span>
+        }
+
+        @Override
+        public FetchFirstFinisher&lt;SelectDSL&lt;R&gt;&gt; fetchFirstWhenPresent(@Nullable Long fetchFirstRows) {
+<span class="fc" id="L397">            return QueryExpressionDSL.this.fetchFirstWhenPresent(fetchFirstRows);</span>
+        }
+
+        @Override
+        public SelectDSL&lt;R&gt; setWaitClause(String waitClause) {
+<span class="fc" id="L402">            return QueryExpressionDSL.this.setWaitClause(waitClause);</span>
+        }
+
+        @Override
+        public SelectDSL&lt;R&gt; setForClause(String forClause) {
+<span class="fc" id="L407">            return QueryExpressionDSL.this.setForClause(forClause);</span>
+        }
+    }
+
+    public class UnionBuilder {
+        protected final String connector;
+
+<span class="fc" id="L414">        public UnionBuilder(String connector) {</span>
+<span class="fc" id="L415">            this.connector = connector;</span>
+<span class="fc" id="L416">        }</span>
+
+        public QueryExpressionDSL&lt;R&gt; select(BasicColumn... selectList) {
+<span class="fc" id="L419">            return select(Arrays.asList(selectList));</span>
+        }
+
+        public QueryExpressionDSL&lt;R&gt; select(List&lt;BasicColumn&gt; selectList) {
+<span class="fc" id="L423">            return new Builder&lt;R&gt;()</span>
+<span class="fc" id="L424">                    .withConnector(connector)</span>
+<span class="fc" id="L425">                    .withSelectList(selectList)</span>
+<span class="fc" id="L426">                    .withSelectDSL(selectDSL)</span>
+<span class="fc" id="L427">                    .build();</span>
+        }
+
+        public QueryExpressionDSL&lt;R&gt; selectDistinct(BasicColumn... selectList) {
+<span class="fc" id="L431">            return selectDistinct(Arrays.asList(selectList));</span>
+        }
+
+        public QueryExpressionDSL&lt;R&gt; selectDistinct(List&lt;BasicColumn&gt; selectList) {
+<span class="fc" id="L435">            return new Builder&lt;R&gt;()</span>
+<span class="fc" id="L436">                    .withConnector(connector)</span>
+<span class="fc" id="L437">                    .withSelectList(selectList)</span>
+<span class="fc" id="L438">                    .withSelectDSL(selectDSL)</span>
+<span class="fc" id="L439">                    .isDistinct()</span>
+<span class="fc" id="L440">                    .build();</span>
+        }
+    }
+
+    public class QueryExpressionHavingBuilder implements BooleanOperations&lt;QueryExpressionHavingBuilder&gt;,
+            ForAndWaitOperations&lt;SelectDSL&lt;R&gt;&gt;,
+            LimitAndOffsetOperations&lt;SelectDSL&lt;R&gt;, R&gt;,
+            OrderByOperations&lt;SelectDSL&lt;R&gt;&gt;,
+            Buildable&lt;R&gt; {
+        private final SqlCriterion initialCriterion;
+<span class="fc" id="L450">        private final List&lt;AndOrCriteriaGroup&gt; subCriteria = new ArrayList&lt;&gt;();</span>
+
+<span class="fc" id="L452">        public QueryExpressionHavingBuilder(SqlCriterion initialCriterion) {</span>
+<span class="fc" id="L453">            this.initialCriterion = initialCriterion;</span>
+<span class="fc" id="L454">        }</span>
+
+        public QueryExpressionHavingBuilder(SqlCriterion initialCriterion, List&lt;AndOrCriteriaGroup&gt; subCriteria) {
+<span class="fc" id="L457">            this(initialCriterion);</span>
+<span class="fc" id="L458">            this.subCriteria.addAll(subCriteria);</span>
+<span class="fc" id="L459">        }</span>
+
+        @Override
+        public QueryExpressionHavingBuilder addSubCriterion(AndOrCriteriaGroup subCriterion) {
+<span class="fc" id="L463">            subCriteria.add(subCriterion);</span>
+<span class="fc" id="L464">            return this;</span>
+        }
+
+        @Override
+        public SelectDSL&lt;R&gt; orderBy(Collection&lt;? extends SortSpecification&gt; columns) {
+<span class="fc" id="L469">            return QueryExpressionDSL.this.orderBy(columns);</span>
+        }
+
+        public UnionBuilder union() {
+<span class="fc" id="L473">            return QueryExpressionDSL.this.union();</span>
+        }
+
+        public UnionBuilder unionAll() {
+<span class="fc" id="L477">            return QueryExpressionDSL.this.unionAll();</span>
+        }
+
+        @Override
+        public R build() {
+<span class="fc" id="L482">            return QueryExpressionDSL.this.build();</span>
+        }
+
+        protected HavingModel buildHavingModel() {
+<span class="fc" id="L486">            return new HavingModel.Builder()</span>
+<span class="fc" id="L487">                    .withInitialCriterion(initialCriterion)</span>
+<span class="fc" id="L488">                    .withSubCriteria(subCriteria)</span>
+<span class="fc" id="L489">                    .build();</span>
+        }
+
+        @Override
+        public SelectDSL&lt;R&gt; setWaitClause(String waitClause) {
+<span class="fc" id="L494">            return QueryExpressionDSL.this.setWaitClause(waitClause);</span>
+        }
+
+        @Override
+        public SelectDSL&lt;R&gt; setForClause(String forClause) {
+<span class="fc" id="L499">            return QueryExpressionDSL.this.setForClause(forClause);</span>
+        }
+
+        @Override
+        public LimitFinisher&lt;SelectDSL&lt;R&gt;, R&gt; limitWhenPresent(@Nullable Long limit) {
+<span class="fc" id="L504">            return QueryExpressionDSL.this.limitWhenPresent(limit);</span>
+        }
+
+        @Override
+        public OffsetFirstFinisher&lt;SelectDSL&lt;R&gt;, R&gt; offsetWhenPresent(@Nullable Long offset) {
+<span class="fc" id="L509">            return QueryExpressionDSL.this.offsetWhenPresent(offset);</span>
+        }
+
+        @Override
+        public FetchFirstFinisher&lt;SelectDSL&lt;R&gt;&gt; fetchFirstWhenPresent(@Nullable Long fetchFirstRows) {
+<span class="fc" id="L514">            return QueryExpressionDSL.this.fetchFirstWhenPresent(fetchFirstRows);</span>
+        }
+    }
+
+<span class="fc" id="L518">    public static class Builder&lt;R&gt; {</span>
+        private @Nullable String connector;
+<span class="fc" id="L520">        private final List&lt;BasicColumn&gt; selectList = new ArrayList&lt;&gt;();</span>
+        private @Nullable SelectDSL&lt;R&gt; selectDSL;
+        private boolean isDistinct;
+
+        public Builder&lt;R&gt; withConnector(String connector) {
+<span class="fc" id="L525">            this.connector = connector;</span>
+<span class="fc" id="L526">            return this;</span>
+        }
+
+        public Builder&lt;R&gt; withSelectList(Collection&lt;? extends BasicColumn&gt; selectList) {
+<span class="fc" id="L530">            this.selectList.addAll(selectList);</span>
+<span class="fc" id="L531">            return this;</span>
+        }
+
+        public Builder&lt;R&gt; withSelectDSL(SelectDSL&lt;R&gt; selectDSL) {
+<span class="fc" id="L535">            this.selectDSL = selectDSL;</span>
+<span class="fc" id="L536">            return this;</span>
+        }
+
+        public Builder&lt;R&gt; isDistinct() {
+<span class="fc" id="L540">            this.isDistinct = true;</span>
+<span class="fc" id="L541">            return this;</span>
+        }
+
+        public QueryExpressionDSL&lt;R&gt; build() {
+<span class="fc" id="L545">            return new QueryExpressionDSL&lt;&gt;(this);</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

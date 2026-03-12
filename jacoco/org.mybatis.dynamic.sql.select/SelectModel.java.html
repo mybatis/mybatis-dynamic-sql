@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SelectModel.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.select</a> &gt; <span class="el_source">SelectModel.java</span></div><h1>SelectModel.java</h1><pre class="source lang-java linenums">/*
+ *    Copyright 2016-2026 the original author or authors.
+ *
+ *    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *       https://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+package org.mybatis.dynamic.sql.select;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Stream;
+
+import org.jspecify.annotations.Nullable;
+import org.mybatis.dynamic.sql.render.RenderingStrategy;
+import org.mybatis.dynamic.sql.select.render.SelectRenderer;
+import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
+import org.mybatis.dynamic.sql.util.Validator;
+
+public class SelectModel extends AbstractSelectModel {
+    private final List&lt;QueryExpressionModel&gt; queryExpressions;
+    private final @Nullable String forClause;
+    private final @Nullable String waitClause;
+
+    private SelectModel(Builder builder) {
+<span class="fc" id="L37">        super(builder);</span>
+<span class="fc" id="L38">        queryExpressions = Objects.requireNonNull(builder.queryExpressions);</span>
+<span class="fc" id="L39">        Validator.assertNotEmpty(queryExpressions, &quot;ERROR.14&quot;); //$NON-NLS-1$</span>
+<span class="fc" id="L40">        forClause = builder.forClause;</span>
+<span class="fc" id="L41">        waitClause = builder.waitClause;</span>
+<span class="fc" id="L42">    }</span>
+
+    public Stream&lt;QueryExpressionModel&gt; queryExpressions() {
+<span class="fc" id="L45">        return queryExpressions.stream();</span>
+    }
+
+    public Optional&lt;String&gt; forClause() {
+<span class="fc" id="L49">        return Optional.ofNullable(forClause);</span>
+    }
+
+    public Optional&lt;String&gt; waitClause() {
+<span class="fc" id="L53">        return Optional.ofNullable(waitClause);</span>
+    }
+
+    public SelectStatementProvider render(RenderingStrategy renderingStrategy) {
+<span class="fc" id="L57">        return SelectRenderer.withSelectModel(this)</span>
+<span class="fc" id="L58">                .withRenderingStrategy(renderingStrategy)</span>
+<span class="fc" id="L59">                .build()</span>
+<span class="fc" id="L60">                .render();</span>
+    }
+
+    public &lt;R&gt; R map(Function&lt;SelectModel, R&gt; mapper) {
+<span class="fc" id="L64">        return mapper.apply(this);</span>
+    }
+
+    public static Builder withQueryExpressions(List&lt;QueryExpressionModel&gt; queryExpressions) {
+<span class="fc" id="L68">        return new Builder().withQueryExpressions(queryExpressions);</span>
+    }
+
+<span class="fc" id="L71">    public static class Builder extends AbstractBuilder&lt;Builder&gt; {</span>
+<span class="fc" id="L72">        private final List&lt;QueryExpressionModel&gt; queryExpressions = new ArrayList&lt;&gt;();</span>
+        private @Nullable String forClause;
+        private @Nullable String waitClause;
+
+        public Builder withQueryExpression(QueryExpressionModel queryExpression) {
+<span class="fc" id="L77">            this.queryExpressions.add(queryExpression);</span>
+<span class="fc" id="L78">            return this;</span>
+        }
+
+        public Builder withQueryExpressions(List&lt;QueryExpressionModel&gt; queryExpressions) {
+<span class="fc" id="L82">            this.queryExpressions.addAll(queryExpressions);</span>
+<span class="fc" id="L83">            return this;</span>
+        }
+
+        public Builder withForClause(@Nullable String forClause) {
+<span class="fc" id="L87">            this.forClause = forClause;</span>
+<span class="fc" id="L88">            return this;</span>
+        }
+
+        public Builder withWaitClause(@Nullable String waitClause) {
+<span class="fc" id="L92">            this.waitClause = waitClause;</span>
+<span class="fc" id="L93">            return this;</span>
+        }
+
+        @Override
+        protected Builder getThis() {
+<span class="fc" id="L98">            return this;</span>
+        }
+
+        public SelectModel build() {
+<span class="fc" id="L102">            return new SelectModel(this);</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

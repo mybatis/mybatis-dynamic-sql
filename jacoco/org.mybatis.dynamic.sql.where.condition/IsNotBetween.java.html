@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>IsNotBetween.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.where.condition</a> &gt; <span class="el_source">IsNotBetween.java</span></div><h1>IsNotBetween.java</h1><pre class="source lang-java linenums">/*
+ *    Copyright 2016-2026 the original author or authors.
+ *
+ *    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *       https://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+package org.mybatis.dynamic.sql.where.condition;
+
+import java.util.NoSuchElementException;
+import java.util.function.BiPredicate;
+import java.util.function.Function;
+import java.util.function.Predicate;
+
+import org.mybatis.dynamic.sql.AbstractTwoValueCondition;
+
+public class IsNotBetween&lt;T&gt; extends AbstractTwoValueCondition&lt;T&gt;
+        implements AbstractTwoValueCondition.Filterable&lt;T&gt;, AbstractTwoValueCondition.Mappable&lt;T&gt; {
+<span class="fc" id="L27">    private static final IsNotBetween&lt;?&gt; EMPTY = new IsNotBetween&lt;Object&gt;(-1, -1) {</span>
+        @Override
+        public Object value1() {
+<span class="fc" id="L30">            throw new NoSuchElementException(&quot;No value present&quot;); //$NON-NLS-1$</span>
+        }
+
+        @Override
+        public Object value2() {
+<span class="fc" id="L35">            throw new NoSuchElementException(&quot;No value present&quot;); //$NON-NLS-1$</span>
+        }
+
+        @Override
+        public boolean isEmpty() {
+<span class="fc" id="L40">            return true;</span>
+        }
+    };
+
+    public static &lt;T&gt; IsNotBetween&lt;T&gt; empty() {
+        @SuppressWarnings(&quot;unchecked&quot;)
+<span class="fc" id="L46">        IsNotBetween&lt;T&gt; t = (IsNotBetween&lt;T&gt;) EMPTY;</span>
+<span class="fc" id="L47">        return t;</span>
+    }
+
+    protected IsNotBetween(T value1, T value2) {
+<span class="fc" id="L51">        super(value1, value2);</span>
+<span class="fc" id="L52">    }</span>
+
+    @Override
+    public String operator1() {
+<span class="fc" id="L56">        return &quot;not between&quot;; //$NON-NLS-1$</span>
+    }
+
+    @Override
+    public String operator2() {
+<span class="fc" id="L61">        return &quot;and&quot;; //$NON-NLS-1$</span>
+    }
+
+    @Override
+    public IsNotBetween&lt;T&gt; filter(BiPredicate&lt;? super T, ? super T&gt; predicate) {
+<span class="fc" id="L66">        return filterSupport(predicate, IsNotBetween::empty, this);</span>
+    }
+
+    @Override
+    public IsNotBetween&lt;T&gt; filter(Predicate&lt;? super T&gt; predicate) {
+<span class="fc" id="L71">        return filterSupport(predicate, IsNotBetween::empty, this);</span>
+    }
+
+    @Override
+    public &lt;R&gt; IsNotBetween&lt;R&gt; map(Function&lt;? super T, ? extends R&gt; mapper1,
+            Function&lt;? super T, ? extends R&gt; mapper2) {
+<span class="fc" id="L77">        return mapSupport(mapper1, mapper2, IsNotBetween::new, IsNotBetween::empty);</span>
+    }
+
+    @Override
+    public &lt;R&gt; IsNotBetween&lt;R&gt; map(Function&lt;? super T, ? extends R&gt; mapper) {
+<span class="fc" id="L82">        return map(mapper, mapper);</span>
+    }
+
+    public static &lt;T&gt; Builder&lt;T&gt; isNotBetween(T value1) {
+<span class="fc" id="L86">        return new Builder&lt;&gt;(value1);</span>
+    }
+
+    public static class Builder&lt;T&gt; extends AndGatherer&lt;T, IsNotBetween&lt;T&gt;&gt; {
+
+        private Builder(T value1) {
+<span class="fc" id="L92">            super(value1);</span>
+<span class="fc" id="L93">        }</span>
+
+        @Override
+        protected IsNotBetween&lt;T&gt; build(T value2) {
+<span class="fc" id="L97">            return new IsNotBetween&lt;&gt;(value1, value2);</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

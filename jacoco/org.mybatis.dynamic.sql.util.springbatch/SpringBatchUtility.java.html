@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SpringBatchUtility.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.util.springbatch</a> &gt; <span class="el_source">SpringBatchUtility.java</span></div><h1>SpringBatchUtility.java</h1><pre class="source lang-java linenums">/*
+ *    Copyright 2016-2026 the original author or authors.
+ *
+ *    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *       https://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+package org.mybatis.dynamic.sql.util.springbatch;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import org.mybatis.dynamic.sql.render.RenderingStrategy;
+import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
+
+public class SpringBatchUtility {
+    private SpringBatchUtility() {}
+
+    static final String PARAMETER_KEY = &quot;mybatis3_dsql_query&quot;; //$NON-NLS-1$
+
+    /**
+     * Constant for use in a query intended for use with the MyBatisPagingItemReader.
+     * This value will not be used in the query at runtime because MyBatis Spring integration
+     * will supply a value for _skiprows.
+     *
+     * &lt;p&gt;This value can be used as a parameter for the &quot;offset&quot; method in a query to make the intention
+     * clear that the actual runtime value will be supplied by MyBatis Spring integration.
+     *
+     * &lt;p&gt;See &lt;a href=&quot;https://mybatis.org/spring/batch.html&quot;&gt;https://mybatis.org/spring/batch.html&lt;/a&gt; for details.
+     */
+    public static final long MYBATIS_SPRING_BATCH_SKIPROWS = -437L;
+
+    /**
+     * Constant for use in a query intended for use with the MyBatisPagingItemReader.
+     * This value will not be used in the query at runtime because MyBatis Spring integration
+     * will supply a value for _pagesize.
+     *
+     * &lt;p&gt;This value can be used as a parameter for the &quot;limit&quot; or &quot;fetchFirst&quot; method in a query to make the intention
+     * clear that the actual runtime value will be supplied by MyBatis Spring integration.
+     *
+     * &lt;p&gt;See &lt;a href=&quot;https://mybatis.org/spring/batch.html&quot;&gt;https://mybatis.org/spring/batch.html&lt;/a&gt; for details.
+     */
+    public static final long MYBATIS_SPRING_BATCH_PAGESIZE = -439L;
+
+<span class="fc" id="L53">    public static final RenderingStrategy SPRING_BATCH_PAGING_ITEM_READER_RENDERING_STRATEGY =</span>
+            new SpringBatchPagingItemReaderRenderingStrategy();
+
+    public static Map&lt;String, Object&gt; toParameterValues(SelectStatementProvider selectStatement) {
+<span class="fc" id="L57">        var parameterValues = new HashMap&lt;String, Object&gt;();</span>
+<span class="fc" id="L58">        parameterValues.put(PARAMETER_KEY, selectStatement.getSelectStatement());</span>
+<span class="fc" id="L59">        parameterValues.put(RenderingStrategy.DEFAULT_PARAMETER_PREFIX, selectStatement.getParameters());</span>
+<span class="fc" id="L60">        return parameterValues;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

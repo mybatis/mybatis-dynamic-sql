@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SimpleSortSpecification.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.select</a> &gt; <span class="el_source">SimpleSortSpecification.java</span></div><h1>SimpleSortSpecification.java</h1><pre class="source lang-java linenums">/*
+ *    Copyright 2016-2026 the original author or authors.
+ *
+ *    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *       https://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+package org.mybatis.dynamic.sql.select;
+
+import java.util.Objects;
+
+import org.mybatis.dynamic.sql.SortSpecification;
+import org.mybatis.dynamic.sql.render.RenderingContext;
+import org.mybatis.dynamic.sql.util.FragmentAndParameters;
+
+/**
+ * This class is used for an order by phrase where there is no suitable column name
+ * to use (for example a calculated column or an aggregate column).
+ *
+ * @author Jeff Butler
+ */
+public class SimpleSortSpecification implements SortSpecification {
+
+    private final String name;
+    private final String descendingPhrase;
+
+    private SimpleSortSpecification(String name) {
+<span class="fc" id="L36">        this(name, &quot;&quot;); //$NON-NLS-1$</span>
+<span class="fc" id="L37">    }</span>
+
+<span class="fc" id="L39">    private SimpleSortSpecification(String name, String descendingPhrase) {</span>
+<span class="fc" id="L40">        this.name = Objects.requireNonNull(name);</span>
+<span class="fc" id="L41">        this.descendingPhrase = descendingPhrase;</span>
+<span class="fc" id="L42">    }</span>
+
+    @Override
+    public SortSpecification descending() {
+<span class="fc" id="L46">        return new SimpleSortSpecification(name, &quot; DESC&quot;); //$NON-NLS-1$</span>
+    }
+
+    @Override
+    public FragmentAndParameters renderForOrderBy(RenderingContext renderingContext) {
+<span class="fc" id="L51">        return FragmentAndParameters.fromFragment(name + descendingPhrase);</span>
+    }
+
+    public static SimpleSortSpecification of(String name) {
+<span class="fc" id="L55">        return new SimpleSortSpecification(name);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

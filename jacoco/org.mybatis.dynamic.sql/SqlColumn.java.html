@@ -1,0 +1,464 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SqlColumn.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql</a> &gt; <span class="el_source">SqlColumn.java</span></div><h1>SqlColumn.java</h1><pre class="source lang-java linenums">/*
+ *    Copyright 2016-2026 the original author or authors.
+ *
+ *    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *       https://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+package org.mybatis.dynamic.sql;
+
+import java.sql.JDBCType;
+import java.util.Objects;
+import java.util.Optional;
+
+import org.jspecify.annotations.Nullable;
+import org.mybatis.dynamic.sql.render.RenderingContext;
+import org.mybatis.dynamic.sql.render.RenderingStrategy;
+import org.mybatis.dynamic.sql.util.FragmentAndParameters;
+import org.mybatis.dynamic.sql.util.StringUtilities;
+
+/**
+ * This class represents the definition of a column in a table.
+ *
+ * &lt;p&gt;The class contains many attributes that are helpful for use in MyBatis and Spring runtime
+ * environments, but the only required attributes are the name of the column and a reference to
+ * the {@link SqlTable} the column is a part of.
+ *
+ * &lt;p&gt;The class can be extended if you wish to associate additional attributes with a column for your
+ * own purposes. Extending the class is a bit more challenging than you might expect because you may need to
+ * handle the covariant types for many methods in {@code SqlColumn}. Additionally, many methods in {@code SqlColumn}
+ * create new instances of the class in keeping with the library's primary strategy of immutability. You will also
+ * need to ensure that these methods create instances of your extended class, rather than the base {@code SqlColumn}
+ * class. We have worked to keep this process as simple as possible.
+ *
+ * &lt;p&gt;Extending the class involves the following activities:
+ * &lt;ol&gt;
+ *     &lt;li&gt;Create a class that extends {@link SqlColumn}&lt;/li&gt;
+ *     &lt;li&gt;In your extended class, create a static builder class that extends {@link SqlColumn.AbstractBuilder}&lt;/li&gt;
+ *     &lt;li&gt;Add your desired attributes to the class and the builder&lt;/li&gt;
+ *     &lt;li&gt;You MUST override the {@link SqlColumn#copyBuilder()} method and return a new instance of
+ *       your builder with all attributes set. In the overridden method you should call the superclass
+ *       {@link SqlColumn#populateBaseBuilder(AbstractBuilder)} method
+ *       to set the attributes from the base {@code SqlColumn}, then populate your extended attributes. During normal
+ *       usage, the library may create additional instances of your class. If you do not override the
+ *       {@link SqlColumn#copyBuilder()} method properly, then your extended attributes will be lost.
+ *     &lt;/li&gt;
+ *     &lt;li&gt;You MAY override the following methods. These methods are used with regular operations in the library and
+ *         create new instances of the class. However, these methods are not typically chained, so losing the specific
+ *         type may not be a problem. If you want to preserve the type, then you can override these methods
+ *         to specify the covariant return type. See below for usage of the {@link SqlColumn#cast(SqlColumn)} method
+ *         to make it easier to override these methods.
+ *       &lt;ul&gt;
+ *           &lt;li&gt;{@link SqlColumn#as(String)}&lt;/li&gt;
+ *           &lt;li&gt;{@link SqlColumn#asCamelCase()}&lt;/li&gt;
+ *           &lt;li&gt;{@link SqlColumn#descending()}&lt;/li&gt;
+ *           &lt;li&gt;{@link SqlColumn#qualifiedWith(String)}&lt;/li&gt;
+ *       &lt;/ul&gt;
+ *     &lt;/li&gt;
+ *     &lt;li&gt;You SHOULD override the following methods. These methods can be used to add additional attributes to a
+ *         column by creating a new instance with a specified attribute set. These methods are used during the
+ *         construction of columns. If you do not override these methods, and a user calls them, then the specific type
+ *         will be lost. If you want to preserve the type, then you can override these methods
+ *         to specify the covariant return type. See below for usage of the {@link SqlColumn#cast(SqlColumn)} method
+ *         to make it easier to override these methods.
+ *       &lt;ul&gt;
+ *           &lt;li&gt;{@link SqlColumn#withJavaProperty(String)}&lt;/li&gt;
+ *           &lt;li&gt;{@link SqlColumn#withRenderingStrategy(RenderingStrategy)}&lt;/li&gt;
+ *           &lt;li&gt;{@link SqlColumn#withTypeHandler(String)}&lt;/li&gt;
+ *           &lt;li&gt;{@link SqlColumn#withJavaType(Class)}&lt;/li&gt;
+ *           &lt;li&gt;{@link SqlColumn#withParameterTypeConverter(ParameterTypeConverter)}&lt;/li&gt;
+ *       &lt;/ul&gt;
+ *     &lt;/li&gt;
+ * &lt;/ol&gt;
+ *
+ * &lt;p&gt;For all overridden methods except {@code copyBuilder()}, the process is to call the superclass
+ * method and cast the result properly. We provide a {@link SqlColumn#cast(SqlColumn)} method to aid with this
+ * process. For example, overriding the {@code descending} method could look like this:
+ *
+ * &lt;pre&gt;
+ * {@code
+ * @Override
+ * public MyExtendedColumn&lt;T&gt; descending() {
+ *     return cast(super.descending());
+ * }
+ * }
+ * &lt;/pre&gt;
+ *
+ * &lt;p&gt;The test code for this library contains an example of a fully executed extension of this class.
+ *
+ * @param &lt;T&gt; the Java type associated with the column
+ */
+public class SqlColumn&lt;T&gt; implements BindableColumn&lt;T&gt;, SortSpecification {
+
+    protected final String name;
+    protected final SqlTable table;
+    protected final @Nullable JDBCType jdbcType;
+    protected final String descendingPhrase;
+    protected final @Nullable String alias;
+    protected final @Nullable String typeHandler;
+    protected final @Nullable RenderingStrategy renderingStrategy;
+    protected final ParameterTypeConverter&lt;T, ?&gt; parameterTypeConverter;
+    protected final @Nullable String tableQualifier;
+    protected final @Nullable Class&lt;T&gt; javaType;
+    protected final @Nullable String javaProperty;
+
+<span class="fc" id="L113">    protected SqlColumn(AbstractBuilder&lt;T, ?&gt; builder) {</span>
+<span class="fc" id="L114">        name = Objects.requireNonNull(builder.name);</span>
+<span class="fc" id="L115">        table = Objects.requireNonNull(builder.table);</span>
+<span class="fc" id="L116">        jdbcType = builder.jdbcType;</span>
+<span class="fc" id="L117">        descendingPhrase = builder.descendingPhrase;</span>
+<span class="fc" id="L118">        alias = builder.alias;</span>
+<span class="fc" id="L119">        typeHandler = builder.typeHandler;</span>
+<span class="fc" id="L120">        renderingStrategy = builder.renderingStrategy;</span>
+<span class="fc" id="L121">        parameterTypeConverter = Objects.requireNonNull(builder.parameterTypeConverter);</span>
+<span class="fc" id="L122">        tableQualifier = builder.tableQualifier;</span>
+<span class="fc" id="L123">        javaType = builder.javaType;</span>
+<span class="fc" id="L124">        javaProperty = builder.javaProperty;</span>
+<span class="fc" id="L125">    }</span>
+
+    public String name() {
+<span class="fc" id="L128">        return name;</span>
+    }
+
+    public SqlTable table() {
+<span class="fc" id="L132">        return table;</span>
+    }
+
+    @Override
+    public Optional&lt;JDBCType&gt; jdbcType() {
+<span class="fc" id="L137">        return Optional.ofNullable(jdbcType);</span>
+    }
+
+    @Override
+    public Optional&lt;String&gt; alias() {
+<span class="fc" id="L142">        return Optional.ofNullable(alias);</span>
+    }
+
+    @Override
+    public Optional&lt;String&gt; typeHandler() {
+<span class="fc" id="L147">        return Optional.ofNullable(typeHandler);</span>
+    }
+
+    @Override
+    public Optional&lt;Class&lt;T&gt;&gt; javaType() {
+<span class="fc" id="L152">        return Optional.ofNullable(javaType);</span>
+    }
+
+    public Optional&lt;String&gt; javaProperty() {
+<span class="fc" id="L156">        return Optional.ofNullable(javaProperty);</span>
+    }
+
+    @Override
+    public @Nullable Object convertParameterType(@Nullable T value) {
+<span class="fc bfc" id="L161" title="All 2 branches covered.">        return value == null ? null : parameterTypeConverter.convert(value);</span>
+    }
+
+    /**
+     * Create a new column instance that will render as descending when used in an order by phrase.
+     *
+     * @return a new column instance that will render as descending when used in an order by phrase
+     */
+    @Override
+    public SqlColumn&lt;T&gt; descending() {
+<span class="fc" id="L171">        return copyBuilder().withDescendingPhrase(&quot; DESC&quot;).build(); //$NON-NLS-1$</span>
+    }
+
+    /**
+     * Create a new column instance with the specified alias that will render as &quot;as alias&quot; in a column list.
+     *
+     * @param alias
+     *            the column alias to set
+     *
+     * @return a new column instance with the specified alias
+     */
+    @Override
+    public SqlColumn&lt;T&gt; as(String alias) {
+<span class="fc" id="L184">        return copyBuilder().withAlias(alias).build();</span>
+    }
+
+    /**
+     * Override the calculated table qualifier if there is one. This is useful for sub-queries
+     * where the calculated table qualifier may not be correct in all cases.
+     *
+     * @param tableQualifier the table qualifier to apply to the rendered column name
+     * @return a new column that will be rendered with the specified table qualifier
+     */
+    public SqlColumn&lt;T&gt; qualifiedWith(String tableQualifier) {
+<span class="fc" id="L195">        return copyBuilder().withTableQualifier(tableQualifier).build();</span>
+    }
+
+    /**
+     * Set an alias with a camel-cased string based on the column name. This can be useful for queries using
+     * the {@link org.mybatis.dynamic.sql.util.mybatis3.CommonSelectMapper} where the columns are placed into
+     * a map based on the column name returned from the database.
+     *
+     * &lt;p&gt;A camel case string is a mixed case string, and most databases do not support unquoted mixed case strings
+     * as identifiers. Therefore, the generated alias will be surrounded by double quotes thereby making it a
+     * quoted identifier. Most databases will respect quoted mixed case identifiers.
+     *
+     * @return a new column aliased with a camel case version of the column name
+     */
+    public SqlColumn&lt;T&gt; asCamelCase() {
+<span class="fc" id="L210">        return copyBuilder()</span>
+<span class="fc" id="L211">                .withAlias(&quot;\&quot;&quot; + StringUtilities.toCamelCase(name) + &quot;\&quot;&quot;) //$NON-NLS-1$ //$NON-NLS-2$</span>
+<span class="fc" id="L212">                .build();</span>
+    }
+
+    @Override
+    public FragmentAndParameters renderForOrderBy(RenderingContext renderingContext) {
+<span class="fc" id="L217">        return FragmentAndParameters.fromFragment(alias().orElse(name) + descendingPhrase);</span>
+    }
+
+    @Override
+    public FragmentAndParameters render(RenderingContext renderingContext) {
+<span class="fc bfc" id="L222" title="All 2 branches covered.">        if (tableQualifier == null) {</span>
+<span class="fc" id="L223">            return FragmentAndParameters.fromFragment(renderingContext.aliasedColumnName(this));</span>
+        } else {
+<span class="fc" id="L225">            return FragmentAndParameters.fromFragment(renderingContext.aliasedColumnName(this, tableQualifier));</span>
+        }
+    }
+
+    @Override
+    public Optional&lt;RenderingStrategy&gt; renderingStrategy() {
+<span class="fc" id="L231">        return Optional.ofNullable(renderingStrategy);</span>
+    }
+
+    /**
+     * Create a new column instance with the specified type handler.
+     *
+     * &lt;p&gt;This method uses a different type (S). This allows it to be chained with the other
+     * with* methods. Using new types forces the compiler to delay type inference until the end of a call chain.
+     * Without this different type (for example, if we used T), the compiler would erase the type after the call
+     * and method chaining would not work. This is a workaround for Java's lack of reification.
+     *
+     * @param typeHandler the type handler to set
+     * @param &lt;S&gt; the type of the new column (will be the same as T)
+     * @return a new column instance with the specified type handler
+     */
+    public &lt;S&gt; SqlColumn&lt;S&gt; withTypeHandler(String typeHandler) {
+<span class="fc" id="L247">        return cast(copyBuilder().withTypeHandler(typeHandler).build());</span>
+    }
+
+    /**
+     * Create a new column instance with the specified rendering strategy.
+     *
+     * &lt;p&gt;This method uses a different type (S). This allows it to be chained with the other
+     * with* methods. Using new types forces the compiler to delay type inference until the end of a call chain.
+     * Without this different type (for example, if we used T), the compiler would erase the type after the call
+     * and method chaining would not work. This is a workaround for Java's lack of reification.
+     *
+     * @param renderingStrategy the rendering strategy to set
+     * @param &lt;S&gt; the type of the new column (will be the same as T)
+     * @return a new column instance with the specified type handler
+     */
+    public &lt;S&gt; SqlColumn&lt;S&gt; withRenderingStrategy(RenderingStrategy renderingStrategy) {
+<span class="fc" id="L263">        return cast(copyBuilder().withRenderingStrategy(renderingStrategy).build());</span>
+    }
+
+    /**
+     * Create a new column instance with the specified parameter type converter.
+     *
+     * &lt;p&gt;Parameter type converters are useful with Spring JDBC. Typically, they are not needed for MyBatis.
+     *
+     * &lt;p&gt;This method uses a different type (S). This allows it to be chained with the other
+     * with* methods. Using new types forces the compiler to delay type inference until the end of a call chain.
+     * Without this different type (for example, if we used T), the compiler would erase the type after the call
+     * and method chaining would not work. This is a workaround for Java's lack of reification.
+     *
+     * @param parameterTypeConverter the parameter type converter to set
+     * @param &lt;S&gt; the type of the new column (will be the same as T)
+     * @return a new column instance with the specified type handler
+     */
+    @SuppressWarnings(&quot;unchecked&quot;)
+    public &lt;S&gt; SqlColumn&lt;S&gt; withParameterTypeConverter(ParameterTypeConverter&lt;S, ?&gt; parameterTypeConverter) {
+<span class="fc" id="L282">        return cast(copyBuilder().withParameterTypeConverter((ParameterTypeConverter&lt;T, ?&gt;) parameterTypeConverter)</span>
+<span class="fc" id="L283">                .build());</span>
+    }
+
+    /**
+     * Create a new column instance with the specified Java type.
+     *
+     * &lt;p&gt;Specifying a Java type will force rendering of the Java type for MyBatis parameters. This can be useful
+     * with some MyBatis type handlers.
+     *
+     * &lt;p&gt;This method uses a different type (S). This allows it to be chained with the other
+     * with* methods. Using new types forces the compiler to delay type inference until the end of a call chain.
+     * Without this different type (for example, if we used T), the compiler would erase the type after the call
+     * and method chaining would not work. This is a workaround for Java's lack of reification.
+     *
+     * @param javaType the Java type to set
+     * @param &lt;S&gt; the type of the new column (will be the same as T)
+     * @return a new column instance with the specified type handler
+     */
+    @SuppressWarnings(&quot;unchecked&quot;)
+    public &lt;S&gt; SqlColumn&lt;S&gt; withJavaType(Class&lt;S&gt; javaType) {
+<span class="fc" id="L303">        return cast(copyBuilder().withJavaType((Class&lt;T&gt;) javaType).build());</span>
+    }
+
+    /**
+     * Create a new column instance with the specified Java property.
+     *
+     * &lt;p&gt;Specifying a Java property in the column will allow usage of the column as a &quot;mapped column&quot; in record-based
+     * insert statements.
+     *
+     * &lt;p&gt;This method uses a different type (S). This allows it to be chained with the other
+     * with* methods. Using new types forces the compiler to delay type inference until the end of a call chain.
+     * Without this different type (for example, if we used T), the compiler would erase the type after the call
+     * and method chaining would not work. This is a workaround for Java's lack of reification.
+     *
+     * @param javaProperty the Java property to set
+     * @param &lt;S&gt; the type of the new column (will be the same as T)
+     * @return a new column instance with the specified type handler
+     */
+    public &lt;S&gt; SqlColumn&lt;S&gt; withJavaProperty(String javaProperty) {
+<span class="fc" id="L322">        return cast(copyBuilder().withJavaProperty(javaProperty).build());</span>
+    }
+
+    /**
+     * Create a new Builder, then populate all attributes in the builder with current values.
+     *
+     * &lt;p&gt;This method is used to create copies of the class during normal operations (e.g. when calling the
+     * {@link SqlColumn#as(String)} method). Any subclass of {@code SqlColumn} MUST override this method.
+     *
+     * @return a new Builder instance with all current values populated
+     */
+    protected AbstractBuilder&lt;T, ?&gt; copyBuilder() {
+<span class="fc" id="L334">        return populateBaseBuilder(new Builder&lt;&gt;());</span>
+    }
+
+    @SuppressWarnings(&quot;unchecked&quot;)
+    protected &lt;S extends SqlColumn&lt;?&gt;&gt; S cast(SqlColumn&lt;?&gt; column) {
+<span class="fc" id="L339">        return (S) column;</span>
+    }
+
+    /**
+     * This method will add all current attributes to the specified builder. It is useful when creating
+     * new class instances that only change one attribute - we set all current attributes, then
+     * change the one attribute. This utility can be used with the with* methods and other methods that
+     * create new instances.
+     *
+     * @param &lt;B&gt; the concrete builder type
+     * @return the populated builder
+     */
+    protected &lt;B extends AbstractBuilder&lt;T, B&gt;&gt; B populateBaseBuilder(B builder) {
+<span class="fc" id="L352">        return builder</span>
+<span class="fc" id="L353">                .withName(this.name)</span>
+<span class="fc" id="L354">                .withTable(this.table)</span>
+<span class="fc" id="L355">                .withJdbcType(this.jdbcType)</span>
+<span class="fc" id="L356">                .withDescendingPhrase(this.descendingPhrase)</span>
+<span class="fc" id="L357">                .withAlias(this.alias)</span>
+<span class="fc" id="L358">                .withTypeHandler(this.typeHandler)</span>
+<span class="fc" id="L359">                .withRenderingStrategy(this.renderingStrategy)</span>
+<span class="fc" id="L360">                .withParameterTypeConverter(this.parameterTypeConverter)</span>
+<span class="fc" id="L361">                .withTableQualifier(this.tableQualifier)</span>
+<span class="fc" id="L362">                .withJavaType(this.javaType)</span>
+<span class="fc" id="L363">                .withJavaProperty(this.javaProperty);</span>
+    }
+
+    public static &lt;T&gt; SqlColumn&lt;T&gt; of(String name, SqlTable table) {
+<span class="fc" id="L367">        return new Builder&lt;T&gt;().withName(name)</span>
+<span class="fc" id="L368">                .withTable(table)</span>
+<span class="fc" id="L369">                .build();</span>
+    }
+
+    public static &lt;T&gt; SqlColumn&lt;T&gt; of(String name, SqlTable table, JDBCType jdbcType) {
+<span class="fc" id="L373">        return new Builder&lt;T&gt;().withName(name)</span>
+<span class="fc" id="L374">                .withTable(table)</span>
+<span class="fc" id="L375">                .withJdbcType(jdbcType)</span>
+<span class="fc" id="L376">                .build();</span>
+    }
+
+<span class="fc" id="L379">    public abstract static class AbstractBuilder&lt;T, B extends AbstractBuilder&lt;T, B&gt;&gt; {</span>
+        protected @Nullable String name;
+        protected @Nullable SqlTable table;
+        protected @Nullable JDBCType jdbcType;
+<span class="fc" id="L383">        protected String descendingPhrase = &quot;&quot;; //$NON-NLS-1$</span>
+        protected @Nullable String alias;
+        protected @Nullable String typeHandler;
+        protected @Nullable RenderingStrategy renderingStrategy;
+<span class="fc" id="L387">        protected ParameterTypeConverter&lt;T, ?&gt; parameterTypeConverter = v -&gt; v;</span>
+        protected @Nullable String tableQualifier;
+        protected @Nullable Class&lt;T&gt; javaType;
+        protected @Nullable String javaProperty;
+
+        public B withName(String name) {
+<span class="fc" id="L393">            this.name = name;</span>
+<span class="fc" id="L394">            return getThis();</span>
+        }
+
+        public B withTable(SqlTable table) {
+<span class="fc" id="L398">            this.table = table;</span>
+<span class="fc" id="L399">            return getThis();</span>
+        }
+
+        public B withJdbcType(@Nullable JDBCType jdbcType) {
+<span class="fc" id="L403">            this.jdbcType = jdbcType;</span>
+<span class="fc" id="L404">            return getThis();</span>
+        }
+
+        public B withDescendingPhrase(String descendingPhrase) {
+<span class="fc" id="L408">            this.descendingPhrase = descendingPhrase;</span>
+<span class="fc" id="L409">            return getThis();</span>
+        }
+
+        public B withAlias(@Nullable String alias) {
+<span class="fc" id="L413">            this.alias = alias;</span>
+<span class="fc" id="L414">            return getThis();</span>
+        }
+
+        public B withTypeHandler(@Nullable String typeHandler) {
+<span class="fc" id="L418">            this.typeHandler = typeHandler;</span>
+<span class="fc" id="L419">            return getThis();</span>
+        }
+
+        public B withRenderingStrategy(@Nullable RenderingStrategy renderingStrategy) {
+<span class="fc" id="L423">            this.renderingStrategy = renderingStrategy;</span>
+<span class="fc" id="L424">            return getThis();</span>
+        }
+
+        public B withParameterTypeConverter(ParameterTypeConverter&lt;T, ?&gt; parameterTypeConverter) {
+<span class="fc" id="L428">            this.parameterTypeConverter = parameterTypeConverter;</span>
+<span class="fc" id="L429">            return getThis();</span>
+        }
+
+        public B withTableQualifier(@Nullable String tableQualifier) {
+<span class="fc" id="L433">            this.tableQualifier = tableQualifier;</span>
+<span class="fc" id="L434">            return getThis();</span>
+        }
+
+        public B withJavaType(@Nullable Class&lt;T&gt; javaType) {
+<span class="fc" id="L438">            this.javaType = javaType;</span>
+<span class="fc" id="L439">            return getThis();</span>
+        }
+
+        public B withJavaProperty(@Nullable String javaProperty) {
+<span class="fc" id="L443">            this.javaProperty = javaProperty;</span>
+<span class="fc" id="L444">            return getThis();</span>
+        }
+
+        protected abstract B getThis();
+
+        public abstract SqlColumn&lt;T&gt; build();
+    }
+
+<span class="fc" id="L452">    public static class Builder&lt;T&gt; extends AbstractBuilder&lt;T, Builder&lt;T&gt;&gt; {</span>
+        @Override
+        public SqlColumn&lt;T&gt; build() {
+<span class="fc" id="L455">            return new SqlColumn&lt;&gt;(this);</span>
+        }
+
+        @Override
+        protected Builder&lt;T&gt; getThis() {
+<span class="fc" id="L460">            return this;</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

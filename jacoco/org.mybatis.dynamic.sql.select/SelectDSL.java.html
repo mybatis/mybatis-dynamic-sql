@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SelectDSL.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.select</a> &gt; <span class="el_source">SelectDSL.java</span></div><h1>SelectDSL.java</h1><pre class="source lang-java linenums">/*
+ *    Copyright 2016-2026 the original author or authors.
+ *
+ *    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *       https://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+package org.mybatis.dynamic.sql.select;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
+import java.util.function.Consumer;
+import java.util.function.Function;
+
+import org.jspecify.annotations.Nullable;
+import org.mybatis.dynamic.sql.BasicColumn;
+import org.mybatis.dynamic.sql.SortSpecification;
+import org.mybatis.dynamic.sql.common.OrderByModel;
+import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
+import org.mybatis.dynamic.sql.dsl.AbstractLimitAndOffsetSupport;
+import org.mybatis.dynamic.sql.dsl.ForAndWaitOperations;
+import org.mybatis.dynamic.sql.dsl.LimitAndOffsetOperations;
+import org.mybatis.dynamic.sql.dsl.OrderByOperations;
+import org.mybatis.dynamic.sql.util.Buildable;
+import org.mybatis.dynamic.sql.util.ConfigurableStatement;
+import org.mybatis.dynamic.sql.util.Validator;
+
+/**
+ * Implements a SQL DSL for building select statements.
+ *
+ * @author Jeff Butler
+ *
+ * @param &lt;R&gt;
+ *            the type of model produced by this builder, typically SelectModel
+ */
+public class SelectDSL&lt;R&gt; implements ForAndWaitOperations&lt;SelectDSL&lt;R&gt;&gt;,
+        LimitAndOffsetOperations&lt;SelectDSL&lt;R&gt;, R&gt;,
+        OrderByOperations&lt;SelectDSL&lt;R&gt;&gt;,
+        ConfigurableStatement&lt;SelectDSL&lt;R&gt;&gt;,
+        Buildable&lt;R&gt; {
+    private final Function&lt;SelectModel, R&gt; adapterFunction;
+<span class="fc" id="L53">    private final List&lt;QueryExpressionDSL&lt;R&gt;&gt; queryExpressions = new ArrayList&lt;&gt;();</span>
+    private @Nullable OrderByModel orderByModel;
+<span class="fc" id="L55">    private final LimitAndOffsetSupport limitAndOffsetSupport = new LimitAndOffsetSupport();</span>
+<span class="fc" id="L56">    final StatementConfiguration statementConfiguration = new StatementConfiguration();</span>
+    private @Nullable String forClause;
+    private @Nullable String waitClause;
+
+<span class="fc" id="L60">    private SelectDSL(Function&lt;SelectModel, R&gt; adapterFunction) {</span>
+<span class="fc" id="L61">        this.adapterFunction = Objects.requireNonNull(adapterFunction);</span>
+<span class="fc" id="L62">    }</span>
+
+    public static QueryExpressionDSL&lt;SelectModel&gt; select(BasicColumn... selectList) {
+<span class="fc" id="L65">        return select(Arrays.asList(selectList));</span>
+    }
+
+    public static QueryExpressionDSL&lt;SelectModel&gt; select(Collection&lt;? extends BasicColumn&gt; selectList) {
+<span class="fc" id="L69">        return select(Function.identity(), selectList);</span>
+    }
+
+    public static &lt;R&gt; QueryExpressionDSL&lt;R&gt; select(Function&lt;SelectModel, R&gt; adapterFunction,
+            BasicColumn... selectList) {
+<span class="fc" id="L74">        return select(adapterFunction, Arrays.asList(selectList));</span>
+    }
+
+    public static &lt;R&gt; QueryExpressionDSL&lt;R&gt; select(Function&lt;SelectModel, R&gt; adapterFunction,
+            Collection&lt;? extends BasicColumn&gt; selectList) {
+<span class="fc" id="L79">        return new QueryExpressionDSL.Builder&lt;R&gt;()</span>
+<span class="fc" id="L80">                .withSelectList(selectList)</span>
+<span class="fc" id="L81">                .withSelectDSL(new SelectDSL&lt;&gt;(adapterFunction))</span>
+<span class="fc" id="L82">                .build();</span>
+    }
+
+    public static QueryExpressionDSL&lt;SelectModel&gt; selectDistinct(BasicColumn... selectList) {
+<span class="fc" id="L86">        return selectDistinct(Arrays.asList(selectList));</span>
+    }
+
+    public static QueryExpressionDSL&lt;SelectModel&gt; selectDistinct(
+            Collection&lt;? extends BasicColumn&gt; selectList) {
+<span class="fc" id="L91">        return selectDistinct(Function.identity(), selectList);</span>
+    }
+
+    public static &lt;R&gt; QueryExpressionDSL&lt;R&gt; selectDistinct(Function&lt;SelectModel, R&gt; adapterFunction,
+            BasicColumn... selectList) {
+<span class="fc" id="L96">        return selectDistinct(adapterFunction, Arrays.asList(selectList));</span>
+    }
+
+    public static &lt;R&gt; QueryExpressionDSL&lt;R&gt; selectDistinct(Function&lt;SelectModel, R&gt; adapterFunction,
+            Collection&lt;? extends BasicColumn&gt; selectList) {
+<span class="fc" id="L101">        return new QueryExpressionDSL.Builder&lt;R&gt;()</span>
+<span class="fc" id="L102">                .withSelectList(selectList)</span>
+<span class="fc" id="L103">                .withSelectDSL(new SelectDSL&lt;&gt;(adapterFunction))</span>
+<span class="fc" id="L104">                .isDistinct()</span>
+<span class="fc" id="L105">                .build();</span>
+    }
+
+    void registerQueryExpression(QueryExpressionDSL&lt;R&gt; queryExpression) {
+<span class="fc" id="L109">        queryExpressions.add(queryExpression);</span>
+<span class="fc" id="L110">    }</span>
+
+
+    @Override
+    public SelectDSL&lt;R&gt; orderBy(Collection&lt;? extends SortSpecification&gt; columns) {
+<span class="fc" id="L115">        orderByModel = OrderByModel.of(columns);</span>
+<span class="fc" id="L116">        return this;</span>
+    }
+
+    @Override
+    public LimitFinisher&lt;SelectDSL&lt;R&gt;, R&gt; limitWhenPresent(@Nullable Long limit) {
+<span class="fc" id="L121">        return limitAndOffsetSupport.limitWhenPresent(limit);</span>
+    }
+
+    @Override
+    public OffsetFirstFinisher&lt;SelectDSL&lt;R&gt;, R&gt; offsetWhenPresent(@Nullable Long offset) {
+<span class="fc" id="L126">        return limitAndOffsetSupport.offsetWhenPresent(offset);</span>
+    }
+
+    @Override
+    public FetchFirstFinisher&lt;SelectDSL&lt;R&gt;&gt; fetchFirstWhenPresent(@Nullable Long fetchFirstRows) {
+<span class="fc" id="L131">        return limitAndOffsetSupport.fetchFirstWhenPresent(fetchFirstRows);</span>
+    }
+
+    @Override
+    public SelectDSL&lt;R&gt; setWaitClause(String waitClause) {
+<span class="fc" id="L136">        Validator.assertNull(this.waitClause, &quot;ERROR.49&quot;); //$NON-NLS-1$</span>
+<span class="fc" id="L137">        this.waitClause = waitClause;</span>
+<span class="fc" id="L138">        return this;</span>
+    }
+
+    @Override
+    public SelectDSL&lt;R&gt; setForClause(String forClause) {
+<span class="fc" id="L143">        Validator.assertNull(this.forClause, &quot;ERROR.48&quot;); //$NON-NLS-1$</span>
+<span class="fc" id="L144">        this.forClause = forClause;</span>
+<span class="fc" id="L145">        return this;</span>
+    }
+
+    @Override
+    public SelectDSL&lt;R&gt; configureStatement(Consumer&lt;StatementConfiguration&gt; consumer) {
+<span class="fc" id="L150">        consumer.accept(statementConfiguration);</span>
+<span class="fc" id="L151">        return this;</span>
+    }
+
+    @Override
+    public R build() {
+<span class="fc" id="L156">        SelectModel selectModel = SelectModel.withQueryExpressions(buildModels())</span>
+<span class="fc" id="L157">                .withOrderByModel(orderByModel)</span>
+<span class="fc" id="L158">                .withPagingModel(limitAndOffsetSupport.buildPagingModel())</span>
+<span class="fc" id="L159">                .withStatementConfiguration(statementConfiguration)</span>
+<span class="fc" id="L160">                .withForClause(forClause)</span>
+<span class="fc" id="L161">                .withWaitClause(waitClause)</span>
+<span class="fc" id="L162">                .build();</span>
+<span class="fc" id="L163">        return adapterFunction.apply(selectModel);</span>
+    }
+
+    private List&lt;QueryExpressionModel&gt; buildModels() {
+<span class="fc" id="L167">        return queryExpressions.stream()</span>
+<span class="fc" id="L168">                .map(QueryExpressionDSL::buildModel)</span>
+<span class="fc" id="L169">                .toList();</span>
+    }
+
+    private class LimitAndOffsetSupport extends AbstractLimitAndOffsetSupport&lt;SelectDSL&lt;R&gt;, R&gt; {
+
+<span class="fc" id="L174">        protected LimitAndOffsetSupport() {</span>
+<span class="fc" id="L175">            super(SelectDSL.this);</span>
+<span class="fc" id="L176">        }</span>
+
+        protected @Nullable PagingModel buildPagingModel() {
+<span class="fc" id="L179">            return toPagingModel().orElse(null);</span>
+        }
+
+        @Override
+        protected SelectDSL&lt;R&gt; getThis() {
+<span class="fc" id="L184">            return SelectDSL.this;</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

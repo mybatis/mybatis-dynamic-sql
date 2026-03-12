@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>QueryExpressionModel.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.select</a> &gt; <span class="el_source">QueryExpressionModel.java</span></div><h1>QueryExpressionModel.java</h1><pre class="source lang-java linenums">/*
+ *    Copyright 2016-2026 the original author or authors.
+ *
+ *    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *       https://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+package org.mybatis.dynamic.sql.select;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Stream;
+
+import org.jspecify.annotations.Nullable;
+import org.mybatis.dynamic.sql.BasicColumn;
+import org.mybatis.dynamic.sql.SqlTable;
+import org.mybatis.dynamic.sql.TableExpression;
+import org.mybatis.dynamic.sql.select.join.JoinModel;
+import org.mybatis.dynamic.sql.util.Validator;
+import org.mybatis.dynamic.sql.where.WhereModel;
+
+public class QueryExpressionModel {
+    private final @Nullable String connector;
+    private final boolean isDistinct;
+    private final List&lt;BasicColumn&gt; selectList;
+    private final TableExpression table;
+    private final @Nullable JoinModel joinModel;
+    private final Map&lt;SqlTable, String&gt; tableAliases;
+    private final @Nullable WhereModel whereModel;
+    private final @Nullable GroupByModel groupByModel;
+    private final @Nullable HavingModel havingModel;
+
+<span class="fc" id="L46">    private QueryExpressionModel(Builder builder) {</span>
+<span class="fc" id="L47">        connector = builder.connector;</span>
+<span class="fc" id="L48">        isDistinct = builder.isDistinct;</span>
+<span class="fc" id="L49">        selectList = Objects.requireNonNull(builder.selectList);</span>
+<span class="fc" id="L50">        table = Objects.requireNonNull(builder.table);</span>
+<span class="fc" id="L51">        joinModel = builder.joinModel;</span>
+<span class="fc" id="L52">        tableAliases = builder.tableAliases;</span>
+<span class="fc" id="L53">        whereModel = builder.whereModel;</span>
+<span class="fc" id="L54">        groupByModel = builder.groupByModel;</span>
+<span class="fc" id="L55">        havingModel = builder.havingModel;</span>
+<span class="fc" id="L56">        Validator.assertNotEmpty(selectList, &quot;ERROR.13&quot;); //$NON-NLS-1$</span>
+<span class="fc" id="L57">    }</span>
+
+    public Optional&lt;String&gt; connector() {
+<span class="fc" id="L60">        return Optional.ofNullable(connector);</span>
+    }
+
+    public boolean isDistinct() {
+<span class="fc" id="L64">        return isDistinct;</span>
+    }
+
+    public Stream&lt;BasicColumn&gt; columns() {
+<span class="fc" id="L68">        return selectList.stream();</span>
+    }
+
+    public TableExpression table() {
+<span class="fc" id="L72">        return table;</span>
+    }
+
+    public Map&lt;SqlTable, String&gt; tableAliases() {
+<span class="fc" id="L76">        return tableAliases;</span>
+    }
+
+    public Optional&lt;WhereModel&gt; whereModel() {
+<span class="fc" id="L80">        return Optional.ofNullable(whereModel);</span>
+    }
+
+    public Optional&lt;JoinModel&gt; joinModel() {
+<span class="fc" id="L84">        return Optional.ofNullable(joinModel);</span>
+    }
+
+    public Optional&lt;GroupByModel&gt; groupByModel() {
+<span class="fc" id="L88">        return Optional.ofNullable(groupByModel);</span>
+    }
+
+    public Optional&lt;HavingModel&gt; havingModel() {
+<span class="fc" id="L92">        return Optional.ofNullable(havingModel);</span>
+    }
+
+    public static Builder withSelectList(List&lt;? extends BasicColumn&gt; columnList) {
+<span class="fc" id="L96">        return new Builder().withSelectList(columnList);</span>
+    }
+
+<span class="fc" id="L99">    public static class Builder {</span>
+        private @Nullable String connector;
+        private boolean isDistinct;
+<span class="fc" id="L102">        private final List&lt;BasicColumn&gt; selectList = new ArrayList&lt;&gt;();</span>
+        private @Nullable TableExpression table;
+<span class="fc" id="L104">        private final Map&lt;SqlTable, String&gt; tableAliases = new HashMap&lt;&gt;();</span>
+        private @Nullable WhereModel whereModel;
+        private @Nullable JoinModel joinModel;
+        private @Nullable GroupByModel groupByModel;
+        private @Nullable HavingModel havingModel;
+
+        public Builder withConnector(@Nullable String connector) {
+<span class="fc" id="L111">            this.connector = connector;</span>
+<span class="fc" id="L112">            return this;</span>
+        }
+
+        public Builder withTable(TableExpression table) {
+<span class="fc" id="L116">            this.table = table;</span>
+<span class="fc" id="L117">            return this;</span>
+        }
+
+        public Builder isDistinct(boolean isDistinct) {
+<span class="fc" id="L121">            this.isDistinct = isDistinct;</span>
+<span class="fc" id="L122">            return this;</span>
+        }
+
+        public Builder withSelectColumn(BasicColumn selectColumn) {
+<span class="fc" id="L126">            this.selectList.add(selectColumn);</span>
+<span class="fc" id="L127">            return this;</span>
+        }
+
+        public Builder withSelectList(Collection&lt;? extends BasicColumn&gt; selectList) {
+<span class="fc" id="L131">            this.selectList.addAll(selectList);</span>
+<span class="fc" id="L132">            return this;</span>
+        }
+
+        public Builder withTableAliases(Map&lt;SqlTable, String&gt; tableAliases) {
+<span class="fc" id="L136">            this.tableAliases.putAll(tableAliases);</span>
+<span class="fc" id="L137">            return this;</span>
+        }
+
+        public Builder withWhereModel(@Nullable WhereModel whereModel) {
+<span class="fc" id="L141">            this.whereModel = whereModel;</span>
+<span class="fc" id="L142">            return this;</span>
+        }
+
+        public Builder withJoinModel(@Nullable JoinModel joinModel) {
+<span class="fc" id="L146">            this.joinModel = joinModel;</span>
+<span class="fc" id="L147">            return this;</span>
+        }
+
+        public Builder withGroupByModel(@Nullable GroupByModel groupByModel) {
+<span class="fc" id="L151">            this.groupByModel = groupByModel;</span>
+<span class="fc" id="L152">            return this;</span>
+        }
+
+        public Builder withHavingModel(@Nullable HavingModel havingModel) {
+<span class="fc" id="L156">            this.havingModel = havingModel;</span>
+<span class="fc" id="L157">            return this;</span>
+        }
+
+        public QueryExpressionModel build() {
+<span class="fc" id="L161">            return new QueryExpressionModel(this);</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

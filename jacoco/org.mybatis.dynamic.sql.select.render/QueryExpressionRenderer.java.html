@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>QueryExpressionRenderer.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.select.render</a> &gt; <span class="el_source">QueryExpressionRenderer.java</span></div><h1>QueryExpressionRenderer.java</h1><pre class="source lang-java linenums">/*
+ *    Copyright 2016-2026 the original author or authors.
+ *
+ *    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *       https://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+package org.mybatis.dynamic.sql.select.render;
+
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import org.jspecify.annotations.Nullable;
+import org.mybatis.dynamic.sql.BasicColumn;
+import org.mybatis.dynamic.sql.TableExpression;
+import org.mybatis.dynamic.sql.render.ExplicitTableAliasCalculator;
+import org.mybatis.dynamic.sql.render.GuaranteedTableAliasCalculator;
+import org.mybatis.dynamic.sql.render.RenderingContext;
+import org.mybatis.dynamic.sql.render.TableAliasCalculator;
+import org.mybatis.dynamic.sql.select.GroupByModel;
+import org.mybatis.dynamic.sql.select.HavingModel;
+import org.mybatis.dynamic.sql.select.QueryExpressionModel;
+import org.mybatis.dynamic.sql.select.join.JoinModel;
+import org.mybatis.dynamic.sql.util.FragmentAndParameters;
+import org.mybatis.dynamic.sql.util.FragmentCollector;
+import org.mybatis.dynamic.sql.util.StringUtilities;
+import org.mybatis.dynamic.sql.where.WhereModel;
+
+public class QueryExpressionRenderer {
+    private final QueryExpressionModel queryExpression;
+    private final TableExpressionRenderer tableExpressionRenderer;
+    private final RenderingContext renderingContext;
+
+<span class="fc" id="L43">    private QueryExpressionRenderer(Builder builder) {</span>
+<span class="fc" id="L44">        queryExpression = Objects.requireNonNull(builder.queryExpression);</span>
+<span class="fc" id="L45">        TableAliasCalculator childTableAliasCalculator = calculateChildTableAliasCalculator(queryExpression);</span>
+
+<span class="fc" id="L47">        renderingContext = Objects.requireNonNull(builder.renderingContext)</span>
+<span class="fc" id="L48">                .withChildTableAliasCalculator(childTableAliasCalculator);</span>
+
+<span class="fc" id="L50">        tableExpressionRenderer = new TableExpressionRenderer.Builder()</span>
+<span class="fc" id="L51">                .withRenderingContext(renderingContext)</span>
+<span class="fc" id="L52">                .build();</span>
+<span class="fc" id="L53">    }</span>
+
+    /**
+     * This function calculates a table alias calculator to use in the current context. There are several
+     * possibilities: this could be a renderer for a top level select statement, or it could be a renderer for a table
+     * expression in a join, or a column to sub query where condition, or it could be a renderer for a select
+     * statement in an &quot;exists&quot; condition in a where clause.
+     *
+     * &lt;p&gt;In the case of conditions in a where clause, we will have a parent table alias calculator. This will give
+     * visibility to the aliases in the outer select statement to this renderer so columns in aliased tables can be
+     * used in where clause sub query conditions without having to re-specify the alias.
+     *
+     * &lt;p&gt;Another complication is that we calculate aliases differently if there are joins and sub queries. The
+     * cases are as follows:
+     *
+     * &lt;ol&gt;
+     *     &lt;li&gt;If there are no joins, then we will only use aliases that are explicitly set by the user&lt;/li&gt;
+     *     &lt;lI&gt;If there are joins and sub queries, we will also only use explicit aliases&lt;/lI&gt;
+     *     &lt;li&gt;If there are joins, but no sub queries, then we will automatically use the table name
+     *     as an alias if no explicit alias has been specified&lt;/li&gt;
+     * &lt;/ol&gt;
+     *
+     * @param queryExpression the model to render
+     * @return a table alias calculator appropriate for this context
+     */
+    private TableAliasCalculator calculateChildTableAliasCalculator(QueryExpressionModel queryExpression) {
+<span class="fc" id="L79">        return queryExpression.joinModel()</span>
+<span class="fc" id="L80">                .map(JoinModel::containsSubQueries)</span>
+<span class="fc" id="L81">                .map(this::calculateTableAliasCalculatorWithJoins)</span>
+<span class="fc" id="L82">                .orElseGet(this::explicitTableAliasCalculator);</span>
+    }
+
+    private TableAliasCalculator calculateTableAliasCalculatorWithJoins(boolean hasSubQueries) {
+<span class="fc bfc" id="L86" title="All 2 branches covered.">        if (hasSubQueries) {</span>
+            // if there are subqueries, we cannot use the table name automatically
+            // so all aliases must be specified
+<span class="fc" id="L89">            return explicitTableAliasCalculator();</span>
+        } else {
+            // without subqueries, we can automatically use table names as aliases
+<span class="fc" id="L92">            return guaranteedTableAliasCalculator();</span>
+        }
+    }
+
+    private TableAliasCalculator explicitTableAliasCalculator() {
+<span class="fc" id="L97">        return ExplicitTableAliasCalculator.of(queryExpression.tableAliases());</span>
+    }
+
+    private TableAliasCalculator guaranteedTableAliasCalculator() {
+<span class="fc" id="L101">        return GuaranteedTableAliasCalculator.of(queryExpression.tableAliases());</span>
+    }
+
+    public FragmentAndParameters render() {
+<span class="fc" id="L105">        FragmentCollector fragmentCollector = new FragmentCollector();</span>
+
+<span class="fc" id="L107">        fragmentCollector.add(calculateQueryExpressionStart());</span>
+<span class="fc" id="L108">        calculateJoinClause().ifPresent(fragmentCollector::add);</span>
+<span class="fc" id="L109">        calculateWhereClause().ifPresent(fragmentCollector::add);</span>
+<span class="fc" id="L110">        calculateGroupByClause().ifPresent(fragmentCollector::add);</span>
+<span class="fc" id="L111">        calculateHavingClause().ifPresent(fragmentCollector::add);</span>
+
+<span class="fc" id="L113">        return fragmentCollector.toFragmentAndParameters(Collectors.joining(&quot; &quot;)); //$NON-NLS-1$</span>
+    }
+
+    private FragmentAndParameters calculateQueryExpressionStart() {
+<span class="fc" id="L117">        FragmentAndParameters columnList = calculateColumnList();</span>
+
+<span class="fc" id="L119">        String start = queryExpression.connector().map(StringUtilities::spaceAfter).orElse(&quot;&quot;) //$NON-NLS-1$</span>
+                + &quot;select &quot; //$NON-NLS-1$
+<span class="fc bfc" id="L121" title="All 2 branches covered.">                + (queryExpression.isDistinct() ? &quot;distinct &quot; : &quot;&quot;) //$NON-NLS-1$ //$NON-NLS-2$</span>
+<span class="fc" id="L122">                + columnList.fragment()</span>
+                + &quot; from &quot;; //$NON-NLS-1$
+
+<span class="fc" id="L125">        FragmentAndParameters renderedTable = renderTableExpression(queryExpression.table());</span>
+<span class="fc" id="L126">        start += renderedTable.fragment();</span>
+
+<span class="fc" id="L128">        return FragmentAndParameters.withFragment(start)</span>
+<span class="fc" id="L129">                .withParameters(renderedTable.parameters())</span>
+<span class="fc" id="L130">                .withParameters(columnList.parameters())</span>
+<span class="fc" id="L131">                .build();</span>
+    }
+
+    private FragmentAndParameters calculateColumnList() {
+<span class="fc" id="L135">        return queryExpression.columns()</span>
+<span class="fc" id="L136">                .map(this::renderColumnAndAlias)</span>
+<span class="fc" id="L137">                .collect(FragmentCollector.collect())</span>
+<span class="fc" id="L138">                .toFragmentAndParameters(Collectors.joining(&quot;, &quot;)); //$NON-NLS-1$</span>
+    }
+
+    private FragmentAndParameters renderColumnAndAlias(BasicColumn selectListItem) {
+<span class="fc" id="L142">        FragmentAndParameters renderedColumn = selectListItem.render(renderingContext);</span>
+
+<span class="fc" id="L144">        return selectListItem.alias().map(a -&gt; renderedColumn.mapFragment(f -&gt; f + &quot; as &quot; + a)) //$NON-NLS-1$</span>
+<span class="fc" id="L145">                .orElse(renderedColumn);</span>
+    }
+
+    private FragmentAndParameters renderTableExpression(TableExpression table) {
+<span class="fc" id="L149">        return table.accept(tableExpressionRenderer);</span>
+    }
+
+    private Optional&lt;FragmentAndParameters&gt; calculateJoinClause() {
+<span class="fc" id="L153">        return queryExpression.joinModel().map(this::renderJoin);</span>
+    }
+
+    private FragmentAndParameters renderJoin(JoinModel joinModel) {
+<span class="fc" id="L157">        return JoinRenderer.withJoinModel(joinModel)</span>
+<span class="fc" id="L158">                .withTableExpressionRenderer(tableExpressionRenderer)</span>
+<span class="fc" id="L159">                .withRenderingContext(renderingContext)</span>
+<span class="fc" id="L160">                .build()</span>
+<span class="fc" id="L161">                .render();</span>
+    }
+
+    private Optional&lt;FragmentAndParameters&gt; calculateWhereClause() {
+<span class="fc" id="L165">        return queryExpression.whereModel().flatMap(this::renderWhereClause);</span>
+    }
+
+    private Optional&lt;FragmentAndParameters&gt; renderWhereClause(WhereModel whereModel) {
+<span class="fc" id="L169">        return whereModel.render(renderingContext);</span>
+    }
+
+    private Optional&lt;FragmentAndParameters&gt; calculateGroupByClause() {
+<span class="fc" id="L173">        return queryExpression.groupByModel().map(this::renderGroupBy);</span>
+    }
+
+    private FragmentAndParameters renderGroupBy(GroupByModel groupByModel) {
+<span class="fc" id="L177">        return groupByModel.columns()</span>
+<span class="fc" id="L178">                .map(this::renderColumn)</span>
+<span class="fc" id="L179">                .collect(FragmentCollector.collect())</span>
+<span class="fc" id="L180">                .toFragmentAndParameters(</span>
+<span class="fc" id="L181">                        Collectors.joining(&quot;, &quot;, &quot;group by &quot;, &quot;&quot;)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$)</span>
+    }
+
+    private FragmentAndParameters renderColumn(BasicColumn column) {
+<span class="fc" id="L185">        return column.render(renderingContext);</span>
+    }
+
+    private Optional&lt;FragmentAndParameters&gt; calculateHavingClause() {
+<span class="fc" id="L189">        return queryExpression.havingModel().flatMap(this::renderHavingClause);</span>
+    }
+
+    private Optional&lt;FragmentAndParameters&gt; renderHavingClause(HavingModel havingModel) {
+<span class="fc" id="L193">        return HavingRenderer.withHavingModel(havingModel)</span>
+<span class="fc" id="L194">                .withRenderingContext(renderingContext)</span>
+<span class="fc" id="L195">                .build()</span>
+<span class="fc" id="L196">                .render();</span>
+    }
+
+    public static Builder withQueryExpression(QueryExpressionModel model) {
+<span class="fc" id="L200">        return new Builder().withQueryExpression(model);</span>
+    }
+
+<span class="fc" id="L203">    public static class Builder {</span>
+        private @Nullable QueryExpressionModel queryExpression;
+        private @Nullable RenderingContext renderingContext;
+
+        public Builder withRenderingContext(RenderingContext renderingContext) {
+<span class="fc" id="L208">            this.renderingContext = renderingContext;</span>
+<span class="fc" id="L209">            return this;</span>
+        }
+
+        public Builder withQueryExpression(QueryExpressionModel queryExpression) {
+<span class="fc" id="L213">            this.queryExpression = queryExpression;</span>
+<span class="fc" id="L214">            return this;</span>
+        }
+
+        public QueryExpressionRenderer build() {
+<span class="fc" id="L218">            return new QueryExpressionRenderer(this);</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

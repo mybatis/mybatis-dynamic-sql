@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>JoinOperations.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MyBatis Dynamic SQL</a> &gt; <a href="index.source.html" class="el_package">org.mybatis.dynamic.sql.dsl</a> &gt; <span class="el_source">JoinOperations.java</span></div><h1>JoinOperations.java</h1><pre class="source lang-java linenums">/*
+ *    Copyright 2016-2026 the original author or authors.
+ *
+ *    Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *       https://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+package org.mybatis.dynamic.sql.dsl;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.function.Function;
+
+import org.jspecify.annotations.Nullable;
+import org.mybatis.dynamic.sql.AndOrCriteriaGroup;
+import org.mybatis.dynamic.sql.BindableColumn;
+import org.mybatis.dynamic.sql.ColumnAndConditionCriterion;
+import org.mybatis.dynamic.sql.RenderableCondition;
+import org.mybatis.dynamic.sql.SqlCriterion;
+import org.mybatis.dynamic.sql.SqlTable;
+import org.mybatis.dynamic.sql.TableExpression;
+import org.mybatis.dynamic.sql.select.SelectModel;
+import org.mybatis.dynamic.sql.select.SubQuery;
+import org.mybatis.dynamic.sql.select.join.JoinType;
+import org.mybatis.dynamic.sql.util.Buildable;
+
+public interface JoinOperations&lt;F extends BooleanOperations&lt;F&gt;&gt; {
+
+    F join(JoinType joinType, TableExpression joinTable, SqlCriterion initialCriterion);
+
+    F join(JoinType joinType, SqlTable joinTable, String tableAlias, SqlCriterion initialCriterion);
+
+    default JoinOnGatherer&lt;F&gt; join(SqlTable joinTable) {
+<span class="fc" id="L42">        return new JoinOnGatherer&lt;&gt;(ic -&gt; join(JoinType.INNER, joinTable, ic));</span>
+    }
+
+    default JoinOnGatherer&lt;F&gt; join(SqlTable joinTable, String tableAlias) {
+<span class="fc" id="L46">        return new JoinOnGatherer&lt;&gt;(ic -&gt; join(JoinType.INNER, joinTable, tableAlias, ic));</span>
+    }
+
+    default JoinOnGatherer&lt;F&gt; join(Buildable&lt;SelectModel&gt; joinTable, @Nullable String tableAlias) {
+<span class="fc" id="L50">        return new JoinOnGatherer&lt;&gt;(ic -&gt; join(JoinType.INNER, buildSubQuery(joinTable, tableAlias), ic));</span>
+    }
+
+    default F join(SqlTable joinTable, SqlCriterion onJoinCriterion,
+                   AndOrCriteriaGroup... andJoinCriteria) {
+<span class="fc" id="L55">        return join(joinTable, onJoinCriterion, Arrays.asList(andJoinCriteria));</span>
+    }
+
+    default F join(SqlTable joinTable, String tableAlias, SqlCriterion onJoinCriterion,
+                   AndOrCriteriaGroup... andJoinCriteria) {
+<span class="fc" id="L60">        return join(joinTable, tableAlias, onJoinCriterion, Arrays.asList(andJoinCriteria));</span>
+    }
+
+    default F join(SqlTable joinTable, SqlCriterion onJoinCriterion,
+                   List&lt;AndOrCriteriaGroup&gt; andJoinCriteria) {
+<span class="fc" id="L65">        return join(joinTable).on(onJoinCriterion).and(andJoinCriteria);</span>
+    }
+
+    default F join(SqlTable joinTable, String tableAlias, SqlCriterion onJoinCriterion,
+                   List&lt;AndOrCriteriaGroup&gt; andJoinCriteria) {
+<span class="fc" id="L70">        return join(joinTable, tableAlias).on(onJoinCriterion).and(andJoinCriteria);</span>
+    }
+
+    default F join(Buildable&lt;SelectModel&gt; subQuery, @Nullable String tableAlias, SqlCriterion onJoinCriterion,
+                   List&lt;AndOrCriteriaGroup&gt; andJoinCriteria) {
+<span class="fc" id="L75">        return join(subQuery, tableAlias).on(onJoinCriterion).and(andJoinCriteria);</span>
+    }
+
+    default JoinOnGatherer&lt;F&gt; leftJoin(SqlTable joinTable) {
+<span class="fc" id="L79">        return new JoinOnGatherer&lt;&gt;(ic -&gt; join(JoinType.LEFT, joinTable, ic));</span>
+    }
+
+    default JoinOnGatherer&lt;F&gt; leftJoin(SqlTable joinTable, String tableAlias) {
+<span class="fc" id="L83">        return new JoinOnGatherer&lt;&gt;(ic -&gt; join(JoinType.LEFT, joinTable, tableAlias, ic));</span>
+    }
+
+    default JoinOnGatherer&lt;F&gt; leftJoin(Buildable&lt;SelectModel&gt; joinTable, @Nullable String tableAlias) {
+<span class="fc" id="L87">        return new JoinOnGatherer&lt;&gt;(ic -&gt; join(JoinType.LEFT, buildSubQuery(joinTable, tableAlias), ic));</span>
+    }
+
+    default F leftJoin(SqlTable joinTable, SqlCriterion onJoinCriterion,
+                       AndOrCriteriaGroup... andJoinCriteria) {
+<span class="fc" id="L92">        return leftJoin(joinTable, onJoinCriterion, Arrays.asList(andJoinCriteria));</span>
+    }
+
+    default F leftJoin(SqlTable joinTable, String tableAlias, SqlCriterion onJoinCriterion,
+                       AndOrCriteriaGroup... andJoinCriteria) {
+<span class="fc" id="L97">        return leftJoin(joinTable, tableAlias, onJoinCriterion, Arrays.asList(andJoinCriteria));</span>
+    }
+
+    default F leftJoin(SqlTable joinTable, SqlCriterion onJoinCriterion,
+                       List&lt;AndOrCriteriaGroup&gt; andJoinCriteria) {
+<span class="fc" id="L102">        return leftJoin(joinTable).on(onJoinCriterion).and(andJoinCriteria);</span>
+    }
+
+    default F leftJoin(SqlTable joinTable, String tableAlias, SqlCriterion onJoinCriterion,
+                       List&lt;AndOrCriteriaGroup&gt; andJoinCriteria) {
+<span class="fc" id="L107">        return leftJoin(joinTable, tableAlias).on(onJoinCriterion).and(andJoinCriteria);</span>
+    }
+
+    default F leftJoin(Buildable&lt;SelectModel&gt; subQuery, @Nullable String tableAlias,
+                       SqlCriterion onJoinCriterion, List&lt;AndOrCriteriaGroup&gt; andJoinCriteria) {
+<span class="fc" id="L112">        return leftJoin(subQuery, tableAlias).on(onJoinCriterion).and(andJoinCriteria);</span>
+    }
+
+    default JoinOnGatherer&lt;F&gt; rightJoin(SqlTable joinTable) {
+<span class="fc" id="L116">        return new JoinOnGatherer&lt;&gt;(ic -&gt; join(JoinType.RIGHT, joinTable, ic));</span>
+    }
+
+    default JoinOnGatherer&lt;F&gt; rightJoin(SqlTable joinTable, String tableAlias) {
+<span class="fc" id="L120">        return new JoinOnGatherer&lt;&gt;(ic -&gt; join(JoinType.RIGHT, joinTable, tableAlias, ic));</span>
+    }
+
+    default JoinOnGatherer&lt;F&gt; rightJoin(Buildable&lt;SelectModel&gt; joinTable, @Nullable String tableAlias) {
+<span class="fc" id="L124">        return new JoinOnGatherer&lt;&gt;(ic -&gt; join(JoinType.RIGHT, buildSubQuery(joinTable, tableAlias), ic));</span>
+    }
+
+    default F rightJoin(SqlTable joinTable, SqlCriterion onJoinCriterion,
+                        AndOrCriteriaGroup... andJoinCriteria) {
+<span class="fc" id="L129">        return rightJoin(joinTable, onJoinCriterion, Arrays.asList(andJoinCriteria));</span>
+    }
+
+    default F rightJoin(SqlTable joinTable, String tableAlias, SqlCriterion onJoinCriterion,
+                        AndOrCriteriaGroup... andJoinCriteria) {
+<span class="fc" id="L134">        return rightJoin(joinTable, tableAlias, onJoinCriterion, Arrays.asList(andJoinCriteria));</span>
+    }
+
+    default F rightJoin(SqlTable joinTable, SqlCriterion onJoinCriterion,
+                        List&lt;AndOrCriteriaGroup&gt; andJoinCriteria) {
+<span class="fc" id="L139">        return rightJoin(joinTable).on(onJoinCriterion).and(andJoinCriteria);</span>
+    }
+
+    default F rightJoin(SqlTable joinTable, String tableAlias, SqlCriterion onJoinCriterion,
+                        List&lt;AndOrCriteriaGroup&gt; andJoinCriteria) {
+<span class="fc" id="L144">        return rightJoin(joinTable, tableAlias).on(onJoinCriterion).and(andJoinCriteria);</span>
+    }
+
+    default F rightJoin(Buildable&lt;SelectModel&gt; subQuery, @Nullable String tableAlias,
+                        SqlCriterion onJoinCriterion, List&lt;AndOrCriteriaGroup&gt; andJoinCriteria) {
+<span class="fc" id="L149">        return rightJoin(subQuery, tableAlias).on(onJoinCriterion).and(andJoinCriteria);</span>
+    }
+
+    default JoinOnGatherer&lt;F&gt; fullJoin(SqlTable joinTable) {
+<span class="fc" id="L153">        return new JoinOnGatherer&lt;&gt;(ic -&gt; join(JoinType.FULL, joinTable, ic));</span>
+    }
+
+    default JoinOnGatherer&lt;F&gt; fullJoin(SqlTable joinTable, String tableAlias) {
+<span class="fc" id="L157">        return new JoinOnGatherer&lt;&gt;(ic -&gt; join(JoinType.FULL, joinTable, tableAlias, ic));</span>
+    }
+
+    default JoinOnGatherer&lt;F&gt; fullJoin(Buildable&lt;SelectModel&gt; joinTable, @Nullable String tableAlias) {
+<span class="fc" id="L161">        return new JoinOnGatherer&lt;&gt;(ic -&gt; join(JoinType.FULL, buildSubQuery(joinTable, tableAlias), ic));</span>
+    }
+
+    default F fullJoin(SqlTable joinTable, SqlCriterion onJoinCriterion,
+                       AndOrCriteriaGroup... andJoinCriteria) {
+<span class="fc" id="L166">        return fullJoin(joinTable, onJoinCriterion, Arrays.asList(andJoinCriteria));</span>
+    }
+
+    default F fullJoin(SqlTable joinTable, String tableAlias, SqlCriterion onJoinCriterion,
+                       AndOrCriteriaGroup... andJoinCriteria) {
+<span class="fc" id="L171">        return fullJoin(joinTable, tableAlias, onJoinCriterion, Arrays.asList(andJoinCriteria));</span>
+    }
+
+    default F fullJoin(SqlTable joinTable, SqlCriterion onJoinCriterion,
+                       List&lt;AndOrCriteriaGroup&gt; andJoinCriteria) {
+<span class="fc" id="L176">        return fullJoin(joinTable).on(onJoinCriterion).and(andJoinCriteria);</span>
+    }
+
+    default F fullJoin(SqlTable joinTable, String tableAlias, SqlCriterion onJoinCriterion,
+                       List&lt;AndOrCriteriaGroup&gt; andJoinCriteria) {
+<span class="fc" id="L181">        return fullJoin(joinTable, tableAlias).on(onJoinCriterion).and(andJoinCriteria);</span>
+    }
+
+    default F fullJoin(Buildable&lt;SelectModel&gt; subQuery, @Nullable String tableAlias,
+                       SqlCriterion onJoinCriterion, List&lt;AndOrCriteriaGroup&gt; andJoinCriteria) {
+<span class="fc" id="L186">        return fullJoin(subQuery, tableAlias).on(onJoinCriterion).and(andJoinCriteria);</span>
+    }
+
+    private SubQuery buildSubQuery(Buildable&lt;SelectModel&gt; selectModel, @Nullable String alias) {
+<span class="fc" id="L190">        return new SubQuery.Builder()</span>
+<span class="fc" id="L191">                .withSelectModel(selectModel.build())</span>
+<span class="fc" id="L192">                .withAlias(alias)</span>
+<span class="fc" id="L193">                .build();</span>
+    }
+
+    class JoinOnGatherer&lt;F extends BooleanOperations&lt;?&gt;&gt; {
+        private final Function&lt;SqlCriterion, F&gt; builder;
+
+<span class="fc" id="L199">        public JoinOnGatherer(Function&lt;SqlCriterion, F&gt; builder) {</span>
+<span class="fc" id="L200">            this.builder = builder;</span>
+<span class="fc" id="L201">        }</span>
+
+        public &lt;T&gt; F on(BindableColumn&lt;T&gt; joinColumn, RenderableCondition&lt;T&gt; joinCondition) {
+<span class="fc" id="L204">            return on(ColumnAndConditionCriterion.withColumn(joinColumn)</span>
+<span class="fc" id="L205">                    .withCondition(joinCondition)</span>
+<span class="fc" id="L206">                    .build());</span>
+        }
+
+        public &lt;T&gt; F on(BindableColumn&lt;T&gt; joinColumn, RenderableCondition&lt;T&gt; onJoinCondition,
+                        AndOrCriteriaGroup... subCriteria) {
+<span class="fc" id="L211">            return on(ColumnAndConditionCriterion.withColumn(joinColumn)</span>
+<span class="fc" id="L212">                    .withCondition(onJoinCondition)</span>
+<span class="fc" id="L213">                    .withSubCriteria(Arrays.asList(subCriteria))</span>
+<span class="fc" id="L214">                    .build());</span>
+        }
+
+        public F on(SqlCriterion initialCriterion) {
+<span class="fc" id="L218">            return builder.apply(initialCriterion);</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>
