@@ -4,6 +4,7 @@
 [![Coverage Status](https://coveralls.io/repos/github/mybatis/mybatis-dynamic-sql/badge.svg?branch=master)](https://coveralls.io/github/mybatis/mybatis-dynamic-sql?branch=master)
 [![Maven Central](https://img.shields.io/maven-central/v/org.mybatis.dynamic-sql/mybatis-dynamic-sql.svg)](https://central.sonatype.com/artifact/org.mybatis.dynamic-sql/mybatis-dynamic-sql)
 [![Sonatype Nexus (Snapshots)](https://img.shields.io/nexus/s/https/oss.sonatype.org/org.mybatis.dynamic-sql/mybatis-dynamic-sql.svg)](https://oss.sonatype.org/content/repositories/snapshots/org/mybatis/dynamic-sql/mybatis-dynamic-sql/)
+[![Docs](https://img.shields.io/badge/docs-mybatis.org-blue?logo=github)](https://mybatis.org/mybatis-dynamic-sql/)
 [![License](https://img.shields.io/:license-apache-brightgreen.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=mybatis_mybatis-dynamic-sql&metric=alert_status)](https://sonarcloud.io/dashboard?id=mybatis_mybatis-dynamic-sql)
 [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=mybatis_mybatis-dynamic-sql&metric=security_rating)](https://sonarcloud.io/dashboard?id=mybatis_mybatis-dynamic-sql)
