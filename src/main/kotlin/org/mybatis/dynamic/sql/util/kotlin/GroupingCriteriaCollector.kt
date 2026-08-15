@@ -26,8 +26,11 @@ import org.mybatis.dynamic.sql.NullCriterion
 import org.mybatis.dynamic.sql.RenderableCondition
 import org.mybatis.dynamic.sql.SqlBuilder
 import org.mybatis.dynamic.sql.SqlCriterion
+import org.mybatis.dynamic.sql.util.Messages
 
 typealias GroupingCriteriaReceiver = GroupingCriteriaCollector.() -> Unit
+
+private const val ERROR51 = "ERROR.51" //$NON-NLS-1$
 
 fun GroupingCriteriaReceiver.andThen(after: SubCriteriaCollector.() -> Unit): GroupingCriteriaReceiver = {
     invoke(this)
@@ -48,6 +51,12 @@ sealed class SubCriteriaCollector {
      */
     fun and(criteriaReceiver: GroupingCriteriaReceiver): Unit =
         GroupingCriteriaCollector().apply(criteriaReceiver).let {
+            if (it.isEmpty()) {
+                throw KInvalidSQLException(Messages.getString(
+                    ERROR51, "an", "and") //$NON-NLS-1$ //$NON-NLS-2$
+                )
+            }
+
             subCriteria.add(
                 AndOrCriteriaGroup.Builder().withConnector("and") //$NON-NLS-1$
                     .withInitialCriterion(it.initialCriterion)
@@ -86,6 +95,12 @@ sealed class SubCriteriaCollector {
      */
     fun or(criteriaReceiver: GroupingCriteriaReceiver): Unit =
         GroupingCriteriaCollector().apply(criteriaReceiver).let {
+            if (it.isEmpty()) {
+                throw KInvalidSQLException(Messages.getString(
+                    ERROR51, "an", "or") //$NON-NLS-1$ //$NON-NLS-2$
+                )
+            }
+
             subCriteria.add(
                 AndOrCriteriaGroup.Builder().withConnector("or") //$NON-NLS-1$
                     .withInitialCriterion(it.initialCriterion)
@@ -140,6 +155,8 @@ open class GroupingCriteriaCollector : SubCriteriaCollector() {
             field = value
         }
 
+    internal fun isEmpty() = internalInitialCriterion == null && subCriteria.isEmpty()
+
     /**
      * Add an initial criterion preceded with "not" to the current context. If the receiver adds more than one
      * criterion that renders then parentheses will be added.
@@ -151,6 +168,12 @@ open class GroupingCriteriaCollector : SubCriteriaCollector() {
      */
     fun not(criteriaReceiver: GroupingCriteriaReceiver): Unit =
         GroupingCriteriaCollector().apply(criteriaReceiver).let {
+            if (it.isEmpty()) {
+                throw KInvalidSQLException(Messages.getString(
+                    ERROR51, "a", "not") //$NON-NLS-1$ //$NON-NLS-2$
+                )
+            }
+
             internalInitialCriterion = NotCriterion.Builder()
                 .withInitialCriterion(it.initialCriterion)
                 .withSubCriteria(it.subCriteria)
@@ -203,6 +226,12 @@ open class GroupingCriteriaCollector : SubCriteriaCollector() {
      */
     fun group(criteriaReceiver: GroupingCriteriaReceiver): Unit =
         GroupingCriteriaCollector().apply(criteriaReceiver).let {
+            if (it.isEmpty()) {
+                throw KInvalidSQLException(Messages.getString(
+                    ERROR51, "a", "group") //$NON-NLS-1$ //$NON-NLS-2$
+                )
+            }
+
             internalInitialCriterion = CriteriaGroup.Builder()
                 .withInitialCriterion(it.initialCriterion)
                 .withSubCriteria(it.subCriteria)

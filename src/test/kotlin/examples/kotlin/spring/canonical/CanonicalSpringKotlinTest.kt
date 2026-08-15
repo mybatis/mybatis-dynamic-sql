@@ -34,6 +34,7 @@ import org.mybatis.dynamic.sql.util.kotlin.KInvalidSQLException
 import org.mybatis.dynamic.sql.util.kotlin.elements.`as`
 import org.mybatis.dynamic.sql.util.kotlin.elements.add
 import org.mybatis.dynamic.sql.util.kotlin.elements.constant
+import org.mybatis.dynamic.sql.util.kotlin.elements.isGreaterThan
 import org.mybatis.dynamic.sql.util.kotlin.elements.isLikeWhenPresent
 import org.mybatis.dynamic.sql.util.kotlin.elements.max
 import org.mybatis.dynamic.sql.util.kotlin.elements.sortColumn
@@ -247,6 +248,64 @@ open class CanonicalSpringKotlinTest {
         val rows = template.delete(deleteStatement)
 
         assertThat(rows).isEqualTo(2)
+    }
+
+    @Test
+    fun testInvalidAnd() {
+        assertThatExceptionOfType(KInvalidSQLException::class.java).isThrownBy {
+            deleteFrom(person) {
+                where {
+                    id isLessThan 10
+                    and {
+                        id
+                        isGreaterThan(5)
+                    }
+                }
+            }
+        }.withMessage(Messages.getString("ERROR.51", "an", "and"))
+    }
+
+    @Test
+    fun testInvalidOr() {
+        assertThatExceptionOfType(KInvalidSQLException::class.java).isThrownBy {
+            deleteFrom(person) {
+                where {
+                    id isLessThan 10
+                    or {
+                        id
+                        isGreaterThan(5)
+                    }
+                }
+            }
+        }.withMessage(Messages.getString("ERROR.51", "an", "or"))
+    }
+
+    @Test
+    fun testInvalidGroup() {
+        assertThatExceptionOfType(KInvalidSQLException::class.java).isThrownBy {
+            deleteFrom(person) {
+                where {
+                    group {
+                        id
+                        isGreaterThan(5)
+                    }
+                }
+            }
+        }.withMessage(Messages.getString("ERROR.51", "a", "group"))
+    }
+
+    @Test
+    fun testInvalidNot() {
+        assertThatExceptionOfType(KInvalidSQLException::class.java).isThrownBy {
+            deleteFrom(person) {
+                where {
+                    not {
+                        id
+                        isGreaterThan(5)
+                    }
+                }
+            }
+        }.withMessage(Messages.getString("ERROR.51", "a", "not"))
     }
 
     @Test

@@ -33,6 +33,10 @@ public class Messages {
         return MessageFormat.format(getString(key), p1);
     }
 
+    public static String getString(String key, String p1, String p2) {
+        return MessageFormat.format(getString(key), p1, p2);
+    }
+
     public static String getString(String key, String p1, String p2, String p3) {
         return MessageFormat.format(getString(key), p1, p2, p3);
     }
