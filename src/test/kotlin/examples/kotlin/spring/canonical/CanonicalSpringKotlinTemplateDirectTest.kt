@@ -56,7 +56,7 @@ import java.util.Date
 @Suppress("LargeClass")
 @SpringJUnitConfig(classes = [SpringConfiguration::class])
 @Transactional
-open class CanonicalSpringKotlinTemplateDirectTest {
+class CanonicalSpringKotlinTemplateDirectTest {
     @Autowired
     private lateinit var template: NamedParameterJdbcTemplate
 

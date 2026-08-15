@@ -32,7 +32,7 @@ import org.springframework.transaction.annotation.Transactional
 
 @SpringJUnitConfig(classes = [SpringConfiguration::class])
 @Transactional
-open class SpringKotlinMapToRowTest {
+class SpringKotlinMapToRowTest {
     @Autowired
     private lateinit var template: NamedParameterJdbcTemplate
 
@@ -62,7 +62,7 @@ open class SpringKotlinMapToRowTest {
     }
 
     @Test
-    open fun testInsertMultiple() {
+    fun testInsertMultiple() {
         val integers = listOf(1, 2, 3)
 
         val insertStatement = insertMultiple(integers) {
@@ -88,7 +88,7 @@ open class SpringKotlinMapToRowTest {
     }
 
     @Test
-    open fun testInsertBatch() {
+    fun testInsertBatch() {
         val integers = listOf(1, 2, 3)
 
         val insertStatement = insertBatch(integers) {

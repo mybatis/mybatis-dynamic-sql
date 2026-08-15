@@ -36,7 +36,7 @@ import org.springframework.transaction.annotation.Transactional
 
 @SpringJUnitConfig(classes = [SpringConfiguration::class])
 @Transactional
-open class SpringKotlinSubQueryTest {
+class SpringKotlinSubQueryTest {
     @Autowired
     private lateinit var template: NamedParameterJdbcTemplate
 
