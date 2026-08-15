@@ -44,7 +44,7 @@ import org.springframework.transaction.annotation.Transactional
 @Suppress("LargeClass")
 @SpringJUnitConfig(SpringConfiguration::class)
 @Transactional
-open class InfixElementsTest {
+class InfixElementsTest {
     @Autowired
     private lateinit var template: NamedParameterJdbcTemplate
 

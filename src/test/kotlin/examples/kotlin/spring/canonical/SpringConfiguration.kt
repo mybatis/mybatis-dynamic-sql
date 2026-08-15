@@ -25,9 +25,9 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import org.springframework.jdbc.datasource.DataSourceTransactionManager
 
 @Configuration
-open class SpringConfiguration {
+class SpringConfiguration {
     @Bean
-    open fun datasource(): DataSource =
+    fun datasource(): DataSource =
         EmbeddedDatabaseBuilder().run {
             setType(EmbeddedDatabaseType.HSQL)
             generateUniqueName(true)
@@ -37,8 +37,8 @@ open class SpringConfiguration {
         }
 
     @Bean
-    open fun template(dataSource: DataSource) = NamedParameterJdbcTemplate(dataSource)
+    fun template(dataSource: DataSource) = NamedParameterJdbcTemplate(dataSource)
 
     @Bean
-    open fun transactionManager(dataSource: DataSource) = DataSourceTransactionManager(dataSource)
+    fun transactionManager(dataSource: DataSource) = DataSourceTransactionManager(dataSource)
 }

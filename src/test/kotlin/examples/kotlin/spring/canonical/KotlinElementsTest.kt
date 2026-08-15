@@ -66,7 +66,7 @@ import org.springframework.transaction.annotation.Transactional
 @Suppress("LargeClass", "MaxLineLength")
 @SpringJUnitConfig(SpringConfiguration::class)
 @Transactional
-open class KotlinElementsTest {
+class KotlinElementsTest {
     @Autowired
     private lateinit var template: NamedParameterJdbcTemplate
 
