@@ -19,7 +19,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.MissingResourceException;
 import java.util.Optional;
@@ -141,7 +140,7 @@ class InvalidSQLTest {
 
     @Test
     void testInvalidEmptyInsertColumnList() {
-        List<SqlColumn<?>> list = Collections.emptyList();
+        List<SqlColumn<?>> list = List.of();
         assertThatExceptionOfType(InvalidSqlException.class).isThrownBy(() -> InsertColumnListModel.of(list))
                 .withMessage(Messages.getString("ERROR.4"));
     }
@@ -171,7 +170,7 @@ class InvalidSQLTest {
 
     @Test
     void testInvalidSelectStatementEmptyJoinModel() {
-        List<JoinSpecification> list = Collections.emptyList();
+        List<JoinSpecification> list = List.of();
         assertThatExceptionOfType(InvalidSqlException.class).isThrownBy(() -> JoinModel.of(list))
                 .withMessage(Messages.getString("ERROR.15"));
     }
@@ -191,14 +190,14 @@ class InvalidSQLTest {
     }
     @Test
     void testInvalidSelectStatementWithEmptyOrderByList() {
-        List<SortSpecification> list = Collections.emptyList();
+        List<SortSpecification> list = List.of();
         assertThatExceptionOfType(InvalidSqlException.class).isThrownBy(() -> OrderByModel.of(list))
                 .withMessage(Messages.getString("ERROR.12"));
     }
 
     @Test
     void testInvalidSelectStatementWithEmptyGroupByList() {
-        List<BasicColumn> list = Collections.emptyList();
+        List<BasicColumn> list = List.of();
         assertThatExceptionOfType(InvalidSqlException.class).isThrownBy(() -> GroupByModel.of(list))
                 .withMessage(Messages.getString("ERROR.11"));
     }

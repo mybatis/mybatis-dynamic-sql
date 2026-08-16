@@ -35,7 +35,6 @@ import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -139,7 +138,7 @@ class VariousListConditionsTest {
     void testInWithEmptyList() {
         var selectModel = select(id, animalName)
                 .from(animalData)
-                .where(id, isIn(Collections.emptyList()))
+                .where(id, isIn(List.of()))
                 .orderBy(id)
                 .build();
 
@@ -155,7 +154,7 @@ class VariousListConditionsTest {
 
             SelectStatementProvider selectStatement = select(id, animalName)
                     .from(animalData)
-                    .where(id, isInWhenPresent(Collections.emptyList()))
+                    .where(id, isInWhenPresent(List.of()))
                     .orderBy(id)
                     .configureStatement(c -> c.setNonRenderingWhereClauseAllowed(true))
                     .build()

@@ -17,7 +17,7 @@ package org.mybatis.dynamic.sql.where.condition;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
+import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -27,7 +27,7 @@ import org.mybatis.dynamic.sql.util.Utilities;
 
 public class IsInWhenPresent<T> extends AbstractListValueCondition<T>
         implements AbstractListValueCondition.Filterable<T>, AbstractListValueCondition.Mappable<T> {
-    private static final IsInWhenPresent<?> EMPTY = new IsInWhenPresent<>(Collections.emptyList());
+    private static final IsInWhenPresent<?> EMPTY = new IsInWhenPresent<>(List.of());
 
     public static <T> IsInWhenPresent<T> empty() {
         @SuppressWarnings("unchecked")

@@ -19,7 +19,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
 import static org.mybatis.dynamic.sql.subselect.FooDynamicSqlSupport.*;
 
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -32,7 +31,7 @@ class NoInitialConditionTest {
 
     @Test
     void testNoInitialConditionEmptyList() {
-        List<AndOrCriteriaGroup> criteria = Collections.emptyList();
+        List<AndOrCriteriaGroup> criteria = List.of();
 
         SelectStatementProvider selectStatement = buildSelectStatement(criteria);
 

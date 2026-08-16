@@ -17,7 +17,7 @@ package org.mybatis.dynamic.sql.where.condition;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
+import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -27,7 +27,7 @@ import org.mybatis.dynamic.sql.util.Validator;
 
 public class IsIn<T> extends AbstractListValueCondition<T>
         implements AbstractListValueCondition.Filterable<T>, AbstractListValueCondition.Mappable<T> {
-    private static final IsIn<?> EMPTY = new IsIn<>(Collections.emptyList());
+    private static final IsIn<?> EMPTY = new IsIn<>(List.of());
 
     public static <T> IsIn<T> empty() {
         @SuppressWarnings("unchecked")

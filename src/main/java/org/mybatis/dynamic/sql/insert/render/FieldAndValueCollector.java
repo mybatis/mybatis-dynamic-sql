@@ -64,7 +64,7 @@ public class FieldAndValueCollector {
     private String toSingleRowOfValues(int row) {
         return fieldsAndValues.stream()
                 .map(FieldAndValueAndParameters::valuePhrase)
-                .map(s -> String.format(s, row))
+                .map(s -> s.formatted(row))
                 .collect(Collectors.joining(", ", "(", ")")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
 

@@ -30,7 +30,6 @@ import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -678,7 +677,7 @@ class AnimalDataTest {
     void testInConditionWithEmptyList() {
         SelectModel selectModel = select(id, animalName, bodyWeight, brainWeight)
                 .from(animalData)
-                .where(id, isInWhenPresent(Collections.emptyList()))
+                .where(id, isInWhenPresent(List.of()))
                 .build();
 
         assertThatExceptionOfType(NonRenderingWhereClauseException.class).isThrownBy(() ->

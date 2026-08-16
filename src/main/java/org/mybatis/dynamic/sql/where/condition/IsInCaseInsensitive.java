@@ -17,7 +17,7 @@ package org.mybatis.dynamic.sql.where.condition;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
+import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -29,7 +29,7 @@ import org.mybatis.dynamic.sql.util.Validator;
 public class IsInCaseInsensitive<T> extends AbstractListValueCondition<T>
         implements CaseInsensitiveRenderableCondition<T>, AbstractListValueCondition.Filterable<T>,
         AbstractListValueCondition.Mappable<T> {
-    private static final IsInCaseInsensitive<?> EMPTY = new IsInCaseInsensitive<>(Collections.emptyList());
+    private static final IsInCaseInsensitive<?> EMPTY = new IsInCaseInsensitive<>(List.of());
 
     public static <T> IsInCaseInsensitive<T> empty() {
         @SuppressWarnings("unchecked")
